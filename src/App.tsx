@@ -1,13 +1,20 @@
 import React from 'react';
-import { Button } from "@material-ui/core";
+import {
+  BrowserRouter as Router,
+  Switch,
+} from 'react-router-dom';
+import Login from "./components/screen/login/Login";
+import PublicRoute from "./routes/PublicRoute";
 
 const App = (): JSX.Element => {
   return (
-    <div className="App">
-      <Button variant="contained" color="primary">
-        Text
-      </Button>
-    </div>
+    <Router>
+      <Switch>
+        <PublicRoute exact={true}>
+          <Login />
+        </PublicRoute>
+      </Switch>
+    </Router>
   );
 }
 
