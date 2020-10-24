@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
   Container,
@@ -9,13 +9,18 @@ import {
   Typography,
   Button,
   Icon,
-  InputAdornment,
+  InputAdornment, IconButton,
 } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useTranslation } from "react-i18next";
 import MailIcon from '@material-ui/icons/Mail';
 import LockIcon from '@material-ui/icons/Lock';
+import {
+  ActionInterface,
+  LoginInitialStateInterface,
+} from "../../../interfaces";
+import { Visibility, VisibilityOff } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {
@@ -37,7 +42,36 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
 }));
 
+const loginInitialState = {
+  email: '',
+  password: '',
+  isVisiblePassword: false,
+};
+
+function reducer(state = loginInitialState, action: ActionInterface): LoginInitialStateInterface {
+  switch (action.type) {
+    case 'email':
+      return {
+        ...state,
+        email: action.value,
+      };
+    case 'password':
+      return {
+        ...state,
+        password: action.value
+      }
+    case 'isVisiblePassword':
+      return {
+        ...state,
+        isVisiblePassword: !state.isVisiblePassword,
+      };
+    default:
+      throw new Error('Action type not defined');
+  }
+}
+
 const Login: React.FC = (): JSX.Element => {
+  const [state, dispatch] = useReducer(reducer, loginInitialState);
   const location  = useLocation();
   const history = useHistory();
   const { from }: any = location.state || { from: { pathname: '/dashboard' } };
@@ -48,6 +82,13 @@ const Login: React.FC = (): JSX.Element => {
     e.preventDefault();
     console.log(1)
   }
+
+  const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>): void => {
+    e.preventDefault();
+  }
+
+  const handleClickShowPassword = (): void =>
+    dispatch({ type: 'isVisiblePassword', value: !state.isVisiblePassword });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -89,13 +130,25 @@ const Login: React.FC = (): JSX.Element => {
             fullWidth
             name="password"
             label="کلمه عبور"
-            type="password"
+            type={state.isVisiblePassword ? 'text' : 'password'}
             id="password"
             autoComplete="current-password"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <LockIcon />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {state.isVisiblePassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
                 </InputAdornment>
               )
             }}
