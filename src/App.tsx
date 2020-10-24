@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
 } from 'react-router-dom';
-import Login from "./components/screen/login/Login";
 import PublicRoute from "./routes/PublicRoute";
+
+const Login = lazy(() => import('./components/screen/login/Login'));
 
 const App = (): JSX.Element => {
   return (
     <Router>
       <Switch>
-        <PublicRoute exact={true}>
-          <Login />
-        </PublicRoute>
+        <Suspense fallback={<>Loading....</>}>
+          <PublicRoute exact={true} path="/login">
+            <Login />
+          </PublicRoute>
+        </Suspense>
       </Switch>
     </Router>
   );
