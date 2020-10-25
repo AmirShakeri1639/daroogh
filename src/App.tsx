@@ -5,6 +5,7 @@ import {
 } from 'react-router-dom';
 import PublicRoute from "./routes/PublicRoute";
 import CircleLoading from "./components/public/loading/CircleLoading";
+import PrivateRoute from "./routes/PrivateRoute";
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 
@@ -13,9 +14,12 @@ const App = (): JSX.Element => {
     <Router>
       <Switch>
         <Suspense fallback={<CircleLoading />}>
-          <PublicRoute exact={true} path="/login">
+          <PublicRoute path="/login">
             <Login />
           </PublicRoute>
+          <PrivateRoute path="/dashboard">
+
+          </PrivateRoute>
         </Suspense>
       </Switch>
     </Router>
