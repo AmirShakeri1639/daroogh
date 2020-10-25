@@ -8,7 +8,6 @@ import {
   Avatar,
   Typography,
   Button,
-  Icon,
   InputAdornment, IconButton,
 } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
@@ -21,13 +20,15 @@ import {
   LoginInitialStateInterface,
 } from "../../../interfaces";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
+import LockOpenIcon from '@material-ui/icons/LockOpen';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {
-    marginTop: theme.spacing(8),
+    height: '100vh',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   avatar: {
     margin: theme.spacing(1),
@@ -39,6 +40,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    color: 'white',
+    background: theme.palette.blueLinearGradient.main,
+  },
+  margin: {
+    margin: theme.spacing(1),
   },
 }));
 
@@ -80,7 +86,6 @@ const Login: React.FC = (): JSX.Element => {
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-    console.log(1)
   }
 
   const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -163,7 +168,7 @@ const Login: React.FC = (): JSX.Element => {
             <Typography variant="button">
               {t('login')}
             </Typography>
-            <Icon>login</Icon>
+            <LockOpenIcon fontSize="inherit" className={classes.margin} />
           </Button>
         </form>
       </div>
