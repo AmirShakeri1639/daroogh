@@ -8,3 +8,8 @@ export interface LoginInitialStateInterface {
   password: string;
   isVisiblePassword: boolean;
 }
+
+export interface CircleProgressInterface {
+  size?: number;
+  color?: 'inherit' | 'primary' | 'secondary';
+}

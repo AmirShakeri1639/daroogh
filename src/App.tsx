@@ -4,6 +4,7 @@ import {
   Switch,
 } from 'react-router-dom';
 import PublicRoute from "./routes/PublicRoute";
+import CircleLoading from "./components/public/loading/CircleLoading";
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 
@@ -11,7 +12,7 @@ const App = (): JSX.Element => {
   return (
     <Router>
       <Switch>
-        <Suspense fallback={<>Loading....</>}>
+        <Suspense fallback={<CircleLoading />}>
           <PublicRoute exact={true} path="/login">
             <Login />
           </PublicRoute>

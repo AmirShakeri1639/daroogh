@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import {
   Container,
@@ -21,6 +21,7 @@ import {
 } from "../../../interfaces";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import LockOpenIcon from '@material-ui/icons/LockOpen';
+import CircleLoading from "../../public/loading/CircleLoading";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {
@@ -78,6 +79,8 @@ function reducer(state = loginInitialState, action: ActionInterface): LoginIniti
 
 const Login: React.FC = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, loginInitialState);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const location  = useLocation();
   const history = useHistory();
   const { from }: any = location.state || { from: { pathname: '/dashboard' } };
@@ -86,6 +89,7 @@ const Login: React.FC = (): JSX.Element => {
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
+    setIsLoading(true);
   }
 
   const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -164,11 +168,16 @@ const Login: React.FC = (): JSX.Element => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={isLoading}
           >
             <Typography variant="button">
               {t('login')}
             </Typography>
-            <LockOpenIcon fontSize="inherit" className={classes.margin} />
+            {
+              isLoading
+                ? <CircleLoading size={16} color="inherit" />
+                : <LockOpenIcon fontSize="inherit" className={classes.margin} />
+            }
           </Button>
         </form>
       </div>
