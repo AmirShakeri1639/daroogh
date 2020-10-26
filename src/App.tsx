@@ -8,6 +8,7 @@ import CircleLoading from "./components/public/loading/CircleLoading";
 import PrivateRoute from "./routes/PrivateRoute";
 
 const Login = lazy(() => import('./components/screen/login/Login'));
+const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
 
 const App = (): JSX.Element => {
   return (
@@ -18,7 +19,7 @@ const App = (): JSX.Element => {
             <Login />
           </PublicRoute>
           <PrivateRoute path="/dashboard">
-
+            <Dashboard />
           </PrivateRoute>
         </Suspense>
       </Switch>
