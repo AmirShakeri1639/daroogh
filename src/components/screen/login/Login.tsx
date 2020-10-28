@@ -1,28 +1,27 @@
 import React, { useReducer, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import {
+  Avatar,
+  Button,
   Container,
   createStyles,
   CssBaseline,
+  IconButton,
+  InputAdornment,
   TextField,
-  Avatar,
   Typography,
-  Button,
-  InputAdornment, IconButton,
 } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useTranslation } from "react-i18next";
 import MailIcon from '@material-ui/icons/Mail';
 import LockIcon from '@material-ui/icons/Lock';
-import {
-  ActionInterface,
-  LoginInitialStateInterface,
-} from "../../../interfaces";
+import { ActionInterface, LoginInitialStateInterface } from "../../../interfaces";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CircleLoading from "../../public/loading/CircleLoading";
 import Account from '../../../services/api/Account';
+import { QueryStatus, useMutation } from "react-query";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {
@@ -82,7 +81,7 @@ function reducer(state = loginInitialState, action: ActionInterface): LoginIniti
 
 const Login: React.FC = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, loginInitialState);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
 
   const location  = useLocation();
   const { t } = useTranslation();
@@ -90,17 +89,28 @@ const Login: React.FC = (): JSX.Element => {
   const classes = useStyles();
   const { from }: any = location.state || { from: { pathname: '/dashboard' } };
   const { loginUser } = new Account();
+  const [_loginUser, { status, data, isLoading }] = useMutation(loginUser);
+
+  if (status === QueryStatus.Success) {
+    localStorage.setItem('user', JSON.stringify(data));
+    push({
+      pathname: from.pathname,
+    });
+  }
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
+    if (
+      state.username.trim().length === 0
+      || state.password.trim().length === 0
+    ) {
+      setShowError(true);
+      return;
+    }
     try {
-      const result = await loginUser({
+      await _loginUser({
         username: state.username,
         password: state.password,
-      });
-      console.log(result)
-      push({
-        pathname: from.pathname,
       });
     }
     catch (e) {
@@ -136,6 +146,7 @@ const Login: React.FC = (): JSX.Element => {
           onSubmit={formSubmitHandler}
         >
           <TextField
+            error={state.username.trim().length === 0 && showError}
             variant="outlined"
             margin="normal"
             required
@@ -155,6 +166,7 @@ const Login: React.FC = (): JSX.Element => {
             }}
           />
           <TextField
+            error={state.password.trim().length === 0 && showError}
             variant="outlined"
             margin="normal"
             required

@@ -1,5 +1,10 @@
 @import "fonts";
 
-*:not(span.icon) {
-  font-family: Vazir !important;
+.txt-md {
+  font-size: 1.1rem !important;
 }
+
+.txt-sm {
+  font-size: .8rem !important;
+}
+
