@@ -1,10 +1,14 @@
 import axios, { AxiosInstance } from 'axios';
 import { api } from '../../config/default.json';
+import https from 'https';
 
 class Api {
   protected axiosInstance: AxiosInstance = axios.create({
     baseURL: api.baseUrl,
     timeout: 0,
+    httpsAgent: new https.Agent({
+      rejectUnauthorized: false,
+    }),
   });
 
   private authorizedUserRequest(): AxiosInstance {
@@ -14,11 +18,10 @@ class Api {
 
   protected async postJsonData(url: string, data: any): Promise<any> {
     try {
-      const response = await this.authorizedUserRequest().post(
+      return await this.authorizedUserRequest().post(
         url,
         data
       );
-      return response;
     }
     catch (e) {
       console.log(e);

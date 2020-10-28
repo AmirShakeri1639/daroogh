@@ -22,6 +22,7 @@ import {
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CircleLoading from "../../public/loading/CircleLoading";
+import Account from '../../../services/api/Account';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {
@@ -50,17 +51,17 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }));
 
 const loginInitialState = {
-  email: '',
+  username: '',
   password: '',
   isVisiblePassword: false,
 };
 
 function reducer(state = loginInitialState, action: ActionInterface): LoginInitialStateInterface {
   switch (action.type) {
-    case 'email':
+    case 'username':
       return {
         ...state,
-        email: action.value,
+        username: action.value,
       };
     case 'password':
       return {
@@ -72,6 +73,8 @@ function reducer(state = loginInitialState, action: ActionInterface): LoginIniti
         ...state,
         isVisiblePassword: !state.isVisiblePassword,
       };
+    case 'reset':
+      return loginInitialState;
     default:
       throw new Error('Action type not defined');
   }
@@ -82,14 +85,27 @@ const Login: React.FC = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const location  = useLocation();
-  const history = useHistory();
-  const { from }: any = location.state || { from: { pathname: '/dashboard' } };
   const { t } = useTranslation();
+  const { push } = useHistory();
   const classes = useStyles();
+  const { from }: any = location.state || { from: { pathname: '/dashboard' } };
+  const { loginUser } = new Account();
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-    setIsLoading(true);
+    try {
+      const result = await loginUser({
+        username: state.username,
+        password: state.password,
+      });
+      console.log(result)
+      push({
+        pathname: from.pathname,
+      });
+    }
+    catch (e) {
+      //
+    }
   }
 
   const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -98,6 +114,11 @@ const Login: React.FC = (): JSX.Element => {
 
   const handleClickShowPassword = (): void =>
     dispatch({ type: 'isVisiblePassword', value: !state.isVisiblePassword });
+
+  const usernameHandler = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    dispatch({ type: 'username', value: e.target.value });
+  const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    dispatch({ type: 'password', value: e.target.value });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -124,6 +145,7 @@ const Login: React.FC = (): JSX.Element => {
             name="email"
             autoComplete="email"
             autoFocus
+            onChange={usernameHandler}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -141,6 +163,7 @@ const Login: React.FC = (): JSX.Element => {
             label="کلمه عبور"
             type={state.isVisiblePassword ? 'text' : 'password'}
             id="password"
+            onChange={passwordHandler}
             autoComplete="current-password"
             InputProps={{
               startAdornment: (

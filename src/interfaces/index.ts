@@ -4,7 +4,7 @@ export interface ActionInterface {
 }
 
 export interface LoginInitialStateInterface {
-  email: string;
+  username: string;
   password: string;
   isVisiblePassword: boolean;
 }
