@@ -18,7 +18,7 @@ class Api {
     return this.axiosInstance;
   }
 
-  protected async postJsonData(url: string, data: any): Promise<any> {
+  protected async postJsonData(url: string, data: any = null): Promise<any> {
     try {
       return await this.authorizedUserRequest().post(
         url,

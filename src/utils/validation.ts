@@ -10,6 +10,11 @@ class Validation {
     // localStorage.removeItem('user');
     return false;
   }
+
+  isValidaMobileNumber(mobileNumber: string): boolean {
+    const regex = /^09\d{9}$/g;
+    return regex.test(mobileNumber);
+  }
 }
 
 export default Validation;
