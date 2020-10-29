@@ -11,6 +11,8 @@ class Api {
     }),
   });
 
+  // TODO: implement handlers for catch errors in axios config
+
   private authorizedUserRequest(): AxiosInstance {
     Object.assign(this.axiosInstance.defaults, {});
     return this.axiosInstance;
@@ -25,6 +27,14 @@ class Api {
     }
     catch (e) {
       console.log(e);
+    }
+  }
+
+  protected async getData(url: string): Promise<any> {
+    try {
+      return await this.authorizedUserRequest().get(url);
+    } catch (e) {
+
     }
   }
 }

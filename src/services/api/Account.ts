@@ -6,7 +6,7 @@ class Account extends Api {
   loginUser = async (data: UserLoginInterface): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        '/api/Account/Login',
+        '/Account/Login',
         data,
       );
       return result.data;

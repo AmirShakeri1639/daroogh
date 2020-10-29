@@ -21,7 +21,7 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CircleLoading from "../../public/loading/CircleLoading";
 import Account from '../../../services/api/Account';
-import { QueryStatus, useMutation } from "react-query";
+import { QueryStatus, useMutation } from 'react-query';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {

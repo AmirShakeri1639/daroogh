@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: theme.palette.gray.dark,
+    backgroundColor: 'white',
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: 36,
+    // color:
   },
   menuButtonHidden: {
     display: 'none',
@@ -128,6 +129,7 @@ const Dashboard: React.FC = () => {
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
+          elevation={0}
           position="absolute"
           className={clsx(classes.appBar, open && classes.appBarShift)}
         >
@@ -139,14 +141,14 @@ const Dashboard: React.FC = () => {
               onClick={handleDrawerOpen}
               className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
             >
-              <MenuIcon />
+              <MenuIcon color="disabled" />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
               {t('dashboard')}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
+                <NotificationsIcon color="disabled" />
               </Badge>
             </IconButton>
             <IconButton
@@ -157,7 +159,7 @@ const Dashboard: React.FC = () => {
               onClick={handleUserIconButton}
               color="inherit"
             >
-              <AccountCircle />
+              <AccountCircle color="disabled" />
             </IconButton>
             <UserMenu />
           </Toolbar>

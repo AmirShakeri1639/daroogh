@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
+  Route,
 } from 'react-router-dom';
 import PublicRoute from "./routes/PublicRoute";
 import CircleLoading from "./components/public/loading/CircleLoading";
@@ -23,6 +24,7 @@ const App = (): JSX.Element => {
             <PrivateRoute path="/dashboard">
               <Dashboard />
             </PrivateRoute>
+            <Route children={<>404 Not Found</>} />
           </Suspense>
         </Switch>
       </Router>

@@ -8,11 +8,10 @@ const PrivateRoute: React.FC<RouteProps> = (props) => {
   const { isValidUserToken } = new Validation();
 
   function isAuthorizedUser(): boolean {
-    // const { token } = JSON.parse(localStorage.getItem('user') || '{}');
-    // return token === undefined
-    //   ? false
-    //   : isValidUserToken(token);
-    return true;
+    const { token } = JSON.parse(localStorage.getItem('user') || '{}');
+    return token === undefined
+      ? false
+      : isValidUserToken(token);
   }
 
   return (
