@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
-import { Button, createStyles, Grid, Paper, TextField, Typography } from "@material-ui/core";
+import {
+  Button,
+  createStyles,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+  Snackbar
+} from "@material-ui/core";
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import { QueryStatus, useMutation } from 'react-query';
 import Account from "../../../services/api/Account";
 import Validation from "../../../utils/validation";
 import CircleLoading from "../../public/loading/CircleLoading";
+import { Alert } from "../../public/alert/Alert";
 
 const useStyles = makeStyles((theme) => createStyles({
   root: {
@@ -41,14 +51,27 @@ const useStyles = makeStyles((theme) => createStyles({
 const ForgetPassword: React.FC = () => {
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
+  const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
+  const [serverMessage, setServerMessage] = useState<string>('');
 
   const { grid, root, paper, submitBtn } = useStyles();
   const { forgetPassword } = new Account();
   const { isValidaMobileNumber } = new Validation();
-  const [_forgetPassword, { isLoading, status, data }] = useMutation(forgetPassword);
+  const [_forgetPassword, { isLoading, status, data, reset }] = useMutation(forgetPassword);
+  const { push } = useHistory();
 
   if (status === QueryStatus.Success) {
-    //
+    const { message, data: _data } = data;
+    if (_data === null && message !== '') {
+      setServerMessage(message);
+      setIsOpenSnackbar(true);
+      reset();
+      setTimeout(() => {
+        push({
+          pathname: '/login',
+        });
+      }, 3 * 1000);
+    }
   }
 
   const resetPasswordHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
@@ -114,6 +137,19 @@ const ForgetPassword: React.FC = () => {
           </form>
         </Paper>
       </Grid>
+
+      <Snackbar
+        open={isOpenSnackbar}
+        autoHideDuration={3000}
+        onClose={(): void => setIsOpenSnackbar(false)}
+      >
+        <Alert
+          onClose={(): void => setIsOpenSnackbar(false)}
+          severity="success"
+        >
+          {serverMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
