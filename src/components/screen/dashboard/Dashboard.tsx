@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
+import {
+  Drawer, List, ListSubheader,
+} from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -13,12 +16,15 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import {
+  ChevronLeft as ChevronLeftIcon,
+} from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { AccountCircle } from "@material-ui/icons";
 import { useTranslation } from "react-i18next";
 import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
+import ListItems from "./sidebar/ListItems";
 
 const drawerWidth = 240;
 
@@ -35,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     padding: '0 8px',
     ...theme.mixins.toolbar,
+  },
+  daroogLogo: {
+    width: '77% !important',
+    height: '35px !important',
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -124,6 +134,10 @@ const Dashboard: React.FC = () => {
     setAnchorEl(e.currentTarget);
   }
 
+  const listItemsGenerator = (): any => {
+    return <ListItems />;
+  }
+
   return (
     <Context.Provider value={contextInitialValues()}>
       <div className={classes.root}>
@@ -173,12 +187,27 @@ const Dashboard: React.FC = () => {
           open={open}
         >
           <div className={classes.toolbarIcon}>
+            <img
+              className={classes.daroogLogo}
+              src={DaroogLogo}
+              alt="logo-daroog"
+            />
             <IconButton onClick={handleDrawerClose}>
               <ChevronLeftIcon />
             </IconButton>
           </div>
           <Divider />
-          {/*<List>{mainListItems}</List>*/}
+          <List
+            component="nav"
+            aria-labelledby="nested-list-items"
+            // subheader={
+            //   <ListSubheader component="div" id="nested-list-subheader">
+            //     Nested List Items
+            //   </ListSubheader>
+            // }
+          >
+            {listItemsGenerator()}
+          </List>
           <Divider />
           {/*<List>{secondaryListItems}</List>*/}
         </Drawer>
@@ -189,19 +218,19 @@ const Dashboard: React.FC = () => {
 
               <Grid item xs={12} md={8} lg={9}>
                 <Paper className={fixedHeightPaper}>
-
+                  Data
                 </Paper>
               </Grid>
 
               <Grid item xs={12} md={4} lg={3}>
                 <Paper className={fixedHeightPaper}>
-
+                  Data
                 </Paper>
               </Grid>
 
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-
+                  Data
                 </Paper>
               </Grid>
             </Grid>

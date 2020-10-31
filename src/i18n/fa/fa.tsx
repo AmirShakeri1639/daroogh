@@ -5,6 +5,7 @@ export default {
       'dashboard': 'داشبورد',
       'exit': 'خروج',
       'signOut': 'خروج از حساب کاربری',
+      'userRole': 'نقش کاربر',
     }
   }
 }
