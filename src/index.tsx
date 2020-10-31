@@ -14,9 +14,7 @@ ReactDOM.render(
   <ReactQueryCacheProvider queryCache={queryCache}>
     <RTL>
       <MuiThemeProvider theme={theme}>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
+        <App />
       </MuiThemeProvider>
     </RTL>
   </ReactQueryCacheProvider>,

@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -47,6 +47,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   margin: {
     margin: theme.spacing(1),
   },
+  forgetPasswordLink: {
+    textDecoration: 'none'
+  }
 }));
 
 const loginInitialState = {
@@ -197,6 +200,12 @@ const Login: React.FC = (): JSX.Element => {
               )
             }}
           />
+          <Link
+            className={classes.forgetPasswordLink}
+            to="/forget-password"
+          >
+            رمز عبور را فراموش کردم
+          </Link>
           <Button
             type="submit"
             fullWidth
