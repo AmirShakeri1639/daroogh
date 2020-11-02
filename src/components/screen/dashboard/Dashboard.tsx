@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -25,6 +25,9 @@ import { useTranslation } from "react-i18next";
 import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
 import ListItems from "./sidebar/ListItems";
+import CreateRole from "./roles/CreateRole";
+import {useQuery} from "react-query";
+import User from "../../../services/api/User";
 
 const drawerWidth = 240;
 
@@ -52,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: 'white',
+    backgroundColor: '#4625b2',
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -113,18 +116,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+type DashboardActivePage =
+  'dashboard'
+  | 'createRole';
+
 const Dashboard: React.FC = () => {
-  const [open, setOpen] = React.useState(true);
+  const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [activePage, setActivePage] = useState<DashboardActivePage>('dashboard');
+
+  const { getUserData } = new User();
+
+  const { isLoading: userProfileIsLoading, data: userProfileData } =
+    useQuery('getUserProfile', getUserData);
 
   const classes = useStyles();
 
-  const handleDrawerOpen = (): void => setOpen(true);
-  const handleDrawerClose = (): void => setOpen(false);
+  const handleDrawerOpen = (): void => setIsOpenDrawer(true);
+  const handleDrawerClose = (): void => setIsOpenDrawer(false);
 
   const contextInitialValues = (): any => ({
     anchorEl,
     setAnchorEl,
+    setActivePage,
   });
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -138,82 +152,12 @@ const Dashboard: React.FC = () => {
     return <ListItems />;
   }
 
-  return (
-    <Context.Provider value={contextInitialValues()}>
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar
-          elevation={0}
-          position="absolute"
-          className={clsx(classes.appBar, open && classes.appBarShift)}
-        >
-          <Toolbar className={classes.toolbar}>
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-            >
-              <MenuIcon color="disabled" />
-            </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              {t('dashboard')}
-            </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon color="disabled" />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls="user-menu"
-              aria-haspopup="true"
-              onClick={handleUserIconButton}
-              color="inherit"
-            >
-              <AccountCircle color="disabled" />
-            </IconButton>
-            <UserMenu />
-          </Toolbar>
-
-        </AppBar>
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-          }}
-          open={open}
-        >
-          <div className={classes.toolbarIcon}>
-            <img
-              className={classes.daroogLogo}
-              src={DaroogLogo}
-              alt="logo-daroog"
-            />
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeftIcon />
-            </IconButton>
-          </div>
-          <Divider />
-          <List
-            component="nav"
-            aria-labelledby="nested-list-items"
-            // subheader={
-            //   <ListSubheader component="div" id="nested-list-subheader">
-            //     Nested List Items
-            //   </ListSubheader>
-            // }
-          >
-            {listItemsGenerator()}
-          </List>
-          <Divider />
-          {/*<List>{secondaryListItems}</List>*/}
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <Container maxWidth="lg" className={classes.container}>
+  const displayActivePage = (cssClasses: any): JSX.Element => {
+    let el: JSX.Element;
+    switch (activePage) {
+      case 'dashboard':
+        el = (
+          <Container maxWidth="lg" className={cssClasses.container}>
             <Grid container spacing={3}>
 
               <Grid item xs={12} md={8} lg={9}>
@@ -229,12 +173,94 @@ const Dashboard: React.FC = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <Paper className={classes.paper}>
+                <Paper className={cssClasses.paper}>
                   Data
                 </Paper>
               </Grid>
             </Grid>
           </Container>
+        );
+        break;
+      case 'createRole':
+        el = <CreateRole />;
+        break;
+      default:
+        el = <></>;
+    }
+
+    return el;
+  }
+
+  return (
+    <Context.Provider value={contextInitialValues()}>
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          elevation={0}
+          position="absolute"
+          className={clsx(classes.appBar, isOpenDrawer && classes.appBarShift)}
+        >
+          <Toolbar className={classes.toolbar}>
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={clsx(classes.menuButton, isOpenDrawer && classes.menuButtonHidden)}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+              {t('dashboard')}
+            </Typography>
+            <IconButton color="inherit">
+              <Badge badgeContent={4} color="secondary">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+            <IconButton
+              edge="end"
+              aria-label="account of current user"
+              aria-controls="user-menu"
+              aria-haspopup="true"
+              onClick={handleUserIconButton}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <UserMenu />
+          </Toolbar>
+
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: clsx(classes.drawerPaper, !isOpenDrawer && classes.drawerPaperClose),
+          }}
+          open={isOpenDrawer}
+        >
+          <div className={classes.toolbarIcon}>
+            <img
+              className={classes.daroogLogo}
+              src={DaroogLogo}
+              alt="logo-daroog"
+            />
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <List
+            component="nav"
+            aria-labelledby="nested-list-items"
+          >
+            {listItemsGenerator()}
+          </List>
+          <Divider />
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          {displayActivePage(classes)}
         </main>
       </div>
     </Context.Provider>
