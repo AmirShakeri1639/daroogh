@@ -21,6 +21,7 @@ const App = (): JSX.Element => {
             <PublicRoute path="/login">
               <Login />
             </PublicRoute>
+
             <PublicRoute path="/forget-password">
               <ForgetPassword />
             </PublicRoute>

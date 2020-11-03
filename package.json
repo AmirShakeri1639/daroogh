@@ -16,6 +16,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.6",
+    "@types/sweetalert": "^2.0.4",
     "axios": "^0.20.0",
     "clsx": "^1.1.1",
     "history": "^5.0.0",
@@ -35,6 +36,8 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-persist": "^6.0.0",
+    "sweetalert2": "^10.9.0",
+    "sweetalert2-react-content": "^3.2.1",
     "typescript": "^3.7.5"
   },
   "devDependencies": {

@@ -1,20 +1,59 @@
 import axios, { AxiosInstance } from 'axios';
 import { api } from '../../config/default.json';
 import https from 'https';
+import { DefaultAxiosConfigInterface } from "../../interfaces";
+import { errorHandler, sweetAlert } from "../../utils";
 
-class Api {
-  protected axiosInstance: AxiosInstance = axios.create({
-    baseURL: api.baseUrl,
-    timeout: 0,
-    httpsAgent: new https.Agent({
-      rejectUnauthorized: false,
-    }),
+const axiosInstance = axios.create({
+  baseURL: api.baseUrl,
+  timeout: 0,
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: false,
+  }),
+});
+
+axiosInstance.interceptors.response.use(
+  undefined,
+  error => {
+    const { response } = error;
+    if (!error.response) {
+      console.error('Error in network');
+      return Promise.reject(error);
+    }
+
+    const { status, data } = response;
+    if (status === 401) {
+      window.location.pathname = '/login';
+    }
+    else if (status === 404) {
+      //
+    }
+    else if (status === 500) {
+      (async (): Promise<any> => {
+        await sweetAlert({
+          type: 'error',
+          text: data.message
+        });
+      })();
+    }
+
+    return Promise.reject(error);
   });
 
-  // TODO: implement handlers for catch errors in axios config
+class Api {
+  protected axiosInstance: AxiosInstance = axiosInstance;
 
   private authorizedUserRequest(): AxiosInstance {
-    Object.assign(this.axiosInstance.defaults, {});
+    const user = localStorage.getItem('user') || '{}';
+    const { token } = JSON.parse(user);
+    const defaultsAxiosHeaders: DefaultAxiosConfigInterface = {};
+
+    if (token !== undefined) {
+      defaultsAxiosHeaders.Authorization = `Bearer ${token}`;
+    }
+    Object.assign(this.axiosInstance.defaults, {
+      headers: defaultsAxiosHeaders,
+    });
     return this.axiosInstance;
   }
 
@@ -26,7 +65,7 @@ class Api {
       );
     }
     catch (e) {
-      console.log(e);
+      errorHandler(e);
     }
   }
 
@@ -34,7 +73,7 @@ class Api {
     try {
       return await this.authorizedUserRequest().get(url);
     } catch (e) {
-
+      errorHandler(e);
     }
   }
 }

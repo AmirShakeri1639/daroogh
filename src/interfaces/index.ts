@@ -22,3 +22,18 @@ export interface UserLoginInterface {
 export interface ForgetPasswordDataInterface {
   mobile: string;
 }
+
+export interface DefaultAxiosConfigInterface {
+  Authorization?: string;
+}
+
+export interface PermissionItemTableColumnInterface {
+  id: string | number;
+  label: string;
+}
+
+export class NewRoleData {
+  public id: number | string = 0;
+  public name: string = '';
+  public permissions: string[] = [];
+}
