@@ -1,6 +1,6 @@
 import Api from './Api';
-import {errorHandler} from "../../utils";
-import {NewRoleData} from "../../interfaces";
+import { errorHandler } from "../../utils";
+import { NewRoleData } from "../../interfaces";
 
 class Role extends Api {
   getAllRoles = async (): Promise<any> => {
@@ -32,7 +32,18 @@ class Role extends Api {
 
   saveNewRole = async (data: NewRoleData): Promise<any> => {
     try {
-      const result = await this.postJsonData('/Roles/Save', data);
+      const result = await this.postJsonData(
+        `/Roles/Save?id=${data.id}&name=${data.name}`,
+        { permissionItems: data.permissionItems });
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  getRoleById = async (roleId: number | string): Promise<any> => {
+    try {
+      const result = await this.postJsonData(`/Roles/Detail/${roleId}`);
       return result.data;
     } catch (e) {
       errorHandler(e);

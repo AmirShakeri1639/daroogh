@@ -69,6 +69,21 @@ class Api {
     }
   }
 
+  protected async postFormData(_url: string, _data: any): Promise<any> {
+    const formData = new FormData();
+    for (const key in _data) {
+      const val = _data[key];
+      if (val !== null) {
+        formData.set(key, Array.isArray(val) ? `[${val}]` : val);
+      }
+    }
+    try {
+      return await this.authorizedUserRequest().post(_url, formData);
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
   protected async getData(url: string): Promise<any> {
     try {
       return await this.authorizedUserRequest().get(url);

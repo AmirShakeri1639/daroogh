@@ -6,7 +6,9 @@ export default {
       'exit': 'خروج',
       'signOut': 'خروج از حساب کاربری',
       'userRole': 'نقش کاربر',
-      'createNewRole': 'ایجاد نقش جدید'
+      'createNewRole': 'ایجاد نقش جدید',
+      'editRole': 'ویرایش نقش',
+      'cancelEditRole': 'انصراف ویرایش نقش',
     }
   }
 }

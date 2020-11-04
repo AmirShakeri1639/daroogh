@@ -29,7 +29,7 @@ const App = (): JSX.Element => {
               <Dashboard />
             </PrivateRoute>
             {/*<Route component={<>404 Not Found</>} />*/}
-          </Suspense>s
+          </Suspense>
         </Switch>
       </Router>
       <ReactQueryDevtools />

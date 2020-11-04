@@ -1,6 +1,6 @@
 export interface ActionInterface {
   type: string;
-  value: any;
+  value?: any;
 }
 
 export interface LoginInitialStateInterface {
@@ -33,7 +33,7 @@ export interface PermissionItemTableColumnInterface {
 }
 
 export class NewRoleData {
-  public id: number | string = 0;
+  public id?: number | string = 0;
   public name: string = '';
-  public permissions: string[] = [];
+  public permissionItems: string[] = [];
 }

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, Fragment, useReducer} from 'react';
+import React, { Fragment, useReducer, useState } from 'react';
 import {
   Container,
   Paper,
@@ -11,16 +11,19 @@ import {
   TableBody,
   TablePagination,
   IconButton,
-  TextField, Typography, Divider,
-  Select,
-  InputLabel,
-  ListSubheader,
-  MenuItem, FormControl, createStyles,
+  TextField,
+  Typography,
+  Divider,
+  MenuItem,
+  FormControl,
+  createStyles,
   FormControlLabel,
   Checkbox,
-  FormGroup, Button
+  FormGroup,
+  Button
 } from "@material-ui/core";
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Role from "../../../../services/api/Role";
 import { useMutation, useQuery } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
@@ -28,8 +31,9 @@ import CircleLoading from "../../../public/loading/CircleLoading";
 import { ActionInterface, PermissionItemTableColumnInterface } from "../../../../interfaces";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { TextMessage } from "../../../../enum";
-import {errorHandler, sweetAlert} from "../../../../utils";
-import {useTranslation} from "react-i18next";
+import { errorHandler, sweetAlert } from "../../../../utils";
+import { useTranslation } from "react-i18next";
+import { queryCache } from '../../.././../index';
 
 interface ReducerInitialStateInterface {
   id: number;
@@ -91,6 +95,7 @@ const useClasses = makeStyles((theme) => createStyles({
   formTitle: {
     marginLeft: theme.spacing(2),
     marginBottom: theme.spacing(2),
+    display: 'flex',
   },
   formContainer: {
     padding: theme.spacing(2),
@@ -112,6 +117,17 @@ const useClasses = makeStyles((theme) => createStyles({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1)
   },
+  formBody: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  addButton: {
+    background: theme.palette.blueLinearGradient.main,
+  },
+  cancelButton: {
+    marginLeft: theme.spacing(1),
+    background: theme.palette.pinkLinearGradient.main,
+  }
 }));
 
 const CreateRole: React.FC = () => {
@@ -121,20 +137,41 @@ const CreateRole: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { getAllRolePermissionItems, getAllRoles, removeRoleById, saveNewRole } = new Role();
-
-  const { isLoading, data: permissionItemsData } =
-    useQuery('rolePermissionItems', getAllRolePermissionItems);
+  const {
+    getAllRolePermissionItems,
+    getAllRoles,
+    removeRoleById,
+    saveNewRole,
+    getRoleById,
+  } = new Role();
 
   const { isLoading: isLoadingRole, data: roleData } =
     useQuery('allRoles', getAllRoles);
 
-  const [_removeRoleById, { isLoading: isLoadingRemoveRole, data: removeRoleData, isSuccess, reset }] =
-    useMutation(removeRoleById);
+  const { isLoading, data: permissionItemsData } =
+    useQuery(
+      'rolePermissionItems',
+      getAllRolePermissionItems,
+      {
+        enabled: roleData,
+        onSuccess: () => {
+          // setFetchedRoleItems(true);
+        },
+      });
 
-  const [_saveNewRole] = useMutation(saveNewRole);
+  const [_removeRoleById, {
+    isLoading: isLoadingRemoveRole,
+    isSuccess: isSuccessRemoveById,
+    reset
+  }] = useMutation(removeRoleById);
 
-  if (isSuccess) {
+  const [_saveNewRole] = useMutation(saveNewRole, {
+    onSuccess: () => {
+      queryCache.invalidateQueries('allRoles');
+    },
+  });
+
+  if (isSuccessRemoveById) {
     (async (): Promise<any> => {
       await sweetAlert({
         type: 'success',
@@ -147,7 +184,7 @@ const CreateRole: React.FC = () => {
   const {
     root, container, parent, formPaper, formTitle,
     formContainer, formControl, gridContainer, gridFormControl,
-    gridTitle,
+    gridTitle, formBody, addButton, cancelButton,
   } = useClasses();
 
   const tableColumns = (): PermissionItemTableColumnInterface[] => {
@@ -170,6 +207,20 @@ const CreateRole: React.FC = () => {
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
         await _removeRoleById(roleId);
+      }
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  const editRoleHandler = async (roleId: number): Promise<any> => {
+    try {
+      const result = await getRoleById(roleId);
+      dispatch({ type: 'reset' });
+      dispatch({ type: 'name', value: result.name });
+      dispatch({ type: 'id', value: result.id });
+      for (const item of result.permissionItemes) {
+        dispatch({ type: 'addPermissions', value: item });
       }
     } catch (e) {
       errorHandler(e);
@@ -219,6 +270,7 @@ const CreateRole: React.FC = () => {
                         component="span"
                         aria-label="edit role"
                         color="primary"
+                        onClick={(): Promise<any> => editRoleHandler(item.id)}
                       >
                         <EditOutlinedIcon fontSize="small" />
                       </IconButton>
@@ -252,6 +304,7 @@ const CreateRole: React.FC = () => {
             md={6}
             lg={4}
             item
+            key={permissionItem.category}
           >
             <Paper className={formPaper}>
               <Typography className={`${gridTitle} txt-md`} variant="h6" component="h6">
@@ -262,7 +315,7 @@ const CreateRole: React.FC = () => {
                   {permissionItem.permissionItems.map((per: any) => {
                     return (
                       <FormControlLabel
-                        key={per.id}
+                        key={per.permissionName}
                         control={
                           <Checkbox
                             color="primary"
@@ -289,14 +342,19 @@ const CreateRole: React.FC = () => {
     )
   }
 
-  const submitNewRole = async (): Promise<any> => {
+  const submitRole = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+    e.preventDefault();
+    if (state.name.trim().length < 1 || state.permissions.length === 0) {
+      return;
+    }
     try {
       await _saveNewRole({
+        id: state.id,
         name: state.name,
-        permissions: state.permissions,
+        permissionItems: state.permissions,
       });
     } catch (e) {
-
+      errorHandler(e);
     }
   }
 
@@ -319,8 +377,6 @@ const CreateRole: React.FC = () => {
                       return (
                         <TableCell
                           key={item.id}
-                          // align={item.align}
-                          // style={{ minWidth: 100 }}
                         >
                           {item.label}
                         </TableCell>
@@ -332,14 +388,14 @@ const CreateRole: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {(!isLoading && roleData) && tableRowsGenerator()}
+                  {(!isLoadingRole && roleData) && tableRowsGenerator()}
                 </TableBody>
               </Table>
             </TableContainer>
             <TablePagination
               rowsPerPageOptions={[10, 25, 100]}
               component="div"
-              count={roleData?.length}
+              count={roleData?.length || 0}
               rowsPerPage={rowsPerPage}
               page={page}
               onChangePage={handleChangePage}
@@ -354,44 +410,77 @@ const CreateRole: React.FC = () => {
       <Grid item xs={12}>
         <Paper className={formPaper}>
           <Typography variant="h6" component="h6" className={`${formTitle} txt-md`}>
-            {t('createNewRole')}
+            {
+              state.id === 0
+                ? (
+                  <Fragment>
+                    <AddCircleOutlineIcon />
+                    {t('createNewRole')}
+                  </Fragment>
+                )
+                : (
+                  <Fragment>
+                    <EditOutlinedIcon />
+                    {t('editRole')}
+                  </Fragment>
+
+                )
+            }
           </Typography>
           <Divider />
           <div className={formContainer}>
             <form
               autoComplete="off"
+              onSubmit={submitRole}
             >
-              <FormControl className={formControl}>
-                <TextField
-                  required
-                  id="role-name"
-                  label="عنوان نقش"
-                  variant="outlined"
-                  size="small"
-                  onChange={
-                    (e): void => dispatch({ type: 'name', value: e.target.value })
-                  }
-                />
-                <Button
-                  size="small"
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  onClick={submitNewRole}
-                >
-                  اضافه کردن نقش
-                </Button>
-              </FormControl>
-              {permissionItemsData !== undefined &&  permissionGridsGenerator()}
+              <div className={formBody}>
+                <FormControl className={formControl}>
+                  <TextField
+                    required
+                    id="role-name"
+                    label="عنوان نقش"
+                    variant="outlined"
+                    size="small"
+                    value={state.name}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'name', value: e.target.value })
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={addButton}
+                  >
+                    {state.id === 0 ? t('createNewRole') : t('editRole')}
+                  </Button>
+                </FormControl>
+                {
+                  state.id !== 0 && (
+                    <FormControl>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="secondary"
+                        className={cancelButton}
+                        onClick={(): void => dispatch({ type: 'reset' })}
+                      >
+                        {t('cancelEditRole')}
+                      </Button>
+                    </FormControl>
+                  )
+                }
+              </div>
+              {(permissionItemsData && !isLoading) && permissionGridsGenerator()}
             </form>
           </div>
         </Paper>
       </Grid>
     </Container>
-
   );
 }
-
-
 
 export default CreateRole;
