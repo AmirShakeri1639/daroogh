@@ -5,6 +5,10 @@ export default {
       'dashboard': 'داشبورد',
       'exit': 'خروج',
       'signOut': 'خروج از حساب کاربری',
+      'userRole': 'نقش کاربر',
+      'createNewRole': 'ایجاد نقش جدید',
+      'editRole': 'ویرایش نقش',
+      'cancelEditRole': 'انصراف ویرایش نقش',
     }
   }
 }

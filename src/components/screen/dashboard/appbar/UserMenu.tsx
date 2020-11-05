@@ -8,7 +8,6 @@ import { logoutUser } from '../../../../utils';
 const UserMenu: React.FC = () => {
   const { anchorEl, setAnchorEl } = useContext(Context);
   const { t } = useTranslation();
-
   const handleClose = (): void => setAnchorEl(null);
 
   const logout = (): void => {

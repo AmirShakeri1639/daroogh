@@ -21,6 +21,7 @@ const App = (): JSX.Element => {
             <PublicRoute path="/login">
               <Login />
             </PublicRoute>
+
             <PublicRoute path="/forget-password">
               <ForgetPassword />
             </PublicRoute>
@@ -28,7 +29,7 @@ const App = (): JSX.Element => {
               <Dashboard />
             </PrivateRoute>
             {/*<Route component={<>404 Not Found</>} />*/}
-          </Suspense>s
+          </Suspense>
         </Switch>
       </Router>
       <ReactQueryDevtools />
