@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useState } from 'react';
+import React, {Fragment, useCallback, useEffect, useMemo, useReducer, useState} from 'react';
 import {
   Container,
   Paper,
@@ -7,20 +7,19 @@ import {
   TableHead,
   TableRow,
   TableCell,
+  AppBar,
+  Slide,
   Grid,
   TableBody,
   TablePagination,
   IconButton,
+  Dialog,
   TextField,
   Typography,
   Divider,
-  MenuItem,
   FormControl,
   createStyles,
-  FormControlLabel,
-  Checkbox,
-  FormGroup,
-  Button
+  Button,
 } from "@material-ui/core";
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -33,7 +32,8 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { TextMessage } from "../../../../enum";
 import { errorHandler, sweetAlert } from "../../../../utils";
 import { useTranslation } from "react-i18next";
-import { queryCache } from '../../.././../index';
+import { queryCache } from '../../../../index';
+import Permissions from "./Permissions";
 
 interface ReducerInitialStateInterface {
   id: number;
@@ -127,6 +127,10 @@ const useClasses = makeStyles((theme) => createStyles({
   cancelButton: {
     marginLeft: theme.spacing(1),
     background: theme.palette.pinkLinearGradient.main,
+  },
+  permissionButton: {
+    marginLeft: theme.spacing(1),
+    background: theme.palette.pinkLinearGradient.main,
   }
 }));
 
@@ -154,37 +158,27 @@ const CreateRole: React.FC = () => {
       getAllRolePermissionItems,
       {
         enabled: roleData,
-        onSuccess: () => {
-          // setFetchedRoleItems(true);
-        },
       });
 
   const [_removeRoleById, {
     isLoading: isLoadingRemoveRole,
-    isSuccess: isSuccessRemoveById,
-    reset
-  }] = useMutation(removeRoleById);
+    reset: resetHandlerOfRemoveRole,
+  }] = useMutation(removeRoleById, {
+    onSuccess: async () => {
+      await queryCache.invalidateQueries('allRoles');
+    }
+  });
 
-  const [_saveNewRole] = useMutation(saveNewRole, {
-    onSuccess: () => {
-      queryCache.invalidateQueries('allRoles');
+  const [_saveNewRole, { isLoading: newRoleLoading }] = useMutation(saveNewRole, {
+    onSuccess: async () => {
+      await queryCache.invalidateQueries('allRoles');
     },
   });
 
-  if (isSuccessRemoveById) {
-    (async (): Promise<any> => {
-      await sweetAlert({
-        type: 'success',
-        text: TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE,
-      });
-      reset();
-    })()
-  }
-
   const {
     root, container, parent, formPaper, formTitle,
-    formContainer, formControl, gridContainer, gridFormControl,
-    gridTitle, formBody, addButton, cancelButton,
+    formContainer, formControl,
+    formBody, addButton, cancelButton,
   } = useClasses();
 
   const tableColumns = (): PermissionItemTableColumnInterface[] => {
@@ -207,6 +201,11 @@ const CreateRole: React.FC = () => {
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
         await _removeRoleById(roleId);
+        await sweetAlert({
+          type: 'success',
+          text: TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE,
+        });
+        resetHandlerOfRemoveRole();
       }
     } catch (e) {
       errorHandler(e);
@@ -284,64 +283,6 @@ const CreateRole: React.FC = () => {
       })
   }
 
-  const togglePermissionHandler = (permission: string): void => {
-    if (state.permissions.indexOf(permission) !== -1) {
-      const idx = state.permissions.indexOf(permission);
-      state.permissions.splice(idx, 1);
-      dispatch({ type: 'removePermissions', value: state.permissions });
-    }
-    else {
-      dispatch({ type: 'addPermissions', value: permission });
-    }
-  }
-
-  const permissionGridsGenerator = (): any => {
-    const el = permissionItemsData
-      .map((permissionItem: any) => {
-        return (
-          <Grid
-            xs={12}
-            md={6}
-            lg={4}
-            item
-            key={permissionItem.category}
-          >
-            <Paper className={formPaper}>
-              <Typography className={`${gridTitle} txt-md`} variant="h6" component="h6">
-                {permissionItem.category}
-              </Typography>
-              <FormControl component="fieldset" className={gridFormControl}>
-                <FormGroup>
-                  {permissionItem.permissionItems.map((per: any) => {
-                    return (
-                      <FormControlLabel
-                        key={per.permissionName}
-                        control={
-                          <Checkbox
-                            color="primary"
-                            name={per.permissionName}
-                            checked={state.permissions.indexOf(per.permissionName) !== -1}
-                            onChange={(): void => togglePermissionHandler(per.permissionName)}
-                          />
-                        }
-                        label={per.title}
-                      />
-                    );
-                  })}
-                </FormGroup>
-              </FormControl>
-            </Paper>
-          </Grid>
-        );
-      });
-
-    return (
-      <Grid container spacing={2} className={gridContainer}>
-        {el}
-      </Grid>
-    )
-  }
-
   const submitRole = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
     if (state.name.trim().length < 1 || state.permissions.length === 0) {
@@ -351,11 +292,20 @@ const CreateRole: React.FC = () => {
       await _saveNewRole({
         id: state.id,
         name: state.name,
-        permissionItems: state.permissions,
+        permissionItemes: state.permissions,
       });
+      await sweetAlert({
+        type: 'success',
+        text: TextMessage.SUCCESS_EDIT_TEXT_MESSAGE,
+      });
+      dispatch({ type: 'reset' });
     } catch (e) {
       errorHandler(e);
     }
+  }
+
+  const roleTitleHandler = async (e: React.ChangeEvent<HTMLInputElement>): Promise<any> => {
+    dispatch({ type: 'name', value: e.target.value });
   }
 
   return (
@@ -442,10 +392,7 @@ const CreateRole: React.FC = () => {
                     variant="outlined"
                     size="small"
                     value={state.name}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'name', value: e.target.value })
-                    }
+                    onChange={roleTitleHandler}
                   />
                 </FormControl>
                 <FormControl>
@@ -455,7 +402,13 @@ const CreateRole: React.FC = () => {
                     color="primary"
                     className={addButton}
                   >
-                    {state.id === 0 ? t('createNewRole') : t('editRole')}
+                    {
+                      newRoleLoading
+                        ? t('pleaseWait')
+                        : state.id === 0
+                          ? t('createNewRole')
+                          : t('editRole')
+                    }
                   </Button>
                 </FormControl>
                 {
@@ -474,7 +427,14 @@ const CreateRole: React.FC = () => {
                   )
                 }
               </div>
-              {(permissionItemsData && !isLoading) && permissionGridsGenerator()}
+              <Permissions
+                permissionItems={permissionItemsData}
+                className={useClasses()}
+                reducer={{
+                  state,
+                  dispatch,
+                }}
+              />
             </form>
           </div>
         </Paper>

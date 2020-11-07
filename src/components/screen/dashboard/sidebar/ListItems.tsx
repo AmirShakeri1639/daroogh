@@ -7,6 +7,9 @@ import { useHistory } from 'react-router-dom';
 import {makeStyles} from "@material-ui/core/styles";
 import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone';
 import Context from "../Context";
+import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
+import {DashboardPages} from "../../../../enum";
+import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -23,6 +26,8 @@ const useStyles = makeStyles((theme) =>
 
 const ListItems: React.FC = () => {
   const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
+  const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
+
   const { setActivePage } = useContext(Context);
 
   const { nested } = useStyles();
@@ -44,7 +49,7 @@ const ListItems: React.FC = () => {
         <ListItemIcon>
           <ContactMailTwoToneIcon />
         </ListItemIcon>
-        <ListItemText primary={t('userRole')} />
+        <ListItemText primary={t('role')} />
         {isOpenRoleMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse
@@ -59,12 +64,44 @@ const ListItems: React.FC = () => {
           <ListItem
             button
             className={nested}
-            onClick={(): void => setActivePage('createRole')}
+            onClick={(): void => setActivePage(DashboardPages.CREATE_ROLE)}
           >
             <ListItemIcon>
               <AddCircleTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary="ایجاد نقش" />
+            <ListItemText primary={t('createRole')} />
+          </ListItem>
+        </List>
+      </Collapse>
+
+      <ListItem
+        button
+        onClick={(): void => setIsOpenUserMenu(val => !val)}
+      >
+        <ListItemIcon>
+          <PermIdentityTwoToneIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('user')} />
+        {isOpenUserMenu ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse
+        in={isOpenUserMenu}
+        timeout="auto"
+        unmountOnExit
+      >
+        <List
+          component="div"
+          disablePadding
+        >
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.CREATE_USER)}
+          >
+            <ListItemIcon>
+              <PersonAddTwoToneIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('createUser')} />
           </ListItem>
         </List>
       </Collapse>

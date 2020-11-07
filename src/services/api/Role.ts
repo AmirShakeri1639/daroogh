@@ -33,8 +33,9 @@ class Role extends Api {
   saveNewRole = async (data: NewRoleData): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `/Roles/Save?id=${data.id}&name=${data.name}`,
-        { permissionItems: data.permissionItems });
+        '/Roles/Save',
+        data,
+      );
       return result.data;
     } catch (e) {
       errorHandler(e);

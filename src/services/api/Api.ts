@@ -91,6 +91,14 @@ class Api {
       errorHandler(e);
     }
   }
+
+  protected async postData(url: string): Promise<any> {
+    try {
+      return await this.authorizedUserRequest().post(url);
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
 }
 
 export default Api;

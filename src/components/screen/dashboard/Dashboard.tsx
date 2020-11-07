@@ -28,6 +28,8 @@ import ListItems from "./sidebar/ListItems";
 import CreateRole from "./roles/CreateRole";
 import {useQuery} from "react-query";
 import User from "../../../services/api/User";
+import {DashboardPages} from "../../../enum";
+import CreateUser from "./user/CreateUser";
 
 const drawerWidth = 240;
 
@@ -118,7 +120,8 @@ const useStyles = makeStyles((theme) => ({
 
 type DashboardActivePage =
   'dashboard'
-  | 'createRole';
+  | 'createRole'
+  | 'createUser';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
@@ -181,8 +184,11 @@ const Dashboard: React.FC = () => {
           </Container>
         );
         break;
-      case 'createRole':
+      case DashboardPages.CREATE_ROLE:
         el = <CreateRole />;
+        break;
+      case DashboardPages.CREATE_USER:
+        el = <CreateUser />
         break;
       default:
         el = <></>;

@@ -9,6 +9,11 @@ export default {
       'createNewRole': 'ایجاد نقش جدید',
       'editRole': 'ویرایش نقش',
       'cancelEditRole': 'انصراف ویرایش نقش',
+      'pleaseWait': 'لطفا صبر کنید...',
+      'user': 'کاربر',
+      'createUser': 'ایجاد کاربر',
+      'createRole': 'ایجاد نقش',
+      'role': 'نقش',
     }
   }
 }
