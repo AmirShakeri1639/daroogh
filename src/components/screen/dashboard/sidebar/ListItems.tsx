@@ -1,10 +1,10 @@
-import React, {useContext, useState} from "react";
-import {ListItem, ListItemIcon, ListItemText, Collapse, List, createStyles} from "@material-ui/core";
-import {Dashboard as DashboardIcon, ExpandLess, ExpandMore} from "@material-ui/icons";
+import React, { useContext, useState } from "react";
+import { ListItem, ListItemIcon, ListItemText, Collapse, List, createStyles } from "@material-ui/core";
+import { Dashboard as DashboardIcon, ExpandLess, ExpandMore } from "@material-ui/icons";
 import ContactMailTwoToneIcon from "@material-ui/icons/ContactMailTwoTone";
 import { useTranslation } from "react-i18next";
-import { useHistory } from 'react-router-dom';
-import {makeStyles} from "@material-ui/core/styles";
+
+import { makeStyles } from "@material-ui/core/styles";
 import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone';
 import Context from "../Context";
 
