@@ -1,5 +1,9 @@
 import React, { useReducer, useState } from 'react';
+<<<<<<< HEAD
 import { Link, useHistory, useLocation } from 'react-router-dom';
+=======
+
+>>>>>>> 7d30b49 (Add eslint because of errors we get in gitlab-runner)
 import {
   Avatar,
   Button,
@@ -87,7 +91,13 @@ const Login: React.FC = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, loginInitialState);
   const [showError, setShowError] = useState<boolean>(false);
 
+<<<<<<< HEAD
   const location  = useLocation();
+=======
+  // const location  = useLocation();
+  // const history = useHistory();
+  // const { from }: any = location.state || { from: { pathname: '/dashboard' } };
+>>>>>>> 7d30b49 (Add eslint because of errors we get in gitlab-runner)
   const { t } = useTranslation();
   const { push } = useHistory();
   const classes = useStyles();
@@ -159,8 +169,11 @@ const Login: React.FC = (): JSX.Element => {
             label="ایمیل"
             name="email"
             autoComplete="email"
+<<<<<<< HEAD
             autoFocus
             onChange={usernameHandler}
+=======
+>>>>>>> 7d30b49 (Add eslint because of errors we get in gitlab-runner)
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
