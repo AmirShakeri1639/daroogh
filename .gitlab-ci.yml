@@ -1,0 +1,25 @@
+stages:
+  - build
+  - deploy
+
+build_solution:
+  stage: build
+  only:
+    - main
+  script:
+    - "npm i"
+    - "npm run build"
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - build
+
+deploy_daroog:
+  stage: deploy
+  only:
+    - main
+  script:
+    - "cp ./build/* C:/daroog/tabadol/front/ -force -recurse"
+  environment:
+    name: staging
+    url: http://sumon.ir
