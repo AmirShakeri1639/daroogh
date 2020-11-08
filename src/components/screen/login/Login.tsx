@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from 'react';
-import { useLocation, useHistory } from 'react-router-dom';
+
 import {
   Container,
   createStyles,
@@ -81,9 +81,9 @@ const Login: React.FC = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, loginInitialState);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const location  = useLocation();
-  const history = useHistory();
-  const { from }: any = location.state || { from: { pathname: '/dashboard' } };
+  // const location  = useLocation();
+  // const history = useHistory();
+  // const { from }: any = location.state || { from: { pathname: '/dashboard' } };
   const { t } = useTranslation();
   const classes = useStyles();
 
@@ -123,7 +123,6 @@ const Login: React.FC = (): JSX.Element => {
             label="ایمیل"
             name="email"
             autoComplete="email"
-            autoFocus
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
