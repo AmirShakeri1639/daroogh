@@ -14,7 +14,6 @@
     "@types/node": "^12.19.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
-    "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.6",
     "@types/sweetalert": "^2.0.4",
     "axios": "^0.20.0",
@@ -30,12 +29,8 @@
     "react-i18next": "^11.7.3",
     "react-query": "^2.25.2",
     "react-query-devtools": "^2.6.0",
-    "react-redux": "^7.2.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.4",
-    "redux": "^4.0.5",
-    "redux-devtools-extension": "^2.13.8",
-    "redux-persist": "^6.0.0",
     "sweetalert2": "^10.9.0",
     "sweetalert2-react-content": "^3.2.1",
     "typescript": "^3.7.5"
@@ -43,7 +38,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.19.0",
     "@typescript-eslint/parser": "^2.19.0",
-    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-unused-imports": "^0.1.3"
@@ -51,11 +46,25 @@
   "scripts": {
     "start": "PORT=3001 react-scripts start",
     "build": "react-scripts build",
+    "lint": "eslint './src/**/*.{jsx,js,ts,tsx}'",
+    "lint:fix": "eslint --fix './src/**/*.{jsx,js,ts,tsx}'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app"
+    ],
+    "rules": {
+      "indent": [
+        "error",
+        2
+      ],
+      "quotes": [
+        "error",
+        "single"
+      ]
+    }
   },
   "browserslist": {
     "production": [
