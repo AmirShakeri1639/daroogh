@@ -6,8 +6,8 @@ class Account extends Api {
   loginUser = async (data: UserLoginInterface): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        '/Account/Login',
-        data,
+          '/Account/Login',
+          data,
       );
       return result.data;
     }
@@ -19,7 +19,7 @@ class Account extends Api {
   forgetPassword = async (data: ForgetPasswordDataInterface): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `/Account/ForgetPassword?mobile=${data.mobile}`,
+          `/Account/ForgetPassword?mobile=${data.mobile}`,
       );
       return result.data;
     }
