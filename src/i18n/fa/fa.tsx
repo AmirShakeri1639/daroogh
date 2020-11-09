@@ -26,6 +26,8 @@ export default {
         'description': 'شرح',
         'active': 'فعال',
         'type': 'نوع',
+        'save': 'ذخیره',
+        'cancel': 'انصراف',
       },
       action: {
         'insert': 'درج',
@@ -75,7 +77,7 @@ export default {
         'company-name': 'نام شرکت',
         'barcode': 'بارکد',
         'en-name': 'نام انگلیسی',
-      }
+      },
     }
   }
 }

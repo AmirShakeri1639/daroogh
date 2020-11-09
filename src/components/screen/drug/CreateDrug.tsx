@@ -7,13 +7,15 @@ import {
   FormControl,
   Checkbox,
   FormGroup,
-  Button
+  Button, createStyles
 } from '@material-ui/core';
 import Drug from '../../../services/api/Drug';
 import { DrugInterface } from '../../../interfaces/DrugInterface';
-import { useMutation, useQuery } from "react-query";
+import {queryCache, useMutation, useQuery} from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
-import {ActionInterface} from "../../../interfaces";
+import { ActionInterface } from "../../../interfaces";
+import {useTranslation} from "react-i18next";
+import {errorHandler} from "../../../utils";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -87,3 +89,226 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
+const useClasses = makeStyles((theme) => createStyles({
+  parent: {
+    paddingTop: theme.spacing(2),
+  },
+  root: {
+    width: '100%',
+    backgroundColor: 'white',
+    paddingBottom: theme.spacing(4),
+  },
+  container: {
+    maxHeight: 440,
+  },
+  formPaper: {
+    marginTop: theme.spacing(3),
+    padding: theme.spacing(2, 0, 2),
+  },
+  formTitle: {
+    marginLeft: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+  },
+  formContainer: {
+    padding: theme.spacing(2),
+  },
+  formControl: {
+    minWidth: 190,
+    margin: theme.spacing(1),
+  },
+  gridContainer: {
+    flexGrow: 1
+  },
+  gridFormControl: {
+    margin: theme.spacing(3),
+  },
+  gridTitle: {
+    marginLeft: theme.spacing(2),
+  },
+  gridItem: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1)
+  },
+  formBody: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  addButton: {
+    background: theme.palette.blueLinearGradient.main,
+  },
+  cancelButton: {
+    marginLeft: theme.spacing(1),
+    background: theme.palette.pinkLinearGradient.main,
+  }
+}));
+
+const CreateDrug: React.FC = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { t } = useTranslation();
+  const { saveDrug } = new Drug();
+
+  const {
+    root, container, parent, formPaper, formTitle,
+    formContainer, formControl, gridContainer, gridFormControl,
+    gridTitle, formBody, addButton, cancelButton,
+  } = useClasses();
+
+  const [_saveDrug] = useMutation(saveDrug, {
+    onSuccess: () => {
+      queryCache.invalidateQueries('allDrugs');
+    }
+  })
+
+  const submitDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+    e.preventDefault();
+
+    if (state.name.trim().length < 1
+        || state.genericName.trim().length < 1
+        || state.companyName.trim().length < 1
+        || state.enName.trim().length < 1
+    ) {
+      return;
+    }
+    try {
+      await _saveDrug({
+        id: state.id,
+        categoryID: state.categoryID,
+        name: state.name,
+        genericName: state.genericName,
+        companyName: state.companyName,
+        barcode: state.barcode,
+        description: state.description,
+        active: state.active,
+        enName: state.enName,
+        type: state.type
+      });
+    } catch (e) {
+      errorHandler(e)
+    }
+  }
+
+  return (
+    <Container maxWidth="lg" className={parent}>
+      <div className={formContainer}>
+        <form
+          autoComplete="off"
+          onSubmit={submitDrug}>
+          <div className={formBody}>
+            <FormControl className={formControl}>
+              <TextField
+                required
+                id=""
+                label={t('drug.name')}
+                value={state.name}
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'name', value: e.target.value })
+                }
+              />
+            </FormControl>
+            {/* TODO: Add CategoryID */}
+            <FormControl className={formControl}>
+              <TextField
+                required
+                id=""
+                label={t('drug.generic-name')}
+                value={state.genericName}
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'genericName', value: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl className={formControl}>
+              <TextField
+                required
+                id=""
+                label={t('drug.company-name')}
+                value={state.companyName}
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'companyName', value: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl className={formControl}>
+              <TextField
+                required
+                id=""
+                label={t('drug.barcode')}
+                value={state.barcode}
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'barcode', value: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl className={formControl}>
+              <TextField
+                required
+                id=""
+                label={t('general.description')}
+                value={state.description}
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'description', value: e.target.value })
+                }
+              />
+            </FormControl>
+            {/* TODO: Add active boolean form control */}
+            <FormControl className={formControl}>
+              <TextField
+                required
+                id=""
+                label={t('drug.en-name')}
+                value={state.enName}
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'enName', value: e.target.value })
+                }
+              />
+            </FormControl>
+            <FormControl className={formControl}>
+              <TextField
+                required
+                id=""
+                label={t('drug.type')}
+                value={state.type}
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'type', value: e.target.value })
+                }
+              />
+            </FormControl>
+
+
+            <FormControl>
+              <Button
+                type="submit"
+                color="primary"
+                className={addButton}
+              >
+                {t('general.save')}
+              </Button>
+            </FormControl>
+            {
+              state.id !== 0 && (
+                <FormControl>
+                  <Button
+                    type="submit"
+                    color="secondary"
+                    className={cancelButton}
+                    onClick={(): void => dispatch({ type: 'reset' })}
+                  >
+                    {t('general.cancel')}
+                  </Button>
+                </FormControl>
+              )
+            }
+          </div>
+        </form>
+      </div>
+    </Container>
+  )
+}
