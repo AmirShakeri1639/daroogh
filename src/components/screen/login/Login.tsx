@@ -216,7 +216,7 @@ const Login: React.FC = (): JSX.Element => {
             disabled={isLoading}
           >
             <Typography variant="button">
-              {t('login')}
+              {t('login.login')}
             </Typography>
             {
               isLoading

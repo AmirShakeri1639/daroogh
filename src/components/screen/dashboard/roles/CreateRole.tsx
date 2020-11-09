@@ -14,7 +14,7 @@ import {
   TextField,
   Typography,
   Divider,
-  
+
   FormControl,
   createStyles,
   FormControlLabel,
@@ -415,13 +415,13 @@ const CreateRole: React.FC = () => {
                 ? (
                   <Fragment>
                     <AddCircleOutlineIcon />
-                    {t('createNewRole')}
+                    {t('user.create-new-role')}
                   </Fragment>
                 )
                 : (
                   <Fragment>
                     <EditOutlinedIcon />
-                    {t('editRole')}
+                    {t('user.edit-role')}
                   </Fragment>
 
                 )
@@ -455,7 +455,7 @@ const CreateRole: React.FC = () => {
                     color="primary"
                     className={addButton}
                   >
-                    {state.id === 0 ? t('createNewRole') : t('editRole')}
+                    {state.id === 0 ? t('user.create-new-role') : t('user.edit-role')}
                   </Button>
                 </FormControl>
                 {
@@ -468,7 +468,7 @@ const CreateRole: React.FC = () => {
                         className={cancelButton}
                         onClick={(): void => dispatch({ type: 'reset' })}
                       >
-                        {t('cancelEditRole')}
+                        {t('user.cancel-edit-eole')}
                       </Button>
                     </FormControl>
                   )
