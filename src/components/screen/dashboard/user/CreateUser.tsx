@@ -9,8 +9,7 @@ import {
   Divider,
   Button,
 } from "@material-ui/core";
-
-import {jalali, dayjs, errorHandler} from '../../../../utils';
+import { jalali, errorHandler } from '../../../../utils';
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../../interfaces";
 import DateTimePicker from "../../../public/datepicker/DatePicker";
@@ -29,7 +28,7 @@ const useClasses = makeStyles((theme) => createStyles({
     padding: theme.spacing(2, 2),
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
-      width: '25ch',
+      // width: '25ch',
     },
   },
   titleContainer: {
@@ -156,7 +155,6 @@ const CreateUser: React.FC = () => {
 
   const formHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-    console.log(11)
     if (inputValuesValidation()) {
       setShowError(true);
       return;
