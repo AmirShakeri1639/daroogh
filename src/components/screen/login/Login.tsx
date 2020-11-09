@@ -21,8 +21,8 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CircleLoading from "../../public/loading/CircleLoading";
 import Account from '../../../services/api/Account';
-import {QueryStatus, useMutation, useQuery} from 'react-query';
-import User from "../../../services/api/User";
+import { QueryStatus, useMutation } from 'react-query';
+
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {
@@ -216,7 +216,7 @@ const Login: React.FC = (): JSX.Element => {
             disabled={isLoading}
           >
             <Typography variant="button">
-              {t('login')}
+              {t('login.login')}
             </Typography>
             {
               isLoading

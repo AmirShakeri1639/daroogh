@@ -1,14 +1,13 @@
-import React, {useContext, useState} from "react";
-import {ListItem, ListItemIcon, ListItemText, Collapse, List, createStyles} from "@material-ui/core";
-import {Dashboard as DashboardIcon, ExpandLess, ExpandMore} from "@material-ui/icons";
+import React, { useContext, useState } from "react";
+import { ListItem, ListItemIcon, ListItemText, Collapse, List, createStyles } from "@material-ui/core";
+import { Dashboard as DashboardIcon, ExpandLess, ExpandMore } from "@material-ui/icons";
 import ContactMailTwoToneIcon from "@material-ui/icons/ContactMailTwoTone";
 import { useTranslation } from "react-i18next";
-import { useHistory } from 'react-router-dom';
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone';
 import Context from "../Context";
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
-import {DashboardPages} from "../../../../enum";
+import { DashboardPages } from "../../../../enum";
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 
 const useStyles = makeStyles((theme) =>
@@ -43,13 +42,13 @@ const ListItems: React.FC = () => {
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
-        <ListItemText primary={t('dashboard')} />
+        <ListItemText primary={t('general.dashboard')} />
       </ListItem>
       <ListItem button onClick={(): void => setIsOpenRoleMenu(val => !val)}>
         <ListItemIcon>
           <ContactMailTwoToneIcon />
         </ListItemIcon>
-        <ListItemText primary={t('role')} />
+        <ListItemText primary={t('user.role')} />
         {isOpenRoleMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse

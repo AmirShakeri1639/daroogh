@@ -1,4 +1,4 @@
-import React, {Fragment, useCallback, useEffect, useMemo, useReducer, useState} from 'react';
+import React, { Fragment, useReducer } from 'react';
 import {
   Container,
   Paper,
@@ -7,13 +7,10 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  AppBar,
-  Slide,
   Grid,
   TableBody,
   TablePagination,
   IconButton,
-  Dialog,
   TextField,
   Typography,
   Divider,
@@ -365,13 +362,13 @@ const CreateRole: React.FC = () => {
                 ? (
                   <Fragment>
                     <AddCircleOutlineIcon />
-                    {t('createNewRole')}
+                    {t('user.create-new-role')}
                   </Fragment>
                 )
                 : (
                   <Fragment>
                     <EditOutlinedIcon />
-                    {t('editRole')}
+                    {t('user.edit-role')}
                   </Fragment>
 
                 )
@@ -406,8 +403,8 @@ const CreateRole: React.FC = () => {
                       newRoleLoading
                         ? t('pleaseWait')
                         : state.id === 0
-                          ? t('createNewRole')
-                          : t('editRole')
+                          ? t('user.create-new-role')
+                          : t('user.edit-role')
                     }
                   </Button>
                 </FormControl>
@@ -421,7 +418,7 @@ const CreateRole: React.FC = () => {
                         className={cancelButton}
                         onClick={(): void => dispatch({ type: 'reset' })}
                       >
-                        {t('cancelEditRole')}
+                        {t('user.cancel-edit-eole')}
                       </Button>
                     </FormControl>
                   )

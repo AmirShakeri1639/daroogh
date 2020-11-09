@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react'
+import React, {  useState } from 'react'
 import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
-  Drawer, List, ListSubheader,
+  Drawer, List,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -26,7 +26,7 @@ import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
 import ListItems from "./sidebar/ListItems";
 import CreateRole from "./roles/CreateRole";
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 import User from "../../../services/api/User";
 import {DashboardPages} from "../../../enum";
 import CreateUser from "./user/CreateUser";
@@ -217,7 +217,7 @@ const Dashboard: React.FC = () => {
               <MenuIcon />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              {t('dashboard')}
+              {t('general.dashboard')}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
