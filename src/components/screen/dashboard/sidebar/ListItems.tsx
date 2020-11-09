@@ -38,13 +38,13 @@ const ListItems: React.FC = () => {
         <ListItemIcon>
           <DashboardIcon />
         </ListItemIcon>
-        <ListItemText primary={t('dashboard')} />
+        <ListItemText primary={t('general.dashboard')} />
       </ListItem>
       <ListItem button onClick={(): void => setIsOpenRoleMenu(val => !val)}>
         <ListItemIcon>
           <ContactMailTwoToneIcon />
         </ListItemIcon>
-        <ListItemText primary={t('userRole')} />
+        <ListItemText primary={t('user.role')} />
         {isOpenRoleMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse

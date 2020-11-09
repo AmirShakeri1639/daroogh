@@ -30,7 +30,7 @@ const UserMenu: React.FC = () => {
         <ListItemIcon>
           <ExitToAppIcon fontSize="small" />
         </ListItemIcon>
-        {t('signOut')}
+        {t('login.sign-out')}
       </MenuItem>
     </Menu>
   )
