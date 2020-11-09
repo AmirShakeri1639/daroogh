@@ -67,6 +67,8 @@ export default {
         'create-new-role': 'ایجاد نقش جدید',
         'edit-role': 'ویرایش نقش',
         'cancel-edit-eole': 'انصراف ویرایش نقش',
+        'users-list': 'لیست کاربران',
+        'create-user': 'ایجاد کاربر',
       },
       drug: {
         'drug': 'دارو',
