@@ -3,6 +3,8 @@ export enum TextMessage {
   SUCCESS_REMOVE_TEXT_MESSAGE = 'با موفقیت حذف شد',
   SUCCESS_EDIT_TEXT_MESSAGE = 'با موفقیت ویرایش شد',
   SUCCESS_CREATE_TEXT_MESSAGE = 'با موفقیت ایجاد شد',
+  DISABLE_TEXT_ALERT = 'آیا میخواهید غیرفعال شود؟',
+  SUCCESS_DISABLE_TEXT_MESSAGE = 'با موفقیت غیرفعال شد',
 }
 
 export enum DashboardPages {

@@ -10,6 +10,7 @@ import Context from "../Context";
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
 import {DashboardPages} from "../../../../enum";
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
+import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -69,7 +70,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon>
               <AddCircleTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary={t('user.create-role')} />
+            <ListItemText primary={t('user.create-new-role')} />
           </ListItem>
         </List>
       </Collapse>
@@ -109,7 +110,7 @@ const ListItems: React.FC = () => {
             onClick={(): void => setActivePage(DashboardPages.USERS_LIST)}
           >
             <ListItemIcon>
-              <PersonAddTwoToneIcon />
+              <GroupTwoToneIcon />
             </ListItemIcon>
             <ListItemText primary={t('user.users-list')} />
           </ListItem>

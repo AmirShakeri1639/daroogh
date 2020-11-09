@@ -32,6 +32,24 @@ class User extends Api {
       errorHandler(e);
     }
   }
+
+  removeUser = async (userId: number): Promise<any> => {
+    try {
+      const result = await this.postJsonData(`/User/Remove/${userId}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  disableUser = async (userId: number): Promise<any> => {
+    try {
+      const result = await this.postJsonData(`/User/DisableUser?userId=${userId}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
 }
 
 export default User;
