@@ -296,12 +296,12 @@ export class NewUserData {
   public password: string = '';
   public nationalCode: string = '';
   public birthDate: string = '';
-  public  pictureFileID: number = 0;
-  public active: boolean = false;
-  public lastChangePassword: string = '';
-  public _date: string = '';
-  public _userid: number = 0;
-  public pharmacy: Pharmacy = new Pharmacy();
-  public message: Message[] = [new Message()];
-  public roleUser: UserRole[] = [new UserRole()];
+  // public  pictureFileID: number = 0;
+  // public active: boolean = false;
+  // public lastChangePassword: string = '';
+  // public _date: string = '';
+  // public _userid: number = 0;
+  // public pharmacy: Pharmacy = new Pharmacy();
+  // public message: Message[] = [new Message()];
+  // public roleUser: UserRole[] = [new UserRole()];
 }

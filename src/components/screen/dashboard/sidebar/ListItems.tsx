@@ -68,7 +68,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon>
               <AddCircleTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary={t('createRole')} />
+            <ListItemText primary={t('user.create-role')} />
           </ListItem>
         </List>
       </Collapse>
@@ -80,7 +80,7 @@ const ListItems: React.FC = () => {
         <ListItemIcon>
           <PermIdentityTwoToneIcon />
         </ListItemIcon>
-        <ListItemText primary={t('user')} />
+        <ListItemText primary={t('user.user')} />
         {isOpenUserMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse
@@ -100,7 +100,17 @@ const ListItems: React.FC = () => {
             <ListItemIcon>
               <PersonAddTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary={t('createUser')} />
+            <ListItemText primary={t('user.create-user')} />
+          </ListItem>
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.USERS_LIST)}
+          >
+            <ListItemIcon>
+              <PersonAddTwoToneIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('user.users-list')} />
           </ListItem>
         </List>
       </Collapse>

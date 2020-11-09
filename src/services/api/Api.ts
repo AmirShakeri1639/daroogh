@@ -7,9 +7,6 @@ import { errorHandler, sweetAlert } from "../../utils";
 const axiosInstance = axios.create({
   baseURL: api.baseUrl,
   timeout: 0,
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: false,
-  }),
 });
 
 axiosInstance.interceptors.response.use(
