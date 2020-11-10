@@ -305,3 +305,16 @@ export class NewUserData {
   // public message: Message[] = [new Message()];
   // public roleUser: UserRole[] = [new UserRole()];
 }
+
+export interface InitialNewUserInterface {
+  id: number;
+  pharmacyID: number;
+  name: string;
+  family: string;
+  mobile: string;
+  email: string;
+  userName: string;
+  password: string;
+  nationalCode: string;
+  birthDate: string;
+}

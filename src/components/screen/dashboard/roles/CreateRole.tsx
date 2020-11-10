@@ -128,7 +128,7 @@ const useClasses = makeStyles((theme) => createStyles({
   permissionButton: {
     marginLeft: theme.spacing(1),
     background: theme.palette.pinkLinearGradient.main,
-  }
+  },
 }));
 
 const CreateRole: React.FC = () => {

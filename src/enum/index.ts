@@ -1,10 +1,10 @@
 export enum TextMessage {
+  // TODO: move this items to 'fa' translation file
   REMOVE_TEXT_ALERT = 'آیا میخواهید حذف شود؟',
-  SUCCESS_REMOVE_TEXT_MESSAGE = 'با موفقیت حذف شد',
+  SUCCESS_REMOVE_TEXT_MESSAGE = '',
   SUCCESS_EDIT_TEXT_MESSAGE = 'با موفقیت ویرایش شد',
   SUCCESS_CREATE_TEXT_MESSAGE = 'با موفقیت ایجاد شد',
-  DISABLE_TEXT_ALERT = 'آیا میخواهید غیرفعال شود؟',
-  SUCCESS_DISABLE_TEXT_MESSAGE = 'با موفقیت غیرفعال شد',
+  SUCCESS_DISABLE_TEXT_MESSAGE = '',
 }
 
 export enum DashboardPages {
