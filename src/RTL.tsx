@@ -4,6 +4,7 @@ import rtl from 'jss-rtl';
 import { StylesProvider, jssPreset, createMuiTheme } from '@material-ui/core/styles';
 import Vazir from './assets/fonts/Vazir.woff';
 import VazirBold from './assets/fonts/Vazir-Bold.woff';
+import VazirFDMedium from './assets/fonts/Vazir-Medium-FD-WOL.woff';
 
 const jss = create({ plugins: [...jssPreset().plugins, rtl()] });
 
@@ -23,6 +24,12 @@ const vazirFont = {
   fontFamily: 'Vazir',
   fontWeight: 'normal',
   src: `url(${Vazir}) format(woff)`,
+};
+
+const vazirFontNumber = {
+  fontFamily: 'VazirNumber',
+  fontWeight: 'normal',
+  src: `url(${VazirFDMedium}) format(woff)`,
 };
 
 const vazirBold = {
@@ -59,6 +66,7 @@ export const theme = createMuiTheme({
       light: '#ebedef',
       main: '#ced2d8',
       dark: '#636f83',
+      // extra: '#232f3e',
     },
     blueLinearGradient: {
       main: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
@@ -76,6 +84,7 @@ export const theme = createMuiTheme({
         '@font-face': [
           vazirFont,
           vazirBold,
+          vazirFontNumber,
         ],
       },
     },

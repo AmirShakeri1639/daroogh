@@ -1,10 +1,10 @@
 export interface ActionInterface {
   type: string;
-  value: any;
+  value?: any;
 }
 
 export interface LoginInitialStateInterface {
-  email: string;
+  username: string;
   password: string;
   isVisiblePassword: boolean;
 }
@@ -17,4 +17,33 @@ export interface CircleProgressInterface {
 export interface UserLoginInterface {
   username: string;
   password: string;
-};
+}
+
+export interface ForgetPasswordDataInterface {
+  mobile: string;
+}
+
+export interface DefaultAxiosConfigInterface {
+  Authorization?: string;
+}
+
+export interface PermissionItemTableColumnInterface {
+  id: string | number;
+  label: string;
+}
+
+export class NewRoleData {
+  public id?: number | string = 0;
+  public name: string = '';
+  public permissionItemes: string[] = [];
+}
+export interface PermissionItemInterface {
+  order: number;
+  permissionName: string;
+  title: string;
+}
+
+export interface PermissionItemsInterface {
+  category: string;
+  permissionItems: PermissionItemInterface[];
+}

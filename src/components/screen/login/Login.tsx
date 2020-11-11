@@ -1,27 +1,28 @@
-import React, { useReducer, useState } from 'react';
-
+import React, { useEffect, useReducer, useState } from 'react';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
+  Avatar,
+  Button,
   Container,
   createStyles,
   CssBaseline,
+  IconButton,
+  InputAdornment,
   TextField,
-  Avatar,
   Typography,
-  Button,
-  InputAdornment, IconButton,
 } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useTranslation } from "react-i18next";
 import MailIcon from '@material-ui/icons/Mail';
 import LockIcon from '@material-ui/icons/Lock';
-import {
-  ActionInterface,
-  LoginInitialStateInterface,
-} from "../../../interfaces";
+import { ActionInterface, LoginInitialStateInterface } from "../../../interfaces";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CircleLoading from "../../public/loading/CircleLoading";
+import Account from '../../../services/api/Account';
+import { useMutation } from 'react-query';
+
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {
@@ -47,20 +48,23 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   margin: {
     margin: theme.spacing(1),
   },
+  forgetPasswordLink: {
+    textDecoration: 'none'
+  }
 }));
 
 const loginInitialState = {
-  email: '',
+  username: '',
   password: '',
   isVisiblePassword: false,
 };
 
 function reducer(state = loginInitialState, action: ActionInterface): LoginInitialStateInterface {
   switch (action.type) {
-    case 'email':
+    case 'username':
       return {
         ...state,
-        email: action.value,
+        username: action.value,
       };
     case 'password':
       return {
@@ -72,6 +76,8 @@ function reducer(state = loginInitialState, action: ActionInterface): LoginIniti
         ...state,
         isVisiblePassword: !state.isVisiblePassword,
       };
+    case 'reset':
+      return loginInitialState;
     default:
       throw new Error('Action type not defined');
   }
@@ -79,17 +85,44 @@ function reducer(state = loginInitialState, action: ActionInterface): LoginIniti
 
 const Login: React.FC = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, loginInitialState);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
 
-  // const location  = useLocation();
-  // const history = useHistory();
-  // const { from }: any = location.state || { from: { pathname: '/dashboard' } };
+  const location  = useLocation();
+
   const { t } = useTranslation();
+  const { push } = useHistory();
   const classes = useStyles();
+  const { from }: any = location.state || { from: { pathname: '/dashboard' } };
+  const { loginUser } = new Account();
+  const [_loginUser, { status, data, isLoading }] = useMutation(loginUser);
+
+  useEffect(() => {
+    if (data !== undefined) {
+      localStorage.setItem('user', JSON.stringify(data));
+      push({
+        pathname: from.pathname,
+      });
+    }
+  }, [data]);
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-    setIsLoading(true);
+    if (
+      state.username.trim().length === 0
+      || state.password.trim().length === 0
+    ) {
+      setShowError(true);
+      return;
+    }
+    try {
+      await _loginUser({
+        username: state.username,
+        password: state.password,
+      });
+    }
+    catch (e) {
+      //
+    }
   }
 
   const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -98,6 +131,11 @@ const Login: React.FC = (): JSX.Element => {
 
   const handleClickShowPassword = (): void =>
     dispatch({ type: 'isVisiblePassword', value: !state.isVisiblePassword });
+
+  const usernameHandler = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    dispatch({ type: 'username', value: e.target.value });
+  const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>): void =>
+    dispatch({ type: 'password', value: e.target.value });
 
   return (
     <Container component="main" maxWidth="xs">
@@ -115,6 +153,7 @@ const Login: React.FC = (): JSX.Element => {
           onSubmit={formSubmitHandler}
         >
           <TextField
+            error={state.username.trim().length === 0 && showError}
             variant="outlined"
             margin="normal"
             required
@@ -123,6 +162,8 @@ const Login: React.FC = (): JSX.Element => {
             label="ایمیل"
             name="email"
             autoComplete="email"
+            autoFocus
+            onChange={usernameHandler}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -132,6 +173,7 @@ const Login: React.FC = (): JSX.Element => {
             }}
           />
           <TextField
+            error={state.password.trim().length === 0 && showError}
             variant="outlined"
             margin="normal"
             required
@@ -140,6 +182,7 @@ const Login: React.FC = (): JSX.Element => {
             label="کلمه عبور"
             type={state.isVisiblePassword ? 'text' : 'password'}
             id="password"
+            onChange={passwordHandler}
             autoComplete="current-password"
             InputProps={{
               startAdornment: (
@@ -161,6 +204,12 @@ const Login: React.FC = (): JSX.Element => {
               )
             }}
           />
+          <Link
+            className={classes.forgetPasswordLink}
+            to="/forget-password"
+          >
+            رمز عبور را فراموش کردم
+          </Link>
           <Button
             type="submit"
             fullWidth
@@ -170,7 +219,7 @@ const Login: React.FC = (): JSX.Element => {
             disabled={isLoading}
           >
             <Typography variant="button">
-              {t('login')}
+              {t('login.login')}
             </Typography>
             {
               isLoading

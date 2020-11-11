@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, {  useState } from 'react'
+import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
+import {
+  Drawer, List,
+} from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -13,12 +16,21 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import {
+  ChevronLeft as ChevronLeftIcon,
+} from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { AccountCircle } from "@material-ui/icons";
 import { useTranslation } from "react-i18next";
 import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
+import ListItems from "./sidebar/ListItems";
+import CreateRole from "./roles/CreateRole";
+import { useQuery } from "react-query";
+import User from "../../../services/api/User";
+import {DashboardPages} from "../../../enum";
+import CreateUser from "./user/CreateUser";
+import UsersList from "./user/UsersList";
 
 const drawerWidth = 240;
 
@@ -36,13 +48,17 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
+  daroogLogo: {
+    width: '77% !important',
+    height: '35px !important',
+  },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: theme.palette.gray.dark,
+    backgroundColor: '#4625b2',
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -54,6 +70,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: 36,
+    // color:
   },
   menuButtonHidden: {
     display: 'none',
@@ -102,18 +119,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+type DashboardActivePage =
+  'dashboard'
+  | 'createRole'
+  | 'createUser'
+  | 'usersList';
+
 const Dashboard: React.FC = () => {
-  const [open, setOpen] = React.useState(true);
+  const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [activePage, setActivePage] = useState<DashboardActivePage>('dashboard');
+
+  const { getUserData } = new User();
+
+  const { isLoading: userProfileIsLoading, data: userProfileData } =
+    useQuery('getUserProfile', getUserData);
 
   const classes = useStyles();
 
-  const handleDrawerOpen = (): void => setOpen(true);
-  const handleDrawerClose = (): void => setOpen(false);
+  const handleDrawerOpen = (): void => setIsOpenDrawer(true);
+  const handleDrawerClose = (): void => setIsOpenDrawer(false);
 
   const contextInitialValues = (): any => ({
     anchorEl,
     setAnchorEl,
+    setActivePage,
   });
 
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -123,13 +153,63 @@ const Dashboard: React.FC = () => {
     setAnchorEl(e.currentTarget);
   }
 
+  const listItemsGenerator = (): any => {
+    return <ListItems />;
+  }
+
+  const displayActivePage = (cssClasses: any): JSX.Element => {
+    let el: JSX.Element;
+    switch (activePage) {
+      case 'dashboard':
+        el = (
+          <Container maxWidth="lg" className={cssClasses.container}>
+            <Grid container spacing={3}>
+
+              <Grid item xs={12} md={8} lg={9}>
+                <Paper className={fixedHeightPaper}>
+                  Data
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12} md={4} lg={3}>
+                <Paper className={fixedHeightPaper}>
+                  Data
+                </Paper>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Paper className={cssClasses.paper}>
+                  Data
+                </Paper>
+              </Grid>
+            </Grid>
+          </Container>
+        );
+        break;
+      case DashboardPages.CREATE_ROLE:
+        el = <CreateRole />;
+        break;
+      case DashboardPages.CREATE_USER:
+        el = <CreateUser />
+        break;
+      case DashboardPages.USERS_LIST:
+        el = <UsersList />
+        break;
+      default:
+        el = <></>;
+    }
+
+    return el;
+  }
+
   return (
     <Context.Provider value={contextInitialValues()}>
       <div className={classes.root}>
         <CssBaseline />
         <AppBar
+          elevation={0}
           position="absolute"
-          className={clsx(classes.appBar, open && classes.appBarShift)}
+          className={clsx(classes.appBar, isOpenDrawer && classes.appBarShift)}
         >
           <Toolbar className={classes.toolbar}>
             <IconButton
@@ -137,12 +217,12 @@ const Dashboard: React.FC = () => {
               color="inherit"
               aria-label="open drawer"
               onClick={handleDrawerOpen}
-              className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+              className={clsx(classes.menuButton, isOpenDrawer && classes.menuButtonHidden)}
             >
               <MenuIcon />
             </IconButton>
             <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-              {t('dashboard')}
+              {t('general.dashboard')}
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -166,44 +246,32 @@ const Dashboard: React.FC = () => {
         <Drawer
           variant="permanent"
           classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+            paper: clsx(classes.drawerPaper, !isOpenDrawer && classes.drawerPaperClose),
           }}
-          open={open}
+          open={isOpenDrawer}
         >
           <div className={classes.toolbarIcon}>
+            <img
+              className={classes.daroogLogo}
+              src={DaroogLogo}
+              alt="logo-daroog"
+            />
             <IconButton onClick={handleDrawerClose}>
               <ChevronLeftIcon />
             </IconButton>
           </div>
           <Divider />
-          {/*<List>{mainListItems}</List>*/}
+          <List
+            component="nav"
+            aria-labelledby="nested-list-items"
+          >
+            {listItemsGenerator()}
+          </List>
           <Divider />
-          {/*<List>{secondaryListItems}</List>*/}
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          <Container maxWidth="lg" className={classes.container}>
-            <Grid container spacing={3}>
-
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper className={fixedHeightPaper}>
-
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper className={fixedHeightPaper}>
-
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-
-                </Paper>
-              </Grid>
-            </Grid>
-          </Container>
+          {displayActivePage(classes)}
         </main>
       </div>
     </Context.Provider>

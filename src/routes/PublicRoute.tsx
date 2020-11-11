@@ -1,11 +1,17 @@
 import React from "react";
 import { RouteProps, Route, Redirect } from 'react-router-dom';
+import { Validation } from '../utils';
 
 const PublicRoute: React.FC<RouteProps> = (props) => {
   const { children, ...rest } = props;
 
+  const { isValidUserToken } = new Validation();
+
   function isAuthorizedUser(): boolean {
-    return false; //TODO will complete
+    const { token } = JSON.parse(localStorage.getItem('user') || '{}');
+    return token === undefined
+      ? false
+      : isValidUserToken(token);
   }
 
   return (
