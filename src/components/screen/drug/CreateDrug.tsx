@@ -1,21 +1,17 @@
-import React, { Fragment, useReducer } from 'react';
+import React, { useReducer } from 'react';
 import {
   Container,
-  Paper,
-  IconButton,
   TextField,
   FormControl,
-  Checkbox,
-  FormGroup,
   Button, createStyles
 } from '@material-ui/core';
 import Drug from '../../../services/api/Drug';
 import { DrugInterface } from '../../../interfaces/DrugInterface';
-import {queryCache, useMutation, useQuery} from "react-query";
+import { queryCache, useMutation } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../interfaces";
-import {useTranslation} from "react-i18next";
-import {errorHandler} from "../../../utils";
+import { useTranslation } from "react-i18next";
+import { errorHandler } from "../../../utils";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -149,9 +145,10 @@ const CreateDrug: React.FC = () => {
   const { saveDrug } = new Drug();
 
   const {
-    root, container, parent, formPaper, formTitle,
-    formContainer, formControl, gridContainer, gridFormControl,
-    gridTitle, formBody, addButton, cancelButton,
+    parent, formContainer, formControl,
+    formBody, addButton, cancelButton,
+    // root, container, formPaper, formTitle,
+    // gridContainer, gridFormControl, gridTitle,
   } = useClasses();
 
   const [_saveDrug] = useMutation(saveDrug, {
@@ -312,3 +309,5 @@ const CreateDrug: React.FC = () => {
     </Container>
   )
 }
+
+export default CreateDrug;

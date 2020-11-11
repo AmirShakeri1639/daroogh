@@ -12,6 +12,7 @@ export enum DashboardPages {
   CREATE_USER = 'createUser',
   CREATE_ROLE = 'createRole',
   USERS_LIST = 'usersList',
+  CREATE_DRUG = 'createDrug',
 }
 
 export enum PharmacyTypeEnum {

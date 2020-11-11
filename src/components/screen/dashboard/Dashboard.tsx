@@ -26,9 +26,10 @@ import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
 import ListItems from "./sidebar/ListItems";
 import CreateRole from "./roles/CreateRole";
+import CreateDrug from '../drug/CreateDrug';
 import { useQuery } from "react-query";
 import User from "../../../services/api/User";
-import {DashboardPages} from "../../../enum";
+import { DashboardPages } from "../../../enum";
 import CreateUser from "./user/CreateUser";
 import UsersList from "./user/UsersList";
 
@@ -123,7 +124,8 @@ type DashboardActivePage =
   'dashboard'
   | 'createRole'
   | 'createUser'
-  | 'usersList';
+  | 'usersList'
+  | 'createDrug';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
@@ -194,6 +196,9 @@ const Dashboard: React.FC = () => {
         break;
       case DashboardPages.USERS_LIST:
         el = <UsersList />
+        break;
+      case DashboardPages.CREATE_DRUG:
+        el = <CreateDrug />
         break;
       default:
         el = <></>;

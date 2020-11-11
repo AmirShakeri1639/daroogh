@@ -21,6 +21,7 @@
     "@types/sweetalert": "^2.0.4",
     "axios": "^0.20.0",
     "clsx": "^1.1.1",
+    "dayjs": "^1.9.6",
     "history": "^5.0.0",
     "i18next": "^19.8.2",
     "jalaali-js": "^1.1.5",
