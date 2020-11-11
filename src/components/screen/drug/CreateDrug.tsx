@@ -192,117 +192,138 @@ const CreateDrug: React.FC = () => {
           autoComplete="off"
           onSubmit={submitDrug}>
           <div className={formBody}>
-            <FormControl className={formControl}>
-              <TextField
-                required
-                id=""
-                label={t('drug.name')}
-                value={state.name}
-                onChange={
-                  (e): void =>
-                    dispatch({ type: 'name', value: e.target.value })
-                }
-              />
-            </FormControl>
-            {/* TODO: Add CategoryID */}
-            <FormControl className={formControl}>
-              <TextField
-                required
-                id=""
-                label={t('drug.generic-name')}
-                value={state.genericName}
-                onChange={
-                  (e): void =>
-                    dispatch({ type: 'genericName', value: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl className={formControl}>
-              <TextField
-                required
-                id=""
-                label={t('drug.company-name')}
-                value={state.companyName}
-                onChange={
-                  (e): void =>
-                    dispatch({ type: 'companyName', value: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl className={formControl}>
-              <TextField
-                required
-                id=""
-                label={t('drug.barcode')}
-                value={state.barcode}
-                onChange={
-                  (e): void =>
-                    dispatch({ type: 'barcode', value: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl className={formControl}>
-              <TextField
-                required
-                id=""
-                label={t('general.description')}
-                value={state.description}
-                onChange={
-                  (e): void =>
-                    dispatch({ type: 'description', value: e.target.value })
-                }
-              />
-            </FormControl>
-            {/* TODO: Add active boolean form control */}
-            <FormControl className={formControl}>
-              <TextField
-                required
-                id=""
-                label={t('drug.en-name')}
-                value={state.enName}
-                onChange={
-                  (e): void =>
-                    dispatch({ type: 'enName', value: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl className={formControl}>
-              <TextField
-                required
-                id=""
-                label={t('drug.type')}
-                value={state.type}
-                onChange={
-                  (e): void =>
-                    dispatch({ type: 'type', value: e.target.value })
-                }
-              />
-            </FormControl>
+            <div className="row">
+              <FormControl className={formControl}>
+                <TextField
+                  required
+                  id=""
+                  label={t('drug.name')}
+                  value={state.name}
+                  onChange={
+                    (e): void =>
+                      dispatch({ type: 'name', value: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className="row">
+              {/* TODO: Add CategoryID */}
+            </div>
+            <div className="row">
+              <FormControl className={formControl}>
+                <TextField
+                  required
+                  id=""
+                  label={t('drug.generic-name')}
+                  value={state.genericName}
+                  onChange={
+                    (e): void =>
+                      dispatch({ type: 'genericName', value: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className="row">
+              <FormControl className={formControl}>
+                <TextField
+                  required
+                  id=""
+                  label={t('drug.company-name')}
+                  value={state.companyName}
+                  onChange={
+                    (e): void =>
+                      dispatch({ type: 'companyName', value: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className="row">
+              <FormControl className={formControl}>
+                <TextField
+                  required
+                  id=""
+                  label={t('drug.barcode')}
+                  value={state.barcode}
+                  onChange={
+                    (e): void =>
+                      dispatch({ type: 'barcode', value: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className="row">
+              <FormControl className={formControl}>
+                <TextField
+                  required
+                  id=""
+                  label={t('general.description')}
+                  value={state.description}
+                  onChange={
+                    (e): void =>
+                      dispatch({ type: 'description', value: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className="row">
+              {/* TODO: Add active boolean form control */}
+            </div>
+            <div className="row">
+              <FormControl className={formControl}>
+                <TextField
+                  required
+                  id=""
+                  label={t('drug.en-name')}
+                  value={state.enName}
+                  onChange={
+                    (e): void =>
+                      dispatch({ type: 'enName', value: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className="row">
+              <FormControl className={formControl}>
+                <TextField
+                  required
+                  id=""
+                  label={t('general.type')}
+                  value={state.type}
+                  onChange={
+                    (e): void =>
+                      dispatch({ type: 'type', value: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
 
-
-            <FormControl>
-              <Button
-                type="submit"
-                color="primary"
-                className={addButton}
-              >
-                {t('general.save')}
-              </Button>
-            </FormControl>
-            {
-              state.id !== 0 && (
-                <FormControl>
-                  <Button
-                    type="submit"
-                    color="secondary"
-                    className={cancelButton}
-                    onClick={(): void => dispatch({ type: 'reset' })}
-                  >
-                    {t('general.cancel')}
-                  </Button>
-                </FormControl>
-              )
-            }
+            <div className="row">
+              <FormControl>
+                <Button
+                  type="submit"
+                  color="primary"
+                  className={addButton}
+                >
+                  {t('general.save')}
+                </Button>
+              </FormControl>
+            </div>
+            <div className="row">
+              {
+                state.id !== 0 && (
+                  <FormControl>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      className={cancelButton}
+                      onClick={(): void => dispatch({ type: 'reset' })}
+                    >
+                      {t('general.cancel')}
+                    </Button>
+                  </FormControl>
+                )
+              }
+            </div>
           </div>
         </form>
       </div>
