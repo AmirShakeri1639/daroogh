@@ -7,9 +7,6 @@ import { errorHandler, sweetAlert } from "../../utils";
 const axiosInstance = axios.create({
   baseURL: api.baseUrl,
   timeout: 0,
-  httpsAgent: new https.Agent({
-    rejectUnauthorized: false,
-  }),
 });
 
 axiosInstance.interceptors.response.use(
@@ -87,6 +84,14 @@ class Api {
   protected async getData(url: string): Promise<any> {
     try {
       return await this.authorizedUserRequest().get(url);
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  protected async postData(url: string): Promise<any> {
+    try {
+      return await this.authorizedUserRequest().post(url);
     } catch (e) {
       errorHandler(e);
     }

@@ -35,5 +35,15 @@ export interface PermissionItemTableColumnInterface {
 export class NewRoleData {
   public id?: number | string = 0;
   public name: string = '';
-  public permissionItems: string[] = [];
+  public permissionItemes: string[] = [];
+}
+export interface PermissionItemInterface {
+  order: number;
+  permissionName: string;
+  title: string;
+}
+
+export interface PermissionItemsInterface {
+  category: string;
+  permissionItems: PermissionItemInterface[];
 }
