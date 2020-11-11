@@ -1,5 +1,5 @@
 import React, {Fragment, useReducer, useState} from 'react';
-import {queryCache, useMutation, useQuery} from "react-query";
+import { useMutation, useQuery, useQueryCache} from "react-query";
 import User from "../../../../services/api/User";
 import {
   Container,
@@ -9,7 +9,6 @@ import {
   Tooltip,
   Paper,
   Table,
-  FormGroup,
   TableBody,
   TableCell,
   TableContainer,
@@ -18,7 +17,7 @@ import {
   TableRow,
   Typography,
   Divider,
-  TextField, Button, FormControl, Box,
+  TextField, Button, Box,
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {ActionInterface, LoginInitialStateInterface, PermissionItemTableColumnInterface} from "../../../../interfaces";
@@ -151,6 +150,8 @@ const UsersList: React.FC = () => {
 
   const { getAllUsers, removeUser, disableUser, saveNewUser } = new User();
 
+  const queryCache = useQueryCache();
+
   const { isLoading: isLoadingUsersList, data: dataUsersList } =
     useQuery('usersList', getAllUsers);
 
@@ -169,8 +170,13 @@ const UsersList: React.FC = () => {
   });
 
   const [_editUser, { isLoading: loadingEditUser }] = useMutation(saveNewUser, {
-    onSuccess: async () => {
-      await queryCache.invalidateQueries('usersList');
+    onSuccess: async (data) => {
+      const { message } = data;
+      await sweetAlert({
+        type: 'success',
+        text: message,
+      });
+      queryCache.invalidateQueries('usersList');
     }
   });
 
@@ -220,16 +226,14 @@ const UsersList: React.FC = () => {
     setPage(0);
   };
 
-  const toggleUserHandler = async (userId: number, activeStatus: boolean): Promise<any> => {
+  const disableUserHandler = async (userId: number): Promise<any> => {
     try {
-      const confirmationText = activeStatus ? t('alert.disableTextAlert') : t('alert.enableTextAlert');
+      const confirmationText = t('alert.disableTextAlert')
       if (window.confirm(confirmationText)) {
         await _disableUser(userId);
         await sweetAlert({
           type: 'success',
-          text: activeStatus
-            ? t('alert.successfulDisableTextMessage')
-            : t('alert.successfulEnableTextMessage'),
+          text: t('alert.successfulDisableTextMessage'),
         });
         resetDisableUser();
       }
@@ -238,7 +242,34 @@ const UsersList: React.FC = () => {
     }
   }
 
-  const editRoleHandler = (item: InitialNewUserInterface): void => {
+  const enableUserHandler = async (user: InitialNewUserInterface): Promise<any> => {
+    if (!window.confirm(t('alert.enableTextAlert'))) {
+      return;
+    }
+    const {
+      name, family, email, mobile, birthDate,
+      id, nationalCode, userName,
+    } = user;
+
+    try {
+      await _editUser({
+        id,
+        active: true,
+        name,
+        family,
+        userName,
+        birthDate,
+        nationalCode,
+        email,
+        mobile,
+        pharmacyID: null,
+      });
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  const editUserHandler = (item: InitialNewUserInterface): void => {
     const {
       name, family, email, mobile, birthDate,
       id, nationalCode, userName,
@@ -303,7 +334,7 @@ const UsersList: React.FC = () => {
                           component="span"
                           aria-label="edit user"
                           color="primary"
-                          onClick={(): void => editRoleHandler(item)}
+                          onClick={(): void => editUserHandler(item)}
                         >
                           <EditOutlinedIcon fontSize="small" />
                         </IconButton>
@@ -311,15 +342,30 @@ const UsersList: React.FC = () => {
                       <Tooltip
                         title={item.active ? String(t('user.disable-user')) : String(t('user.enable-user'))}
                       >
-                        <IconButton
-                          component="span"
-                          aria-label="disable user"
-                          color="inherit"
-                          className={item.active ? checkIcon : ''}
-                          onClick={(): Promise<any> => toggleUserHandler(item.id, item.active)}
-                        >
-                          {item.active ? <CheckIcon fontSize="small" /> : <BlockTwoToneIcon fontSize="small" />}
-                        </IconButton>
+                        {
+                          item.active
+                            ? (
+                              <IconButton
+                                component="span"
+                                aria-label="disable user"
+                                color="inherit"
+                                className={checkIcon}
+                                onClick={(): Promise<any> => disableUserHandler(item.id)}
+                              >
+                                <CheckIcon fontSize="small" />
+                              </IconButton>
+                            )
+                            : (
+                              <IconButton
+                                component="span"
+                                aria-label="enable user"
+                                color="inherit"
+                                onClick={(): Promise<any> => enableUserHandler(item)}
+                              >
+                                <BlockTwoToneIcon fontSize="small" />
+                              </IconButton>
+                            )
+                        }
                       </Tooltip>
                     </TableCell>
                   </Fragment>
@@ -329,6 +375,33 @@ const UsersList: React.FC = () => {
           </TableRow>
         );
       })
+  }
+
+  const submitEditUser = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+    e.preventDefault();
+
+    const {
+      name, family, email, password, userName,
+      nationalCode, birthDate, id, mobile,
+    } = state;
+
+    try {
+      await _editUser({
+        id,
+        name,
+        family,
+        mobile,
+        email,
+        password,
+        userName,
+        nationalCode,
+        birthDate,
+        pharmacyID: null,
+      });
+      dispatch({ type: 'reset' });
+    } catch (e) {
+      errorHandler(e);
+    }
   }
 
   const displayEditForm = (): JSX.Element => {
@@ -351,9 +424,8 @@ const UsersList: React.FC = () => {
             <Divider />
             <form
               autoComplete="off"
-              noValidate
               className={formContainer}
-              // onSubmit={formHandler}
+              onSubmit={submitEditUser}
             >
               <Grid
                 container
@@ -422,7 +494,6 @@ const UsersList: React.FC = () => {
                     <TextField
                       error={state.password.length < 3 && showError}
                       label="کلمه عبور"
-                      required
                       autoComplete="new-password"
                       type="password"
                       size="small"

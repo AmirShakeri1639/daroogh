@@ -8,10 +8,10 @@ import './i18n';
 import './assets/scss/main.scss';
 import { QueryCache, ReactQueryCacheProvider } from 'react-query';
 
-export const queryCache = new QueryCache({
+const queryCache = new QueryCache({
   defaultConfig: {
     queries: {
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     },
   },
 });

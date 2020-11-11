@@ -10,15 +10,15 @@ import {
   Box,
   Button,
 } from "@material-ui/core";
-import { jalali, errorHandler } from '../../../../utils';
+import { errorHandler, sweetAlert } from '../../../../utils';
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../../interfaces";
 import DateTimePicker from "../../../public/datepicker/DatePicker";
 import Modal from "../../../public/modal/Modal";
-import { useMutation } from "react-query";
+import {useMutation, useQueryCache} from "react-query";
 import User from "../../../../services/api/User";
 import { useTranslation } from "react-i18next";
-import {InitialNewUserInterface} from "../../../../interfaces/user";
+import { InitialNewUserInterface } from "../../../../interfaces/user";
 
 const useClasses = makeStyles((theme) => createStyles({
   container: {
@@ -51,7 +51,7 @@ const useClasses = makeStyles((theme) => createStyles({
 
 const initialState: InitialNewUserInterface = {
   id: 0,
-  pharmacyID: 0,
+  pharmacyID: null,
   name: '',
   family: '',
   mobile: '',
@@ -60,7 +60,7 @@ const initialState: InitialNewUserInterface = {
   password: '',
   nationalCode: '',
   birthDate: '',
-};
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -106,6 +106,8 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         birthDate: value,
       }
+    case 'reset':
+      return initialState;
     default:
       console.error('Action type not defined');
   }
@@ -157,7 +159,7 @@ const CreateUser: React.FC = () => {
     try {
       await _saveNewUser({
         id: 0,
-        pharmacyID: 0,
+        pharmacyID: state.pharmacyID,
         name: state.name,
         family: state.family,
         mobile: state.mobile,
@@ -166,6 +168,12 @@ const CreateUser: React.FC = () => {
         password: state.password,
         nationalCode: state.nationalCode,
         birthDate: state.birthDate,
+        active: true,
+      });
+      dispatch({ type: 'reset' });
+      await sweetAlert({
+        type: 'success',
+        text: t('alert.successfulCreateTextMessage'),
       });
     } catch (e) {
       errorHandler(e);
@@ -191,7 +199,6 @@ const CreateUser: React.FC = () => {
             <Divider />
             <form
               autoComplete="off"
-              noValidate
               className={formContainer}
               onSubmit={formHandler}
             >
@@ -273,30 +280,33 @@ const CreateUser: React.FC = () => {
                 </Grid>
                 <Grid
                   xs
+                  md={8}
                 >
-                  <TextField
-                    error={state.nationalCode.length < 10 && showError}
-                    label="کد ملی"
-                    required
-                    type="text"
-                    size="small"
-                    variant="outlined"
-                    value={state.nationalCode}
-                    onChange={(e): void => dispatch({ type: 'nationalCode', value: e.target.value })}
-                  />
-                  <TextField
-                    error={state.birthDate === '' && showError}
-                    label="تاریخ تولد"
-                    required
-                    inputProps={{
-                      readOnly: true
-                    }}
-                    type="text"
-                    size="small"
-                    variant="outlined"
-                    value={state.birthDate}
-                    onClick={toggleIsOpenDatePicker}
-                  />
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      error={state.nationalCode.length < 10 && showError}
+                      label="کد ملی"
+                      required
+                      type="text"
+                      size="small"
+                      variant="outlined"
+                      value={state.nationalCode}
+                      onChange={(e): void => dispatch({ type: 'nationalCode', value: e.target.value })}
+                    />
+                    <TextField
+                      error={state.birthDate === '' && showError}
+                      label="تاریخ تولد"
+                      required
+                      inputProps={{
+                        readOnly: true
+                      }}
+                      type="text"
+                      size="small"
+                      variant="outlined"
+                      value={state.birthDate}
+                      onClick={toggleIsOpenDatePicker}
+                    />
+                  </Box>
                 </Grid>
                 <Grid
                   item

@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
   Avatar,
@@ -95,12 +95,14 @@ const Login: React.FC = (): JSX.Element => {
   const { loginUser } = new Account();
   const [_loginUser, { status, data, isLoading }] = useMutation(loginUser);
 
-  if (status === QueryStatus.Success) {
-    localStorage.setItem('user', JSON.stringify(data));
-    push({
-      pathname: from.pathname,
-    });
-  }
+  useEffect(() => {
+    if (data !== undefined) {
+      localStorage.setItem('user', JSON.stringify(data));
+      push({
+        pathname: from.pathname,
+      });
+    }
+  }, [data]);
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();

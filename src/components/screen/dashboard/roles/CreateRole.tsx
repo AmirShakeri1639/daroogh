@@ -21,7 +21,7 @@ import {
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Role from "../../../../services/api/Role";
-import { useMutation, useQuery } from "react-query";
+import {useMutation, useQuery, useQueryCache} from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import CircleLoading from "../../../public/loading/CircleLoading";
 import { ActionInterface, PermissionItemTableColumnInterface } from "../../../../interfaces";
@@ -29,7 +29,6 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { TextMessage } from "../../../../enum";
 import { errorHandler, sweetAlert } from "../../../../utils";
 import { useTranslation } from "react-i18next";
-import { queryCache } from '../../../../index';
 import Permissions from "./Permissions";
 
 interface ReducerInitialStateInterface {
@@ -146,6 +145,8 @@ const CreateRole: React.FC = () => {
     getRoleById,
   } = new Role();
 
+  const queryCache = useQueryCache();
+
   const { isLoading: isLoadingRole, data: roleData } =
     useQuery('allRoles', getAllRoles);
 
@@ -161,8 +162,8 @@ const CreateRole: React.FC = () => {
     isLoading: isLoadingRemoveRole,
     reset: resetHandlerOfRemoveRole,
   }] = useMutation(removeRoleById, {
-    onSuccess: async () => {
-      await queryCache.invalidateQueries('allRoles');
+    onSuccess: () => {
+      queryCache.invalidateQueries('allRoles');
     }
   });
 
@@ -401,7 +402,7 @@ const CreateRole: React.FC = () => {
                   >
                     {
                       newRoleLoading
-                        ? t('pleaseWait')
+                        ? t('general.pleaseWait')
                         : state.id === 0
                           ? t('user.create-new-role')
                           : t('user.edit-role')

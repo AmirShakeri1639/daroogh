@@ -287,17 +287,17 @@ export class UserRole extends DateUserId {
 
 export class NewUserData {
   public id?: number = 0;
-  public pharmacyID: number = 0;
+  public pharmacyID: number | null = null;
   public name: string = '';
   public family: string = '';
   public mobile: string = '';
   public email: string = '';
   public userName: string = '';
-  public password: string = '';
+  public password?: string = '';
   public nationalCode: string = '';
   public birthDate: string = '';
   // public  pictureFileID: number = 0;
-  // public active: boolean = false;
+  public active?: boolean = false;
   // public lastChangePassword: string = '';
   // public _date: string = '';
   // public _userid: number = 0;
@@ -308,7 +308,7 @@ export class NewUserData {
 
 export interface InitialNewUserInterface {
   id: number;
-  pharmacyID: number;
+  pharmacyID: number | null;
   name: string;
   family: string;
   mobile: string;
