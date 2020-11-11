@@ -15,7 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../../interfaces";
 import DateTimePicker from "../../../public/datepicker/DatePicker";
 import Modal from "../../../public/modal/Modal";
-import {useMutation, useQueryCache} from "react-query";
+import { useMutation } from "react-query";
 import User from "../../../../services/api/User";
 import { useTranslation } from "react-i18next";
 import { InitialNewUserInterface } from "../../../../interfaces/user";
