@@ -505,30 +505,33 @@ const UsersList: React.FC = () => {
                 </Grid>
                 <Grid
                   xs
+                  md={8}
                 >
-                  <TextField
-                    error={state.nationalCode.length < 10 && showError}
-                    label="کد ملی"
-                    required
-                    type="text"
-                    size="small"
-                    variant="outlined"
-                    value={state.nationalCode}
-                    onChange={(e): void => dispatch({ type: 'nationalCode', value: e.target.value })}
-                  />
-                  <TextField
-                    error={state.birthDate === '' && showError}
-                    label="تاریخ تولد"
-                    required
-                    inputProps={{
-                      readOnly: true
-                    }}
-                    type="text"
-                    size="small"
-                    variant="outlined"
-                    value={state.birthDate}
-                    onClick={toggleIsOpenDatePicker}
-                  />
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      error={state.nationalCode.length < 10 && showError}
+                      label="کد ملی"
+                      required
+                      type="text"
+                      size="small"
+                      variant="outlined"
+                      value={state.nationalCode}
+                      onChange={(e): void => dispatch({ type: 'nationalCode', value: e.target.value })}
+                    />
+                    <TextField
+                      error={state.birthDate === '' && showError}
+                      label="تاریخ تولد"
+                      required
+                      inputProps={{
+                        readOnly: true
+                      }}
+                      type="text"
+                      size="small"
+                      variant="outlined"
+                      value={state.birthDate}
+                      onClick={toggleIsOpenDatePicker}
+                    />
+                  </Box>
                 </Grid>
                 <Grid
                   item
