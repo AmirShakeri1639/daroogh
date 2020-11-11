@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState} from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
   Avatar,
@@ -21,7 +21,7 @@ import { Visibility, VisibilityOff } from "@material-ui/icons";
 import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CircleLoading from "../../public/loading/CircleLoading";
 import Account from '../../../services/api/Account';
-import { QueryStatus, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -88,6 +88,7 @@ const Login: React.FC = (): JSX.Element => {
   const [showError, setShowError] = useState<boolean>(false);
 
   const location  = useLocation();
+
   const { t } = useTranslation();
   const { push } = useHistory();
   const classes = useStyles();

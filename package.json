@@ -65,6 +65,10 @@
       "react-app"
     ],
     "rules": {
+      "semi": [
+        2,
+        "never"
+      ],
       "indent": [
         "error",
         2
