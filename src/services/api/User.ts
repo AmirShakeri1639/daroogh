@@ -1,6 +1,6 @@
 import Api from "./Api";
-import {errorHandler} from "../../utils";
-import {NewUserData} from "../../interfaces/user";
+import { errorHandler } from "../../utils";
+import { NewUserData } from "../../interfaces/user";
 
 class User extends Api {
   getUserData = async (): Promise<any> => {

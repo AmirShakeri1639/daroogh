@@ -1,4 +1,4 @@
-import React, {Fragment, useCallback, useEffect, useMemo, useReducer, useState} from 'react';
+import React, { Fragment,    useReducer } from 'react';
 import {
   Container,
   Paper,
@@ -7,13 +7,13 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  AppBar,
-  Slide,
+  
+  
   Grid,
   TableBody,
   TablePagination,
   IconButton,
-  Dialog,
+  
   TextField,
   Typography,
   Divider,
@@ -24,7 +24,7 @@ import {
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Role from "../../../../services/api/Role";
-import {useMutation, useQuery, useQueryCache} from "react-query";
+import { useMutation, useQuery, useQueryCache } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import CircleLoading from "../../../public/loading/CircleLoading";
 import { ActionInterface, PermissionItemTableColumnInterface } from "../../../../interfaces";
@@ -245,7 +245,6 @@ const CreateRole: React.FC = () => {
                 return (
                   <TableCell
                     key={col.id}
-                    // align={col.align}
                   >
                     {typeof value === 'string' ? value : value.length}
                   </TableCell>

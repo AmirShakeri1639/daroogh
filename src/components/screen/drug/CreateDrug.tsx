@@ -7,8 +7,7 @@ import {
 } from '@material-ui/core';
 import Drug from '../../../services/api/Drug';
 import { DrugInterface } from '../../../interfaces/DrugInterface';
-import { CategoryInterface } from '../../../interfaces/CategoryInterface';
-import {queryCache, useMutation, useQuery } from "react-query";
+import { queryCache, useMutation } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../interfaces";
 import { useTranslation } from "react-i18next";
