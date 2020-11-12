@@ -3,7 +3,7 @@ import { errorHandler } from "../../utils";
 import { DrugInterface } from '../../interfaces/DrugInterface'
 
 class Drug extends Api {
-  readonly apiUrls = {
+  readonly urls = {
     all: '/Drugs/AllDrugs',
     save: '/Drugs/Save',
     get: '/Drugs/Detail/',
@@ -13,7 +13,7 @@ class Drug extends Api {
   saveDrug = async (data: DrugInterface): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        this.apiUrls.save,
+        this.urls.save,
         data
       );
       return result.data;
@@ -24,7 +24,7 @@ class Drug extends Api {
 
   getAllDrugs = async (): Promise<any> => {
     try {
-      const result = await this.postJsonData(this.apiUrls.all);
+      const result = await this.postJsonData(this.urls.all);
       return result.data;
     } catch (e) {
       errorHandler(e)
@@ -33,7 +33,7 @@ class Drug extends Api {
 
   getDrug = async (id: number | string): Promise<any> => {
     try {
-      const result = await this.postJsonData(`${this.apiUrls.get}${id}`);
+      const result = await this.postJsonData(`${this.urls.get}${id}`);
       return result.data;
     } catch (e) {
       errorHandler(e)
@@ -42,7 +42,7 @@ class Drug extends Api {
 
   removeDrug = async (id: number | string): Promise<any> => {
     try {
-      const result = await this.postJsonData(`${this.apiUrls.remove}${id}`);
+      const result = await this.postJsonData(`${this.urls.remove}${id}`);
       return result.data;
     } catch (e) {
       errorHandler(e)

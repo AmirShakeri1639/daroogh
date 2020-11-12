@@ -17,7 +17,12 @@ export default {
         'notifications': 'Notifications',
         'home': 'Home',
         'deleted-success': 'Deleted successfully.',
-        'confirm-delete': 'Are you sure?'
+        'confirm-delete': 'Are you sure?',
+        'description': 'Description',
+        'active': 'Active',
+        'type': 'Type',
+        'save': 'Save',
+        'cancel': 'Cancel',
       },
       action: {
         'insert': 'Insert',
@@ -57,7 +62,17 @@ export default {
         'create-new-role': 'Create New Role',
         'edit-role': 'Edit Role',
         'cancel-edit-eole': 'Cancel editing role',
-      }
+      },
+      drug: {
+        'drug': 'دارو',
+        'category': 'دسته‌بندی',
+        'category-id': 'شناسه دسته‌بندی',
+        'name': 'نام دارو',
+        'generic-name': 'نام عمومی',
+        'company-name': 'نام شرکت',
+        'barcode': 'بارکد',
+        'en-name': 'نام انگلیسی',
+      },
     },
   },
 };
