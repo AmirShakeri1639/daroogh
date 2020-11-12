@@ -7,9 +7,10 @@ import {
   createStyles,
   Typography,
   Divider,
+  Box,
   Button,
 } from "@material-ui/core";
-import { jalali, errorHandler } from '../../../../utils';
+import { errorHandler, sweetAlert } from '../../../../utils';
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../../interfaces";
 import DateTimePicker from "../../../public/datepicker/DatePicker";
@@ -17,6 +18,7 @@ import Modal from "../../../public/modal/Modal";
 import { useMutation } from "react-query";
 import User from "../../../../services/api/User";
 import { useTranslation } from "react-i18next";
+import { InitialNewUserInterface } from "../../../../interfaces/user";
 
 const useClasses = makeStyles((theme) => createStyles({
   container: {
@@ -28,7 +30,6 @@ const useClasses = makeStyles((theme) => createStyles({
     padding: theme.spacing(2, 2),
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
-      // width: '25ch',
     },
   },
   titleContainer: {
@@ -40,24 +41,16 @@ const useClasses = makeStyles((theme) => createStyles({
   addButton: {
     background: theme.palette.blueLinearGradient.main,
   },
+  box: {
+    '& > .MuiFormControl-root': {
+      flexGrow: 1,
+    }
+  }
 }));
 
-interface InitialStateInterface {
-  id: number;
-  pharmacyID: number;
-  name: string;
-  family: string;
-  mobile: string;
-  email: string;
-  userName: string;
-  password: string;
-  nationalCode: string;
-  birthDate: string;
-}
-
-const initialState: InitialStateInterface = {
+const initialState: InitialNewUserInterface = {
   id: 0,
-  pharmacyID: 0,
+  pharmacyID: null,
   name: '',
   family: '',
   mobile: '',
@@ -66,7 +59,7 @@ const initialState: InitialStateInterface = {
   password: '',
   nationalCode: '',
   birthDate: '',
-};
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -112,6 +105,8 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         birthDate: value,
       }
+    case 'reset':
+      return initialState;
     default:
       console.error('Action type not defined');
   }
@@ -123,15 +118,23 @@ const CreateUser: React.FC = () => {
   const [showError, setShowError] = useState<boolean>(false);
 
   const { saveNewUser } = new User();
+  const { t } = useTranslation();
 
-  const [_saveNewUser, { isLoading: isLoadingNewUser }] = useMutation(saveNewUser);
+  const [_saveNewUser, { isLoading: isLoadingNewUser }] = useMutation(saveNewUser, {
+    onSuccess: async () => {
+      dispatch({ type: 'reset' });
+      await sweetAlert({
+        type: 'success',
+        text: t('alert.successfulCreateTextMessage'),
+      });
+    }
+  });
 
   const {
-    formContainer, formTitle,
+    formContainer, formTitle, box,
     titleContainer, addButton, container,
   } = useClasses();
 
-  const { t } = useTranslation();
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g;
 
@@ -161,15 +164,9 @@ const CreateUser: React.FC = () => {
     }
 
     try {
-      const dateArray = state.birthDate.split('/');
-      const gregorainDate = jalali.toGregorian(
-        Number(dateArray[0]),
-        Number(dateArray[1]),
-        Number(dateArray[2]),
-      );
       await _saveNewUser({
         id: 0,
-        pharmacyID: 0,
+        pharmacyID: state.pharmacyID,
         name: state.name,
         family: state.family,
         mobile: state.mobile,
@@ -177,7 +174,8 @@ const CreateUser: React.FC = () => {
         userName: state.userName,
         password: state.password,
         nationalCode: state.nationalCode,
-        birthDate: `${gregorainDate.gy}/${gregorainDate.gm}/${gregorainDate.gd}`,
+        birthDate: state.birthDate,
+        active: true,
       });
     } catch (e) {
       errorHandler(e);
@@ -203,7 +201,6 @@ const CreateUser: React.FC = () => {
             <Divider />
             <form
               autoComplete="off"
-              noValidate
               className={formContainer}
               onSubmit={formHandler}
             >
@@ -215,96 +212,103 @@ const CreateUser: React.FC = () => {
                   item
                   xs={12}
                 >
-                  <TextField
-                    error={state.name.length < 2 && showError}
-                    label="نام کاربر"
-                    required
-                    size="small"
-                    variant="outlined"
-                    value={state.name}
-                    onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
-                  />
-                  <TextField
-                    error={state.family.length < 2 && showError}
-                    label="نام خانوادگی کاربر"
-                    required
-                    size="small"
-                    variant="outlined"
-                    value={state.family}
-                    onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
-                  />
-                  <TextField
-                    error={state.mobile.trim().length < 11 && showError}
-                    label="موبایل"
-                    required
-                    size="small"
-                    variant="outlined"
-                    value={state.mobile}
-                    onChange={(e): void => dispatch({ type: 'mobile', value: e.target.value })}
-                  />
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      error={state.name.length < 2 && showError}
+                      label="نام کاربر"
+                      required
+                      size="small"
+                      variant="outlined"
+                      value={state.name}
+                      onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
+                    />
+                    <TextField
+                      error={state.family.length < 2 && showError}
+                      label="نام خانوادگی کاربر"
+                      required
+                      size="small"
+                      variant="outlined"
+                      value={state.family}
+                      onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
+                    />
+                    <TextField
+                      error={state.mobile.trim().length < 11 && showError}
+                      label="موبایل"
+                      required
+                      size="small"
+                      variant="outlined"
+                      value={state.mobile}
+                      onChange={(e): void => dispatch({ type: 'mobile', value: e.target.value })}
+                    />
+                  </Box>
                 </Grid>
                 <Grid
                   item
                   xs={12}
                 >
-                  <TextField
-                    error={!emailRegex.test(state.email) && showError}
-                    label="ایمیل"
-                    required
-                    type="email"
-                    size="small"
-                    variant="outlined"
-                    value={state.email}
-                    onChange={(e): void => dispatch({ type: 'email', value: e.target.value })}
-                  />
-                  <TextField
-                    error={state.userName.length < 1 && showError}
-                    label="نام کاربری"
-                    required
-                    size="small"
-                    variant="outlined"
-                    autoComplete="off"
-                    value={state.userName}
-                    onChange={(e): void => dispatch({ type: 'userName', value: e.target.value })}
-                  />
-                  <TextField
-                    error={state.password.length < 3 && showError}
-                    label="کلمه عبور"
-                    required
-                    autoComplete="new-password"
-                    type="password"
-                    size="small"
-                    variant="outlined"
-                    value={state.password}
-                    onChange={(e): void => dispatch({ type: 'password', value: e.target.value })}
-                  />
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      error={!emailRegex.test(state.email) && showError}
+                      label="ایمیل"
+                      required
+                      type="email"
+                      size="small"
+                      variant="outlined"
+                      value={state.email}
+                      onChange={(e): void => dispatch({ type: 'email', value: e.target.value })}
+                    />
+                    <TextField
+                      error={state.userName.length < 1 && showError}
+                      label="نام کاربری"
+                      required
+                      size="small"
+                      variant="outlined"
+                      autoComplete="off"
+                      value={state.userName}
+                      onChange={(e): void => dispatch({ type: 'userName', value: e.target.value })}
+                    />
+                    <TextField
+                      error={state.password.length < 3 && showError}
+                      label="کلمه عبور"
+                      required
+                      autoComplete="new-password"
+                      type="password"
+                      size="small"
+                      variant="outlined"
+                      value={state.password}
+                      onChange={(e): void => dispatch({ type: 'password', value: e.target.value })}
+                    />
+                  </Box>
                 </Grid>
                 <Grid
                   xs
+                  md={8}
                 >
-                  <TextField
-                    error={state.nationalCode.length < 10 && showError}
-                    label="کد ملی"
-                    required
-                    type="text"
-                    size="small"
-                    variant="outlined"
-                    value={state.nationalCode}
-                    onChange={(e): void => dispatch({ type: 'nationalCode', value: e.target.value })}
-                  />
-                  <TextField
-                    error={state.birthDate === '' && showError}
-                    label="تاریخ تولد"
-                    required
-                    inputProps={{
-                      readOnly: true
-                    }}
-                    type="text"
-                    size="small"
-                    variant="outlined"
-                    value={state.birthDate}
-                    onClick={toggleIsOpenDatePicker}
-                  />
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      error={state.nationalCode.length < 10 && showError}
+                      label="کد ملی"
+                      required
+                      type="text"
+                      size="small"
+                      variant="outlined"
+                      value={state.nationalCode}
+                      onChange={(e): void => dispatch({ type: 'nationalCode', value: e.target.value })}
+                    />
+                    <TextField
+                      error={state.birthDate === '' && showError}
+                      label="تاریخ تولد"
+                      required
+                      inputProps={{
+                        readOnly: true
+                      }}
+                      type="text"
+                      size="small"
+                      variant="outlined"
+                      value={state.birthDate}
+                      onClick={toggleIsOpenDatePicker}
+                    />
+                  </Box>
                 </Grid>
                 <Grid
                   item

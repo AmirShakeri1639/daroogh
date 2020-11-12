@@ -26,7 +26,7 @@ export default {
         'description': 'شرح',
         'active': 'فعال',
         'type': 'نوع',
-        'save': 'ذخیره',
+        'pleaseWait': 'لطفا صبر کنید',
         'cancel': 'انصراف',
       },
       action: {
@@ -60,8 +60,9 @@ export default {
         'failed': 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
       },
       user: {
-        'role': 'نقش کاربر',
+        'role': 'نقش',
         'user': 'کاربر',
+        'user-role': 'نقش کاربر',
         'users': 'کاربران',
         'profile': 'پروفایل',
         'create-new-role': 'ایجاد نقش جدید',
@@ -69,6 +70,10 @@ export default {
         'cancel-edit-eole': 'انصراف ویرایش نقش',
         'users-list': 'لیست کاربران',
         'create-user': 'ایجاد کاربر',
+        'disable-user': 'غیرفعال کردن حساب کاربر',
+        'enable-user': 'فعال کردن حساب کاربر',
+        'edit-user': 'ویرایش کاربر',
+        'remove-user': 'حذف کاربر',
       },
       drug: {
         'drug': 'دارو',
@@ -80,6 +85,14 @@ export default {
         'barcode': 'بارکد',
         'en-name': 'نام انگلیسی',
       },
+      alert: {
+        disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
+        enableTextAlert: 'آیا میخواهید فعال شود؟',
+        successfulDisableTextMessage: 'با موفقیت غیرفعال شد',
+        successfulEnableTextMessage: 'با موفقیت فعال شد',
+        successfulRemoveTextMessage: 'با موفقیت حذف شد',
+        successfulCreateTextMessage: 'با موفقیت ایجاد شد',
+      }
     }
   }
 }

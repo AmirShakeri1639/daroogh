@@ -19,7 +19,7 @@ const App = (): JSX.Element => {
       <Router>
         <Switch>
           <Suspense fallback={<CircleLoading />}>
-            <PublicRoute path="/login">
+            <PublicRoute path={['/', '/login']}>
               <Login />
             </PublicRoute>
             <PublicRoute path="/drug">
