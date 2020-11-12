@@ -1,10 +1,11 @@
-import React, {  useState } from 'react'
+import React, { useState } from 'react'
 import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import {
-  Drawer, List,
+  Drawer,
+  List,
 } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -27,9 +28,7 @@ import UserMenu from "./appbar/UserMenu";
 import ListItems from "./sidebar/ListItems";
 import CreateRole from "./roles/CreateRole";
 import CreateDrug from './drug/CreateDrug';
-import { useQuery } from "react-query";
-import User from "../../../services/api/User";
-import {DashboardPages} from "../../../enum";
+import { DashboardPages } from "../../../enum";
 import CreateUser from "./user/CreateUser";
 import UsersList from "./user/UsersList";
 
@@ -131,11 +130,6 @@ const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [activePage, setActivePage] = useState<DashboardActivePage>('dashboard');
-
-  const { getUserData } = new User();
-
-  const { isLoading: userProfileIsLoading, data: userProfileData } =
-    useQuery('getUserProfile', getUserData);
 
   const classes = useStyles();
 
