@@ -11,7 +11,7 @@ import { QueryCache, ReactQueryCacheProvider } from 'react-query';
 const queryCache = new QueryCache({
   defaultConfig: {
     queries: {
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
     },
   },
 });

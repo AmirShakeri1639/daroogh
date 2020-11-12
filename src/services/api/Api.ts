@@ -1,8 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { api } from '../../config/default.json';
-import https from 'https';
 import { DefaultAxiosConfigInterface } from "../../interfaces";
-import { errorHandler, sweetAlert } from "../../utils";
+import { errorHandler, errorSweetAlert, sweetAlert } from "../../utils";
 
 const axiosInstance = axios.create({
   baseURL: api.baseUrl,
@@ -20,10 +19,15 @@ axiosInstance.interceptors.response.use(
 
     const { status, data } = response;
     if (status === 401) {
-      window.location.pathname = '/login';
+      (async (): Promise<any> => {
+        await errorSweetAlert('خطایی در عدم دسترسی وجود دارد');
+        window.location.pathname = '/login';
+      })();
     }
     else if (status === 404) {
-      //
+      (async (): Promise<any> => {
+        await errorSweetAlert('خطای 404');
+      })();
     }
     else if (status === 500) {
       (async (): Promise<any> => {

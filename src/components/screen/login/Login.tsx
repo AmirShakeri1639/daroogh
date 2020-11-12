@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
   Avatar,
@@ -22,7 +22,7 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CircleLoading from "../../public/loading/CircleLoading";
 import Account from '../../../services/api/Account';
 import { useMutation } from 'react-query';
-
+import { errorHandler, errorSweetAlert } from "../../../utils";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   paper: {
@@ -94,16 +94,19 @@ const Login: React.FC = (): JSX.Element => {
   const classes = useStyles();
   const { from }: any = location.state || { from: { pathname: '/dashboard' } };
   const { loginUser } = new Account();
-  const [_loginUser, { status, data, isLoading }] = useMutation(loginUser);
-
-  useEffect(() => {
-    if (data !== undefined) {
-      localStorage.setItem('user', JSON.stringify(data));
-      push({
-        pathname: from.pathname,
-      });
+  const [_loginUser, { isLoading }] = useMutation(loginUser, {
+    onSuccess: (data) => {
+      if (data !== undefined) {
+        localStorage.setItem('user', JSON.stringify(data));
+        push({
+          pathname: from.pathname,
+        });
+      }
+    },
+    onError: async () => {
+      await errorSweetAlert(t('error.loading-data'));
     }
-  }, [data]);
+  });
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
@@ -121,7 +124,7 @@ const Login: React.FC = (): JSX.Element => {
       });
     }
     catch (e) {
-      //
+      errorHandler(e);
     }
   }
 
@@ -162,7 +165,6 @@ const Login: React.FC = (): JSX.Element => {
             label="ایمیل"
             name="email"
             autoComplete="email"
-            autoFocus
             onChange={usernameHandler}
             InputProps={{
               startAdornment: (
