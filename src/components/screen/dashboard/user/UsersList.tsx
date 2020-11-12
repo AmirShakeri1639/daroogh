@@ -165,7 +165,7 @@ const UsersList: React.FC = () => {
       },
     });
 
-  const [_disableUser, { isLoading: loadingDisableUser, reset: resetDisableUser }] = useMutation(disableUser, {
+  const [_disableUser, { reset: resetDisableUser }] = useMutation(disableUser, {
     onSuccess: async () => {
       await queryCache.invalidateQueries('usersList');
     }
@@ -379,6 +379,19 @@ const UsersList: React.FC = () => {
       })
   }
 
+  const inputsValidationResult = (): boolean => {
+    return (
+      state.name.trim().length < 1
+      || state.family.trim().length < 1
+      || !emailRegex.test(state.email)
+      || state.userName.trim().length < 1
+      || state.nationalCode.trim().length < 10
+      || state.birthDate !== ''
+      || state.id !== 0
+      || state.mobile.trim().length < 11
+    );
+  }
+
   const submitEditUser = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
@@ -386,6 +399,11 @@ const UsersList: React.FC = () => {
       name, family, email, password, userName,
       nationalCode, birthDate, id, mobile,
     } = state;
+
+    if (inputsValidationResult()) {
+      setShowError(true);
+      return;
+    }
 
     try {
       await _editUser({
