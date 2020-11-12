@@ -30,7 +30,6 @@ const useClasses = makeStyles((theme) => createStyles({
     padding: theme.spacing(2, 2),
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
-      // width: '25ch',
     },
   },
   titleContainer: {
@@ -119,15 +118,23 @@ const CreateUser: React.FC = () => {
   const [showError, setShowError] = useState<boolean>(false);
 
   const { saveNewUser } = new User();
+  const { t } = useTranslation();
 
-  const [_saveNewUser, { isLoading: isLoadingNewUser }] = useMutation(saveNewUser);
+  const [_saveNewUser, { isLoading: isLoadingNewUser }] = useMutation(saveNewUser, {
+    onSuccess: async () => {
+      dispatch({ type: 'reset' });
+      await sweetAlert({
+        type: 'success',
+        text: t('alert.successfulCreateTextMessage'),
+      });
+    }
+  });
 
   const {
     formContainer, formTitle, box,
     titleContainer, addButton, container,
   } = useClasses();
 
-  const { t } = useTranslation();
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g;
 
@@ -169,11 +176,6 @@ const CreateUser: React.FC = () => {
         nationalCode: state.nationalCode,
         birthDate: state.birthDate,
         active: true,
-      });
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.successfulCreateTextMessage'),
       });
     } catch (e) {
       errorHandler(e);
