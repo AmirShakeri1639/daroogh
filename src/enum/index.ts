@@ -2,6 +2,7 @@ export enum TextMessage {
   REMOVE_TEXT_ALERT = 'آیا میخواهید حذف شود؟',
   SUCCESS_REMOVE_TEXT_MESSAGE = 'با موفقیت حذف شد',
   SUCCESS_EDIT_TEXT_MESSAGE = 'با موفقیت ویرایش شد',
+  SUCCESS_SAVE_MESSAGE = 'با موفقیت ذخیره شد.',
   SUCCESS_CREATE_TEXT_MESSAGE = 'با موفقیت ایجاد شد',
   DISABLE_TEXT_ALERT = 'آیا میخواهید غیرفعال شود؟',
   SUCCESS_DISABLE_TEXT_MESSAGE = 'با موفقیت غیرفعال شد',

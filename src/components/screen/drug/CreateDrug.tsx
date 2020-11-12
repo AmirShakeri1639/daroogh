@@ -7,11 +7,13 @@ import {
 } from '@material-ui/core';
 import Drug from '../../../services/api/Drug';
 import { DrugInterface } from '../../../interfaces/DrugInterface';
-import { queryCache, useMutation } from "react-query";
+import { CategoryInterface } from '../../../interfaces/CategoryInterface';
+import {queryCache, useMutation, useQuery } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../interfaces";
 import { useTranslation } from "react-i18next";
-import { errorHandler } from "../../../utils";
+import { errorHandler, sweetAlert } from "../../../utils";
+import { TextMessage } from "../../../enum";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -144,6 +146,9 @@ const CreateDrug: React.FC = () => {
   const { t } = useTranslation();
   const { saveDrug } = new Drug();
 
+  // const { data: drugData } =
+  //   useQuery('allRoles', getAllRoles);
+
   const {
     parent, formContainer, formControl,
     formBody, addButton, cancelButton,
@@ -180,6 +185,11 @@ const CreateDrug: React.FC = () => {
         enName: state.enName,
         type: state.type
       });
+      await sweetAlert({
+        type: 'success',
+        text: TextMessage.SUCCESS_CREATE_TEXT_MESSAGE
+      });
+      dispatch({ type: 'reset' });
     } catch (e) {
       errorHandler(e)
     }
