@@ -8,7 +8,7 @@ import CircleLoading from './components/public/loading/CircleLoading';
 import PrivateRoute from './routes/PrivateRoute';
 import { ReactQueryDevtools } from 'react-query-devtools';
 import ForgetPassword from './components/screen/forget-password/ForgetPassword';
-import CreateDrug from "./components/screen/drug/CreateDrug";
+import CreateDrug from "./components/screen/dashboard/drug/CreateDrug";
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));

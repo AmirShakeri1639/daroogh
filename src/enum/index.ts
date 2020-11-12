@@ -4,6 +4,7 @@ export enum TextMessage {
   SUCCESS_REMOVE_TEXT_MESSAGE = '',
   SUCCESS_EDIT_TEXT_MESSAGE = 'با موفقیت ویرایش شد',
   SUCCESS_CREATE_TEXT_MESSAGE = 'با موفقیت ایجاد شد',
+  SUCCESS_SAVE_TEXT_MESSAGE = 'با موفقیت ذخیره شد',
   SUCCESS_DISABLE_TEXT_MESSAGE = '',
 }
 

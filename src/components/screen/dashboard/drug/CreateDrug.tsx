@@ -5,15 +5,14 @@ import {
   FormControl,
   Button, createStyles
 } from '@material-ui/core';
-import Drug from '../../../services/api/Drug';
-import { DrugInterface } from '../../../interfaces/DrugInterface';
-import { CategoryInterface } from '../../../interfaces/CategoryInterface';
+import Drug from '../../../../services/api/Drug';
+import { DrugInterface, CategoryInterface } from '../../../../interfaces';
 import {queryCache, useMutation, useQuery } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
-import { ActionInterface } from "../../../interfaces";
+import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
-import { errorHandler, sweetAlert } from "../../../utils";
-import { TextMessage } from "../../../enum";
+import { errorHandler, sweetAlert } from "../../../../utils";
+import { TextMessage } from "../../../../enum";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -158,7 +157,7 @@ const CreateDrug: React.FC = () => {
 
   const [_saveDrug] = useMutation(saveDrug, {
     onSuccess: async (data) => {
-      await queryCache.invalidateQueries('allDrugs');
+      await queryCache.invalidateQueries('drugsList');
       await sweetAlert({
         type: 'success',
         text: data.message || TextMessage.SUCCESS_CREATE_TEXT_MESSAGE
@@ -230,7 +229,7 @@ const CreateDrug: React.FC = () => {
                 <TextField
                   required
                   id=""
-                  label={t('drug.generic-name')}
+                  label={t('drug.genericName')}
                   value={state.genericName}
                   onChange={
                     (e): void =>
@@ -244,7 +243,7 @@ const CreateDrug: React.FC = () => {
                 <TextField
                   required
                   id=""
-                  label={t('drug.company-name')}
+                  label={t('drug.companyName')}
                   value={state.companyName}
                   onChange={
                     (e): void =>
@@ -289,7 +288,7 @@ const CreateDrug: React.FC = () => {
                 <TextField
                   required
                   id=""
-                  label={t('drug.en-name')}
+                  label={t('drug.enName')}
                   value={state.enName}
                   onChange={
                     (e): void =>
