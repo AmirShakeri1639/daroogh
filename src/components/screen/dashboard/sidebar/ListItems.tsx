@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) =>
 const ListItems: React.FC = () => {
   const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
   const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
+  const [isOpenDrugMenu, setIsOpenDrugMenu] = useState<boolean>(false);
 
   const { setActivePage } = useContext(Context);
 
@@ -112,6 +113,37 @@ const ListItems: React.FC = () => {
               <GroupTwoToneIcon />
             </ListItemIcon>
             <ListItemText primary={t('user.users-list')} />
+          </ListItem>
+        </List>
+      </Collapse>
+      <ListItem
+        button
+        onClick={(): void => setIsOpenDrugMenu(val => !val)}
+      >
+        <ListItemIcon>
+          <PermIdentityTwoToneIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('drug.drug')} />
+        {isOpenDrugMenu ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse
+        in={isOpenDrugMenu}
+        timeout="auto"
+        unmountOnExit
+      >
+        <List
+          component="div"
+          disablePadding
+        >
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.CREATE_DRUG)}
+          >
+            <ListItemIcon>
+              <PersonAddTwoToneIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('drug.create')} />
           </ListItem>
         </List>
       </Collapse>

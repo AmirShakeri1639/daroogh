@@ -17,7 +17,7 @@ import { TextMessage } from "../../../enum";
 
 const initialState: DrugInterface = {
   id: 0,
-  categoryID: 0,
+  categoryID: 1,
   name: '',
   genericName: '',
   companyName: '',
@@ -157,8 +157,19 @@ const CreateDrug: React.FC = () => {
   } = useClasses();
 
   const [_saveDrug] = useMutation(saveDrug, {
-    onSuccess: () => {
-      queryCache.invalidateQueries('allDrugs');
+    onSuccess: async (data) => {
+      await queryCache.invalidateQueries('allDrugs');
+      await sweetAlert({
+        type: 'success',
+        text: data.message || TextMessage.SUCCESS_CREATE_TEXT_MESSAGE
+      });
+      dispatch({ type: 'reset' });
+    },
+    onError: async () => {
+      await sweetAlert({
+        type: 'error',
+        text: t('error.save')
+      })
     }
   })
 
@@ -185,11 +196,6 @@ const CreateDrug: React.FC = () => {
         enName: state.enName,
         type: state.type
       });
-      await sweetAlert({
-        type: 'success',
-        text: TextMessage.SUCCESS_CREATE_TEXT_MESSAGE
-      });
-      dispatch({ type: 'reset' });
     } catch (e) {
       errorHandler(e)
     }

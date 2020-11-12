@@ -124,7 +124,8 @@ type DashboardActivePage =
   'dashboard'
   | 'createRole'
   | 'createUser'
-  | 'usersList';
+  | 'usersList'
+  | 'createDrug';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
@@ -195,6 +196,9 @@ const Dashboard: React.FC = () => {
         break;
       case DashboardPages.USERS_LIST:
         el = <UsersList />
+        break;
+      case DashboardPages.CREATE_DRUG:
+        el = <CreateDrug />
         break;
       default:
         el = <></>;

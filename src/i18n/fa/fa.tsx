@@ -28,6 +28,7 @@ export default {
         'type': 'نوع',
         'pleaseWait': 'لطفا صبر کنید',
         'cancel': 'انصراف',
+        save: 'ذخیره',
       },
       action: {
         'insert': 'درج',
@@ -84,6 +85,7 @@ export default {
         'company-name': 'نام شرکت',
         'barcode': 'بارکد',
         'en-name': 'نام انگلیسی',
+        'create': 'ایجاد دارو',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
