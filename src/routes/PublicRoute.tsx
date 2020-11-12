@@ -8,6 +8,8 @@ const PublicRoute: React.FC<RouteProps> = (props) => {
   const { isValidUserToken } = new Validation();
 
   function isAuthorizedUser(): boolean {
+    // TODO: json error
+    // SyntaxError: JSON.parse: unexpected character at line 1 column 1 of the JSON data
     const { token } = JSON.parse(localStorage.getItem('user') || '{}');
     return token === undefined
       ? false

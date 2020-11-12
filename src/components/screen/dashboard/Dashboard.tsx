@@ -26,6 +26,7 @@ import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
 import ListItems from "./sidebar/ListItems";
 import CreateRole from "./roles/CreateRole";
+import CreateDrug from '../drug/CreateDrug';
 import { useQuery } from "react-query";
 import User from "../../../services/api/User";
 import {DashboardPages} from "../../../enum";
