@@ -86,7 +86,9 @@ export default {
         barcode: 'بارکد',
         enName: 'نام انگلیسی',
         create: 'ایجاد دارو',
-        list: 'لیست دارو'
+        suggest: 'پیشنهاد دارو',
+        list: 'لیست دارو',
+        newDrug: 'داروی جدید',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',

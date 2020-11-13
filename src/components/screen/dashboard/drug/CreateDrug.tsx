@@ -3,7 +3,8 @@ import {
   Container,
   TextField,
   FormControl,
-  Button, createStyles
+  Paper,
+  Button, createStyles, Grid, Typography, Divider, Box
 } from '@material-ui/core';
 import Drug from '../../../../services/api/Drug';
 import { DrugInterface, CategoryInterface } from '../../../../interfaces';
@@ -34,10 +35,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         id: action.value,
       };
-    case 'categoryID':
+    case 'categoryId':
       return {
         ...state,
-        categoryID: action.value,
+        categoryId: action.value,
       };
     case 'name':
       return {
@@ -98,6 +99,9 @@ const useClasses = makeStyles((theme) => createStyles({
   container: {
     maxHeight: 440,
   },
+  titleContainer: {
+    padding: theme.spacing(2)
+  },
   formPaper: {
     marginTop: theme.spacing(3),
     padding: theme.spacing(2, 0, 2),
@@ -137,6 +141,11 @@ const useClasses = makeStyles((theme) => createStyles({
   cancelButton: {
     marginLeft: theme.spacing(1),
     background: theme.palette.pinkLinearGradient.main,
+  },
+  box: {
+    '& > .MuiFormControl-root': {
+      flexGrow: 1,
+    }
   }
 }));
 
@@ -149,10 +158,9 @@ const CreateDrug: React.FC = () => {
   //   useQuery('allRoles', getAllRoles);
 
   const {
-    parent, formContainer, formControl,
-    formBody, addButton, cancelButton,
-    // root, container, formPaper, formTitle,
-    // gridContainer, gridFormControl, gridTitle,
+    parent, formContainer,
+    addButton, cancelButton, box,
+    titleContainer, formTitle
   } = useClasses();
 
   const [_saveDrug] = useMutation(saveDrug, {
@@ -185,7 +193,7 @@ const CreateDrug: React.FC = () => {
     try {
       await _saveDrug({
         id: state.id,
-        categoryId: state.categoryID,
+        categoryId: state.categoryId,
         name: state.name,
         genericName: state.genericName,
         companyName: state.companyName,
@@ -202,146 +210,137 @@ const CreateDrug: React.FC = () => {
 
   return (
     <Container maxWidth="lg" className={parent}>
-      <div className={formContainer}>
-        <form
-          autoComplete="off"
-          onSubmit={submitDrug}>
-          <div className={formBody}>
-            <div className="row">
-              <FormControl className={formControl}>
-                <TextField
-                  required
-                  id=""
-                  label={t('drug.name')}
-                  value={state.name}
-                  onChange={
-                    (e): void =>
-                      dispatch({ type: 'name', value: e.target.value })
-                  }
-                />
-              </FormControl>
-            </div>
-            <div className="row">
-              {/* TODO: Add CategoryID */}
-            </div>
-            <div className="row">
-              <FormControl className={formControl}>
-                <TextField
-                  required
-                  id=""
-                  label={t('drug.genericName')}
-                  value={state.genericName}
-                  onChange={
-                    (e): void =>
-                      dispatch({ type: 'genericName', value: e.target.value })
-                  }
-                />
-              </FormControl>
-            </div>
-            <div className="row">
-              <FormControl className={formControl}>
-                <TextField
-                  required
-                  id=""
-                  label={t('drug.companyName')}
-                  value={state.companyName}
-                  onChange={
-                    (e): void =>
-                      dispatch({ type: 'companyName', value: e.target.value })
-                  }
-                />
-              </FormControl>
-            </div>
-            <div className="row">
-              <FormControl className={formControl}>
-                <TextField
-                  required
-                  id=""
-                  label={t('drug.barcode')}
-                  value={state.barcode}
-                  onChange={
-                    (e): void =>
-                      dispatch({ type: 'barcode', value: e.target.value })
-                  }
-                />
-              </FormControl>
-            </div>
-            <div className="row">
-              <FormControl className={formControl}>
-                <TextField
-                  required
-                  id=""
-                  label={t('general.description')}
-                  value={state.description}
-                  onChange={
-                    (e): void =>
-                      dispatch({ type: 'description', value: e.target.value })
-                  }
-                />
-              </FormControl>
-            </div>
-            <div className="row">
-              {/* TODO: Add active boolean form control */}
-            </div>
-            <div className="row">
-              <FormControl className={formControl}>
-                <TextField
-                  required
-                  id=""
-                  label={t('drug.enName')}
-                  value={state.enName}
-                  onChange={
-                    (e): void =>
-                      dispatch({ type: 'enName', value: e.target.value })
-                  }
-                />
-              </FormControl>
-            </div>
-            <div className="row">
-              <FormControl className={formControl}>
-                <TextField
-                  required
-                  id=""
-                  label={t('general.type')}
-                  value={state.type}
-                  onChange={
-                    (e): void =>
-                      dispatch({ type: 'type', value: e.target.value })
-                  }
-                />
-              </FormControl>
-            </div>
-
-            <div className="row">
-              <FormControl>
-                <Button
-                  type="submit"
-                  color="primary"
-                  className={addButton}
-                >
-                  {t('general.save')}
-                </Button>
-              </FormControl>
-            </div>
-            <div className="row">
-              {
-                state.id !== 0 && (
-                  <FormControl>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      className={cancelButton}
-                      onClick={(): void => dispatch({ type: 'reset' })}
-                    >
-                      {t('general.cancel')}
-                    </Button>
-                  </FormControl>
-                )
-              }
-            </div>
+      <Grid container spacing={0}>
+        <Paper>
+          <div className={titleContainer}>
+            <Typography variant="h6" component="h6" className={`${formTitle} txt-md`}>
+              {t('drug.newDrug')}
+            </Typography>
           </div>
-        </form>
-      </div>
+          <Divider />
+          <form
+            autoComplete="off"
+            className={formContainer}
+            onSubmit={submitDrug}>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between" className={box}>
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('drug.name')}
+                    value={state.name}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'name', value: e.target.value })
+                    }
+                  />
+                  <div className="row">
+                    {/* TODO: Add CategoryId */}
+                  </div>
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('drug.genericName')}
+                    value={state.genericName}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'genericName', value: e.target.value })
+                    }
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between" className={box}>
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('drug.companyName')}
+                    value={state.companyName}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'companyName', value: e.target.value })
+                    }
+                  />
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('drug.barcode')}
+                    value={state.barcode}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'barcode', value: e.target.value })
+                    }
+                  />
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('general.description')}
+                    value={state.description}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'description', value: e.target.value })
+                    }
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between" className={box}>
+                  <div className="row">
+                    {/* TODO: Add active boolean form control */}
+                  </div>
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('drug.enName')}
+                    value={state.enName}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'enName', value: e.target.value })
+                    }
+                  />
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('general.type')}
+                    value={state.type}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'type', value: e.target.value })
+                    }
+                  />
+                </Box>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between" className={box}>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    className={addButton}
+                  >
+                    {t('general.save')}
+                  </Button>
+                  {
+                    state.id !== 0 && (
+                      <FormControl>
+                        <Button
+                          type="submit"
+                          color="secondary"
+                          className={cancelButton}
+                          onClick={(): void => dispatch({ type: 'reset' })}
+                        >
+                          {t('general.cancel')}
+                        </Button>
+                      </FormControl>
+                    )
+                  }
+                </Box>
+              </Grid>
+            </Grid>
+          </form>
+        </Paper>
+      </Grid>
     </Container>
   )
 }

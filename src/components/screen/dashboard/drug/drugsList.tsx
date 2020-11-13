@@ -182,6 +182,13 @@ const DrugsList: React.FC = () => {
         type: 'success',
         text: data.message || t('alert.successfulDelete')
       });
+      resetRemoveDrug();
+    },
+    onError: async () => {
+      await sweetAlert({
+        type: 'error',
+        text: t('error.remove')
+      });
     }
   })
 
@@ -226,11 +233,6 @@ const DrugsList: React.FC = () => {
     try {
       if (window.confirm(t('alert.remove'))) {
         await _removeDrug(drugId);
-        await sweetAlert({
-          type: 'success',
-          text: TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE,
-        });
-        resetRemoveDrug();
       }
     } catch (e) {
       errorHandler(e);
@@ -286,6 +288,32 @@ const DrugsList: React.FC = () => {
                 </TableCell>
               );
             })}
+            <TableCell>
+              <Tooltip
+                title={String(t('action.delete'))}
+              >
+                <IconButton
+                  component="span"
+                  aria-label="remove drug"
+                  color="secondary"
+                  onClick={(): Promise<any> => removeDrugHandler(item.id)}
+                >
+                  <DeleteOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip
+                title={String(t('action.edit'))}
+              >
+                <IconButton
+                  component="span"
+                  aria-label="edit drug"
+                  color="primary"
+                  onClick={(): void => editDrugHandler(item)}
+                >
+                  <EditOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </TableCell>
           </TableRow>
         );
       })

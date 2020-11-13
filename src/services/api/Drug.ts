@@ -29,7 +29,7 @@ class Drug extends Api {
       console.log('pageNo', pageNo)
       const skip = (pageNo - 1) * pageSize;
       const result = await this.postJsonData(
-        `${this.urls.all}?$top=${pageSize}&$skip=${skip}`);
+        `${this.urls.all}?$top=${pageSize}&$skip=${skip}&$orderby=id desc`);
       return result.data;
     } catch (e) {
       errorHandler(e)
@@ -47,6 +47,7 @@ class Drug extends Api {
 
   removeDrug = async (id: number | string): Promise<any> => {
     try {
+      console.log('id in remove api:', id);
       const result = await this.postJsonData(`${this.urls.remove}${id}`);
       return result.data;
     } catch (e) {
