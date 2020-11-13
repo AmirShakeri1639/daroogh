@@ -155,13 +155,9 @@ const DrugsList: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [showError, setShowError] = useState<boolean>(false);
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
 
   const {
-    container, checkIcon, gridEditForm,
-    formContainer, formTitle, box,
-    titleContainer, addButton, cancelButton,
+    container,
   } = useClasses();
   const { t } = useTranslation();
 
@@ -206,15 +202,13 @@ const DrugsList: React.FC = () => {
     }
   })
 
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
-
   const tableColumns = (): TableColumnInterface[] => {
     return [
       { id: 'name', label: 'نام' },
       { id: 'genericName', label: t('drug.genericName') },
-      { id: 'companyName', label: t('drug.companyName') },
-      { id: 'active', label: t('general.active') },
-      { id: 'enName', label: t('drug.enName') },
+      // { id: 'companyName', label: t('drug.companyName') },
+      // { id: 'active', label: t('general.active') },
+      // { id: 'enName', label: t('drug.enName') },
       { id: 'type', label: t('general.type') },
     ];
   }
@@ -227,8 +221,6 @@ const DrugsList: React.FC = () => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
-  /* TODO: add edit drug using the createDrug component with an Id. */
 
   const removeDrugHandler = async (drugId: number): Promise<any> => {
     try {
@@ -245,6 +237,7 @@ const DrugsList: React.FC = () => {
     }
   }
 
+  /* TODO: add edit drug using the createDrug component with an Id. */
   const editDrugHandler = (item: DrugInterface): void => {
     const {
       id,
@@ -273,8 +266,9 @@ const DrugsList: React.FC = () => {
 
   const tableRowsGenerator = (): JSX.Element[] => {
     return dataDrugsList
-      .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
+      // .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
       .map((item: any) => {
+        console.log('item in map dataDrugslist:', item);
         return (
           <TableRow
             hover
@@ -282,63 +276,37 @@ const DrugsList: React.FC = () => {
             tabIndex={-1}
             key={item.id}
           >
-            {tableColumns().map((col, index) => {
-              const value = item[col.id];
-
-              if (index < 5) {
-                return (
-                  <TableCell
-                    key={col.id}
-                  >
-                    {typeof value === 'string' ? value : value.length}
-                  </TableCell>
-                )
-              }
-              else {
-                return (
-                  <Fragment key={col.id}>
-                    <TableCell>
-                      {typeof value === 'string' ? value : value.length}
-                    </TableCell>
-                    <TableCell>
-                      <Tooltip
-                        title={String(t('action.delete'))}
-                      >
-                        <IconButton
-                          component="span"
-                          aria-label="remove drug"
-                          color="secondary"
-                          onClick={(): Promise<any> => removeDrugHandler(item.id)}
-                        >
-                          <DeleteOutlinedIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip
-                        title={String(t('action.edit'))}
-                      >
-                        <IconButton
-                          component="span"
-                          aria-label="edit drug"
-                          color="primary"
-                          onClick={(): void => editDrugHandler(item)}
-                        >
-                          <EditOutlinedIcon fontSize="small" />
-                        </IconButton>
-                      </Tooltip>
-                    </TableCell>
-                  </Fragment>
-                );
-              }
+            {tableColumns().map((field: any, index: number) => {
+              console.log('field in item:', field.id)
+              console.log('index in item', index)
+              return (
+                <TableCell key={field.id+index}>
+                  {item[field.id]}
+                  {/*{typeof value === 'string' ? value : value.length}*/}
+                </TableCell>
+              );
             })}
           </TableRow>
         );
       })
   }
 
+  const inputsValidationResult = (): boolean => {
+    return (
+      state.name.trim().length < 1
+      || state.genericName.trim().length < 1
+      || state.companyName.trim().length < 1
+      || state.enName.trim().length < 1
+      || state.type.trim().length < 1
+    );
+  }
+
   const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
     alert('drug submitted');
+
+    // inputsValidationResult();
   }
 
   return (

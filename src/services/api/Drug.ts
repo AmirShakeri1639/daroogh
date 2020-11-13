@@ -10,8 +10,6 @@ class Drug extends Api {
     remove: '/Drugs/Remove/'
   }
 
-  readonly pageSize = 15;
-
   saveDrug = async (data: DrugInterface): Promise<any> => {
     try {
       const result = await this.postJsonData(
@@ -24,12 +22,14 @@ class Drug extends Api {
     }
   }
 
-  getAllDrugs = async (q = '', pageNo = 1): Promise<any> => {
+  getAllDrugs = async (q = '', pageSize = 10, pageNo = 1): Promise<any> => {
     try {
       console.log('q:', q)
-      const skip = (pageNo - 1) * this.pageSize;
+      console.log('pageSize', pageSize)
+      console.log('pageNo', pageNo)
+      const skip = (pageNo - 1) * pageSize;
       const result = await this.postJsonData(
-        `${this.urls.all}?$top=${this.pageSize}&$skip=${skip}`);
+        `${this.urls.all}?$top=${pageSize}&$skip=${skip}`);
       return result.data;
     } catch (e) {
       errorHandler(e)
