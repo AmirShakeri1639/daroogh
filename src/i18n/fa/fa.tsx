@@ -31,6 +31,7 @@ export default {
       },
       action: {
         insert: 'درج',
+        edit: 'ویرایش',
         delete: 'حذف'
       },
       error: {
@@ -85,6 +86,7 @@ export default {
         barcode: 'بارکد',
         enName: 'نام انگلیسی',
         create: 'ایجاد دارو',
+        list: 'لیست دارو'
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',

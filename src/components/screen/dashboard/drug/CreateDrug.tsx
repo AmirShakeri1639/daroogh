@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 import Drug from '../../../../services/api/Drug';
 import { DrugInterface, CategoryInterface } from '../../../../interfaces';
-import {queryCache, useMutation, useQuery } from "react-query";
+import { queryCache, useMutation, useQuery } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
@@ -16,7 +16,7 @@ import { TextMessage } from "../../../../enum";
 
 const initialState: DrugInterface = {
   id: 0,
-  categoryID: 1,
+  categoryId: 1,
   name: '',
   genericName: '',
   companyName: '',
@@ -185,7 +185,7 @@ const CreateDrug: React.FC = () => {
     try {
       await _saveDrug({
         id: state.id,
-        categoryID: state.categoryID,
+        categoryId: state.categoryID,
         name: state.name,
         genericName: state.genericName,
         companyName: state.companyName,

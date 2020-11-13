@@ -28,6 +28,7 @@ import UserMenu from "./appbar/UserMenu";
 import ListItems from "./sidebar/ListItems";
 import CreateRole from "./roles/CreateRole";
 import CreateDrug from './drug/CreateDrug';
+import DrugsList from './drug/drugsList';
 import { DashboardPages } from "../../../enum";
 import CreateUser from "./user/CreateUser";
 import UsersList from "./user/UsersList";
@@ -124,7 +125,8 @@ type DashboardActivePage =
   | 'createRole'
   | 'createUser'
   | 'usersList'
-  | 'createDrug';
+  | 'createDrug'
+  | 'drugsList';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
@@ -193,6 +195,9 @@ const Dashboard: React.FC = () => {
         break;
       case DashboardPages.CREATE_DRUG:
         el = <CreateDrug />
+        break;
+      case DashboardPages.DRUGS_LIST:
+        el = <DrugsList />
         break;
       default:
         el = <></>;

@@ -145,6 +145,16 @@ const ListItems: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary={t('drug.create')} />
           </ListItem>
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.DRUGS_LIST)}
+          >
+            <ListItemIcon>
+              <PersonAddTwoToneIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('drug.list')} />
+          </ListItem>
         </List>
       </Collapse>
     </div>

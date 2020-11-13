@@ -1,5 +1,5 @@
 import React, { Fragment, useReducer, useState } from 'react';
-import {queryCache, useMutation, useQuery, useQueryCache} from "react-query";
+import { useMutation, useQuery, useQueryCache } from "react-query";
 import Drug from '../../../../services/api/Drug';
 import {
   Container,
@@ -79,7 +79,7 @@ const useClasses = makeStyles((theme) => createStyles({
 
 const initialState: DrugInterface = {
   id: 0,
-  categoryID: 1,
+  categoryId: 1,
   name: '',
   genericName: '',
   companyName: '',
@@ -99,7 +99,7 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         id: value,
       };
-    case 'categoryID':
+    case 'categoryId':
       return {
         ...state,
         categoryID: value,
@@ -212,10 +212,10 @@ const DrugsList: React.FC = () => {
     return [
       { id: 'name', label: 'نام' },
       { id: 'genericName', label: t('drug.genericName') },
-      { id: 'companyName', label: 'موبایل' },
-      { id: 'active', label: 'ایمیل' },
-      { id: 'enName', label: 'کد ملی' },
-      { id: 'type', label: 'نام کاربری' },
+      { id: 'companyName', label: t('drug.companyName') },
+      { id: 'active', label: t('general.active') },
+      { id: 'enName', label: t('drug.enName') },
+      { id: 'type', label: t('general.type') },
     ];
   }
 
@@ -230,24 +230,49 @@ const DrugsList: React.FC = () => {
 
   /* TODO: add edit drug using the createDrug component with an Id. */
 
-  const removeDrugHandler = async (userId: number): Promise<any> => {
+  const removeDrugHandler = async (drugId: number): Promise<any> => {
     try {
       if (window.confirm(t('alert.remove'))) {
-        await _removeDrug(userId);
+        await _removeDrug(drugId);
         await sweetAlert({
           type: 'success',
           text: TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE,
         });
-        resetRemoveUser();
+        resetRemoveDrug();
       }
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  /*
+  const editDrugHandler = (item: DrugInterface): void => {
+    const {
+      id,
+      name,
+      categoryId,
+      genericName,
+      companyName,
+      barcode,
+      description,
+      active,
+      enName,
+      type
+    } = item;
+
+    dispatch({ type: 'id', value: id });
+    dispatch({ type: 'name', value: name });
+    dispatch({ type: 'categoryId', value: categoryId });
+    dispatch({ type: 'genericName', value: genericName });
+    dispatch({ type: 'companyName', value: companyName });
+    dispatch({ type: 'barcode', value: barcode });
+    dispatch({ type: 'description', value: description });
+    dispatch({ type: 'active', value: active });
+    dispatch({ type: 'enName', value: enName });
+    dispatch({ type: 'type', value: type });
+  }
+
   const tableRowsGenerator = (): JSX.Element[] => {
-    return dataUsersList
+    return dataDrugsList
       .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
       .map((item: any) => {
         return (
@@ -277,56 +302,28 @@ const DrugsList: React.FC = () => {
                     </TableCell>
                     <TableCell>
                       <Tooltip
-                        title={String(t('user.remove-user'))}
+                        title={String(t('action.delete'))}
                       >
                         <IconButton
                           component="span"
-                          aria-label="remove user"
+                          aria-label="remove drug"
                           color="secondary"
-                          onClick={(): Promise<any> => removeUserHandler(item.id)}
+                          onClick={(): Promise<any> => removeDrugHandler(item.id)}
                         >
                           <DeleteOutlinedIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       <Tooltip
-                        title={String(t('user.edit-user'))}
+                        title={String(t('action.edit'))}
                       >
                         <IconButton
                           component="span"
-                          aria-label="edit user"
+                          aria-label="edit drug"
                           color="primary"
-                          onClick={(): void => editUserHandler(item)}
+                          onClick={(): void => editDrugHandler(item)}
                         >
                           <EditOutlinedIcon fontSize="small" />
                         </IconButton>
-                      </Tooltip>
-                      <Tooltip
-                        title={item.active ? String(t('user.disable-user')) : String(t('user.enable-user'))}
-                      >
-                        {
-                          item.active
-                            ? (
-                              <IconButton
-                                component="span"
-                                aria-label="disable user"
-                                color="inherit"
-                                className={checkIcon}
-                                onClick={(): Promise<any> => disableUserHandler(item.id)}
-                              >
-                                <CheckIcon fontSize="small" />
-                              </IconButton>
-                            )
-                            : (
-                              <IconButton
-                                component="span"
-                                aria-label="enable user"
-                                color="inherit"
-                                onClick={(): Promise<any> => enableUserHandler(item)}
-                              >
-                                <BlockTwoToneIcon fontSize="small" />
-                              </IconButton>
-                            )
-                        }
                       </Tooltip>
                     </TableCell>
                   </Fragment>
@@ -337,7 +334,6 @@ const DrugsList: React.FC = () => {
         );
       })
   }
-  */
 
   const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
@@ -396,19 +392,8 @@ const DrugsList: React.FC = () => {
         </Grid>
       </Grid>
 
-      {state.id !== 0 && displayEditForm()}
+      {/*{state.id !== 0 && displayEditForm()}*/}
 
-      <Modal
-        open={isOpenDatePicker}
-        toggle={toggleIsOpenDatePicker}
-      >
-        <DateTimePicker
-          selectedDateHandler={(e): void => {
-            dispatch({ type: 'birthDate', value: e });
-            toggleIsOpenDatePicker();
-          }}
-        />
-      </Modal>
     </Container>
   );
 }
