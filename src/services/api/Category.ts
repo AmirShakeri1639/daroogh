@@ -49,3 +49,5 @@ class Category extends Api {
     }
   }
 }
+
+export default Category;
