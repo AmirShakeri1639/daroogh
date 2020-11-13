@@ -1,0 +1,12 @@
+/* TEAM */
+	Front-end developer: S. Mostafa Rahmani
+	Contact: s.mostafa.rahmani [at] gmail.com
+
+	Front-end developer: Saeed Hemmati
+	Contact: hemmati464 [at] gmail.com
+
+	Back-end developer: Mohammad Razeqi
+	Contact: razeghi.mohammad [at] gmail.com
+
+	AI: Ehsan Asgarian
+	Contact: ehsan.asgarian@gmail.com
