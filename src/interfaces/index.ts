@@ -32,6 +32,11 @@ export interface PermissionItemTableColumnInterface {
   label: string;
 }
 
+export interface TableColumnInterface {
+  id: string | number;
+  label: string;
+}
+
 export class NewRoleData {
   public id?: number | string = 0;
   public name: string = '';
@@ -47,3 +52,6 @@ export interface PermissionItemsInterface {
   category: string;
   permissionItems: PermissionItemInterface[];
 }
+
+export type { DrugInterface } from './DrugInterface';
+export type { CategoryInterface } from './CategoryInterface';
