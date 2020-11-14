@@ -1,4 +1,5 @@
 import React, {
+  useCallback,
   useMemo,
 } from 'react';
 import {
@@ -20,7 +21,12 @@ interface PermissionProps {
  reducer: any;
 }
 
-const permissionGridsGenerator = (permissionItems: PermissionItemsInterface[], className: any, togglePermissionHandler: any): any => {
+const permissionGridsGenerator = (
+  permissionItems: PermissionItemsInterface[],
+  permissions: any,
+  className: any,
+  togglePermissionHandler: any
+): any => {
   const { formPaper, gridTitle, gridFormControl, gridContainer } = className;
 
   let el: JSX.Element[] | null = null;
@@ -49,7 +55,7 @@ const permissionGridsGenerator = (permissionItems: PermissionItemsInterface[], c
                           <Checkbox
                             color="primary"
                             name={per.permissionName}
-                            // checked={state.permissions.indexOf(per.permissionName) !== -1}
+                            checked={permissions.indexOf(per.permissionName) !== -1}
                             onChange={(): void => togglePermissionHandler(per.permissionName)}
                           />
                         }
@@ -78,7 +84,7 @@ const permissionGridsGenerator = (permissionItems: PermissionItemsInterface[], c
 const Permissions: React.FC<PermissionProps> = (props) => {
   const { permissionItems, className, reducer: { state, dispatch } } = props;
 
-  const togglePermissionHandler = (permission: string): void => {
+  const togglePermissionHandler = useCallback((permission: string): void => {
     if (state.permissions.indexOf(permission) !== -1) {
       const idx = state.permissions.indexOf(permission);
       state.permissions.splice(idx, 1);
@@ -87,11 +93,11 @@ const Permissions: React.FC<PermissionProps> = (props) => {
     else {
       dispatch({ type: 'addPermissions', value: permission });
     }
-  }
+  }, [dispatch, state.permissions]);
 
   return useMemo(
-    () => permissionGridsGenerator(permissionItems, className, togglePermissionHandler),
-    [permissionItems, state.permissions, permissionItems, className, togglePermissionHandler]
+    () => permissionGridsGenerator(permissionItems, state.permissions, className, togglePermissionHandler),
+    [permissionItems, state.permissions, className, togglePermissionHandler]
   );
 }
 

@@ -92,6 +92,7 @@ export default {
         successfulEnableTextMessage: 'با موفقیت فعال شد',
         successfulRemoveTextMessage: 'با موفقیت حذف شد',
         successfulCreateTextMessage: 'با موفقیت ایجاد شد',
+        successfulEditTextMessage: 'با موفقیت به روزرسانی شد',
       }
     }
   }
