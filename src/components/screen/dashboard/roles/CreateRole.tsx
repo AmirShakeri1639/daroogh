@@ -1,12 +1,6 @@
-import React, { Fragment, useReducer } from 'react';
+
+import React from 'react';
 import {
-  Container,
-  Paper,
-  Table,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableCell,
   Grid,
   TableBody,
   TablePagination,
