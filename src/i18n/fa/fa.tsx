@@ -97,6 +97,7 @@ export default {
         successfulEnableTextMessage: 'با موفقیت فعال شد',
         successfulRemoveTextMessage: 'با موفقیت حذف شد',
         successfulCreateTextMessage: 'با موفقیت ایجاد شد',
+        successfulEditTextMessage: 'با موفقیت به روزرسانی شد',
         successfulSave: 'با موفقیت ذخیره شد',
         successfulDelete: 'با موفقیت حذف شد.',
         remove: 'آیا از حذف مطمئن هستید؟',

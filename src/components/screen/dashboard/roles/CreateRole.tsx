@@ -1,19 +1,10 @@
-import React, {Fragment, useCallback, useEffect, useMemo, useReducer, useState} from 'react';
+
+import React from 'react';
 import {
-  Container,
-  Paper,
-  Table,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableCell,
-  AppBar,
-  Slide,
   Grid,
   TableBody,
   TablePagination,
   IconButton,
-  Dialog,
   TextField,
   Typography,
   Divider,
@@ -30,7 +21,7 @@ import CircleLoading from "../../../public/loading/CircleLoading";
 import { ActionInterface, PermissionItemTableColumnInterface } from "../../../../interfaces";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { TextMessage } from "../../../../enum";
-import { errorHandler, sweetAlert } from "../../../../utils";
+import { errorHandler, successSweetAlert } from "../../../../utils";
 import { useTranslation } from "react-i18next";
 import Permissions from "./Permissions";
 
@@ -158,21 +149,27 @@ const CreateRole: React.FC = () => {
       'rolePermissionItems',
       getAllRolePermissionItems,
       {
-        enabled: roleData,
+        enabled: roleData
       });
 
   const [_removeRoleById, {
     isLoading: isLoadingRemoveRole,
-    reset: resetHandlerOfRemoveRole,
   }] = useMutation(removeRoleById, {
-    onSuccess: () => {
-      queryCache.invalidateQueries('allRoles');
+    onSuccess: async (data) => {
+      await queryCache.invalidateQueries('allRoles');
+      await successSweetAlert(data.message || t('alert.successfulRemoveTextMessage'));
     }
   });
 
   const [_saveNewRole, { isLoading: newRoleLoading }] = useMutation(saveNewRole, {
     onSuccess: async () => {
       await queryCache.invalidateQueries('allRoles');
+      await successSweetAlert(
+        state.id === 0
+          ? t('alert.successfulCreateTextMessage')
+          : t('alert.successfulEditTextMessage')
+      );
+      dispatch({ type: 'reset' });
     },
   });
 
@@ -202,11 +199,6 @@ const CreateRole: React.FC = () => {
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
         await _removeRoleById(roleId);
-        await sweetAlert({
-          type: 'success',
-          text: TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE,
-        });
-        resetHandlerOfRemoveRole();
       }
     } catch (e) {
       errorHandler(e);
@@ -294,10 +286,6 @@ const CreateRole: React.FC = () => {
         name: state.name,
         permissionItemes: state.permissions,
       });
-      await sweetAlert({
-        type: 'success',
-        text: TextMessage.SUCCESS_EDIT_TEXT_MESSAGE,
-      });
       dispatch({ type: 'reset' });
     } catch (e) {
       errorHandler(e);
@@ -350,9 +338,8 @@ const CreateRole: React.FC = () => {
               page={page}
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
-
             />
-            {(isLoading || isLoadingRemoveRole)&& <CircleLoading />}
+            {(isLoading || isLoadingRemoveRole) && <CircleLoading />}
           </Paper>
         </Grid>
       </Grid>
