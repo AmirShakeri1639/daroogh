@@ -24,9 +24,6 @@ class Drug extends Api {
 
   getAllDrugs = async (q = '', pageSize = 10, pageNo = 1): Promise<any> => {
     try {
-      console.log('q:', q)
-      console.log('pageSize', pageSize)
-      console.log('pageNo', pageNo)
       const skip = (pageNo - 1) * pageSize;
       const result = await this.postJsonData(
         `${this.urls.all}?$top=${pageSize}&$skip=${skip}&$orderby=id desc`);
@@ -47,7 +44,6 @@ class Drug extends Api {
 
   removeDrug = async (id: number | string): Promise<any> => {
     try {
-      console.log('id in remove api:', id);
       const result = await this.postJsonData(`${this.urls.remove}${id}`);
       return result.data;
     } catch (e) {

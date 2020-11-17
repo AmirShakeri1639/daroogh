@@ -32,7 +32,9 @@ export default {
       action: {
         insert: 'درج',
         edit: 'ویرایش',
-        delete: 'حذف'
+        delete: 'حذف',
+        activation: 'فعال کردن',
+        deactivation: 'غیرفعال کردن',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
