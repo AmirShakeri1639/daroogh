@@ -23,7 +23,7 @@ const App = (): JSX.Element => {
               <Login />
             </PublicRoute>
 
-            <PublicRoute path="/forget-password">
+            <PublicRoute exact path="/forget-password">
               <ForgetPassword />
             </PublicRoute>
             <PrivateRoute path="/dashboard">

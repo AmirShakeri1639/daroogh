@@ -1,29 +1,26 @@
-import React, { Fragment, useReducer } from 'react';
+import React, { useReducer, Fragment } from 'react';
 import {
-  Container,
-  Paper,
-  TableCell,
   Grid,
   IconButton,
+  Paper,
   TextField,
-  Typography,
-  Divider,
-  FormControl,
+  Container,
+  TableCell,
   createStyles,
-  Button,
+  Typography, FormControl, Button, Divider,
 } from "@material-ui/core";
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Role from "../../../../services/api/Role";
 import { useMutation, useQuery, useQueryCache } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface, PermissionItemTableColumnInterface } from "../../../../interfaces";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { TextMessage } from "../../../../enum";
-import { errorHandler, sweetAlert } from "../../../../utils";
+import { errorHandler, successSweetAlert } from "../../../../utils";
 import { useTranslation } from "react-i18next";
 import Permissions from "./Permissions";
 import DataGrid from "../../../public/data-grid/DataGrid";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 interface ReducerInitialStateInterface {
   id: number;
@@ -35,7 +32,7 @@ const initialState: ReducerInitialStateInterface = {
   id: 0,
   name: '',
   permissions: [],
-};
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
   switch (action.type) {
@@ -147,21 +144,27 @@ const CreateRole: React.FC = () => {
       'rolePermissionItems',
       getAllRolePermissionItems,
       {
-        enabled: roleData,
+        enabled: roleData
       });
 
   const [_removeRoleById, {
     isLoading: isLoadingRemoveRole,
-    reset: resetHandlerOfRemoveRole,
   }] = useMutation(removeRoleById, {
-    onSuccess: () => {
-      queryCache.invalidateQueries('allRoles');
+    onSuccess: async (data) => {
+      await queryCache.invalidateQueries('allRoles');
+      await successSweetAlert(data.message || t('alert.successfulRemoveTextMessage'));
     }
   });
 
   const [_saveNewRole, { isLoading: newRoleLoading }] = useMutation(saveNewRole, {
     onSuccess: async () => {
       await queryCache.invalidateQueries('allRoles');
+      await successSweetAlert(
+        state.id === 0
+          ? t('alert.successfulCreateTextMessage')
+          : t('alert.successfulEditTextMessage')
+      );
+      dispatch({ type: 'reset' });
     },
   });
 
@@ -182,11 +185,6 @@ const CreateRole: React.FC = () => {
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
         await _removeRoleById(roleId);
-        await sweetAlert({
-          type: 'success',
-          text: TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE,
-        });
-        resetHandlerOfRemoveRole();
       }
     } catch (e) {
       errorHandler(e);
@@ -217,10 +215,6 @@ const CreateRole: React.FC = () => {
         id: state.id,
         name: state.name,
         permissionItemes: state.permissions,
-      });
-      await sweetAlert({
-        type: 'success',
-        text: TextMessage.SUCCESS_EDIT_TEXT_MESSAGE,
       });
       dispatch({ type: 'reset' });
     } catch (e) {
@@ -288,7 +282,7 @@ const CreateRole: React.FC = () => {
                   </Fragment>
                 )
                 : (
-                  <Fragment>s
+                  <Fragment>
                     <EditOutlinedIcon />
                     {t('user.edit-role')}
                   </Fragment>
