@@ -359,23 +359,23 @@ const DrugsList: React.FC = () => {
       })
   }
 
-  const inputsValidationResult = (): boolean => {
-    return (
-      state.name.trim().length < 1
-      || state.genericName.trim().length < 1
-      || state.companyName.trim().length < 1
-      || state.enName.trim().length < 1
-      || state.type.trim().length < 1
-    );
-  }
+  // const inputsValidationResult = (): boolean => {
+  //   return (
+  //     state.name.trim().length < 1
+  //     || state.genericName.trim().length < 1
+  //     || state.companyName.trim().length < 1
+  //     || state.enName.trim().length < 1
+  //     || state.type.trim().length < 1
+  //   );
+  // }
 
-  const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
-    e.preventDefault();
-
-    alert('drug submitted');
-
-    // inputsValidationResult();
-  }
+  // const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  //   e.preventDefault();
+  //
+  //   alert('drug submitted');
+  //
+  //   // inputsValidationResult();
+  // }
 
   return (
     <Container maxWidth="lg" className={container}>

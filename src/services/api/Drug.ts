@@ -24,6 +24,7 @@ class Drug extends Api {
 
   getAllDrugs = async (q = '', pageSize = 10, pageNo = 1): Promise<any> => {
     try {
+      console.log('let this log be here', q);
       const skip = (pageNo - 1) * pageSize;
       const result = await this.postJsonData(
         `${this.urls.all}?$top=${pageSize}&$skip=${skip}&$orderby=id desc`);

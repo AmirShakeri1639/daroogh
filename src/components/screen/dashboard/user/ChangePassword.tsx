@@ -16,7 +16,7 @@ import { useMutation } from "react-query";
 import User from "../../../../services/api/User";
 import { Alert } from "../../../public/alert/Alert";
 import { errorHandler } from "../../../../utils";
-import {SnackbarInterface} from "../../../../interfaces/MaterialUI";
+import { SnackbarInterface } from "../../../../interfaces/MaterialUI";
 
 const useClasses = makeStyles((theme) => createStyles({
   container: {
