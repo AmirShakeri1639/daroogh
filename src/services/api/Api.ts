@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { api } from '../../config/default.json';
 import { DefaultAxiosConfigInterface } from "../../interfaces";
-import { errorHandler, errorSweetAlert, sweetAlert } from "../../utils";
+import { errorHandler, errorSweetAlert } from "../../utils";
 
 const axiosInstance = axios.create({
   baseURL: api.baseUrl,
@@ -17,11 +17,10 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const { status, data } = response;
+    const { status } = response;
     if (status === 401) {
       (async (): Promise<any> => {
         await errorSweetAlert('خطایی در عدم دسترسی وجود دارد');
-        window.location.pathname = '/login';
       })();
     }
     else if (status === 404) {
@@ -30,12 +29,12 @@ axiosInstance.interceptors.response.use(
       })();
     }
     else if (status === 500) {
-      (async (): Promise<any> => {
-        await sweetAlert({
-          type: 'error',
-          text: data.message
-        });
-      })();
+      // (async (): Promise<any> => {
+      //   await sweetAlert({
+      //     type: 'error',
+      //     text: data.message
+      //   });
+      // })();
     }
 
     return Promise.reject(error);
@@ -66,7 +65,7 @@ class Api {
       );
     }
     catch (e) {
-      errorHandler(e);
+      throw new Error(e);
     }
   }
 
@@ -97,7 +96,7 @@ class Api {
     try {
       return await this.authorizedUserRequest().post(url);
     } catch (e) {
-      errorHandler(e);
+      throw new Error(e);
     }
   }
 }

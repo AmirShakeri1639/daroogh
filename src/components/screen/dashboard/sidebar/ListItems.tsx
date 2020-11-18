@@ -10,6 +10,7 @@ import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
 import { DashboardPages } from "../../../../enum";
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
+import LockIcon from '@material-ui/icons/Lock';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -113,6 +114,16 @@ const ListItems: React.FC = () => {
               <GroupTwoToneIcon />
             </ListItemIcon>
             <ListItemText primary={t('user.users-list')} />
+          </ListItem>
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.CHANGE_USER_PASSWORD)}
+          >
+            <ListItemIcon>
+              <LockIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('user.changeUserPassword')} />
           </ListItem>
         </List>
       </Collapse>
