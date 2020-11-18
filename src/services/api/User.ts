@@ -1,6 +1,6 @@
 import Api from "./Api";
 import { errorHandler } from "../../utils";
-import { NewUserData } from "../../interfaces/user";
+import { ChangeUserPasswordInterface, NewUserData } from "../../interfaces/user";
 
 class User extends Api {
   getUserData = async (): Promise<any> => {
@@ -22,15 +22,10 @@ class User extends Api {
   }
 
   saveNewUser = async (data: NewUserData): Promise<any> => {
-    try {
-      const result = await this.postJsonData(
-        '/User/Save',
-        data,
-      );
-      return result.data;
-    } catch (e) {
-      errorHandler(e);
-    }
+    return await this.postJsonData(
+      '/User/Save',
+      data,
+    );
   }
 
   removeUser = async (userId: number): Promise<any> => {
@@ -49,6 +44,12 @@ class User extends Api {
     } catch (e) {
       errorHandler(e);
     }
+  }
+
+  changeUserPassword = async (data: ChangeUserPasswordInterface): Promise<any> => {
+    return await this.postData(
+      `/User/ChangePassword?oldPassword=${data.oldPassword}&newPassword=${data.newPassword}`
+    );
   }
 }
 

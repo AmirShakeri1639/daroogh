@@ -297,7 +297,7 @@ export class NewUserData {
   public nationalCode: string = '';
   public birthDate: string = '';
   // public  pictureFileID: number = 0;
-  public active?: boolean = false;
+  public active?: boolean | string = '';
   // public lastChangePassword: string = '';
   // public _date: string = '';
   // public _userid: number = 0;
@@ -317,4 +317,9 @@ export interface InitialNewUserInterface {
   password: string;
   nationalCode: string;
   birthDate: string;
+}
+
+export interface ChangeUserPasswordInterface {
+  oldPassword: string;
+  newPassword: string;
 }
