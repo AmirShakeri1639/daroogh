@@ -27,6 +27,8 @@ import { DashboardPages } from "../../../enum";
 import CreateUser from "./user/CreateUser";
 import UsersList from "./user/UsersList";
 import ChangeUserPassword from "./user/ChangePassword";
+import PharmaciesList from "./pharmacy/pharmaciesList";
+import CreatePharmacy from "./pharmacy/createPharmacy";
 
 const drawerWidth = 240;
 
@@ -188,6 +190,12 @@ const Dashboard: React.FC = () => {
         break;
       case DashboardPages.CHANGE_USER_PASSWORD:
         el = <ChangeUserPassword />;
+        break;
+      case DashboardPages.PHARMACY_LIST:
+        el = <PharmaciesList />;
+        break;
+      case DashboardPages.PHARMACY_CREATE:
+        el = <CreatePharmacy />;
         break;
       default:
         el = <></>;

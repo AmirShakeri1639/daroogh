@@ -28,7 +28,13 @@ export default {
         cancel: 'انصراف',
         save: 'ذخیره',
         edit: 'ویرایش',
-        options: 'امکانات'
+        options: 'امکانات',
+        address: 'نشانی',
+        mobile: 'همراه',
+        phone: 'تلفن',
+        website: 'وب سایت',
+        email: 'ایمیل',
+        postalCode: 'کد پستی',
       },
       action: {
         insert: 'درج',
@@ -107,6 +113,16 @@ export default {
         successfulDelete: 'با موفقیت حذف شد.',
         remove: 'آیا از حذف مطمئن هستید؟',
         failedEdit: 'ویرایش با خطا روبرو شد',
+      },
+      pharmacy: {
+        pharmacy: 'داروخانه',
+        create: 'ایجاد داروخانه',
+        list: 'لیست داروخانه‌ها',
+        new: 'داروخانه جدید',
+        name: 'نام داروخانه',
+        hix: 'HIX',
+        gli: 'GLI',
+        workTime: 'ساعت کار',
       }
     }
   }
