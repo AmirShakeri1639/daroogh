@@ -29,6 +29,7 @@ const ListItems: React.FC = () => {
   const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
   const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
   const [isOpenDrugMenu, setIsOpenDrugMenu] = useState<boolean>(false);
+  const [isOpenPharmacyMenu, setIsOpenPharmacyMenu] = useState<boolean>(false);
 
   const { setActivePage } = useContext(Context);
 
@@ -165,6 +166,47 @@ const ListItems: React.FC = () => {
               <PersonAddTwoToneIcon />
             </ListItemIcon>
             <ListItemText primary={t('drug.list')} />
+          </ListItem>
+        </List>
+      </Collapse>
+      <ListItem
+        button
+        onClick={(): void => setIsOpenPharmacyMenu(val => !val)}
+      >
+        <ListItemIcon>
+          <PermIdentityTwoToneIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('pharmacy.pharmacy')} />
+        {isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse
+        in={isOpenPharmacyMenu}
+        timeout="auto"
+        unmountOnExit
+      >
+        <List
+          component="div"
+          disablePadding
+        >
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.PHARMACY_CREATE)}
+          >
+            <ListItemIcon>
+              <PersonAddTwoToneIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('pharmacy.create')} />
+          </ListItem>
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.PHARMACY_LIST)}
+          >
+            <ListItemIcon>
+              <PersonAddTwoToneIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('pharmacy.list')} />
           </ListItem>
         </List>
       </Collapse>

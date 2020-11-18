@@ -3,10 +3,10 @@ export interface PharmacyInterface {
     name: string;
     hix: string;
     gli: string;
+    worktime: number;
     address: string;
     mobile: string;
-    telphon: boolean;
-    fax: string;
+    telphon: string;
     website: string;
     email: string;
     postalCode: string;
