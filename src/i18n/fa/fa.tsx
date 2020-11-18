@@ -22,6 +22,7 @@ export default {
         home: 'خانه',
         description: 'شرح',
         active: 'فعال',
+        deActive: 'غیرفعال',
         type: 'نوع',
         pleaseWait: 'لطفا صبر کنید',
         cancel: 'انصراف',
@@ -32,7 +33,8 @@ export default {
       action: {
         insert: 'درج',
         edit: 'ویرایش',
-        delete: 'حذف'
+        delete: 'حذف',
+        create: 'ایجاد',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
@@ -75,6 +77,7 @@ export default {
         'enable-user': 'فعال کردن حساب کاربر',
         'edit-user': 'ویرایش کاربر',
         'remove-user': 'حذف کاربر',
+        changeUserPassword: 'تغییر رمز عبور کاربر',
       },
       drug: {
         drug: 'دارو',
@@ -101,6 +104,7 @@ export default {
         successfulSave: 'با موفقیت ذخیره شد',
         successfulDelete: 'با موفقیت حذف شد.',
         remove: 'آیا از حذف مطمئن هستید؟',
+        failedEdit: 'ویرایش با خطا روبرو شد',
       }
     }
   }
