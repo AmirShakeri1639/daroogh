@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useState } from 'react';
+import React, {  useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from "react-query";
 import Drug from '../../../../services/api/Drug';
 import {
@@ -15,28 +15,24 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
-  Divider,
-  TextField,
-  Button,
-  Box,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import { TextMessage } from "../../../../enum";
+
 import { errorHandler, sweetAlert } from "../../../../utils";
 import CircleLoading from "../../../public/loading/CircleLoading";
 import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
 import CheckIcon from '@material-ui/icons/Check';
 import { useTranslation } from "react-i18next";
-import DateTimePicker from "../../../public/datepicker/DatePicker";
-import Modal from "../../../public/modal/Modal";
+
+
 import {
   ActionInterface,
   DrugInterface,
   TableColumnInterface
 } from "../../../../interfaces";
+
 
 const useClasses = makeStyles((theme) => createStyles({
   container: {
@@ -157,7 +153,7 @@ const DrugsList: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
   const {
-    container,
+    container, checkIcon
   } = useClasses();
   const { t } = useTranslation();
 
@@ -239,6 +235,25 @@ const DrugsList: React.FC = () => {
     }
   }
 
+  const toggleDrugActivationHandler = async (drugId: number): Promise<any> => {
+    try {
+      await _saveDrug({
+        id: drugId,
+        categoryId: state.categoryId,
+        name: state.name,
+        genericName: state.genericName,
+        companyName: state.companyName,
+        barcode: state.barcode,
+        description: state.description,
+        active: !state.active,
+        enName: state.enName,
+        type: state.type
+      });
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
   /* TODO: add edit drug using the createDrug component with an Id. */
   const editDrugHandler = (item: DrugInterface): void => {
     const {
@@ -270,7 +285,6 @@ const DrugsList: React.FC = () => {
     return dataDrugsList
       // .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
       .map((item: any) => {
-        console.log('item in map dataDrugslist:', item);
         return (
           <TableRow
             hover
@@ -279,8 +293,6 @@ const DrugsList: React.FC = () => {
             key={item.id}
           >
             {tableColumns().map((field: any, index: number) => {
-              console.log('field in item:', field.id)
-              console.log('index in item', index)
               return (
                 <TableCell key={field.id+index}>
                   {item[field.id]}
@@ -313,29 +325,57 @@ const DrugsList: React.FC = () => {
                   <EditOutlinedIcon fontSize="small" />
                 </IconButton>
               </Tooltip>
+              <Tooltip
+                title={item.active ? String(t('action.deactivation')) : String(t('action.activation'))}
+              >
+                {
+                  item.active
+                    ? (
+                      <IconButton
+                        component="span"
+                        aria-label="deactivate drug"
+                        color="inherit"
+                        className={checkIcon}
+                        onClick={(): Promise<any> => toggleDrugActivationHandler(item.id)}
+                      >
+                        <CheckIcon fontSize="small" />
+                      </IconButton>
+                    )
+                    : (
+                      <IconButton
+                        component="span"
+                        aria-label="activate drug"
+                        color="inherit"
+                        onClick={(): Promise<any> => toggleDrugActivationHandler(item.id)}
+                      >
+                        <BlockTwoToneIcon fontSize="small" />
+                      </IconButton>
+                    )
+                }
+              </Tooltip>
             </TableCell>
           </TableRow>
         );
       })
   }
 
-  const inputsValidationResult = (): boolean => {
-    return (
-      state.name.trim().length < 1
-      || state.genericName.trim().length < 1
-      || state.companyName.trim().length < 1
-      || state.enName.trim().length < 1
-      || state.type.trim().length < 1
-    );
-  }
+  // const inputsValidationResult = (): boolean => {
+  //   return (
+  //     state.name.trim().length < 1
+  //     || state.genericName.trim().length < 1
+  //     || state.companyName.trim().length < 1
+  //     || state.enName.trim().length < 1
+  //     || state.type.trim().length < 1
+  //   );
+  // }
 
-  const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
-    e.preventDefault();
-
-    alert('drug submitted');
-
-    // inputsValidationResult();
-  }
+  // const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  //   e.preventDefault();
+  //
+  //   alert('drug submitted');
+  //
+  //   // inputsValidationResult();
+  // }
 
   return (
     <Container maxWidth="lg" className={container}>

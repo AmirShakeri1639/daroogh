@@ -35,6 +35,8 @@ export default {
         edit: 'ویرایش',
         delete: 'حذف',
         create: 'ایجاد',
+        activation: 'فعال کردن',
+        deactivation: 'غیرفعال کردن',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
