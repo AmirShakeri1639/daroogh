@@ -11,6 +11,9 @@ import { DashboardPages } from "../../../../enum";
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
 import LockIcon from '@material-ui/icons/Lock';
+import MessageIcon from '@material-ui/icons/Message';
+import AddIcon from '@material-ui/icons/Add';
+import ListIcon from '@material-ui/icons/List';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -29,6 +32,7 @@ const ListItems: React.FC = () => {
   const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
   const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
   const [isOpenDrugMenu, setIsOpenDrugMenu] = useState<boolean>(false);
+  const [isOpenMessageMenu, setIsOpenMessageMenu] = useState<boolean>(false);
 
   const { setActivePage } = useContext(Context);
 
@@ -69,7 +73,7 @@ const ListItems: React.FC = () => {
             onClick={(): void => setActivePage(DashboardPages.CREATE_ROLE)}
           >
             <ListItemIcon>
-              <AddCircleTwoToneIcon />
+              <AddIcon />
             </ListItemIcon>
             <ListItemText primary={t('user.create-new-role')} />
           </ListItem>
@@ -127,6 +131,7 @@ const ListItems: React.FC = () => {
           </ListItem>
         </List>
       </Collapse>
+
       <ListItem
         button
         onClick={(): void => setIsOpenDrugMenu(val => !val)}
@@ -165,6 +170,48 @@ const ListItems: React.FC = () => {
               <PersonAddTwoToneIcon />
             </ListItemIcon>
             <ListItemText primary={t('drug.list')} />
+          </ListItem>
+        </List>
+      </Collapse>
+
+      <ListItem
+        button
+        onClick={(): void => setIsOpenMessageMenu(val => !val)}
+      >
+        <ListItemIcon>
+          <MessageIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('message.message')} />
+        {isOpenMessageMenu ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse
+        in={isOpenMessageMenu}
+        timeout="auto"
+        unmountOnExit
+      >
+        <List
+          component="div"
+          disablePadding
+        >
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.CREATE_NEW_MESSAGE)}
+          >
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('message.createMessage')} />
+          </ListItem>
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.MESSAGES_LIST)}
+          >
+            <ListItemIcon>
+              <ListIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('message.messagesList')} />
           </ListItem>
         </List>
       </Collapse>

@@ -93,6 +93,11 @@ export default {
         list: 'لیست دارو',
         newDrug: 'داروی جدید',
       },
+      message: {
+        message: 'پیام',
+        messagesList: 'لیست پیام ها',
+        createMessage: 'ایجاد پیام',
+      },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
         enableTextAlert: 'آیا میخواهید فعال شود؟',
