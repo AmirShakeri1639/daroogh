@@ -32,6 +32,7 @@ import DrugsList from './drug/drugsList';
 import { DashboardPages } from "../../../enum";
 import CreateUser from "./user/CreateUser";
 import UsersList from "./user/UsersList";
+import CategoryList from './category/CategoryList';
 
 const drawerWidth = 240;
 
@@ -126,7 +127,8 @@ type DashboardActivePage =
   | 'createUser'
   | 'usersList'
   | 'createDrug'
-  | 'drugsList';
+  | 'drugsList'
+  | 'categoryList';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
@@ -198,6 +200,9 @@ const Dashboard: React.FC = () => {
         break;
       case DashboardPages.DRUGS_LIST:
         el = <DrugsList />
+        break;
+      case DashboardPages.CATEGORY_LIST:
+        el = <CategoryList />
         break;
       default:
         el = <></>;

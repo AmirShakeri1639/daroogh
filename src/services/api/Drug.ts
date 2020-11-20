@@ -22,8 +22,9 @@ class Drug extends Api {
     }
   }
 
-  getAllDrugs = async (q = '', pageSize = 10, pageNo = 1): Promise<any> => {
+  getAllDrugs = async (q = '', pageSize = 5, pageNo = 1): Promise<any> => {
     try {
+      debugger;
       const skip = (pageNo - 1) * pageSize;
       const result = await this.postJsonData(
         `${this.urls.all}?$top=${pageSize}&$skip=${skip}&$orderby=id desc`);
