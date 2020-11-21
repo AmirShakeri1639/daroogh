@@ -28,7 +28,9 @@ export default {
         cancel: 'انصراف',
         save: 'ذخیره',
         edit: 'ویرایش',
-        options: 'امکانات'
+        options: 'امکانات',
+        address: 'آدرس',
+        expireDate: 'تاریخ انقضا',
       },
       action: {
         insert: 'درج',
@@ -97,6 +99,10 @@ export default {
         message: 'پیام',
         messagesList: 'لیست پیام ها',
         createMessage: 'ایجاد پیام',
+        profile: 'پروفایل',
+        sms: 'پیامک',
+        notification: 'ناتیفیکیشن',
+
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',

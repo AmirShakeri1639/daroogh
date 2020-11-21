@@ -5,8 +5,16 @@ export interface SnackbarInterface {
 }
 
 export interface InputInterface {
+  placeholder?: string | number;
   type?: string;
   value?: string | number;
+  readOnly?: boolean;
   label?: string;
-  onChange: () => void;
+  dir?: 'ltr' | 'rtl';
+  rows?: number;
+  required?: boolean;
+  isMultiLine?: boolean;
+  onClick?: () => void;
+  onChange: (e: any) => void;
+  error?: any;
 }

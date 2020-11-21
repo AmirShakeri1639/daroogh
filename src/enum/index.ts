@@ -40,3 +40,17 @@ export enum PackStatusEnum {
   FIRST_PACK_STATUS = 1,
   SECOND_PACK_STATUS,
 }
+
+export enum MessageTypeEnum {
+  PROFILE = 1,
+  SMS,
+  NOTIFICATION,
+  SMS_AND_NOTIFICATION,
+}
+
+export const MessageTypeArray = (textArray: string[]) => [
+  { val: MessageTypeEnum.PROFILE, text: textArray[0] },
+  { val: MessageTypeEnum.SMS, text: textArray[1] },
+  { val: MessageTypeEnum.NOTIFICATION, text: textArray[2] },
+  { val: MessageTypeEnum.SMS_AND_NOTIFICATION, text: textArray[3] },
+]

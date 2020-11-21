@@ -26,6 +26,7 @@ import DateTimePicker from "../../../public/datepicker/DatePicker";
 import Modal from "../../../public/modal/Modal";
 import DataGrid from "../../../public/data-grid/DataGrid";
 import UserForm from "./UserForm";
+import { UserQueryEnum } from '../../../../enum/query';
 
 const useClasses = makeStyles((theme) => createStyles({
   container: {
@@ -150,20 +151,20 @@ const UsersList: React.FC = () => {
   const queryCache = useQueryCache();
 
   const { isLoading: isLoadingUsersList, data: dataUsersList } =
-    useQuery('usersList', getAllUsers);
+    useQuery(UserQueryEnum.GET_ALL_USERS, getAllUsers);
 
   const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(
     removeUser,
     {
       onSuccess: async () => {
-        await queryCache.invalidateQueries('usersList');
+        await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulRemoveTextMessage'));
       },
     });
 
   const [_disableUser, { reset: resetDisableUser }] = useMutation(disableUser, {
     onSuccess: async () => {
-      await queryCache.invalidateQueries('usersList');
+      await queryCache.invalidateQueries(UserQueryEnum.USERS_LIST);
     }
   });
 
@@ -171,7 +172,7 @@ const UsersList: React.FC = () => {
     onSuccess: async (data) => {
       const { message } = data;
       await successSweetAlert(message);
-      await queryCache.invalidateQueries('usersList');
+      await queryCache.invalidateQueries(UserQueryEnum.USERS_LIST);
     }
   });
 
