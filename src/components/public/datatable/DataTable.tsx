@@ -34,7 +34,7 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
     tableRef = createRef(),
   } = props;
 
-  const [] = React.useState<any>(null);
+  // const [] = React.useState<any>(null);
   const [entries, setEntries] = useState([]);
 
   const fetchData = (): void => {
@@ -52,9 +52,7 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
         console.log(error);
       });};
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useEffect(fetchData, []);
 
   React.useImperativeHandle(forwardedRef, () => ({
     loadItems(): void {
