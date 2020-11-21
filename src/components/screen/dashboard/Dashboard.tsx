@@ -3,10 +3,7 @@ import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import {
-  Drawer,
-  List,
-} from '@material-ui/core';
+import { Drawer, List, } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -17,11 +14,8 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
-import {
-  ChevronLeft as ChevronLeftIcon,
-} from '@material-ui/icons';
+import { AccountCircle, ChevronLeft as ChevronLeftIcon, } from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { AccountCircle } from "@material-ui/icons";
 import { useTranslation } from "react-i18next";
 import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
@@ -32,6 +26,9 @@ import DrugsList from './drug/drugsList';
 import { DashboardPages } from "../../../enum";
 import CreateUser from "./user/CreateUser";
 import UsersList from "./user/UsersList";
+import ChangeUserPassword from "./user/ChangePassword";
+import PharmaciesList from "./pharmacy/pharmaciesList";
+import CreatePharmacy from "./pharmacy/createPharmacy";
 import CategoryList from './category/CategoryList';
 
 const drawerWidth = 240;
@@ -133,7 +130,7 @@ type DashboardActivePage =
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [activePage, setActivePage] = useState<DashboardActivePage>('dashboard');
+  const [activePage, setActivePage] = useState<DashboardPages>(DashboardPages.DASHBOARD);
 
   const classes = useStyles();
 
@@ -160,7 +157,7 @@ const Dashboard: React.FC = () => {
   const displayActivePage = (cssClasses: any): JSX.Element => {
     let el: JSX.Element;
     switch (activePage) {
-      case 'dashboard':
+      case DashboardPages.DASHBOARD:
         el = (
           <Container maxWidth="lg" className={cssClasses.container}>
             <Grid container spacing={3}>
@@ -200,6 +197,15 @@ const Dashboard: React.FC = () => {
         break;
       case DashboardPages.DRUGS_LIST:
         el = <DrugsList />
+        break;
+      case DashboardPages.CHANGE_USER_PASSWORD:
+        el = <ChangeUserPassword />;
+        break;
+      case DashboardPages.PHARMACY_LIST:
+        el = <PharmaciesList />;
+        break;
+      case DashboardPages.PHARMACY_CREATE:
+        el = <CreatePharmacy />;
         break;
       case DashboardPages.CATEGORY_LIST:
         el = <CategoryList />

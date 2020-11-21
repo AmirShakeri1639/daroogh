@@ -1,36 +1,26 @@
-
 import React, { useReducer, Fragment } from 'react';
 import {
   Grid,
-  TableBody,
-  TablePagination,
-  TableHead,
   IconButton,
-  TableContainer,
   Paper,
-  Table,
   TextField,
-  Typography,
   Container,
-  Divider,
   TableCell,
-  FormControl,
   createStyles,
-  Button,
-  TableRow,
+  Typography, FormControl, Button, Divider,
 } from "@material-ui/core";
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Role from "../../../../services/api/Role";
 import { useMutation, useQuery, useQueryCache } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
-import CircleLoading from "../../../public/loading/CircleLoading";
 import { ActionInterface, PermissionItemTableColumnInterface } from "../../../../interfaces";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { TextMessage } from "../../../../enum";
 import { errorHandler, successSweetAlert } from "../../../../utils";
 import { useTranslation } from "react-i18next";
 import Permissions from "./Permissions";
+import DataGrid from "../../../public/data-grid/DataGrid";
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 interface ReducerInitialStateInterface {
   id: number;
@@ -42,7 +32,7 @@ const initialState: ReducerInitialStateInterface = {
   id: 0,
   name: '',
   permissions: [],
-};
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
   switch (action.type) {
@@ -132,8 +122,6 @@ const useClasses = makeStyles((theme) => createStyles({
 }));
 
 const CreateRole: React.FC = () => {
-  const [page, setPage] = React.useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState<number>(10);
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { t } = useTranslation();
@@ -151,7 +139,7 @@ const CreateRole: React.FC = () => {
   const { isLoading: isLoadingRole, data: roleData } =
     useQuery('allRoles', getAllRoles);
 
-  const { isLoading, data: permissionItemsData } =
+  const { data: permissionItemsData } =
     useQuery(
       'rolePermissionItems',
       getAllRolePermissionItems,
@@ -181,7 +169,7 @@ const CreateRole: React.FC = () => {
   });
 
   const {
-    root, container, parent, formPaper, formTitle,
+    root, parent, formPaper, formTitle,
     formContainer, formControl,
     formBody, addButton, cancelButton,
   } = useClasses();
@@ -192,15 +180,6 @@ const CreateRole: React.FC = () => {
       { id: 'permissionItemes', label: 'تعداد مجوزها' },
     ];
   }
-
-  const handleChangePage = (event: unknown, newPage: number): void => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
 
   const removeRoleHandler = async (roleId: number): Promise<any> => {
     try {
@@ -226,62 +205,6 @@ const CreateRole: React.FC = () => {
     }
   }
 
-  const tableRowsGenerator = (): JSX.Element[] => {
-    return roleData
-      .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
-      .map((item: any) => {
-        return (
-          <TableRow
-            hover
-            role="checkbox"
-            tabIndex={-1}
-            key={item.id}
-          >
-            {tableColumns().map((col, index) => {
-              const value = item[col.id];
-
-              if (index < Object.keys(tableColumns()[0]).length - 1) {
-                return (
-                  <TableCell
-                    key={col.id}
-                  >
-                    {typeof value === 'string' ? value : value.length}
-                  </TableCell>
-                )
-              }
-              else {
-                return (
-                  <Fragment key={col.id}>
-                    <TableCell>
-                      {typeof value === 'string' ? value : value.length}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        component="span"
-                        aria-label="remove role"
-                        color="secondary"
-                        onClick={(): Promise<any> => removeRoleHandler(item.id)}
-                      >
-                        <DeleteOutlinedIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        component="span"
-                        aria-label="edit role"
-                        color="primary"
-                        onClick={(): Promise<any> => editRoleHandler(item.id)}
-                      >
-                        <EditOutlinedIcon fontSize="small" />
-                      </IconButton>
-                    </TableCell>
-                  </Fragment>
-                );
-              }
-            })}
-          </TableRow>
-        );
-      })
-  }
-
   const submitRole = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
     if (state.name.trim().length < 1 || state.permissions.length === 0) {
@@ -303,6 +226,31 @@ const CreateRole: React.FC = () => {
     dispatch({ type: 'name', value: e.target.value });
   }
 
+  const extraColumnHandler = (item: any): JSX.Element => {
+    return (
+      <Fragment>
+        <TableCell>
+          <IconButton
+            component="span"
+            aria-label="remove role"
+            color="secondary"
+            onClick={(): Promise<any> => removeRoleHandler(item.id)}
+          >
+            <DeleteOutlinedIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            component="span"
+            aria-label="edit role"
+            color="primary"
+            onClick={(): Promise<any> => editRoleHandler(item.id)}
+          >
+            <EditOutlinedIcon fontSize="small" />
+          </IconButton>
+        </TableCell>
+      </Fragment>
+    )
+  }
+
   return (
     <Container maxWidth="lg" className={parent}>
       <Grid container spacing={0}>
@@ -311,42 +259,13 @@ const CreateRole: React.FC = () => {
           xs={12}
         >
           <Paper className={root}>
-            <TableContainer className={container}>
-              <Table
-                stickyHeader
-                aria-label="roles table"
-              >
-                <TableHead>
-                  <TableRow>
-                    {tableColumns().map(item => {
-                      return (
-                        <TableCell
-                          key={item.id}
-                        >
-                          {item.label}
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell>
-                      امکانات
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(!isLoadingRole && roleData) && tableRowsGenerator()}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
-              component="div"
-              count={roleData?.length || 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
+            <DataGrid
+              data={roleData}
+              tableColumns={tableColumns()}
+              isLoading={isLoadingRemoveRole || isLoadingRole}
+              ariaLabel="roles list"
+              extraColumn={(item: any): JSX.Element => extraColumnHandler(item)}
             />
-            {(isLoading || isLoadingRemoveRole) && <CircleLoading />}
           </Paper>
         </Grid>
       </Grid>

@@ -22,17 +22,25 @@ export default {
         home: 'خانه',
         description: 'شرح',
         active: 'فعال',
+        deActive: 'غیرفعال',
         type: 'نوع',
         pleaseWait: 'لطفا صبر کنید',
         cancel: 'انصراف',
         save: 'ذخیره',
         edit: 'ویرایش',
-        options: 'امکانات'
+        options: 'امکانات',
+        address: 'نشانی',
+        mobile: 'همراه',
+        phone: 'تلفن',
+        website: 'وب سایت',
+        email: 'ایمیل',
+        postalCode: 'کد پستی',
       },
       action: {
         insert: 'درج',
         edit: 'ویرایش',
         delete: 'حذف',
+        create: 'ایجاد',
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
       },
@@ -77,6 +85,7 @@ export default {
         'enable-user': 'فعال کردن حساب کاربر',
         'edit-user': 'ویرایش کاربر',
         'remove-user': 'حذف کاربر',
+        changeUserPassword: 'تغییر رمز عبور کاربر',
       },
       drug: {
         drug: 'دارو',
@@ -109,6 +118,17 @@ export default {
         successfulSave: 'با موفقیت ذخیره شد',
         successfulDelete: 'با موفقیت حذف شد.',
         remove: 'آیا از حذف مطمئن هستید؟',
+        failedEdit: 'ویرایش با خطا روبرو شد',
+      },
+      pharmacy: {
+        pharmacy: 'داروخانه',
+        create: 'ایجاد داروخانه',
+        list: 'لیست داروخانه‌ها',
+        new: 'داروخانه جدید',
+        name: 'نام داروخانه',
+        hix: 'HIX',
+        gli: 'GLI',
+        workTime: 'ساعت کار',
       }
     }
   }

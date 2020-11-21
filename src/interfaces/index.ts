@@ -55,3 +55,4 @@ export interface PermissionItemsInterface {
 
 export type { DrugInterface } from './DrugInterface';
 export type { CategoryInterface } from './CategoryInterface';
+export type { PharmacyInterface } from './PharmacyInterface';
