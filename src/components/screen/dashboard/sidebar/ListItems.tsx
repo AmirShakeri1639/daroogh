@@ -11,6 +11,8 @@ import { DashboardPages } from "../../../../enum";
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
 import LockIcon from '@material-ui/icons/Lock';
+import CategoryIcon from '@material-ui/icons/Category';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -172,26 +174,26 @@ const ListItems: React.FC = () => {
       </Collapse>
       <ListItem  button
         onClick={(): void => setIsOpenCategory(val => !val)}>
-          <ListItemIcon>
-          <PermIdentityTwoToneIcon />
+        <ListItemIcon>
+          <CategoryIcon />
         </ListItemIcon>
         <ListItemText primary={t('category.category')} />
         {isOpenCategory ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={isOpenCategory}
+      </ListItem>
+      <Collapse in={isOpenCategory}
         timeout="auto"
         unmountOnExit>
-          <List component="div"  disablePadding>
-            <ListItem button
+        <List component="div"  disablePadding>
+          <ListItem button
             className={nested}
             onClick={(): void => setActivePage(DashboardPages.CATEGORY_LIST)}>
             <ListItemIcon>
-              <PersonAddTwoToneIcon />
+              <AddToPhotosIcon />
             </ListItemIcon>
             <ListItemText primary={t('category.list')} />
-            </ListItem>
-          </List>
-        </Collapse>
+          </ListItem>
+        </List>
+      </Collapse>
       <ListItem
         button
         onClick={(): void => setIsOpenPharmacyMenu(val => !val)}

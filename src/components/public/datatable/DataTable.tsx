@@ -36,9 +36,11 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
 
   // const [] = React.useState<any>(null);
   const [entries, setEntries] = useState([]);
+  const [isLoader, setLoader] = useState(false);
 
   const fetchData = (): void => {
     setEntries([]);
+    setLoader(true);
     axios
       .post(`${env.api.baseUrl}/${url}`)
       .then(response => {
@@ -47,9 +49,11 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
           data.push(el);
         });
         setEntries(response.data);
+        setLoader(false);
       })
       .catch(function(error) {
         console.log(error);
+        setLoader(false);
       });};
 
   useEffect(fetchData, []);
@@ -178,6 +182,7 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
           }
         ]}
         title=""
+        isLoading={isLoader}
         options={{
           actionsColumnIndex: -1,
           showSelectAllCheckbox: multiple,

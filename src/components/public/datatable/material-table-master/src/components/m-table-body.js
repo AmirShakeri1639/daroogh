@@ -150,7 +150,6 @@ class MTableBody extends React.Component {
             hideFilterIcons={this.props.options.hideFilterIcons}
           />
         }
-
         {this.props.showAddRow && this.props.options.addRowPosition === "first" &&
           <this.props.components.EditRow
             columns={this.props.columns.filter(columnDef => { return !columnDef.hidden })}

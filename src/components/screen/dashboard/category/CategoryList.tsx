@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import React, {   useReducer,  useState } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import {
@@ -124,9 +123,6 @@ const getColumns = (): DataTableColumns[] => {
   ];
 }
 
-const onHandleSelectedValues = (val: any)=> {
-  console.log("Value : ", val);
-}
 
 interface CategoriesInterface {
   id: number;
@@ -215,7 +211,7 @@ const CategoryList: React.FC = () =>{
     }
   });
 
-  const onHandleEditRow = (row: CategoriesInterface) =>{
+  const onHandleEditRow = (row: CategoriesInterface): void =>{
     toggleIsOpenSaveModalForm();
     dispatch({ type: 'id', value: row.id });
     dispatch({ type: 'name', value: row.name });
@@ -223,7 +219,7 @@ const CategoryList: React.FC = () =>{
     dispatch({ type: 'typeString', value: row.typeString });
   }
 
-  const onHandleAddAction = () =>{
+  const onHandleAddAction = (): void =>{
     toggleIsOpenSaveModalForm();
     dispatch({ type: 'id', value: 0 });
     dispatch({ type: 'name', value: null });
@@ -231,7 +227,7 @@ const CategoryList: React.FC = () =>{
     dispatch({ type: 'typeString', value: null });
   }
 
-  const onHandleRemoveRow = async (row: CategoriesInterface) =>{
+  const onHandleRemoveRow = async (row: CategoriesInterface): Promise<void> =>{
     const { id } = row;
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
@@ -368,10 +364,9 @@ const CategoryList: React.FC = () =>{
             <DataTable
               ref={ref}
               columns={getColumns()}
-              getData={(e: any) => onHandleSelectedValues(e)}
-              addAction={()=> onHandleAddAction()}
-              editAction={(e: any, row: any)=> onHandleEditRow(row)}
-              removeAction={(e: any, row: any)=> onHandleRemoveRow(row)}
+              addAction={(): void => onHandleAddAction()}
+              editAction={(e: any, row: any): void => onHandleEditRow(row)}
+              removeAction={async (e: any, row: any): Promise<void> => await onHandleRemoveRow(row)}
               url="Categories/AllCategories"
               initLoad={false}
             />
