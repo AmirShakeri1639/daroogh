@@ -11,6 +11,9 @@ import { DashboardPages } from "../../../../enum";
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
 import LockIcon from '@material-ui/icons/Lock';
+import MessageIcon from '@material-ui/icons/Message';
+import AddIcon from '@material-ui/icons/Add';
+import ListIcon from '@material-ui/icons/List';
 import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 
@@ -31,6 +34,7 @@ const ListItems: React.FC = () => {
   const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
   const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
   const [isOpenDrugMenu, setIsOpenDrugMenu] = useState<boolean>(false);
+  const [isOpenMessageMenu, setIsOpenMessageMenu] = useState<boolean>(false);
   const [isOpenCategory, setIsOpenCategory] = useState<boolean>(false);
   const [isOpenPharmacyMenu, setIsOpenPharmacyMenu] = useState<boolean>(false);
 
@@ -73,7 +77,7 @@ const ListItems: React.FC = () => {
             onClick={(): void => setActivePage(DashboardPages.CREATE_ROLE)}
           >
             <ListItemIcon>
-              <AddCircleTwoToneIcon />
+              <AddIcon />
             </ListItemIcon>
             <ListItemText primary={t('user.create-new-role')} />
           </ListItem>
@@ -131,6 +135,7 @@ const ListItems: React.FC = () => {
           </ListItem>
         </List>
       </Collapse>
+
       <ListItem
         button
         onClick={(): void => setIsOpenDrugMenu(val => !val)}
@@ -172,8 +177,12 @@ const ListItems: React.FC = () => {
           </ListItem>
         </List>
       </Collapse>
-      <ListItem  button
-        onClick={(): void => setIsOpenCategory(val => !val)}>
+
+
+      <ListItem
+        button
+        onClick={(): void => setIsOpenCategory(val => !val)}
+      >
         <ListItemIcon>
           <CategoryIcon />
         </ListItemIcon>
@@ -234,6 +243,42 @@ const ListItems: React.FC = () => {
             <ListItemText primary={t('pharmacy.list')} />
           </ListItem>
         </List>
+      </Collapse>
+
+      <ListItem
+        button
+        onClick={(): void => setIsOpenMessageMenu(val => !val)}
+      >
+        <ListItemIcon>
+          <MessageIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('message.message')} />
+        {isOpenMessageMenu ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse
+        in={isOpenMessageMenu}
+        timeout="auto"
+        unmountOnExit
+      >
+        <ListItem
+          button
+          onClick={(): void => setActivePage(DashboardPages.CREATE_NEW_MESSAGE)}
+        >
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('message.createMessage')} />
+        </ListItem>
+
+        <ListItem
+          button
+          onClick={(): void => setActivePage(DashboardPages.MESSAGES_LIST)}
+        >
+          <ListItemIcon>
+            <ListIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('message.messagesList')} />
+        </ListItem>
       </Collapse>
     </div>
   );
