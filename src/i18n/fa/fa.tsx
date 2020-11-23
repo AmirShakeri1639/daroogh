@@ -101,6 +101,12 @@ export default {
         list: 'لیست دارو',
         newDrug: 'داروی جدید',
       },
+      category:{
+        category: 'دسته‌بندی',
+        list: 'لیست دسته‌بندی',
+        'edit-category': 'ویرایش دسته بندی',
+        'new-category': 'ایجاد دسته بندی',
+      },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
         enableTextAlert: 'آیا میخواهید فعال شود؟',

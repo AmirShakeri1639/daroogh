@@ -29,6 +29,7 @@ import UsersList from "./user/UsersList";
 import ChangeUserPassword from "./user/ChangePassword";
 import PharmaciesList from "./pharmacy/pharmaciesList";
 import CreatePharmacy from "./pharmacy/createPharmacy";
+import CategoryList from './category/CategoryList';
 
 const drawerWidth = 240;
 
@@ -117,6 +118,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+type DashboardActivePage =
+  'dashboard'
+  | 'createRole'
+  | 'createUser'
+  | 'usersList'
+  | 'createDrug'
+  | 'drugsList'
+  | 'categoryList';
+
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -196,6 +206,9 @@ const Dashboard: React.FC = () => {
         break;
       case DashboardPages.PHARMACY_CREATE:
         el = <CreatePharmacy />;
+        break;
+      case DashboardPages.CATEGORY_LIST:
+        el = <CategoryList />
         break;
       default:
         el = <></>;
