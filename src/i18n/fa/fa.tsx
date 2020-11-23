@@ -29,6 +29,7 @@ export default {
         save: 'ذخیره',
         edit: 'ویرایش',
         options: 'امکانات',
+        expireDate: 'تاریخ انقضا',
         address: 'نشانی',
         mobile: 'همراه',
         phone: 'تلفن',
@@ -100,6 +101,14 @@ export default {
         suggest: 'پیشنهاد دارو',
         list: 'لیست دارو',
         newDrug: 'داروی جدید',
+      },
+      message: {
+        message: 'پیام',
+        messagesList: 'لیست پیام ها',
+        createMessage: 'ایجاد پیام',
+        profile: 'پروفایل',
+        sms: 'پیامک',
+        notification: 'ناتیفیکیشن',
       },
       category:{
         category: 'دسته‌بندی',

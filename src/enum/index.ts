@@ -16,6 +16,8 @@ export enum DashboardPages {
   CREATE_DRUG = 'createDrug',
   DRUGS_LIST = 'drugsList',
   CHANGE_USER_PASSWORD = 'changeUserPassword',
+  MESSAGES_LIST = 'messagesList',
+  CREATE_NEW_MESSAGE = 'createNewMessage',
   PHARMACY_CREATE = 'createPharmacy',
   PHARMACY_LIST = 'pharmaciesList',
   CATEGORY_LIST = 'categoryList'
@@ -41,3 +43,17 @@ export enum PackStatusEnum {
   FIRST_PACK_STATUS = 1,
   SECOND_PACK_STATUS,
 }
+
+export enum MessageTypeEnum {
+  PROFILE = 1,
+  SMS,
+  NOTIFICATION,
+  SMS_AND_NOTIFICATION,
+}
+
+export const MessageTypeArray = (textArray: string[]) => [
+  { val: MessageTypeEnum.PROFILE, text: textArray[0] },
+  { val: MessageTypeEnum.SMS, text: textArray[1] },
+  { val: MessageTypeEnum.NOTIFICATION, text: textArray[2] },
+  { val: MessageTypeEnum.SMS_AND_NOTIFICATION, text: textArray[3] },
+]
