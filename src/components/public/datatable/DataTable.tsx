@@ -32,7 +32,10 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
     selection = false,
     url,
     tableRef = createRef(),
+    initLoad = true
   } = props;
+
+  let initialLoad = initLoad;
 
   // const [] = React.useState<any>(null);
   const [entries, setEntries] = useState([]);
@@ -45,10 +48,10 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
       .post(`${env.api.baseUrl}/${url}`)
       .then(response => {
         const data: any[] = [];
-        response.data.forEach((el: any) => {
+        response.data.items.forEach((el: any) => {
           data.push(el);
         });
-        setEntries(response.data);
+        setEntries(response.data.items);
         setLoader(false);
       })
       .catch(function(error) {
@@ -56,7 +59,10 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
         setLoader(false);
       });};
 
-  useEffect(fetchData, []);
+  useEffect(() => {
+    if (initialLoad) fetchData()
+    else initialLoad = true
+  }, []);
 
   React.useImperativeHandle(forwardedRef, () => ({
     loadItems(): void {
