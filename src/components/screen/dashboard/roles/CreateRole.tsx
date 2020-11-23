@@ -13,7 +13,7 @@ import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import Role from "../../../../services/api/Role";
 import { useMutation, useQuery, useQueryCache } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
-import { ActionInterface, PermissionItemTableColumnInterface } from "../../../../interfaces";
+import { ActionInterface, TableColumnInterface } from "../../../../interfaces";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import { TextMessage } from "../../../../enum";
 import { errorHandler, successSweetAlert } from "../../../../utils";
@@ -174,10 +174,10 @@ const CreateRole: React.FC = () => {
     formBody, addButton, cancelButton,
   } = useClasses();
 
-  const tableColumns = (): PermissionItemTableColumnInterface[] => {
+  const tableColumns = (): TableColumnInterface[] => {
     return [
-      { id: 'name', label: 'نام نقش' },
-      { id: 'permissionItemes', label: 'تعداد مجوزها' },
+      { field: 'name', title: 'نام نقش', type: 'string' },
+      { field: 'permissionItemes', title: 'تعداد مجوزها', type: 'string' },
     ];
   }
 

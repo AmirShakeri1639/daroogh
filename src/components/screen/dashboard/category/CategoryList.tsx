@@ -25,6 +25,8 @@ import { errorHandler, sweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../enum';
 import CircleLoading from '../../../public/loading/CircleLoading';
+import { CategoriesInterface } from '../../../../interfaces/component';
+import useDataTableRef from '../../../../hooks/useDataTableRef';
 
 const useClasses = makeStyles((theme) => createStyles({
   root: {
@@ -123,13 +125,6 @@ const getColumns = (): DataTableColumns[] => {
   ];
 }
 
-
-interface CategoriesInterface {
-  id: number;
-  name: string;
-  type: number;
-  typeString: string;
-}
 const initialState: CategoriesInterface = {
   id: 0,
   name: "",
@@ -170,9 +165,8 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 const CategoryList: React.FC = () =>{
-  type CountdownHandle = React.ElementRef<typeof DataTable>;
-  const ref = React.useRef<CountdownHandle>(null);
-  
+  const ref = useDataTableRef();
+
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
@@ -276,7 +270,7 @@ const CategoryList: React.FC = () =>{
   }
 
   const { container, root, formContainer, addButton, cancelButton } = useClasses();
-  
+
 
   const editModal = (): JSX.Element =>{
     return(

@@ -225,8 +225,8 @@ const PharmaciesList: React.FC = () => {
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { id: 'name', label: 'نام' },
-      { id: 'description', label: t('general.description') },
+      { field: 'name', title: 'نام', type: 'string' },
+      { field: 'description', title: t(',general.description'), type: 'string' },
     ];
   }
 
@@ -421,9 +421,9 @@ const PharmaciesList: React.FC = () => {
                     {tableColumns().map(item => {
                       return (
                         <TableCell
-                          key={item.id}
+                          key={item.field}
                         >
-                          {item.label}
+                          {item.title}
                         </TableCell>
                       );
                     })}

@@ -3,18 +3,18 @@ import {useQuery} from "react-query";
 import Message from "../../../../services/api/Message";
 import {Container, Paper, Grid} from "@material-ui/core";
 import DataGrid from "../../../public/data-grid/DataGrid";
-import {PermissionItemTableColumnInterface} from "../../../../interfaces";
+import { TableColumnInterface } from "../../../../interfaces";
 
 const MessagesList: React.FC = () => {
   const { getAllMessages } = new Message();
   const { data: allMessages, isLoading } = useQuery('allMessages', getAllMessages);
 
-  const tableColumns = (): PermissionItemTableColumnInterface[] => {
+  const tableColumns = (): TableColumnInterface[] => {
     return [
-      { id: 'subject', label: 'موضوع' },
-      { id: 'sendDate', label: 'تاریخ ارسال' },
-      { id: 'reciveDate', label: 'تاریخ دریافت' },
-      { id: 'url', label: 'آدرس' },
+      { field: 'subject', title: 'موضوع', type: 'string' },
+      { field: 'sendDate', title: 'تاریخ ارسال', type: 'string' },
+      { field: 'reciveDate', title: 'تاریخ دریافت', type: 'string' },
+      { field: 'url', title: 'آدرس', type: 'string' },
     ];
   }
 
