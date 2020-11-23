@@ -207,12 +207,12 @@ const DrugsList: React.FC = () => {
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { id: 'name', label: 'نام' },
-      { id: 'genericName', label: t('drug.genericName') },
+      { field: 'name', title: 'نام', type: 'string' },
+      { field: 'genericName', title: t('drug.genericName'), type: 'string' },
       // { id: 'companyName', label: t('drug.companyName') },
       // { id: 'active', label: t('general.active') },
       // { id: 'enName', label: t('drug.enName') },
-      { id: 'type', label: t('general.type') },
+      { field: 'type', title: t('general.type'), type: 'string' },
     ];
   }
 
@@ -398,9 +398,9 @@ const DrugsList: React.FC = () => {
                     {tableColumns().map(item => {
                       return (
                         <TableCell
-                          key={item.id}
+                          key={item.field}
                         >
-                          {item.label}
+                          {item.title}
                         </TableCell>
                       );
                     })}

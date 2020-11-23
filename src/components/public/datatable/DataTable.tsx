@@ -1,25 +1,10 @@
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, useEffect, useState, forwardRef } from "react";
 import env from "../../../config/default.json";
 import MaterialTable, {
   MTableToolbar,
 } from "./material-table-master/src";
 import axios from "axios";
-
-interface DataTableProps{
-  columns: Array<{type: string;title: string; field: string; headerStyle?: {}; cellStyle?: {} }>;
-  whereClause?: [];
-  extraParam?: {};
-  onSelectedValues?: () => void;
-  multiple?: boolean | false;
-  selection?: boolean | false;
-  url?: string;
-  initLoad?: boolean;
-  tableRef?: any;
-  getData?: (() => any) | Array<any> | any;
-  editAction?: (() => void) | void | any;
-  removeAction?: (() => void) | void | any;
-  addAction?: (() => void) | void | any;
-}
+import { DataTableProps } from '../../../interfaces';
 
 type CountdownHandle = {
   loadItems: () => void;
@@ -45,10 +30,10 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
       .post(`${env.api.baseUrl}/${url}`)
       .then(response => {
         const data: any[] = [];
-        response.data.forEach((el: any) => {
+        response.data.items.forEach((el: any) => {
           data.push(el);
         });
-        setEntries(response.data);
+        setEntries(response.data.items);
         setLoader(false);
       })
       .catch(function(error) {
@@ -64,13 +49,6 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
       fetchData();
     },
   }));
-
-  return (
-    <div>
-      <InitData />
-    </div>
-  );
-
 
   function InitData(): JSX.Element {
     return (
@@ -212,6 +190,13 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
       />
     );
   }
+
+  return (
+    <div>
+      <InitData />
+    </div>
+  );
+
 };
 
-export default React.forwardRef(DataTable);
+export default forwardRef(DataTable);

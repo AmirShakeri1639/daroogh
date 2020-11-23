@@ -1,11 +1,7 @@
 import React from "react";
 import ReactModal from 'react-modal';
+import { ModalPropsInterface } from '../../../interfaces/component';
 import './style.css';
-
-interface ModalPropsInterface {
-  open: boolean;
-  toggle: () => void;
-}
 
 const modalStyle = {
   content: {
@@ -27,6 +23,7 @@ const modalStyle = {
 const Modal: React.FC<ModalPropsInterface> = (props) => {
   const { open, toggle, children } = props;
 
+  // Notice: Maybe using of useCAllback method be a good solution rather this implmentation
   return (
     <ReactModal
       isOpen={open}

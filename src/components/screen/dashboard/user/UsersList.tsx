@@ -13,7 +13,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { ActionInterface, PermissionItemTableColumnInterface } from "../../../../interfaces";
+import { ActionInterface, TableColumnInterface } from "../../../../interfaces";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import { TextMessage } from "../../../../enum";
@@ -27,11 +27,11 @@ import Modal from "../../../public/modal/Modal";
 import DataGrid from "../../../public/data-grid/DataGrid";
 import UserForm from "./UserForm";
 import { UserQueryEnum } from '../../../../enum/query';
+import DataTable from '../../../public/datatable/DataTable';
+import FormContainer from '../../../public/form-container/FormContainer';
+import useDataTableRef from '../../../../hooks/useDataTableRef';
 
 const useClasses = makeStyles((theme) => createStyles({
-  container: {
-    marginTop: theme.spacing(1),
-  },
   gridEditForm: {
     margin: theme.spacing(2, 0, 2),
   },
@@ -143,6 +143,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 const UsersList: React.FC = () => {
+  const ref = useDataTableRef();
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
@@ -180,18 +181,18 @@ const UsersList: React.FC = () => {
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
 
   const {
-    container, checkIcon, gridEditForm,
+    checkIcon, gridEditForm,
     formTitle, titleContainer,
   } = useClasses();
 
-  const tableColumns = (): PermissionItemTableColumnInterface[] => {
+  const tableColumns = (): TableColumnInterface[] => {
     return [
-      { id: 'name', label: 'نام' },
-      { id: 'family', label: 'نام خانوادگی' },
-      { id: 'mobile', label: 'موبایل' },
-      { id: 'email', label: 'ایمیل' },
-      { id: 'nationalCode', label: 'کد ملی' },
-      { id: 'userName', label: 'نام کاربری' },
+      { field: 'name', title: 'نام', type: 'string' },
+      { field: 'family', title: 'نام خانوادگی', type: 'string' },
+      { field: 'mobile', title: 'موبایل', type: 'string' },
+      { field: 'email', title: 'ایمیل', type: 'string' },
+      { field: 'nationalCode', title: 'کد ملی', type: 'string' },
+      { field: 'userName', title: 'نام کاربری', type: 'string' },
     ];
   }
 
@@ -351,26 +352,18 @@ const UsersList: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="lg" className={container}>
-      <Grid
-        container
-        spacing={0}
-      >
-        <Grid
-          item
-          xs={12}
-        >
-          <Paper>
-            <DataGrid
-              ariaLabel="users table"
-              data={dataUsersList || null}
-              tableColumns={tableColumns()}
-              isLoading={isLoadingUsersList || isLoadingRemoveUser}
-              extraColumn={(item: any): JSX.Element => extraColumnHandler(item)}
-            />
-          </Paper>
-        </Grid>
-      </Grid>
+    <FormContainer
+      title={t('user.users-list')}
+    >
+      <DataTable
+        ref={ref}
+        columns={tableColumns()}
+        addAction={() => {}}
+        editAction={() => {}}
+        removeAction={() => {}}
+        url="User/AllUsers"
+        initLoad={false}
+      />
 
       {(state.id !== 0) && displayEditForm()}
 
@@ -385,7 +378,7 @@ const UsersList: React.FC = () => {
           }}
         />
       </Modal>
-    </Container>
+    </FormContainer>
   );
 }
 
