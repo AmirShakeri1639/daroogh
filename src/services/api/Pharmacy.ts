@@ -1,16 +1,16 @@
 import Api from './Api'
 import { errorHandler } from "../../utils";
-import { DrugInterface } from '../../interfaces'
+import { PharmacyInterface } from '../../interfaces';
 
-class Drug extends Api {
+class Pharmacy extends Api {
   readonly urls = {
-    all: '/Drugs/AllDrugs',
-    save: '/Drugs/Save',
-    get: '/Drugs/Detail/',
-    remove: '/Drugs/Remove/'
+    all: '/Pharmacy/AllPharmacy',
+    save: '/Pharmacy/Save',
+    get: '/Pharmacy/Detail/',
+    remove: '/Pharmacy/Remove/'
   }
 
-  saveDrug = async (data: DrugInterface): Promise<any> => {
+  save = async (data: PharmacyInterface): Promise<any> => {
     try {
       const result = await this.postJsonData(
         this.urls.save,
@@ -22,7 +22,7 @@ class Drug extends Api {
     }
   }
 
-  getAllDrugs = async (q = '', pageSize = 5, pageNo = 1): Promise<any> => {
+  getAll = async (q = '', pageSize = 10, pageNo = 1): Promise<any> => {
     try {
       console.log('let this log be here', q);
       const skip = (pageNo - 1) * pageSize;
@@ -34,7 +34,7 @@ class Drug extends Api {
     }
   }
 
-  getDrug = async (id: number | string): Promise<any> => {
+  get = async (id: number | string): Promise<any> => {
     try {
       const result = await this.postJsonData(`${this.urls.get}${id}`);
       return result.data;
@@ -43,7 +43,7 @@ class Drug extends Api {
     }
   }
 
-  removeDrug = async (id: number | string): Promise<any> => {
+  remove = async (id: number | string): Promise<any> => {
     try {
       const result = await this.postJsonData(`${this.urls.remove}${id}`);
       return result.data;
@@ -53,4 +53,4 @@ class Drug extends Api {
   }
 }
 
-export default Drug;
+export default Pharmacy;

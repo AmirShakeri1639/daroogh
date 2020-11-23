@@ -14,6 +14,9 @@ import Context from "./Context";
 import ChangeUserPassword from './user/ChangePassword';
 import MessagesList from './message/MessagesList';
 import CreateMessage from './message/CreateMessage';
+import PharmaciesList from "./pharmacy/pharmaciesList";
+import CreatePharmacy from "./pharmacy/createPharmacy";
+import CategoryList from './category/CategoryList';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -89,6 +92,33 @@ const DashboardActivePage: React.FC = () => {
         break;
       case DashboardPages.DRUGS_LIST:
         el = <DrugsList />
+        break;
+        case DashboardPages.CREATE_ROLE:
+        el = <CreateRole />;
+        break;
+      case DashboardPages.CREATE_USER:
+        el = <CreateUser />
+        break;
+      case DashboardPages.USERS_LIST:
+        el = <UsersList />
+        break;
+      case DashboardPages.CREATE_DRUG:
+        el = <CreateDrug />
+        break;
+      case DashboardPages.DRUGS_LIST:
+        el = <DrugsList />
+        break;
+      case DashboardPages.CHANGE_USER_PASSWORD:
+        el = <ChangeUserPassword />;
+        break;
+      case DashboardPages.PHARMACY_LIST:
+        el = <PharmaciesList />;
+        break;
+      case DashboardPages.PHARMACY_CREATE:
+        el = <CreatePharmacy />;
+        break;
+      case DashboardPages.CATEGORY_LIST:
+        el = <CategoryList />
         break;
       default:
         el = <></>;

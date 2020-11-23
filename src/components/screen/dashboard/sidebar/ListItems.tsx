@@ -14,6 +14,8 @@ import LockIcon from '@material-ui/icons/Lock';
 import MessageIcon from '@material-ui/icons/Message';
 import AddIcon from '@material-ui/icons/Add';
 import ListIcon from '@material-ui/icons/List';
+import CategoryIcon from '@material-ui/icons/Category';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -33,6 +35,8 @@ const ListItems: React.FC = () => {
   const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
   const [isOpenDrugMenu, setIsOpenDrugMenu] = useState<boolean>(false);
   const [isOpenMessageMenu, setIsOpenMessageMenu] = useState<boolean>(false);
+  const [isOpenCategory, setIsOpenCategory] = useState<boolean>(false);
+  const [isOpenPharmacyMenu, setIsOpenPharmacyMenu] = useState<boolean>(false);
 
   const { setActivePage } = useContext(Context);
 
@@ -174,6 +178,73 @@ const ListItems: React.FC = () => {
         </List>
       </Collapse>
 
+
+      <ListItem
+        button
+        onClick={(): void => setIsOpenCategory(val => !val)}
+      >
+        <ListItemIcon>
+          <CategoryIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('category.category')} />
+        {isOpenCategory ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={isOpenCategory}
+        timeout="auto"
+        unmountOnExit>
+        <List component="div"  disablePadding>
+          <ListItem button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.CATEGORY_LIST)}>
+            <ListItemIcon>
+              <AddToPhotosIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('category.list')} />
+          </ListItem>
+        </List>
+      </Collapse>
+      <ListItem
+        button
+        onClick={(): void => setIsOpenPharmacyMenu(val => !val)}
+      >
+        <ListItemIcon>
+          <PermIdentityTwoToneIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('pharmacy.pharmacy')} />
+        {isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse
+        in={isOpenPharmacyMenu}
+        timeout="auto"
+        unmountOnExit
+      >
+        <List
+          component="div"
+          disablePadding
+        >
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.PHARMACY_CREATE)}
+          >
+            <ListItemIcon>
+              <PersonAddTwoToneIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('pharmacy.create')} />
+          </ListItem>
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.PHARMACY_LIST)}
+          >
+            <ListItemIcon>
+              <PersonAddTwoToneIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('pharmacy.list')} />
+          </ListItem>
+        </List>
+      </Collapse>
+
       <ListItem
         button
         onClick={(): void => setIsOpenMessageMenu(val => !val)}
@@ -189,31 +260,25 @@ const ListItems: React.FC = () => {
         timeout="auto"
         unmountOnExit
       >
-        <List
-          component="div"
-          disablePadding
+        <ListItem
+          button
+          onClick={(): void => setActivePage(DashboardPages.CREATE_NEW_MESSAGE)}
         >
-          <ListItem
-            button
-            className={nested}
-            onClick={(): void => setActivePage(DashboardPages.CREATE_NEW_MESSAGE)}
-          >
-            <ListItemIcon>
-              <AddIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('message.createMessage')} />
-          </ListItem>
-          <ListItem
-            button
-            className={nested}
-            onClick={(): void => setActivePage(DashboardPages.MESSAGES_LIST)}
-          >
-            <ListItemIcon>
-              <ListIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('message.messagesList')} />
-          </ListItem>
-        </List>
+          <ListItemIcon>
+            <AddIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('message.createMessage')} />
+        </ListItem>
+
+        <ListItem
+          button
+          onClick={(): void => setActivePage(DashboardPages.MESSAGES_LIST)}
+        >
+          <ListItemIcon>
+            <ListIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('message.messagesList')} />
+        </ListItem>
       </Collapse>
     </div>
   );

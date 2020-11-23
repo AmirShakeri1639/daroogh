@@ -19,7 +19,7 @@ const modalStyle = {
     borderRadius: '.9rem',
   },
   overlay: {
-    zIndex: 9999,
+    zIndex: 999,
     backgroundColor: 'rgba(0, 0, 0, .5)',
   },
 };

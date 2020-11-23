@@ -29,14 +29,21 @@ export default {
         save: 'ذخیره',
         edit: 'ویرایش',
         options: 'امکانات',
-        address: 'آدرس',
         expireDate: 'تاریخ انقضا',
+        address: 'نشانی',
+        mobile: 'همراه',
+        phone: 'تلفن',
+        website: 'وب سایت',
+        email: 'ایمیل',
+        postalCode: 'کد پستی',
       },
       action: {
         insert: 'درج',
         edit: 'ویرایش',
         delete: 'حذف',
         create: 'ایجاد',
+        activation: 'فعال کردن',
+        deactivation: 'غیرفعال کردن',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
@@ -102,7 +109,12 @@ export default {
         profile: 'پروفایل',
         sms: 'پیامک',
         notification: 'ناتیفیکیشن',
-
+      },
+      category:{
+        category: 'دسته‌بندی',
+        list: 'لیست دسته‌بندی',
+        'edit-category': 'ویرایش دسته بندی',
+        'new-category': 'ایجاد دسته بندی',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -116,6 +128,16 @@ export default {
         successfulDelete: 'با موفقیت حذف شد.',
         remove: 'آیا از حذف مطمئن هستید؟',
         failedEdit: 'ویرایش با خطا روبرو شد',
+      },
+      pharmacy: {
+        pharmacy: 'داروخانه',
+        create: 'ایجاد داروخانه',
+        list: 'لیست داروخانه‌ها',
+        new: 'داروخانه جدید',
+        name: 'نام داروخانه',
+        hix: 'HIX',
+        gli: 'GLI',
+        workTime: 'ساعت کار',
       }
     }
   }

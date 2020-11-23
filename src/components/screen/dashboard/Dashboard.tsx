@@ -93,6 +93,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+type DashboardActivePage =
+  'dashboard'
+  | 'createRole'
+  | 'createUser'
+  | 'usersList'
+  | 'createDrug'
+  | 'drugsList'
+  | 'categoryList';
+
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);

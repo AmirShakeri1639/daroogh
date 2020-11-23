@@ -17,11 +17,11 @@ import { ActionInterface, PermissionItemTableColumnInterface } from "../../../..
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import { TextMessage } from "../../../../enum";
-import {errorHandler, successSweetAlert, sweetAlert} from "../../../../utils";
+import { errorHandler, successSweetAlert, sweetAlert } from "../../../../utils";
 import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
 import CheckIcon from '@material-ui/icons/Check';
 import { useTranslation } from "react-i18next";
-import {InitialNewUserInterface, NewUserData} from "../../../../interfaces/user";
+import { InitialNewUserInterface, NewUserData } from "../../../../interfaces/user";
 import DateTimePicker from "../../../public/datepicker/DatePicker";
 import Modal from "../../../public/modal/Modal";
 import DataGrid from "../../../public/data-grid/DataGrid";
@@ -143,6 +143,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 const UsersList: React.FC = () => {
+  const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
 
@@ -168,7 +169,7 @@ const UsersList: React.FC = () => {
     }
   });
 
-  const [_editUser, { isLoading: loadingEditUser }] = useMutation(saveNewUser, {
+  const [_editUser] = useMutation(saveNewUser, {
     onSuccess: async (data) => {
       const { message } = data;
       await successSweetAlert(message);
@@ -182,7 +183,6 @@ const UsersList: React.FC = () => {
     container, checkIcon, gridEditForm,
     formTitle, titleContainer,
   } = useClasses();
-  const { t } = useTranslation();
 
   const tableColumns = (): PermissionItemTableColumnInterface[] => {
     return [

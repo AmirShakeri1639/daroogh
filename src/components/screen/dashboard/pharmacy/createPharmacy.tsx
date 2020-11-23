@@ -6,78 +6,97 @@ import {
   Paper,
   Button, createStyles, Grid, Typography, Divider, Box
 } from '@material-ui/core';
-import Drug from '../../../../services/api/Drug';
-import { DrugInterface } from '../../../../interfaces';
+import Pharmacy from '../../../../services/api/Pharmacy';
+import { PharmacyInterface } from '../../../../interfaces';
 import { queryCache, useMutation } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
 import { errorHandler, sweetAlert } from "../../../../utils";
 
-const initialState: DrugInterface = {
+const initialState: PharmacyInterface = {
   id: 0,
-  categoryId: 1,
   name: '',
-  genericName: '',
-  companyName: '',
-  barcode: '',
   description: '',
   active: false,
-  enName: '',
-  type: ''
+  hix: '',
+  gli: '',
+  worktime: 0,
+  address: '',
+  mobile: '',
+  telphon: '',
+  website: '',
+  email: '',
+  postalCode: ''
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
+  const { value } = action;
   switch (action.type) {
     case 'id':
       return {
         ...state,
-        id: action.value,
-      };
-    case 'categoryId':
-      return {
-        ...state,
-        categoryId: action.value,
+        id: value,
       };
     case 'name':
       return {
         ...state,
-        name: action.value,
+        name: value,
       };
-    case 'genericName':
+    case 'hix':
       return {
         ...state,
-        genericName: action.value,
+        hix: value,
       };
-    case 'companyName':
+    case 'gli':
       return {
         ...state,
-        companyName: action.value,
+        gli: value,
       };
-    case 'barcode':
+    case 'worktime':
       return {
         ...state,
-        barcode: action.value,
+        worktime: +value,
       };
     case 'description':
       return {
         ...state,
-        description: action.value,
+        description: value,
       };
     case 'active':
       return {
         ...state,
-        active: action.value,
+        active: value,
       };
-    case 'enName':
+    case 'address':
       return {
         ...state,
-        enName: action.value,
+        address: value,
       };
-    case 'type':
+    case 'mobile':
       return {
         ...state,
-        type: action.value,
+        mobile: value,
+      };
+    case 'telphon':
+      return {
+        ...state,
+        telphon: value,
+      };
+    case 'website':
+      return {
+        ...state,
+        website: value,
+      };
+    case 'email':
+      return {
+        ...state,
+        email: value,
+      };
+    case 'postalCode':
+      return {
+        ...state,
+        postalCode: value,
       };
     case 'reset':
       return initialState;
@@ -148,13 +167,10 @@ const useClasses = makeStyles((theme) => createStyles({
   }
 }));
 
-const CreateDrug: React.FC = () => {
+const CreatePharmacy: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { t } = useTranslation();
-  const { saveDrug } = new Drug();
-
-  // const { data: drugData } =
-  //   useQuery('allRoles', getAllRoles);
+  const { save } = new Pharmacy();
 
   const {
     parent, formContainer,
@@ -162,9 +178,9 @@ const CreateDrug: React.FC = () => {
     titleContainer, formTitle
   } = useClasses();
 
-  const [_saveDrug] = useMutation(saveDrug, {
-    onSuccess: async (data) => {
-      await queryCache.invalidateQueries('drugsList');
+  const [_save] = useMutation(save, {
+    onSuccess: async (data: any) => {
+      await queryCache.invalidateQueries('pharmaciesList');
       await sweetAlert({
         type: 'success',
         text: data.message || t('alert.successfulSave')
@@ -179,28 +195,27 @@ const CreateDrug: React.FC = () => {
     }
   })
 
-  const submitDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
-    if (state.name.trim().length < 1
-        || state.genericName.trim().length < 1
-        || state.companyName.trim().length < 1
-        || state.enName.trim().length < 1
-    ) {
+    if (state.name.trim().length < 1) {
       return;
     }
     try {
-      await _saveDrug({
+      await _save({
         id: state.id,
-        categoryId: state.categoryId,
         name: state.name,
-        genericName: state.genericName,
-        companyName: state.companyName,
-        barcode: state.barcode,
+        hix: state.hix,
+        gli: state.gli,
+        worktime: state.worktime,
+        address: state.address,
+        mobile: state.mobile,
+        telphon: state.telphon,
+        website: state.website,
+        email: state.email,
+        postalCode: state.postalCode,
         description: state.description,
-        active: state.active,
-        enName: state.enName,
-        type: state.type
+        active: !state.active,
       });
     } catch (e) {
       errorHandler(e)
@@ -213,38 +228,45 @@ const CreateDrug: React.FC = () => {
         <Paper>
           <div className={titleContainer}>
             <Typography variant="h6" component="h6" className={`${formTitle} txt-md`}>
-              {t('drug.newDrug')}
+              {t('pharmacy.new')}
             </Typography>
           </div>
           <Divider />
           <form
             autoComplete="off"
             className={formContainer}
-            onSubmit={submitDrug}>
+            onSubmit={submit}>
             <Grid container spacing={1}>
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between" className={box}>
                   <TextField
                     required
                     variant="outlined"
-                    label={t('drug.name')}
+                    label={t('pharmacy.name')}
                     value={state.name}
                     onChange={
                       (e): void =>
                         dispatch({ type: 'name', value: e.target.value })
                     }
                   />
-                  <div className="row">
-                    {/* TODO: Add CategoryId */}
-                  </div>
                   <TextField
                     required
                     variant="outlined"
-                    label={t('drug.genericName')}
-                    value={state.genericName}
+                    label={t('pharmacy.hix')}
+                    value={state.hix}
                     onChange={
                       (e): void =>
-                        dispatch({ type: 'genericName', value: e.target.value })
+                        dispatch({ type: 'hix', value: e.target.value })
+                    }
+                  />
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('pharmacy.gli')}
+                    value={state.gli}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'gli', value: e.target.value })
                     }
                   />
                 </Box>
@@ -254,21 +276,79 @@ const CreateDrug: React.FC = () => {
                   <TextField
                     required
                     variant="outlined"
-                    label={t('drug.companyName')}
-                    value={state.companyName}
+                    label={t('pharmacy.workTime')}
+                    value={state.worktime}
                     onChange={
                       (e): void =>
-                        dispatch({ type: 'companyName', value: e.target.value })
+                        dispatch({ type: 'worktime', value: e.target.value })
                     }
                   />
                   <TextField
                     required
                     variant="outlined"
-                    label={t('drug.barcode')}
-                    value={state.barcode}
+                    label={t('general.address')}
+                    value={state.address}
                     onChange={
                       (e): void =>
-                        dispatch({ type: 'barcode', value: e.target.value })
+                        dispatch({ type: 'address', value: e.target.value })
+                    }
+                  />
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('general.mobile')}
+                    value={state.mobile}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'mobile', value: e.target.value })
+                    }
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between" className={box}>
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('general.phone')}
+                    value={state.telphon}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'telphon', value: e.target.value })
+                    }
+                  />
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('general.website')}
+                    value={state.website}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'website', value: e.target.value })
+                    }
+                  />
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('general.email')}
+                    value={state.email}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'email', value: e.target.value })
+                    }
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="space-between" className={box}>
+                  <TextField
+                    required
+                    variant="outlined"
+                    label={t('general.postalCode')}
+                    value={state.postalCode}
+                    onChange={
+                      (e): void =>
+                        dispatch({ type: 'postalCode', value: e.target.value })
                     }
                   />
                   <TextField
@@ -283,34 +363,6 @@ const CreateDrug: React.FC = () => {
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
-                  <div className="row">
-                    {/* TODO: Add active boolean form control */}
-                  </div>
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('drug.enName')}
-                    value={state.enName}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'enName', value: e.target.value })
-                    }
-                  />
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('general.type')}
-                    value={state.type}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'type', value: e.target.value })
-                    }
-                  />
-                </Box>
-              </Grid>
-
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between" className={box}>
                   <Button
@@ -344,4 +396,4 @@ const CreateDrug: React.FC = () => {
   )
 }
 
-export default CreateDrug;
+export default CreatePharmacy;

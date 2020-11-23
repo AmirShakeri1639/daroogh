@@ -1,6 +1,6 @@
 import React, {  useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from "react-query";
-import Drug from '../../../../services/api/Drug';
+import Pharmacy from "../../../../services/api/Pharmacy";
 import {
   Container,
   createStyles,
@@ -29,7 +29,7 @@ import { useTranslation } from "react-i18next";
 
 import {
   ActionInterface,
-  DrugInterface,
+  PharmacyInterface,
   TableColumnInterface
 } from "../../../../interfaces";
 
@@ -73,17 +73,20 @@ const useClasses = makeStyles((theme) => createStyles({
   }
 }));
 
-const initialState: DrugInterface = {
+const initialState: PharmacyInterface = {
   id: 0,
-  categoryId: 1,
   name: '',
-  genericName: '',
-  companyName: '',
-  barcode: '',
   description: '',
   active: false,
-  enName: '',
-  type: ''
+  hix: '',
+  gli: '',
+  worktime: 0,
+  address: '',
+  mobile: '',
+  telphon: '',
+  website: '',
+  email: '',
+  postalCode: ''
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -95,30 +98,25 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         id: value,
       };
-    case 'categoryId':
-      return {
-        ...state,
-        categoryID: value,
-      };
     case 'name':
       return {
         ...state,
         name: value,
       };
-    case 'genericName':
+    case 'hix':
       return {
         ...state,
-        genericName: value,
+        hix: value,
       };
-    case 'companyName':
+    case 'gli':
       return {
         ...state,
-        companyName: value,
+        gli: value,
       };
-    case 'barcode':
+    case 'worktime':
       return {
         ...state,
-        barcode: value,
+        worktime: value,
       };
     case 'description':
       return {
@@ -130,15 +128,35 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         active: value,
       };
-    case 'enName':
+    case 'address':
       return {
         ...state,
-        enName: value,
+        address: value,
       };
-    case 'type':
+    case 'mobile':
       return {
         ...state,
-        type: value,
+        mobile: value,
+      };
+    case 'telphon':
+      return {
+        ...state,
+        telphon: value,
+      };
+    case 'website':
+      return {
+        ...state,
+        website: value,
+      };
+    case 'email':
+      return {
+        ...state,
+        email: value,
+      };
+    case 'postcalCode':
+      return {
+        ...state,
+        postcalCode: value,
       };
     case 'reset':
       return initialState;
@@ -147,7 +165,7 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
-const DrugsList: React.FC = () => {
+const PharmaciesList: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
@@ -158,27 +176,27 @@ const DrugsList: React.FC = () => {
   const { t } = useTranslation();
 
   const {
-    saveDrug,
-    getAllDrugs,
-    removeDrug
-  } = new Drug();
+    save,
+    getAll,
+    remove
+  } = new Pharmacy();
 
   const queryCache = useQueryCache();
 
   const {
-    isLoading: isLoadingDrugsList,
-    data: dataDrugsList
-  } = useQuery('drugsList', getAllDrugs);
+    isLoading: isLoadingList,
+    data: dataList
+  } = useQuery('pharmaciesList', getAll);
 
-  const [_removeDrug,
-    { isLoading: isLoadingRemoveDrug, reset: resetRemoveDrug }] = useMutation(removeDrug, {
+  const [_remove,
+    { isLoading: isLoadingRemove, reset: resetRemove }] = useMutation(remove, {
     onSuccess: async(data) => {
-      await queryCache.invalidateQueries('drugsList');
+      await queryCache.invalidateQueries('pharmaciesList');
       await sweetAlert({
         type: 'success',
         text: data.message || t('alert.successfulDelete')
       });
-      resetRemoveDrug();
+      resetRemove();
     },
     onError: async () => {
       await sweetAlert({
@@ -188,9 +206,9 @@ const DrugsList: React.FC = () => {
     }
   })
 
-  const [_saveDrug] = useMutation(saveDrug, {
+  const [_save] = useMutation(save, {
     onSuccess: async (data) => {
-      await queryCache.invalidateQueries('drugsList');
+      await queryCache.invalidateQueries('pharmaciesList');
       await sweetAlert({
         type: 'success',
         text: data.message || t('alert.successfulSave')
@@ -208,11 +226,7 @@ const DrugsList: React.FC = () => {
   const tableColumns = (): TableColumnInterface[] => {
     return [
       { id: 'name', label: 'نام' },
-      { id: 'genericName', label: t('drug.genericName') },
-      // { id: 'companyName', label: t('drug.companyName') },
-      // { id: 'active', label: t('general.active') },
-      // { id: 'enName', label: t('drug.enName') },
-      { id: 'type', label: t('general.type') },
+      { id: 'description', label: t('general.description') },
     ];
   }
 
@@ -225,64 +239,73 @@ const DrugsList: React.FC = () => {
     setPage(0);
   };
 
-  const removeDrugHandler = async (drugId: number): Promise<any> => {
+  const removeHandler = async (id: number): Promise<any> => {
     try {
       if (window.confirm(t('alert.remove'))) {
-        await _removeDrug(drugId);
+        await _remove(id);
       }
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  const toggleDrugActivationHandler = async (drugId: number): Promise<any> => {
+  const toggleActivationHandler = async (id: number): Promise<any> => {
     try {
-      await _saveDrug({
-        id: drugId,
-        categoryId: state.categoryId,
+      await _save({
+        id: id,
         name: state.name,
-        genericName: state.genericName,
-        companyName: state.companyName,
-        barcode: state.barcode,
+        hix: state.hix,
+        gli: state.gli,
+        worktime: state.worktime,
+        address: state.address,
+        mobile: state.mobile,
+        telphon: state.telphon,
+        website: state.website,
+        email: state.email,
+        postalCode: state.postalCode,
         description: state.description,
         active: !state.active,
-        enName: state.enName,
-        type: state.type
       });
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  /* TODO: add edit drug using the createDrug component with an Id. */
-  const editDrugHandler = (item: DrugInterface): void => {
+  /* TODO: add edit pharmacy using the createPharmacy component with an Id. */
+  const editHandler = (item: PharmacyInterface): void => {
     const {
       id,
       name,
-      categoryId,
-      genericName,
-      companyName,
-      barcode,
+      hix,
+      gli,
+      worktime,
+      address,
+      mobile,
+      telphon,
+      website,
+      email,
+      postalCode,
       description,
-      active,
-      enName,
-      type
+      active
     } = item;
 
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'name', value: name });
-    dispatch({ type: 'categoryId', value: categoryId });
-    dispatch({ type: 'genericName', value: genericName });
-    dispatch({ type: 'companyName', value: companyName });
-    dispatch({ type: 'barcode', value: barcode });
+    dispatch({ type: 'hix', value: hix });
+    dispatch({ type: 'gli', value: gli });
+    dispatch({ type: 'worktime', value: worktime });
+    dispatch({ type: 'address', value: address });
+    dispatch({ type: 'mobile', value: mobile });
+    dispatch({ type: 'telphon', value: telphon });
+    dispatch({ type: 'website', value: website });
+    dispatch({ type: 'email', value: email });
+    dispatch({ type: 'postalCode', value: postalCode });
     dispatch({ type: 'description', value: description });
     dispatch({ type: 'active', value: active });
-    dispatch({ type: 'enName', value: enName });
-    dispatch({ type: 'type', value: type });
   }
 
   const tableRowsGenerator = (): JSX.Element[] => {
-    return dataDrugsList
+    return dataList
       // .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
       .map((item: any) => {
         return (
@@ -306,9 +329,9 @@ const DrugsList: React.FC = () => {
               >
                 <IconButton
                   component="span"
-                  aria-label="remove drug"
+                  aria-label="remove pharmacy"
                   color="secondary"
-                  onClick={(): Promise<any> => removeDrugHandler(item.id)}
+                  onClick={(): Promise<any> => removeHandler(item.id)}
                 >
                   <DeleteOutlinedIcon fontSize="small" />
                 </IconButton>
@@ -318,9 +341,9 @@ const DrugsList: React.FC = () => {
               >
                 <IconButton
                   component="span"
-                  aria-label="edit drug"
+                  aria-label="edit pharmacy"
                   color="primary"
-                  onClick={(): void => editDrugHandler(item)}
+                  onClick={(): void => editHandler(item)}
                 >
                   <EditOutlinedIcon fontSize="small" />
                 </IconButton>
@@ -333,10 +356,10 @@ const DrugsList: React.FC = () => {
                     ? (
                       <IconButton
                         component="span"
-                        aria-label="deactivate drug"
+                        aria-label="deactivate pharmacy"
                         color="inherit"
                         className={checkIcon}
-                        onClick={(): Promise<any> => toggleDrugActivationHandler(item.id)}
+                        onClick={(): Promise<any> => toggleActivationHandler(item.id)}
                       >
                         <CheckIcon fontSize="small" />
                       </IconButton>
@@ -344,9 +367,9 @@ const DrugsList: React.FC = () => {
                     : (
                       <IconButton
                         component="span"
-                        aria-label="activate drug"
+                        aria-label="activate pharmacy"
                         color="inherit"
-                        onClick={(): Promise<any> => toggleDrugActivationHandler(item.id)}
+                        onClick={(): Promise<any> => toggleActivationHandler(item.id)}
                       >
                         <BlockTwoToneIcon fontSize="small" />
                       </IconButton>
@@ -369,10 +392,10 @@ const DrugsList: React.FC = () => {
   //   );
   // }
 
-  // const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  // const submitEdit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
   //   e.preventDefault();
   //
-  //   alert('drug submitted');
+  //   alert('pharmacy submitted');
   //
   //   // inputsValidationResult();
   // }
@@ -391,7 +414,7 @@ const DrugsList: React.FC = () => {
             <TableContainer>
               <Table
                 stickyHeader
-                aria-label="drugs table"
+                aria-label="pharmacy table"
               >
                 <TableHead>
                   <TableRow>
@@ -410,20 +433,20 @@ const DrugsList: React.FC = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {(!isLoadingDrugsList && dataDrugsList) && tableRowsGenerator()}
+                  {(!isLoadingList && dataList) && tableRowsGenerator()}
                 </TableBody>
               </Table>
             </TableContainer>
             <TablePagination
               rowsPerPageOptions={[1, 25, 100]}
               component="div"
-              count={dataDrugsList?.length || 0}
+              count={dataList?.length || 0}
               rowsPerPage={rowsPerPage}
               page={page}
               onChangePage={handleChangePage}
               onChangeRowsPerPage={handleChangeRowsPerPage}
             />
-            {(isLoadingDrugsList || isLoadingRemoveDrug) && <CircleLoading />}
+            {(isLoadingList || isLoadingRemove) && <CircleLoading />}
           </Paper>
         </Grid>
       </Grid>
@@ -434,4 +457,4 @@ const DrugsList: React.FC = () => {
   );
 }
 
-export default DrugsList;
+export default PharmaciesList;

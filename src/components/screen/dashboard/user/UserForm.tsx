@@ -12,7 +12,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { NewUserData } from "../../../../interfaces/user";
 import { ActionInterface } from "../../../../interfaces";
-import {errorHandler, errorSweetAlert, successSweetAlert, sweetAlert} from "../../../../utils";
+import { errorHandler, errorSweetAlert, successSweetAlert } from "../../../../utils";
 import { useMutation } from "react-query";
 import DateTimePicker from "../../../public/datepicker/DatePicker";
 import Modal from "../../../public/modal/Modal";

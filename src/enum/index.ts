@@ -18,6 +18,9 @@ export enum DashboardPages {
   CHANGE_USER_PASSWORD = 'changeUserPassword',
   MESSAGES_LIST = 'messagesList',
   CREATE_NEW_MESSAGE = 'createNewMessage',
+  PHARMACY_CREATE = 'createPharmacy',
+  PHARMACY_LIST = 'pharmaciesList',
+  CATEGORY_LIST = 'categoryList'
 }
 
 export enum PharmacyTypeEnum {
