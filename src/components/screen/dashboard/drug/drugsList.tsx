@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useState } from 'react';
+import React, {  useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from "react-query";
 import Drug from '../../../../services/api/Drug';
 import {
@@ -15,29 +15,24 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
-  Divider,
-  TextField,
-  Button,
-  Box,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import { TextMessage } from "../../../../enum";
+
 import { errorHandler, sweetAlert } from "../../../../utils";
 import CircleLoading from "../../../public/loading/CircleLoading";
 import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
 import CheckIcon from '@material-ui/icons/Check';
 import { useTranslation } from "react-i18next";
-import DateTimePicker from "../../../public/datepicker/DatePicker";
-import Modal from "../../../public/modal/Modal";
+
+
 import {
   ActionInterface,
   DrugInterface,
   TableColumnInterface
 } from "../../../../interfaces";
-import {InitialNewUserInterface} from "../../../../interfaces/user";
+
 
 const useClasses = makeStyles((theme) => createStyles({
   container: {
@@ -212,12 +207,12 @@ const DrugsList: React.FC = () => {
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { id: 'name', label: 'نام' },
-      { id: 'genericName', label: t('drug.genericName') },
+      { field: 'name', title: 'نام', type: 'string' },
+      { field: 'genericName', title: t('drug.genericName'), type: 'string' },
       // { id: 'companyName', label: t('drug.companyName') },
       // { id: 'active', label: t('general.active') },
       // { id: 'enName', label: t('drug.enName') },
-      { id: 'type', label: t('general.type') },
+      { field: 'type', title: t('general.type'), type: 'string' },
     ];
   }
 
@@ -364,23 +359,23 @@ const DrugsList: React.FC = () => {
       })
   }
 
-  const inputsValidationResult = (): boolean => {
-    return (
-      state.name.trim().length < 1
-      || state.genericName.trim().length < 1
-      || state.companyName.trim().length < 1
-      || state.enName.trim().length < 1
-      || state.type.trim().length < 1
-    );
-  }
+  // const inputsValidationResult = (): boolean => {
+  //   return (
+  //     state.name.trim().length < 1
+  //     || state.genericName.trim().length < 1
+  //     || state.companyName.trim().length < 1
+  //     || state.enName.trim().length < 1
+  //     || state.type.trim().length < 1
+  //   );
+  // }
 
-  const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
-    e.preventDefault();
-
-    alert('drug submitted');
-
-    // inputsValidationResult();
-  }
+  // const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  //   e.preventDefault();
+  //
+  //   alert('drug submitted');
+  //
+  //   // inputsValidationResult();
+  // }
 
   return (
     <Container maxWidth="lg" className={container}>
@@ -403,9 +398,9 @@ const DrugsList: React.FC = () => {
                     {tableColumns().map(item => {
                       return (
                         <TableCell
-                          key={item.id}
+                          key={item.field}
                         >
-                          {item.label}
+                          {item.title}
                         </TableCell>
                       );
                     })}

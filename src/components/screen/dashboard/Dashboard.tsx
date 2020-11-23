@@ -3,35 +3,21 @@ import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import {
-  Drawer,
-  List,
-} from '@material-ui/core';
+import { Drawer, List } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import MenuIcon from '@material-ui/icons/Menu';
-import {
-  ChevronLeft as ChevronLeftIcon,
-} from '@material-ui/icons';
+import { AccountCircle, ChevronLeft as ChevronLeftIcon } from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { AccountCircle } from "@material-ui/icons";
 import { useTranslation } from "react-i18next";
 import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
 import ListItems from "./sidebar/ListItems";
-import CreateRole from "./roles/CreateRole";
-import CreateDrug from './drug/CreateDrug';
-import DrugsList from './drug/drugsList';
-import { DashboardPages } from "../../../enum";
-import CreateUser from "./user/CreateUser";
-import UsersList from "./user/UsersList";
+import DashboardActivePage from "./DashboardActivePage";
 
 const drawerWidth = 240;
 
@@ -105,19 +91,6 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     overflow: 'auto',
   },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-  },
-  fixedHeight: {
-    height: 240,
-  },
 }));
 
 type DashboardActivePage =
@@ -126,12 +99,13 @@ type DashboardActivePage =
   | 'createUser'
   | 'usersList'
   | 'createDrug'
-  | 'drugsList';
+  | 'drugsList'
+  | 'categoryList';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [activePage, setActivePage] = useState<DashboardActivePage>('dashboard');
+  const [activePage, setActivePage] = useState<string>('dashboard');
 
   const classes = useStyles();
 
@@ -141,10 +115,10 @@ const Dashboard: React.FC = () => {
   const contextInitialValues = (): any => ({
     anchorEl,
     setAnchorEl,
+    activePage,
     setActivePage,
   });
 
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const { t } = useTranslation();
 
   const handleUserIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -153,57 +127,6 @@ const Dashboard: React.FC = () => {
 
   const listItemsGenerator = (): any => {
     return <ListItems />;
-  }
-
-  const displayActivePage = (cssClasses: any): JSX.Element => {
-    let el: JSX.Element;
-    switch (activePage) {
-      case 'dashboard':
-        el = (
-          <Container maxWidth="lg" className={cssClasses.container}>
-            <Grid container spacing={3}>
-
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper className={fixedHeightPaper}>
-                  Data
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper className={fixedHeightPaper}>
-                  Data
-                </Paper>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Paper className={cssClasses.paper}>
-                  Data
-                </Paper>
-              </Grid>
-            </Grid>
-          </Container>
-        );
-        break;
-      case DashboardPages.CREATE_ROLE:
-        el = <CreateRole />;
-        break;
-      case DashboardPages.CREATE_USER:
-        el = <CreateUser />
-        break;
-      case DashboardPages.USERS_LIST:
-        el = <UsersList />
-        break;
-      case DashboardPages.CREATE_DRUG:
-        el = <CreateDrug />
-        break;
-      case DashboardPages.DRUGS_LIST:
-        el = <DrugsList />
-        break;
-      default:
-        el = <></>;
-    }
-
-    return el;
   }
 
   return (
@@ -275,7 +198,7 @@ const Dashboard: React.FC = () => {
         </Drawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          {displayActivePage(classes)}
+          <DashboardActivePage />
         </main>
       </div>
     </Context.Provider>

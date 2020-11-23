@@ -7,13 +7,12 @@ import {
   Button, createStyles, Grid, Typography, Divider, Box
 } from '@material-ui/core';
 import Drug from '../../../../services/api/Drug';
-import { DrugInterface, CategoryInterface } from '../../../../interfaces';
-import { queryCache, useMutation, useQuery } from "react-query";
+import { DrugInterface } from '../../../../interfaces';
+import { queryCache, useMutation } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
 import { errorHandler, sweetAlert } from "../../../../utils";
-import { TextMessage } from "../../../../enum";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -168,7 +167,7 @@ const CreateDrug: React.FC = () => {
       await queryCache.invalidateQueries('drugsList');
       await sweetAlert({
         type: 'success',
-        text: data.message || TextMessage.SUCCESS_CREATE_TEXT_MESSAGE
+        text: data.message || t('alert.successfulSave')
       });
       dispatch({ type: 'reset' });
     },

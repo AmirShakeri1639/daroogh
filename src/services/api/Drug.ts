@@ -1,6 +1,6 @@
 import Api from './Api'
 import { errorHandler } from "../../utils";
-import { DrugInterface } from '../../interfaces/DrugInterface'
+import { DrugInterface } from '../../interfaces'
 
 class Drug extends Api {
   readonly urls = {
@@ -22,8 +22,9 @@ class Drug extends Api {
     }
   }
 
-  getAllDrugs = async (q = '', pageSize = 10, pageNo = 1): Promise<any> => {
+  getAllDrugs = async (q = '', pageSize = 5, pageNo = 1): Promise<any> => {
     try {
+      console.log('let this log be here', q);
       const skip = (pageNo - 1) * pageSize;
       const result = await this.postJsonData(
         `${this.urls.all}?$top=${pageSize}&$skip=${skip}&$orderby=id desc`);
