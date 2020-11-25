@@ -260,25 +260,32 @@ const ListItems: React.FC = () => {
         timeout="auto"
         unmountOnExit
       >
-        <ListItem
-          button
-          onClick={(): void => setActivePage(DashboardPages.CREATE_NEW_MESSAGE)}
+        <List
+          component="div"
+          disablePadding
         >
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText primary={t('message.createMessage')} />
-        </ListItem>
+          <ListItem
+            button
+            onClick={(): void => setActivePage(DashboardPages.CREATE_NEW_MESSAGE)}
+            className={nested}
+          >
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('message.createMessage')} />
+          </ListItem>
 
-        <ListItem
-          button
-          onClick={(): void => setActivePage(DashboardPages.MESSAGES_LIST)}
-        >
-          <ListItemIcon>
-            <ListIcon />
-          </ListItemIcon>
-          <ListItemText primary={t('message.messagesList')} />
-        </ListItem>
+          <ListItem
+            button
+            onClick={(): void => setActivePage(DashboardPages.MESSAGES_LIST)}
+            className={nested}
+          >
+            <ListItemIcon>
+              <ListIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('message.messagesList')} />
+          </ListItem>
+        </List>
       </Collapse>
     </div>
   );
