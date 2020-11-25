@@ -6,3 +6,7 @@ export enum UserQueryEnum {
 export enum CategoryQueryEnum {
   GET_ALL_CATEGORIES = 'getAllCategories',
 };
+
+export enum MessageQueryEnum {
+  GET_ALL_MESSAGES = 'getAllMessages',
+}
