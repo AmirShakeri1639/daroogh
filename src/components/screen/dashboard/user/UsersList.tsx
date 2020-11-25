@@ -2,29 +2,20 @@ import React, { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from "react-query";
 import User from "../../../../services/api/User";
 import {
-  Container,
   createStyles,
   Grid,
-  IconButton,
-  Tooltip,
   Paper,
-  TableCell,
   Typography,
   Divider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface, TableColumnInterface } from "../../../../interfaces";
-import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import { TextMessage } from "../../../../enum";
 import { errorHandler, successSweetAlert, sweetAlert } from "../../../../utils";
-import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
-import CheckIcon from '@material-ui/icons/Check';
 import { useTranslation } from "react-i18next";
 import { InitialNewUserInterface, NewUserData } from "../../../../interfaces/user";
 import DateTimePicker from "../../../public/datepicker/DatePicker";
 import Modal from "../../../public/modal/Modal";
-import DataGrid from "../../../public/data-grid/DataGrid";
 import UserForm from "./UserForm";
 import { UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
@@ -69,7 +60,7 @@ const useClasses = makeStyles((theme) => createStyles({
 
 const initialState: NewUserData = {
   id: 0,
-  pharmacyID: 0,
+  pharmacyID: null,
   name: '',
   family: '',
   mobile: '',
@@ -159,6 +150,7 @@ const UsersList: React.FC = () => {
     removeUser,
     {
       onSuccess: async () => {
+        ref.current?.loadItems();
         await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulRemoveTextMessage'));
       },
@@ -170,10 +162,11 @@ const UsersList: React.FC = () => {
     }
   });
 
-  const [_editUser] = useMutation(saveNewUser, {
+  const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(saveNewUser, {
     onSuccess: async (data) => {
       const { message } = data;
       await successSweetAlert(message);
+      dispatch({ type: 'reset' });
       await queryCache.invalidateQueries(UserQueryEnum.USERS_LIST);
     }
   });
@@ -181,26 +174,25 @@ const UsersList: React.FC = () => {
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
 
   const {
-    checkIcon, gridEditForm,
+    gridEditForm,
     formTitle, titleContainer,
   } = useClasses();
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { field: 'name', title: 'نام', type: 'string' },
-      { field: 'family', title: 'نام خانوادگی', type: 'string' },
-      { field: 'mobile', title: 'موبایل', type: 'string' },
-      { field: 'email', title: 'ایمیل', type: 'string' },
-      { field: 'nationalCode', title: 'کد ملی', type: 'string' },
-      { field: 'userName', title: 'نام کاربری', type: 'string' },
+      { field: 'name', title: 'نام', type: 'string', cellStyle: { textAlign: "right" } },
+      { field: 'family', title: 'نام خانوادگی', type: 'string', cellStyle: { textAlign: "right" } },
+      { field: 'mobile', title: 'موبایل', type: 'string', cellStyle: { textAlign: "right" } },
+      { field: 'email', title: 'ایمیل', type: 'string', cellStyle: { textAlign: "right" } },
+      { field: 'nationalCode', title: 'کد ملی', type: 'string', cellStyle: { textAlign: "right" } },
+      { field: 'userName', title: 'نام کاربری', type: 'string', cellStyle: { textAlign: "right" } },
     ];
   }
 
-  const removeUserHandler = async (userId: number): Promise<any> => {
+  const removeUserHandler = async (e: any, userRow: NewUserData): Promise<any> => {
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
-        await _removeUser(userId);
-        // resetRemoveUser();
+        await _removeUser(userRow.id);
       }
     } catch (e) {
       errorHandler(e);
@@ -250,12 +242,11 @@ const UsersList: React.FC = () => {
     }
   }
 
-  const editUserHandler = (item: NewUserData): void => {
+  const editUserHandler = (e: any, item: NewUserData): void => {
     const {
       name, family, email, mobile, birthDate,
       id, nationalCode, userName, active,
     } = item;
-
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'family', value: family });
     dispatch({ type: 'email', value: email });
@@ -264,7 +255,7 @@ const UsersList: React.FC = () => {
     dispatch({ type: 'nationalCode', value: nationalCode });
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'birthDate', value: birthDate });
-    dispatch({ type: 'active', value: active });
+    dispatch({ type: 'active', value: active === true ? 'true' : 'false' });
   }
 
   const displayEditForm = (): JSX.Element => {
@@ -292,65 +283,6 @@ const UsersList: React.FC = () => {
     );
   }
 
-  const extraColumnHandler = (item: any): JSX.Element => {
-    return (
-      <TableCell>
-        <Tooltip
-          title={String(t('user.remove-user'))}
-        >
-          <IconButton
-            component="span"
-            aria-label="remove user"
-            color="secondary"
-            onClick={(): Promise<any> => removeUserHandler(item.id)}
-          >
-            <DeleteOutlinedIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip
-          title={String(t('user.edit-user'))}
-        >
-          <IconButton
-            component="span"
-            aria-label="edit user"
-            color="primary"
-            onClick={(): void => editUserHandler(item)}
-          >
-            <EditOutlinedIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip
-          title={item.active ? String(t('user.disable-user')) : String(t('user.enable-user'))}
-        >
-          {
-            item.active
-              ? (
-                <IconButton
-                  component="span"
-                  aria-label="disable user"
-                  color="inherit"
-                  className={checkIcon}
-                  onClick={(): Promise<any> => disableUserHandler(item.id)}
-                >
-                  <CheckIcon fontSize="small" />
-                </IconButton>
-              )
-              : (
-                <IconButton
-                  component="span"
-                  aria-label="enable user"
-                  color="inherit"
-                  onClick={(): Promise<any> => enableUserHandler(item)}
-                >
-                  <BlockTwoToneIcon fontSize="small" />
-                </IconButton>
-              )
-          }
-        </Tooltip>
-      </TableCell>
-    );
-  }
-
   return (
     <FormContainer
       title={t('user.users-list')}
@@ -358,11 +290,12 @@ const UsersList: React.FC = () => {
       <DataTable
         ref={ref}
         columns={tableColumns()}
-        addAction={() => {}}
-        editAction={() => {}}
-        removeAction={() => {}}
-        url="User/AllUsers"
+        editAction={editUserHandler}
+        removeAction={removeUserHandler}
+        queryKey={UserQueryEnum.GET_ALL_USERS}
+        queryCallback={getAllUsers}
         initLoad={false}
+        isLoading={isLoadingRemoveUser || isLoadingEditUser || isLoadingUsersList}
       />
 
       {(state.id !== 0) && displayEditForm()}

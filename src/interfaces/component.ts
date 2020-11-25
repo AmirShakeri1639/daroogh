@@ -32,10 +32,12 @@ export interface DataTableProps{
   columns: Array<TableColumnInterface>;
   whereClause?: [];
   extraParam?: {};
+  isLoading?: boolean;
   onSelectedValues?: () => void;
   multiple?: boolean | false;
   selection?: boolean | false;
-  url?: string;
+  queryKey: any;
+  queryCallback: () => Promise<any>;
   initLoad?: boolean;
   tableRef?: any;
   getData?: (() => any) | Array<any> | any;

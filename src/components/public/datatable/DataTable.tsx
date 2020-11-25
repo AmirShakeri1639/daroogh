@@ -1,52 +1,55 @@
-import React, { createRef, useEffect, useState, forwardRef } from "react";
-import env from "../../../config/default.json";
+import React, {
+  createRef,
+  useImperativeHandle,
+  useState,
+  forwardRef,
+} from "react";
 import MaterialTable, {
   MTableToolbar,
 } from "./material-table-master/src";
-import axios from "axios";
 import { DataTableProps } from '../../../interfaces';
+import { useQuery, useQueryCache } from "react-query";
+import { errorSweetAlert } from "../../../utils";
+import { useTranslation } from "react-i18next";
 
 type CountdownHandle = {
   loadItems: () => void;
 }
 
-const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> = (props, forwardedRef) => {
+const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (props, forwardedRef) => {
   const {
     columns,
     multiple = false,
     selection = false,
-    url,
     tableRef = createRef(),
+    isLoading,
+    queryKey,
+    queryCallback,
   } = props;
 
-  // const [] = React.useState<any>(null);
+  const { t } = useTranslation();
+  const queryCache = useQueryCache();
+  const { isLoading: isLoadingFetchData } = useQuery(queryKey, queryCallback, {
+    onSuccess: (data) => {
+      const { items } = data;
+      setEntries(items);
+      setLoader(false);
+    },
+    onError: async () => {
+      await errorSweetAlert(t('error.loading-data'));
+      setLoader(false);
+    }
+  });
+
   const [entries, setEntries] = useState([]);
-  const [isLoader, setLoader] = useState(false);
+  const [isLoader, setLoader] = useState(true);
 
-  const fetchData = (): void => {
-    setEntries([]);
-    setLoader(true);
-    axios
-      .post(`${env.api.baseUrl}/${url}`)
-      .then(response => {
-        const data: any[] = [];
-        response.data.items.forEach((el: any) => {
-          data.push(el);
-        });
-        setEntries(response.data.items);
-        setLoader(false);
-      })
-      .catch(function(error) {
-        console.log(error);
-        setLoader(false);
-      });};
+  const reFetchData = () => queryCache.invalidateQueries(queryKey);
 
-  useEffect(fetchData, []);
-
-  React.useImperativeHandle(forwardedRef, () => ({
+  useImperativeHandle(forwardedRef, () => ({
     loadItems(): void {
       // tableRef.current && tableRef.current.onQueryChange();
-      fetchData();
+      reFetchData();
     },
   }));
 
@@ -135,7 +138,7 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
             icon: "refresh",
             tooltip: "بارگزاری مجدد",
             isFreeAction: true,
-            onClick: (): void => fetchData(),
+            onClick: (): Promise<any> => reFetchData(),
           },
           {
             icon: 'add',
@@ -147,6 +150,7 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
             icon: 'edit',
             position: 'row',
             tooltip: 'ویرایش',
+            color: '#dedede',
             onClick: (event: any, rowData: any): void =>
               props.editAction(event, rowData)
           },
@@ -160,7 +164,7 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
           }
         ]}
         title=""
-        isLoading={isLoader}
+        isLoading={isLoader || isLoading || isLoadingFetchData}
         options={{
           actionsColumnIndex: -1,
           showSelectAllCheckbox: multiple,

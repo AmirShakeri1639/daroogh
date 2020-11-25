@@ -335,8 +335,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                     dispatch({ type: 'active', value: e.target.value });
                   }}
                 >
-                  <FormControlLabel value={true} control={<Radio />} label={t('general.active')} />
-                  <FormControlLabel value={false} control={<Radio />} label={t('general.deActive')} />
+                  <FormControlLabel value="true" control={<Radio />} label={t('general.active')} />
+                  <FormControlLabel value="false" control={<Radio />} label={t('general.deActive')} />
                 </RadioGroup>
               </FormControl>
             </Box>
