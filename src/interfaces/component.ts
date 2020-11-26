@@ -37,7 +37,8 @@ export interface DataTableProps{
   multiple?: boolean | false;
   selection?: boolean | false;
   queryKey: any;
-  queryCallback: () => Promise<any>;
+  pageSize?: number;
+  queryCallback: (pageNumber: number, pageSize: number) => Promise<any>;
   initLoad?: boolean;
   tableRef?: any;
   getData?: (() => any) | Array<any> | any;

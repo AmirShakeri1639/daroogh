@@ -143,9 +143,6 @@ const UsersList: React.FC = () => {
 
   const queryCache = useQueryCache();
 
-  const { isLoading: isLoadingUsersList, data: dataUsersList } =
-    useQuery(UserQueryEnum.GET_ALL_USERS, getAllUsers);
-
   const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(
     removeUser,
     {
@@ -295,7 +292,8 @@ const UsersList: React.FC = () => {
         queryKey={UserQueryEnum.GET_ALL_USERS}
         queryCallback={getAllUsers}
         initLoad={false}
-        isLoading={isLoadingRemoveUser || isLoadingEditUser || isLoadingUsersList}
+        isLoading={isLoadingRemoveUser || isLoadingEditUser}
+        pageSize={5}
       />
 
       {(state.id !== 0) && displayEditForm()}
