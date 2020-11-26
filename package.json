@@ -60,29 +60,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "SET NODE_ENV=dev npm run build --dev --configuration=dev && react-scripts build",
+    "build:dev": "SET NODE_ENV=dev npm run build --dev --configuration=dev && react-scripts build",
     "lint": "eslint './src/**/*.{jsx,js,ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{jsx,js,ts,tsx}'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ],
-    "rules": {
-      "semi": [
-        2,
-        "never"
-      ],
-      "indent": [
-        "error",
-        2
-      ],
-      "quotes": [
-        "error",
-        "single"
-      ]
-    }
   },
   "browserslist": {
     "production": [
