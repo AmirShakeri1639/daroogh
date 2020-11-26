@@ -5,7 +5,7 @@ export interface SelectPropsInterface {
   labelId?: string;
   onChange: (e: any) => void;
   label?: string;
-  required?: boolean,
+  required?: boolean;
   error: any;
 }
 

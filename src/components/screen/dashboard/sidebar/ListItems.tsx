@@ -4,7 +4,7 @@ import { Dashboard as DashboardIcon, ExpandLess, ExpandMore } from "@material-ui
 import ContactMailTwoToneIcon from "@material-ui/icons/ContactMailTwoTone";
 import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
-import AddCircleTwoToneIcon from '@material-ui/icons/AddCircleTwoTone';
+
 import Context from "../Context";
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
 import { DashboardPages } from "../../../../enum";

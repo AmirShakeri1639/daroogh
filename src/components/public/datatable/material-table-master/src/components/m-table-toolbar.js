@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+
 import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Menu from "@material-ui/core/Menu";
@@ -8,12 +8,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
 import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
+
 import withStyles from "@material-ui/core/styles/withStyles";
 import { lighten } from "@material-ui/core/styles/colorManipulator";
 import classNames from "classnames";
 import { CsvBuilder } from "filefy";
-import PropTypes, { oneOf } from "prop-types";
+import PropTypes from "prop-types";
 import * as React from "react";
 /* eslint-enable no-unused-vars */
 
@@ -288,12 +288,12 @@ export class MTableToolbar extends React.Component {
       this.props.selectedRows &&
       this.props.selectedRows.length > 0
         ? localization.nRowsSelected.replace(
-            "{0}",
-            this.props.selectedRows.length
-          )
+          "{0}",
+          this.props.selectedRows.length
+        )
         : this.props.showTitle
-        ? this.props.title
-        : null;
+          ? this.props.title
+          : null;
     return (
       <Toolbar
         className={classNames(classes.root, {
@@ -375,13 +375,13 @@ export const styles = (theme) => ({
   highlight:
     theme.palette.type === "light"
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
   spacer: {
     flex: "1 1 10%",
   },

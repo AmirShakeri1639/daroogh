@@ -1,7 +1,7 @@
 import React from 'react';
-import {useQuery} from "react-query";
+import { useQuery } from "react-query";
 import Message from "../../../../services/api/Message";
-import {Container, Paper, Grid} from "@material-ui/core";
+import { Container, Paper, Grid } from "@material-ui/core";
 import DataGrid from "../../../public/data-grid/DataGrid";
 import { TableColumnInterface } from "../../../../interfaces";
 

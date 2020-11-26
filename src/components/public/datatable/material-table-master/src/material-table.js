@@ -12,7 +12,7 @@ import { debounce } from "debounce";
 import equal from "fast-deep-equal";
 import { withStyles } from "@material-ui/core";
 import * as CommonValues from "./utils/common-values";
-import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 /* eslint-enable no-unused-vars */
 
@@ -756,7 +756,7 @@ export default class MaterialTable extends React.Component {
   );
 
   getColumnsWidth = (props, count) => {
-    let result = [];
+    const result = [];
 
     const actionsWidth = CommonValues.actionsColumnWidth(props);
     if (actionsWidth > 0) {
@@ -985,7 +985,7 @@ export default class MaterialTable extends React.Component {
   }
 }
 
-let style = () => ({
+const style = () => ({
   scrollbarContainer: {
     "& ::-webkit-scrollbar": {
       "-webkit-appearance": "none",
