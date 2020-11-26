@@ -15,12 +15,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "plugins": [
-    "react",
-    "@typescript-eslint",
-    "eslint-plugin-react-hooks",
-    "jsx-a11y",
-    "unused-imports",
-    "react-hooks"
+    "@typescript-eslint"
   ],
   "rules": {
     "jsx-a11y/label-has-associated-control": 0,
