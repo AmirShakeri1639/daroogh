@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from "react";
 import {
-  PermissionItemTableColumnInterface,
+  TableColumnInterface,
 } from "../../../interfaces";
 import {
   createStyles,
@@ -17,7 +17,7 @@ import { makeStyles } from "@material-ui/core/styles";
 interface DataGridProps {
   stickyHeader?: boolean;
   ariaLabel?: string;
-  tableColumns: PermissionItemTableColumnInterface[];
+  tableColumns: TableColumnInterface[];
   data: any;
   isLoading: boolean;
   extraColumn?: (item: any) => any;
@@ -56,9 +56,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
   const tableHeadGenerator = (): JSX.Element[] => {
     return tableColumns.map((item, index) => {
       return (
-        <Fragment key={item.id}>
+        <Fragment key={item.field}>
           <TableCell>
-            {item.label}
+            {item.title}
           </TableCell>
           {index + 1 === tableColumns.length && (
             <TableCell />
@@ -80,9 +80,9 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
               key={item.id}
             >
               {tableColumns.map((c, index) => {
-                const value = item[c.id];
+                const value = item[c.field];
                 return (
-                  <Fragment key={c.id}>
+                  <Fragment key={c.field}>
                     <TableCell>
                       {value}
                     </TableCell>
@@ -109,7 +109,7 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!isLoading && tableRowsGenerator()}
+            {/* {!isLoading && tableRowsGenerator()} */}
           </TableBody>
         </Table>
       </TableContainer>

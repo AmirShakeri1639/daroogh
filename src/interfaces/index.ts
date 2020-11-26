@@ -27,14 +27,12 @@ export interface DefaultAxiosConfigInterface {
   Authorization?: string;
 }
 
-export interface PermissionItemTableColumnInterface {
-  id: string | number;
-  label: string;
-}
-
 export interface TableColumnInterface {
-  id: string | number;
-  label: string;
+  field: string | number;
+  title: string;
+  type: string;
+  headerStyle?: {} | undefined;
+  cellStyle?: {} | undefined;
 }
 
 export class NewRoleData {
@@ -56,3 +54,4 @@ export interface PermissionItemsInterface {
 export type { DrugInterface } from './DrugInterface';
 export type { CategoryInterface } from './CategoryInterface';
 export type { PharmacyInterface } from './PharmacyInterface';
+export * from './component';

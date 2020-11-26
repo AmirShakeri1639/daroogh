@@ -1,4 +1,4 @@
-import React, {   useReducer,  useState } from 'react';
+import React, { useReducer,  useState } from 'react';
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Container,
@@ -25,6 +25,9 @@ import { errorHandler, sweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../enum';
 import CircleLoading from '../../../public/loading/CircleLoading';
+import { CategoriesInterface } from '../../../../interfaces/component';
+import useDataTableRef from '../../../../hooks/useDataTableRef';
+import { CategoryQueryEnum } from '../../../../enum/query';
 
 const useClasses = makeStyles((theme) => createStyles({
   root: {
@@ -123,13 +126,6 @@ const getColumns = (): DataTableColumns[] => {
   ];
 }
 
-
-interface CategoriesInterface {
-  id: number;
-  name: string;
-  type: number;
-  typeString: string;
-}
 const initialState: CategoriesInterface = {
   id: 0,
   name: "",
@@ -170,14 +166,13 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 const CategoryList: React.FC = () =>{
-  type CountdownHandle = React.ElementRef<typeof DataTable>;
-  const ref = React.useRef<CountdownHandle>(null);
-  
+  const ref = useDataTableRef();
+
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
-  const { saveCategory, removeCategory } = new Category();
+  const { saveCategory, removeCategory, getAllCategories } = new Category();
   const queryCache = useQueryCache();
 
   const { t } = useTranslation();
@@ -276,7 +271,7 @@ const CategoryList: React.FC = () =>{
   }
 
   const { container, root, formContainer, addButton, cancelButton } = useClasses();
-  
+
 
   const editModal = (): JSX.Element =>{
     return(
@@ -367,7 +362,8 @@ const CategoryList: React.FC = () =>{
               addAction={(): void => onHandleAddAction()}
               editAction={(e: any, row: any): void => onHandleEditRow(row)}
               removeAction={async (e: any, row: any): Promise<void> => await onHandleRemoveRow(row)}
-              url="Categories/AllCategories"
+              queryKey={CategoryQueryEnum.GET_ALL_CATEGORIES}
+              queryCallback={getAllCategories}
               initLoad={false}
             />
             {(isLoadingRemoveCategory) && <CircleLoading />}
