@@ -13,6 +13,11 @@ class Message extends Api {
     );
     return result.data;
   }
+
+  readMessage = async (messageId: number | string): Promise<any> => {
+    const result = await this.postData(`/Message/Read/${messageId}`);
+    return result.data;
+  }
 }
 
 export default Message;

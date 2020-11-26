@@ -34,6 +34,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     pageSize = 10,
     removeAction,
     addAction,
+    onRowClick,
   } = props;
 
   const { t } = useTranslation();
@@ -56,6 +57,11 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
       }
     }
   );
+
+  const materialTableProps = {
+    onRowClick,
+    onSelectionChange: () => {}
+  };
 
   const [entries, setEntries] = useState([]);
   const [isLoader, setLoader] = useState(true);
@@ -86,7 +92,9 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         icon: 'edit',
         position: 'row',
         tooltip: 'ویرایش',
-        color: '#dedede',
+        iconProps: {
+          color: 'primary'
+        },
         onClick: (event: any, rowData: any): void =>
           editAction(event, rowData)
       }
@@ -99,6 +107,9 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
           icon: 'delete',
           position: 'row',
           tooltip: 'حدف',
+          iconProps: {
+            color: 'secondary'
+          },
           onClick: (event: any, rowData: any): void => {
             removeAction(event, rowData);
           }
@@ -158,12 +169,9 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
           }),
         }}
         onChangePage={(pageNumber: any) => {
-          console.log('pageNumber-->', pageNumber)
           setPage(pageNumber);
         }}
-        onSelectionChange={(): void => {
-          // onSelectionChange(rows, row);
-        }}
+        {...materialTableProps}
       />
     );
   }

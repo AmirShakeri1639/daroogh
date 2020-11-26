@@ -104,7 +104,6 @@ const Login: React.FC = (): JSX.Element => {
       }
     },
     onError: async () => {
-      console.log(22)
       await errorSweetAlert(t('error.loading-data'));
     }
   });

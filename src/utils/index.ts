@@ -10,3 +10,4 @@ export {
   warningSweetAlert,
 } from './sweetAlert';
 export { default as jalali } from './jalali';
+export { default as Convertor } from './Convertor';
