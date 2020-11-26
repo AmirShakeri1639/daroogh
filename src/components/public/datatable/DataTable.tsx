@@ -2,11 +2,11 @@ import React, { createRef, useEffect, useState } from "react";
 import env from "../../../config/default.json";
 import MaterialTable, {
   MTableToolbar,
-} from "./material-table-master/src";
+} from "material-table";
 import axios from "axios";
 
 interface DataTableProps{
-  columns: Array<{type: string;title: string; field: string; headerStyle?: {}; cellStyle?: {} }>;
+  columns: any[];
   whereClause?: [];
   extraParam?: {};
   onSelectedValues?: () => void;
