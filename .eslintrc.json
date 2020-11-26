@@ -14,9 +14,7 @@
   "extends": [
     "plugin:@typescript-eslint/recommended"
   ],
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": [],
   "rules": {
     "jsx-a11y/label-has-associated-control": 0,
     "unused-imports/no-unused-imports" : "off",
