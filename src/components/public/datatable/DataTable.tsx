@@ -1,52 +1,115 @@
-import React, { createRef, useEffect, useState, forwardRef } from "react";
-import env from "../../../config/default.json";
+import React, {
+  createRef,
+  useImperativeHandle,
+  useState,
+  forwardRef,
+} from "react";
 import MaterialTable, {
   MTableToolbar,
 } from "./material-table-master/src";
-import axios from "axios";
 import { DataTableProps } from '../../../interfaces';
+import { usePaginatedQuery, useQueryCache } from "react-query";
+import { errorSweetAlert } from "../../../utils";
+import { useTranslation } from "react-i18next";
+import localization from './localization';
+import { TablePagination } from "@material-ui/core";
 
 type CountdownHandle = {
   loadItems: () => void;
 }
 
-const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> = (props, forwardedRef) => {
+const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (props, forwardedRef) => {
+  const [page, setPage] = useState<number>(0);
+  const [itemsCount, setItemsCount] = useState<number>(0);
+
   const {
     columns,
     multiple = false,
     selection = false,
-    url,
     tableRef = createRef(),
+    isLoading,
+    queryKey,
+    queryCallback,
+    editAction,
+    pageSize = 10,
+    removeAction,
+    addAction,
   } = props;
 
-  // const [] = React.useState<any>(null);
+  const { t } = useTranslation();
+
+  const queryCache = useQueryCache();
+
+  const { isLoading: isLoadingFetchData } = usePaginatedQuery(
+    [queryKey, page],
+    () => queryCallback(page, pageSize),
+    {
+      onSuccess: (data) => {
+        const { items, count } = data;
+        setEntries(items);
+        setItemsCount(count);
+        setLoader(false);
+      },
+      onError: async () => {
+        await errorSweetAlert(t('error.loading-data'));
+        setLoader(false);
+      }
+    }
+  );
+
   const [entries, setEntries] = useState([]);
-  const [isLoader, setLoader] = useState(false);
+  const [isLoader, setLoader] = useState(true);
 
-  const fetchData = (): void => {
-    setEntries([]);
-    setLoader(true);
-    axios
-      .post(`${env.api.baseUrl}/${url}`)
-      .then(response => {
-        const data: any[] = [];
-        response.data.items.forEach((el: any) => {
-          data.push(el);
-        });
-        setEntries(response.data.items);
-        setLoader(false);
-      })
-      .catch(function(error) {
-        console.log(error);
-        setLoader(false);
-      });};
+  const reFetchData = () => queryCache.invalidateQueries(queryKey);
 
-  useEffect(fetchData, []);
+  let tableActions: any[] = [
+    {
+      icon: "refresh",
+      tooltip: "بارگزاری مجدد",
+      isFreeAction: true,
+      onClick: (): Promise<any> => reFetchData(),
+    }
+  ];
 
-  React.useImperativeHandle(forwardedRef, () => ({
+  if (addAction !== undefined) {
+    tableActions = [...tableActions, {
+      icon: 'add',
+      tooltip: 'ایجاد',
+      isFreeAction: true,
+      onClick: (): void => addAction(),
+    }];
+  }
+  if (editAction !== undefined) {
+    tableActions = [
+      ...tableActions,
+      {
+        icon: 'edit',
+        position: 'row',
+        tooltip: 'ویرایش',
+        color: '#dedede',
+        onClick: (event: any, rowData: any): void =>
+          editAction(event, rowData)
+      }
+    ];
+  }
+  if (removeAction !== undefined) {
+    tableActions = [
+      ...tableActions,
+      {
+          icon: 'delete',
+          position: 'row',
+          tooltip: 'حدف',
+          onClick: (event: any, rowData: any): void => {
+            removeAction(event, rowData);
+          }
+        }
+    ];
+  }
+
+  useImperativeHandle(forwardedRef, () => ({
     loadItems(): void {
       // tableRef.current && tableRef.current.onQueryChange();
-      fetchData();
+      reFetchData();
     },
   }));
 
@@ -54,113 +117,23 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
     return (
       <MaterialTable
         tableRef={tableRef}
-        // style={{ margin: -10 }}
-        localization={{
-          pagination: {
-            labelDisplayedRows: "{from}-{to} از {count}",
-            labelRowsSelect: "ردیف",
-            nextAriaLabel: "صفحه بعد",
-            nextTooltip: "صفحه بعد",
-            previousAriaLabel: "صفحه قبل",
-            previousTooltip: "صفحه قبل",
-            firstAriaLabel: "اولین صفحه",
-            firstTooltip: "اولین صفحه",
-            lastAriaLabel: "آخرین صفحه",
-            lastTooltip: "آخرین صفحه",
-          },
-          toolbar: {
-            nRowsSelected: "{0} ردیف انتخاب شده است",
-            searchPlaceholder: "جستجو",
-            addRemoveColumns: "افزودن و یا حذف ستون ها",
-            showColumnsTitle: "نمایش ستون ها",
-            showColumnsAriaLabel: "نمایش ستون ها",
-            searchTooltip: "جستجو",
-            exportTitle: "تبدیل کردن",
-            exportName: "تبدیل به اکسل",
-          },
-          header: {
-            actions: "عملیات",
-          },
-          body: {
-            emptyDataSourceMessage: "هیچ رکوردی برای نمایش وجود ندارد",
-            filterRow: {
-              filterTooltip: "فیلتر",
-            },
-          },
-        }}
+        localization={localization}
         components={{
           Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
+          Pagination: (props: any) => (
+            <TablePagination
+              {...props}
+              rowsPerPageOptions={[5, 10, 20, 30]}
+              rowsPerPage={pageSize}
+              count={itemsCount}
+            />
+          )
         }}
         columns={columns}
-        // data={(query: any) =>
-        //   new Promise((resolve, reject) => {
-        //     let oQuery = { ...query };
-        //     query.filter = "List.statuscode=1";
-        //     query.whereClause = whereClause;
-        //     query = { ...query, ...extraParam };
-        //     if (typeof oQuery.filter !== "undefined") {
-        //       delete oQuery.filter
-        //     }
-        //     if (typeof oQuery.whereClause !== "undefined") {
-        //       delete oQuery.whereClause
-        //     }
-        //     var data = {
-        //       data: [] = [],
-        //       page: 0,
-        //       totalCount: 0
-        //     };
-        //       return fetch(`${env.api.baseUrl}/${url}`, {
-        //         method: "POST",
-        //         headers: {
-        //           Accept: "application/json",
-        //           "Content-Type": "application/json",
-        //         },
-        //       })
-        //         .then((response) => response.json())
-        //         .then((result) => {
-        //           resolve(result);
-        //           getData(result);
-        //           loadItems = false;
-        //           oldQuery = { ...oQuery };
-        //         });
-        //   }).catch((error) => {
-        //     alert(error.message);
-        //     loadItems = false;
-        //     oldQuery = {};
-        //   })
-        // }
         data={entries}
-        actions={[
-          {
-            icon: "refresh",
-            tooltip: "بارگزاری مجدد",
-            isFreeAction: true,
-            onClick: (): void => fetchData(),
-          },
-          {
-            icon: 'add',
-            tooltip: 'ایجاد',
-            isFreeAction: true,
-            onClick: (): void => props.addAction()
-          },
-          {
-            icon: 'edit',
-            position: 'row',
-            tooltip: 'ویرایش',
-            onClick: (event: any, rowData: any): void =>
-              props.editAction(event, rowData)
-          },
-          {
-            icon: 'delete',
-            position: 'row',
-            tooltip: 'حدف',
-            onClick: (event: any, rowData: any): void => {
-              props.removeAction(event, rowData)
-            }
-          }
-        ]}
+        actions={tableActions}
         title=""
-        isLoading={isLoader}
+        isLoading={isLoader || isLoading || isLoadingFetchData}
         options={{
           actionsColumnIndex: -1,
           showSelectAllCheckbox: multiple,
@@ -169,7 +142,7 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
           doubleHorizontalScroll: false,
           paginationType: "stepped",
           filtering: false,
-          pageSize: 10,
+          pageSize,
           exportButton: true,
           padding: "dense",
           showTitle: false,
@@ -183,6 +156,10 @@ const DataTable: React.RefForwardingComponent<CountdownHandle, DataTableProps> =
           rowStyle: (rowData: any): {} => ({
             backgroundColor: rowData.tableData.checked ? "#37b15933" : "",
           }),
+        }}
+        onChangePage={(pageNumber: any) => {
+          console.log('pageNumber-->', pageNumber)
+          setPage(pageNumber);
         }}
         onSelectionChange={(): void => {
           // onSelectionChange(rows, row);

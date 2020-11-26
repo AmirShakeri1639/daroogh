@@ -127,7 +127,7 @@ const MessageForm: React.FC = () => {
 
   const usersListGenerator = useCallback(() => {
     if (dataGetAllUsers !== undefined) {
-      return dataGetAllUsers.map((d: NewUserData) => {
+      return dataGetAllUsers.items.map((d: NewUserData) => {
         return (
           <MenuItem
             key={d.id}
@@ -159,7 +159,6 @@ const MessageForm: React.FC = () => {
 
   const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-    console.log(state)
     try {
       if (!inputsIsValid()) {
         setShowError(true);
@@ -182,7 +181,6 @@ const MessageForm: React.FC = () => {
           Number(expireDateArray[2]),
         );
         state.expireDate = `${gregorianDate.gy}-${gregorianDate.gm}-${gregorianDate.gd}`;
-        console.log(state.expireDate)
       }
       await _createNewMessage(state);
     } catch (e) {
