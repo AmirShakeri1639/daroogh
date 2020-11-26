@@ -58,6 +58,29 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "eslintConfig": {
+    "extends": [],
+    "rules": {
+      "jsx-a11y/label-has-associated-control": 0,
+      "unused-imports/no-unused-imports" : "off",
+      "unused-imports/no-unused-vars-ts": "off",
+      "unused-imports/no-duplicate-case": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-duplicate-case": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/camelcase": "off",
+      "@typescript-eslint/ban-ts-ignore": "off",
+      "@typescript-eslint/no-inferrable-types": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "object-curly-spacing": [2, "always"],
+      "react/jsx-uses-react": "off",
+      "react/jsx-uses-vars": "off",
+      "indent": ["off", 2, { "SwitchCase": 1 }],
+      "jsx-a11y/no-onchange": 0,
+      "react-hooks/rules-of-hooks": "off",
+      "react-hooks/exhaustive-deps": "off"
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",
