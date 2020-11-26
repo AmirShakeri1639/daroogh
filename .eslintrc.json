@@ -1,6 +1,7 @@
 {
   "env": {
-    "browser": true
+    "browser": true,
+    "CI": false
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -11,9 +12,7 @@
     }
   },
   "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "plugin:jsx-a11y/recommended",
-    "plugin:react-hooks/recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "plugins": [
     "react",
@@ -25,9 +24,11 @@
   ],
   "rules": {
     "jsx-a11y/label-has-associated-control": 0,
-    "@typescript-eslint/no-unused-vars" : "off",
     "unused-imports/no-unused-imports" : "off",
     "unused-imports/no-unused-vars-ts": "off",
+    "unused-imports/no-duplicate-case": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-duplicate-case": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/ban-ts-ignore": "off",
@@ -36,7 +37,7 @@
     "object-curly-spacing": [2, "always"],
     "react/jsx-uses-react": "off",
     "react/jsx-uses-vars": "off",
-    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "indent": ["off", 2, { "SwitchCase": 1 }],
     "jsx-a11y/no-onchange": 0,
     "react-hooks/rules-of-hooks": "off",
     "react-hooks/exhaustive-deps": "off"
