@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from 'react';
-import { useMutation, useQuery, useQueryCache } from "react-query";
+import { useMutation, useQueryCache } from "react-query";
 import User from "../../../../services/api/User";
 import {
   createStyles,
@@ -39,7 +39,6 @@ const useClasses = makeStyles((theme) => createStyles({
     padding: theme.spacing(2, 2),
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
-      // width: '25ch',
     },
   },
   titleContainer: {
@@ -285,7 +284,6 @@ const UsersList: React.FC = () => {
       title={t('user.users-list')}
     >
       <DataTable
-        ref={ref}
         columns={tableColumns()}
         editAction={editUserHandler}
         removeAction={removeUserHandler}
