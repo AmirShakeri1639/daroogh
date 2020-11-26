@@ -60,6 +60,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "SET NODE_ENV=dev npm run build --dev --configuration=dev && react-scripts build",
+    "build:dev": "SET NODE_ENV=dev npm run build --dev --configuration=dev && react-scripts build",
     "lint": "eslint './src/**/*.{jsx,js,ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{jsx,js,ts,tsx}'",
     "test": "react-scripts test",
@@ -70,19 +71,28 @@
       "react-app"
     ],
     "rules": {
-      "semi": [
-        2,
-        "never"
-      ],
-      "indent": [
-        "error",
-        2
-      ],
-      "quotes": [
-        "error",
-        "single"
-      ]
+      "jsx-a11y/label-has-associated-control": 0,
+      "unused-imports/no-unused-imports" : "off",
+      "unused-imports/no-unused-vars-ts": "off",
+      "unused-imports/no-duplicate-case": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-duplicate-case": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/camelcase": "off",
+      "@typescript-eslint/ban-ts-ignore": "off",
+      "@typescript-eslint/no-inferrable-types": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "object-curly-spacing": [2, "always"],
+      "react/jsx-uses-react": "off",
+      "react/jsx-uses-vars": "off",
+      "indent": ["off", 2, { "SwitchCase": 1 }],
+      "jsx-a11y/no-onchange": 0,
+      "react-hooks/rules-of-hooks": "off",
+      "react-hooks/exhaustive-deps": "off"
     }
+  },
+  "esling": {
+    "enable": false
   },
   "browserslist": {
     "production": [
