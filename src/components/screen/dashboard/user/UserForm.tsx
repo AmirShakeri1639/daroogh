@@ -1,13 +1,15 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import {
   Box,
-  Button, createStyles,
+  Button,
+  createStyles,
   Grid,
   TextField,
   FormControlLabel,
   FormLabel,
   RadioGroup,
-  Radio, FormControl,
+  Radio,
+  FormControl,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { NewUserData } from "../../../../interfaces/user";
@@ -18,6 +20,7 @@ import DateTimePicker from "../../../public/datepicker/DatePicker";
 import Modal from "../../../public/modal/Modal";
 import User from "../../../../services/api/User";
 import { useTranslation } from "react-i18next";
+import { UserDataProps } from '../../../../interfaces';
 
 const useClasses = makeStyles((theme) => createStyles({
   formContainer: {
@@ -112,11 +115,6 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
-interface UserDataProps {
-  userData?: NewUserData;
-  noShowInput?: string[];
-}
-
 const UserForm: React.FC<UserDataProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showError, setShowError] = useState<boolean>(false);
@@ -134,12 +132,13 @@ const UserForm: React.FC<UserDataProps> = (props) => {
   const { t } = useTranslation();
 
   const [_saveNewUser, { isLoading: isLoadingNewUser }] = useMutation(saveNewUser, {
-    onSuccess: async () => {
+    onSuccess: async (data) => {
+      const { message } = data;
       if (showError) {
         setShowError(false);
       }
       dispatch({ type: 'reset' });
-      await successSweetAlert(t('alert.successfulCreateTextMessage'));
+      await successSweetAlert(message || t('alert.successfulCreateTextMessage'));
     },
     onError: async () => {
       await errorSweetAlert(t('error.save'));
@@ -195,8 +194,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
 
   const isVisibleField = (field: string): boolean => {
     return (
-      noShowInput !== undefined
-      && !noShowInput.includes(field)
+      !noShowInput?.includes(field)
     );
   }
 
