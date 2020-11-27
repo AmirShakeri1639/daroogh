@@ -1,9 +1,8 @@
-import React, {  useReducer, useState } from 'react';
-import { useMutation, useQuery, useQueryCache } from "react-query";
+import React, {useReducer, useState} from 'react';
+import {useMutation, useQuery, useQueryCache} from "react-query";
 import Drug from '../../../../services/api/Drug';
 import {
   Container,
-  createStyles,
   Grid,
   IconButton,
   Tooltip,
@@ -15,63 +14,27 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  CardHeader, Card, CardContent, Divider
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import CloseIcon from '@material-ui/icons/Close';
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-
-import { errorHandler, sweetAlert } from "../../../../utils";
+import Modal from '../../../public/modal/Modal';
+import {errorHandler, successSweetAlert, sweetAlert, warningSweetAlert} from "../../../../utils";
 import CircleLoading from "../../../public/loading/CircleLoading";
 import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
 import CheckIcon from '@material-ui/icons/Check';
-import { useTranslation } from "react-i18next";
-
+import {useTranslation} from "react-i18next";
+import {useClasses} from "../classes";
 
 import {
   ActionInterface,
   DrugInterface,
   TableColumnInterface
 } from "../../../../interfaces";
-
-
-const useClasses = makeStyles((theme) => createStyles({
-  container: {
-    marginTop: theme.spacing(1),
-  },
-  gridEditForm: {
-    margin: theme.spacing(2, 0, 2),
-  },
-  cancelButton: {
-    background: theme.palette.pinkLinearGradient.main,
-    marginLeft: theme.spacing(2),
-  },
-  checkIcon: {
-    color: theme.palette.success.main,
-  },
-  formContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: theme.spacing(2, 2),
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-      // width: '25ch',
-    },
-  },
-  titleContainer: {
-    padding: theme.spacing(2)
-  },
-  formTitle: {
-    margin: 0
-  },
-  addButton: {
-    background: theme.palette.blueLinearGradient.main,
-  },
-  box: {
-    '& > .MuiFormControl-root': {
-      flexGrow: 1,
-    }
-  }
-}));
+import useDataTableRef from "../../../../hooks/useDataTableRef";
+import DataTable from "../../../public/datatable/DataTable";
+import {CategoryQueryEnum, DrugEnum} from "../../../../enum/query";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -87,7 +50,7 @@ const initialState: DrugInterface = {
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
-  const { value } = action;
+  const {value} = action;
 
   switch (action.type) {
     case 'id':
@@ -148,87 +111,56 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 const DrugsList: React.FC = () => {
+  const ref = useDataTableRef();
+  const {t} = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
   const {
-    container, checkIcon
+    container, root
   } = useClasses();
-  const { t } = useTranslation();
-
-  const {
-    saveDrug,
-    getAllDrugs,
-    removeDrug
-  } = new Drug();
-
   const queryCache = useQueryCache();
-
   const {
-    isLoading: isLoadingDrugsList,
-    data: dataDrugsList
-  } = useQuery('drugsList', getAllDrugs);
+    save,
+    all,
+    remove
+  } = new Drug();
+  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
-  const [_removeDrug,
-    { isLoading: isLoadingRemoveDrug, reset: resetRemoveDrug }] = useMutation(removeDrug, {
-    onSuccess: async(data) => {
+  const [_remove,
+    {isLoading: isLoadingRemove, reset: resetRemove}] = useMutation(remove, {
+    onSuccess: async () => {
+      ref.current?.loadItems()
       await queryCache.invalidateQueries('drugsList');
-      await sweetAlert({
-        type: 'success',
-        text: data.message || t('alert.successfulDelete')
-      });
-      resetRemoveDrug();
-    },
-    onError: async () => {
-      await sweetAlert({
-        type: 'error',
-        text: t('error.remove')
-      });
+      await successSweetAlert(t('alert.successfulDelete'));
     }
-  })
+  });
 
-  const [_saveDrug] = useMutation(saveDrug, {
+  const [_save] = useMutation(save, {
     onSuccess: async (data) => {
       await queryCache.invalidateQueries('drugsList');
-      await sweetAlert({
-        type: 'success',
-        text: data.message || t('alert.successfulSave')
-      });
-      dispatch({ type: 'reset' });
-    },
-    onError: async () => {
-      await sweetAlert({
-        type: 'error',
-        text: t('error.save')
-      })
+      await successSweetAlert(t('alert.successfulSave'));
+      dispatch({type: 'reset'});
     }
-  })
+  });
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { field: 'name', title: 'نام', type: 'string' },
-      { field: 'genericName', title: t('drug.genericName'), type: 'string' },
+      {field: 'id', title: t('general.id'), type: 'number',
+        cellStyle: {textAlign: 'right'}},
+      {field: 'name', title: t('drug.name'), type: 'string'},
+      {field: 'genericName', title: t('drug.genericName'), type: 'string'},
       // { id: 'companyName', label: t('drug.companyName') },
-      // { id: 'active', label: t('general.active') },
-      // { id: 'enName', label: t('drug.enName') },
-      { field: 'type', title: t('general.type'), type: 'string' },
+      {field: 'active', title: t('general.active'), type: 'boolean'},
+      {field: 'enName', title: t('drug.enName'), type: 'string'},
+      {field: 'type', title: t('general.type'), type: 'string'},
     ];
   }
 
-  const handleChangePage = (event: unknown, newPage: number): void => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const removeDrugHandler = async (drugId: number): Promise<any> => {
+  const removeHandler = async (userRow: DrugInterface): Promise<any> => {
     try {
       if (window.confirm(t('alert.remove'))) {
-        await _removeDrug(drugId);
+        await _remove(userRow.id);
       }
     } catch (e) {
       errorHandler(e);
@@ -237,7 +169,7 @@ const DrugsList: React.FC = () => {
 
   const toggleDrugActivationHandler = async (drugId: number): Promise<any> => {
     try {
-      await _saveDrug({
+      await _save({
         id: drugId,
         categoryId: state.categoryId,
         name: state.name,
@@ -254,8 +186,8 @@ const DrugsList: React.FC = () => {
     }
   }
 
-  /* TODO: add edit drug using the createDrug component with an Id. */
-  const editDrugHandler = (item: DrugInterface): void => {
+  const saveHandler = (item: DrugInterface): void => {
+    toggleIsOpenSaveModalForm();
     const {
       id,
       name,
@@ -269,114 +201,83 @@ const DrugsList: React.FC = () => {
       type
     } = item;
 
-    dispatch({ type: 'id', value: id });
-    dispatch({ type: 'name', value: name });
-    dispatch({ type: 'categoryId', value: categoryId });
-    dispatch({ type: 'genericName', value: genericName });
-    dispatch({ type: 'companyName', value: companyName });
-    dispatch({ type: 'barcode', value: barcode });
-    dispatch({ type: 'description', value: description });
-    dispatch({ type: 'active', value: active });
-    dispatch({ type: 'enName', value: enName });
-    dispatch({ type: 'type', value: type });
+    dispatch({type: 'id', value: id});
+    dispatch({type: 'name', value: name});
+    dispatch({type: 'categoryId', value: categoryId});
+    dispatch({type: 'genericName', value: genericName});
+    dispatch({type: 'companyName', value: companyName});
+    dispatch({type: 'barcode', value: barcode});
+    dispatch({type: 'description', value: description});
+    dispatch({type: 'active', value: active});
+    dispatch({type: 'enName', value: enName});
+    dispatch({type: 'type', value: type});
   }
 
-  const tableRowsGenerator = (): JSX.Element[] => {
-    return dataDrugsList
-      // .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
-      .map((item: any) => {
-        return (
-          <TableRow
-            hover
-            role="checkbox"
-            tabIndex={-1}
-            key={item.id}
-          >
-            {tableColumns().map((field: any, index: number) => {
-              return (
-                <TableCell key={field.id+index}>
-                  {item[field.id]}
-                  {/*{typeof value === 'string' ? value : value.length}*/}
-                </TableCell>
-              );
-            })}
-            <TableCell>
-              <Tooltip
-                title={String(t('action.delete'))}
-              >
-                <IconButton
-                  component="span"
-                  aria-label="remove drug"
-                  color="secondary"
-                  onClick={(): Promise<any> => removeDrugHandler(item.id)}
-                >
-                  <DeleteOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={String(t('action.edit'))}
-              >
-                <IconButton
-                  component="span"
-                  aria-label="edit drug"
-                  color="primary"
-                  onClick={(): void => editDrugHandler(item)}
-                >
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={item.active ? String(t('action.deactivation')) : String(t('action.activation'))}
-              >
-                {
-                  item.active
-                    ? (
-                      <IconButton
-                        component="span"
-                        aria-label="deactivate drug"
-                        color="inherit"
-                        className={checkIcon}
-                        onClick={(): Promise<any> => toggleDrugActivationHandler(item.id)}
-                      >
-                        <CheckIcon fontSize="small" />
-                      </IconButton>
-                    )
-                    : (
-                      <IconButton
-                        component="span"
-                        aria-label="activate drug"
-                        color="inherit"
-                        onClick={(): Promise<any> => toggleDrugActivationHandler(item.id)}
-                      >
-                        <BlockTwoToneIcon fontSize="small" />
-                      </IconButton>
-                    )
-                }
-              </Tooltip>
-            </TableCell>
-          </TableRow>
-        );
-      })
+  const isFormValid = (): boolean => {
+    return (
+      state.name.trim().length < 1
+      || state.genericName.trim().length < 1
+      || state.companyName.trim().length < 1
+      || state.enName.trim().length < 1
+      || state.type.trim().length < 1
+    );
   }
 
-  // const inputsValidationResult = (): boolean => {
-  //   return (
-  //     state.name.trim().length < 1
-  //     || state.genericName.trim().length < 1
-  //     || state.companyName.trim().length < 1
-  //     || state.enName.trim().length < 1
-  //     || state.type.trim().length < 1
-  //   );
-  // }
+  const submitSave = async (el: React.FormEvent<HTMLFormElement>): Promise<any> => {
+    el.preventDefault();
 
-  // const submitEditDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
-  //   e.preventDefault();
-  //
-  //   alert('drug submitted');
-  //
-  //   // inputsValidationResult();
-  // }
+    const {
+      id,
+      name,
+      categoryId,
+      genericName,
+      companyName,
+      barcode,
+      description,
+      active,
+      enName,
+      type
+    } = state;
 
+    if (isFormValid()) {
+      try {
+        await _save({
+          id, name, categoryId, genericName, companyName,
+          barcode, description, active, enName, type
+        });
+        dispatch({type: 'reset'});
+        toggleIsOpenSaveModalForm();
+        ref.current?.loadItems();
+      } catch (e) {
+        errorHandler(e);
+      }
+    } else {
+      await warningSweetAlert(t('alert.fillFormCarefully'));
+    }
+  }
+
+  const editModal = (): JSX.Element => {
+    return (
+      <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
+        <Card className={root}>
+          <CardHeader
+            title={state.id === 0 ? t('action.create') : t('action.edit')}
+            action={
+              <IconButton onClick={toggleIsOpenSaveModalForm}>
+                <CloseIcon/>
+              </IconButton>
+            }
+          />
+          <Divider/>
+          <CardContent>
+            /* TODO: load create form component */
+          </CardContent>
+        </Card>
+      </Modal>
+    )
+  }
+
+  // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
       <Grid
@@ -387,49 +288,23 @@ const DrugsList: React.FC = () => {
           item
           xs={12}
         >
+          <div>{t('drug.list')}</div>
           <Paper>
-            <TableContainer>
-              <Table
-                stickyHeader
-                aria-label="drugs table"
-              >
-                <TableHead>
-                  <TableRow>
-                    {tableColumns().map(item => {
-                      return (
-                        <TableCell
-                          key={item.field}
-                        >
-                          {item.title}
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell>
-                      {t('general.options')}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(!isLoadingDrugsList && dataDrugsList) && tableRowsGenerator()}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[1, 25, 100]}
-              component="div"
-              count={dataDrugsList?.length || 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
+            <DataTable
+              ref={ref}
+              columns={tableColumns()}
+              addAction={(): void => saveHandler(initialState)}
+              editAction={(e: any, row: any): void => saveHandler(row)}
+              removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
+              queryKey={DrugEnum.GET_ALL}
+              queryCallback={all}
+              initLoad={false}
             />
-            {(isLoadingDrugsList || isLoadingRemoveDrug) && <CircleLoading />}
+            {(isLoadingRemove) && <CircleLoading/>}
           </Paper>
         </Grid>
+        {isOpenEditModal && editModal()}
       </Grid>
-
-      {/*{state.id !== 0 && displayEditForm()}*/}
-
     </Container>
   );
 }

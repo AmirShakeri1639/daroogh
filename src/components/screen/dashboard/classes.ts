@@ -2,6 +2,19 @@ import {makeStyles} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 
 export const useClasses = makeStyles((theme) => createStyles({
+  root: {
+    width: 500,
+    '& > .MuiCardContent-root': {
+      padding: 0
+    },
+    '& > .MuiCardHeader-root': {
+      padding: '10px 10px 2px 10px'
+    },
+    '& > .MuiCardHeader-content': {
+      marginTop: '-10px !important',
+      color: 'red'
+    }
+  },
   container: {
     marginTop: theme.spacing(1),
   },
