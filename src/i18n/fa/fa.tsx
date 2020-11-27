@@ -36,6 +36,7 @@ export default {
         website: 'وب سایت',
         email: 'ایمیل',
         postalCode: 'کد پستی',
+        close: 'بستن',
       },
       action: {
         insert: 'درج',
@@ -109,6 +110,7 @@ export default {
         profile: 'پروفایل',
         sms: 'پیامک',
         notification: 'ناتیفیکیشن',
+        detail: 'جزییات پیام',
       },
       category:{
         category: 'دسته‌بندی',

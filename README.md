@@ -1,3 +1,7 @@
+[![pipeline status](https://git.hozehkh.com/daroog/tabadol/react-front/badges/main/pipeline.svg)](https://git.hozehkh.com/daroog/tabadol/react-front/-/commits/main)
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

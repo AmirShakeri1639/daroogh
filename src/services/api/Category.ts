@@ -10,9 +10,9 @@ class Category extends Api {
     remove: '/Categories/Remove/',
   }
 
-  getAllCategories = async (): Promise<any> => {
+  getAllCategories = async (skip: number, top: number = 10): Promise<any> => {
     try {
-      const result = await this.postJsonData(this.urls.all);
+      const result = await this.postJsonData(`${this.urls.all}?&top=${top}&$skip=${top * skip}`);
       return result.data;
     } catch (e) {
       errorHandler(e);

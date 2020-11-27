@@ -8,7 +8,7 @@ build_solution:
     - main
   script:
     - "npm i"
-    - "npm run build"
+    - "npm run build:dev"
   artifacts:
     expire_in: 1 week
     paths:
