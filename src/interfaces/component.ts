@@ -1,4 +1,5 @@
 import { TableColumnInterface } from ".";
+import { NewUserData } from "./user";
 
 export interface SelectPropsInterface {
   value: string;
@@ -50,4 +51,9 @@ export interface DataTableProps{
   editAction?: (() => void) | void | any;
   removeAction?: (() => void) | void | any;
   addAction?: (() => void) | void | any;
+}
+
+export interface UserDataProps {
+  userData?: NewUserData;
+  noShowInput?: string[];
 }
