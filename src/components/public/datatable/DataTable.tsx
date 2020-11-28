@@ -137,6 +137,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
               rowsPerPageOptions={[5, 10, 20, 30]}
               rowsPerPage={pageSize}
               count={itemsCount}
+              page={page}
             />
           )
         }}
