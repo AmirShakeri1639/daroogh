@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Button as MaterialButton, createStyles, makeStyles, useTheme
+  Button as MaterialButton, createStyles, makeStyles
 } from '@material-ui/core';
 import { ButtonPropsInterface } from '../../../interfaces/component';
 

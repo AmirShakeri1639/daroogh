@@ -37,6 +37,7 @@ export default {
         email: 'ایمیل',
         postalCode: 'کد پستی',
         close: 'بستن',
+        id: 'شناسه',
       },
       action: {
         insert: 'درج',
@@ -130,6 +131,7 @@ export default {
         successfulDelete: 'با موفقیت حذف شد.',
         remove: 'آیا از حذف مطمئن هستید؟',
         failedEdit: 'ویرایش با خطا روبرو شد',
+        fillFormCarefully: 'در پر کردن مقادیر فرم بیشتر دقت کنید.',
       },
       pharmacy: {
         pharmacy: 'داروخانه',

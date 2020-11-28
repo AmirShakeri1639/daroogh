@@ -151,7 +151,7 @@ const useClasses = makeStyles((theme) => createStyles({
 const CreateDrug: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { t } = useTranslation();
-  const { saveDrug } = new Drug();
+  const { save } = new Drug();
 
   // const { data: drugData } =
   //   useQuery('allRoles', getAllRoles);
@@ -162,7 +162,7 @@ const CreateDrug: React.FC = () => {
     titleContainer, formTitle
   } = useClasses();
 
-  const [_saveDrug] = useMutation(saveDrug, {
+  const [_saveDrug] = useMutation(save, {
     onSuccess: async (data) => {
       await queryCache.invalidateQueries('drugsList');
       await sweetAlert({

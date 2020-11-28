@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IconProps } from '@material-ui/core/Icon';
-import { string } from 'prop-types';
+
 
 export interface MaterialTableProps<RowData extends object> {
   actions?: (Action<RowData> | ((rowData: RowData) => Action<RowData>))[];
@@ -14,7 +14,7 @@ export interface MaterialTableProps<RowData extends object> {
     onRowAdd?: (newData: RowData) => Promise<any>;
     onRowUpdate?: (newData: RowData, oldData?: RowData) => Promise<any>;
     onRowDelete?: (oldData: RowData) => Promise<any>;
-  }
+  };
   icons?: Icons;
   isLoading?: boolean;
   title?: string | React.ReactElement<any>;
@@ -23,10 +23,10 @@ export interface MaterialTableProps<RowData extends object> {
   localization?: Localization;
   onChangeRowsPerPage?: (pageSize: number) => void;
   onChangePage?: (page: number) => void;
-  onChangeColumnHidden?: (column:Column<RowData>, hidden:boolean) => void;
+  onChangeColumnHidden?: (column: Column<RowData>, hidden: boolean) => void;
   onColumnDragged?: (sourceIndex: number, destinationIndex: number) => void;
   onOrderChange?: (orderBy: number, orderDirection: ("asc" | "desc")) => void;
-  onGroupRemoved?: (column:Column<RowData>, index:boolean) => void;
+  onGroupRemoved?: (column: Column<RowData>, index: boolean) => void;
   onRowClick?: (event?: React.MouseEvent, rowData?: RowData, toggleDetailPanel?: (panelIndex?: number) => void) => void;
   onRowSelected?: (rowData: RowData) => void;
   onSearchChange?: (searchText: string) => void;
@@ -98,12 +98,12 @@ export interface EditCellColumnDef {
     groupOrder: any;
     groupSort: string;
     id: number;
-  }
+  };
 }
 
 export interface Column<RowData extends object> {
   cellStyle?: React.CSSProperties | ((data: RowData[], rowData: RowData) => React.CSSProperties);
-  currencySetting?: { locale?: string, currencyCode?: string, minimumFractionDigits?: number, maximumFractionDigits?: number };
+  currencySetting?: { locale?: string; currencyCode?: string; minimumFractionDigits?: number; maximumFractionDigits?: number };
   customFilterAndSearch?: (filter: any, rowData: RowData, columnDef: Column<RowData>) => boolean;
   customSort?: (data1: RowData, data2: RowData, type: (('row' | 'group'))) => number;
   defaultFilter?: any;
@@ -116,14 +116,14 @@ export interface Column<RowData extends object> {
   export?: boolean;
   field?: keyof RowData | string;
   filtering?: boolean;
-  filterComponent?: ((props: {columnDef: Column<RowData>, onFilterChanged: (rowId: string, value: any) => void}) => React.ReactElement<any>);
+  filterComponent?: ((props: {columnDef: Column<RowData>; onFilterChanged: (rowId: string, value: any) => void}) => React.ReactElement<any>);
   filterPlaceholder?: string;
   filterCellStyle?: React.CSSProperties;
   grouping?: boolean;
   headerStyle?: React.CSSProperties;
   hidden?: boolean;
   hideFilterIcon?: boolean;
-  initialEditValue?: any,
+  initialEditValue?: any;
   lookup?: object;
   editable?: ('always' | 'onUpdate' | 'onAdd' | 'never' | ((columnDef: Column<RowData>, rowData: RowData) => boolean));
   removable?: boolean;
@@ -206,7 +206,7 @@ export interface Options {
   exportCsv?: (columns: any[], renderData: any[]) => void;
   filtering?: boolean;
   filterCellStyle?: React.CSSProperties;
-  fixedColumns?: { left?: number; right?: number; };
+  fixedColumns?: { left?: number; right?: number };
   groupRowSeparator?: string;
   header?: boolean;
   headerStyle?: React.CSSProperties;
@@ -252,7 +252,7 @@ export interface Localization {
       saveTooltip?: string;
       cancelTooltip?: string;
       deleteText?: string;
-    },
+    };
     addTooltip?: string;
     deleteTooltip?: string;
     editTooltip?: string;
@@ -268,13 +268,13 @@ export interface Localization {
     firstTooltip?: string;
     firstAriaLabel?: string;
     previousTooltip?: string;
-    previousAriaLabel?: string,
+    previousAriaLabel?: string;
     nextTooltip?: string;
-    nextAriaLabel?: string,
+    nextAriaLabel?: string;
     labelDisplayedRows?: string;
     labelRowsPerPage?: string;
     lastTooltip?: string;
-    lastAriaLabel?: string,
+    lastAriaLabel?: string;
     labelRowsSelect?: string;
   };
   toolbar?: {
