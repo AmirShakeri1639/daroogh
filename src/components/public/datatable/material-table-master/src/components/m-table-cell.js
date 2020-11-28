@@ -54,7 +54,7 @@ export default class MTableCell extends React.Component {
         return this.props.value;
       }
     } else if (this.props.columnDef.type === "currency") {
-      var res = this.getCurrencyValue(
+      const res = this.getCurrencyValue(
         this.props.columnDef.currencySetting,
         this.props.value
       );

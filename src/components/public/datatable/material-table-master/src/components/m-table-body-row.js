@@ -56,9 +56,9 @@ export default class MTableBodyRow extends React.Component {
     const styles = size === 'medium' ? {
       marginLeft: this.props.level * 9
     } : {
-        padding: "4px",
-        marginLeft: 5 + this.props.level * 9
-      };
+      padding: "4px",
+      marginLeft: 5 + this.props.level * 9
+    };
 
     return (
       <TableCell size={size} padding="none" key="key-selection-column" style={{ width: selectionWidth }}>
