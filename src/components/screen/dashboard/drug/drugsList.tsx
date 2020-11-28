@@ -14,7 +14,17 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  CardHeader, Card, CardContent, Divider
+  Checkbox,
+  CardHeader,
+  Card,
+  CardContent,
+  Divider,
+  Box,
+  TextField,
+  Button,
+  FormControl,
+  FormControlLabel,
+  CardActions
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
@@ -35,6 +45,7 @@ import {
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import {CategoryQueryEnum, DrugEnum} from "../../../../enum/query";
+import {CheckBox} from "@material-ui/icons";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -117,7 +128,7 @@ const DrugsList: React.FC = () => {
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
   const {
-    container, root
+    container, root, formContainer, box, addButton, cancelButton
   } = useClasses();
   const queryCache = useQueryCache();
   const {
@@ -136,7 +147,7 @@ const DrugsList: React.FC = () => {
     }
   });
 
-  const [_save] = useMutation(save, {
+  const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
     onSuccess: async (data) => {
       await queryCache.invalidateQueries('drugsList');
       await successSweetAlert(t('alert.successfulSave'));
@@ -215,11 +226,7 @@ const DrugsList: React.FC = () => {
 
   const isFormValid = (): boolean => {
     return (
-      state.name.trim().length < 1
-      || state.genericName.trim().length < 1
-      || state.companyName.trim().length < 1
-      || state.enName.trim().length < 1
-      || state.type.trim().length < 1
+      state.name && state.name.trim().length > 1
     );
   }
 
@@ -270,7 +277,135 @@ const DrugsList: React.FC = () => {
           />
           <Divider/>
           <CardContent>
-            /* TODO: load create form component */
+            <form
+              autoComplete="off"
+              className={formContainer}
+              onSubmit={submitSave}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      required
+                      variant="outlined"
+                      label={t('drug.name')}
+                      value={state.name}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'name', value: e.target.value })
+                      }
+                    />
+                    <div className="row">
+                      {/* TODO: Add CategoryId */}
+                    </div>
+                    <TextField
+                      variant="outlined"
+                      label={t('drug.genericName')}
+                      value={state.genericName}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'genericName', value: e.target.value })
+                      }
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      variant="outlined"
+                      label={t('drug.companyName')}
+                      value={state.companyName}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'companyName', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('drug.barcode')}
+                      value={state.barcode}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'barcode', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('general.description')}
+                      value={state.description}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'description', value: e.target.value })
+                      }
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <div className="row">
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={state.active}
+                            onChange={
+                              (e): void =>
+                                dispatch({type: 'active', value: e.target.checked})
+                            }
+                          />
+                        }
+                        label={t('general.active')}
+                      />
+                    </div>
+                    <TextField
+                      variant="outlined"
+                      label={t('drug.enName')}
+                      value={state.enName}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'enName', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('general.type')}
+                      value={state.type}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'type', value: e.target.value })
+                      }
+                    />
+                  </Box>
+                </Grid>
+                <Divider />
+                <Grid item xs={12}>
+                  <CardActions>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      variant="contained"
+                      className={addButton}
+                    >
+                      {
+                        isLoadingSave
+                          ? t('general.pleaseWait')
+                          : t('general.save')
+                      }
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="contained"
+                      className={cancelButton}
+                      onClick={(): void => {
+                        dispatch({ type: 'reset' });
+                        toggleIsOpenSaveModalForm();
+                      }}
+                    >
+                      {t('general.cancel')}
+                    </Button>
+                  </CardActions>
+                </Grid>
+              </Grid>
+            </form>
           </CardContent>
         </Card>
       </Modal>
