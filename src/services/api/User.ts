@@ -14,7 +14,7 @@ class User extends Api {
 
   getAllUsers = async (skip: number = 0, top: number = 1): Promise<any> => {
     try {
-      console.log(skip, top)
+      console.log('skip', skip, 'top', top)
       const result = await this.postData(`/User/AllUsers?$top=${top}&$skip=${skip * top}`);
       return result.data;
     } catch (e) {
