@@ -14,3 +14,8 @@ export enum MessageQueryEnum {
 export enum DrugEnum {
   GET_ALL = 'all',
 }
+
+export enum RoleQueryEnum {
+  GET_ALL_ROLES = 'getAllRoles',
+  GET_ALL_ROLE_PERMISSION_ITEMS = 'getAllRolePermissionItems',
+}

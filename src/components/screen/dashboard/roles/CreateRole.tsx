@@ -1,26 +1,28 @@
 import React, { useReducer, Fragment } from 'react';
 import {
   Grid,
-  IconButton,
   Paper,
   TextField,
   Container,
-  TableCell,
   createStyles,
-  Typography, FormControl, Button, Divider,
+  Typography,
+  FormControl,
+  Button,
+  Divider,
 } from "@material-ui/core";
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import Role from "../../../../services/api/Role";
 import { useMutation, useQuery, useQueryCache } from "react-query";
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface, TableColumnInterface } from "../../../../interfaces";
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { TextMessage } from "../../../../enum";
 import { errorHandler, successSweetAlert } from "../../../../utils";
 import { useTranslation } from "react-i18next";
 import Permissions from "./Permissions";
-import DataGrid from "../../../public/data-grid/DataGrid";
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import DataTable from '../../../public/datatable/DataTable';
+import { RoleQueryEnum } from '../../../../enum/query';
+import useDataTableRef from '../../../../hooks/useDataTableRef';
+import { NewRoleData } from '../../../../interfaces';
 
 interface ReducerInitialStateInterface {
   id: number;
@@ -123,7 +125,7 @@ const useClasses = makeStyles((theme) => createStyles({
 
 const CreateRole: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const ref = useDataTableRef();
   const { t } = useTranslation();
 
   const {
@@ -136,29 +138,26 @@ const CreateRole: React.FC = () => {
 
   const queryCache = useQueryCache();
 
-  const { isLoading: isLoadingRole, data: roleData } =
-    useQuery('allRoles', getAllRoles);
-
   const { data: permissionItemsData } =
     useQuery(
-      'rolePermissionItems',
+      RoleQueryEnum.GET_ALL_ROLE_PERMISSION_ITEMS,
       getAllRolePermissionItems,
-      {
-        enabled: roleData
-      });
+    );
 
   const [_removeRoleById, {
     isLoading: isLoadingRemoveRole,
   }] = useMutation(removeRoleById, {
     onSuccess: async (data) => {
-      await queryCache.invalidateQueries('allRoles');
+      ref.current?.loadItems();
+      await queryCache.invalidateQueries(RoleQueryEnum.GET_ALL_ROLES);
       await successSweetAlert(data.message || t('alert.successfulRemoveTextMessage'));
     }
   });
 
   const [_saveNewRole, { isLoading: newRoleLoading }] = useMutation(saveNewRole, {
     onSuccess: async () => {
-      await queryCache.invalidateQueries('allRoles');
+      ref.current?.loadItems();
+      await queryCache.invalidateQueries(RoleQueryEnum.GET_ALL_ROLES);
       await successSweetAlert(
         state.id === 0
           ? t('alert.successfulCreateTextMessage')
@@ -176,24 +175,26 @@ const CreateRole: React.FC = () => {
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { field: 'name', title: 'نام نقش', type: 'string' },
-      { field: 'permissionItemes', title: 'تعداد مجوزها', type: 'string' },
+      { field: 'name', title: 'نام نقش', type: 'string', cellStyle: { textAlign: "right" } },
+      { field: 'permissionItemes', title: 'تعداد مجوزها', type: 'string', cellStyle: { textAlign: "right" } },
     ];
   }
 
-  const removeRoleHandler = async (roleId: number): Promise<any> => {
+  const removeRoleHandler = async (event: any, row: any): Promise<any> => {
+    const { id } = row;
     try {
-      if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
-        await _removeRoleById(roleId);
+      if (window.confirm(t('alert.remove'))) {
+        await _removeRoleById(id);
       }
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  const editRoleHandler = async (roleId: number): Promise<any> => {
+  const editRoleHandler = async (event: any, row: NewRoleData): Promise<any> => {
+    const { id } = row;
     try {
-      const result = await getRoleById(roleId);
+      const result = await getRoleById(Number(id));
       dispatch({ type: 'reset' });
       dispatch({ type: 'name', value: result.name });
       dispatch({ type: 'id', value: result.id });
@@ -226,31 +227,6 @@ const CreateRole: React.FC = () => {
     dispatch({ type: 'name', value: e.target.value });
   }
 
-  const extraColumnHandler = (item: any): JSX.Element => {
-    return (
-      <Fragment>
-        <TableCell>
-          <IconButton
-            component="span"
-            aria-label="remove role"
-            color="secondary"
-            onClick={(): Promise<any> => removeRoleHandler(item.id)}
-          >
-            <DeleteOutlinedIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            component="span"
-            aria-label="edit role"
-            color="primary"
-            onClick={(): Promise<any> => editRoleHandler(item.id)}
-          >
-            <EditOutlinedIcon fontSize="small" />
-          </IconButton>
-        </TableCell>
-      </Fragment>
-    )
-  }
-
   return (
     <Container maxWidth="lg" className={parent}>
       <Grid container spacing={0}>
@@ -259,12 +235,14 @@ const CreateRole: React.FC = () => {
           xs={12}
         >
           <Paper className={root}>
-            <DataGrid
-              data={roleData}
-              tableColumns={tableColumns()}
-              isLoading={isLoadingRemoveRole || isLoadingRole}
-              ariaLabel="roles list"
-              extraColumn={(item: any): JSX.Element => extraColumnHandler(item)}
+            <DataTable
+              ref={ref}
+              queryKey={RoleQueryEnum.GET_ALL_ROLES}
+              queryCallback={getAllRoles}
+              columns={tableColumns()}
+              isLoading={isLoadingRemoveRole}
+              removeAction={removeRoleHandler}
+              editAction={editRoleHandler}
             />
           </Paper>
         </Grid>
