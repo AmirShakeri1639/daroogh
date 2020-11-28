@@ -41,7 +41,7 @@ import {useClasses} from "../classes";
 
 import {
   ActionInterface, CategoryInterface,
-  DrugInterface,
+  DrugInterface, LabelValue,
   TableColumnInterface
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
@@ -49,6 +49,7 @@ import DataTable from "../../../public/datatable/DataTable";
 import {CategoryQueryEnum, DrugEnum} from "../../../../enum/query";
 import {CheckBox} from "@material-ui/icons";
 import {Category} from "../../../../services/api";
+import {DaroogDropdown} from "../common/daroogDropdown";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -75,7 +76,7 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'categoryId':
       return {
         ...state,
-        categoryID: value,
+        categoryId: value,
       };
     case 'name':
       return {
@@ -194,6 +195,7 @@ const DrugsList: React.FC = () => {
 
   const toggleDrugActivationHandler = async (drugId: number): Promise<any> => {
     try {
+      console.log('categoryid in _save:', state.categoryId)
       await _save({
         id: drugId,
         categoryId: state.categoryId,
@@ -226,6 +228,7 @@ const DrugsList: React.FC = () => {
       type
     } = item;
 
+    console.log('categoryid in saveHandler:', categoryId)
     dispatch({type: 'id', value: id});
     dispatch({type: 'name', value: name});
     dispatch({type: 'categoryId', value: categoryId});
@@ -260,6 +263,7 @@ const DrugsList: React.FC = () => {
       type
     } = state;
 
+    console.log('categoryid in submitSave:', categoryId)
     if (isFormValid()) {
       try {
         await _save({
@@ -309,23 +313,15 @@ const DrugsList: React.FC = () => {
                       }
                     />
                     <div className="row">
-                      <Select
-                        label={t('drug.category')}
-                        value={state.categoryId}
+                      <DaroogDropdown
                         defaultValue={1}
-                        onChange={
-                          (e): void =>
-                            dispatch({type: 'categoryId', value: e.target.value as string})
-                        }
-                      >
-                        {categories && categories.map((item: any) => {
-                          return (
-                            <MenuItem key={item.value} value={item.value}>
-                              {item.label}
-                            </MenuItem>
-                          )
-                        })}
-                      </Select>
+                        data={categories}
+                        label={t('drug.category')}
+                        onChangeHandler={(v): void => {
+                          console.log('vvv:', v)
+                          return dispatch({type: 'categoryId', value: v})
+                        }}
+                      />
                     </div>
                     <TextField
                       variant="outlined"
