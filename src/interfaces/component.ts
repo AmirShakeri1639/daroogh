@@ -33,7 +33,7 @@ export interface CategoriesInterface {
 }
 
 export interface DataTableProps{
-  columns: Array<TableColumnInterface>;
+  columns: any;
   whereClause?: [];
   extraParam?: {};
   isLoading?: boolean;
