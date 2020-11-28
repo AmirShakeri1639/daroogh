@@ -1,11 +1,12 @@
 import { TableColumnInterface } from ".";
+import { NewUserData } from "./user";
 
 export interface SelectPropsInterface {
   value: string;
   labelId?: string;
   onChange: (e: any) => void;
   label?: string;
-  required?: boolean,
+  required?: boolean;
   error: any;
 }
 
@@ -50,4 +51,9 @@ export interface DataTableProps{
   editAction?: (() => void) | void | any;
   removeAction?: (() => void) | void | any;
   addAction?: (() => void) | void | any;
+}
+
+export interface UserDataProps {
+  userData?: NewUserData;
+  noShowInput?: string[];
 }

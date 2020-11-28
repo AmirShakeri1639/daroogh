@@ -10,3 +10,7 @@ export enum CategoryQueryEnum {
 export enum MessageQueryEnum {
   GET_ALL_MESSAGES = 'getAllMessages',
 }
+
+export enum DrugEnum {
+  GET_ALL = 'all',
+}
