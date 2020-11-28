@@ -22,9 +22,7 @@ export interface ModalPropsInterface {
   toggle: () => void;
 }
 
-export interface ModalContentPropsInterface extends ModalPropsInterface {
-  //
-}
+export type ModalContentPropsInterface = ModalPropsInterface
 
 export interface CategoriesInterface {
   id: number;

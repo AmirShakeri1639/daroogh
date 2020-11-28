@@ -1,5 +1,5 @@
-import React, {useReducer, useState} from 'react';
-import {useMutation, useQuery, useQueryCache} from "react-query";
+import React, { useReducer, useState } from 'react';
+import { useMutation, useQuery, useQueryCache } from "react-query";
 import Drug from '../../../../services/api/Drug';
 import {
   Container,
@@ -32,12 +32,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import Modal from '../../../public/modal/Modal';
-import {errorHandler, successSweetAlert, sweetAlert, warningSweetAlert} from "../../../../utils";
+import { errorHandler, successSweetAlert, sweetAlert, warningSweetAlert } from "../../../../utils";
 import CircleLoading from "../../../public/loading/CircleLoading";
 import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
 import CheckIcon from '@material-ui/icons/Check';
-import {useTranslation} from "react-i18next";
-import {useClasses} from "../classes";
+import { useTranslation } from "react-i18next";
+import { useClasses } from "../classes";
 
 import {
   ActionInterface, CategoryInterface,
@@ -46,10 +46,10 @@ import {
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
-import {CategoryQueryEnum, DrugEnum} from "../../../../enum/query";
-import {CheckBox} from "@material-ui/icons";
-import {Category} from "../../../../services/api";
-import {DaroogDropdown} from "../common/daroogDropdown";
+import { CategoryQueryEnum, DrugEnum } from "../../../../enum/query";
+import { CheckBox } from "@material-ui/icons";
+import { Category } from "../../../../services/api";
+import { DaroogDropdown } from "../common/daroogDropdown";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -65,7 +65,7 @@ const initialState: DrugInterface = {
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
-  const {value} = action;
+  const { value } = action;
 
   switch (action.type) {
     case 'id':
@@ -127,7 +127,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 
 const DrugsList: React.FC = () => {
   const ref = useDataTableRef();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
@@ -148,13 +148,13 @@ const DrugsList: React.FC = () => {
     async function getCategories() {
       const result = await allCategories(0, 1000);
       console.log('RESULT:', result);
-      setCategories(result.items.map((item: any) => ({value: item.id, label: item.name})));
+      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
     }
     getCategories();
   }, []);
 
   const [_remove,
-    {isLoading: isLoadingRemove, reset: resetRemove}] = useMutation(remove, {
+    { isLoading: isLoadingRemove, reset: resetRemove }] = useMutation(remove, {
     onSuccess: async () => {
       ref.current?.loadItems()
       await queryCache.invalidateQueries('drugsList');
@@ -166,20 +166,20 @@ const DrugsList: React.FC = () => {
     onSuccess: async (data) => {
       await queryCache.invalidateQueries('drugsList');
       await successSweetAlert(t('alert.successfulSave'));
-      dispatch({type: 'reset'});
+      dispatch({ type: 'reset' });
     }
   });
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      {field: 'id', title: t('general.id'), type: 'number',
-        cellStyle: {textAlign: 'right'}},
-      {field: 'name', title: t('drug.name'), type: 'string'},
-      {field: 'genericName', title: t('drug.genericName'), type: 'string'},
+      { field: 'id', title: t('general.id'), type: 'number',
+        cellStyle: { textAlign: 'right' } },
+      { field: 'name', title: t('drug.name'), type: 'string' },
+      { field: 'genericName', title: t('drug.genericName'), type: 'string' },
       // { id: 'companyName', label: t('drug.companyName') },
-      {field: 'active', title: t('general.active'), type: 'boolean'},
-      {field: 'enName', title: t('drug.enName'), type: 'string'},
-      {field: 'type', title: t('general.type'), type: 'string'},
+      { field: 'active', title: t('general.active'), type: 'boolean' },
+      { field: 'enName', title: t('drug.enName'), type: 'string' },
+      { field: 'type', title: t('general.type'), type: 'string' },
     ];
   }
 
@@ -229,16 +229,16 @@ const DrugsList: React.FC = () => {
     } = item;
 
     console.log('categoryid in saveHandler:', categoryId)
-    dispatch({type: 'id', value: id});
-    dispatch({type: 'name', value: name});
-    dispatch({type: 'categoryId', value: categoryId});
-    dispatch({type: 'genericName', value: genericName});
-    dispatch({type: 'companyName', value: companyName});
-    dispatch({type: 'barcode', value: barcode});
-    dispatch({type: 'description', value: description});
-    dispatch({type: 'active', value: active});
-    dispatch({type: 'enName', value: enName});
-    dispatch({type: 'type', value: type});
+    dispatch({ type: 'id', value: id });
+    dispatch({ type: 'name', value: name });
+    dispatch({ type: 'categoryId', value: categoryId });
+    dispatch({ type: 'genericName', value: genericName });
+    dispatch({ type: 'companyName', value: companyName });
+    dispatch({ type: 'barcode', value: barcode });
+    dispatch({ type: 'description', value: description });
+    dispatch({ type: 'active', value: active });
+    dispatch({ type: 'enName', value: enName });
+    dispatch({ type: 'type', value: type });
   }
 
   const isFormValid = (): boolean => {
@@ -270,7 +270,7 @@ const DrugsList: React.FC = () => {
           id, name, categoryId, genericName, companyName,
           barcode, description, active, enName, type
         });
-        dispatch({type: 'reset'});
+        dispatch({ type: 'reset' });
         toggleIsOpenSaveModalForm();
         ref.current?.loadItems();
       } catch (e) {
@@ -319,7 +319,7 @@ const DrugsList: React.FC = () => {
                         label={t('drug.category')}
                         onChangeHandler={(v): void => {
                           console.log('vvv:', v)
-                          return dispatch({type: 'categoryId', value: v})
+                          return dispatch({ type: 'categoryId', value: v })
                         }}
                       />
                     </div>
@@ -374,7 +374,7 @@ const DrugsList: React.FC = () => {
                             checked={state.active}
                             onChange={
                               (e): void =>
-                                dispatch({type: 'active', value: e.target.checked})
+                                dispatch({ type: 'active', value: e.target.checked })
                             }
                           />
                         }

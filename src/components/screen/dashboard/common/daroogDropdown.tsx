@@ -1,16 +1,16 @@
-import React, {useState} from "react";
-import {MenuItem, Select} from "@material-ui/core";
-import {LabelValue} from "../../../../interfaces";
+import React, { useState } from "react";
+import { MenuItem, Select } from "@material-ui/core";
+import { LabelValue } from "../../../../interfaces";
 
-interface IProps {
+interface Props {
   defaultValue: any;
   onChangeHandler: (value: string) => void;
   data: LabelValue[];
   label: string;
 }
 
-export const DaroogDropdown: React.FC<IProps> =
-  ({defaultValue, onChangeHandler, data, label}) => {
+export const DaroogDropdown: React.FC<Props> =
+  ({ defaultValue, onChangeHandler, data, label }) => {
     const [finalValue, setValue] = useState(defaultValue);
 
     return (
