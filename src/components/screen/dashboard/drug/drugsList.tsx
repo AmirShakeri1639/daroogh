@@ -24,7 +24,9 @@ import {
   Button,
   FormControl,
   FormControlLabel,
-  CardActions
+  CardActions,
+  Select,
+  MenuItem
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
@@ -38,7 +40,7 @@ import {useTranslation} from "react-i18next";
 import {useClasses} from "../classes";
 
 import {
-  ActionInterface,
+  ActionInterface, CategoryInterface,
   DrugInterface,
   TableColumnInterface
 } from "../../../../interfaces";
@@ -46,6 +48,7 @@ import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import {CategoryQueryEnum, DrugEnum} from "../../../../enum/query";
 import {CheckBox} from "@material-ui/icons";
+import {Category} from "../../../../services/api";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -138,6 +141,17 @@ const DrugsList: React.FC = () => {
   } = new Drug();
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
+  const { getAllCategories: allCategories } = new Category();
+  const [categories, setCategories] = useState([]);
+  React.useEffect(() => {
+    async function getCategories() {
+      const result = await allCategories(0, 1000);
+      console.log('RESULT:', result);
+      setCategories(result.items.map((item: any) => ({value: item.id, label: item.name})));
+    }
+    getCategories();
+  }, []);
+
   const [_remove,
     {isLoading: isLoadingRemove, reset: resetRemove}] = useMutation(remove, {
     onSuccess: async () => {
@@ -226,7 +240,7 @@ const DrugsList: React.FC = () => {
 
   const isFormValid = (): boolean => {
     return (
-      state.name && state.name.trim().length > 1
+      state.name && state.name.trim().length > 0
     );
   }
 
@@ -295,7 +309,23 @@ const DrugsList: React.FC = () => {
                       }
                     />
                     <div className="row">
-                      {/* TODO: Add CategoryId */}
+                      <Select
+                        label={t('drug.category')}
+                        value={state.categoryId}
+                        defaultValue={1}
+                        onChange={
+                          (e): void =>
+                            dispatch({type: 'categoryId', value: e.target.value as string})
+                        }
+                      >
+                        {categories && categories.map((item: any) => {
+                          return (
+                            <MenuItem key={item.value} value={item.value}>
+                              {item.label}
+                            </MenuItem>
+                          )
+                        })}
+                      </Select>
                     </div>
                     <TextField
                       variant="outlined"
