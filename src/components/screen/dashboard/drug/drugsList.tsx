@@ -123,7 +123,8 @@ const DrugsList: React.FC = () => {
   const {
     save,
     all,
-    remove
+    remove,
+    types
   } = new Drug();
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
@@ -135,6 +136,15 @@ const DrugsList: React.FC = () => {
       setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
     }
     getCategories();
+  }, []);
+
+  const [drugTypes, setDrugTypes] = useState([]);
+  React.useEffect(() => {
+    async function getTypes() {
+      const result = await types();
+      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item})));
+    }
+    getTypes();
   }, []);
 
   const [_remove,
@@ -369,14 +379,13 @@ const DrugsList: React.FC = () => {
                           dispatch({ type: 'enName', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
+                    <DaroogDropdown
+                      defaultValue="شربت"
+                      data={drugTypes}
                       label={t('general.type')}
-                      value={state.type}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'type', value: e.target.value })
-                      }
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'type', value: v })
+                      }}
                     />
                   </Box>
                 </Grid>
