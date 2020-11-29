@@ -27,7 +27,8 @@ const initialState: PharmacyInterface = {
   telphon: '',
   website: '',
   email: '',
-  postalCode: ''
+  postalCode: '',
+  countryDivisionID: 1
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -216,6 +217,7 @@ const CreatePharmacy: React.FC = () => {
         postalCode: state.postalCode,
         description: state.description,
         active: !state.active,
+        countryDivisionID: state.countryDivisionID
       });
     } catch (e) {
       errorHandler(e)

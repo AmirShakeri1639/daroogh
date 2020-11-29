@@ -1,19 +1,11 @@
 import React, { useReducer, useState } from 'react';
-import { useMutation, useQuery, useQueryCache } from "react-query";
+import { useMutation, useQueryCache } from "react-query";
 import Drug from '../../../../services/api/Drug';
 import {
   Container,
   Grid,
   IconButton,
-  Tooltip,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
   Checkbox,
   CardHeader,
   Card,
@@ -22,32 +14,24 @@ import {
   Box,
   TextField,
   Button,
-  FormControl,
   FormControlLabel,
-  CardActions,
-  Select,
-  MenuItem
+  CardActions
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
-import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import Modal from '../../../public/modal/Modal';
 import { errorHandler, successSweetAlert, sweetAlert, warningSweetAlert } from "../../../../utils";
 import CircleLoading from "../../../public/loading/CircleLoading";
-import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
-import CheckIcon from '@material-ui/icons/Check';
 import { useTranslation } from "react-i18next";
 import { useClasses } from "../classes";
 
 import {
-  ActionInterface, CategoryInterface,
-  DrugInterface, LabelValue,
+  ActionInterface,
+  DrugInterface,
   TableColumnInterface
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
-import { CategoryQueryEnum, DrugEnum } from "../../../../enum/query";
-import { CheckBox } from "@material-ui/icons";
+import { DrugEnum } from "../../../../enum/query";
 import { Category } from "../../../../services/api";
 import { DaroogDropdown } from "../common/daroogDropdown";
 
@@ -147,7 +131,6 @@ const DrugsList: React.FC = () => {
   React.useEffect(() => {
     async function getCategories() {
       const result = await allCategories(0, 1000);
-      console.log('RESULT:', result);
       setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
     }
     getCategories();
@@ -163,7 +146,7 @@ const DrugsList: React.FC = () => {
   });
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await queryCache.invalidateQueries('drugsList');
       await successSweetAlert(t('alert.successfulSave'));
       dispatch({ type: 'reset' });
@@ -193,11 +176,10 @@ const DrugsList: React.FC = () => {
     }
   }
 
-  const toggleDrugActivationHandler = async (drugId: number): Promise<any> => {
+  const toggleDrugActivationHandler = async (id: number): Promise<any> => {
     try {
-      console.log('categoryid in _save:', state.categoryId)
       await _save({
-        id: drugId,
+        id: id,
         categoryId: state.categoryId,
         name: state.name,
         genericName: state.genericName,
@@ -228,7 +210,6 @@ const DrugsList: React.FC = () => {
       type
     } = item;
 
-    console.log('categoryid in saveHandler:', categoryId)
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'categoryId', value: categoryId });
@@ -263,7 +244,6 @@ const DrugsList: React.FC = () => {
       type
     } = state;
 
-    console.log('categoryid in submitSave:', categoryId)
     if (isFormValid()) {
       try {
         await _save({
@@ -271,7 +251,6 @@ const DrugsList: React.FC = () => {
           barcode, description, active, enName, type
         });
         dispatch({ type: 'reset' });
-        toggleIsOpenSaveModalForm();
         ref.current?.loadItems();
       } catch (e) {
         errorHandler(e);
@@ -318,7 +297,6 @@ const DrugsList: React.FC = () => {
                         data={categories}
                         label={t('drug.category')}
                         onChangeHandler={(v): void => {
-                          console.log('vvv:', v)
                           return dispatch({ type: 'categoryId', value: v })
                         }}
                       />
