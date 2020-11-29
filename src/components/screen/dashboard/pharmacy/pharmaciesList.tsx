@@ -16,9 +16,11 @@ import {
   CardActions, FormControlLabel, Checkbox
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
+import Modal from '../../../public/modal/Modal';
 import CircleLoading from "../../../public/loading/CircleLoading";
-import {errorHandler, successSweetAlert, sweetAlert, warningSweetAlert} from "../../../../utils";
+import {errorHandler, successSweetAlert, warningSweetAlert} from "../../../../utils";
 import {useTranslation} from "react-i18next";
+import {useClasses} from "../classes";
 
 import {
   ActionInterface,
@@ -28,8 +30,6 @@ import {
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import {PharmacyEnum} from "../../../../enum/query";
-import {useClasses} from "../classes";
-import Modal from "../../../public/modal/Modal";
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -143,7 +143,7 @@ const PharmaciesList: React.FC = () => {
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
   const [_remove,
-    {isLoading: isLoadingRemove, reset: resetRemove}] = useMutation(remove, {
+    {isLoading: isLoadingRemove}] = useMutation(remove, {
     onSuccess: async () => {
       ref.current?.loadItems()
       await queryCache.invalidateQueries('pharmaciesList');

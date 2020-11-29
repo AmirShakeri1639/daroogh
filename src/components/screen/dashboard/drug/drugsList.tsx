@@ -19,7 +19,7 @@ import {
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '../../../public/modal/Modal';
-import { errorHandler, successSweetAlert, sweetAlert, warningSweetAlert } from "../../../../utils";
+import { errorHandler, successSweetAlert, warningSweetAlert } from "../../../../utils";
 import CircleLoading from "../../../public/loading/CircleLoading";
 import { useTranslation } from "react-i18next";
 import { useClasses } from "../classes";
@@ -119,6 +119,7 @@ const DrugsList: React.FC = () => {
     container, root, formContainer, box, addButton, cancelButton
   } = useClasses();
   const queryCache = useQueryCache();
+
   const {
     save,
     all,
@@ -137,7 +138,7 @@ const DrugsList: React.FC = () => {
   }, []);
 
   const [_remove,
-    { isLoading: isLoadingRemove, reset: resetRemove }] = useMutation(remove, {
+    { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
       ref.current?.loadItems()
       await queryCache.invalidateQueries('drugsList');
