@@ -142,7 +142,7 @@ const DrugsList: React.FC = () => {
   React.useEffect(() => {
     async function getTypes() {
       const result = await types();
-      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item})));
+      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
     }
     getTypes();
   }, []);
