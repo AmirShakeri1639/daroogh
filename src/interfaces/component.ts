@@ -22,9 +22,7 @@ export interface ModalPropsInterface {
   toggle: () => void;
 }
 
-export interface ModalContentPropsInterface extends ModalPropsInterface {
-  //
-}
+export type ModalContentPropsInterface = ModalPropsInterface
 
 export interface CategoriesInterface {
   id: number;
@@ -41,7 +39,7 @@ export interface DataTableProps{
   onSelectedValues?: () => void;
   multiple?: boolean | false;
   selection?: boolean | false;
-  queryKey: any;
+  queryKey: string;
   pageSize?: number;
   onRowClick?: (e: any, data: any) => any;
   queryCallback: (pageNumber: number, pageSize: number) => Promise<any>;

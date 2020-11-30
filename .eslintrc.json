@@ -1,7 +1,6 @@
 {
   "env": {
-    "browser": true,
-    "CI": false
+    "browser": true
   },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {

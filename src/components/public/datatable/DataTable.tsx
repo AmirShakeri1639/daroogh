@@ -13,6 +13,7 @@ import { errorSweetAlert } from "../../../utils";
 import { useTranslation } from "react-i18next";
 import localization from './localization';
 import { TablePagination } from "@material-ui/core";
+import itemsSanitizer from './ItemsSanitizer';
 
 type CountdownHandle = {
   loadItems: () => void;
@@ -21,6 +22,8 @@ type CountdownHandle = {
 const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (props, forwardedRef) => {
   const [page, setPage] = useState<number>(0);
   const [itemsCount, setItemsCount] = useState<number>(0);
+  const [entries, setEntries] = useState([]);
+  const [isLoader, setLoader] = useState(true);
 
   const {
     columns,
@@ -47,7 +50,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     {
       onSuccess: (data) => {
         const { items, count } = data;
-        setEntries(items);
+        setEntries(itemsSanitizer(items, queryKey));
         setItemsCount(count);
         setLoader(false);
       },
@@ -62,9 +65,6 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     onRowClick,
     onSelectionChange: () => {}
   };
-
-  const [entries, setEntries] = useState([]);
-  const [isLoader, setLoader] = useState(true);
 
   const reFetchData = () => queryCache.invalidateQueries(queryKey);
 
@@ -137,6 +137,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
               rowsPerPageOptions={[5, 10, 25, 50]}
               rowsPerPage={pageSize}
               count={itemsCount}
+              page={page}
             />
           )
         }}
