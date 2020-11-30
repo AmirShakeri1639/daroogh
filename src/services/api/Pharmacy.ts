@@ -22,12 +22,10 @@ class Pharmacy extends Api {
     }
   }
 
-  getAll = async (q = '', pageSize = 10, pageNo = 1): Promise<any> => {
+  all = async (skip: number, top: number = 10): Promise<any> => {
     try {
-      console.log('let this log be here', q);
-      const skip = (pageNo - 1) * pageSize;
       const result = await this.postJsonData(
-        `${this.urls.all}?$top=${pageSize}&$skip=${skip}&$orderby=id desc`);
+        `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`);
       return result.data;
     } catch (e) {
       errorHandler(e)

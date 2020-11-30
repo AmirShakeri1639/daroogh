@@ -7,7 +7,8 @@ class Drug extends Api {
     all: '/Drugs/AllDrugs',
     save: '/Drugs/Save',
     get: '/Drugs/Detail/',
-    remove: '/Drugs/Remove/'
+    remove: '/Drugs/Remove/',
+    types: '/Drugs/AllDrugTypes'
   }
 
   save = async (data: DrugInterface): Promise<any> => {
@@ -47,6 +48,15 @@ class Drug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e)
+    }
+  }
+
+  types = async (): Promise<any> => {
+    try {
+      const result = await this.postJsonData(this.urls.types);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
     }
   }
 }
