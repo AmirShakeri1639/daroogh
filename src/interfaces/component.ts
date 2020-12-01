@@ -63,3 +63,9 @@ export interface ExCardContentProps {
   expireDate: any;
   offer: string;
 }
+
+export interface CardPropsInterface {
+  isPack?: boolean;
+  basicDetail: JSX.Element;
+  collapsableContent?: JSX.Element;
+}
