@@ -62,6 +62,7 @@
     "build:dev": "SET NODE_ENV=dev npm run build --dev --configuration=dev && react-scripts build",
     "lint": "eslint './src/**/*.{jsx,js,ts,tsx}'",
     "lint:fix": "eslint --fix './src/**/*.{jsx,js,ts,tsx}'",
+    "lint:wfix": "eslint --fix ./src/**/*.{jsx,js,ts,tsx}",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

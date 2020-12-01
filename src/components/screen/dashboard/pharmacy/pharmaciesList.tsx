@@ -1,5 +1,5 @@
-import React, {useReducer, useState} from 'react';
-import {useMutation, useQueryCache} from "react-query";
+import React, { useReducer, useState } from 'react';
+import { useMutation, useQueryCache } from "react-query";
 import Pharmacy from "../../../../services/api/Pharmacy";
 import {
   Container,
@@ -13,23 +13,24 @@ import {
   Box,
   TextField,
   Button,
-  CardActions, FormControlLabel, Checkbox
+  CardActions, FormControlLabel, Switch
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '../../../public/modal/Modal';
 import CircleLoading from "../../../public/loading/CircleLoading";
-import {errorHandler, successSweetAlert, warningSweetAlert} from "../../../../utils";
-import {useTranslation} from "react-i18next";
-import {useClasses} from "../classes";
+import { errorHandler, successSweetAlert, warningSweetAlert } from "../../../../utils";
+import { useTranslation } from "react-i18next";
+import { useClasses } from "../classes";
 
 import {
   ActionInterface,
   PharmacyInterface,
-  TableColumnInterface
+  TableColumnInterface,
+  ConfirmParams
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
-import {PharmacyEnum} from "../../../../enum/query";
+import { PharmacyEnum } from "../../../../enum/query";
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -49,7 +50,7 @@ const initialState: PharmacyInterface = {
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
-  const {value} = action;
+  const { value } = action;
 
   switch (action.type) {
     case 'id':
@@ -126,7 +127,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 
 const PharmaciesList: React.FC = () => {
   const ref = useDataTableRef();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
@@ -138,12 +139,13 @@ const PharmaciesList: React.FC = () => {
   const {
     save,
     all,
-    remove
+    remove,
+    confirm
   } = new Pharmacy();
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
   const [_remove,
-    {isLoading: isLoadingRemove}] = useMutation(remove, {
+    { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
       ref.current?.loadItems()
       await queryCache.invalidateQueries('pharmaciesList');
@@ -151,11 +153,20 @@ const PharmaciesList: React.FC = () => {
     }
   });
 
-  const [_save, {isLoading: isLoadingSave}] = useMutation(save, {
+  const [_confirm,
+    { isLoading: isLoadingConfirm }] = useMutation(confirm, {
+    onSuccess: async () => {
+      ref.current?.loadItems()
+      await queryCache.invalidateQueries('pharmaciesList');
+      await successSweetAlert(t('alert.successfulEnableTextMessage'));
+    }
+  });
+
+  const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
     onSuccess: async () => {
       await queryCache.invalidateQueries('pharmaciesList');
       await successSweetAlert(t('alert.successfulSave'));
-      dispatch({type: 'reset'});
+      dispatch({ type: 'reset' });
     }
   });
 
@@ -163,10 +174,10 @@ const PharmaciesList: React.FC = () => {
     return [
       {
         field: 'id', title: t('general.id'), type: 'number',
-        cellStyle: {textAlign: 'right'}
+        cellStyle: { textAlign: 'right' }
       },
-      {field: 'name', title: t('pharmacy.pharmacy'), type: 'string'},
-      {field: 'description', title: t('general.description'), type: 'string'},
+      { field: 'name', title: t('pharmacy.pharmacy'), type: 'string' },
+      { field: 'description', title: t('general.description'), type: 'string' },
     ];
   }
 
@@ -180,24 +191,13 @@ const PharmaciesList: React.FC = () => {
     }
   }
 
-  const toggleActivationHandler = async (id: number): Promise<any> => {
+  const toggleConfirmHandler = async (id: number): Promise<any> => {
     try {
-      await _save({
+      const confirmParams: ConfirmParams = {
         id: id,
-        name: state.name,
-        hix: state.hix,
-        gli: state.gli,
-        worktime: state.worktime,
-        address: state.address,
-        mobile: state.mobile,
-        telphon: state.telphon,
-        website: state.website,
-        email: state.email,
-        postalCode: state.postalCode,
-        description: state.description,
-        active: !state.active,
-        countryDivisionID: state.countryDivisionID
-      });
+        status: !state.active
+      };
+      await _confirm(confirmParams);
     } catch (e) {
       errorHandler(e);
     }
@@ -222,20 +222,20 @@ const PharmaciesList: React.FC = () => {
       countryDivisionID
     } = item;
 
-    dispatch({type: 'id', value: id});
-    dispatch({type: 'name', value: name});
-    dispatch({type: 'hix', value: hix});
-    dispatch({type: 'gli', value: gli});
-    dispatch({type: 'worktime', value: worktime});
-    dispatch({type: 'address', value: address});
-    dispatch({type: 'mobile', value: mobile});
-    dispatch({type: 'telphon', value: telphon});
-    dispatch({type: 'website', value: website});
-    dispatch({type: 'email', value: email});
-    dispatch({type: 'postalCode', value: postalCode});
-    dispatch({type: 'description', value: description});
-    dispatch({type: 'active', value: active});
-    dispatch({type: 'countryDivisionID', value: countryDivisionID});
+    dispatch({ type: 'id', value: id });
+    dispatch({ type: 'name', value: name });
+    dispatch({ type: 'hix', value: hix });
+    dispatch({ type: 'gli', value: gli });
+    dispatch({ type: 'worktime', value: worktime });
+    dispatch({ type: 'address', value: address });
+    dispatch({ type: 'mobile', value: mobile });
+    dispatch({ type: 'telphon', value: telphon });
+    dispatch({ type: 'website', value: website });
+    dispatch({ type: 'email', value: email });
+    dispatch({ type: 'postalCode', value: postalCode });
+    dispatch({ type: 'description', value: description });
+    dispatch({ type: 'active', value: active });
+    dispatch({ type: 'countryDivisionID', value: countryDivisionID });
   }
 
   const isFormValid = (): boolean => {
@@ -432,7 +432,7 @@ const PharmaciesList: React.FC = () => {
                   <div className="row">
                     <FormControlLabel
                       control={
-                        <Checkbox
+                        <Switch
                           checked={state.active}
                           onChange={
                             (e): void =>

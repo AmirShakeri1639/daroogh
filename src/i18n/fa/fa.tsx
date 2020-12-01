@@ -142,6 +142,7 @@ export default {
         hix: 'HIX',
         gli: 'GLI',
         workTime: 'ساعت کار',
+        request: 'درخواست ایجاد',
       }
     }
   }

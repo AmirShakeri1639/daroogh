@@ -4,6 +4,9 @@
 
 	Front-end developer: Saeed Hemmati
 	Contact: hemmati464 [at] gmail.com
+	
+	Front-end developer: Ebrahim Amini
+	Contact: amini.ebrahim.it [at] gmail.com
 
 	Back-end developer: Mohammad Razeqi
 	Contact: razeghi.mohammad [at] gmail.com

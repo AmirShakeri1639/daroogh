@@ -1,18 +1,20 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import {
   Container,
   TextField,
   FormControl,
   Paper,
-  Button, createStyles, Grid, Typography, Divider, Box
+  Button, Grid, Typography, Divider, Box, FormControlLabel, Switch
 } from '@material-ui/core';
 import Drug from '../../../../services/api/Drug';
 import { DrugInterface } from '../../../../interfaces';
 import { queryCache, useMutation } from "react-query";
-import { makeStyles } from "@material-ui/core/styles";
+import { useClasses } from "../classes";
 import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
-import { errorHandler, sweetAlert } from "../../../../utils";
+import { errorHandler, errorSweetAlert, successSweetAlert, sweetAlert } from "../../../../utils";
+import { DaroogDropdown } from "../common/daroogDropdown";
+import { Category } from "../../../../services/api";
 
 const initialState: DrugInterface = {
   id: 0,
@@ -86,107 +88,51 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
-const useClasses = makeStyles((theme) => createStyles({
-  parent: {
-    paddingTop: theme.spacing(2),
-  },
-  root: {
-    width: '100%',
-    backgroundColor: 'white',
-    paddingBottom: theme.spacing(4),
-  },
-  container: {
-    maxHeight: 440,
-  },
-  titleContainer: {
-    padding: theme.spacing(2)
-  },
-  formPaper: {
-    marginTop: theme.spacing(3),
-    padding: theme.spacing(2, 0, 2),
-  },
-  formTitle: {
-    marginLeft: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-    display: 'flex',
-  },
-  formContainer: {
-    padding: theme.spacing(2),
-  },
-  formControl: {
-    minWidth: 190,
-    margin: theme.spacing(1),
-  },
-  gridContainer: {
-    flexGrow: 1
-  },
-  gridFormControl: {
-    margin: theme.spacing(3),
-  },
-  gridTitle: {
-    marginLeft: theme.spacing(2),
-  },
-  gridItem: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
-  },
-  formBody: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  addButton: {
-    background: theme.palette.blueLinearGradient.main,
-  },
-  cancelButton: {
-    marginLeft: theme.spacing(1),
-    background: theme.palette.pinkLinearGradient.main,
-  },
-  box: {
-    '& > .MuiFormControl-root': {
-      flexGrow: 1,
-    }
-  }
-}));
-
 const CreateDrug: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { t } = useTranslation();
-  const { save } = new Drug();
-
-  // const { data: drugData } =
-  //   useQuery('allRoles', getAllRoles);
+  const { save, types } = new Drug();
 
   const {
-    parent, formContainer,
+    parent, formContainer, dropdown,
     addButton, cancelButton, box,
     titleContainer, formTitle
   } = useClasses();
 
+  const { getAllCategories: allCategories } = new Category();
+  const [categories, setCategories] = useState([]);
+  React.useEffect(() => {
+    async function getCategories() {
+      const result = await allCategories(0, 1000);
+      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
+    }
+    getCategories();
+  }, []);
+
+  const [drugTypes, setDrugTypes] = useState([]);
+  React.useEffect(() => {
+    async function getTypes() {
+      const result = await types();
+      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
+    }
+    getTypes();
+  }, []);
+
   const [_saveDrug] = useMutation(save, {
     onSuccess: async (data) => {
       await queryCache.invalidateQueries('drugsList');
-      await sweetAlert({
-        type: 'success',
-        text: data.message || t('alert.successfulSave')
-      });
+      await successSweetAlert(t('alert.successfulSave'));
       dispatch({ type: 'reset' });
     },
     onError: async () => {
-      await sweetAlert({
-        type: 'error',
-        text: t('error.save')
-      })
+      await errorSweetAlert(t('error.save'));
     }
   })
 
   const submitDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
-    if (state.name.trim().length < 1
-        || state.genericName.trim().length < 1
-        || state.companyName.trim().length < 1
-        || state.enName.trim().length < 1
-    ) {
+    if (state.name.trim().length < 1) {
       return;
     }
     try {
@@ -234,11 +180,16 @@ const CreateDrug: React.FC = () => {
                         dispatch({ type: 'name', value: e.target.value })
                     }
                   />
-                  <div className="row">
-                    {/* TODO: Add CategoryId */}
-                  </div>
+                  <DaroogDropdown
+                    defaultValue={1}
+                    className={dropdown}
+                    data={categories}
+                    label={t('drug.category')}
+                    onChangeHandler={(v): void => {
+                      return dispatch({ type: 'categoryId', value: v })
+                    }}
+                  />
                   <TextField
-                    required
                     variant="outlined"
                     label={t('drug.genericName')}
                     value={state.genericName}
@@ -252,7 +203,6 @@ const CreateDrug: React.FC = () => {
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between" className={box}>
                   <TextField
-                    required
                     variant="outlined"
                     label={t('drug.companyName')}
                     value={state.companyName}
@@ -262,7 +212,6 @@ const CreateDrug: React.FC = () => {
                     }
                   />
                   <TextField
-                    required
                     variant="outlined"
                     label={t('drug.barcode')}
                     value={state.barcode}
@@ -272,7 +221,6 @@ const CreateDrug: React.FC = () => {
                     }
                   />
                   <TextField
-                    required
                     variant="outlined"
                     label={t('general.description')}
                     value={state.description}
@@ -285,11 +233,7 @@ const CreateDrug: React.FC = () => {
               </Grid>
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between" className={box}>
-                  <div className="row">
-                    {/* TODO: Add active boolean form control */}
-                  </div>
                   <TextField
-                    required
                     variant="outlined"
                     label={t('drug.enName')}
                     value={state.enName}
@@ -298,15 +242,14 @@ const CreateDrug: React.FC = () => {
                         dispatch({ type: 'enName', value: e.target.value })
                     }
                   />
-                  <TextField
-                    required
-                    variant="outlined"
+                  <DaroogDropdown
+                    defaultValue="شربت"
+                    data={drugTypes}
+                    className={dropdown}
                     label={t('general.type')}
-                    value={state.type}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'type', value: e.target.value })
-                    }
+                    onChangeHandler={(v): void => {
+                      return dispatch({ type: 'type', value: v })
+                    }}
                   />
                 </Box>
               </Grid>

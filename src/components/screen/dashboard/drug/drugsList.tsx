@@ -6,7 +6,7 @@ import {
   Grid,
   IconButton,
   Paper,
-  Checkbox,
+  Switch,
   CardHeader,
   Card,
   CardContent,
@@ -116,7 +116,7 @@ const DrugsList: React.FC = () => {
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
   const {
-    container, root, formContainer, box, addButton, cancelButton
+    container, root, formContainer, box, addButton, cancelButton, dropdown
   } = useClasses();
   const queryCache = useQueryCache();
 
@@ -142,7 +142,7 @@ const DrugsList: React.FC = () => {
   React.useEffect(() => {
     async function getTypes() {
       const result = await types();
-      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item})));
+      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
     }
     getTypes();
   }, []);
@@ -306,6 +306,7 @@ const DrugsList: React.FC = () => {
                       <DaroogDropdown
                         defaultValue={1}
                         data={categories}
+                        className={dropdown}
                         label={t('drug.category')}
                         onChangeHandler={(v): void => {
                           return dispatch({ type: 'categoryId', value: v })
@@ -359,7 +360,7 @@ const DrugsList: React.FC = () => {
                     <div className="row">
                       <FormControlLabel
                         control={
-                          <Checkbox
+                          <Switch
                             checked={state.active}
                             onChange={
                               (e): void =>
@@ -382,6 +383,7 @@ const DrugsList: React.FC = () => {
                     <DaroogDropdown
                       defaultValue="شربت"
                       data={drugTypes}
+                      className={dropdown}
                       label={t('general.type')}
                       onChangeHandler={(v): void => {
                         return dispatch({ type: 'type', value: v })
