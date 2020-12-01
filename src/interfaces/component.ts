@@ -55,3 +55,11 @@ export interface UserDataProps {
   userData?: NewUserData;
   noShowInput?: string[];
 }
+
+export interface ExCardContentProps {
+  drugName: string;
+  inventory: number;
+  price: number;
+  expireDate: any;
+  offer: string;
+}
