@@ -57,3 +57,9 @@ export interface UserDataProps {
   userData?: NewUserData;
   noShowInput?: string[];
 }
+
+export interface CardPropsInterface {
+  isPack?: boolean;
+  basicDetail: JSX.Element;
+  collapsableContent?: JSX.Element;
+}
