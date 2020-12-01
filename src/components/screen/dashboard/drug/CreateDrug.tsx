@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react';
+import React, { useReducer, useState } from 'react';
 import {
   Container,
   TextField,
@@ -12,9 +12,9 @@ import { queryCache, useMutation } from "react-query";
 import { useClasses } from "../classes";
 import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
-import {errorHandler, errorSweetAlert, successSweetAlert, sweetAlert} from "../../../../utils";
-import {DaroogDropdown} from "../common/daroogDropdown";
-import {Category} from "../../../../services/api";
+import { errorHandler, errorSweetAlert, successSweetAlert, sweetAlert } from "../../../../utils";
+import { DaroogDropdown } from "../common/daroogDropdown";
+import { Category } from "../../../../services/api";
 
 const initialState: DrugInterface = {
   id: 0,

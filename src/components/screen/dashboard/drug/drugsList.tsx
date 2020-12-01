@@ -33,7 +33,7 @@ import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import { DrugEnum } from "../../../../enum/query";
 import { Category } from "../../../../services/api";
-import {DaroogDropdown} from "../common/daroogDropdown";
+import { DaroogDropdown } from "../common/daroogDropdown";
 
 const initialState: DrugInterface = {
   id: 0,

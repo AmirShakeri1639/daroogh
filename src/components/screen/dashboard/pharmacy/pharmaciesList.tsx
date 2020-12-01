@@ -25,7 +25,8 @@ import { useClasses } from "../classes";
 import {
   ActionInterface,
   PharmacyInterface,
-  TableColumnInterface
+  TableColumnInterface,
+  ConfirmParams
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
@@ -138,7 +139,8 @@ const PharmaciesList: React.FC = () => {
   const {
     save,
     all,
-    remove
+    remove,
+    confirm
   } = new Pharmacy();
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
@@ -148,6 +150,15 @@ const PharmaciesList: React.FC = () => {
       ref.current?.loadItems()
       await queryCache.invalidateQueries('pharmaciesList');
       await successSweetAlert(t('alert.successfulDelete'));
+    }
+  });
+
+  const [_confirm,
+    { isLoading: isLoadingConfirm }] = useMutation(confirm, {
+    onSuccess: async () => {
+      ref.current?.loadItems()
+      await queryCache.invalidateQueries('pharmaciesList');
+      await successSweetAlert(t('alert.successfulEnableTextMessage'));
     }
   });
 
@@ -180,24 +191,13 @@ const PharmaciesList: React.FC = () => {
     }
   }
 
-  const toggleActivationHandler = async (id: number): Promise<any> => {
+  const toggleConfirmHandler = async (id: number): Promise<any> => {
     try {
-      await _save({
+      const confirmParams: ConfirmParams = {
         id: id,
-        name: state.name,
-        hix: state.hix,
-        gli: state.gli,
-        worktime: state.worktime,
-        address: state.address,
-        mobile: state.mobile,
-        telphon: state.telphon,
-        website: state.website,
-        email: state.email,
-        postalCode: state.postalCode,
-        description: state.description,
-        active: !state.active,
-        countryDivisionID: state.countryDivisionID
-      });
+        status: !state.active
+      };
+      await _confirm(confirmParams);
     } catch (e) {
       errorHandler(e);
     }

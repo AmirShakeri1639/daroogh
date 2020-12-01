@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {FormControlLabel, MenuItem, Select} from "@material-ui/core";
+import { FormControlLabel, MenuItem, Select } from "@material-ui/core";
 import { LabelValue } from "../../../../interfaces";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const DaroogDropdown: React.FC<Props> =
-  ({ defaultValue, onChangeHandler, data, label , className = ''}) => {
+  ({ defaultValue, onChangeHandler, data, label , className = '' }) => {
     const [finalValue, setValue] = useState(defaultValue);
 
     return (
