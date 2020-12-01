@@ -8,14 +8,14 @@ const useClasses = makeStyles(theme =>
       padding: 5,
     },
     cardcontent: {
-      borderRadius: 5,
+      borderRadius: 15,
       backgroundColor: '#dadada',
-      width: '33.33%'
+      width: '100%'
     },
   }),
 );
 
-const ExCardContent: React.FC<ExCardContentProps> = props => {
+function ExCardContent(props: ExCardContentProps): JSX.Element {
   const {
     drugName = 'استامینوفن',
     inventory = 100,

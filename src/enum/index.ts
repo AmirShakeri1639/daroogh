@@ -20,7 +20,8 @@ export enum DashboardPages {
   CREATE_NEW_MESSAGE = 'createNewMessage',
   PHARMACY_CREATE = 'createPharmacy',
   PHARMACY_LIST = 'pharmaciesList',
-  CATEGORY_LIST = 'categoryList'
+  CATEGORY_LIST = 'categoryList',
+  EXCHANGE = 'exchange'
 }
 
 export enum PharmacyTypeEnum {
