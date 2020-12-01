@@ -50,5 +50,36 @@ export const useClasses = makeStyles((theme) => createStyles({
     '& > .MuiFormControl-root': {
       flexGrow: 1,
     }
-  }
+  },
+  parent: {
+    paddingTop: theme.spacing(2),
+  },
+  formPaper: {
+    marginTop: theme.spacing(3),
+    padding: theme.spacing(2, 0, 2),
+  },
+  formControl: {
+    minWidth: 190,
+    margin: theme.spacing(1),
+  },
+  gridContainer: {
+    flexGrow: 1
+  },
+  gridFormControl: {
+    margin: theme.spacing(3),
+  },
+  gridTitle: {
+    marginLeft: theme.spacing(2),
+  },
+  gridItem: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1)
+  },
+  formBody: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  dropdown: {
+    minWidth: 150
+  },
 }));

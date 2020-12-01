@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { MenuItem, Select } from "@material-ui/core";
+import {FormControlLabel, MenuItem, Select} from "@material-ui/core";
 import { LabelValue } from "../../../../interfaces";
 
 interface Props {
@@ -7,32 +7,40 @@ interface Props {
   onChangeHandler: (value: string) => void;
   data: LabelValue[];
   label: string;
+  className?: any;
 }
 
 export const DaroogDropdown: React.FC<Props> =
-  ({ defaultValue, onChangeHandler, data, label }) => {
+  ({ defaultValue, onChangeHandler, data, label , className = ''}) => {
     const [finalValue, setValue] = useState(defaultValue);
 
     return (
-      <Select
-        label={label}
-        value={finalValue}
-        defaultValue={defaultValue}
-        onChange={
-          (e): void => {
-            setValue(e.target.value);
-            onChangeHandler(e.target.value as string);
-          }
-        }
+      <FormControlLabel
+        control={
+          <Select
+            label={label}
+            value={finalValue}
+            className={className}
+            defaultValue={defaultValue}
+            onChange={
+              (e): void => {
+                setValue(e.target.value);
+                onChangeHandler(e.target.value as string);
+              }
+            }
 
-      >
-        {data && data.map((item: LabelValue) => {
-          return (
-            <MenuItem key={item.value} value={item.value}>
-              {item.label}
-            </MenuItem>
-          )
-        })}
-      </Select>
+          >
+            {data && data.map((item: LabelValue) => {
+              return (
+                <MenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MenuItem>
+              )
+            })}
+          </Select>
+        }
+        label={label}
+        labelPlacement='start'
+      />
     );
   }

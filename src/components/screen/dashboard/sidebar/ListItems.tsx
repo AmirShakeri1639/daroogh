@@ -163,7 +163,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon>
               <PersonAddTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary={t('drug.create')} />
+            <ListItemText primary={t('drug.suggest')} />
           </ListItem>
           <ListItem
             button
@@ -230,7 +230,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon>
               <PersonAddTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary={t('pharmacy.create')} />
+            <ListItemText primary={t('pharmacy.request')} />
           </ListItem>
           <ListItem
             button

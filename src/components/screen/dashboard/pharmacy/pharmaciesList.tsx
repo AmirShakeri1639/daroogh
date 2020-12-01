@@ -13,7 +13,7 @@ import {
   Box,
   TextField,
   Button,
-  CardActions, FormControlLabel, Checkbox
+  CardActions, FormControlLabel, Switch
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '../../../public/modal/Modal';
@@ -432,7 +432,7 @@ const PharmaciesList: React.FC = () => {
                   <div className="row">
                     <FormControlLabel
                       control={
-                        <Checkbox
+                        <Switch
                           checked={state.active}
                           onChange={
                             (e): void =>
