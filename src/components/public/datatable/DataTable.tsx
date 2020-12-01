@@ -6,7 +6,7 @@ import React, {
 } from "react";
 import MaterialTable, {
   MTableToolbar,
-} from "./material-table-master/src";
+} from "material-table";
 import { DataTableProps } from '../../../interfaces';
 import { usePaginatedQuery, useQueryCache } from "react-query";
 import { errorSweetAlert } from "../../../utils";
@@ -134,7 +134,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
           Pagination: (props: any) => (
             <TablePagination
               {...props}
-              rowsPerPageOptions={[5, 10, 20, 30]}
+              rowsPerPageOptions={[5, 10, 25, 50]}
               rowsPerPage={pageSize}
               count={itemsCount}
               page={page}
