@@ -7,11 +7,11 @@ import PublicRoute from './routes/PublicRoute';
 import CircleLoading from './components/public/loading/CircleLoading';
 import PrivateRoute from './routes/PrivateRoute';
 import { ReactQueryDevtools } from 'react-query-devtools';
-import ForgetPassword from './components/screen/forget-password/ForgetPassword';
-
+import ToolBox from './components/screen/dashboard/drug-transfer/Toolbox';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
+const ForgetPassword = lazy(() => import('./components/screen/forget-password/ForgetPassword'));
 
 const App = (): JSX.Element => {
   return (
@@ -28,6 +28,9 @@ const App = (): JSX.Element => {
             </PublicRoute>
             <PrivateRoute path="/dashboard">
               <Dashboard />
+            </PrivateRoute>
+            <PrivateRoute exact path="/s">
+              <ToolBox />
             </PrivateRoute>
             {/*<Route component={<>404 Not Found</>} />*/}
           </Suspense>
