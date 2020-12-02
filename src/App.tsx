@@ -8,6 +8,7 @@ import CircleLoading from './components/public/loading/CircleLoading';
 import PrivateRoute from './routes/PrivateRoute';
 import { ReactQueryDevtools } from 'react-query-devtools';
 import ToolBox from './components/screen/dashboard/drug-transfer/Toolbox';
+import ProgressBar from './components/screen/dashboard/drug-transfer/ProgressBar';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -30,7 +31,7 @@ const App = (): JSX.Element => {
               <Dashboard />
             </PrivateRoute>
             <PrivateRoute exact path="/s">
-              <ToolBox />
+              <ProgressBar />
             </PrivateRoute>
             {/*<Route component={<>404 Not Found</>} />*/}
           </Suspense>
