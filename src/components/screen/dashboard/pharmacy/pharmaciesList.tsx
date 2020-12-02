@@ -31,6 +31,7 @@ import {
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import { PharmacyEnum } from "../../../../enum/query";
+import {DaroogSearchBar} from '../exchange/DaroogSearchBar';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -172,10 +173,8 @@ const PharmaciesList: React.FC = () => {
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      {
-        field: 'id', title: t('general.id'), type: 'number',
-        cellStyle: { textAlign: 'right' }
-      },
+      { field: 'id', title: t('general.id'), type: 'number',
+        cellStyle: { textAlign: 'right' } },
       { field: 'name', title: t('pharmacy.pharmacy'), type: 'string' },
       { field: 'description', title: t('general.description'), type: 'string' },
     ];
@@ -203,8 +202,7 @@ const PharmaciesList: React.FC = () => {
     }
   }
 
-  const saveHandler = (item: PharmacyInterface): void => {
-    toggleIsOpenSaveModalForm();
+  const saveHandler = (item: any): void => {
     const {
       id,
       name,
@@ -236,6 +234,9 @@ const PharmaciesList: React.FC = () => {
     dispatch({ type: 'description', value: description });
     dispatch({ type: 'active', value: active });
     dispatch({ type: 'countryDivisionID', value: countryDivisionID });
+    console.log('state before modal:', state);
+    console.log('isopeneditmodal before toggle in save:', isOpenEditModal);
+    toggleIsOpenSaveModalForm();
   }
 
   const isFormValid = (): boolean => {
@@ -293,6 +294,7 @@ const PharmaciesList: React.FC = () => {
   }
 
   const editModal = (): JSX.Element => {
+    console.log('state in editModal:', state);
     return (
       <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
@@ -481,8 +483,10 @@ const PharmaciesList: React.FC = () => {
     )
   }
 
+  // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
+      <DaroogSearchBar />
       <Grid
         container
         spacing={0}
@@ -503,11 +507,11 @@ const PharmaciesList: React.FC = () => {
               queryCallback={all}
               initLoad={false}
             />
-            {(isLoadingRemove) && <CircleLoading/>}
+            {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && <CircleLoading/>}
           </Paper>
         </Grid>
+        {isOpenEditModal && editModal()}
       </Grid>
-      {isOpenEditModal && editModal()}
     </Container>
   );
 }
