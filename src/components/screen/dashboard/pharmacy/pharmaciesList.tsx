@@ -53,7 +53,6 @@ const initialState: PharmacyInterface = {
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
 
-  console.log('action in reducer:', action);
   switch (action.type) {
     case 'id':
       return {
@@ -209,7 +208,6 @@ const PharmaciesList: React.FC = () => {
   }
 
   const saveHandler = (item: PharmacyInterface): void => {
-    console.log('item in saveHandler:', item);
     toggleIsOpenSaveModalForm();
     const {
       id,
@@ -242,8 +240,6 @@ const PharmaciesList: React.FC = () => {
     dispatch({ type: 'description', value: description });
     dispatch({ type: 'active', value: active });
     dispatch({ type: 'countryDivisionID', value: countryDivisionID });
-    console.log('state before modal:', state);
-    console.log('isopeneditmodal before toggle in save:', isOpenEditModal);
   }
 
   const isFormValid = (): boolean => {
@@ -289,7 +285,6 @@ const PharmaciesList: React.FC = () => {
   }
 
   const editModal = (): JSX.Element => {
-    console.log('state in editModal:', state);
     return (
       <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
