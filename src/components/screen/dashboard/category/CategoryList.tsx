@@ -350,13 +350,6 @@ const CategoryList: React.FC = () => {
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <div style={{ backgroundColor: 'white' }}>لیست دسته بندی ها</div>
-          <ExCardContent
-            drugName="استامینوفن"
-            inventory={100}
-            price={10000}
-            expireDate="2020/12/01"
-            offer="1 به 3"
-          />
           <Paper style={{ height: 500 }}>
             <DataTable
               ref={ref}

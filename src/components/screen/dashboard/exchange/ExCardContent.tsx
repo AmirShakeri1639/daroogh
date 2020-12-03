@@ -1,4 +1,4 @@
-import { createStyles, Grid, makeStyles } from '@material-ui/core';
+import { Container, createStyles, Grid, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { ExCardContentProps } from '../../../../interfaces';
 
@@ -25,7 +25,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   } = props;
   const { container, cardcontent } = useClasses();
   return (
-    <div className={`${cardcontent}`}>
+    <Container className={`${cardcontent}`}>
       <Grid container spacing={1} className={container}>
         <Grid item xs={12} sm={12}>
           💊{drugName}
@@ -36,20 +36,14 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
         <Grid item xs={12} sm={6} style={{ textAlign: "left" }}>
           💰قیمت : {price}
         </Grid>
-        <Grid item xs={12} sm={4}>
-          📆تاریخ انقضا :
-        </Grid>
-        <Grid item xs={12} sm={4} style={{ textAlign: "center" }}>
-          --------------
-        </Grid>
-        <Grid item xs={12} sm={4} style={{ textAlign: "left" }}>
-          {expireDate}
+        <Grid item xs={12} sm={12}>
+          📆تاریخ انقضا : {expireDate}
         </Grid>
         <Grid item xs={12} sm={12}>
           🎁پیشنهاد : {offer}
         </Grid>
       </Grid>
-    </div>
+    </Container>
   );
 };
 
