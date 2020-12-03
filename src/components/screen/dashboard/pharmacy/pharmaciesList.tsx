@@ -30,7 +30,7 @@ import {
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
-import { PharmacyEnum } from "../../../../enum/query";
+import {PharmacyEnum} from "../../../../enum/query";
 import {DaroogSearchBar} from '../exchange/DaroogSearchBar';
 
 const initialState: PharmacyInterface = {
@@ -202,7 +202,8 @@ const PharmaciesList: React.FC = () => {
     }
   }
 
-  const saveHandler = (item: any): void => {
+  const saveHandler = (item: PharmacyInterface): void => {
+    toggleIsOpenSaveModalForm();
     const {
       id,
       name,
@@ -236,7 +237,6 @@ const PharmaciesList: React.FC = () => {
     dispatch({ type: 'countryDivisionID', value: countryDivisionID });
     console.log('state before modal:', state);
     console.log('isopeneditmodal before toggle in save:', isOpenEditModal);
-    toggleIsOpenSaveModalForm();
   }
 
   const isFormValid = (): boolean => {
@@ -268,20 +268,8 @@ const PharmaciesList: React.FC = () => {
     if (isFormValid()) {
       try {
         await _save({
-          id,
-          name,
-          hix,
-          gli,
-          worktime,
-          address,
-          mobile,
-          telphon,
-          website,
-          email,
-          postalCode,
-          description,
-          active,
-          countryDivisionID
+          id, name, hix, gli, worktime, address, mobile, telphon, website,
+          email, postalCode, description, active, countryDivisionID
         });
         dispatch({ type: 'reset' });
         ref.current?.loadItems();
@@ -486,7 +474,9 @@ const PharmaciesList: React.FC = () => {
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
-      <DaroogSearchBar />
+      <div style={{margin: "2rem", padding: ".5rem;"}}>
+        <DaroogSearchBar />
+      </div>
       <Grid
         container
         spacing={0}
