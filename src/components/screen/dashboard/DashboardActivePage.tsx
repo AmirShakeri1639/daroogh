@@ -78,9 +78,6 @@ const DashboardActivePage: React.FC = () => {
       case DashboardPages.USERS_LIST:
         el = <UsersList />
         break;
-      case DashboardPages.CREATE_DRUG:
-        el = <CreateDrug />
-        break;
       case DashboardPages.CHANGE_USER_PASSWORD:
         el = <ChangeUserPassword />;
         break;
@@ -89,9 +86,6 @@ const DashboardActivePage: React.FC = () => {
         break;
       case DashboardPages.CREATE_NEW_MESSAGE:
         el = <CreateMessage />;
-        break;
-      case DashboardPages.DRUGS_LIST:
-        el = <DrugsList />
         break;
       case DashboardPages.CREATE_ROLE:
         el = <CreateRole />;
