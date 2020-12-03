@@ -40,7 +40,7 @@ const initialState: PharmacyInterface = {
   active: false,
   hix: '',
   gli: '',
-  worktime: 0,
+  worktime: 1,
   address: '',
   mobile: '',
   telphon: '',
@@ -203,6 +203,7 @@ const PharmaciesList: React.FC = () => {
   }
 
   const saveHandler = (item: PharmacyInterface): void => {
+    console.log('item in saveHandler:', item);
     toggleIsOpenSaveModalForm();
     const {
       id,
@@ -287,7 +288,7 @@ const PharmaciesList: React.FC = () => {
       <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
           <CardHeader
-            title={state.id === 0 ? t('action.create') : t('action.edit')}
+            title={state?.id === 0 ? t('action.create') : t('action.edit')}
             action={
               <IconButton onClick={toggleIsOpenSaveModalForm}>
                 <CloseIcon/>
@@ -307,7 +308,7 @@ const PharmaciesList: React.FC = () => {
                       required
                       variant="outlined"
                       label={t('pharmacy.name')}
-                      value={state.name}
+                      value={state?.name}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'name', value: e.target.value })
@@ -316,7 +317,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('pharmacy.hix')}
-                      value={state.hix}
+                      value={state?.hix}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'hix', value: e.target.value })
@@ -325,7 +326,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('pharmacy.gli')}
-                      value={state.gli}
+                      value={state?.gli}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'gli', value: e.target.value })
@@ -335,11 +336,12 @@ const PharmaciesList: React.FC = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Box display="flex" justifyContent="space-between" className={box}>
+                    {/* TODO: dropdown and enum for worktime */}
                     <TextField
                       required
                       variant="outlined"
                       label={t('pharmacy.workTime')}
-                      value={state.worktime}
+                      value={state?.worktime}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'worktime', value: e.target.value })
@@ -348,7 +350,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.address')}
-                      value={state.address}
+                      value={state?.address}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'address', value: e.target.value })
@@ -357,7 +359,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.mobile')}
-                      value={state.mobile}
+                      value={state?.mobile}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'mobile', value: e.target.value })
@@ -370,7 +372,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.phone')}
-                      value={state.telphon}
+                      value={state?.telphon}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'telphon', value: e.target.value })
@@ -379,7 +381,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.website')}
-                      value={state.website}
+                      value={state?.website}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'website', value: e.target.value })
@@ -388,7 +390,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.email')}
-                      value={state.email}
+                      value={state?.email}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'email', value: e.target.value })
@@ -401,7 +403,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.postalCode')}
-                      value={state.postalCode}
+                      value={state?.postalCode}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'postalCode', value: e.target.value })
@@ -410,7 +412,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.description')}
-                      value={state.description}
+                      value={state?.description}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'description', value: e.target.value })
@@ -423,7 +425,7 @@ const PharmaciesList: React.FC = () => {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={state.active}
+                          checked={state?.active}
                           onChange={
                             (e): void =>
                               dispatch({ type: 'active', value: e.target.checked })
