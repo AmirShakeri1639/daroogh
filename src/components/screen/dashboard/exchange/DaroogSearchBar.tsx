@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import SearchBar from 'material-ui-search-bar';
-import { useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 export const DaroogSearchBar: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');

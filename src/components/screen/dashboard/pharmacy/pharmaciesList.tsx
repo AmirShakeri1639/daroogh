@@ -30,8 +30,8 @@ import {
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
-import {PharmacyEnum} from "../../../../enum/query";
-import {DaroogSearchBar} from '../exchange/DaroogSearchBar';
+import { PharmacyEnum } from "../../../../enum/query";
+import { DaroogSearchBar } from '../exchange/DaroogSearchBar';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -53,6 +53,7 @@ const initialState: PharmacyInterface = {
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
 
+  console.log('action in reducer:', action);
   switch (action.type) {
     case 'id':
       return {
@@ -114,10 +115,15 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         email: value,
       };
-    case 'postcalCode':
+    case 'postalCode':
       return {
         ...state,
-        postcalCode: value,
+        postalCode: value,
+      };
+    case 'countryDivisionID':
+      return {
+        ...state,
+        countryDivisionID: value,
       };
     case 'reset':
       return initialState;
@@ -476,7 +482,7 @@ const PharmaciesList: React.FC = () => {
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
-      <div style={{margin: "2rem", padding: ".5rem;"}}>
+      <div style={{ margin: "2rem", padding: ".5rem;" }}>
         <DaroogSearchBar />
       </div>
       <Grid

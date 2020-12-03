@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import SearchBar from 'material-ui-search-bar';
 
 export const SearchBox: React.FC = () => {
