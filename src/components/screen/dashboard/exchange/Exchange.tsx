@@ -36,8 +36,7 @@ const Exchange: React.FC = () => {
       expireDate: '2020/08/01',
       offer: '1 به 3',
       isPack: true,
-      packName: 'قلب و عروق',
-      totalPrice: 500000,
+      packInfo: { packName: 'قلب و عروق', totalPrice: 500000 },
       collapsableContent: 'این بسته شامل',
     },
     {
@@ -57,8 +56,7 @@ const Exchange: React.FC = () => {
       expireDate: '',
       offer: '',
       isPack: true,
-      packName: 'قلب و عروق',
-      totalPrice: 500000,
+      packInfo: { packName: 'قلب و عروق', totalPrice: 500000 },
       collapsableContent: 'این بسته شامل',
     },
     {
@@ -97,8 +95,7 @@ const Exchange: React.FC = () => {
                     expireDate={item.expireDate}
                     offer={item.offer}
                     isPack={item.isPack}
-                    packName={item.packName}
-                    totalPrice={item.totalPrice}
+                    packInfo={item.packInfo}
                   />
                 }
                 isPack={item.isPack}

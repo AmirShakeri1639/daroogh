@@ -64,8 +64,7 @@ export interface ExCardContentProps {
   expireDate: any;
   offer: string;
   isPack?: boolean;
-  packName?: string;
-  totalPrice?: number;
+  packInfo?: { packName?: string; totalPrice?: number };
 }
 
 export interface CardPropsInterface {

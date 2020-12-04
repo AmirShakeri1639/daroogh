@@ -87,7 +87,7 @@ const CounterButton = (): JSX.Element => {
       <Button size="small">
         <AddIcon />
       </Button>
-      <Button variant="outlined" size="small">
+      <Button variant="outlined" size="small" style={{ paddingTop: 5 }}>
         100
       </Button>
       <Button size="small">
@@ -149,12 +149,7 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit className={collapse}>
             <div style={{ margin: 10 }}> {collapsableContent} </div>
-            <Button
-              variant="contained"
-              size="small"
-              className={button}
-              style={{ marginBottom: 5 }}
-            >
+            <Button variant="contained" size="small" className={button} style={{ marginBottom: 5 }}>
               افزودن به تبادل
             </Button>
           </Collapse>

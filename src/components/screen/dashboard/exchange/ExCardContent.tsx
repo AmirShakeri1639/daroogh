@@ -6,26 +6,20 @@ const useClasses = makeStyles(theme =>
   createStyles({
     container: {
       padding: 5,
+      minHeight: 150,
+      alignItems: 'center',
     },
     cardcontent: {
       borderRadius: 15,
       backgroundColor: '#dadada',
       width: '100%',
+      padding: 0,
     },
   }),
 );
 
 function ExCardContent(props: ExCardContentProps): JSX.Element {
-  const {
-    drugName,
-    inventory,
-    price,
-    expireDate,
-    offer,
-    isPack = false,
-    packName,
-    totalPrice,
-  } = props;
+  const { drugName, inventory, price, expireDate, offer, isPack = false, packInfo } = props;
   const { container, cardcontent } = useClasses();
 
   const PackContent = (): JSX.Element => {
@@ -35,19 +29,19 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           📦 نام دسته
         </Grid>
         <Grid item xs={12} sm={4}>
-          <hr style={{ border: '1px solid black', marginTop: 10 }} />
+          <hr />
         </Grid>
         <Grid item xs={12} sm={4}>
-          {packName}
+          {packInfo?.packName}
         </Grid>
         <Grid item xs={12} sm={4}>
           💰 قیمت کل
         </Grid>
         <Grid item xs={12} sm={4}>
-          <hr style={{ border: '1px solid black', marginTop: 10 }} />
+          <hr />
         </Grid>
         <Grid item xs={12} sm={4}>
-          {totalPrice}
+          {packInfo?.totalPrice}
         </Grid>
       </Grid>
     );
@@ -59,17 +53,32 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
         <Grid item xs={12} sm={12}>
           💊{drugName}
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={4}>
           🔊موجودی : {inventory}
         </Grid>
-        <Grid item xs={12} sm={6} style={{ textAlign: 'left' }}>
+        <Grid item xs={12} sm={4}>
+          <hr />
+        </Grid>
+        <Grid item xs={12} sm={4}>
           💰قیمت : {price}
         </Grid>
-        <Grid item xs={12} sm={12}>
-          📆تاریخ انقضا : {expireDate}
+        <Grid item xs={12} sm={4}>
+          📆تاریخ انقضا
         </Grid>
-        <Grid item xs={12} sm={12}>
-          🎁پیشنهاد : {offer}
+        <Grid item xs={12} sm={4}>
+          <hr style={{ border: '1px dashed black', marginTop: 10 }} />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          {expireDate}
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          🎁پیشنهاد
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <hr style={{ border: '1px dashed black', marginTop: 10 }} />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          {offer}
         </Grid>
       </Grid>
     );
