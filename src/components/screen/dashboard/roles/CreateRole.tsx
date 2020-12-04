@@ -72,7 +72,6 @@ const useClasses = makeStyles((theme) => createStyles({
   root: {
     width: '100%',
     backgroundColor: 'white',
-    paddingBottom: theme.spacing(4),
   },
   container: {
     maxHeight: 440,

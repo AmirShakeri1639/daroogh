@@ -119,6 +119,9 @@ export default {
         'edit-category': 'ویرایش دسته بندی',
         'new-category': 'ایجاد دسته بندی',
       },
+      exchange:{
+        exchange: 'تبادل'
+      },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
         enableTextAlert: 'آیا میخواهید فعال شود؟',
