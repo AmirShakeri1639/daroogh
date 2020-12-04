@@ -10,22 +10,51 @@ const useClasses = makeStyles(theme =>
     cardcontent: {
       borderRadius: 15,
       backgroundColor: '#dadada',
-      width: '100%'
+      width: '100%',
     },
   }),
 );
 
 function ExCardContent(props: ExCardContentProps): JSX.Element {
   const {
-    drugName = 'استامینوفن',
-    inventory = 100,
-    price = 10000,
-    expireDate = '2020/12/01',
-    offer = '1 به 3',
+    drugName,
+    inventory,
+    price,
+    expireDate,
+    offer,
+    isPack = false,
+    packName,
+    totalPrice,
   } = props;
   const { container, cardcontent } = useClasses();
-  return (
-    <Container className={`${cardcontent}`}>
+
+  const PackContent = (): JSX.Element => {
+    return (
+      <Grid container spacing={1} className={container}>
+        <Grid item xs={12} sm={4}>
+          📦 نام دسته
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <hr style={{ border: '1px solid black', marginTop: 10 }} />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          {packName}
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          💰 قیمت کل
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <hr style={{ border: '1px solid black', marginTop: 10 }} />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          {totalPrice}
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const DrugInfo = (): JSX.Element => {
+    return (
       <Grid container spacing={1} className={container}>
         <Grid item xs={12} sm={12}>
           💊{drugName}
@@ -33,7 +62,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
         <Grid item xs={12} sm={6}>
           🔊موجودی : {inventory}
         </Grid>
-        <Grid item xs={12} sm={6} style={{ textAlign: "left" }}>
+        <Grid item xs={12} sm={6} style={{ textAlign: 'left' }}>
           💰قیمت : {price}
         </Grid>
         <Grid item xs={12} sm={12}>
@@ -43,8 +72,15 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           🎁پیشنهاد : {offer}
         </Grid>
       </Grid>
+    );
+  };
+
+  return (
+    <Container className={`${cardcontent}`}>
+      {isPack && <PackContent />}
+      {!isPack && <DrugInfo />}
     </Container>
   );
-};
+}
 
 export default ExCardContent;

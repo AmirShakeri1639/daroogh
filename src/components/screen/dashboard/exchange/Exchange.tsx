@@ -26,6 +26,8 @@ const Exchange: React.FC = () => {
       expireDate: '2020/12/01',
       offer: '1 به 3',
       isPack: false,
+      packName: '',
+      totalPrice: 0,
     },
     {
       drugName: 'سرماخوردگی',
@@ -34,6 +36,8 @@ const Exchange: React.FC = () => {
       expireDate: '2020/08/01',
       offer: '1 به 3',
       isPack: true,
+      packName: 'قلب و عروق',
+      totalPrice: 500000,
       collapsableContent: 'این بسته شامل',
     },
     {
@@ -43,14 +47,18 @@ const Exchange: React.FC = () => {
       expireDate: '2020/08/01',
       offer: '1 به 3',
       isPack: false,
+      packName: '',
+      totalPrice: 0,
     },
     {
-      drugName: 'سرماخوردگی',
-      inventory: 100,
-      price: 55000,
-      expireDate: '2020/08/01',
-      offer: '1 به 3',
+      drugName: '',
+      inventory: 0,
+      price: 0,
+      expireDate: '',
+      offer: '',
       isPack: true,
+      packName: 'قلب و عروق',
+      totalPrice: 500000,
       collapsableContent: 'این بسته شامل',
     },
     {
@@ -60,6 +68,8 @@ const Exchange: React.FC = () => {
       expireDate: '2020/12/01',
       offer: '1 به 3',
       isPack: false,
+      packName: '',
+      totalPrice: 0,
     },
     {
       drugName: 'کلداکس',
@@ -68,6 +78,8 @@ const Exchange: React.FC = () => {
       expireDate: '2020/08/01',
       offer: '1 به 3',
       isPack: false,
+      packName: '',
+      totalPrice: 0,
     },
   ];
   return (
@@ -84,6 +96,9 @@ const Exchange: React.FC = () => {
                     price={item.price}
                     expireDate={item.expireDate}
                     offer={item.offer}
+                    isPack={item.isPack}
+                    packName={item.packName}
+                    totalPrice={item.totalPrice}
                   />
                 }
                 isPack={item.isPack}

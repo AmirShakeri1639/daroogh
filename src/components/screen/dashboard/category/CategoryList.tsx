@@ -224,6 +224,7 @@ const CategoryList: React.FC = () => {
     dispatch({ type: 'typeString', value: null });
   };
 
+
   const onHandleRemoveRow = async (row: CategoriesInterface): Promise<void> => {
     const { id } = row;
     try {

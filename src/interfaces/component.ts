@@ -49,6 +49,7 @@ export interface DataTableProps{
   editAction?: (() => void) | void | any;
   removeAction?: (() => void) | void | any;
   addAction?: (() => void) | void | any;
+  stateAction?: (() => void) | void | any;
 }
 
 export interface UserDataProps {
@@ -62,6 +63,9 @@ export interface ExCardContentProps {
   price: number;
   expireDate: any;
   offer: string;
+  isPack?: boolean;
+  packName?: string;
+  totalPrice?: number;
 }
 
 export interface CardPropsInterface {
