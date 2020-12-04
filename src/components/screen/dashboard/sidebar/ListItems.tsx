@@ -1,13 +1,20 @@
-import React, { useContext, useState } from "react";
-import { ListItem, ListItemIcon, ListItemText, Collapse, List, createStyles } from "@material-ui/core";
-import { Dashboard as DashboardIcon, ExpandLess, ExpandMore } from "@material-ui/icons";
-import ContactMailTwoToneIcon from "@material-ui/icons/ContactMailTwoTone";
-import { useTranslation } from "react-i18next";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useContext, useState } from 'react';
+import {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  List,
+  createStyles,
+} from '@material-ui/core';
+import { Dashboard as DashboardIcon, ExpandLess, ExpandMore } from '@material-ui/icons';
+import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone';
+import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core/styles';
 
-import Context from "../Context";
+import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
-import { DashboardPages } from "../../../../enum";
+import { DashboardPages } from '../../../../enum';
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
 import LockIcon from '@material-ui/icons/Lock';
@@ -17,7 +24,7 @@ import ListIcon from '@material-ui/icons/List';
 import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 
-const useStyles = makeStyles((theme) =>
+const useStyles = makeStyles(theme =>
   createStyles({
     root: {
       width: '100%',
@@ -37,6 +44,7 @@ const ListItems: React.FC = () => {
   const [isOpenMessageMenu, setIsOpenMessageMenu] = useState<boolean>(false);
   const [isOpenCategory, setIsOpenCategory] = useState<boolean>(false);
   const [isOpenPharmacyMenu, setIsOpenPharmacyMenu] = useState<boolean>(false);
+  const [isOpenExchange, setIsOpenExchange] = useState<boolean>(false);
 
   const { setActivePage } = useContext(Context);
 
@@ -45,7 +53,7 @@ const ListItems: React.FC = () => {
 
   const redirectDashboardHandler = (): void => {
     setActivePage('dashboard');
-  }
+  };
 
   return (
     <div>
@@ -62,15 +70,8 @@ const ListItems: React.FC = () => {
         <ListItemText primary={t('user.role')} />
         {isOpenRoleMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse
-        in={isOpenRoleMenu}
-        timeout="auto"
-        unmountOnExit
-      >
-        <List
-          component="div"
-          disablePadding
-        >
+      <Collapse in={isOpenRoleMenu} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
           <ListItem
             button
             className={nested}
@@ -84,25 +85,15 @@ const ListItems: React.FC = () => {
         </List>
       </Collapse>
 
-      <ListItem
-        button
-        onClick={(): void => setIsOpenUserMenu(val => !val)}
-      >
+      <ListItem button onClick={(): void => setIsOpenUserMenu(val => !val)}>
         <ListItemIcon>
           <PermIdentityTwoToneIcon />
         </ListItemIcon>
         <ListItemText primary={t('user.user')} />
         {isOpenUserMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse
-        in={isOpenUserMenu}
-        timeout="auto"
-        unmountOnExit
-      >
-        <List
-          component="div"
-          disablePadding
-        >
+      <Collapse in={isOpenUserMenu} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
           <ListItem
             button
             className={nested}
@@ -136,25 +127,15 @@ const ListItems: React.FC = () => {
         </List>
       </Collapse>
 
-      <ListItem
-        button
-        onClick={(): void => setIsOpenDrugMenu(val => !val)}
-      >
+      <ListItem button onClick={(): void => setIsOpenDrugMenu(val => !val)}>
         <ListItemIcon>
           <PermIdentityTwoToneIcon />
         </ListItemIcon>
         <ListItemText primary={t('drug.drug')} />
         {isOpenDrugMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse
-        in={isOpenDrugMenu}
-        timeout="auto"
-        unmountOnExit
-      >
-        <List
-          component="div"
-          disablePadding
-        >
+      <Collapse in={isOpenDrugMenu} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
           <ListItem
             button
             className={nested}
@@ -178,24 +159,20 @@ const ListItems: React.FC = () => {
         </List>
       </Collapse>
 
-
-      <ListItem
-        button
-        onClick={(): void => setIsOpenCategory(val => !val)}
-      >
+      <ListItem button onClick={(): void => setIsOpenCategory(val => !val)}>
         <ListItemIcon>
           <CategoryIcon />
         </ListItemIcon>
         <ListItemText primary={t('category.category')} />
         {isOpenCategory ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse in={isOpenCategory}
-        timeout="auto"
-        unmountOnExit>
-        <List component="div"  disablePadding>
-          <ListItem button
+      <Collapse in={isOpenCategory} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem
+            button
             className={nested}
-            onClick={(): void => setActivePage(DashboardPages.CATEGORY_LIST)}>
+            onClick={(): void => setActivePage(DashboardPages.CATEGORY_LIST)}
+          >
             <ListItemIcon>
               <AddToPhotosIcon />
             </ListItemIcon>
@@ -203,25 +180,15 @@ const ListItems: React.FC = () => {
           </ListItem>
         </List>
       </Collapse>
-      <ListItem
-        button
-        onClick={(): void => setIsOpenPharmacyMenu(val => !val)}
-      >
+      <ListItem button onClick={(): void => setIsOpenPharmacyMenu(val => !val)}>
         <ListItemIcon>
           <PermIdentityTwoToneIcon />
         </ListItemIcon>
         <ListItemText primary={t('pharmacy.pharmacy')} />
         {isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse
-        in={isOpenPharmacyMenu}
-        timeout="auto"
-        unmountOnExit
-      >
-        <List
-          component="div"
-          disablePadding
-        >
+      <Collapse in={isOpenPharmacyMenu} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
           <ListItem
             button
             className={nested}
@@ -245,25 +212,15 @@ const ListItems: React.FC = () => {
         </List>
       </Collapse>
 
-      <ListItem
-        button
-        onClick={(): void => setIsOpenMessageMenu(val => !val)}
-      >
+      <ListItem button onClick={(): void => setIsOpenMessageMenu(val => !val)}>
         <ListItemIcon>
           <MessageIcon />
         </ListItemIcon>
         <ListItemText primary={t('message.message')} />
         {isOpenMessageMenu ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
-      <Collapse
-        in={isOpenMessageMenu}
-        timeout="auto"
-        unmountOnExit
-      >
-        <List
-          component="div"
-          disablePadding
-        >
+      <Collapse in={isOpenMessageMenu} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
           <ListItem
             button
             onClick={(): void => setActivePage(DashboardPages.CREATE_NEW_MESSAGE)}
@@ -287,8 +244,30 @@ const ListItems: React.FC = () => {
           </ListItem>
         </List>
       </Collapse>
+
+      <ListItem button onClick={(): void => setIsOpenExchange(val => !val)}>
+        <ListItemIcon>
+          <CategoryIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('exchange.exchange')} />
+        {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.EXCHANGE)}
+          >
+            <ListItemIcon>
+              <AddToPhotosIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('exchange.exchange')} />
+          </ListItem>
+        </List>
+      </Collapse>
     </div>
   );
-}
+};
 
 export default ListItems;

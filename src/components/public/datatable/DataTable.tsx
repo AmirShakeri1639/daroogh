@@ -63,10 +63,10 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
 
   const materialTableProps = {
     onRowClick,
-    onSelectionChange: () => {}
+    onSelectionChange: (): any => void(0)
   };
 
-  const reFetchData = () => queryCache.invalidateQueries(queryKey);
+  const reFetchData = (): any => queryCache.invalidateQueries(queryKey);
 
   let tableActions: any[] = [
     {
@@ -131,7 +131,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         localization={localization}
         components={{
           Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
-          Pagination: (props: any) => (
+          Pagination: (props: any): any => (
             <TablePagination
               {...props}
               rowsPerPageOptions={[5, 10, 25, 50]}
@@ -169,7 +169,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
             backgroundColor: rowData.tableData.checked ? "#37b15933" : "",
           }),
         }}
-        onChangePage={(pageNumber: any) => {
+        onChangePage={(pageNumber: any): any => {
           setPage(pageNumber);
         }}
         {...materialTableProps}
