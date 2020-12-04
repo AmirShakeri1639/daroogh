@@ -103,6 +103,7 @@ type DashboardActivePage =
   | 'categoryList'
   | 'pharmaciesList'
   | 'exchange'
+  | 'createPharmacy';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);

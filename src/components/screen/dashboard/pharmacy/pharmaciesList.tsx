@@ -31,6 +31,7 @@ import {
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import { PharmacyEnum } from "../../../../enum/query";
+import { DaroogSearchBar } from '../drug-transfer/DaroogSearchBar';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -39,7 +40,7 @@ const initialState: PharmacyInterface = {
   active: false,
   hix: '',
   gli: '',
-  worktime: 0,
+  worktime: 1,
   address: '',
   mobile: '',
   telphon: '',
@@ -113,10 +114,15 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         email: value,
       };
-    case 'postcalCode':
+    case 'postalCode':
       return {
         ...state,
-        postcalCode: value,
+        postalCode: value,
+      };
+    case 'countryDivisionID':
+      return {
+        ...state,
+        countryDivisionID: value,
       };
     case 'reset':
       return initialState;
@@ -172,10 +178,8 @@ const PharmaciesList: React.FC = () => {
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      {
-        field: 'id', title: t('general.id'), type: 'number',
-        cellStyle: { textAlign: 'right' }
-      },
+      { field: 'id', title: t('general.id'), type: 'number',
+        cellStyle: { textAlign: 'right' } },
       { field: 'name', title: t('pharmacy.pharmacy'), type: 'string' },
       { field: 'description', title: t('general.description'), type: 'string' },
     ];
@@ -267,20 +271,8 @@ const PharmaciesList: React.FC = () => {
     if (isFormValid()) {
       try {
         await _save({
-          id,
-          name,
-          hix,
-          gli,
-          worktime,
-          address,
-          mobile,
-          telphon,
-          website,
-          email,
-          postalCode,
-          description,
-          active,
-          countryDivisionID
+          id, name, hix, gli, worktime, address, mobile, telphon, website,
+          email, postalCode, description, active, countryDivisionID
         });
         dispatch({ type: 'reset' });
         ref.current?.loadItems();
@@ -297,7 +289,7 @@ const PharmaciesList: React.FC = () => {
       <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
           <CardHeader
-            title={state.id === 0 ? t('action.create') : t('action.edit')}
+            title={state?.id === 0 ? t('action.create') : t('action.edit')}
             action={
               <IconButton onClick={toggleIsOpenSaveModalForm}>
                 <CloseIcon/>
@@ -317,7 +309,7 @@ const PharmaciesList: React.FC = () => {
                       required
                       variant="outlined"
                       label={t('pharmacy.name')}
-                      value={state.name}
+                      value={state?.name}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'name', value: e.target.value })
@@ -326,7 +318,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('pharmacy.hix')}
-                      value={state.hix}
+                      value={state?.hix}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'hix', value: e.target.value })
@@ -335,7 +327,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('pharmacy.gli')}
-                      value={state.gli}
+                      value={state?.gli}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'gli', value: e.target.value })
@@ -345,11 +337,12 @@ const PharmaciesList: React.FC = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Box display="flex" justifyContent="space-between" className={box}>
+                    {/* TODO: dropdown and enum for worktime */}
                     <TextField
                       required
                       variant="outlined"
                       label={t('pharmacy.workTime')}
-                      value={state.worktime}
+                      value={state?.worktime}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'worktime', value: e.target.value })
@@ -358,7 +351,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.address')}
-                      value={state.address}
+                      value={state?.address}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'address', value: e.target.value })
@@ -367,7 +360,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.mobile')}
-                      value={state.mobile}
+                      value={state?.mobile}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'mobile', value: e.target.value })
@@ -380,7 +373,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.phone')}
-                      value={state.telphon}
+                      value={state?.telphon}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'telphon', value: e.target.value })
@@ -389,7 +382,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.website')}
-                      value={state.website}
+                      value={state?.website}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'website', value: e.target.value })
@@ -398,7 +391,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.email')}
-                      value={state.email}
+                      value={state?.email}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'email', value: e.target.value })
@@ -411,7 +404,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.postalCode')}
-                      value={state.postalCode}
+                      value={state?.postalCode}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'postalCode', value: e.target.value })
@@ -420,7 +413,7 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={t('general.description')}
-                      value={state.description}
+                      value={state?.description}
                       onChange={
                         (e): void =>
                           dispatch({ type: 'description', value: e.target.value })
@@ -433,7 +426,7 @@ const PharmaciesList: React.FC = () => {
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={state.active}
+                          checked={state?.active}
                           onChange={
                             (e): void =>
                               dispatch({ type: 'active', value: e.target.checked })
@@ -481,8 +474,12 @@ const PharmaciesList: React.FC = () => {
     )
   }
 
+  // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
+      <div style={{ margin: "2rem", padding: ".5rem;" }}>
+        <DaroogSearchBar />
+      </div>
       <Grid
         container
         spacing={0}
@@ -503,11 +500,11 @@ const PharmaciesList: React.FC = () => {
               queryCallback={all}
               initLoad={false}
             />
-            {(isLoadingRemove) && <CircleLoading/>}
+            {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && <CircleLoading/>}
           </Paper>
         </Grid>
+        {isOpenEditModal && editModal()}
       </Grid>
-      {isOpenEditModal && editModal()}
     </Container>
   );
 }

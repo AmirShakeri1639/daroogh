@@ -8,6 +8,7 @@ import ProgressBar from "./ProgressBar";
 import MaterialContainer from "../../../public/material-container/MaterialContainer";
 import ExCardContent from "./exchange/ExCardContent";
 import ToolBox from "./Toolbox";
+import { DaroogSearchBar } from "./DaroogSearchBar";
 
 const style = makeStyles((theme) => createStyles({
   root: {
@@ -125,14 +126,19 @@ const TransferDrug: React.FC = () => {
             item
             xs={9}
           >
-            <Grid item xs={5}>
-              <ToolBox />
-            </Grid>
+            <Grid
+              container
+              spacing={1}
+            >
+              <Grid item xs={5}>
+                <ToolBox />
+              </Grid>
 
-            <Grid item xs={7}>
-            {/* Searchbar */}
+              <Grid item xs={7}>
+                <DaroogSearchBar />
+              </Grid>
             </Grid>
-
+            
             <Grid
               container
               spacing={1}
