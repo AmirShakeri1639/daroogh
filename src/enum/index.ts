@@ -41,8 +41,8 @@ export enum CategoryTypeEnum {
 }
 
 export enum PackStatusEnum {
-  FIRST_PACK_STATUS = 1,
-  SECOND_PACK_STATUS,
+  ARZESHODEH = 1,
+  FOROOKHTEHSHODEH,
 }
 
 export enum MessageTypeEnum {
