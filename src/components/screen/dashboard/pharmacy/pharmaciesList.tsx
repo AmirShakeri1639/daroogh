@@ -31,7 +31,7 @@ import {
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import { PharmacyEnum } from "../../../../enum/query";
-import { DaroogSearchBar } from '../exchange/DaroogSearchBar';
+import { DaroogSearchBar } from '../drug-transfer/DaroogSearchBar';
 
 const initialState: PharmacyInterface = {
   id: 0,

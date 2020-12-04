@@ -17,7 +17,7 @@ import CreateMessage from './message/CreateMessage';
 import PharmaciesList from './pharmacy/pharmaciesList';
 import CreatePharmacy from './pharmacy/createPharmacy';
 import CategoryList from './category/CategoryList';
-import Exchange from './exchange/Exchange';
+import Exchange from './drug-transfer/exchange/Exchange';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -66,12 +66,6 @@ const DashboardActivePage: React.FC = () => {
       case DashboardPages.CREATE_ROLE:
         el = <CreateRole />;
         break;
-      case DashboardPages.CREATE_USER:
-        el = <CreateUser />;
-        break;
-      case DashboardPages.USERS_LIST:
-        el = <UsersList />;
-        break;
       case DashboardPages.CHANGE_USER_PASSWORD:
         el = <ChangeUserPassword />;
         break;
@@ -80,9 +74,6 @@ const DashboardActivePage: React.FC = () => {
         break;
       case DashboardPages.CREATE_NEW_MESSAGE:
         el = <CreateMessage />;
-        break;
-      case DashboardPages.CREATE_ROLE:
-        el = <CreateRole />;
         break;
       case DashboardPages.CREATE_USER:
         el = <CreateUser />;
@@ -95,9 +86,6 @@ const DashboardActivePage: React.FC = () => {
         break;
       case DashboardPages.DRUGS_LIST:
         el = <DrugsList />;
-        break;
-      case DashboardPages.CHANGE_USER_PASSWORD:
-        el = <ChangeUserPassword />;
         break;
       case DashboardPages.PHARMACY_LIST:
         el = <PharmaciesList />;

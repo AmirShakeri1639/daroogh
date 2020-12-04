@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+// @ts-ignore
 import SearchBar from 'material-ui-search-bar';
 import { useTranslation } from "react-i18next";
 
@@ -18,6 +19,6 @@ export const DaroogSearchBar: React.FC = () => {
       placeholder={t('general.search')}
       onChange={(v) => setSearchValue(v)}
       onRequestSearch={() => doSearch(searchValue)}
-      />
+    />
   )
 }

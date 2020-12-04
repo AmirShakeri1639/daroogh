@@ -1,5 +1,16 @@
-import React, { useContext, useState } from "react";
-import { ListItem, ListItemIcon, ListItemText, Collapse, List, createStyles } from "@material-ui/core";
+
+import React, { useContext, useState } from 'react';
+import {
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  List,
+  createStyles,
+} from '@material-ui/core';
+import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone';
+import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   AddBox, AddCircle,
   Dashboard as DashboardIcon,
@@ -7,9 +18,6 @@ import {
   ExpandMore, Extension,
   LocalPharmacy, Business
 } from "@material-ui/icons";
-import ContactMailTwoToneIcon from "@material-ui/icons/ContactMailTwoTone";
-import { useTranslation } from "react-i18next";
-import { makeStyles } from "@material-ui/core/styles";
 
 import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';

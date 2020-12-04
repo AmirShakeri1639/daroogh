@@ -1,6 +1,6 @@
 import { Container, createStyles, Grid, makeStyles } from '@material-ui/core';
 import React from 'react';
-import { ExCardContentProps } from '../../../../interfaces';
+import { ExCardContentProps } from '../../../../../interfaces';
 
 const useClasses = makeStyles(theme =>
   createStyles({
