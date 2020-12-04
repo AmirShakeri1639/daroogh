@@ -1,16 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState } from "react";
+import { ListItem, ListItemIcon, ListItemText, Collapse, List, createStyles } from "@material-ui/core";
 import {
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Collapse,
-  List,
-  createStyles,
-} from '@material-ui/core';
-import { Dashboard as DashboardIcon, ExpandLess, ExpandMore } from '@material-ui/icons';
-import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone';
-import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@material-ui/core/styles';
+  AddBox, AddCircle,
+  Dashboard as DashboardIcon,
+  ExpandLess, EnhancedEncryption,
+  ExpandMore, Extension,
+  LocalPharmacy, Business
+} from "@material-ui/icons";
+import ContactMailTwoToneIcon from "@material-ui/icons/ContactMailTwoTone";
+import { useTranslation } from "react-i18next";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
@@ -129,7 +128,7 @@ const ListItems: React.FC = () => {
 
       <ListItem button onClick={(): void => setIsOpenDrugMenu(val => !val)}>
         <ListItemIcon>
-          <PermIdentityTwoToneIcon />
+          <Extension />
         </ListItemIcon>
         <ListItemText primary={t('drug.drug')} />
         {isOpenDrugMenu ? <ExpandLess /> : <ExpandMore />}
@@ -142,7 +141,7 @@ const ListItems: React.FC = () => {
             onClick={(): void => setActivePage(DashboardPages.CREATE_DRUG)}
           >
             <ListItemIcon>
-              <PersonAddTwoToneIcon />
+              <AddCircle />
             </ListItemIcon>
             <ListItemText primary={t('drug.suggest')} />
           </ListItem>
@@ -152,7 +151,7 @@ const ListItems: React.FC = () => {
             onClick={(): void => setActivePage(DashboardPages.DRUGS_LIST)}
           >
             <ListItemIcon>
-              <PersonAddTwoToneIcon />
+              <EnhancedEncryption />
             </ListItemIcon>
             <ListItemText primary={t('drug.list')} />
           </ListItem>
@@ -182,7 +181,7 @@ const ListItems: React.FC = () => {
       </Collapse>
       <ListItem button onClick={(): void => setIsOpenPharmacyMenu(val => !val)}>
         <ListItemIcon>
-          <PermIdentityTwoToneIcon />
+          <LocalPharmacy />
         </ListItemIcon>
         <ListItemText primary={t('pharmacy.pharmacy')} />
         {isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
@@ -195,7 +194,7 @@ const ListItems: React.FC = () => {
             onClick={(): void => setActivePage(DashboardPages.PHARMACY_CREATE)}
           >
             <ListItemIcon>
-              <PersonAddTwoToneIcon />
+              <AddBox />
             </ListItemIcon>
             <ListItemText primary={t('pharmacy.request')} />
           </ListItem>
@@ -205,7 +204,7 @@ const ListItems: React.FC = () => {
             onClick={(): void => setActivePage(DashboardPages.PHARMACY_LIST)}
           >
             <ListItemIcon>
-              <PersonAddTwoToneIcon />
+              <Business />
             </ListItemIcon>
             <ListItemText primary={t('pharmacy.list')} />
           </ListItem>

@@ -21,7 +21,7 @@ const initialState: PharmacyInterface = {
   active: false,
   hix: '',
   gli: '',
-  worktime: 0,
+  worktime: 1,
   address: '',
   mobile: '',
   telphon: '',
@@ -275,6 +275,7 @@ const CreatePharmacy: React.FC = () => {
               </Grid>
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between" className={box}>
+                  // TODO: dropdown and enum for worktime
                   <TextField
                     required
                     variant="outlined"
