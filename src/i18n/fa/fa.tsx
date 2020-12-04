@@ -146,6 +146,25 @@ export default {
         gli: 'GLI',
         workTime: 'ساعت کار',
         request: 'درخواست ایجاد',
+      },
+      enums:{
+        PharmacyTypeEnum: {
+          NONGOVERNMENTAL: 'خصوصی',
+          GOVERNMENTAL: 'دولتی'
+        },
+        WorktimeEnum: {
+          PART_TIME: 'نیمه وقت',
+          FULL_TIME: 'تمام وقت',
+          NIGHTLY: 'شبانه‌روزی',
+        },
+        CategoryTypeEnum: {
+          MEDICAL: 'پزشکی',
+          MAKEUP: 'آرایشی بهداشتی'
+        },
+        PackStatusEnum: {
+          ARZESHODEH: 'عرضه شده',
+          FOROOKHTEHSHODEH: 'فروخته شده'
+        },
       }
     }
   }

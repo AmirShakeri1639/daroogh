@@ -153,7 +153,7 @@ export class Pack {
   public id: number = 0;
   public name: string = '';
   public categoryID?: number = 0;
-  public status: PackStatusEnum = PackStatusEnum.FIRST_PACK_STATUS;
+  public status: PackStatusEnum = PackStatusEnum.ARZESHODEH;
   public _date: string = '';
   public _userid: number = 0;
   public category: Category = new Category();
