@@ -28,7 +28,7 @@ import CircleLoading from '../../../public/loading/CircleLoading';
 import { CategoriesInterface } from '../../../../interfaces/component';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { CategoryQueryEnum } from '../../../../enum/query';
-import ExCardContent from '../exchange/ExCardContent';
+import ExCardContent from '../drug-transfer/exchange/ExCardContent';
 
 const useClasses = makeStyles(theme =>
   createStyles({

@@ -9,6 +9,7 @@ import ViewStreamIcon from '@material-ui/icons/ViewStream';
 const styles = makeStyles((theme) => createStyles({
   ul: {
     listStyle: 'none',
+    paddingLeft: 0,
     '& > li': {
       display: 'inline',
       marginLeft: theme.spacing(2),
@@ -19,8 +20,8 @@ const styles = makeStyles((theme) => createStyles({
         color: theme.palette.gray.dark,
         bottom: 9,
         left: 3,
-      }
-    }
+      },
+    },
   },
   icons: {
     color: theme.palette.gray.dark,
@@ -31,45 +32,34 @@ const ToolBox: React.FC = () => {
   const { ul, icons } = styles();
 
   return (
-    <Grid
-      container
-      spacing={1}
-    >
-      <Grid
-        item
-        xs={12}
-        md={4}
-      >
-        <ul className={ul}>
-          <li>
-            <Tooltip title="سبد دارو">
-              <ShoppingBasketIcon className={icons} />
-            </Tooltip>
-          </li>
-          <li>
-            <Tooltip title="مرتب سازی">
-              <SortIcon className={icons} />
-            </Tooltip>
-            <span className="txt-xs position-relative">پیشنهاد هوشمند</span>
-          </li>
-          <li>
-            <Tooltip title="نمایش لیستی">
-              <ListIcon className={icons} />
-            </Tooltip>
-          </li>
-          <li>
-            <Tooltip title="نمایش سطری">
-              <ViewStreamIcon className={icons} />
-            </Tooltip>
-          </li>
-          <li>
-            <Tooltip title="نمایش فشرده">
-              <ViewComfyIcon className={icons} />
-            </Tooltip>
-          </li>
-        </ul>
-      </Grid>
-    </Grid>
+    <ul className={ul}>
+      <li>
+        <Tooltip title="سبد دارو">
+          <ShoppingBasketIcon className={icons} />
+        </Tooltip>
+      </li>
+      <li>
+        <Tooltip title="مرتب سازی">
+          <SortIcon className={icons} />
+        </Tooltip>
+        <span className="txt-xs position-relative">پیشنهاد هوشمند</span>
+      </li>
+      <li>
+        <Tooltip title="نمایش لیستی">
+          <ListIcon className={icons} />
+        </Tooltip>
+      </li>
+      <li>
+        <Tooltip title="نمایش سطری">
+          <ViewStreamIcon className={icons} />
+        </Tooltip>
+      </li>
+      <li>
+        <Tooltip title="نمایش فشرده">
+          <ViewComfyIcon className={icons} />
+        </Tooltip>
+      </li>
+    </ul>
   );
 }
 

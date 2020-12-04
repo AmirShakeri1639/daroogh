@@ -1,20 +1,26 @@
-import { Step, StepLabel, Stepper, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
+import { createStyles, makeStyles, Step, StepLabel, Stepper } from '@material-ui/core';
+import React, { useContext } from 'react';
+import DrugTransferContext, { TransferDrugContextInterface } from "./Context";
+
+const style = makeStyles(() => createStyles({
+  stepper: {
+    backgroundColor: '#ebebeb',
+  }
+}));
 
 function getSteps(): string[] {
   return ['انتخاب داروخانه', 'انتخاب از سبد طرف مقابل', 'انتخاب از سبد شما', '', ''];
-};
-
+}
 
 const ProgressBar: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const { activeStep, setActiveStep } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   const [skipped, setSkipped] = React.useState(new Set<number>());
+
+  const { stepper } = style();
 
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
   };
-
-
 
   const stepHandler = () => {
     return getSteps().map((label, index) => {
@@ -32,12 +38,12 @@ const ProgressBar: React.FC = () => {
           newSkipped.delete(activeStep);
         }
 
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        setActiveStep(activeStep + 1);
         setSkipped(newSkipped);
       };
 
       const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        setActiveStep( activeStep - 1);
       };
 
       return (
@@ -48,7 +54,7 @@ const ProgressBar: React.FC = () => {
     })}
 
   return (
-    <Stepper activeStep={activeStep}>
+    <Stepper activeStep={activeStep} className={stepper}>
       {stepHandler()}
     </Stepper>
   );
