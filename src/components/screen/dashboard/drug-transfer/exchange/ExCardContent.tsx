@@ -1,6 +1,7 @@
 import { Container, createStyles, Grid, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { ExCardContentProps } from '../../../../../interfaces';
+import EventBusyIcon from '@material-ui/icons/EventBusy';
 
 const useClasses = makeStyles(theme =>
   createStyles({
@@ -63,7 +64,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           💰قیمت : {price}
         </Grid>
         <Grid item xs={12} sm={4}>
-          📆تاریخ انقضا
+          <EventBusyIcon />تاریخ انقضا
         </Grid>
         <Grid item xs={12} sm={4}>
           <hr style={{ border: '1px dashed black', marginTop: 10 }} />
