@@ -1,25 +1,21 @@
-import React, {
-  createRef,
-  useImperativeHandle,
-  useState,
-  forwardRef,
-} from "react";
-import MaterialTable, {
-  MTableToolbar,
-} from "material-table";
+import React, { createRef, useImperativeHandle, useState, forwardRef } from 'react';
+import MaterialTable, { MTableToolbar } from 'material-table';
 import { DataTableProps } from '../../../interfaces';
-import { usePaginatedQuery, useQueryCache } from "react-query";
-import { errorSweetAlert } from "../../../utils";
-import { useTranslation } from "react-i18next";
+import { usePaginatedQuery, useQueryCache } from 'react-query';
+import { errorSweetAlert } from '../../../utils';
+import { useTranslation } from 'react-i18next';
 import localization from './localization';
-import { TablePagination } from "@material-ui/core";
+import { TablePagination } from '@material-ui/core';
 import itemsSanitizer from './ItemsSanitizer';
 
 type CountdownHandle = {
   loadItems: () => void;
-}
+};
 
-const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (props, forwardedRef) => {
+const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (
+  props,
+  forwardedRef,
+) => {
   const [page, setPage] = useState<number>(0);
   const [itemsCount, setItemsCount] = useState<number>(0);
   const [entries, setEntries] = useState([]);
@@ -37,6 +33,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     pageSize = 10,
     removeAction,
     addAction,
+    stateAction,
     onRowClick,
   } = props;
 
@@ -48,7 +45,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     [queryKey, page],
     () => queryCallback(page, pageSize),
     {
-      onSuccess: (data) => {
+      onSuccess: data => {
         const { items, count } = data;
         setEntries(itemsSanitizer(items, queryKey));
         setItemsCount(count);
@@ -57,33 +54,50 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
       onError: async () => {
         await errorSweetAlert(t('error.loading-data'));
         setLoader(false);
-      }
-    }
+      },
+    },
   );
 
   const materialTableProps = {
     onRowClick,
-    onSelectionChange: (): any => void(0)
+    onSelectionChange: (): any => void 0,
   };
 
   const reFetchData = (): any => queryCache.invalidateQueries(queryKey);
 
   let tableActions: any[] = [
     {
-      icon: "refresh",
-      tooltip: "بارگزاری مجدد",
+      icon: 'refresh',
+      tooltip: 'بارگزاری مجدد',
       isFreeAction: true,
       onClick: (): Promise<any> => reFetchData(),
-    }
+    },
   ];
 
   if (addAction !== undefined) {
-    tableActions = [...tableActions, {
-      icon: 'add',
-      tooltip: 'ایجاد',
-      isFreeAction: true,
-      onClick: (): void => addAction(),
-    }];
+    tableActions = [
+      ...tableActions,
+      {
+        icon: 'add',
+        tooltip: 'ایجاد',
+        isFreeAction: true,
+        onClick: (): void => addAction(),
+      },
+    ];
+  }
+  if (stateAction !== undefined) {
+    tableActions = [
+      ...tableActions,
+      {
+        icon: 'check',
+        position: 'row',
+        tooltip: 'تغییر وضعیت',
+        iconProps: {
+          color: 'error',
+        },
+        onClick: (event: any, rowData: any): void => stateAction(event, rowData),
+      },
+    ];
   }
   if (editAction !== undefined) {
     tableActions = [
@@ -93,27 +107,26 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         position: 'row',
         tooltip: 'ویرایش',
         iconProps: {
-          color: 'primary'
+          color: 'primary',
         },
-        onClick: (event: any, rowData: any): void =>
-          editAction(event, rowData)
-      }
+        onClick: (event: any, rowData: any): void => editAction(event, rowData),
+      },
     ];
   }
   if (removeAction !== undefined) {
     tableActions = [
       ...tableActions,
       {
-          icon: 'delete',
-          position: 'row',
-          tooltip: 'حدف',
-          iconProps: {
-            color: 'secondary'
-          },
-          onClick: (event: any, rowData: any): void => {
-            removeAction(event, rowData);
-          }
-        }
+        icon: 'delete',
+        position: 'row',
+        tooltip: 'حدف',
+        iconProps: {
+          color: 'secondary',
+        },
+        onClick: (event: any, rowData: any): void => {
+          removeAction(event, rowData);
+        },
+      },
     ];
   }
 
@@ -139,7 +152,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
               count={itemsCount}
               page={page}
             />
-          )
+          ),
         }}
         columns={columns}
         data={entries}
@@ -150,23 +163,23 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
           actionsColumnIndex: -1,
           showSelectAllCheckbox: multiple,
           selection: selection,
-          searchFieldAlignment: "left",
+          searchFieldAlignment: 'left',
           doubleHorizontalScroll: false,
-          paginationType: "stepped",
+          paginationType: 'stepped',
           filtering: false,
           pageSize,
           exportButton: true,
-          padding: "dense",
+          padding: 'dense',
           showTitle: false,
           headerStyle: {
             fontWeight: 800,
-            backgroundColor: "rgb(215, 204, 255)",
+            backgroundColor: 'rgb(215, 204, 255)',
           },
           columnsButton: true,
           maxBodyHeight: 400,
           minBodyHeight: 400,
           rowStyle: (rowData: any): {} => ({
-            backgroundColor: rowData.tableData.checked ? "#37b15933" : "",
+            backgroundColor: rowData.tableData.checked ? '#37b15933' : '',
           }),
         }}
         onChangePage={(pageNumber: any): any => {
@@ -182,7 +195,6 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
       <InitData />
     </div>
   );
-
 };
 
 export default forwardRef(DataTable);
