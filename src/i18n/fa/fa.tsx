@@ -38,6 +38,8 @@ export default {
         postalCode: 'کد پستی',
         close: 'بستن',
         id: 'شناسه',
+        nextLevel: 'مرحله بعد',
+        prevLevel: 'مرحله قبل',
       },
       action: {
         insert: 'درج',

@@ -15,6 +15,7 @@ export interface ButtonPropsInterface {
   variant?: 'outlined' | 'text' | 'contained';
   className?: any;
   color?: 'pink' | 'blue';
+  onClick?: () => void;
 }
 
 export interface ModalPropsInterface {
