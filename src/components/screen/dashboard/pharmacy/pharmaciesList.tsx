@@ -26,12 +26,14 @@ import {
   ActionInterface,
   PharmacyInterface,
   TableColumnInterface,
-  ConfirmParams
+  ConfirmParams, LabelValue
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import { PharmacyEnum } from "../../../../enum/query";
 import { DaroogSearchBar } from '../drug-transfer/DaroogSearchBar';
+import { DaroogDropdown } from "../common/daroogDropdown";
+import { WorkTimeEnum } from "../../../../enum";
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -40,7 +42,7 @@ const initialState: PharmacyInterface = {
   active: false,
   hix: '',
   gli: '',
-  worktime: 1,
+  workTime: WorkTimeEnum.FULL_TIME,
   address: '',
   mobile: '',
   telphon: '',
@@ -74,10 +76,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         gli: value,
       };
-    case 'worktime':
+    case 'workTime':
       return {
         ...state,
-        worktime: value,
+        workTime: value,
       };
     case 'description':
       return {
@@ -138,7 +140,7 @@ const PharmaciesList: React.FC = () => {
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
   const {
-    container, root, formContainer, box, addButton, cancelButton
+    container, root, formContainer, box, addButton, cancelButton, dropdown
   } = useClasses();
   const queryCache = useQueryCache();
 
@@ -161,10 +163,10 @@ const PharmaciesList: React.FC = () => {
 
   const [_confirm,
     { isLoading: isLoadingConfirm }] = useMutation(confirm, {
-    onSuccess: async () => {
+    onSuccess: async ({ message }) => {
       ref.current?.loadItems()
       await queryCache.invalidateQueries('pharmaciesList');
-      await successSweetAlert(t('alert.successfulEnableTextMessage'));
+      await successSweetAlert(message);
     }
   });
 
@@ -185,21 +187,21 @@ const PharmaciesList: React.FC = () => {
     ];
   }
 
-  const removeHandler = async (userRow: PharmacyInterface): Promise<any> => {
+  const removeHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
       if (window.confirm(t('alert.remove'))) {
-        await _remove(userRow.id);
+        await _remove(row.id);
       }
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  const toggleConfirmHandler = async (id: number): Promise<any> => {
+  const toggleConfirmHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
       const confirmParams: ConfirmParams = {
-        id: id,
-        status: !state.active
+        id: row.id,
+        status: !row.active
       };
       await _confirm(confirmParams);
     } catch (e) {
@@ -214,7 +216,7 @@ const PharmaciesList: React.FC = () => {
       name,
       hix,
       gli,
-      worktime,
+      workTime,
       address,
       mobile,
       telphon,
@@ -230,7 +232,7 @@ const PharmaciesList: React.FC = () => {
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'hix', value: hix });
     dispatch({ type: 'gli', value: gli });
-    dispatch({ type: 'worktime', value: worktime });
+    dispatch({ type: 'workTime', value: workTime });
     dispatch({ type: 'address', value: address });
     dispatch({ type: 'mobile', value: mobile });
     dispatch({ type: 'telphon', value: telphon });
@@ -256,7 +258,7 @@ const PharmaciesList: React.FC = () => {
       name,
       hix,
       gli,
-      worktime,
+      workTime,
       address,
       mobile,
       telphon,
@@ -271,7 +273,7 @@ const PharmaciesList: React.FC = () => {
     if (isFormValid()) {
       try {
         await _save({
-          id, name, hix, gli, worktime, address, mobile, telphon, website,
+          id, name, hix, gli, workTime, address, mobile, telphon, website,
           email, postalCode, description, active, countryDivisionID
         });
         dispatch({ type: 'reset' });
@@ -283,6 +285,15 @@ const PharmaciesList: React.FC = () => {
       await warningSweetAlert(t('alert.fillFormCarefully'));
     }
   }
+
+  const [workTimeList, setworkTimeList] = useState(new Array<LabelValue>());
+  React.useEffect(() => {
+    const wtList: LabelValue[] = []
+    for (const wt in WorkTimeEnum) {
+      wtList.push({ label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt });
+    }
+    setworkTimeList(wtList);
+  }, []);
 
   const editModal = (): JSX.Element => {
     return (
@@ -337,16 +348,14 @@ const PharmaciesList: React.FC = () => {
                 </Grid>
                 <Grid item xs={12}>
                   <Box display="flex" justifyContent="space-between" className={box}>
-                    {/* TODO: dropdown and enum for worktime */}
-                    <TextField
-                      required
-                      variant="outlined"
+                    <DaroogDropdown
+                      defaultValue={state?.workTime}
+                      data={workTimeList}
+                      className={dropdown}
                       label={t('pharmacy.workTime')}
-                      value={state?.worktime}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'worktime', value: e.target.value })
-                      }
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'workTime', value: v })
+                      }}
                     />
                     <TextField
                       variant="outlined"
@@ -477,7 +486,7 @@ const PharmaciesList: React.FC = () => {
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
-      <div style={{ margin: "2rem", padding: ".5rem;" }}>
+      <div style={{ margin: "2rem", padding: ".5rem" }}>
         <DaroogSearchBar />
       </div>
       <Grid
@@ -496,6 +505,7 @@ const PharmaciesList: React.FC = () => {
               addAction={(): void => saveHandler(initialState)}
               editAction={(e: any, row: any): void => saveHandler(row)}
               removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
+              stateAction={async (e: any, row: any): Promise<void> => await toggleConfirmHandler(row)}
               queryKey={PharmacyEnum.GET_ALL}
               queryCallback={all}
               initLoad={false}

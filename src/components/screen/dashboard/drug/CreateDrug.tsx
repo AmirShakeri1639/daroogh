@@ -18,7 +18,7 @@ import { Category } from "../../../../services/api";
 
 const initialState: DrugInterface = {
   id: 0,
-  categoryId: 1,
+  categoryID: 1,
   name: '',
   genericName: '',
   companyName: '',
@@ -26,7 +26,7 @@ const initialState: DrugInterface = {
   description: '',
   active: false,
   enName: '',
-  type: ''
+  type: 'شربت'
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -36,10 +36,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         id: action.value,
       };
-    case 'categoryId':
+    case 'categoryID':
       return {
         ...state,
-        categoryId: action.value,
+        categoryID: action.value,
       };
     case 'name':
       return {
@@ -138,7 +138,7 @@ const CreateDrug: React.FC = () => {
     try {
       await _saveDrug({
         id: state.id,
-        categoryId: state.categoryId,
+        categoryID: state.categoryID,
         name: state.name,
         genericName: state.genericName,
         companyName: state.companyName,
@@ -181,12 +181,12 @@ const CreateDrug: React.FC = () => {
                     }
                   />
                   <DaroogDropdown
-                    defaultValue={1}
+                    defaultValue={state.categoryID}
                     className={dropdown}
                     data={categories}
                     label={t('drug.category')}
                     onChangeHandler={(v): void => {
-                      return dispatch({ type: 'categoryId', value: v })
+                      return dispatch({ type: 'categoryID', value: v })
                     }}
                   />
                   <TextField
@@ -243,7 +243,7 @@ const CreateDrug: React.FC = () => {
                     }
                   />
                   <DaroogDropdown
-                    defaultValue="شربت"
+                    defaultValue={state.type}
                     data={drugTypes}
                     className={dropdown}
                     label={t('general.type')}

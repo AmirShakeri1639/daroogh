@@ -64,7 +64,7 @@ export default {
       drug: {
         drug: 'Drug',
         category: 'Category',
-        categoryId: 'Category ID',
+        categoryID: 'Category ID',
         name: 'Drug Name',
         genericName: 'Generic Name',
         companyName: 'Company Name',

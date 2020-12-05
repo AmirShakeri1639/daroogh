@@ -95,7 +95,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         iconProps: {
           color: 'error',
         },
-        onClick: (): void => addAction(),
+        onClick: (event: any, rowData: any): void => stateAction(event, rowData),
       },
     ];
   }

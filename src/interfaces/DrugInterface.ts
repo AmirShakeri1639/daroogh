@@ -1,6 +1,6 @@
 export interface DrugInterface {
     id: number;
-    categoryId: number;
+    categoryID: number;
     name: string;
     genericName: string;
     companyName: string;

@@ -38,6 +38,8 @@ export default {
         postalCode: 'کد پستی',
         close: 'بستن',
         id: 'شناسه',
+        nextLevel: 'مرحله بعد',
+        prevLevel: 'مرحله قبل',
       },
       action: {
         insert: 'درج',
@@ -93,7 +95,7 @@ export default {
       drug: {
         drug: 'دارو',
         category: 'دسته‌بندی',
-        categoryId: 'شناسه دسته‌بندی',
+        categoryID: 'شناسه دسته‌بندی',
         name: 'نام دارو',
         genericName: 'نام عمومی',
         companyName: 'نام شرکت',
@@ -146,7 +148,24 @@ export default {
         gli: 'GLI',
         workTime: 'ساعت کار',
         request: 'درخواست ایجاد',
-      }
+      },
+      PharmacyTypeEnum: {
+        NONGOVERNMENTAL: 'خصوصی',
+        GOVERNMENTAL: 'دولتی'
+      },
+      WorkTimeEnum: {
+        PART_TIME: 'نیمه وقت',
+        FULL_TIME: 'تمام وقت',
+        NIGHTLY: 'شبانه‌روزی',
+      },
+      CategoryTypeEnum: {
+        MEDICAL: 'پزشکی',
+        MAKEUP: 'آرایشی بهداشتی'
+      },
+      PackStatusEnum: {
+        ARZESHODEH: 'عرضه شده',
+        FOROOKHTEHSHODEH: 'فروخته شده'
+      },
     }
   }
 }

@@ -120,7 +120,7 @@ export class Category {
   public id: number = 0;
   public name?: string = '';
   public parentID?: number = 0;
-  public type: CategoryTypeEnum = CategoryTypeEnum.FIRST_CATEGORY_TYPE;
+  public type: CategoryTypeEnum = CategoryTypeEnum.MEDICAL;
   public _date: string = '';
   public _userid: number = 0;
   public parent: string[] = [];
@@ -153,7 +153,7 @@ export class Pack {
   public id: number = 0;
   public name: string = '';
   public categoryID?: number = 0;
-  public status: PackStatusEnum = PackStatusEnum.FIRST_PACK_STATUS;
+  public status: PackStatusEnum = PackStatusEnum.ARZESHODEH;
   public _date: string = '';
   public _userid: number = 0;
   public category: Category = new Category();
@@ -220,8 +220,8 @@ export class Pharmacy {
   public name: string = '';
   public hix: string = '';
   public gli: string = '';
-  public type: PharmacyTypeEnum = PharmacyTypeEnum.FIRST_PHARMACY_TYPE;
-  public workTime: WorkTimeEnum = WorkTimeEnum.FIRST_WORK_TIME;
+  public type: PharmacyTypeEnum = PharmacyTypeEnum.NONGOVERNMENTAL;
+  public workTime: WorkTimeEnum = WorkTimeEnum.PART_TIME;
   public address: string = '';
   public countryDivisionID: number = 0;
   public x?: string = '';

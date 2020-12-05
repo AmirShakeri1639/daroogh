@@ -58,6 +58,9 @@ export const useClasses = makeStyles((theme) => createStyles({
     marginTop: theme.spacing(3),
     padding: theme.spacing(2, 0, 2),
   },
+  spacing1: {
+    margin: theme.spacing(1)
+  },
   formControl: {
     minWidth: 190,
     margin: theme.spacing(1),
@@ -80,6 +83,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     alignItems: 'center',
   },
   dropdown: {
-    minWidth: 150
+    margin: theme.spacing(1),
+    minWidth: 120
   },
 }));
