@@ -9,98 +9,21 @@ import MaterialContainer from "../../../public/material-container/MaterialContai
 import ExCardContent from "./exchange/ExCardContent";
 import ToolBox from "./Toolbox";
 import { DaroogSearchBar } from "./DaroogSearchBar";
+import SecondStep from "./second-step/SecondStep";
+import FirstStep from "./first-step/FirstStep";
+import ThirdStep from "./third-step/ThirdStep";
 
 const style = makeStyles((theme) => createStyles({
   root: {
     backgroundColor: '#ebebeb',
     padding: theme.spacing(2, 1),
   },
-  paper: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
 }));
 
-const data = [
-  {
-    drugName: 'استامینوفن',
-    inventory: 100,
-    price: 10000,
-    expireDate: '2020/12/01',
-    offer: '1 به 3',
-    isPack: false,
-  },
-  {
-    drugName: 'سرماخوردگی',
-    inventory: 100,
-    price: 55000,
-    expireDate: '2020/08/01',
-    offer: '1 به 3',
-    isPack: true,
-    collapsableContent: 'این بسته شامل',
-  },
-  {
-    drugName: 'کلداکس',
-    inventory: 100,
-    price: 50000,
-    expireDate: '2020/08/01',
-    offer: '1 به 3',
-    isPack: false,
-  },
-  {
-    drugName: 'سرماخوردگی',
-    inventory: 100,
-    price: 55000,
-    expireDate: '2020/08/01',
-    offer: '1 به 3',
-    isPack: true,
-    collapsableContent: 'این بسته شامل',
-  },
-  {
-    drugName: 'استامینوفن',
-    inventory: 100,
-    price: 10000,
-    expireDate: '2020/12/01',
-    offer: '1 به 3',
-    isPack: false,
-  },
-  {
-    drugName: 'کلداکس',
-    inventory: 100,
-    price: 50000,
-    expireDate: '2020/08/01',
-    offer: '1 به 3',
-    isPack: false,
-  },
-];
-
 const TransferDrug: React.FC = () => {
-  const [activeStep, setActiveStep] = useState<number>(1);
+  const [activeStep, setActiveStep] = useState<number>(0);
 
-  const { root, paper } = style();
-
-  const cardListGenerator = (): JSX.Element[] => {
-    return data.map((item: any, index: number) => (
-      <Grid item xs={12} sm={4} key={index}>
-        <div className={paper}>
-          <CardContainer
-            basicDetail={
-              <ExCardContent
-                drugName={item.drugName}
-                inventory={item.inventory}
-                price={item.price}
-                expireDate={item.expireDate}
-                offer={item.offer}
-              />
-            }
-            isPack={item.isPack}
-            collapsableContent={item.collapsableContent}
-          />
-        </div>
-      </Grid>
-    ));
-  }
+  const { root } = style();
 
   const initialContextValues = (): any => ({
     activeStep,
@@ -110,52 +33,24 @@ const TransferDrug: React.FC = () => {
   return (
     <Context.Provider value={initialContextValues()}>
       <div className={root}>
-      <MaterialContainer>
-        <Grid
-          container
-          spacing={1}
-        >
+        <MaterialContainer>
           <Grid
-            item
-            xs={12}
-          >
-            <ProgressBar />
-          </Grid>
-
-          <Grid
-            item
-            xs={9}
+            container
+            spacing={1}
           >
             <Grid
-              container
-              spacing={1}
+              item
+              xs={12}
             >
-              <Grid item xs={5}>
-                <ToolBox />
-              </Grid>
-
-              <Grid item xs={7}>
-                <DaroogSearchBar />
-              </Grid>
+              <ProgressBar />
             </Grid>
-            
-            <Grid
-              container
-              spacing={1}
-            >
-              {cardListGenerator()}
-            </Grid>
-          </Grid>
 
-          <Grid
-            item
-            xs={3}
-          >
-          {/* Description */}
+            {activeStep === 0 && <FirstStep />}
+            {activeStep === 1 && <SecondStep />}
+            {activeStep === 2 && <ThirdStep />}
           </Grid>
-        </Grid>
-      </MaterialContainer>
-    </div>
+        </MaterialContainer>
+      </div>
     </Context.Provider>
   );
 }

@@ -17,7 +17,7 @@ const ProgressBar: React.FC = () => {
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
   const { stepper } = style();
-
+  console.log(activeStep)
   const isStepSkipped = (step: number) => {
     return skipped.has(step);
   };
@@ -54,7 +54,7 @@ const ProgressBar: React.FC = () => {
     })}
 
   return (
-    <Stepper activeStep={activeStep} className={stepper}>
+    <Stepper activeStep={activeStep || 0} className={stepper}>
       {stepHandler()}
     </Stepper>
   );

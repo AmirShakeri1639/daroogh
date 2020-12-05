@@ -18,10 +18,9 @@ const useClasses = makeStyles((theme) => createStyles({
 }));
 
 const Button: React.FC<ButtonPropsInterface> = (props) => {
-
   const {
     type, children, variant, className,
-    color,
+    color, onClick,
   } = props;
 
   const { blueButton, pinkButton, button } = useClasses();
@@ -32,6 +31,7 @@ const Button: React.FC<ButtonPropsInterface> = (props) => {
       size="small"
       className={`${className} ${color === 'blue' ? blueButton : pinkButton } ${button}`}
       variant={variant}
+      onClick={onClick}
     >
       {children}
     </MaterialButton>
