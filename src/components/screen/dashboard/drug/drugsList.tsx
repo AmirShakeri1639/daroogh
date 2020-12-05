@@ -37,7 +37,7 @@ import { DaroogDropdown } from "../common/daroogDropdown";
 
 const initialState: DrugInterface = {
   id: 0,
-  categoryId: 1,
+  categoryID: 1,
   name: '',
   genericName: '',
   companyName: '',
@@ -45,7 +45,7 @@ const initialState: DrugInterface = {
   description: '',
   active: false,
   enName: '',
-  type: ''
+  type: 'شربت'
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -57,10 +57,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         id: value,
       };
-    case 'categoryId':
+    case 'categoryID':
       return {
         ...state,
-        categoryId: value,
+        categoryID: value,
       };
     case 'name':
       return {
@@ -191,7 +191,7 @@ const DrugsList: React.FC = () => {
     try {
       await _save({
         id: id,
-        categoryId: state.categoryId,
+        categoryID: state.categoryID,
         name: state.name,
         genericName: state.genericName,
         companyName: state.companyName,
@@ -206,12 +206,11 @@ const DrugsList: React.FC = () => {
     }
   }
 
-  const saveHandler = (item: DrugInterface): void => {
+  const saveHandler = (item: any): void => {
     toggleIsOpenSaveModalForm();
     const {
       id,
       name,
-      categoryId,
       genericName,
       companyName,
       barcode,
@@ -220,10 +219,11 @@ const DrugsList: React.FC = () => {
       enName,
       type
     } = item;
+    const categoryID = item.category.id;
 
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'name', value: name });
-    dispatch({ type: 'categoryId', value: categoryId });
+    dispatch({ type: 'categoryID', value: categoryID });
     dispatch({ type: 'genericName', value: genericName });
     dispatch({ type: 'companyName', value: companyName });
     dispatch({ type: 'barcode', value: barcode });
@@ -245,7 +245,7 @@ const DrugsList: React.FC = () => {
     const {
       id,
       name,
-      categoryId,
+      categoryID,
       genericName,
       companyName,
       barcode,
@@ -258,7 +258,7 @@ const DrugsList: React.FC = () => {
     if (isFormValid()) {
       try {
         await _save({
-          id, name, categoryId, genericName, companyName,
+          id, name, categoryID, genericName, companyName,
           barcode, description, active, enName, type
         });
         dispatch({ type: 'reset' });
@@ -304,12 +304,12 @@ const DrugsList: React.FC = () => {
                     />
                     <div className="row">
                       <DaroogDropdown
-                        defaultValue={1}
+                        defaultValue={state.categoryID}
                         data={categories}
                         className={dropdown}
                         label={t('drug.category')}
                         onChangeHandler={(v): void => {
-                          return dispatch({ type: 'categoryId', value: v })
+                          return dispatch({ type: 'categoryID', value: v })
                         }}
                       />
                     </div>
@@ -381,7 +381,7 @@ const DrugsList: React.FC = () => {
                       }
                     />
                     <DaroogDropdown
-                      defaultValue="شربت"
+                      defaultValue={state.type}
                       data={drugTypes}
                       className={dropdown}
                       label={t('general.type')}

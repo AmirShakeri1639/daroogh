@@ -1,18 +1,20 @@
-import React, { useReducer } from 'react';
+import React, {useReducer, useState} from 'react';
 import {
   Container,
   TextField,
   FormControl,
   Paper,
-  Button, createStyles, Grid, Typography, Divider, Box
+  Button, Grid, Typography, Divider, Box
 } from '@material-ui/core';
 import Pharmacy from '../../../../services/api/Pharmacy';
-import { PharmacyInterface } from '../../../../interfaces';
+import {LabelValue, PharmacyInterface} from '../../../../interfaces';
 import { queryCache, useMutation } from "react-query";
-import { makeStyles } from "@material-ui/core/styles";
+import { useClasses } from "../classes";
 import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
 import { errorHandler, sweetAlert } from "../../../../utils";
+import {DaroogDropdown} from "../common/daroogDropdown";
+import {WorkTimeEnum} from "../../../../enum";
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -21,7 +23,7 @@ const initialState: PharmacyInterface = {
   active: false,
   hix: '',
   gli: '',
-  worktime: 1,
+  workTime: WorkTimeEnum.FULL_TIME,
   address: '',
   mobile: '',
   telphon: '',
@@ -54,10 +56,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         gli: value,
       };
-    case 'worktime':
+    case 'workTime':
       return {
         ...state,
-        worktime: +value,
+        workTime: +value,
       };
     case 'description':
       return {
@@ -106,78 +108,26 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
-const useClasses = makeStyles((theme) => createStyles({
-  parent: {
-    paddingTop: theme.spacing(2),
-  },
-  root: {
-    width: '100%',
-    backgroundColor: 'white',
-    paddingBottom: theme.spacing(4),
-  },
-  container: {
-    maxHeight: 440,
-  },
-  titleContainer: {
-    padding: theme.spacing(2)
-  },
-  formPaper: {
-    marginTop: theme.spacing(3),
-    padding: theme.spacing(2, 0, 2),
-  },
-  formTitle: {
-    marginLeft: theme.spacing(2),
-    marginBottom: theme.spacing(2),
-    display: 'flex',
-  },
-  formContainer: {
-    padding: theme.spacing(2),
-  },
-  formControl: {
-    minWidth: 190,
-    margin: theme.spacing(1),
-  },
-  gridContainer: {
-    flexGrow: 1
-  },
-  gridFormControl: {
-    margin: theme.spacing(3),
-  },
-  gridTitle: {
-    marginLeft: theme.spacing(2),
-  },
-  gridItem: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1)
-  },
-  formBody: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  addButton: {
-    background: theme.palette.blueLinearGradient.main,
-  },
-  cancelButton: {
-    marginLeft: theme.spacing(1),
-    background: theme.palette.pinkLinearGradient.main,
-  },
-  box: {
-    '& > .MuiFormControl-root': {
-      flexGrow: 1,
-    }
-  }
-}));
-
 const CreatePharmacy: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { t } = useTranslation();
   const { save } = new Pharmacy();
 
   const {
-    parent, formContainer,
+    parent, formContainer, dropdown,
     addButton, cancelButton, box,
     titleContainer, formTitle
   } = useClasses();
+
+  const [workTimeList, setworkTimeList] = useState(new Array<LabelValue>());
+  React.useEffect(() => {
+    let wtList: LabelValue[] = []
+    for (let wt in WorkTimeEnum) {
+      if (parseInt(wt) >= 0)
+        wtList.push({label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt});
+    }
+    setworkTimeList(wtList);
+  }, []);
 
   const [_save] = useMutation(save, {
     onSuccess: async (data: any) => {
@@ -208,7 +158,7 @@ const CreatePharmacy: React.FC = () => {
         name: state.name,
         hix: state.hix,
         gli: state.gli,
-        worktime: state.worktime,
+        workTime: state.workTime,
         address: state.address,
         mobile: state.mobile,
         telphon: state.telphon,
@@ -275,16 +225,14 @@ const CreatePharmacy: React.FC = () => {
               </Grid>
               <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between" className={box}>
-                  // TODO: dropdown and enum for worktime
-                  <TextField
-                    required
-                    variant="outlined"
+                  <DaroogDropdown
+                    defaultValue={state?.workTime}
+                    data={workTimeList}
+                    className={dropdown}
                     label={t('pharmacy.workTime')}
-                    value={state.worktime}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'worktime', value: e.target.value })
-                    }
+                    onChangeHandler={(v): void => {
+                      return dispatch({ type: 'workTime', value: v })
+                    }}
                   />
                   <TextField
                     required

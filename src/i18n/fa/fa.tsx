@@ -93,7 +93,7 @@ export default {
       drug: {
         drug: 'دارو',
         category: 'دسته‌بندی',
-        categoryId: 'شناسه دسته‌بندی',
+        categoryID: 'شناسه دسته‌بندی',
         name: 'نام دارو',
         genericName: 'نام عمومی',
         companyName: 'نام شرکت',
@@ -151,7 +151,7 @@ export default {
         NONGOVERNMENTAL: 'خصوصی',
         GOVERNMENTAL: 'دولتی'
       },
-      WorktimeEnum: {
+      WorkTimeEnum: {
         PART_TIME: 'نیمه وقت',
         FULL_TIME: 'تمام وقت',
         NIGHTLY: 'شبانه‌روزی',

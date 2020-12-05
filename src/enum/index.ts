@@ -29,7 +29,7 @@ export enum PharmacyTypeEnum {
   GOVERNMENTAL,
 }
 
-export enum WorktimeEnum {
+export enum WorkTimeEnum {
   PART_TIME = 1,
   FULL_TIME,
   NIGHTLY,

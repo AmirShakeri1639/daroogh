@@ -2,7 +2,7 @@ import {
   CategoryTypeEnum,
   PackStatusEnum,
   PharmacyTypeEnum,
-  WorktimeEnum,
+  WorkTimeEnum,
 } from "../enum";
 
 export class DateUserId {
@@ -221,7 +221,7 @@ export class Pharmacy {
   public hix: string = '';
   public gli: string = '';
   public type: PharmacyTypeEnum = PharmacyTypeEnum.NONGOVERNMENTAL;
-  public workTime: WorktimeEnum = WorktimeEnum.PART_TIME;
+  public workTime: WorkTimeEnum = WorkTimeEnum.PART_TIME;
   public address: string = '';
   public countryDivisionID: number = 0;
   public x?: string = '';

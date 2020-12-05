@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FormControlLabel, MenuItem, Select } from "@material-ui/core";
+import {FormControl, InputLabel, MenuItem, Select} from "@material-ui/core";
 import { LabelValue } from "../../../../interfaces";
 
 interface Props {
@@ -8,18 +8,21 @@ interface Props {
   data: LabelValue[];
   label: string;
   className?: any;
+  variant?: any;
 }
 
 export const DaroogDropdown: React.FC<Props> =
-  ({ defaultValue, onChangeHandler, data, label , className = '' }) => {
+  ({ defaultValue, onChangeHandler, data, label ,
+     className = '', variant= 'outlined'}) => {
     const [finalValue, setValue] = useState(defaultValue);
 
     return (
-      <FormControlLabel
-        control={
+      <FormControl>
+          <InputLabel className="daroog-dropdown-label">{label}</InputLabel>
           <Select
-            label={label}
             value={finalValue}
+            label={label}
+            variant={variant}
             className={className}
             defaultValue={defaultValue}
             onChange={
@@ -28,7 +31,6 @@ export const DaroogDropdown: React.FC<Props> =
                 onChangeHandler(e.target.value as string);
               }
             }
-
           >
             {data && data.map((item: LabelValue) => {
               return (
@@ -38,9 +40,6 @@ export const DaroogDropdown: React.FC<Props> =
               )
             })}
           </Select>
-        }
-        label={label}
-        labelPlacement='start'
-      />
+      </FormControl>
     );
   }
