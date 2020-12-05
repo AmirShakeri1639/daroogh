@@ -187,19 +187,25 @@ const DrugsList: React.FC = () => {
     }
   }
 
-  const toggleDrugActivationHandler = async (id: number): Promise<any> => {
+  const toggleDrugActivationHandler = async (row: any): Promise<any> => {
     try {
+      const {
+        id,
+        name,
+        genericName,
+        companyName,
+        barcode,
+        description,
+        enName,
+        type
+      } = row;
+      const categoryID = row.category.id;
+      let { active } = row;
+      active = !active;
+
       await _save({
-        id: id,
-        categoryID: state.categoryID,
-        name: state.name,
-        genericName: state.genericName,
-        companyName: state.companyName,
-        barcode: state.barcode,
-        description: state.description,
-        active: !state.active,
-        enName: state.enName,
-        type: state.type
+        id, name, categoryID, genericName, companyName,
+        barcode, description, enName, type, active,
       });
     } catch (e) {
       errorHandler(e);
@@ -446,6 +452,8 @@ const DrugsList: React.FC = () => {
               columns={tableColumns()}
               addAction={(): void => saveHandler(initialState)}
               editAction={(e: any, row: any): void => saveHandler(row)}
+              stateAction={async (e: any, row: any):
+                Promise<void> => await toggleDrugActivationHandler(row)}
               removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
               queryKey={DrugEnum.GET_ALL}
               queryCallback={all}
