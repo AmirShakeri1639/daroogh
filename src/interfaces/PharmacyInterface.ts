@@ -1,4 +1,4 @@
-import {WorkTimeEnum} from '../enum';
+import { WorkTimeEnum } from '../enum';
 
 export interface PharmacyInterface {
   id: number;

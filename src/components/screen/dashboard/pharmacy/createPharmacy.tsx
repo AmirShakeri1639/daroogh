@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react';
+import React, { useReducer, useState } from 'react';
 import {
   Container,
   TextField,
@@ -7,14 +7,14 @@ import {
   Button, Grid, Typography, Divider, Box
 } from '@material-ui/core';
 import Pharmacy from '../../../../services/api/Pharmacy';
-import {LabelValue, PharmacyInterface} from '../../../../interfaces';
+import { LabelValue, PharmacyInterface } from '../../../../interfaces';
 import { queryCache, useMutation } from "react-query";
 import { useClasses } from "../classes";
 import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
 import { errorHandler, sweetAlert } from "../../../../utils";
-import {DaroogDropdown} from "../common/daroogDropdown";
-import {WorkTimeEnum} from "../../../../enum";
+import { DaroogDropdown } from "../common/daroogDropdown";
+import { WorkTimeEnum } from "../../../../enum";
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -121,10 +121,10 @@ const CreatePharmacy: React.FC = () => {
 
   const [workTimeList, setworkTimeList] = useState(new Array<LabelValue>());
   React.useEffect(() => {
-    let wtList: LabelValue[] = []
-    for (let wt in WorkTimeEnum) {
+    const wtList: LabelValue[] = []
+    for (const wt in WorkTimeEnum) {
       if (parseInt(wt) >= 0)
-        wtList.push({label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt});
+        wtList.push({ label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt });
     }
     setworkTimeList(wtList);
   }, []);
