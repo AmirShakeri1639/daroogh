@@ -32,8 +32,8 @@ import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import { PharmacyEnum } from "../../../../enum/query";
 import { DaroogSearchBar } from '../drug-transfer/DaroogSearchBar';
-import {DaroogDropdown} from "../common/daroogDropdown";
-import {WorkTimeEnum} from "../../../../enum";
+import { DaroogDropdown } from "../common/daroogDropdown";
+import { WorkTimeEnum } from "../../../../enum";
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -163,10 +163,10 @@ const PharmaciesList: React.FC = () => {
 
   const [_confirm,
     { isLoading: isLoadingConfirm }] = useMutation(confirm, {
-    onSuccess: async () => {
+    onSuccess: async ({ message }) => {
       ref.current?.loadItems()
       await queryCache.invalidateQueries('pharmaciesList');
-      await successSweetAlert(t('alert.successfulEnableTextMessage'));
+      await successSweetAlert(message);
     }
   });
 
@@ -187,21 +187,21 @@ const PharmaciesList: React.FC = () => {
     ];
   }
 
-  const removeHandler = async (userRow: PharmacyInterface): Promise<any> => {
+  const removeHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
       if (window.confirm(t('alert.remove'))) {
-        await _remove(userRow.id);
+        await _remove(row.id);
       }
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  const toggleConfirmHandler = async (id: number): Promise<any> => {
+  const toggleConfirmHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
       const confirmParams: ConfirmParams = {
-        id: id,
-        status: !state.active
+        id: row.id,
+        status: !row.active
       };
       await _confirm(confirmParams);
     } catch (e) {
@@ -288,9 +288,9 @@ const PharmaciesList: React.FC = () => {
 
   const [workTimeList, setworkTimeList] = useState(new Array<LabelValue>());
   React.useEffect(() => {
-    let wtList: LabelValue[] = []
-    for (let wt in WorkTimeEnum) {
-      wtList.push({label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt});
+    const wtList: LabelValue[] = []
+    for (const wt in WorkTimeEnum) {
+      wtList.push({ label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt });
     }
     setworkTimeList(wtList);
   }, []);
@@ -505,6 +505,7 @@ const PharmaciesList: React.FC = () => {
               addAction={(): void => saveHandler(initialState)}
               editAction={(e: any, row: any): void => saveHandler(row)}
               removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
+              stateAction={async (e: any, row: any): Promise<void> => await toggleConfirmHandler(row)}
               queryKey={PharmacyEnum.GET_ALL}
               queryCallback={all}
               initLoad={false}
