@@ -18,6 +18,7 @@ import PharmaciesList from './pharmacy/pharmaciesList';
 import CreatePharmacy from './pharmacy/createPharmacy';
 import CategoryList from './category/CategoryList';
 import Exchange from './drug-transfer/exchange/Exchange';
+import TransferDrug from './drug-transfer/Transfer';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -97,7 +98,7 @@ const DashboardActivePage: React.FC = () => {
         el = <CategoryList />;
         break;
       case DashboardPages.EXCHANGE:
-        el = <Exchange />;
+        el = <TransferDrug />;
         break;
       default:
         el = <></>;
