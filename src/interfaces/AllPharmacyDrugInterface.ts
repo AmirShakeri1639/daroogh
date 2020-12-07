@@ -10,6 +10,7 @@ export interface AllPharmacyDrugInterface {
   offer2: number;
   drugID: number;
   drug: DrugI;
+  currentCnt: number;
 }
 
 export interface DrugI {

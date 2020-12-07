@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -20,6 +20,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import { CardPropsInterface } from '../../../../../interfaces';
 import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import { AllPharmacyDrugInterface } from "../../../../../interfaces/AllPharmacyDrugInterface";
 
 const style = makeStyles(theme =>
   createStyles({
@@ -90,12 +91,17 @@ const style = makeStyles(theme =>
 
 const CardContainer: React.FC<CardPropsInterface> = props => {
   const [expanded, setExpanded] = React.useState(false);
+  const [drugInfo, setDrugInfo] = useState<any>();
 
   const { basketCount, setBasketCount } = useContext<TransferDrugContextInterface>(
     DrugTransferContext,
   );
 
-  const { isPack, collapsableContent, basicDetail, pharmacyDrug = { cnt: 0, id: 0 } } = props;
+  const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
+
+  useEffect(() => {
+    setDrugInfo(pharmacyDrug);
+  }, []);
 
   const {
     expand,
@@ -113,12 +119,26 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
   const counterHandle = (e: string): void => {
     switch (e) {
       case '+':
-        setBasketCount(basketCount + 1);
-        pharmacyDrug.cnt += 1;
+        setBasketCount(
+            basketCount.indexOf(pharmacyDrug?.id) !== -1
+              ? [...basketCount]
+              : [...basketCount, pharmacyDrug?.id]
+        );
+        Object.assign(drugInfo, { currentCnt: drugInfo?.currentCnt + 1 });
+        setDrugInfo(drugInfo)
         break;
       case '-':
-        setBasketCount(basketCount - 1);
-        if (pharmacyDrug.cnt > 0) pharmacyDrug.cnt -= 1;
+        if (drugInfo?.currentCnt === drugInfo?.cnt) {
+          basketCount.splice(basketCount.indexOf(drugInfo?.id), 1);
+          setBasketCount([...basketCount]);
+        }
+        else if (drugInfo.currentCnt > drugInfo.cnt) {
+          Object.assign(
+            drugInfo,
+          { currentCnt: drugInfo?.currentCnt - 1 }
+            );
+        }
+        setDrugInfo(drugInfo)
         break;
       default:
         break;
@@ -126,9 +146,11 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
   };
 
   const addTransferHandle = (): void => {
-    if (pharmacyDrug.cnt <= 1) setBasketCount(basketCount + 1);
-    if ((pharmacyDrug.cnt = 0)) setBasketCount(basketCount - 1);
+    // if (pharmacyDrug.cnt <= 1) setBasketCount(basketCount + 1);
+    // if ((pharmacyDrug.cnt = 0)) setBasketCount(basketCount - 1);
   };
+
+  console.log('---->',drugInfo)
 
   const CounterButton = (): JSX.Element => {
     return (
@@ -137,7 +159,7 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
           <AddIcon />
         </Button>
         <Button variant="outlined" size="small" style={{ paddingTop: 5 }}>
-          {pharmacyDrug.cnt}
+          {drugInfo?.currentCnt}
         </Button>
         <Button size="small" className={counterButton} onClick={(): void => counterHandle('-')}>
           <RemoveIcon />

@@ -67,5 +67,5 @@ export interface CardPropsInterface {
   isPack?: boolean;
   basicDetail: JSX.Element;
   collapsableContent?: JSX.Element;
-  pharmacyDrug?: AllPharmacyDrugInterface;
+  pharmacyDrug: AllPharmacyDrugInterface;
 }

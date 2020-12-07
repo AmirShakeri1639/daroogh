@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
 import { DaroogSearchBar } from '../DaroogSearchBar';
@@ -31,6 +31,7 @@ const SecondStep: React.FC = () => {
     allPharmacyDrug,
     setAllPharmacyDrug,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
   const { paper } = style();
   const { getAllPharmacyDrug } = new PharmacyDrug();
 
@@ -48,23 +49,30 @@ const SecondStep: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const cardListGenerator = (): JSX.Element[] => {
-    return allPharmacyDrug.map((item: any, index: number) => ( 
-      <Grid item xs={12} sm={4} key={index}>
-        <div className={paper}>
-          <CardContainer
-            basicDetail={
-              <ExCardContent
-                pharmacyDrug={item}
+  const cardListGenerator = (): JSX.Element[] | null => {
+    if (allPharmacyDrug.length > 0) {
+      return allPharmacyDrug.map((item: any, index: number) => {
+        console.log('item', item)
+        return (
+          <Grid item xs={12} sm={4} key={index}>
+            <div className={paper}>
+              <CardContainer
+                basicDetail={
+                  <ExCardContent
+                    pharmacyDrug={item}
+                  />
+                }
+                isPack={item.packID}
+                pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                collapsableContent={item.collapsableContent}
               />
-            }
-            isPack={item.packID}
-            pharmacyDrug={item}
-            collapsableContent={item.collapsableContent}
-          />
-        </div>
-      </Grid>
-    ));
+            </div>
+          </Grid>
+        )
+      });
+    }
+
+    return null;
   };
 
   return (

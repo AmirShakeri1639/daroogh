@@ -13,6 +13,7 @@ import SecondStep from './second-step/SecondStep';
 import FirstStep from './first-step/FirstStep';
 import ThirdStep from './third-step/ThirdStep';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
+import { TransferBasketInterface } from "../../../../interfaces/DrugInterface";
 
 const style = makeStyles(theme =>
   createStyles({
@@ -26,7 +27,7 @@ const style = makeStyles(theme =>
 const TransferDrug: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [allPharmacyDrug, setAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
-  const [basketCount, setBasketCount] = useState<number>(0);
+  const [basketCount, setBasketCount] = useState<number[]>([]);
 
   const { root } = style();
 
@@ -47,7 +48,7 @@ const TransferDrug: React.FC = () => {
             <Grid item xs={12}>
               <ProgressBar />
             </Grid>
-             
+
             {activeStep === 0 && <FirstStep />}
             {activeStep === 1 && <SecondStep />}
             {activeStep === 2 && <ThirdStep />}

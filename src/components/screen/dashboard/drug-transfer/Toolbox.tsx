@@ -43,7 +43,7 @@ const ToolBox: React.FC = () => {
       <li>
         <Tooltip title="سبد دارو">
           <IconButton color="inherit">
-            <Badge badgeContent={basketCount} color="secondary">
+            <Badge badgeContent={basketCount.length} color="secondary">
               <ShoppingBasketIcon className={icons} />
             </Badge>
           </IconButton>
