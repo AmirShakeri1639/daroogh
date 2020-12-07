@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core';
-import CardContainer from '../../../public/card/CardContainer';
+import CardContainer from './exchange/CardContainer';
 import './transfer.scss';
 import Context from './Context';
 import { Grid } from '@material-ui/core';
@@ -26,6 +26,7 @@ const style = makeStyles(theme =>
 const TransferDrug: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
   const [allPharmacyDrug, setAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [basketCount, setBasketCount] = useState<number>(0);
 
   const { root } = style();
 
@@ -34,6 +35,8 @@ const TransferDrug: React.FC = () => {
     setActiveStep,
     allPharmacyDrug,
     setAllPharmacyDrug,
+    basketCount,
+    setBasketCount
   });
 
   return (
@@ -44,7 +47,7 @@ const TransferDrug: React.FC = () => {
             <Grid item xs={12}>
               <ProgressBar />
             </Grid>
-
+             
             {activeStep === 0 && <FirstStep />}
             {activeStep === 1 && <SecondStep />}
             {activeStep === 2 && <ThirdStep />}

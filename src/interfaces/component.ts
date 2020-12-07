@@ -1,4 +1,5 @@
 import { TableColumnInterface } from ".";
+import { AllPharmacyDrugInterface } from "./AllPharmacyDrugInterface";
 import { NewUserData } from "./user";
 
 export interface SelectPropsInterface {
@@ -59,17 +60,12 @@ export interface UserDataProps {
 }
 
 export interface ExCardContentProps {
-  drugName: string;
-  inventory: number;
-  price: number;
-  expireDate: any;
-  offer: string;
-  isPack?: boolean;
-  packInfo?: { packName?: string; totalPrice?: number };
+  pharmacyDrug?: AllPharmacyDrugInterface;
 }
 
 export interface CardPropsInterface {
   isPack?: boolean;
   basicDetail: JSX.Element;
   collapsableContent?: JSX.Element;
+  pharmacyDrug?: AllPharmacyDrugInterface;
 }

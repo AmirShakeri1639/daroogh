@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -17,8 +17,9 @@ import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import { CardPropsInterface } from '../../../interfaces';
+import { CardPropsInterface } from '../../../../../interfaces';
 import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
 const style = makeStyles(theme =>
   createStyles({
@@ -33,8 +34,14 @@ const style = makeStyles(theme =>
     },
     button: {
       height: 32,
-      width: 100,
-      fontSize: 12,
+      width: 80,
+      fontSize: 10,
+      fontWeight: 'bold',
+    },
+    counterButton: {
+      height: 32,
+      width: 20,
+      fontSize: 11,
       fontWeight: 'bold',
     },
     expand: {
@@ -81,26 +88,14 @@ const style = makeStyles(theme =>
   }),
 );
 
-const CounterButton = (): JSX.Element => {
-  return (
-    <ButtonGroup variant="contained" color="primary">
-      <Button size="small">
-        <AddIcon />
-      </Button>
-      <Button variant="outlined" size="small" style={{ paddingTop: 5 }}>
-        100
-      </Button>
-      <Button size="small">
-        <RemoveIcon />
-      </Button>
-    </ButtonGroup>
-  );
-};
-
 const CardContainer: React.FC<CardPropsInterface> = props => {
   const [expanded, setExpanded] = React.useState(false);
 
-  const { isPack, collapsableContent, basicDetail } = props;
+  const { basketCount, setBasketCount } = useContext<TransferDrugContextInterface>(
+    DrugTransferContext,
+  );
+
+  const { isPack, collapsableContent, basicDetail, pharmacyDrug = { cnt: 0, id: 0 } } = props;
 
   const {
     expand,
@@ -111,8 +106,45 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
     pack,
     collapse,
     button,
+    counterButton,
     textBoxCounter,
   } = style();
+
+  const counterHandle = (e: string): void => {
+    switch (e) {
+      case '+':
+        setBasketCount(basketCount + 1);
+        pharmacyDrug.cnt += 1;
+        break;
+      case '-':
+        setBasketCount(basketCount - 1);
+        if (pharmacyDrug.cnt > 0) pharmacyDrug.cnt -= 1;
+        break;
+      default:
+        break;
+    }
+  };
+
+  const addTransferHandle = (): void => {
+    if (pharmacyDrug.cnt <= 1) setBasketCount(basketCount + 1);
+    if ((pharmacyDrug.cnt = 0)) setBasketCount(basketCount - 1);
+  };
+
+  const CounterButton = (): JSX.Element => {
+    return (
+      <ButtonGroup variant="contained" color="primary">
+        <Button size="small" className={counterButton} onClick={(): void => counterHandle('+')}>
+          <AddIcon />
+        </Button>
+        <Button variant="outlined" size="small" style={{ paddingTop: 5 }}>
+          {pharmacyDrug.cnt}
+        </Button>
+        <Button size="small" className={counterButton} onClick={(): void => counterHandle('-')}>
+          <RemoveIcon />
+        </Button>
+      </ButtonGroup>
+    );
+  };
 
   const handleExpandClick = (): any => {
     setExpanded(!expanded);
@@ -128,7 +160,12 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
               <CounterButton />
             </Grid>
             <Grid item xs={6} style={{ textAlign: 'left' }}>
-              <Button variant="contained" className={button} size="small">
+              <Button
+                variant="contained"
+                className={button}
+                size="small"
+                onClick={(): void => addTransferHandle()}
+              >
                 افزودن به تبادل
               </Button>
             </Grid>

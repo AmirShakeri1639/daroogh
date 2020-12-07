@@ -4,6 +4,7 @@ export interface AllPharmacyDrugInterface {
   packID?: number;
   expireDate: any;
   amount: number;
+  totalCount: number;
   cnt: number;
   offer1: number;
   offer2: number;

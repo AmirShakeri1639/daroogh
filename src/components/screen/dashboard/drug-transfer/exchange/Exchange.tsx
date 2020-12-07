@@ -91,7 +91,7 @@ const Exchange: React.FC = () => {
         {data.map((item: any, index: number) => (
           <Grid item xs={12} sm={4} key={index}>
             <div className={paper}>
-              <CardContainer
+              {/* <CardContainer
                 basicDetail={
                   <ExCardContent
                     drugName={item.drugName}
@@ -105,7 +105,7 @@ const Exchange: React.FC = () => {
                 }
                 isPack={item.isPack}
                 collapsableContent={item.collapsableContent}
-              />
+              /> */}
             </div>
           </Grid>
         ))}
