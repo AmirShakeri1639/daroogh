@@ -18,7 +18,8 @@ import {
   ExpandMore, Extension,
   LocalPharmacy, Business
 } from "@material-ui/icons";
-
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import ReceiptIcon from '@material-ui/icons/Receipt';
 import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
 import { DashboardPages } from '../../../../enum';
@@ -52,6 +53,7 @@ const ListItems: React.FC = () => {
   const [isOpenCategory, setIsOpenCategory] = useState<boolean>(false);
   const [isOpenPharmacyMenu, setIsOpenPharmacyMenu] = useState<boolean>(false);
   const [isOpenExchange, setIsOpenExchange] = useState<boolean>(false);
+  const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
 
   const { setActivePage } = useContext(Context);
 
@@ -273,6 +275,29 @@ const ListItems: React.FC = () => {
           </ListItem>
         </List>
       </Collapse>
+
+      <ListItem button onClick={(): void => setIsOpenAccounting(val => !val)}>
+        <ListItemIcon>
+          <AccountBalanceIcon />
+        </ListItemIcon>
+        <ListItemText primary={t('accounting.accounting')} />
+        {isOpenAccounting ? <ExpandLess /> : <ExpandMore />}
+      </ListItem>
+      <Collapse in={isOpenAccounting} timeout="auto" unmountOnExit>
+        <List component="div" disablePadding>
+          <ListItem
+            button
+            className={nested}
+            onClick={(): void => setActivePage(DashboardPages.ACCOUNTING_LIST)}
+          >
+            <ListItemIcon>
+              <ReceiptIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('accounting.transactions')} />
+          </ListItem>
+        </List>
+      </Collapse>
+
     </div>
   );
 };
