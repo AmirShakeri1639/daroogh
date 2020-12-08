@@ -1,44 +1,40 @@
 import axios, { AxiosInstance } from 'axios';
 import { api } from '../../config/default.json';
-import { DefaultAxiosConfigInterface } from "../../interfaces";
-import { errorHandler, errorSweetAlert } from "../../utils";
+import { DefaultAxiosConfigInterface } from '../../interfaces';
+import { errorHandler, errorSweetAlert } from '../../utils';
 
 const axiosInstance = axios.create({
   baseURL: api.baseUrl,
   timeout: 0,
 });
 
-axiosInstance.interceptors.response.use(
-  undefined,
-  error => {
-    const { response } = error;
-    if (!error.response) {
-      console.error('Error in network');
-      return Promise.reject(error);
-    }
-
-    const { status } = response;
-    if (status === 401) {
-      (async (): Promise<any> => {
-        await errorSweetAlert('خطایی در عدم دسترسی وجود دارد');
-      })();
-    }
-    else if (status === 404) {
-      (async (): Promise<any> => {
-        await errorSweetAlert('خطای 404');
-      })();
-    }
-    else if (status === 500) {
-      // (async (): Promise<any> => {
-      //   await sweetAlert({
-      //     type: 'error',
-      //     text: data.message
-      //   });
-      // })();
-    }
-
+axiosInstance.interceptors.response.use(undefined, error => {
+  const { response } = error;
+  if (!error.response) {
+    console.error('Error in network');
     return Promise.reject(error);
-  });
+  }
+
+  const { status } = response;
+  if (status === 401) {
+    (async (): Promise<any> => {
+      await errorSweetAlert('خطایی در عدم دسترسی وجود دارد');
+    })();
+  } else if (status === 404) {
+    (async (): Promise<any> => {
+      await errorSweetAlert('خطای 404');
+    })();
+  } else if (status === 500) {
+    // (async (): Promise<any> => {
+    //   await sweetAlert({
+    //     type: 'error',
+    //     text: data.message
+    //   });
+    // })();
+  }
+
+  return Promise.reject(error);
+});
 
 class Api {
   protected axiosInstance: AxiosInstance = axiosInstance;
@@ -52,19 +48,18 @@ class Api {
       defaultsAxiosHeaders.Authorization = `Bearer ${token}`;
     }
     Object.assign(this.axiosInstance.defaults, {
-      headers: defaultsAxiosHeaders,
+      headers:  defaultsAxiosHeaders ,
     });
+    // Object.assign(this.axiosInstance.defaults, {
+    //   'Content-Type': 'application/json' ,
+    // });
     return this.axiosInstance;
   }
 
   protected async postJsonData(url: string, data: any = null): Promise<any> {
     try {
-      return await this.authorizedUserRequest().post(
-        url,
-        data
-      );
-    }
-    catch (e) {
+      return await this.authorizedUserRequest().post(url, data);
+    } catch (e) {
       throw new Error(e);
     }
   }
@@ -82,7 +77,7 @@ class Api {
     } catch (e) {
       errorHandler(e);
     }
-  };
+  }
 
   protected async getData(url: string): Promise<any> {
     try {

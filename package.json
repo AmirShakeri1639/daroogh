@@ -33,6 +33,7 @@
     "history": "^5.0.0",
     "i18next": "^19.8.2",
     "jalaali-js": "^1.1.5",
+    "jalali-moment": "^3.3.9",
     "jsonwebtoken": "^8.5.1",
     "jss": "^10.4.0",
     "jss-rtl": "^0.3.0",
