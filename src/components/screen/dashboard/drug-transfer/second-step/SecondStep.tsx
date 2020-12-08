@@ -25,6 +25,8 @@ const style = makeStyles(theme =>
 );
 
 const SecondStep: React.FC = () => {
+  const { getAllPharmacyDrug } = new PharmacyDrug();
+  
   const {
     activeStep,
     setActiveStep,
@@ -33,7 +35,7 @@ const SecondStep: React.FC = () => {
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { paper } = style();
-  const { getAllPharmacyDrug } = new PharmacyDrug();
+  
 
   const queryCache = useQueryCache();
   const { isLoading, error, data, refetch } = useQuery(

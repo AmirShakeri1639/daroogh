@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -17,10 +17,15 @@ import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import { CardPropsInterface } from '../../../../../interfaces';
+import { ActionInterface, CardPropsInterface } from '../../../../../interfaces';
 import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
-import { AllPharmacyDrugInterface } from "../../../../../interfaces/AllPharmacyDrugInterface";
+import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
+import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
+import { useMutation } from 'react-query';
+import { AddDrugInterface } from '../../../../../interfaces/ExchangeInterface';
+import { errorHandler, sweetAlert } from '../../../../../utils';
+import { useTranslation } from 'react-i18next';
 
 const style = makeStyles(theme =>
   createStyles({
@@ -89,15 +94,60 @@ const style = makeStyles(theme =>
   }),
 );
 
+const initialState: AddDrugInterface = {
+  pharmacyDrugID: 0,
+  count: 0,
+  pharmacyKey: '',
+};
+
+function reducer(state = initialState, action: ActionInterface): any {
+  const { value } = action;
+
+  switch (action.type) {
+    case 'pharmacyDrugID':
+      return {
+        ...state,
+        pharmacyDrugID: value,
+      };
+    case 'count':
+      return {
+        ...state,
+        count: value,
+      };
+    case 'pharmacyKey':
+      return {
+        ...state,
+        pharmacyKey: value,
+      };
+    case 'reset':
+      return initialState;
+    default:
+      console.error('Action type not defined');
+  }
+}
+
 const CardContainer: React.FC<CardPropsInterface> = props => {
   const [expanded, setExpanded] = React.useState(false);
-  const [drugInfo, setDrugInfo] = useState<any>();
+  const [drugInfo, setDrugInfo] = useState<any>({});
+  const { addDrug1 } = new PharmacyDrug();
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { t } = useTranslation();
 
   const { basketCount, setBasketCount } = useContext<TransferDrugContextInterface>(
     DrugTransferContext,
   );
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
+
+  const [_addDrug1, { isLoading: isLoadingNewCategory }] = useMutation(addDrug1, {
+    onSuccess: async () => {
+      dispatch({ type: 'reset' });
+      await sweetAlert({
+        type: 'success',
+        text: t('alert.successfulCreateTextMessage'),
+      });
+    },
+  });
 
   useEffect(() => {
     setDrugInfo(pharmacyDrug);
@@ -119,38 +169,57 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
   const counterHandle = (e: string): void => {
     switch (e) {
       case '+':
-        setBasketCount(
-            basketCount.indexOf(pharmacyDrug?.id) !== -1
-              ? [...basketCount]
-              : [...basketCount, pharmacyDrug?.id]
-        );
-        Object.assign(drugInfo, { currentCnt: drugInfo?.currentCnt + 1 });
-        setDrugInfo(drugInfo)
+        // setBasketCount(
+        //   basketCount.indexOf(pharmacyDrug?.id) !== -1
+        //     ? [...basketCount]
+        //     : [...basketCount, pharmacyDrug?.id],
+        // );
+        if (drugInfo.currentCnt < drugInfo.cnt) {
+          // Object.assign(drugInfo, { currentCnt: drugInfo?.currentCnt + 1 });
+          drugInfo.currentCnt += 1;
+          setDrugInfo(drugInfo);
+        }
         break;
       case '-':
-        if (drugInfo?.currentCnt === drugInfo?.cnt) {
-          basketCount.splice(basketCount.indexOf(drugInfo?.id), 1);
-          setBasketCount([...basketCount]);
+        // if (drugInfo?.currentCnt === drugInfo?.cnt) {
+        //   basketCount.splice(basketCount.indexOf(drugInfo?.id), 1);
+        //   setBasketCount([...basketCount]);
+        // } else if (drugInfo.currentCnt > drugInfo.cnt) {
+        //   Object.assign(drugInfo, { currentCnt: drugInfo?.currentCnt - 1 });
+        // }
+        if (drugInfo.currentCnt > 0) {
+          // Object.assign(drugInfo, { currentCnt: drugInfo?.currentCnt - 1 });
+          drugInfo.currentCnt -= 1;
+          setDrugInfo(drugInfo);
         }
-        else if (drugInfo.currentCnt > drugInfo.cnt) {
-          Object.assign(
-            drugInfo,
-          { currentCnt: drugInfo?.currentCnt - 1 }
-            );
-        }
-        setDrugInfo(drugInfo)
         break;
       default:
         break;
     }
   };
 
-  const addTransferHandle = (): void => {
-    // if (pharmacyDrug.cnt <= 1) setBasketCount(basketCount + 1);
-    // if ((pharmacyDrug.cnt = 0)) setBasketCount(basketCount - 1);
+  const getInputModel = (): AddDrugInterface => {
+    return {
+      pharmacyDrugID: drugInfo.id,
+      count: drugInfo.currentCnt,
+      pharmacyKey: 'test::17',
+    };
   };
 
-  console.log('---->',drugInfo)
+  const addTransferHandle = async (): Promise<any> => {
+    debugger;
+    // dispatch({ type: 'pharmacyDrugID', value: drugInfo.id });
+    // dispatch({ type: 'count', value: drugInfo.currentCnt });
+    // dispatch({ type: 'pharmacyKey', value: 'test::17' });
+    // const { pharmacyDrugID, count, pharmacyKey } = state;
+
+    try {
+      await _addDrug1(getInputModel());
+      dispatch({ type: 'reset' });
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
 
   const CounterButton = (): JSX.Element => {
     return (
@@ -159,7 +228,7 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
           <AddIcon />
         </Button>
         <Button variant="outlined" size="small" style={{ paddingTop: 5 }}>
-          {drugInfo?.currentCnt}
+          {drugInfo.currentCnt}
         </Button>
         <Button size="small" className={counterButton} onClick={(): void => counterHandle('-')}>
           <RemoveIcon />
@@ -186,7 +255,7 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
                 variant="contained"
                 className={button}
                 size="small"
-                onClick={(): void => addTransferHandle()}
+                onClick={async (): Promise<any> => await addTransferHandle()}
               >
                 افزودن به تبادل
               </Button>

@@ -2,6 +2,8 @@ export interface AllPharmacyDrugInterface {
   id: number;
   batchNO: string;
   packID?: number;
+  packName?: string;
+  packCategoryName?: string;
   expireDate: any;
   amount: number;
   totalCount: number;

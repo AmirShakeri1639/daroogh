@@ -36,7 +36,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           <hr />
         </Grid>
         <Grid item xs={12} sm={4}>
-          {pharmacyDrug?.drug.name}
+          {pharmacyDrug?.packName}
         </Grid>
         <Grid item xs={12} sm={4}>
           💰 قیمت کل
