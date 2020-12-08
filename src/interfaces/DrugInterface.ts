@@ -10,3 +10,8 @@ export interface DrugInterface {
     enName: string;
     type: string;
 }
+
+export interface TransferBasketInterface {
+  drugId: number;
+  drugCount: number;
+}
