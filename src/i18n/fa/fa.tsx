@@ -40,6 +40,7 @@ export default {
         id: 'شناسه',
         nextLevel: 'مرحله بعد',
         prevLevel: 'مرحله قبل',
+        date: 'تاریخ',
       },
       action: {
         insert: 'درج',
@@ -166,6 +167,12 @@ export default {
         ARZESHODEH: 'عرضه شده',
         FOROOKHTEHSHODEH: 'فروخته شده'
       },
+      accounting: {
+        accounting: 'مالی',
+        amount: 'مبلغ',
+        list: 'لیست تراکنش‌های مالی',
+        transactions: 'تراکنش‌ها',
+      }
     }
   }
 }

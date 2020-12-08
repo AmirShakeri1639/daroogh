@@ -21,7 +21,8 @@ export enum DashboardPages {
   PHARMACY_CREATE = 'createPharmacy',
   PHARMACY_LIST = 'pharmaciesList',
   CATEGORY_LIST = 'categoryList',
-  EXCHANGE = 'exchange'
+  EXCHANGE = 'exchange',
+  ACCOUNTING_LIST = 'accounting',
 }
 
 export enum PharmacyTypeEnum {
