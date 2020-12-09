@@ -48,7 +48,11 @@ class Api {
       defaultsAxiosHeaders.Authorization = `Bearer ${token}`;
     }
     Object.assign(this.axiosInstance.defaults, {
+<<<<<<< HEAD
       headers: { ...defaultsAxiosHeaders, 'Content-Type': 'application/json' },
+=======
+      headers: { ...defaultsAxiosHeaders, 'Content-Type': 'application/json' }
+>>>>>>> dev
     });
     return this.axiosInstance;
   }

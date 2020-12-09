@@ -1,7 +1,9 @@
 import { Container, createStyles, Grid, makeStyles } from '@material-ui/core';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ExCardContentProps } from '../../../../../interfaces';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import moment from 'jalali-moment';
 
 const useClasses = makeStyles(theme =>
   createStyles({
@@ -9,6 +11,7 @@ const useClasses = makeStyles(theme =>
       padding: 5,
       minHeight: 150,
       alignItems: 'center',
+      fontSize: 11
     },
     cardcontent: {
       borderRadius: 15,
@@ -20,7 +23,7 @@ const useClasses = makeStyles(theme =>
 );
 
 function ExCardContent(props: ExCardContentProps): JSX.Element {
-  const { drugName, inventory, price, expireDate, offer, isPack = false, packInfo } = props;
+  const { pharmacyDrug } = props;
   const { container, cardcontent } = useClasses();
 
   const PackContent = (): JSX.Element => {
@@ -33,7 +36,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           <hr />
         </Grid>
         <Grid item xs={12} sm={4}>
-          {packInfo?.packName}
+          {pharmacyDrug?.packName}
         </Grid>
         <Grid item xs={12} sm={4}>
           💰 قیمت کل
@@ -42,7 +45,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           <hr />
         </Grid>
         <Grid item xs={12} sm={4}>
-          {packInfo?.totalPrice}
+          {pharmacyDrug?.amount}
         </Grid>
       </Grid>
     );
@@ -52,16 +55,16 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
     return (
       <Grid container spacing={1} className={container}>
         <Grid item xs={12} sm={12}>
-          💊{drugName}
+          💊{pharmacyDrug?.drug.name}
         </Grid>
         <Grid item xs={12} sm={4}>
-          🔊موجودی : {inventory}
+          🔊موجودی : {pharmacyDrug?.cnt}
         </Grid>
         <Grid item xs={12} sm={4}>
           <hr />
         </Grid>
         <Grid item xs={12} sm={4}>
-          💰قیمت : {price}
+          💰قیمت : {pharmacyDrug?.amount}
         </Grid>
         <Grid item xs={12} sm={4}>
           <EventBusyIcon />تاریخ انقضا
@@ -70,7 +73,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           <hr style={{ border: '1px dashed black', marginTop: 10 }} />
         </Grid>
         <Grid item xs={12} sm={4}>
-          {expireDate}
+        {moment(pharmacyDrug?.expireDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
         </Grid>
         <Grid item xs={12} sm={4}>
           🎁پیشنهاد
@@ -79,7 +82,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           <hr style={{ border: '1px dashed black', marginTop: 10 }} />
         </Grid>
         <Grid item xs={12} sm={4}>
-          {offer}
+        {`${pharmacyDrug?.offer1} به ${pharmacyDrug?.offer2}`}
         </Grid>
       </Grid>
     );
@@ -87,8 +90,8 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
 
   return (
     <Container className={`${cardcontent}`}>
-      {isPack && <PackContent />}
-      {!isPack && <DrugInfo />}
+      {pharmacyDrug?.packID && <PackContent />}
+      {!pharmacyDrug?.packID && <DrugInfo />}
     </Container>
   );
 }

@@ -56,5 +56,8 @@ export type { CategoryInterface } from './CategoryInterface';
 export type { PharmacyInterface } from './PharmacyInterface';
 export type { LabelValue } from './LabelValue';
 export type { ConfirmParams } from './ConfirmParams';
+export type { AccountingInterface } from './AccountingInterface';
+export type { AllPharmacyDrugInterface } from './AllPharmacyDrugInterface';
+export type { DrugI } from './AllPharmacyDrugInterface';
 
 export * from './component';

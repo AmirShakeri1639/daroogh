@@ -4,11 +4,14 @@ export interface AllPharmacyDrugInterface {
   packID?: number;
   expireDate: any;
   amount: number;
+  totalCount: number;
   cnt: number;
   offer1: number;
   offer2: number;
   drugID: number;
   drug: DrugI;
+  currentCnt: number;
+  packName?: string;
 }
 
 export interface DrugI {

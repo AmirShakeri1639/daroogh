@@ -1,41 +1,52 @@
-import React from 'react';
-import { createStyles, Grid, makeStyles, Tooltip } from '@material-ui/core';
+import React, { useContext } from 'react';
+import { Badge, createStyles, Grid, IconButton, makeStyles, Tooltip } from '@material-ui/core';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import SortIcon from '@material-ui/icons/Sort';
 import ListIcon from '@material-ui/icons/List';
 import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import ViewStreamIcon from '@material-ui/icons/ViewStream';
+import DrugTransferContext, { TransferDrugContextInterface } from './Context';
 
-const styles = makeStyles((theme) => createStyles({
-  ul: {
-    listStyle: 'none',
-    paddingLeft: 0,
-    '& > li': {
-      display: 'inline',
-      marginLeft: theme.spacing(2),
-      '&:hover': {
-        cursor: 'pointer',
-      },
-      '& > span': {
-        color: theme.palette.gray.dark,
-        bottom: 9,
-        left: 3,
+const styles = makeStyles(theme =>
+  createStyles({
+    ul: {
+      listStyle: 'none',
+      paddingLeft: 0,
+      '& > li': {
+        display: 'inline',
+        marginLeft: theme.spacing(2),
+        '&:hover': {
+          cursor: 'pointer',
+        },
+        '& > span': {
+          color: theme.palette.gray.dark,
+          bottom: 9,
+          left: 3,
+        },
       },
     },
-  },
-  icons: {
-    color: theme.palette.gray.dark,
-  }
-}));
+    icons: {
+      color: theme.palette.gray.dark,
+    },
+  }),
+);
 
 const ToolBox: React.FC = () => {
   const { ul, icons } = styles();
+
+  const { basketCount, setBasketCount } = useContext<TransferDrugContextInterface>(
+    DrugTransferContext,
+  );
 
   return (
     <ul className={ul}>
       <li>
         <Tooltip title="سبد دارو">
-          <ShoppingBasketIcon className={icons} />
+          <IconButton color="inherit">
+            <Badge badgeContent={basketCount.length} color="secondary">
+              <ShoppingBasketIcon className={icons} />
+            </Badge>
+          </IconButton>
         </Tooltip>
       </li>
       <li>
@@ -61,6 +72,6 @@ const ToolBox: React.FC = () => {
       </li>
     </ul>
   );
-}
+};
 
 export default ToolBox;
