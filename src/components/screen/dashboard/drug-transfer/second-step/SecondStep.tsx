@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
-import { DaroogSearchBar } from '../DaroogSearchBar';
+import SearchInAList from '../SearchInAList';
 import CardContainer from '../exchange/CardContainer';
 import ExCardContent from '../exchange/ExCardContent';
 import Button from '../../../../public/button/Button';
@@ -26,7 +26,7 @@ const style = makeStyles(theme =>
 
 const SecondStep: React.FC = () => {
   const { getAllPharmacyDrug } = new PharmacyDrug();
-  
+
   const {
     activeStep,
     setActiveStep,
@@ -35,7 +35,7 @@ const SecondStep: React.FC = () => {
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { paper } = style();
-  
+
 
   const queryCache = useQueryCache();
   const { isLoading, error, data, refetch } = useQuery(
@@ -86,7 +86,7 @@ const SecondStep: React.FC = () => {
           </Grid>
 
           <Grid item xs={7}>
-            <DaroogSearchBar />
+            <SearchInAList />
           </Grid>
         </Grid>
 

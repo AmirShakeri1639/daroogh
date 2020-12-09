@@ -6,7 +6,7 @@ export interface TransferDrugContextInterface {
   setActiveStep: (page: number) => void;
   searchQuery?: string;
   allPharmacyDrug: AllPharmacyDrugInterface[];
-  setAllPharmacyDrug: (items: AllPharmacyDrugInterface) => void;
+  setAllPharmacyDrug: (items: AllPharmacyDrugInterface[]) => void;
   basketCount: any[];
   setBasketCount: (count: any) => any[];
 }
