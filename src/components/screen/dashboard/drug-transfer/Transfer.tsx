@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core';
-import CardContainer from '../../../public/card/CardContainer';
 import './transfer.scss';
 import Context from './Context';
 import { Grid } from '@material-ui/core';
 import ProgressBar from './ProgressBar';
 import MaterialContainer from '../../../public/material-container/MaterialContainer';
-import ExCardContent from './exchange/ExCardContent';
-import ToolBox from './Toolbox';
-import { DaroogSearchBar } from './DaroogSearchBar';
 import SecondStep from './second-step/SecondStep';
 import FirstStep from './first-step/FirstStep';
 import ThirdStep from './third-step/ThirdStep';

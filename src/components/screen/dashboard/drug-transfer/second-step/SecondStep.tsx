@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { createStyles, Grid, makeStyles } from '@material-ui/core';
+import { createStyles, Grid, Hidden, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
 import { DaroogSearchBar } from '../DaroogSearchBar';
-import CardContainer from '../../../../public/card/CardContainer';
+import CardContainer from '../exchange/CardContainer';
 import ExCardContent from '../exchange/ExCardContent';
 import Button from '../../../../public/button/Button';
 import DrugTransferContext from '../Context';
@@ -11,7 +11,6 @@ import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useQuery, useQueryCache } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 
 const style = makeStyles(theme =>
   createStyles({
@@ -121,9 +120,9 @@ const SecondStep: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={9}>
+      <Grid item xs={12}>
         <Grid container spacing={1}>
-          <Grid item xs={5}>
+          <Grid item xs={12} md={5}>
             <ToolBox />
           </Grid>
 
@@ -137,27 +136,29 @@ const SecondStep: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Grid item xs={3}>
-        <Button
-          type="button"
-          variant="outlined"
-          color="pink"
-          onClick={(): void => setActiveStep(activeStep - 1)}
-        >
-          <ArrowRightAltIcon />
-          {t('general.prevLevel')}
-        </Button>
+      <Hidden smDown>
+        <Grid item xs={12}>
+          <Button
+            type="button"
+            variant="outlined"
+            color="pink"
+            onClick={(): void => setActiveStep(activeStep - 1)}
+          >
+            <ArrowRightAltIcon />
+            {t('general.prevLevel')}
+          </Button>
 
-        <Button
-          type="button"
-          variant="outlined"
-          color="pink"
-          onClick={(): void => setActiveStep(activeStep + 1)}
-        >
-          {t('general.nextLevel')}
-          <KeyboardBackspaceIcon />
-        </Button>
-      </Grid>
+          <Button
+            type="button"
+            variant="outlined"
+            color="pink"
+            onClick={(): void => setActiveStep(activeStep + 1)}
+          >
+            {t('general.nextLevel')}
+            <KeyboardBackspaceIcon />
+          </Button>
+        </Grid>
+      </Hidden>
     </>
   );
 };

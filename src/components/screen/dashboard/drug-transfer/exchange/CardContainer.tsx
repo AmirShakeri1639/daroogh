@@ -8,17 +8,14 @@ import {
   Collapse,
   createStyles,
   Grid,
-  Icon,
   IconButton,
   makeStyles,
-  TextField,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import { CardPropsInterface } from '../../../interfaces';
-import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
+import { CardPropsInterface } from '../../../../../interfaces';
 
 const style = makeStyles(theme =>
   createStyles({
@@ -111,7 +108,6 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
     pack,
     collapse,
     button,
-    textBoxCounter,
   } = style();
 
   const handleExpandClick = (): any => {
