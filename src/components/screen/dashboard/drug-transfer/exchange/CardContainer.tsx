@@ -82,7 +82,9 @@ const style = makeStyles(theme =>
       '& > .MuiIconButton-root': {
         marginLeft: 0,
       },
-      marginBottom: 7,
+      marginBottom: 10,
+      marginRight: 10,
+      marginLeft: 10,
     },
     pack: {
       backgroundColor: '#00bcd430',
@@ -211,14 +213,21 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
     // dispatch({ type: 'pharmacyDrugID', value: drugInfo.id });
     // dispatch({ type: 'count', value: drugInfo.currentCnt });
     // dispatch({ type: 'pharmacyKey', value: 'test::17' });
-    // const { pharmacyDrugID, count, pharmacyKey } = state;
+    const { pharmacyDrugID, count, pharmacyKey } = state;
 
-    try {
-      await _addDrug1(getInputModel());
-      dispatch({ type: 'reset' });
-    } catch (e) {
-      errorHandler(e);
+    if (basketCount.indexOf(drugInfo.id) === -1) {
+      setBasketCount([...basketCount, drugInfo.id]);
+    } else {
+      setBasketCount([...basketCount.splice(basketCount.indexOf(drugInfo.id), 1)]);
+      setDrugInfo({ ...drugInfo, currentCnt: drugInfo.cnt });
     }
+
+    // try {
+    //   await _addDrug1(getInputModel());
+    //   dispatch({ type: 'reset' });
+    // } catch (e) {
+    //   errorHandler(e);
+    // }
   };
 
   const CounterButton = (): JSX.Element => {
@@ -246,7 +255,7 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
       <CardContent>{basicDetail}</CardContent>
       {!isPack && (
         <CardActions disableSpacing className={action}>
-          <Grid container spacing={1}>
+          <Grid container>
             <Grid item xs={6} style={{ textAlign: 'right' }}>
               <CounterButton />
             </Grid>
@@ -257,7 +266,7 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
                 size="small"
                 onClick={async (): Promise<any> => await addTransferHandle()}
               >
-                افزودن به تبادل
+                {basketCount.indexOf(drugInfo.id) == -1 ? 'افزودن به تبادل' : 'حذف از تبادل'}
               </Button>
             </Grid>
           </Grid>
@@ -276,7 +285,7 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
             </IconButton>
           </CardActions>
           <Collapse in={expanded} timeout="auto" unmountOnExit className={collapse}>
-            <div style={{ margin: 10 }}> {collapsableContent} </div>
+            <div> {collapsableContent} </div>
             <Button variant="contained" size="small" className={button} style={{ marginBottom: 5 }}>
               افزودن به تبادل
             </Button>

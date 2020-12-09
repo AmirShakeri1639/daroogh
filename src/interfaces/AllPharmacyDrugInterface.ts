@@ -6,6 +6,7 @@ export interface AllPharmacyDrugInterface {
   packCategoryName?: string;
   expireDate: any;
   amount: number;
+  totalAmount: number;
   totalCount: number;
   cnt: number;
   offer1: number;

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
 import { DaroogSearchBar } from '../DaroogSearchBar';
@@ -26,16 +26,14 @@ const style = makeStyles(theme =>
 
 const SecondStep: React.FC = () => {
   const { getAllPharmacyDrug } = new PharmacyDrug();
-  
-  const {
-    activeStep,
-    setActiveStep,
-    allPharmacyDrug,
-    setAllPharmacyDrug,
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const { activeStep, setActiveStep, allPharmacyDrug, setAllPharmacyDrug } = useContext<
+    TransferDrugContextInterface
+  >(DrugTransferContext);
 
   const { paper } = style();
-  
+
+  const [packInfo, setPackInfo] = useState<AllPharmacyDrugInterface[]>([]);
 
   const queryCache = useQueryCache();
   const { isLoading, error, data, refetch } = useQuery(
@@ -53,24 +51,40 @@ const SecondStep: React.FC = () => {
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (allPharmacyDrug.length > 0) {
-      return allPharmacyDrug.map((item: any, index: number) => {
-        console.log('item', item)
+      const packList = new Array<AllPharmacyDrugInterface>();
+      return allPharmacyDrug.map((item: AllPharmacyDrugInterface, index: number) => {
+        let isPack = false;
+        let totalAmount = 0;
+        if (item.packID && !packList.find(x => x.packID === item.packID)) {
+          allPharmacyDrug
+            .filter(x => x.packID === item.packID)
+            .forEach((p: AllPharmacyDrugInterface) => {
+              packList.push(p);
+              totalAmount += p.amount
+            });
+          item.totalAmount = totalAmount;
+          isPack = true;
+        }
         return (
           <Grid item xs={12} sm={4} key={index}>
             <div className={paper}>
-              <CardContainer
-                basicDetail={
-                  <ExCardContent
-                    pharmacyDrug={item}
-                  />
-                }
-                isPack={item.packID}
-                pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                collapsableContent={item.collapsableContent}
-              />
+              {isPack ? (
+                <CardContainer
+                  basicDetail={<ExCardContent formType={1} pharmacyDrug={item} />}
+                  isPack={true}
+                  pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                  collapsableContent={<ExCardContent formType={3} packInfo={packList} />}
+                />
+              ) : (
+                <CardContainer
+                  basicDetail={<ExCardContent formType={2} pharmacyDrug={item} />}
+                  isPack={false}
+                  pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                />
+              )}
             </div>
           </Grid>
-        )
+        );
       });
     }
 
@@ -79,7 +93,7 @@ const SecondStep: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={9}>
+      <Grid item xs={12}>
         <Grid container spacing={1}>
           <Grid item xs={5}>
             <ToolBox />
@@ -95,7 +109,7 @@ const SecondStep: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Grid item xs={3}>
+      <Grid item >
         <Button
           type="button"
           variant="outlined"
