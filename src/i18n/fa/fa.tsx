@@ -41,6 +41,9 @@ export default {
         nextLevel: 'مرحله بعد',
         prevLevel: 'مرحله قبل',
         date: 'تاریخ',
+        loading: 'در حال بارگذاری ... ',
+        more: 'بیشتر',
+        noMoreData: 'داده دیگری موجود نیست',
       },
       action: {
         insert: 'درج',

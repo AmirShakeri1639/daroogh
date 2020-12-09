@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { createStyles, Grid, Hidden, makeStyles } from '@material-ui/core';
+import React, { useContext, useMemo, useState } from 'react';
+import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
 import SearchInAList from '../SearchInAList';
 import CardContainer from '../exchange/CardContainer';
@@ -9,8 +9,10 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { useTranslation } from 'react-i18next';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { useQuery, useQueryCache } from 'react-query';
+import { useQuery, useQueryCache, useInfiniteQuery } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
+import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
+import moment from 'jalali-moment';
 
 const style = makeStyles(theme =>
   createStyles({
@@ -24,6 +26,7 @@ const style = makeStyles(theme =>
 
 const SecondStep: React.FC = () => {
   const { getAllPharmacyDrug } = new PharmacyDrug();
+  const { t } = useTranslation();
 
   const {
     activeStep,
@@ -34,11 +37,12 @@ const SecondStep: React.FC = () => {
 
   const { paper } = style();
 
-  const queryCache = useQueryCache();
+  const [listPageNo, setListPage] = useState(0);
 
-  const { isLoading, error, data, refetch } = useQuery(
+  const queryCache = useQueryCache();
+  const { isLoading1, error1, data1, refetch } = useQuery(
     ['key'],
-    () => getAllPharmacyDrug('test::17'),
+    () => getAllPharmacyDrug('test::17', listPageNo, 10),
     {
       onSuccess: data => {
         const { items, count } = data;
@@ -47,13 +51,32 @@ const SecondStep: React.FC = () => {
     },
   );
 
-  const { t } = useTranslation();
+  const {
+    isLoading,
+    error,
+    data,
+    isFetching,
+    isFetchingMore,
+    fetchMore,
+    canFetchMore,
+  } = useInfiniteQuery(
+    'key',
+    () => getAllPharmacyDrug('test::17', listPageNo, 10),
+    {
+      getFetchMore: lastGroup => lastGroup.nextId,
+      onSuccess: data => {
+        const { items, count } = data;
+        setAllPharmacyDrug(items);
+      },
+    }
+  )
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (allPharmacyDrug.length > 0) {
       return allPharmacyDrug.map((item: any, index: number) => {
+        console.log('item', item)
         return (
-          <Grid item xs={12} sm={6} lg={4} key={index}>
+          <Grid item xs={12} sm={4} key={index}>
             <div className={paper}>
               <CardContainer
                 basicDetail={
@@ -76,45 +99,43 @@ const SecondStep: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={12}>
+      <Grid item xs={9}>
         <Grid container spacing={1}>
-          <Grid item xs={12} md={5}>
+          <Grid item xs={5}>
             <ToolBox />
           </Grid>
 
-          <Grid item xs={12} md={7}>
+          <Grid item xs={7}>
             <SearchInAList />
           </Grid>
         </Grid>
 
-        <Grid container spacing={0}>
+        <Grid container spacing={1}>
           {cardListGenerator()}
         </Grid>
       </Grid>
 
-      <Hidden smDown>
-        <Grid item xs={12}>
-          <Button
-            type="button"
-            variant="outlined"
-            color="pink"
-            onClick={(): void => setActiveStep(activeStep - 1)}
-          >
-            <ArrowRightAltIcon />
-            {t('general.prevLevel')}
-          </Button>
+      <Grid item xs={3}>
+        <Button
+          type="button"
+          variant="outlined"
+          color="pink"
+          onClick={(): void => setActiveStep(activeStep - 1)}
+        >
+          <ArrowRightAltIcon />
+          {t('general.prevLevel')}
+        </Button>
 
-          <Button
-            type="button"
-            variant="outlined"
-            color="pink"
-            onClick={(): void => setActiveStep(activeStep + 1)}
-          >
-            {t('general.nextLevel')}
-            <KeyboardBackspaceIcon />
-          </Button>
-        </Grid>
-      </Hidden>
+        <Button
+          type="button"
+          variant="outlined"
+          color="pink"
+          onClick={(): void => setActiveStep(activeStep + 1)}
+        >
+          {t('general.nextLevel')}
+          <KeyboardBackspaceIcon />
+        </Button>
+      </Grid>
     </>
   );
 };
