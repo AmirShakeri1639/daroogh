@@ -2,8 +2,6 @@ export interface AllPharmacyDrugInterface {
   id: number;
   batchNO: string;
   packID?: number;
-  packName?: string;
-  packCategoryName?: string;
   expireDate: any;
   amount: number;
   totalAmount: number;
@@ -14,6 +12,7 @@ export interface AllPharmacyDrugInterface {
   drugID: number;
   drug: DrugI;
   currentCnt: number;
+  packName?: string;
 }
 
 export interface DrugI {

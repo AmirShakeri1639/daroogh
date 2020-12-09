@@ -4,6 +4,7 @@ import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrug
 export interface TransferDrugContextInterface {
   activeStep: number;
   setActiveStep: (page: number) => void;
+  searchQuery?: string;
   allPharmacyDrug: AllPharmacyDrugInterface[];
   setAllPharmacyDrug: (items: AllPharmacyDrugInterface) => void;
   basketCount: number[];
@@ -17,6 +18,7 @@ const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   setAllPharmacyDrug: () => void 0,
   basketCount: [],
   setBasketCount: () => [],
+  searchQuery: '',
 });
 
 export default DrugTransferContext;

@@ -50,9 +50,6 @@ class Api {
     Object.assign(this.axiosInstance.defaults, {
       headers: { ...defaultsAxiosHeaders, 'Content-Type': 'application/json' },
     });
-    // Object.assign(this.axiosInstance.defaults, {
-    //   'Content-Type': 'application/json' ,
-    // });
     return this.axiosInstance;
   }
 
