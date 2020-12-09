@@ -1,5 +1,5 @@
-import React, { useContext, useMemo } from 'react';
-import { createStyles, Grid, makeStyles } from '@material-ui/core';
+import React, { useContext } from 'react';
+import { createStyles, Grid, Hidden, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
 import SearchInAList from '../SearchInAList';
 import CardContainer from '../exchange/CardContainer';
@@ -11,8 +11,6 @@ import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useQuery, useQueryCache } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
-import moment from 'jalali-moment';
 
 const style = makeStyles(theme =>
   createStyles({
@@ -36,8 +34,8 @@ const SecondStep: React.FC = () => {
 
   const { paper } = style();
 
-
   const queryCache = useQueryCache();
+
   const { isLoading, error, data, refetch } = useQuery(
     ['key'],
     () => getAllPharmacyDrug('test::17'),
@@ -54,9 +52,8 @@ const SecondStep: React.FC = () => {
   const cardListGenerator = (): JSX.Element[] | null => {
     if (allPharmacyDrug.length > 0) {
       return allPharmacyDrug.map((item: any, index: number) => {
-        console.log('item', item)
         return (
-          <Grid item xs={12} sm={4} key={index}>
+          <Grid item xs={12} sm={6} lg={4} key={index}>
             <div className={paper}>
               <CardContainer
                 basicDetail={
@@ -79,43 +76,45 @@ const SecondStep: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={9}>
+      <Grid item xs={12}>
         <Grid container spacing={1}>
-          <Grid item xs={5}>
+          <Grid item xs={12} md={5}>
             <ToolBox />
           </Grid>
 
-          <Grid item xs={7}>
+          <Grid item xs={12} md={7}>
             <SearchInAList />
           </Grid>
         </Grid>
 
-        <Grid container spacing={1}>
+        <Grid container spacing={0}>
           {cardListGenerator()}
         </Grid>
       </Grid>
 
-      <Grid item xs={3}>
-        <Button
-          type="button"
-          variant="outlined"
-          color="pink"
-          onClick={(): void => setActiveStep(activeStep - 1)}
-        >
-          <ArrowRightAltIcon />
-          {t('general.prevLevel')}
-        </Button>
+      <Hidden smDown>
+        <Grid item xs={12}>
+          <Button
+            type="button"
+            variant="outlined"
+            color="pink"
+            onClick={(): void => setActiveStep(activeStep - 1)}
+          >
+            <ArrowRightAltIcon />
+            {t('general.prevLevel')}
+          </Button>
 
-        <Button
-          type="button"
-          variant="outlined"
-          color="pink"
-          onClick={(): void => setActiveStep(activeStep + 1)}
-        >
-          {t('general.nextLevel')}
-          <KeyboardBackspaceIcon />
-        </Button>
-      </Grid>
+          <Button
+            type="button"
+            variant="outlined"
+            color="pink"
+            onClick={(): void => setActiveStep(activeStep + 1)}
+          >
+            {t('general.nextLevel')}
+            <KeyboardBackspaceIcon />
+          </Button>
+        </Grid>
+      </Hidden>
     </>
   );
 };

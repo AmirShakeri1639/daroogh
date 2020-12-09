@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core';
-import CardContainer from './exchange/CardContainer';
 import './transfer.scss';
 import Context from './Context';
 import { Grid } from '@material-ui/core';
 import ProgressBar from './ProgressBar';
 import MaterialContainer from '../../../public/material-container/MaterialContainer';
-import ExCardContent from './exchange/ExCardContent';
-import ToolBox from './Toolbox';
 import SecondStep from './second-step/SecondStep';
 import FirstStep from './first-step/FirstStep';
 import ThirdStep from './third-step/ThirdStep';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
-import { TransferBasketInterface } from "../../../../interfaces/DrugInterface";
 
 const style = makeStyles(theme =>
   createStyles({

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Grid } from '@material-ui/core';
+import { Grid, Hidden } from '@material-ui/core';
 import ProgressBar from "../ProgressBar";
 import Button from "../../../../public/button/Button";
 import DrugTransferContext from "../Context";
@@ -16,30 +16,33 @@ const FirstStep: React.FC = () => {
     <>
       <Grid
         item
-        xs={9}
+        xs={12}
+        lg={9}
       >
 
       </Grid>
 
-      <Grid
-        xs={3}
-        item
-      >
+      <Hidden smDown>
         <Grid
-          container
-          justify="center"
-          spacing={1}
+          lg={3}
+          item
         >
-          <Grid item xs={12}>
-            <Button
-              onClick={(): void => setActiveStep(activeStep + 1)}
-            >
-              {t('general.nextLevel')}
-              <KeyboardBackspaceIcon />
-            </Button>
+          <Grid
+            container
+            justify="center"
+            spacing={1}
+          >
+            <Grid item xs={12}>
+              <Button
+                onClick={(): void => setActiveStep(activeStep + 1)}
+              >
+                {t('general.nextLevel')}
+                <KeyboardBackspaceIcon />
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </Hidden>
     </>
   );
 };

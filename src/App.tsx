@@ -8,6 +8,7 @@ import CircleLoading from './components/public/loading/CircleLoading';
 import PrivateRoute from './routes/PrivateRoute';
 import { ReactQueryDevtools } from 'react-query-devtools';
 import { CssBaseline } from '@material-ui/core';
+import ViewPharmacyInfo from "./components/screen/dashboard/drug-transfer/ViewPharmacyInfo";
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -34,7 +35,7 @@ const App = (): JSX.Element => {
             </PrivateRoute>
 
             <PrivateRoute path="/dashboard/drug-transfer">
-              <DrugTransfer />
+              <ViewPharmacyInfo />
             </PrivateRoute>
             {/*<Route component={<>404 Not Found</>} />*/}
           </Suspense>
