@@ -5,3 +5,4 @@ export { default as Drug } from './Drug';
 export { default as Message } from './Message';
 export { default as Category } from './Category';
 export { default as Exchange } from './Exchange';
+export { default as PharmacyDrug } from './PharmacyDrug';

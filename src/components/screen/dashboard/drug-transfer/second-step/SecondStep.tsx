@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 import React, { useContext } from 'react';
 import { createStyles, Grid, Hidden, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
-import { DaroogSearchBar } from '../DaroogSearchBar';
-=======
-import React, { useContext, useMemo } from 'react';
-import { createStyles, Grid, makeStyles } from '@material-ui/core';
-import ToolBox from '../Toolbox';
 import SearchInAList from '../SearchInAList';
->>>>>>> dev
 import CardContainer from '../exchange/CardContainer';
 import ExCardContent from '../exchange/ExCardContent';
 import Button from '../../../../public/button/Button';
@@ -18,11 +11,6 @@ import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useQuery, useQueryCache } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-<<<<<<< HEAD
-=======
-import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
-import moment from 'jalali-moment';
->>>>>>> dev
 
 const style = makeStyles(theme =>
   createStyles({
@@ -46,8 +34,8 @@ const SecondStep: React.FC = () => {
 
   const { paper } = style();
 
-
   const queryCache = useQueryCache();
+
   const { isLoading, error, data, refetch } = useQuery(
     ['key'],
     () => getAllPharmacyDrug('test::17'),
@@ -64,9 +52,8 @@ const SecondStep: React.FC = () => {
   const cardListGenerator = (): JSX.Element[] | null => {
     if (allPharmacyDrug.length > 0) {
       return allPharmacyDrug.map((item: any, index: number) => {
-        console.log('item', item)
         return (
-          <Grid item xs={12} sm={4} key={index}>
+          <Grid item xs={12} sm={6} lg={4} key={index}>
             <div className={paper}>
               <CardContainer
                 basicDetail={
@@ -95,12 +82,12 @@ const SecondStep: React.FC = () => {
             <ToolBox />
           </Grid>
 
-          <Grid item xs={7}>
+          <Grid item xs={12} md={7}>
             <SearchInAList />
           </Grid>
         </Grid>
 
-        <Grid container spacing={1}>
+        <Grid container spacing={0}>
           {cardListGenerator()}
         </Grid>
       </Grid>

@@ -30,9 +30,7 @@ const SearchInAList: React.FC = () => {
 
   return (
     <Container maxWidth="lg" className={ container }>
-      <div style={ { margin: "2rem", padding: ".5rem" } }>
-        <DaroogSearchBar onRequestSearch={ (v: string) => searchHandler(v) }/>
-      </div>
+      <DaroogSearchBar onRequestSearch={ (v: string) => searchHandler(v) }/>
     </Container>
   )
 }
