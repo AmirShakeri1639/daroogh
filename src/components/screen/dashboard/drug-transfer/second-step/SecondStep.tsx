@@ -1,5 +1,5 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { createStyles, Grid, makeStyles } from '@material-ui/core';
+import React, { useContext, useState } from 'react';
+import { createStyles, FormControl, Grid, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
 import SearchInAList from '../SearchInAList';
 import CardContainer from '../exchange/CardContainer';
@@ -9,10 +9,10 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { useTranslation } from 'react-i18next';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { useQuery, useQueryCache, useInfiniteQuery } from 'react-query';
+import { useQueryCache, useInfiniteQuery, ReactQueryCacheProvider } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
-import moment from 'jalali-moment';
+import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
+import CircleLoading from "../../../../public/loading/CircleLoading";
 
 const style = makeStyles(theme =>
   createStyles({
@@ -21,6 +21,9 @@ const style = makeStyles(theme =>
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
+    btn: {
+
+    }
   }),
 );
 
@@ -37,21 +40,13 @@ const SecondStep: React.FC = () => {
 
   const { paper } = style();
 
-  const [listPageNo, setListPage] = useState(0);
-
   const queryCache = useQueryCache();
-  const { isLoading1, error1, data1, refetch } = useQuery(
-    ['key'],
-    () => getAllPharmacyDrug('test::17', listPageNo, 10),
-    {
-      onSuccess: data => {
-        const { items, count } = data;
-        setAllPharmacyDrug(items);
-      },
-    },
-  );
+
+  const [listPageNo, setListPage] = useState(0);
+  const pageSize = 10;
 
   const {
+    status,
     isLoading,
     error,
     data,
@@ -61,32 +56,46 @@ const SecondStep: React.FC = () => {
     canFetchMore,
   } = useInfiniteQuery(
     'key',
-    () => getAllPharmacyDrug('test::17', listPageNo, 10),
+    async () => {
+      setListPage(listPageNo + 1);
+      return await getAllPharmacyDrug('test::17', listPageNo, pageSize)
+    },
     {
-      getFetchMore: lastGroup => lastGroup.nextId,
-      onSuccess: data => {
-        const { items, count } = data;
-        setAllPharmacyDrug(items);
+      getFetchMore: (data: any) => {
+        return (listPageNo + 1) && (listPageNo * pageSize <= (data.count + pageSize))
       },
+      onSuccess: (data: any) => {
+        const { items, count } = data[data.length - 1];
+        let allItemsTillNow = [...allPharmacyDrug];
+        allItemsTillNow = [...allItemsTillNow, ...items];
+        setAllPharmacyDrug(allItemsTillNow);
+      }
     }
   )
 
+  const loadMoreButtonRef = React.useRef<any>(null);
+
+  useIntersectionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchMore,
+    enabled: canFetchMore,
+  });
+
   const cardListGenerator = (): JSX.Element[] | null => {
-    if (allPharmacyDrug.length > 0) {
+    if (allPharmacyDrug && allPharmacyDrug.length > 0) {
       return allPharmacyDrug.map((item: any, index: number) => {
-        console.log('item', item)
         return (
-          <Grid item xs={12} sm={4} key={index}>
-            <div className={paper}>
+          <Grid item xs={ 12 } sm={ 4 } key={ index }>
+            <div className={ paper }>
               <CardContainer
                 basicDetail={
                   <ExCardContent
-                    pharmacyDrug={item}
+                    pharmacyDrug={ item }
                   />
                 }
-                isPack={item.packID}
-                pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                collapsableContent={item.collapsableContent}
+                isPack={ item.packID }
+                pharmacyDrug={ Object.assign(item, { currentCnt: item.cnt }) }
+                collapsableContent={ item.collapsableContent }
               />
             </div>
           </Grid>
@@ -99,42 +108,73 @@ const SecondStep: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={9}>
-        <Grid container spacing={1}>
-          <Grid item xs={5}>
-            <ToolBox />
+      <Grid item xs={ 9 }>
+        <Grid container spacing={ 1 }>
+          <Grid item xs={ 5 }>
+            <ToolBox/>
           </Grid>
-
-          <Grid item xs={7}>
-            <SearchInAList />
+          <Grid item xs={ 7 }>
+            <SearchInAList/>
           </Grid>
         </Grid>
 
-        <Grid container spacing={1}>
-          {cardListGenerator()}
+
+        <Grid container spacing={ 1 }>
+          <ReactQueryCacheProvider queryCache={ queryCache }>
+            { status === 'loading'
+              ? (<CircleLoading/>)
+              : status === 'error' ?
+                (<span>{ t('error.loading-data') }</span>
+                ) : (
+                  <>
+                    { cardListGenerator() }
+                    <div>
+                      <button
+                        className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
+                        ref={ loadMoreButtonRef }
+                        onClick={ () => fetchMore() }
+                        disabled={ !canFetchMore }
+                      >
+                        { isFetchingMore
+                          ? t('general.loading')
+                          : canFetchMore
+                            ? t('general.more')
+                            : t('general.noMoreData') }
+                      </button>
+                    </div>
+                    <div>
+                      { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+                    </div>
+                  </>
+                )
+            }
+            <div>
+              { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+            </div>
+          </ReactQueryCacheProvider>
         </Grid>
-      </Grid>
 
-      <Grid item xs={3}>
-        <Button
-          type="button"
-          variant="outlined"
-          color="pink"
-          onClick={(): void => setActiveStep(activeStep - 1)}
-        >
-          <ArrowRightAltIcon />
-          {t('general.prevLevel')}
-        </Button>
+        <Grid item xs={ 3 }>
+          <Button
+            type="button"
+            variant="outlined"
+            color="pink"
+            onClick={ (): void => setActiveStep(activeStep - 1) }
+          >
+            <ArrowRightAltIcon/>
+            { t('general.prevLevel') }
+          </Button>
 
-        <Button
-          type="button"
-          variant="outlined"
-          color="pink"
-          onClick={(): void => setActiveStep(activeStep + 1)}
-        >
-          {t('general.nextLevel')}
-          <KeyboardBackspaceIcon />
-        </Button>
+          <Button
+            type="button"
+            variant="outlined"
+            color="pink"
+            onClick={ (): void => setActiveStep(activeStep + 1) }
+          >
+            { t('general.nextLevel') }
+            <KeyboardBackspaceIcon/>
+          </Button>
+        </Grid>
       </Grid>
     </>
   );

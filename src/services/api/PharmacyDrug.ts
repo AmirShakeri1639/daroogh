@@ -10,11 +10,11 @@ class PharmacyDrug extends Api {
     remove: '',
   };
 
-  getAllPharmacyDrug = async (id: string, skip: number = 0, top: number = 5): Promise<any> => {
+  getAllPharmacyDrug = async (id: string, skip: number = 0, top: number = 10): Promise<any> => {
     try {
       let query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
-      query += skip !== 0 ? `&$top=${top}&$skip=${skip * top}` : '';
-      console.log('query: ', query);
+      // query += skip !== 0 ? `&$top=${top}&$skip=${skip * top }` : '';
+      query += `&$top=${top}&$skip=${skip * top}`;
       const result = await this.postJsonData(query);
       return result.data;
     } catch (e) {
