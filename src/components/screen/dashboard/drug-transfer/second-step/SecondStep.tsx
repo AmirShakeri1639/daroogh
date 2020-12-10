@@ -13,6 +13,7 @@ import { useQueryCache, useInfiniteQuery, ReactQueryCacheProvider } from 'react-
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 import CircleLoading from "../../../../public/loading/CircleLoading";
+import { AllPharmacyDrugInterface } from "../../../../../interfaces";
 
 const style = makeStyles(theme =>
   createStyles({
@@ -21,9 +22,7 @@ const style = makeStyles(theme =>
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
-    btn: {
-
-    }
+    btn: {}
   }),
 );
 
@@ -43,6 +42,8 @@ const SecondStep: React.FC = () => {
   const queryCache = useQueryCache();
 
   const [listPageNo, setListPage] = useState(0);
+  const [listCount, setListCount] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
 
   const {
     status,
@@ -55,19 +56,19 @@ const SecondStep: React.FC = () => {
     canFetchMore,
   } = useInfiniteQuery(
     'key',
-    async () => {
-      return await getAllPharmacyDrug('test::17', listPageNo)
+    async (k) => {
+      const data = await getAllPharmacyDrug('test::17', listPageNo, pageSize);
+      setListPage(listPageNo + 1);
+      const allItemsTillNow = [...allPharmacyDrug, ...data.items];
+      setAllPharmacyDrug(allItemsTillNow);
+      setListCount(data.count);
+      return data.items;
     },
     {
       getFetchMore: () => {
-        setListPage(listPageNo + 1);
-        return listPageNo + 1
-      },
-      onSuccess: (data: any) => {
-        const { items, count } = data[data.length - 1];
-        let allItemsTillNow = [...allPharmacyDrug];
-        allItemsTillNow = [...allItemsTillNow, ...items];
-        setAllPharmacyDrug(allItemsTillNow);
+        console.log('allPharmacyDrug.length:', allPharmacyDrug.length)
+        console.log('listCount:', listCount);
+        return allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount;
       },
     }
   )
@@ -77,28 +78,32 @@ const SecondStep: React.FC = () => {
   useIntersectionObserver({
     target: loadMoreButtonRef,
     onIntersect: fetchMore,
-    enabled: true, // canFetchMore,
+    enabled: canFetchMore,
   });
 
   const cardListGenerator = (): JSX.Element[] | null => {
-    if (allPharmacyDrug && allPharmacyDrug.length > 0) {
-      return allPharmacyDrug.map((item: any, index: number) => {
-        return (
-          <Grid item xs={ 12 } sm={ 4 } key={ index }>
-            <div className={ paper }>
-              <CardContainer
-                basicDetail={
-                  <ExCardContent
-                    pharmacyDrug={ item }
-                  />
-                }
-                isPack={ item.packID }
-                pharmacyDrug={ Object.assign(item, { currentCnt: item.cnt }) }
-                collapsableContent={ item.collapsableContent }
-              />
-            </div>
-          </Grid>
-        )
+    // if (allPharmacyDrug && allPharmacyDrug.length > 0) {
+    if (data && data.length > 0) {
+      return data.map((listItem: any, pIndex: number) => {
+        return listItem?.map((item: any, index: number) => {
+          return (
+            <Grid item xs={ 12 } sm={ 4 } key={ index }>
+              <div className={ paper }>
+                <div>{ pIndex * 10 + index }</div>
+                <CardContainer
+                  basicDetail={
+                    <ExCardContent
+                      pharmacyDrug={ item }
+                    />
+                  }
+                  isPack={ item.packID }
+                  pharmacyDrug={ Object.assign(item, { currentCnt: item.cnt }) }
+                  collapsableContent={ item.collapsableContent }
+                />
+              </div>
+            </Grid>
+          )
+        })
       });
     }
 
@@ -118,38 +123,36 @@ const SecondStep: React.FC = () => {
         </Grid>
 
         <Grid container spacing={ 1 }>
-          <ReactQueryCacheProvider queryCache={ queryCache }>
-            { status === 'loading'
-              ? (<CircleLoading/>)
-              : status === 'error' ?
-                (<span>{ t('error.loading-data') }</span>
-                ) : (
-                  <>
-                    { cardListGenerator() }
-                    <div>
-                      <button
-                        className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
-                        ref={ loadMoreButtonRef }
-                        onClick={ () => fetchMore() }
-                        disabled={ !canFetchMore }
-                      >
-                        { isFetchingMore
-                          ? t('general.loading')
-                          : canFetchMore
-                            ? t('general.more')
-                            : t('general.noMoreData') }
-                      </button>
-                    </div>
-                    <div>
-                      { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
-                    </div>
-                  </>
-                )
-            }
-            <div>
-              { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
-            </div>
-          </ReactQueryCacheProvider>
+          { status === 'loading'
+            ? (<CircleLoading/>)
+            : status === 'error' ?
+              (<span>{ t('error.loading-data') }</span>
+              ) : (
+                <>
+                  { cardListGenerator() }
+                  <div>
+                    <button
+                      className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
+                      ref={ loadMoreButtonRef }
+                      onClick={ fetchMore }
+                      disabled={ !canFetchMore }
+                    >
+                      { isFetchingMore
+                        ? t('general.loading')
+                        : canFetchMore
+                          ? t('general.more')
+                          : t('general.noMoreData') }
+                    </button>
+                  </div>
+                  <div>
+                    { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+                  </div>
+                </>
+              )
+          }
+          <div>
+            { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+          </div>
         </Grid>
 
         <Grid item xs={ 3 }>
