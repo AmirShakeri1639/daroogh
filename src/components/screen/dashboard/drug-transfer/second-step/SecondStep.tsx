@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { createStyles, FormControl, Grid, makeStyles } from '@material-ui/core';
+import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import ToolBox from '../Toolbox';
 import SearchInAList from '../SearchInAList';
 import CardContainer from '../exchange/CardContainer';
@@ -43,7 +43,6 @@ const SecondStep: React.FC = () => {
   const queryCache = useQueryCache();
 
   const [listPageNo, setListPage] = useState(0);
-  const pageSize = 10;
 
   const {
     status,
@@ -57,19 +56,19 @@ const SecondStep: React.FC = () => {
   } = useInfiniteQuery(
     'key',
     async () => {
-      setListPage(listPageNo + 1);
-      return await getAllPharmacyDrug('test::17', listPageNo, pageSize)
+      return await getAllPharmacyDrug('test::17', listPageNo)
     },
     {
-      getFetchMore: (data: any) => {
-        return (listPageNo + 1) && (listPageNo * pageSize <= (data.count + pageSize))
+      getFetchMore: () => {
+        setListPage(listPageNo + 1);
+        return listPageNo + 1
       },
       onSuccess: (data: any) => {
         const { items, count } = data[data.length - 1];
         let allItemsTillNow = [...allPharmacyDrug];
         allItemsTillNow = [...allItemsTillNow, ...items];
         setAllPharmacyDrug(allItemsTillNow);
-      }
+      },
     }
   )
 
@@ -78,7 +77,7 @@ const SecondStep: React.FC = () => {
   useIntersectionObserver({
     target: loadMoreButtonRef,
     onIntersect: fetchMore,
-    enabled: canFetchMore,
+    enabled: true, // canFetchMore,
   });
 
   const cardListGenerator = (): JSX.Element[] | null => {
@@ -117,7 +116,6 @@ const SecondStep: React.FC = () => {
             <SearchInAList/>
           </Grid>
         </Grid>
-
 
         <Grid container spacing={ 1 }>
           <ReactQueryCacheProvider queryCache={ queryCache }>
