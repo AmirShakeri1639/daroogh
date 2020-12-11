@@ -32,7 +32,7 @@ const App = (): JSX.Element => {
             </PublicRoute>
 
             <PublicRoute exact path="/register-pharmacy-with-user">
-              <ForgetPassword />
+              <RegisterPharmacyWithUser />
             </PublicRoute>
 
             <PrivateRoute exact path="/dashboard">

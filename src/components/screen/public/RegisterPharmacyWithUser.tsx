@@ -1,10 +1,7 @@
 import React, { useReducer, useState } from 'react';
 import {
-  Container,
-  TextField,
-  FormControl,
-  Paper,
-  Button, Grid, Typography, Divider, Box
+  Container, TextField, Paper,
+  Button, Grid, Typography, Divider
 } from '@material-ui/core';
 import Pharmacy from '../../../services/api/Pharmacy';
 import { LabelValue, PharmacyWithUserInterface } from '../../../interfaces';
@@ -16,6 +13,8 @@ import { errorHandler, sweetAlert, warningSweetAlert } from "../../../utils";
 import { DaroogDropdown } from "../dashboard/common/daroogDropdown";
 import { WorkTimeEnum } from "../../../enum";
 import { emailRegex } from "../../../enum/consts";
+import Modal from "../../public/modal/Modal";
+import DateTimePicker from "../../public/datepicker/DatePicker";
 
 const initialState: PharmacyWithUserInterface = {
   pharmacy: {
@@ -53,113 +52,113 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'pharmacy.id':
       return {
         ...state,
-        'pharmacy.id': value,
+        pharmacy: { ...state.pharmacy, id: value }
       };
     case 'pharmacy.name':
       return {
         ...state,
-        'pharmacy.name': value,
+        pharmacy: { ...state.pharmacy, name: value }
       };
     case 'pharmacy.description':
       return {
         ...state,
-        'pharmacy.description': value,
+        pharmacy: { ...state.pharmacy, description: value }
       };
     case 'pharmacy.hix':
       return {
         ...state,
-        'pharmacy.hix': value,
+        pharmacy: { ...state.pharmacy, hix: value }
       };
     case 'pharmacy.gli':
       return {
         ...state,
-        'pharmacy.gli': value,
+        pharmacy: { ...state.pharmacy, gli: value }
       };
     case 'pharmacy.workTime':
       return {
         ...state,
-        'pharmacy.workTime': +value,
+        pharmacy: { ...state.pharmacy, workTime: +value }
       };
     case 'pharmacy.address':
       return {
         ...state,
-        'pharmacy.address': value,
+        pharmacy: { ...state.pharmacy, address: value }
       };
     case 'pharmacy.mobile':
       return {
         ...state,
-        'pharmacy.mobile': value,
+        pharmacy: { ...state.pharmacy, mobile: value }
       };
     case 'pharmacy.telphon':
       return {
         ...state,
-        'pharmacy.telphon': value,
+        pharmacy: { ...state.pharmacy, telphon: value }
       };
     case 'pharmacy.website':
       return {
         ...state,
-        'pharmacy.website': value,
+        pharmacy: { ...state.pharmacy, website: value }
       };
     case 'pharmacy.email':
       return {
         ...state,
-        'pharmacy.email': value,
+        pharmacy: { ...state.pharmacy, email: value }
       };
     case 'pharmacy.postalCode':
       return {
         ...state,
-        'pharmacy.postalCode': value,
+        pharmacy: { ...state.pharmacy, postalCode: value }
       };
     case 'pharmacy.countryDivisionID':
       return {
         ...state,
-        'pharmacy.countryDivisionID': value,
+        pharmacy: { ...state.pharmacy, countryDivisionID: value }
       };
     // USER -------------------
     case 'user.pharmacyID':
       return {
         ...state,
-        'user.pharmacyID': value,
+        user: { ...state.user, pharmacyID: value }
       };
     case 'user.name':
       return {
         ...state,
-        'user.name': value,
+        user: { ...state.user, name: value }
       };
     case 'user.family':
       return {
         ...state,
-        'user.family': value,
+        user: { ...state.user, family: value }
       };
     case 'user.mobile':
       return {
         ...state,
-        'user.mobile': value
+        user: { ...state.user, mobile: value }
       };
     case 'user.email':
       return {
         ...state,
-        'user.email': value,
+        user: { ...state.user, email: value }
       };
     case 'user.userName':
       return {
         ...state,
-        'user.userName': value,
+        user: { ...state.user, userName: value }
       };
     case 'user.password':
       return {
         ...state,
-        'user.password': value,
+        user: { ...state.user, password: value }
       };
     case 'user.nationalCode':
       return {
         ...state,
-        'user.nationalCode': value,
+        user: { ...state.user, nationalCode: value }
       }
     case 'user.birthDate':
       return {
         ...state,
-        'user.birthDate': value,
+        user: { ...state.user, birthDate: value }
       }
     case 'reset':
       return initialState;
@@ -171,26 +170,32 @@ function reducer(state = initialState, action: ActionInterface): any {
 const RegisterPharmacyWithUser: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { t } = useTranslation();
+  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
+  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
   const { register } = new Pharmacy();
 
   const {
-    parent, formContainer, dropdown,
-    addButton, cancelButton, box,
-    titleContainer, formTitle
+    parent, dropdown, silverBackground,
+    addButton, spacing1, spacing3, formItem,
+    titleContainer, formTitle, rootFull,
   } = useClasses();
 
-  const [workTimeList, setworkTimeList] = useState(new Array<LabelValue>());
+  const [workTimeList, setWorkTimeList] = useState(new Array<LabelValue>());
   React.useEffect(() => {
     const wtList: LabelValue[] = []
     for (const wt in WorkTimeEnum) {
       if (parseInt(wt) >= 0)
-        wtList.push({ label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt });
+        wtList.push({ label: t(`WorkTimeEnum.${ WorkTimeEnum[wt] }`), value: wt });
     }
-    setworkTimeList(wtList);
+    setWorkTimeList(wtList);
   }, []);
 
-  const [_register] = useMutation(register, {
+  const [_register, { isLoading: isLoadingNewUser }] = useMutation(register, {
     onSuccess: async (data: any) => {
+      if (showError) {
+        setShowError(false);
+      }
       await queryCache.invalidateQueries('pharmaciesList');
       await sweetAlert({
         type: 'success',
@@ -209,11 +214,10 @@ const RegisterPharmacyWithUser: React.FC = () => {
   const isFormValid = (): boolean => {
     const { pharmacy, user } = state;
     const {
-      name, family, email, userName,
-      nationalCode, birthDate,
+      name, family, userName, nationalCode, birthDate
     } = user;
     const {
-      name: pharmacyName, hix, gli, address, mobile
+      name: pharmacyName, hix, gli, address, email, mobile
     } = pharmacy;
 
     return !(
@@ -227,7 +231,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
       || name.trim().length < 2
       || family.trim().length < 2
       || !emailRegex.test(email)
-      || userName.trim().length < 1
+      || userName.trim().length < 3
       || nationalCode.length !== 10
       || birthDate === ''
     );
@@ -259,8 +263,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
             id: 0,
             name: state.user.name,
             family: state.user.family,
-            mobile: state.user.mobile,
-            email: state.user.email,
+            mobile: state.pharmacy.mobile,
+            email: state.pharmacy.email,
             userName: state.user.userName,
             nationalCode: state.user.nationalCode,
             birthDate: state.user.birthDate,
@@ -272,178 +276,305 @@ const RegisterPharmacyWithUser: React.FC = () => {
       }
     } else {
       await warningSweetAlert(t('alert.fillFormCarefully'));
+      setShowError(true);
     }
   }
 
   return (
-    <Container maxWidth="lg" className={parent}>
-      <Grid container spacing={0}>
-        <Paper>
-          <div className={titleContainer}>
-            <Typography variant="h6" component="h6" className={`${formTitle} txt-md`}>
-              {t('pharmacy.new')}
-            </Typography>
-          </div>
-          <Divider />
-          <form
-            autoComplete="off"
-            className={formContainer}
-            onSubmit={submit}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('pharmacy.name')}
-                    value={state.name}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'name', value: e.target.value })
-                    }
-                  />
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('pharmacy.hix')}
-                    value={state.hix}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'hix', value: e.target.value })
-                    }
-                  />
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('pharmacy.gli')}
-                    value={state.gli}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'gli', value: e.target.value })
-                    }
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
-                  <DaroogDropdown
-                    defaultValue={state?.workTime}
-                    data={workTimeList}
-                    className={dropdown}
-                    label={t('pharmacy.workTime')}
-                    onChangeHandler={(v): void => {
-                      return dispatch({ type: 'workTime', value: v })
-                    }}
-                  />
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('general.address')}
-                    value={state.address}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'address', value: e.target.value })
-                    }
-                  />
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('general.mobile')}
-                    value={state.mobile}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'mobile', value: e.target.value })
-                    }
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('general.phone')}
-                    value={state.telphon}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'telphon', value: e.target.value })
-                    }
-                  />
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('general.website')}
-                    value={state.website}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'website', value: e.target.value })
-                    }
-                  />
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('general.email')}
-                    value={state.email}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'email', value: e.target.value })
-                    }
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('general.postalCode')}
-                    value={state.postalCode}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'postalCode', value: e.target.value })
-                    }
-                  />
-                  <TextField
-                    required
-                    variant="outlined"
-                    label={t('general.description')}
-                    value={state.description}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'description', value: e.target.value })
-                    }
-                  />
-                </Box>
-              </Grid>
-              <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    className={addButton}
-                  >
-                    {t('general.save')}
-                  </Button>
-                  {
-                    state.id !== 0 && (
-                      <FormControl>
-                        <Button
-                          type="submit"
-                          color="secondary"
-                          className={cancelButton}
-                          onClick={(): void => dispatch({ type: 'reset' })}
-                        >
-                          {t('general.cancel')}
-                        </Button>
-                      </FormControl>
-                    )
-                  }
-                </Box>
-              </Grid>
+    <Container maxWidth="lg" className={ parent }>
+      <Paper>
+        <div className={ `${ titleContainer } ${ silverBackground }` }>
+          <Typography variant="h2" component="h2" className={ `${ formTitle } txt-md` }>
+            <h2>{ t('pharmacy.new') }</h2>
+          </Typography>
+        </div>
+        <Divider/>
+        <form
+          autoComplete="off"
+          className={ rootFull }
+          onSubmit={ submit }>
+          {/* ////////////////////// PHARMACY ///////////////////// */ }
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" className={ `${ formTitle } txt-md` }>
+                  <h3>{ t('pharmacy.pharmacy') }</h3>
+                </Typography>
+              </div>
             </Grid>
-          </form>
-        </Paper>
-      </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.pharmacy.name.trim().length < 3 && showError }
+                required
+                variant="outlined"
+                label={ t('pharmacy.name') }
+                className={ formItem }
+                value={ state.pharmacy.name }
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'pharmacy.name', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.pharmacy.description.trim().length < 3 && showError }
+                required
+                variant="outlined"
+                className={ formItem }
+                label={ t('general.description') }
+                value={ state.pharmacy.description }
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'pharmacy.description', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 }>
+              <TextField
+                error={ state.pharmacy.address.trim().length < 3 && showError }
+                required
+                variant="outlined"
+                label={ t('general.address') }
+                className={ formItem }
+                value={ state.pharmacy.address }
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'pharmacy.address', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <TextField
+                error={ state.pharmacy.mobile.trim().length < 10 && showError }
+                label={ t('general.mobile') }
+                type="number"
+                required
+                className={ formItem }
+                variant="outlined"
+                value={ state.pharmacy.mobile }
+                onChange={ (e):
+                  void => dispatch({ type: 'pharmacy.mobile', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <TextField
+                error={ state.pharmacy.telphon.trim().length < 8 && showError }
+                required
+                variant="outlined"
+                label={ t('general.phone') }
+                value={ state.pharmacy.telphon }
+                className={ formItem }
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'pharmacy.telphon', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <TextField
+                error={ state.pharmacy.website.trim().length < 3 && showError }
+                required
+                variant="outlined"
+                className={ formItem }
+                label={ t('general.website') }
+                value={ state.pharmacy.website }
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'pharmacy.website', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <TextField
+                error={ !emailRegex.test(state.pharmacy.email) && showError }
+                label={ t('general.email') }
+                required
+                type="email"
+                className={ formItem }
+                variant="outlined"
+                value={ state.pharmacy.email }
+                onChange={ (e):
+                  void => dispatch({ type: 'pharmacy.email', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <TextField
+                error={ state.pharmacy.postalCode.trim().length < 3 && showError }
+                required
+                variant="outlined"
+                className={ formItem }
+                label={ t('general.postalCode') }
+                value={ state.pharmacy.postalCode }
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'pharmacy.postalCode', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <TextField
+                error={ state.pharmacy.hix.length < 3 && showError }
+                required
+                variant="outlined"
+                label={ t('pharmacy.hix') }
+                className={ formItem }
+                value={ state.hix }
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'pharmacy.hix', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <TextField
+                error={ state.pharmacy.gli.length < 3 && showError }
+                required
+                variant="outlined"
+                className={ formItem }
+                label={ t('pharmacy.gli') }
+                value={ state.gli }
+                onChange={
+                  (e): void =>
+                    dispatch({ type: 'pharmacy.gli', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <DaroogDropdown
+                defaultValue={ state?.pharmacy.workTime }
+                data={ workTimeList }
+                className={ `${ formItem } ${ dropdown }` }
+                label={ t('pharmacy.workTime') }
+                onChangeHandler={ (v): void => {
+                  return dispatch({ type: 'pharmacy.workTime', value: v })
+                } }
+              />
+            </Grid>
+          </Grid>
+          <div className={ spacing3 }></div>
+          <Divider/>
+          {/* ////////////////////// USER ///////////////////// */ }
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" component="h3" className={ `${ formTitle } txt-md` }>
+                  <h3>{ t('user.user') }</h3>
+                </Typography>
+              </div>
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.name.length < 2 && showError }
+                label={ t('user.name') }
+                required
+                variant="outlined"
+                value={ state.user.name }
+                className={ formItem }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.name', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.family.length < 2 && showError }
+                label={ t('user.family') }
+                required
+                className={ formItem }
+                variant="outlined"
+                value={ state.user.family }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.family', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.userName.length < 3 && showError }
+                label={ t('login.username') }
+                required
+                className={ formItem }
+                variant="outlined"
+                autoComplete="off"
+                value={ state.user.userName }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.userName', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state?.password?.length < 3 && showError }
+                label={ t('login.password') }
+                autoComplete="new-password"
+                type="password"
+                className={ formItem }
+                variant="outlined"
+                value={ state.user.password }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.password', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.nationalCode.length < 10 && showError }
+                label={ t('user.nationalCode') }
+                required
+                type="text"
+                className={ formItem }
+                variant="outlined"
+                value={ state.user.nationalCode }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.nationalCode', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.birthDate === '' && showError }
+                label={ t('user.birthDate') }
+                required
+                inputProps={ {
+                  readOnly: true
+                } }
+                type="text"
+                variant="outlined"
+                className={ formItem }
+                value={ state.user.birthDate }
+                onClick={ toggleIsOpenDatePicker }
+              />
+            </Grid>
+          </Grid>
+          <div className={ spacing1 }>&nbsp;</div>
+          <Divider/>
+          {/* //////// SUBMIT //////////// */ }
+          <Grid item xs={ 12 } className={ spacing3 }>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={ addButton }
+            >
+              {
+                isLoadingNewUser
+                  ? t('general.pleaseWait')
+                  : <span>{ t('action.create') }</span>
+              }
+            </Button>
+          </Grid>
+        </form>
+        <div className={ spacing3 }>&nbsp;</div>
+      </Paper>
+      <div className={ spacing3 }>&nbsp;</div>
+      <Modal
+        open={ isOpenDatePicker }
+        toggle={ toggleIsOpenDatePicker }
+      >
+        <DateTimePicker
+          selectedDateHandler={ (e): void => {
+            dispatch({ type: 'user.birthDate', value: e });
+            toggleIsOpenDatePicker();
+          } }
+        />
+      </Modal>
+      <div className={ spacing3 }>&nbsp;</div>
     </Container>
   )
 }

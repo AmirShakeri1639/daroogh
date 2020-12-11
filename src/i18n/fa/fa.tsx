@@ -83,6 +83,10 @@ export default {
       user: {
         role: 'نقش',
         user: 'کاربر',
+        name: 'نام کاربر',
+        family: 'نام خانوادگی',
+        nationalCode: 'کد ملی',
+        birthDate: 'تاریخ تولد',
         'user-role': 'نقش کاربر',
         users: 'کاربران',
         profile: 'پروفایل',
