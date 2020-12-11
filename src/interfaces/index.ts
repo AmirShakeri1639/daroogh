@@ -59,5 +59,6 @@ export type { ConfirmParams } from './ConfirmParams';
 export type { AccountingInterface } from './AccountingInterface';
 export type { AllPharmacyDrugInterface } from './AllPharmacyDrugInterface';
 export type { DrugI } from './AllPharmacyDrugInterface';
+export type { PharmacyWithUserInterface } from './PharmacyWithUserInterface';
 
 export * from './component';

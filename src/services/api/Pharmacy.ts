@@ -1,6 +1,6 @@
 import Api from './Api'
 import { errorHandler } from "../../utils";
-import { PharmacyInterface, ConfirmParams } from '../../interfaces';
+import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface } from '../../interfaces';
 
 class Pharmacy extends Api {
   readonly urls = {
@@ -8,13 +8,26 @@ class Pharmacy extends Api {
     save: '/Pharmacy/Save',
     get: '/Pharmacy/Detail/',
     remove: '/Pharmacy/Remove/',
-    confirm: '/Pharmacy/Confirm'
+    confirm: '/Pharmacy/Confirm',
+    register: '/Pharmacy/Register'
   }
 
   save = async (data: PharmacyInterface): Promise<any> => {
     try {
       const result = await this.postJsonData(
         this.urls.save,
+        data
+      );
+      return result.data;
+    } catch(e) {
+      errorHandler(e);
+    }
+  }
+
+  register = async (data: PharmacyWithUserInterface): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        this.urls.register,
         data
       );
       return result.data;
