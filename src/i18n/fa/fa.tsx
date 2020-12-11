@@ -78,6 +78,7 @@ export default {
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
         failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
       },
       user: {
         role: 'نقش',

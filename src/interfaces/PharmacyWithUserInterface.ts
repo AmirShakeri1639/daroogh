@@ -18,7 +18,7 @@ export interface PharmacyWithUserInterface {
   };
   user: {
     id?: number;
-    pharmacyID: number | null;
+    pharmacyID?: number | null;
     name: string;
     family: string;
     mobile: string;
