@@ -31,7 +31,7 @@ const initialState: PharmacyWithUserInterface = {
     website: '',
     email: '',
     postalCode: '',
-    countryDivisionID: 1
+    countryDivisionID: 0
   },
   user: {
     id: 0,
@@ -218,7 +218,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
       name, family, userName, nationalCode, birthDate
     } = user;
     const {
-      name: pharmacyName, hix, gli, address, email, mobile
+      name: pharmacyName, hix, gli, address, email, mobile,
+      countryDivisionID
     } = pharmacy;
 
     return !(
@@ -228,6 +229,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
       || gli.trim().length < 2
       || address.trim().length < 2
       || mobile.trim().length < 10
+      || countryDivisionID === 0
+      || countryDivisionID === '0'
       // user
       || name.trim().length < 2
       || family.trim().length < 2
@@ -544,8 +547,12 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <CountryDivisionSelect
-                countryDivisionId={28368}
+                countryDivisionID={28367}
                 label={t('general.location')}
+                onSelectedHandler={(id) => {
+                  alert('selected city id: ' + id)
+                  dispatch({ type: 'pharmacy.countryDivisionID', value: id});
+                }}
                 />
             </Grid>
           </Grid>

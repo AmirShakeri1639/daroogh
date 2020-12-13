@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { DaroogDropdown } from '../daroog-dropdown/DaroogDropdown';
 import { useClasses } from "../../screen/dashboard/classes";
 import { Container, Grid } from "@material-ui/core";
 import { useTranslation } from "react-i18next";
 import { CountryDivision } from "../../../services/api";
 import { CountryDivisionInterface, LabelValue } from "../../../interfaces";
+import { useQueryCache } from "react-query";
 
 interface Props {
-  countryDivisionId?: number | null;
+  countryDivisionID?: number | null;
   label?: string;
+  onSelectedHandler: (value: number | string) => void;
 }
 
 const initialProvince: CountryDivisionInterface = {
@@ -18,41 +20,35 @@ const initialProvince: CountryDivisionInterface = {
 };
 
 const initialCity: CountryDivisionInterface = {
-  id: 28368,
-  name: 'منطقه ۱',
+  id: 28367,
+  name: 'مشهد ثامن',
   selectable: true
 };
 
 export const CountryDivisionSelect: React.FC<Props> = (props) => {
-  const { countryDivisionId = 28368, label = '' } = props;
-  // countryDivisionId of Xorasan Razavi - Mashhad - district 1 is 28368
+  const { countryDivisionID = 28367, label = '', onSelectedHandler } = props;
+  // countryDivisionID of Xorasan Razavi - Mashhad - district 1 is 28368
   const [province, setProvince] = useState<CountryDivisionInterface>(initialProvince);
   const [city, setCity] = useState<CountryDivisionInterface>(initialCity);
 
+  const queryCache = useQueryCache();
   const { t } = useTranslation();
   const { root } = useClasses();
 
   const { getAllProvinces, getAllCities } = new CountryDivision();
-  const [allProvinces, setAllProvinces] = useState([]);
+  const [allProvinces, setAllProvinces] = useState<LabelValue[]>([]);
   const [allCities, setAllCities] = useState<LabelValue[]>([]);
-  React.useEffect(() => {
-    async function getProvinces() {
-      const result = await getAllProvinces();
-      setAllProvinces(result.items.map((item: any) =>
-        ({ value: item.id, label: item.name })));
-    }
-    getProvinces();
 
-    async function getCities(provinceId?: number | null) {
+  function loadCities(provinceId: number | string) {
+    const getCities = async (provinceId: number | string) => {
       if (provinceId == null) return;
       const result = await getAllCities(provinceId);
-      debugger;
-      const selectableCities: LabelValue[] = [];
+      const selectableCities: Array<LabelValue> = [];
       const findSelectables = (item: any, cName: string = '') => {
         if (!item.shahres) return;
         item.shahres.map((innerItem: any) => {
           const { id } = innerItem;
-          const name = `${cName} - ${innerItem.name} `;
+          const name = `${ cName } - ${ innerItem.name } `;
           if (innerItem.selectable) {
             selectableCities.push({ value: id, label: name });
             console.log('selectableCities:', selectableCities);
@@ -63,16 +59,42 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
       };
       result.items.map((item: any) => {
         if (item.selectable) {
-          const { id, name, selectable } = item;
+          const { id, name } = item;
           selectableCities.push({ value: id, label: name });
           console.log('selectableCities:', selectableCities);
         }
         findSelectables(item, item.name);
       });
-      setAllCities(selectableCities);
+      return selectableCities;
     }
-    getCities(province?.id);
+
+    getCities(provinceId).then((result: any)=> {
+      setAllCities(result)
+    });
+  }
+
+  React.useEffect(() => {
+    async function getProvinces() {
+      const result = await getAllProvinces();
+      setAllProvinces(result.items.map((item: any) =>
+        ({ value: item.id, label: item.name })));
+    }
+    getProvinces();
+
+    loadCities(province?.id);
   }, []);
+
+  const provinceSelectedHandler = (id: number | string) => {
+    const  { value, label } = allProvinces.filter(p => p.value === id)[0];
+    setProvince({ id: value, name: label, selectable: false });
+    loadCities(id);
+  }
+
+  const citySelectedHandler = (id: number | string) => {
+    const { value, label } = allCities.filter(p => p.value === id)[0];
+    setCity({ id: value, name: label, selectable: true });
+    onSelectedHandler(id);
+  }
 
   return (
     <Container className={root}>
@@ -83,14 +105,18 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
           </label>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <DaroogDropdown defaultValue={province}
-                          onChangeHandler={ (id) => null }
+          <DaroogDropdown defaultValue={province.id}
+                          onChangeHandler={ (id) => {
+                            provinceSelectedHandler(id);
+                          } }
                           data={allProvinces}
                           label={t('countryDivision.province')} />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <DaroogDropdown defaultValue={city}
-                          onChangeHandler={ (id) => null }
+          <DaroogDropdown defaultValue={city.id}
+                          onChangeHandler={ (id) => {
+                            citySelectedHandler(id);
+                          } }
                           data={allCities}
                           label={t('countryDivision.city')} />
         </Grid>

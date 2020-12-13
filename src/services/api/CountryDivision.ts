@@ -16,7 +16,7 @@ class CountryDivision extends Api {
     }
   }
 
-  getAllCities = async (provinceId: number = 9) => {
+  getAllCities = async (provinceId: number | string = 9) => {
     // provinceId of Xorasan Razavi is 9
     try {
       const result = await this.postJsonData(
