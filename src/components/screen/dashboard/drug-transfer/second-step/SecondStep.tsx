@@ -66,8 +66,6 @@ const SecondStep: React.FC = () => {
     },
     {
       getFetchMore: () => {
-        console.log('allPharmacyDrug.length:', allPharmacyDrug.length)
-        console.log('listCount:', listCount);
         return allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount;
       },
     }

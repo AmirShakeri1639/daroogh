@@ -13,10 +13,6 @@ export const DaroogSearchBar: React.FC<SearchBarProps> = (props) => {
   const [searchValue, setSearchValue] = useState('');
   const { t } = useTranslation();
 
-  const doSearch: any = (v: string) => {
-    console.log('search for in main component', v);
-  }
-
   return (
     <SearchBar
       value={ searchValue }

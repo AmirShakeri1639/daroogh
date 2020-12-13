@@ -51,7 +51,6 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
           const name = `${ cName } - ${ innerItem.name } `;
           if (innerItem.selectable) {
             selectableCities.push({ value: id, label: name });
-            console.log('selectableCities:', selectableCities);
           } else {
             findSelectables(innerItem, name);
           }
@@ -61,7 +60,6 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
         if (item.selectable) {
           const { id, name } = item;
           selectableCities.push({ value: id, label: name });
-          console.log('selectableCities:', selectableCities);
         }
         findSelectables(item, item.name);
       });
