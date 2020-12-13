@@ -33,7 +33,7 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
-  const { root } = useClasses();
+  const { container } = useClasses();
 
   const { getAllProvinces, getAllCities } = new CountryDivision();
   const [allProvinces, setAllProvinces] = useState<LabelValue[]>([]);
@@ -45,8 +45,14 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
       const result = await getAllCities(provinceId);
       const selectableCities: Array<LabelValue> = [];
       const findSelectables = (item: any, cName: string = '') => {
-        if (!item.shahres) return;
-        item.shahres.map((innerItem: any) => {
+        if (!item.shahres && !item.regions) return;
+        let subItems;
+        if (item.shahres) {
+          subItems = item.shahres;
+        } else if (item.regions) {
+          subItems = item.regions;
+        }
+        subItems.map((innerItem: any) => {
           const { id } = innerItem;
           const name = `${ cName } - ${ innerItem.name } `;
           if (innerItem.selectable) {
@@ -95,7 +101,7 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
   }
 
   return (
-    <Container className={root}>
+    <Container className={container}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <label>
