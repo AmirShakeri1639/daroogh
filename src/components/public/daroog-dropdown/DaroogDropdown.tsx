@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
-import { LabelValue } from "../../../../interfaces";
+import { LabelValue } from "../../../interfaces";
 
 interface Props {
   defaultValue: any;

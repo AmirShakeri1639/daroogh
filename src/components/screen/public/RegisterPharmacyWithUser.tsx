@@ -10,11 +10,12 @@ import { useClasses } from "../dashboard/classes";
 import { ActionInterface } from "../../../interfaces";
 import { useTranslation } from "react-i18next";
 import { errorHandler, sweetAlert, warningSweetAlert } from "../../../utils";
-import { DaroogDropdown } from "../dashboard/common/daroogDropdown";
+import { DaroogDropdown } from "../../public/daroog-dropdown/DaroogDropdown";
 import { WorkTimeEnum } from "../../../enum";
 import { emailRegex } from "../../../enum/consts";
 import Modal from "../../public/modal/Modal";
 import DateTimePicker from "../../public/datepicker/DatePicker";
+import { CountryDivisionSelect } from "../../public/country-division/CountryDivisionSelect";
 
 const initialState: PharmacyWithUserInterface = {
   pharmacy: {
@@ -293,6 +294,96 @@ const RegisterPharmacyWithUser: React.FC = () => {
           autoComplete="off"
           className={ rootFull }
           onSubmit={ submit }>
+          {/* ////////////////////// USER ///////////////////// */ }
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" component="h3" className={ `${ formTitle } txt-md` }>
+                  <h3>{ t('pharmacy.manager') }</h3>
+                </Typography>
+              </div>
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.name.length < 2 && showError }
+                label={ t('general.name') }
+                required
+                variant="outlined"
+                value={ state.user.name }
+                className={ formItem }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.name', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.family.length < 2 && showError }
+                label={ t('user.family') }
+                required
+                className={ formItem }
+                variant="outlined"
+                value={ state.user.family }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.family', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.userName.length < 3 && showError }
+                label={ t('login.username') }
+                required
+                className={ formItem }
+                variant="outlined"
+                autoComplete="off"
+                value={ state.user.userName }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.userName', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state?.password?.length < 3 && showError }
+                label={ t('login.password') }
+                autoComplete="new-password"
+                type="password"
+                className={ formItem }
+                variant="outlined"
+                value={ state.user.password }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.password', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.nationalCode.length < 10 && showError }
+                label={ t('user.nationalCode') }
+                required
+                type="text"
+                className={ formItem }
+                variant="outlined"
+                value={ state.user.nationalCode }
+                onChange={ (e):
+                  void => dispatch({ type: 'user.nationalCode', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state.user.birthDate === '' && showError }
+                label={ t('user.birthDate') }
+                required
+                inputProps={ {
+                  readOnly: true
+                } }
+                type="text"
+                variant="outlined"
+                className={ formItem }
+                value={ state.user.birthDate }
+                onClick={ toggleIsOpenDatePicker }
+              />
+            </Grid>
+          </Grid>
+          <div className={ spacing3 }></div>
+          <Divider/>
           {/* ////////////////////// PHARMACY ///////////////////// */ }
           <Grid container spacing={ 3 }>
             <Grid item xs={ 12 }>
@@ -451,95 +542,11 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 } }
               />
             </Grid>
-          </Grid>
-          <div className={ spacing3 }></div>
-          <Divider/>
-          {/* ////////////////////// USER ///////////////////// */ }
-          <Grid container spacing={ 3 }>
-            <Grid item xs={ 12 }>
-              <div className={ titleContainer }>
-                <Typography variant="h3" component="h3" className={ `${ formTitle } txt-md` }>
-                  <h3>{ t('user.user') }</h3>
-                </Typography>
-              </div>
-            </Grid>
-            <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
-                error={ state.user.name.length < 2 && showError }
-                label={ t('user.name') }
-                required
-                variant="outlined"
-                value={ state.user.name }
-                className={ formItem }
-                onChange={ (e):
-                  void => dispatch({ type: 'user.name', value: e.target.value }) }
-              />
-            </Grid>
-            <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
-                error={ state.user.family.length < 2 && showError }
-                label={ t('user.family') }
-                required
-                className={ formItem }
-                variant="outlined"
-                value={ state.user.family }
-                onChange={ (e):
-                  void => dispatch({ type: 'user.family', value: e.target.value }) }
-              />
-            </Grid>
-            <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
-                error={ state.user.userName.length < 3 && showError }
-                label={ t('login.username') }
-                required
-                className={ formItem }
-                variant="outlined"
-                autoComplete="off"
-                value={ state.user.userName }
-                onChange={ (e):
-                  void => dispatch({ type: 'user.userName', value: e.target.value }) }
-              />
-            </Grid>
-            <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
-                error={ state?.password?.length < 3 && showError }
-                label={ t('login.password') }
-                autoComplete="new-password"
-                type="password"
-                className={ formItem }
-                variant="outlined"
-                value={ state.user.password }
-                onChange={ (e):
-                  void => dispatch({ type: 'user.password', value: e.target.value }) }
-              />
-            </Grid>
-            <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
-                error={ state.user.nationalCode.length < 10 && showError }
-                label={ t('user.nationalCode') }
-                required
-                type="text"
-                className={ formItem }
-                variant="outlined"
-                value={ state.user.nationalCode }
-                onChange={ (e):
-                  void => dispatch({ type: 'user.nationalCode', value: e.target.value }) }
-              />
-            </Grid>
-            <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
-                error={ state.user.birthDate === '' && showError }
-                label={ t('user.birthDate') }
-                required
-                inputProps={ {
-                  readOnly: true
-                } }
-                type="text"
-                variant="outlined"
-                className={ formItem }
-                value={ state.user.birthDate }
-                onClick={ toggleIsOpenDatePicker }
-              />
+            <Grid item xs={12} sm={6} md={4}>
+              <CountryDivisionSelect
+                countryDivisionId={28368}
+                label={t('general.location')}
+                />
             </Grid>
           </Grid>
           <div className={ spacing1 }>&nbsp;</div>

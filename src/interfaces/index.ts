@@ -60,5 +60,6 @@ export type { AccountingInterface } from './AccountingInterface';
 export type { AllPharmacyDrugInterface } from './AllPharmacyDrugInterface';
 export type { DrugI } from './AllPharmacyDrugInterface';
 export type { PharmacyWithUserInterface } from './PharmacyWithUserInterface';
+export type { CountryDivisionInterface } from './CountryDivisionInterface';
 
 export * from './component';

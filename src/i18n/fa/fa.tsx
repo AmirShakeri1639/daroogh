@@ -44,6 +44,8 @@ export default {
         loading: 'در حال بارگذاری ... ',
         more: 'بیشتر',
         noMoreData: 'داده دیگری موجود نیست',
+        name: 'نام',
+        location: 'مکان',
       },
       action: {
         insert: 'درج',
@@ -157,6 +159,7 @@ export default {
         gli: 'GLI',
         workTime: 'ساعت کار',
         request: 'درخواست ایجاد',
+        manager: 'مدیر داروخانه',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
@@ -180,6 +183,10 @@ export default {
         amount: 'مبلغ',
         list: 'لیست تراکنش‌های مالی',
         transactions: 'تراکنش‌ها',
+      },
+      countryDivision: {
+        province: 'استان',
+        city: 'شهر',
       }
     }
   }
