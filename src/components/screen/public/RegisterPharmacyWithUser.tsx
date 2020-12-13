@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next";
 import { errorHandler, sweetAlert, warningSweetAlert } from "../../../utils";
 import { DaroogDropdown } from "../../public/daroog-dropdown/DaroogDropdown";
 import { WorkTimeEnum } from "../../../enum";
-import { emailRegex } from "../../../enum/consts";
+// import { emailRegex } from "../../../enum/consts";
 import Modal from "../../public/modal/Modal";
 import DateTimePicker from "../../public/datepicker/DatePicker";
 import { CountryDivisionSelect } from "../../public/country-division/CountryDivisionSelect";
@@ -175,6 +175,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
   const [showError, setShowError] = useState<boolean>(false);
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
   const { register } = new Pharmacy();
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g;
 
   const {
     parent, dropdown, silverBackground,
@@ -234,7 +235,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
       // user
       || name.trim().length < 2
       || family.trim().length < 2
-      || !emailRegex.test(email)
+      // TODO: emailRegex works just sometimes!
+      // || !emailRegex.test(email)
       || userName.trim().length < 3
       || nationalCode.length !== 10
       || birthDate === ''
@@ -550,7 +552,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 countryDivisionID={28367}
                 label={t('general.location')}
                 onSelectedHandler={(id) => {
-                  alert('selected city id: ' + id)
                   dispatch({ type: 'pharmacy.countryDivisionID', value: id});
                 }}
                 />
