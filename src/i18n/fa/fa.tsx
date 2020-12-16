@@ -116,6 +116,7 @@ export default {
         'edit-user': 'ویرایش کاربر',
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
+        admin: 'ادمین',
       },
       drug: {
         drug: 'دارو',
