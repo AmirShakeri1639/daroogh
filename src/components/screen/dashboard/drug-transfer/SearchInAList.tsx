@@ -22,7 +22,7 @@ const SearchInAList: React.FC = () => {
             (p.drug.name && p.drug.name.includes(v)) ||
             (p.drug.companyName && p.drug.companyName?.includes(v)) ||
             (p.drug.genericName && p.drug.genericName?.includes(v))
-          )
+          );
         });
       setAllPharmacyDrug(filtered);
     }

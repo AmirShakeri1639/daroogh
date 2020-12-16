@@ -17,4 +17,5 @@ export interface InputInterface {
   onClick?: () => void;
   onChange: (e: any) => void;
   error?: any;
+  className?: any;
 }

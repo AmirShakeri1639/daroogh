@@ -3,3 +3,8 @@ export interface JalaliInterface {
   jm: number;
   jd: number;
 }
+
+export interface SelectOption {
+  label: string;
+  value: string | number;
+}

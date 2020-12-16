@@ -1,0 +1,76 @@
+@import "src/assets/scss/mixin";
+@import "src/assets/scss/vars";
+
+.react-select__indicators {
+  display: none !important;
+}
+
+.react-select__control {
+  position: relative;
+  // z-index: 1;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAQCAYAAADj5tSrAAAABHNCSVQICAgIfAhkiAAAAXNJREFUOE+d1M1LlUEUBvDfjb7M6EssEMFNi2gRiIEE4koQwoULzcT/rpUUraIICltY5kIhEITcBRFCuha1NA7Mm8Pw3vve61nNnHOe55nzwbSc2Rhu42PmO8/xMh5jrQK30uEJJtJ5A5/Ow44reI67+IYPwRMi45gsSL/ic49CfVjAYIb7EhWFyB0s4lpBuor1LoUCGxUMFPn7eFG1K4JLqdw8bwWbDULX0yNvFXl7WMZBJRLxe+k1Mbjcoq/R3zq7mTA3iuAuXuKwmkkeH8IzXCpA77FV+GITo839hf9XEjgutyvPG8Y8LmbOU7zDdvJFe0Mghp3bT7zCn9yZtyv3j2AOF2qEfqcWXS0EfuA1/pZ9bScSefcxm9a8wkVFRzULsoM3OKkbXCeRyH+AmUKo5PmeBOIBtdYkEqCHeNpGKGb0th15p8HXYR5hugjEtsXWNVo3lVQko5hKl57+t15Egj8+0sD8/2Eby2gYaDf4rnL+AWWeOBVnLLp/AAAAAElFTkSuQmCC);
+  background-color: transparent !important;
+  background-size: 8px;
+  background-position: 10px center;
+  background-repeat: no-repeat;
+  border: 1px rgba(44, 4, 185, 0.30) solid !important;
+  border-radius: 10px !important;
+  box-shadow: none !important;
+  font-size: 15px !important;
+  min-height: auto !important;
+  // height: calc(1.5em + 0.75rem + 1px);
+  height: 37px;
+}
+
+.react-select__input {
+  padding: 0 0.75rem;
+  input[type=text]:not(.scoped) {
+    transition: none;
+    border: none !important;
+    font-size: inherit !important;
+    color: inherit !important;
+    padding-bottom: 5px !important;
+    position: relative;
+    bottom: -5px;
+  }
+}
+
+.react-select__single-value, .react-select__placeholder {
+  padding: 0 0.75rem;
+  margin: 0 !important;
+}
+
+.react-select__value-container {
+  padding: 0 5px !important;
+}
+
+.react-select__menu {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.react-select__menu .react-select__menu-list{
+  max-height: 10rem !important;
+  overflow-y: scroll !important;
+}
+
+.react-select__option {
+  padding: 5px 8px !important;
+  margin: 0;
+}
+
+.drop-up .react-select__menu {
+  top: auto;
+  bottom: 100%;
+}
+
+.react-select--is-disabled {
+  background-color: #e7e7e7 !important;
+  border-radius: 10px;
+}
+
+.react-select-height-unset {
+  .react-select__control {
+    height: unset;
+  }
+}

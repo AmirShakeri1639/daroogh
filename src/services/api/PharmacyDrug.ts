@@ -33,6 +33,11 @@ class PharmacyDrug extends Api {
       errorHandler(e);
     }
   }
+
+  getRelatedPharmacyDrug = async (): Promise<any> => {
+    const result = await this.postData('/PharmacyDrug/GetRelatedPharmacyDrug');
+    return result.data;
+  }
 }
 
 export default PharmacyDrug;

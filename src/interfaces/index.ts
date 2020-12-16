@@ -63,3 +63,4 @@ export type { PharmacyWithUserInterface } from './PharmacyWithUserInterface';
 export type { CountryDivisionInterface } from './CountryDivisionInterface';
 
 export * from './component';
+export * from './general';

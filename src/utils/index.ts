@@ -11,3 +11,4 @@ export {
 } from './sweetAlert';
 export { default as jalali } from './jalali';
 export { default as Convertor } from './Convertor';
+export { default as sanitizeReactSelect } from './sanitizeReactSelect';
