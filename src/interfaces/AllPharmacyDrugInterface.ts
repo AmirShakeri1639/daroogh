@@ -13,6 +13,10 @@ export interface AllPharmacyDrugInterface {
   drug: DrugI;
   currentCnt: number;
   packName?: string;
+  packCategoryName?: string;
+  order: number;
+  buttonName: string;
+  cardColor: string;
 }
 
 export interface DrugI {

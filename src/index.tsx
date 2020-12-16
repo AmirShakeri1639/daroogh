@@ -7,6 +7,7 @@ import RTL, { theme } from "./RTL";
 import './i18n';
 import './assets/scss/main.scss';
 import { QueryCache, ReactQueryCacheProvider } from 'react-query';
+import './scrollbar.css';
 
 const queryCache = new QueryCache({
   defaultConfig: {

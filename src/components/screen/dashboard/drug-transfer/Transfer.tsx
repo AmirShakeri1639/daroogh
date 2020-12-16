@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createStyles, makeStyles } from '@material-ui/core';
 import './transfer.scss';
-import Context from './Context';
+import Context, { TransferDrugContextInterface } from './Context';
 import { Grid } from '@material-ui/core';
 import ProgressBar from './ProgressBar';
 import MaterialContainer from '../../../public/material-container/MaterialContainer';
@@ -9,6 +9,7 @@ import SecondStep from './second-step/SecondStep';
 import FirstStep from './first-step/FirstStep';
 import ThirdStep from './third-step/ThirdStep';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
+import FourthStep from './fourth-step/FourthStep';
 
 const style = makeStyles(theme =>
   createStyles({
@@ -21,18 +22,30 @@ const style = makeStyles(theme =>
 
 const TransferDrug: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
+  const [openDialog, setOpenDialog] = React.useState(false);
   const [allPharmacyDrug, setAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
-  const [basketCount, setBasketCount] = useState<number[]>([]);
+  const [basketCount, setBasketCount] = useState<AllPharmacyDrugInterface[]>([]);
+  const [uBasketCount, setUbasketCount] = useState<AllPharmacyDrugInterface[]>([]);
+  const [recommendationMessage, setRecommendationMessage] = React.useState('');
+  const [exchangeId, setExchangeId] = React.useState(0);
 
   const { root } = style();
 
-  const initialContextValues = (): any => ({
+  const initialContextValues = (): TransferDrugContextInterface => ({
     activeStep,
     setActiveStep,
     allPharmacyDrug,
     setAllPharmacyDrug,
     basketCount,
-    setBasketCount
+    setBasketCount,
+    uBasketCount,
+    setUbasketCount,
+    openDialog,
+    setOpenDialog,
+    recommendationMessage,
+    setRecommendationMessage,
+    exchangeId,
+    setExchangeId,
   });
 
   return (
@@ -43,10 +56,10 @@ const TransferDrug: React.FC = () => {
             <Grid item xs={12}>
               <ProgressBar />
             </Grid>
-
             {activeStep === 0 && <FirstStep />}
             {activeStep === 1 && <SecondStep />}
             {activeStep === 2 && <ThirdStep />}
+            {activeStep === 3 && <FourthStep />}
           </Grid>
         </MaterialContainer>
       </div>
