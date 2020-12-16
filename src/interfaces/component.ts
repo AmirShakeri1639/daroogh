@@ -1,6 +1,7 @@
-import { TableColumnInterface } from ".";
+import {DrugInterface, TableColumnInterface} from ".";
 import { AllPharmacyDrugInterface } from "./AllPharmacyDrugInterface";
 import { NewUserData } from "./user";
+import {PharmacyDrugInterface} from "./pharmacyDrug";
 
 export interface SelectPropsInterface {
   value: string;
@@ -68,4 +69,44 @@ export interface CardPropsInterface {
   basicDetail: JSX.Element;
   collapsableContent?: JSX.Element;
   pharmacyDrug: AllPharmacyDrugInterface;
+}
+
+export interface CardContainerRelatedPharmacyDrugsInterface {
+  data: PharmacyDrugInterface;
+}
+
+export interface CardHeaderInterface {
+  province: string;
+  city: string;
+  guaranty: string | number;
+  star: number | string;
+  itemsCount: number | string;
+}
+
+export interface ItemContainerPropsInterface {
+  drug: DrugInterface;
+  amount: number;
+  offer2: number | string;
+  offer1: string | number;
+  expireDate: string;
+}
+
+export interface MaterialDrawerPropsInterface {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export interface SwitchComponentPropsInterface {
+  id: string;
+  checked: boolean;
+  onChange: () => void;
+}
+
+export interface CountyPropsInterface {
+  countyHandler?: (val?: number) => void;
+}
+
+export interface ProvincePropsInterface {
+  provinceHandler?: (val?: number) => void;
+  countyId?: number;
 }

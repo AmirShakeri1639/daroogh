@@ -65,3 +65,4 @@ export type { LoggedInUserInterface } from './LoggedInUserInterface';
 export type { TokenInterface } from './LoggedInUserInterface';
 
 export * from './component';
+export * from './general';

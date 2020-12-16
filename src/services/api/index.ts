@@ -7,3 +7,4 @@ export { default as Category } from './Category';
 export { default as Exchange } from './Exchange';
 export { default as PharmacyDrug } from './PharmacyDrug';
 export { default as CountryDivision } from './CountryDivision';
+export { default as Search } from './Search';

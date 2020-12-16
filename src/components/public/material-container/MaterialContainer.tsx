@@ -13,7 +13,7 @@ const MaterialContainer: React.FC = (props) => {
   const { children } = props;
 
   return (
-    <Container maxWidth="lg" className={container}>
+    <Container maxWidth="xl" className={container}>
       {children || <></>}
     </Container>
   );
