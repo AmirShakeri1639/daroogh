@@ -28,7 +28,6 @@ const TransferDrug: React.FC = () => {
   const [uBasketCount, setUbasketCount] = useState<AllPharmacyDrugInterface[]>([]);
   const [recommendationMessage, setRecommendationMessage] = React.useState('');
   const [exchangeId, setExchangeId] = React.useState(0);
-  const [basketCount, setBasketCount] = useState<number[]>([]);
   const [selectedPharmacyForTransfer, setSelectedPharmacyForTransfer] = useState<number>(0);
 
   const { root } = style();

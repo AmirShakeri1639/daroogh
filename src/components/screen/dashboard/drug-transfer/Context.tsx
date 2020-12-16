@@ -36,7 +36,7 @@ const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   recommendationMessage: '',
   setRecommendationMessage: () => '',
   exchangeId: 0,
-  setExchangeId: () => 0
+  setExchangeId: () => 0,
   setSelectedPharmacyForTransfer: () => void 0,
   selectedPharmacyForTransfer: 0,
 });

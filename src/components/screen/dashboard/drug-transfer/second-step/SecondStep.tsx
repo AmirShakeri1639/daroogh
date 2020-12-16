@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   createStyles,
   Dialog,
@@ -27,6 +27,8 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
+import { useQueryCache, useInfiniteQuery, ReactQueryCacheProvider } from 'react-query';
+import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 
 const style = makeStyles(theme =>
   createStyles({
@@ -87,9 +89,32 @@ const SecondStep: React.FC = () => {
     };
   };
 
-  const { isLoading, error, data, refetch } = useQuery(
-    ['key'],
-    () => getAllPharmacyDrug('test::17'),
+  const queryCache = useQueryCache();
+
+  const [listPageNo, setListPage] = useState(0);
+  const [listCount, setListCount] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
+  const {
+    status,
+    isLoading,
+    error,
+    data,
+    isFetching,
+    isFetchingMore,
+    fetchMore,
+    refetch,
+    canFetchMore,
+  } = useInfiniteQuery(
+    'key',
+    async k => {
+      const data = await getAllPharmacyDrug('test::17', listPageNo, pageSize);
+      setListPage(listPageNo + 1);
+      const allItemsTillNow = [...allPharmacyDrug, ...data.items];
+      setAllPharmacyDrug(allItemsTillNow);
+      setListCount(data.count);
+      return data.items;
+    },
     {
       getFetchMore: () => {
         return allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount;
@@ -104,56 +129,64 @@ const SecondStep: React.FC = () => {
     refetch();
   }, []);
 
+  useIntersectionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchMore,
+    enabled: canFetchMore,
+  });
+
   const cardListGenerator = (): JSX.Element[] | null => {
-    if (allPharmacyDrug.length > 0) {
+    if (data && data.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
-      return allPharmacyDrug
-        .sort((a, b) => (a.order > b.order ? 1 : -1))
-        .map((item: AllPharmacyDrugInterface, index: number) => {
-          Object.assign(item, {
-            order: index + 1,
-            buttonName: !item.buttonName ? 'افزودن به تبادل' : item.buttonName,
-            cardColor: !item.cardColor ? 'white' : item.cardColor,
+      return data.map((item: any, index: number) => {
+        return item
+          ?.sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
+          .map((item: any, index: number) => {
+            Object.assign(item, {
+              order: index + 1,
+              buttonName: !item.buttonName ? 'افزودن به تبادل' : item.buttonName,
+              cardColor: !item.cardColor ? 'white' : item.cardColor,
+            });
+
+            if (basketCount) {
+              const c = basketCount.find(x => x.id == item.id)?.currentCnt;
+              if (c) item.currentCnt = c;
+            }
+
+            let isPack = false;
+            let totalAmount = 0;
+            if (item.packID && !packList.find(x => x.packID === item.packID)) {
+              allPharmacyDrug
+                .filter(x => x.packID === item.packID)
+                .forEach((p: AllPharmacyDrugInterface) => {
+                  packList.push(p);
+                  totalAmount += p.amount;
+                });
+              item.totalAmount = totalAmount;
+              isPack = true;
+            }
+            return (
+              <Grid item xs={12} sm={6} xl={4} key={index}>
+                <div className={paper}>
+                  {isPack ? (
+                    <CardContainer
+                      basicDetail={<ExCardContent formType={1} pharmacyDrug={item} />}
+                      isPack={true}
+                      pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                      collapsableContent={<ExCardContent formType={3} packInfo={packList} />}
+                    />
+                  ) : (
+                    <CardContainer
+                      basicDetail={<ExCardContent formType={2} pharmacyDrug={item} />}
+                      isPack={false}
+                      pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                    />
+                  )}
+                </div>
+              </Grid>
+            );
           });
-
-          if (basketCount) {
-            const c = basketCount.find(x => x.id == item.id)?.currentCnt;
-            if (c) item.currentCnt = c;
-          }
-
-          let isPack = false;
-          let totalAmount = 0;
-          if (item.packID && !packList.find(x => x.packID === item.packID)) {
-            allPharmacyDrug
-              .filter(x => x.packID === item.packID)
-              .forEach((p: AllPharmacyDrugInterface) => {
-                packList.push(p);
-                totalAmount += p.amount;
-              });
-            item.totalAmount = totalAmount;
-            isPack = true;
-          }
-          return (
-            <Grid item xs={12} sm={6} xl={4} key={index}>
-              <div className={paper}>
-                {isPack ? (
-                  <CardContainer
-                    basicDetail={<ExCardContent formType={1} pharmacyDrug={item} />}
-                    isPack={true}
-                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                    collapsableContent={<ExCardContent formType={3} packInfo={packList} />}
-                  />
-                ) : (
-                  <CardContainer
-                    basicDetail={<ExCardContent formType={2} pharmacyDrug={item} />}
-                    isPack={false}
-                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                  />
-                )}
-              </div>
-            </Grid>
-          );
-        });
+      });
     }
 
     return null;
