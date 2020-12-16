@@ -42,6 +42,24 @@ export default {
         prevLevel: 'مرحله قبل',
         sendExchange: 'ارسال',
         date: 'تاریخ',
+        loading: 'در حال بارگذاری ... ',
+        more: 'بیشتر',
+        noMoreData: 'داده دیگری موجود نیست',
+        name: 'نام',
+        location: 'مکان',
+        filter: 'فیلتر',
+        justOffer: 'فقط دارای آفر',
+        noData: 'اطلاعات موجود نیست',
+      },
+      date: {
+        minDateAsMonth: 'حداقل تاریخ به ماه',
+      },
+      province: {
+        selectCounty: 'انتخاب استان',
+        selectProvince: 'انتخاب شهر',
+        selectCity: 'انتخاب شهر',
+        province: 'شهرستان',
+        county: 'استان',
       },
       action: {
         insert: 'درج',
@@ -59,7 +77,7 @@ export default {
         'fill-requireds': 'لطفا مقادیر لازم را وارد کنید.',
         'loading-data': 'خطایی در دریافت اطلاعات به وجود آمد.',
         save: 'خطایی در ذخیره اطلاعات رخ داد.',
-        remove: 'خطایی در حذف اطلاعات پیش آمد.'
+        remove: 'خطایی در حذف اطلاعات پیش آمد.',
       },
       login: {
         login: 'ورود',
@@ -75,11 +93,17 @@ export default {
         username: 'نام کاربری',
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
-        failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        failed:
+          'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
       },
       user: {
         role: 'نقش',
         user: 'کاربر',
+        name: 'نام کاربر',
+        family: 'نام خانوادگی',
+        nationalCode: 'کد ملی',
+        birthDate: 'تاریخ تولد',
         'user-role': 'نقش کاربر',
         users: 'کاربران',
         profile: 'پروفایل',
@@ -93,6 +117,7 @@ export default {
         'edit-user': 'ویرایش کاربر',
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
+        admin: 'ادمین',
       },
       drug: {
         drug: 'دارو',
@@ -117,14 +142,14 @@ export default {
         notification: 'ناتیفیکیشن',
         detail: 'جزییات پیام',
       },
-      category:{
+      category: {
         category: 'دسته‌بندی',
         list: 'لیست دسته‌بندی',
         'edit-category': 'ویرایش دسته بندی',
         'new-category': 'ایجاد دسته بندی',
       },
-      exchange:{
-        exchange: 'تبادل'
+      exchange: {
+        exchange: 'تبادل',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -154,10 +179,11 @@ export default {
         gli: 'GLI',
         workTime: 'ساعت کار',
         request: 'درخواست ایجاد',
+        manager: 'مدیر داروخانه',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
-        GOVERNMENTAL: 'دولتی'
+        GOVERNMENTAL: 'دولتی',
       },
       WorkTimeEnum: {
         PART_TIME: 'نیمه وقت',
@@ -166,18 +192,22 @@ export default {
       },
       CategoryTypeEnum: {
         MEDICAL: 'پزشکی',
-        MAKEUP: 'آرایشی بهداشتی'
+        MAKEUP: 'آرایشی بهداشتی',
       },
       PackStatusEnum: {
         ARZESHODEH: 'عرضه شده',
-        FOROOKHTEHSHODEH: 'فروخته شده'
+        FOROOKHTEHSHODEH: 'فروخته شده',
       },
       accounting: {
         accounting: 'مالی',
         amount: 'مبلغ',
         list: 'لیست تراکنش‌های مالی',
         transactions: 'تراکنش‌ها',
-      }
-    }
-  }
-}
+      },
+      countryDivision: {
+        province: 'استان',
+        city: 'شهر',
+      },
+    },
+  },
+};

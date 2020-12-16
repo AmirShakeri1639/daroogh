@@ -56,6 +56,7 @@ const style = makeStyles(theme =>
 
 const SecondStep: React.FC = () => {
   const { getAllPharmacyDrug } = new PharmacyDrug();
+  const { t } = useTranslation();
 
   const {
     activeStep,
@@ -90,15 +91,14 @@ const SecondStep: React.FC = () => {
     ['key'],
     () => getAllPharmacyDrug('test::17'),
     {
-      onSuccess: data => {
-        const { items, count } = data;
-        setAllPharmacyDrug(items);
+      getFetchMore: () => {
+        return allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount;
       },
       enabled: false,
     },
   );
 
-  const { t } = useTranslation();
+  const loadMoreButtonRef = React.useRef<any>(null);
 
   useEffect(() => {
     refetch();

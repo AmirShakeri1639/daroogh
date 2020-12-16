@@ -13,7 +13,7 @@ import { useClasses } from "../classes";
 import { ActionInterface } from "../../../../interfaces";
 import { useTranslation } from "react-i18next";
 import { errorHandler, sweetAlert } from "../../../../utils";
-import { DaroogDropdown } from "../common/daroogDropdown";
+import { DaroogDropdown } from "../../../public/daroog-dropdown/DaroogDropdown";
 import { WorkTimeEnum } from "../../../../enum";
 
 const initialState: PharmacyInterface = {

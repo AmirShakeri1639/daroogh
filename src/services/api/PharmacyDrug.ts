@@ -15,9 +15,12 @@ class PharmacyDrug extends Api {
     removePack2: '/Exchange/RemovePack2',
   };
 
-  getAllPharmacyDrug = async (id: string): Promise<any | null> => {
+  getAllPharmacyDrug = async (id: string, skip: number = 0, top: number = 10): Promise<any> => {
     try {
-      const result = await this.postJsonData(`${this.urls.all}?pharmacyKey=${id}&full=false`);
+      let query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
+      // query += skip !== 0 ? `&$top=${top}&$skip=${skip * top }` : '';
+      query += `&$top=${top}&$skip=${skip * top}`;
+      const result = await this.postJsonData(query);
       return result.data;
     } catch (e) {
       errorHandler(e);
@@ -33,6 +36,11 @@ class PharmacyDrug extends Api {
     } catch(e) {
       errorHandler(e);
     }
+  }
+
+  getRelatedPharmacyDrug = async (): Promise<any> => {
+    const result = await this.postData('/PharmacyDrug/GetRelatedPharmacyDrug');
+    return result.data;
   }
 
   addPack1 = async (data: AddPack1): Promise<any> => {

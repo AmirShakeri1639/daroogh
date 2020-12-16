@@ -14,7 +14,7 @@ import FourthStep from './fourth-step/FourthStep';
 const style = makeStyles(theme =>
   createStyles({
     root: {
-      backgroundColor: '#ebebeb',
+      backgroundColor: '#f7f7f7',
       padding: theme.spacing(2, 1),
     },
   }),
@@ -28,6 +28,8 @@ const TransferDrug: React.FC = () => {
   const [uBasketCount, setUbasketCount] = useState<AllPharmacyDrugInterface[]>([]);
   const [recommendationMessage, setRecommendationMessage] = React.useState('');
   const [exchangeId, setExchangeId] = React.useState(0);
+  const [basketCount, setBasketCount] = useState<number[]>([]);
+  const [selectedPharmacyForTransfer, setSelectedPharmacyForTransfer] = useState<number>(0);
 
   const { root } = style();
 
@@ -46,6 +48,8 @@ const TransferDrug: React.FC = () => {
     setRecommendationMessage,
     exchangeId,
     setExchangeId,
+    selectedPharmacyForTransfer,
+    setSelectedPharmacyForTransfer,
   });
 
   return (
@@ -53,9 +57,14 @@ const TransferDrug: React.FC = () => {
       <div className={root}>
         <MaterialContainer>
           <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <ProgressBar />
-            </Grid>
+            {
+              activeStep > 0 && (
+                <Grid item xs={12}>
+                  <ProgressBar />
+                </Grid>
+              )
+            }
+
             {activeStep === 0 && <FirstStep />}
             {activeStep === 1 && <SecondStep />}
             {activeStep === 2 && <ThirdStep />}

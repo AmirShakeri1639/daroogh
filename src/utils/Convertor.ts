@@ -13,6 +13,14 @@ class Convertor {
     );
     return `${convertedDate.jy}-${convertedDate.jm < 10 ? `0${convertedDate.jm}` : convertedDate.jm}-${convertedDate.jd < 10 ? `0${convertedDate.jd}` : convertedDate.jd}`;
   }
+
+  zeroSeparator(price: number | string): string {
+    const formatter = new Intl.NumberFormat('fa-IR', {
+      style: 'currency',
+      currency: 'IRR',
+    });
+    return formatter.format(Number(price));
+  }
 }
 
 export default new Convertor();

@@ -13,13 +13,14 @@ const SearchInAList: React.FC = () => {
 
   const searchHandler = (v: string) => {
     if (allPharmacyDrug && allPharmacyDrug.length > 0) {
-      const filtered: AllPharmacyDrugInterface[] = allPharmacyDrug.filter(p => {
-        return (
-          (p.drug.name && p.drug.name.includes(v)) ||
-          (p.drug.companyName && p.drug.companyName?.includes(v)) ||
-          (p.drug.genericName && p.drug.genericName?.includes(v))
-        );
-      });
+      const filtered: AllPharmacyDrugInterface[] =
+        allPharmacyDrug.filter((p) => {
+          return (
+            (p.drug.name && p.drug.name.includes(v)) ||
+            (p.drug.companyName && p.drug.companyName?.includes(v)) ||
+            (p.drug.genericName && p.drug.genericName?.includes(v))
+          );
+        });
       setAllPharmacyDrug(filtered);
     }
   };

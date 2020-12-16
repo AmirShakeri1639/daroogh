@@ -13,6 +13,7 @@ import ViewPharmacyInfo from "./components/screen/dashboard/drug-transfer/ViewPh
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
 const ForgetPassword = lazy(() => import('./components/screen/forget-password/ForgetPassword'));
+const RegisterPharmacyWithUser = lazy(() => import('./components/screen/public/RegisterPharmacyWithUser'));
 const DrugTransfer = lazy(() => import('./components/screen/dashboard/drug-transfer/Transfer'));
 
 const App = (): JSX.Element => {
@@ -28,6 +29,10 @@ const App = (): JSX.Element => {
 
             <PublicRoute exact path="/forget-password">
               <ForgetPassword />
+            </PublicRoute>
+
+            <PublicRoute exact path="/register-pharmacy-with-user">
+              <RegisterPharmacyWithUser />
             </PublicRoute>
 
             <PrivateRoute exact path="/dashboard">

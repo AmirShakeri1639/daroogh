@@ -61,6 +61,12 @@ export const useClasses = makeStyles((theme) => createStyles({
   spacing1: {
     margin: theme.spacing(1)
   },
+  spacing2: {
+    margin: theme.spacing(2)
+  },
+  spacing3: {
+    margin: theme.spacing(3)
+  },
   formControl: {
     minWidth: 190,
     margin: theme.spacing(1),
@@ -84,6 +90,18 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   dropdown: {
     margin: theme.spacing(1),
-    minWidth: 120
+    minWidth: '100%',
+  },
+  silverBackground: {
+    background: '#ebebeb',
+  },
+  rootFull: {
+    flexGrow: 1,
+    margin: theme.spacing(1)
+  },
+  formItem: {
+    display: 'flex',
+    justifySelf: 'stretch',
+    margin: theme.spacing(1)
   },
 }));

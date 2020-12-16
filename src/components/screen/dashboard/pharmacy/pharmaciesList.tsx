@@ -32,7 +32,7 @@ import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
 import { PharmacyEnum } from "../../../../enum/query";
 import { DaroogSearchBar } from '../drug-transfer/DaroogSearchBar';
-import { DaroogDropdown } from "../common/daroogDropdown";
+import { DaroogDropdown } from "../../../public/daroog-dropdown/DaroogDropdown";
 import { WorkTimeEnum } from "../../../../enum";
 
 const initialState: PharmacyInterface = {
