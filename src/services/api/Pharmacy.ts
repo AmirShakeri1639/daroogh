@@ -1,13 +1,15 @@
 import Api from './Api'
 import { errorHandler } from "../../utils";
-import { PharmacyInterface } from '../../interfaces';
+import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface } from '../../interfaces';
 
 class Pharmacy extends Api {
   readonly urls = {
     all: '/Pharmacy/AllPharmacy',
     save: '/Pharmacy/Save',
     get: '/Pharmacy/Detail/',
-    remove: '/Pharmacy/Remove/'
+    remove: '/Pharmacy/Remove/',
+    confirm: '/Pharmacy/Confirm',
+    register: '/Pharmacy/Register'
   }
 
   save = async (data: PharmacyInterface): Promise<any> => {
@@ -22,12 +24,22 @@ class Pharmacy extends Api {
     }
   }
 
-  getAll = async (q = '', pageSize = 10, pageNo = 1): Promise<any> => {
+  register = async (data: PharmacyWithUserInterface): Promise<any> => {
     try {
-      console.log('let this log be here', q);
-      const skip = (pageNo - 1) * pageSize;
       const result = await this.postJsonData(
-        `${this.urls.all}?$top=${pageSize}&$skip=${skip}&$orderby=id desc`);
+        this.urls.register,
+        data
+      );
+      return result.data;
+    } catch(e) {
+      errorHandler(e);
+    }
+  }
+
+  all = async (skip: number, top: number = 10): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`);
       return result.data;
     } catch (e) {
       errorHandler(e)
@@ -46,6 +58,16 @@ class Pharmacy extends Api {
   remove = async (id: number | string): Promise<any> => {
     try {
       const result = await this.postJsonData(`${this.urls.remove}${id}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e)
+    }
+  }
+
+  confirm = async (p: ConfirmParams): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.confirm}?pharmacyId=${p.id}&confirmed=${p.status}`);
       return result.data;
     } catch (e) {
       errorHandler(e)

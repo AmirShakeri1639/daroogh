@@ -1,6 +1,6 @@
 export interface DrugInterface {
     id: number;
-    categoryId: number;
+    categoryID: number;
     name: string;
     genericName: string;
     companyName: string;
@@ -9,4 +9,9 @@ export interface DrugInterface {
     active: boolean;
     enName: string;
     type: string;
+}
+
+export interface TransferBasketInterface {
+  drugId: number;
+  drugCount: number;
 }

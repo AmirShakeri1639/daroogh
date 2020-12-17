@@ -9,7 +9,7 @@ import {
   IconButton,
   InputAdornment,
   TextField,
-  Typography,
+  Typography
 } from "@material-ui/core";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   margin: {
     margin: theme.spacing(1),
   },
-  forgetPasswordLink: {
+  link: {
     textDecoration: 'none'
   }
 }));
@@ -207,7 +207,7 @@ const Login: React.FC = (): JSX.Element => {
             }}
           />
           <Link
-            className={classes.forgetPasswordLink}
+            className={classes.link}
             to="/forget-password"
           >
             رمز عبور را فراموش کردم
@@ -229,6 +229,14 @@ const Login: React.FC = (): JSX.Element => {
                 : <LockOpenIcon fontSize="inherit" className={classes.margin} />
             }
           </Button>
+          <Link
+            className={`${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root`}
+            to="/register-pharmacy-with-user"
+            >
+            <Typography variant="button">
+              {t('login.registerPharmacyWithUser')}
+            </Typography>
+          </Link>
         </form>
       </div>
     </Container>

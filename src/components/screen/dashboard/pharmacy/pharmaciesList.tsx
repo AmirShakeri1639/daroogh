@@ -1,77 +1,39 @@
-import React, {  useReducer, useState } from 'react';
-import { useMutation, useQuery, useQueryCache } from "react-query";
+import React, { useReducer, useState } from 'react';
+import { useMutation, useQueryCache } from "react-query";
 import Pharmacy from "../../../../services/api/Pharmacy";
 import {
   Container,
-  createStyles,
   Grid,
   IconButton,
-  Tooltip,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
+  CardHeader,
+  Card,
+  CardContent,
+  Divider,
+  Box,
+  TextField,
+  Button,
+  CardActions, FormControlLabel, Switch
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-
-import { errorHandler, sweetAlert } from "../../../../utils";
+import CloseIcon from '@material-ui/icons/Close';
+import Modal from '../../../public/modal/Modal';
 import CircleLoading from "../../../public/loading/CircleLoading";
-import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
-import CheckIcon from '@material-ui/icons/Check';
+import { errorHandler, successSweetAlert, warningSweetAlert } from "../../../../utils";
 import { useTranslation } from "react-i18next";
-
+import { useClasses } from "../classes";
 
 import {
   ActionInterface,
   PharmacyInterface,
-  TableColumnInterface
+  TableColumnInterface,
+  ConfirmParams, LabelValue
 } from "../../../../interfaces";
-
-
-const useClasses = makeStyles((theme) => createStyles({
-  container: {
-    marginTop: theme.spacing(1),
-  },
-  gridEditForm: {
-    margin: theme.spacing(2, 0, 2),
-  },
-  cancelButton: {
-    background: theme.palette.pinkLinearGradient.main,
-    marginLeft: theme.spacing(2),
-  },
-  checkIcon: {
-    color: theme.palette.success.main,
-  },
-  formContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: theme.spacing(2, 2),
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-      // width: '25ch',
-    },
-  },
-  titleContainer: {
-    padding: theme.spacing(2)
-  },
-  formTitle: {
-    margin: 0
-  },
-  addButton: {
-    background: theme.palette.blueLinearGradient.main,
-  },
-  box: {
-    '& > .MuiFormControl-root': {
-      flexGrow: 1,
-    }
-  }
-}));
+import useDataTableRef from "../../../../hooks/useDataTableRef";
+import DataTable from "../../../public/datatable/DataTable";
+import { PharmacyEnum } from "../../../../enum/query";
+import { DaroogSearchBar } from '../drug-transfer/DaroogSearchBar';
+import { DaroogDropdown } from "../../../public/daroog-dropdown/DaroogDropdown";
+import { WorkTimeEnum } from "../../../../enum";
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -80,13 +42,14 @@ const initialState: PharmacyInterface = {
   active: false,
   hix: '',
   gli: '',
-  worktime: 0,
+  workTime: WorkTimeEnum.FULL_TIME,
   address: '',
   mobile: '',
   telphon: '',
   website: '',
   email: '',
-  postalCode: ''
+  postalCode: '',
+  countryDivisionID: 1
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -113,10 +76,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         gli: value,
       };
-    case 'worktime':
+    case 'workTime':
       return {
         ...state,
-        worktime: value,
+        workTime: value,
       };
     case 'description':
       return {
@@ -153,10 +116,15 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         email: value,
       };
-    case 'postcalCode':
+    case 'postalCode':
       return {
         ...state,
-        postcalCode: value,
+        postalCode: value,
+      };
+    case 'countryDivisionID':
+      return {
+        ...state,
+        countryDivisionID: value,
       };
     case 'reset':
       return initialState;
@@ -166,119 +134,89 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 const PharmaciesList: React.FC = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-
-  const {
-    container, checkIcon
-  } = useClasses();
+  const ref = useDataTableRef();
   const { t } = useTranslation();
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
   const {
-    save,
-    getAll,
-    remove
-  } = new Pharmacy();
-
+    container, root, formContainer, box, addButton, cancelButton, dropdown
+  } = useClasses();
   const queryCache = useQueryCache();
 
   const {
-    isLoading: isLoadingList,
-    data: dataList
-  } = useQuery('pharmaciesList', getAll);
+    save,
+    all,
+    remove,
+    confirm
+  } = new Pharmacy();
+  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
   const [_remove,
-    { isLoading: isLoadingRemove, reset: resetRemove }] = useMutation(remove, {
-    onSuccess: async(data) => {
+    { isLoading: isLoadingRemove }] = useMutation(remove, {
+    onSuccess: async () => {
+      ref.current?.loadItems()
       await queryCache.invalidateQueries('pharmaciesList');
-      await sweetAlert({
-        type: 'success',
-        text: data.message || t('alert.successfulDelete')
-      });
-      resetRemove();
-    },
-    onError: async () => {
-      await sweetAlert({
-        type: 'error',
-        text: t('error.remove')
-      });
+      await successSweetAlert(t('alert.successfulDelete'));
     }
-  })
+  });
 
-  const [_save] = useMutation(save, {
-    onSuccess: async (data) => {
+  const [_confirm,
+    { isLoading: isLoadingConfirm }] = useMutation(confirm, {
+    onSuccess: async ({ message }) => {
+      ref.current?.loadItems()
       await queryCache.invalidateQueries('pharmaciesList');
-      await sweetAlert({
-        type: 'success',
-        text: data.message || t('alert.successfulSave')
-      });
-      dispatch({ type: 'reset' });
-    },
-    onError: async () => {
-      await sweetAlert({
-        type: 'error',
-        text: t('error.save')
-      })
+      await successSweetAlert(message);
     }
-  })
+  });
+
+  const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
+    onSuccess: async () => {
+      await queryCache.invalidateQueries('pharmaciesList');
+      await successSweetAlert(t('alert.successfulSave'));
+      dispatch({ type: 'reset' });
+    }
+  });
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { field: 'name', title: 'نام', type: 'string' },
-      { field: 'description', title: t(',general.description'), type: 'string' },
+      { field: 'id', title: t('general.id'), type: 'number',
+        cellStyle: { textAlign: 'right' } },
+      { field: 'name', title: t('pharmacy.pharmacy'), type: 'string' },
+      { field: 'description', title: t('general.description'), type: 'string' },
     ];
   }
 
-  const handleChangePage = (event: unknown, newPage: number): void => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const removeHandler = async (id: number): Promise<any> => {
+  const removeHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
       if (window.confirm(t('alert.remove'))) {
-        await _remove(id);
+        await _remove(row.id);
       }
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  const toggleActivationHandler = async (id: number): Promise<any> => {
+  const toggleConfirmHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
-      await _save({
-        id: id,
-        name: state.name,
-        hix: state.hix,
-        gli: state.gli,
-        worktime: state.worktime,
-        address: state.address,
-        mobile: state.mobile,
-        telphon: state.telphon,
-        website: state.website,
-        email: state.email,
-        postalCode: state.postalCode,
-        description: state.description,
-        active: !state.active,
-      });
+      const confirmParams: ConfirmParams = {
+        id: row.id,
+        status: !row.active
+      };
+      await _confirm(confirmParams);
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  /* TODO: add edit pharmacy using the createPharmacy component with an Id. */
-  const editHandler = (item: PharmacyInterface): void => {
+  const saveHandler = (item: PharmacyInterface): void => {
+    toggleIsOpenSaveModalForm();
     const {
       id,
       name,
       hix,
       gli,
-      worktime,
+      workTime,
       address,
       mobile,
       telphon,
@@ -286,14 +224,15 @@ const PharmaciesList: React.FC = () => {
       email,
       postalCode,
       description,
-      active
+      active,
+      countryDivisionID
     } = item;
 
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'hix', value: hix });
     dispatch({ type: 'gli', value: gli });
-    dispatch({ type: 'worktime', value: worktime });
+    dispatch({ type: 'workTime', value: workTime });
     dispatch({ type: 'address', value: address });
     dispatch({ type: 'mobile', value: mobile });
     dispatch({ type: 'telphon', value: telphon });
@@ -302,106 +241,254 @@ const PharmaciesList: React.FC = () => {
     dispatch({ type: 'postalCode', value: postalCode });
     dispatch({ type: 'description', value: description });
     dispatch({ type: 'active', value: active });
+    dispatch({ type: 'countryDivisionID', value: countryDivisionID });
   }
 
-  const tableRowsGenerator = (): JSX.Element[] => {
-    return dataList
-      // .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
-      .map((item: any) => {
-        return (
-          <TableRow
-            hover
-            role="checkbox"
-            tabIndex={-1}
-            key={item.id}
-          >
-            {tableColumns().map((field: any, index: number) => {
-              return (
-                <TableCell key={field.id+index}>
-                  {item[field.id]}
-                  {/*{typeof value === 'string' ? value : value.length}*/}
-                </TableCell>
-              );
-            })}
-            <TableCell>
-              <Tooltip
-                title={String(t('action.delete'))}
-              >
-                <IconButton
-                  component="span"
-                  aria-label="remove pharmacy"
-                  color="secondary"
-                  onClick={(): Promise<any> => removeHandler(item.id)}
-                >
-                  <DeleteOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={String(t('action.edit'))}
-              >
-                <IconButton
-                  component="span"
-                  aria-label="edit pharmacy"
-                  color="primary"
-                  onClick={(): void => editHandler(item)}
-                >
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip
-                title={item.active ? String(t('action.deactivation')) : String(t('action.activation'))}
-              >
-                {
-                  item.active
-                    ? (
-                      <IconButton
-                        component="span"
-                        aria-label="deactivate pharmacy"
-                        color="inherit"
-                        className={checkIcon}
-                        onClick={(): Promise<any> => toggleActivationHandler(item.id)}
-                      >
-                        <CheckIcon fontSize="small" />
-                      </IconButton>
-                    )
-                    : (
-                      <IconButton
-                        component="span"
-                        aria-label="activate pharmacy"
-                        color="inherit"
-                        onClick={(): Promise<any> => toggleActivationHandler(item.id)}
-                      >
-                        <BlockTwoToneIcon fontSize="small" />
-                      </IconButton>
-                    )
-                }
-              </Tooltip>
-            </TableCell>
-          </TableRow>
-        );
-      })
+  const isFormValid = (): boolean => {
+    return (
+      state.name && state.name.trim().length > 0
+    );
   }
 
-  // const inputsValidationResult = (): boolean => {
-  //   return (
-  //     state.name.trim().length < 1
-  //     || state.genericName.trim().length < 1
-  //     || state.companyName.trim().length < 1
-  //     || state.enName.trim().length < 1
-  //     || state.type.trim().length < 1
-  //   );
-  // }
+  const submitSave = async (el: React.FormEvent<HTMLFormElement>): Promise<any> => {
+    el.preventDefault();
 
-  // const submitEdit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
-  //   e.preventDefault();
-  //
-  //   alert('pharmacy submitted');
-  //
-  //   // inputsValidationResult();
-  // }
+    const {
+      id,
+      name,
+      hix,
+      gli,
+      workTime,
+      address,
+      mobile,
+      telphon,
+      website,
+      email,
+      postalCode,
+      description,
+      active,
+      countryDivisionID
+    } = state;
 
+    if (isFormValid()) {
+      try {
+        await _save({
+          id, name, hix, gli, workTime, address, mobile, telphon, website,
+          email, postalCode, description, active, countryDivisionID
+        });
+        dispatch({ type: 'reset' });
+        ref.current?.loadItems();
+      } catch (e) {
+        errorHandler(e);
+      }
+    } else {
+      await warningSweetAlert(t('alert.fillFormCarefully'));
+    }
+  }
+
+  const [workTimeList, setworkTimeList] = useState(new Array<LabelValue>());
+  React.useEffect(() => {
+    const wtList: LabelValue[] = []
+    for (const wt in WorkTimeEnum) {
+      wtList.push({ label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt });
+    }
+    setworkTimeList(wtList);
+  }, []);
+
+  const editModal = (): JSX.Element => {
+    return (
+      <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
+        <Card className={root}>
+          <CardHeader
+            title={state?.id === 0 ? t('action.create') : t('action.edit')}
+            action={
+              <IconButton onClick={toggleIsOpenSaveModalForm}>
+                <CloseIcon/>
+              </IconButton>
+            }
+          />
+          <Divider/>
+          <CardContent>
+            <form
+              autoComplete="off"
+              className={formContainer}
+              onSubmit={submitSave}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      required
+                      variant="outlined"
+                      label={t('pharmacy.name')}
+                      value={state?.name}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'name', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('pharmacy.hix')}
+                      value={state?.hix}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'hix', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('pharmacy.gli')}
+                      value={state?.gli}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'gli', value: e.target.value })
+                      }
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <DaroogDropdown
+                      defaultValue={state?.workTime}
+                      data={workTimeList}
+                      className={dropdown}
+                      label={t('pharmacy.workTime')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'workTime', value: v })
+                      }}
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('general.address')}
+                      value={state?.address}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'address', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('general.mobile')}
+                      value={state?.mobile}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'mobile', value: e.target.value })
+                      }
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      variant="outlined"
+                      label={t('general.phone')}
+                      value={state?.telphon}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'telphon', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('general.website')}
+                      value={state?.website}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'website', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('general.email')}
+                      value={state?.email}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'email', value: e.target.value })
+                      }
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box display="flex" justifyContent="space-between" className={box}>
+                    <TextField
+                      variant="outlined"
+                      label={t('general.postalCode')}
+                      value={state?.postalCode}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'postalCode', value: e.target.value })
+                      }
+                    />
+                    <TextField
+                      variant="outlined"
+                      label={t('general.description')}
+                      value={state?.description}
+                      onChange={
+                        (e): void =>
+                          dispatch({ type: 'description', value: e.target.value })
+                      }
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <div className="row">
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={state?.active}
+                          onChange={
+                            (e): void =>
+                              dispatch({ type: 'active', value: e.target.checked })
+                          }
+                        />
+                      }
+                      label={t('general.active')}
+                    />
+                  </div>
+                </Grid>
+                <Divider />
+                <Grid item xs={12}>
+                  <CardActions>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      variant="contained"
+                      className={addButton}
+                    >
+                      {
+                        isLoadingSave
+                          ? t('general.pleaseWait')
+                          : t('general.save')
+                      }
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="contained"
+                      className={cancelButton}
+                      onClick={(): void => {
+                        dispatch({ type: 'reset' });
+                        toggleIsOpenSaveModalForm();
+                      }}
+                    >
+                      {t('general.cancel')}
+                    </Button>
+                  </CardActions>
+                </Grid>
+              </Grid>
+            </form>
+          </CardContent>
+        </Card>
+      </Modal>
+    )
+  }
+
+  // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
+      <div style={{ margin: "2rem", padding: ".5rem" }}>
+        <DaroogSearchBar />
+      </div>
       <Grid
         container
         spacing={0}
@@ -410,49 +497,24 @@ const PharmaciesList: React.FC = () => {
           item
           xs={12}
         >
+          <div>{t('pharmacy.list')}</div>
           <Paper>
-            <TableContainer>
-              <Table
-                stickyHeader
-                aria-label="pharmacy table"
-              >
-                <TableHead>
-                  <TableRow>
-                    {tableColumns().map(item => {
-                      return (
-                        <TableCell
-                          key={item.field}
-                        >
-                          {item.title}
-                        </TableCell>
-                      );
-                    })}
-                    <TableCell>
-                      {t('general.options')}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {(!isLoadingList && dataList) && tableRowsGenerator()}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[1, 25, 100]}
-              component="div"
-              count={dataList?.length || 0}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
+            <DataTable
+              ref={ref}
+              columns={tableColumns()}
+              addAction={(): void => saveHandler(initialState)}
+              editAction={(e: any, row: any): void => saveHandler(row)}
+              removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
+              stateAction={async (e: any, row: any): Promise<void> => await toggleConfirmHandler(row)}
+              queryKey={PharmacyEnum.GET_ALL}
+              queryCallback={all}
+              initLoad={false}
             />
-            {(isLoadingList || isLoadingRemove) && <CircleLoading />}
+            {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && <CircleLoading/>}
           </Paper>
         </Grid>
+        {isOpenEditModal && editModal()}
       </Grid>
-
-      {/*{state.id !== 0 && displayEditForm()}*/}
-
     </Container>
   );
 }

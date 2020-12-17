@@ -20,28 +20,30 @@ export enum DashboardPages {
   CREATE_NEW_MESSAGE = 'createNewMessage',
   PHARMACY_CREATE = 'createPharmacy',
   PHARMACY_LIST = 'pharmaciesList',
-  CATEGORY_LIST = 'categoryList'
+  CATEGORY_LIST = 'categoryList',
+  EXCHANGE = 'exchange',
+  ACCOUNTING_LIST = 'accounting',
 }
 
 export enum PharmacyTypeEnum {
-  FIRST_PHARMACY_TYPE = 1,
-  SECOND_PHARMACY_TYPE,
+  NONGOVERNMENTAL = 1,
+  GOVERNMENTAL,
 }
 
 export enum WorkTimeEnum {
-  FIRST_WORK_TIME = 1,
-  SECOND_WORK_TIME,
-  THIRD_WORK_TIME,
+  PART_TIME = 1,
+  FULL_TIME,
+  NIGHTLY,
 }
 
 export enum CategoryTypeEnum {
-  FIRST_CATEGORY_TYPE = 1,
-  SECOND_CATEGORY_TYPE,
+  MEDICAL = 1,
+  MAKEUP,
 }
 
 export enum PackStatusEnum {
-  FIRST_PACK_STATUS = 1,
-  SECOND_PACK_STATUS,
+  ARZESHODEH = 1,
+  FOROOKHTEHSHODEH,
 }
 
 export enum MessageTypeEnum {
@@ -57,3 +59,5 @@ export const MessageTypeArray = (textArray: string[]) => [
   { val: MessageTypeEnum.NOTIFICATION, text: textArray[2] },
   { val: MessageTypeEnum.SMS_AND_NOTIFICATION, text: textArray[3] },
 ]
+
+

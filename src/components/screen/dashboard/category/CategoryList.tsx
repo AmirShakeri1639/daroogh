@@ -1,5 +1,5 @@
-import React, { useReducer,  useState } from 'react';
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useReducer, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Container,
   createStyles,
@@ -13,13 +13,13 @@ import {
   TextField,
   Button,
   CardActions,
-} from "@material-ui/core";
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
-import DataTable from "../../../public/datatable/DataTable";
+import DataTable from '../../../public/datatable/DataTable';
 import Modal from '../../../public/modal/Modal';
-import { ActionInterface } from "../../../../interfaces";
-import { DataTableColumns } from "../../../../interfaces/DataTableColumns";
-import Category from "../../../../services/api/Category";
+import { ActionInterface } from '../../../../interfaces';
+import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
+import Category from '../../../../services/api/Category';
 import { useMutation, useQueryCache } from 'react-query';
 import { errorHandler, sweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
@@ -29,110 +29,110 @@ import { CategoriesInterface } from '../../../../interfaces/component';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { CategoryQueryEnum } from '../../../../enum/query';
 
-const useClasses = makeStyles((theme) => createStyles({
-  root: {
-    width: 500,
-    '& > .MuiCardContent-root': {
-      padding: 0
+const useClasses = makeStyles(theme =>
+  createStyles({
+    root: {
+      width: 500,
+      '& > .MuiCardContent-root': {
+        padding: 0,
+      },
+      '& > .MuiCardHeader-root': {
+        padding: '10px 10px 2px 10px',
+      },
+      '& > .MuiCardHeader-content': {
+        marginTop: '-10px !important',
+        color: 'red',
+      },
     },
-    '& > .MuiCardHeader-root': {
-      padding: '10px 10px 2px 10px'
+    header: {
+      fontSize: 12,
     },
-    '& > .MuiCardHeader-content': {
-      marginTop: '-10px !important',
-      color: 'red'
-    }
-  },
-  header: {
-    fontSize: 12
-  },
-  container: {
-    marginTop: theme.spacing(1),
-  },
-  gridEditForm: {
-    margin: theme.spacing(2, 0, 2),
-  },
-  cancelButton: {
-    background: theme.palette.pinkLinearGradient.main,
-    marginLeft: theme.spacing(2),
-  },
-  checkIcon: {
-    color: theme.palette.success.main,
-  },
-  formContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    padding: theme.spacing(2, 2),
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-      // width: '25ch',
+    container: {
+      marginTop: theme.spacing(1),
     },
-  },
-  titleContainer: {
-    padding: theme.spacing(2)
-  },
-  formTitle: {
-    margin: 0
-  },
-  addButton: {
-    background: theme.palette.blueLinearGradient.main,
-  },
-  box: {
-    '& > .MuiFormControl-root': {
-      flexGrow: 1,
+    gridEditForm: {
+      margin: theme.spacing(2, 0, 2),
     },
-    '& > .MuiCardHeader-title' : {
-      fontSize: '12px !important'
-    }
-  },
-  card: {
-    '& > .MuiCardContent-root': {
-      padding: 0
-    }
-  }
-}));
-
+    cancelButton: {
+      background: theme.palette.pinkLinearGradient.main,
+      marginLeft: theme.spacing(2),
+    },
+    checkIcon: {
+      color: theme.palette.success.main,
+    },
+    formContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      padding: theme.spacing(2, 2),
+      '& .MuiTextField-root': {
+        margin: theme.spacing(1),
+        // width: '25ch',
+      },
+    },
+    titleContainer: {
+      padding: theme.spacing(2),
+    },
+    formTitle: {
+      margin: 0,
+    },
+    addButton: {
+      background: theme.palette.blueLinearGradient.main,
+    },
+    box: {
+      '& > .MuiFormControl-root': {
+        flexGrow: 1,
+      },
+      '& > .MuiCardHeader-title': {
+        fontSize: '12px !important',
+      },
+    },
+    card: {
+      '& > .MuiCardContent-root': {
+        padding: 0,
+      },
+    },
+  }),
+);
 
 const getColumns = (): DataTableColumns[] => {
   return [
     {
-      title: "شناسه",
-      field: "id",
-      type: "numeric",
-      headerStyle: { textAlign: "right", direction: "ltr" },
-      cellStyle: { textAlign: "right", color: "red" }
+      title: 'شناسه',
+      field: 'id',
+      type: 'numeric',
+      headerStyle: { textAlign: 'right', direction: 'ltr' },
+      cellStyle: { textAlign: 'right', color: 'red' },
     },
     {
-      title: "نام",
-      field: "name",
-      type: "string",
+      title: 'نام',
+      field: 'name',
+      type: 'string',
       headerStyle: { minWidth: 50 },
-      cellStyle: { textAlign: "right" }
+      cellStyle: { textAlign: 'right' },
     },
     {
-      title: "نوع",
-      field: "type",
-      type: "numeric",
-      headerStyle: { textAlign: "right", direction: "ltr" },
-      cellStyle: { textAlign: "right" }
+      title: 'نوع',
+      field: 'type',
+      type: 'numeric',
+      headerStyle: { textAlign: 'right', direction: 'ltr' },
+      cellStyle: { textAlign: 'right' },
     },
     {
-      title: "دسته",
-      field: "typeString",
-      type: "string",
-      headerStyle: { textAlign: "right" },
-      cellStyle: { textAlign: "right" }
-    }
+      title: 'دسته',
+      field: 'typeString',
+      type: 'string',
+      headerStyle: { textAlign: 'right' },
+      cellStyle: { textAlign: 'right' },
+    },
   ];
-}
+};
 
 const initialState: CategoriesInterface = {
   id: 0,
-  name: "",
+  name: '',
   type: 0,
-  typeString: ""
-}
-
+  typeString: '',
+};
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -165,7 +165,7 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
-const CategoryList: React.FC = () =>{
+const CategoryList: React.FC = () => {
   const ref = useDataTableRef();
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -184,45 +184,47 @@ const CategoryList: React.FC = () =>{
         type: 'success',
         text: t('alert.successfulCreateTextMessage'),
       });
-    }
+    },
   });
 
-  const [_removeCategory, { isLoading: isLoadingRemoveCategory, reset: resetRemoveCategory }] = useMutation(
-    removeCategory,
-    {
-      onSuccess: async () => {
-        await queryCache.invalidateQueries('categoryList');
-      },
-    });
+  const [
+    _removeCategory,
+    { isLoading: isLoadingRemoveCategory, reset: resetRemoveCategory },
+  ] = useMutation(removeCategory, {
+    onSuccess: async () => {
+      await queryCache.invalidateQueries('categoryList');
+    },
+  });
 
   const [_editCategory, { isLoading: loadingEditCategory }] = useMutation(saveCategory, {
-    onSuccess: async (data) => {
+    onSuccess: async data => {
       const { message } = data;
       await sweetAlert({
         type: 'success',
         text: message,
       });
       queryCache.invalidateQueries('categoryList');
-    }
+    },
   });
 
-  const onHandleEditRow = (row: CategoriesInterface): void =>{
+  const onHandleEditRow = (row: CategoriesInterface): void => {
     toggleIsOpenSaveModalForm();
     dispatch({ type: 'id', value: row.id });
     dispatch({ type: 'name', value: row.name });
     dispatch({ type: 'type', value: row.type });
     dispatch({ type: 'typeString', value: row.typeString });
-  }
+  };
 
-  const onHandleAddAction = (): void =>{
+  const onHandleAddAction = (): void => {
     toggleIsOpenSaveModalForm();
     dispatch({ type: 'id', value: 0 });
     dispatch({ type: 'name', value: null });
     dispatch({ type: 'type', value: null });
     dispatch({ type: 'typeString', value: null });
-  }
+  };
 
-  const onHandleRemoveRow = async (row: CategoriesInterface): Promise<void> =>{
+
+  const onHandleRemoveRow = async (row: CategoriesInterface): Promise<void> => {
     const { id } = row;
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
@@ -237,29 +239,27 @@ const CategoryList: React.FC = () =>{
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   const submitSaveCategory = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
-    const {
-      id, name, type
-    } = state;
+    const { id, name, type } = state;
 
     try {
-      if(id > 0){
+      if (id > 0) {
         await _editCategory({
           id,
           name,
           type,
-          parentId: null
+          parentId: null,
         });
-      }else{
+      } else {
         await _saveNewCategory({
           id,
           name,
           type,
-          parentId: null
+          parentId: null,
         });
       }
       dispatch({ type: 'reset' });
@@ -268,33 +268,33 @@ const CategoryList: React.FC = () =>{
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   const { container, root, formContainer, addButton, cancelButton } = useClasses();
 
-
-  const editModal = (): JSX.Element =>{
-    return(
+  const editModal = (): JSX.Element => {
+    return (
       <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
-          <CardHeader style={{ marginTop: -10 }} title={(state.id === 0 ? "ایجاد": "ویرایش")+" دسته بندی"} titleTypographyProps={{ variant:'h6' }}
-            action=
-              {
-                <IconButton style={{ marginTop: 10 }} aria-label="settings" onClick={toggleIsOpenSaveModalForm}>
-                  <CloseIcon />
-                </IconButton>
-              }
+          <CardHeader
+            style={{ marginTop: -10 }}
+            title={(state.id === 0 ? 'ایجاد' : 'ویرایش') + ' دسته بندی'}
+            titleTypographyProps={{ variant: 'h6' }}
+            action={
+              <IconButton
+                style={{ marginTop: 10 }}
+                aria-label="settings"
+                onClick={toggleIsOpenSaveModalForm}
+              >
+                <CloseIcon />
+              </IconButton>
+            }
           />
           <Divider />
           <CardContent>
-            <form autoComplete="off"
-              onSubmit={submitSaveCategory}
-              className={formContainer}>
-              <Grid
-                container
-                spacing={1}
-              >
-                <Grid item  xs={12} sm={8}>
+            <form autoComplete="off" onSubmit={submitSaveCategory} className={formContainer}>
+              <Grid container spacing={1}>
+                <Grid item xs={12} sm={8}>
                   <TextField
                     label="نام"
                     required
@@ -304,7 +304,7 @@ const CategoryList: React.FC = () =>{
                     onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
                   />
                 </Grid>
-                <Grid item  xs={12} sm={4}>
+                <Grid item xs={12} sm={4}>
                   <TextField
                     label="نوع"
                     required
@@ -315,29 +315,24 @@ const CategoryList: React.FC = () =>{
                   />
                 </Grid>
                 <Divider />
-                <Grid
-                  item
-                  xs={12}
-                >
+                <Grid item xs={12}>
                   <CardActions>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      className={addButton}
-                    >
-                      {
-                        loadingEditCategory || isLoadingNewCategory
-                          ? t('general.pleaseWait')
-                          : (state.id > 0 ? t('category.edit-category') : t('category.new-category'))
-                      }
+                    <Button type="submit" variant="contained" color="primary" className={addButton}>
+                      {loadingEditCategory || isLoadingNewCategory
+                        ? t('general.pleaseWait')
+                        : state.id > 0
+                        ? t('category.edit-category')
+                        : t('category.new-category')}
                     </Button>
                     <Button
                       type="submit"
                       variant="contained"
                       color="primary"
                       className={cancelButton}
-                      onClick={(): void => {dispatch({ type: 'reset' }); toggleIsOpenSaveModalForm()}}
+                      onClick={(): void => {
+                        dispatch({ type: 'reset' });
+                        toggleIsOpenSaveModalForm();
+                      }}
                     >
                       {t('general.cancel')}
                     </Button>
@@ -348,13 +343,13 @@ const CategoryList: React.FC = () =>{
           </CardContent>
         </Card>
       </Modal>
-    )
-  }
-  return(
+    );
+  };
+  return (
     <Container maxWidth="lg" className={container}>
-      <Grid container  spacing={0}>
+      <Grid container spacing={0}>
         <Grid item xs={12}>
-          <div style={{ backgroundColor: "white" }}>لیست دسته بندی ها</div>
+          <div style={{ backgroundColor: 'white' }}>لیست دسته بندی ها</div>
           <Paper style={{ height: 500 }}>
             <DataTable
               ref={ref}
@@ -366,13 +361,13 @@ const CategoryList: React.FC = () =>{
               queryCallback={getAllCategories}
               initLoad={false}
             />
-            {(isLoadingRemoveCategory) && <CircleLoading />}
+            {isLoadingRemoveCategory && <CircleLoading />}
           </Paper>
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
     </Container>
-  )
-}
+  );
+};
 
 export default CategoryList;

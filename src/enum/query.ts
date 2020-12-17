@@ -15,7 +15,19 @@ export enum DrugEnum {
   GET_ALL = 'all',
 }
 
+export enum PharmacyEnum {
+  GET_ALL = 'all',
+}
+
+export enum AccountingEnum {
+  GET_ALL = 'all',
+}
+
 export enum RoleQueryEnum {
   GET_ALL_ROLES = 'getAllRoles',
   GET_ALL_ROLE_PERMISSION_ITEMS = 'getAllRolePermissionItems',
+}
+
+export enum PharmacyDrugEnum {
+  GET_RELATED_PHARMACY_DRUG = 'getRelatedPharmacyDrug',
 }

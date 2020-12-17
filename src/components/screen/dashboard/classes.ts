@@ -1,5 +1,5 @@
-import {makeStyles} from "@material-ui/core/styles";
-import {createStyles} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import { createStyles } from "@material-ui/core";
 
 export const useClasses = makeStyles((theme) => createStyles({
   root: {
@@ -50,5 +50,58 @@ export const useClasses = makeStyles((theme) => createStyles({
     '& > .MuiFormControl-root': {
       flexGrow: 1,
     }
-  }
+  },
+  parent: {
+    paddingTop: theme.spacing(2),
+  },
+  formPaper: {
+    marginTop: theme.spacing(3),
+    padding: theme.spacing(2, 0, 2),
+  },
+  spacing1: {
+    margin: theme.spacing(1)
+  },
+  spacing2: {
+    margin: theme.spacing(2)
+  },
+  spacing3: {
+    margin: theme.spacing(3)
+  },
+  formControl: {
+    minWidth: 190,
+    margin: theme.spacing(1),
+  },
+  gridContainer: {
+    flexGrow: 1
+  },
+  gridFormControl: {
+    margin: theme.spacing(3),
+  },
+  gridTitle: {
+    marginLeft: theme.spacing(2),
+  },
+  gridItem: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1)
+  },
+  formBody: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  dropdown: {
+    margin: theme.spacing(1),
+    minWidth: '100%',
+  },
+  silverBackground: {
+    background: '#ebebeb',
+  },
+  rootFull: {
+    flexGrow: 1,
+    margin: theme.spacing(1)
+  },
+  formItem: {
+    display: 'flex',
+    justifySelf: 'stretch',
+    margin: theme.spacing(1)
+  },
 }));

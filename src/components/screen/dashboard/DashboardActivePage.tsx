@@ -1,24 +1,27 @@
 import React, { useContext } from 'react';
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import { DashboardPages } from "../../../enum";
-import CreateRole from "./roles/CreateRole";
-import CreateUser from "./user/CreateUser";
-import UsersList from "./user/UsersList";
-import CreateDrug from "./drug/CreateDrug";
-import DrugsList from "./drug/drugsList";
-import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import Context from "./Context";
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import { DashboardPages } from '../../../enum';
+import CreateRole from './roles/CreateRole';
+import CreateUser from './user/CreateUser';
+import UsersList from './user/UsersList';
+import CreateDrug from './drug/CreateDrug';
+import DrugsList from './drug/drugsList';
+import { makeStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import Context from './Context';
 import ChangeUserPassword from './user/ChangePassword';
 import MessagesList from './message/MessagesList';
 import CreateMessage from './message/CreateMessage';
-import PharmaciesList from "./pharmacy/pharmaciesList";
-import CreatePharmacy from "./pharmacy/createPharmacy";
+import PharmaciesList from './pharmacy/pharmaciesList';
+import CreatePharmacy from './pharmacy/createPharmacy';
 import CategoryList from './category/CategoryList';
+import Exchange from './drug-transfer/exchange/Exchange';
+import AccountingList from './accounting/accountingList';
+import TransferDrug from './drug-transfer/Transfer';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
@@ -47,23 +50,16 @@ const DashboardActivePage: React.FC = () => {
         el = (
           <Container maxWidth="lg" className={classes.container}>
             <Grid container spacing={3}>
-
               <Grid item xs={12} md={8} lg={9}>
-                <Paper className={fixedHeightPaper}>
-                  Data
-                </Paper>
+                <Paper className={fixedHeightPaper}>Data</Paper>
               </Grid>
 
               <Grid item xs={12} md={4} lg={3}>
-                <Paper className={fixedHeightPaper}>
-                  Data
-                </Paper>
+                <Paper className={fixedHeightPaper}>Data</Paper>
               </Grid>
 
               <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  Data
-                </Paper>
+                <Paper className={classes.paper}>Data</Paper>
               </Grid>
             </Grid>
           </Container>
@@ -71,15 +67,6 @@ const DashboardActivePage: React.FC = () => {
         break;
       case DashboardPages.CREATE_ROLE:
         el = <CreateRole />;
-        break;
-      case DashboardPages.CREATE_USER:
-        el = <CreateUser />
-        break;
-      case DashboardPages.USERS_LIST:
-        el = <UsersList />
-        break;
-      case DashboardPages.CREATE_DRUG:
-        el = <CreateDrug />
         break;
       case DashboardPages.CHANGE_USER_PASSWORD:
         el = <ChangeUserPassword />;
@@ -90,26 +77,17 @@ const DashboardActivePage: React.FC = () => {
       case DashboardPages.CREATE_NEW_MESSAGE:
         el = <CreateMessage />;
         break;
-      case DashboardPages.DRUGS_LIST:
-        el = <DrugsList />
-        break;
-      case DashboardPages.CREATE_ROLE:
-        el = <CreateRole />;
-        break;
       case DashboardPages.CREATE_USER:
-        el = <CreateUser />
+        el = <CreateUser />;
         break;
       case DashboardPages.USERS_LIST:
-        el = <UsersList />
+        el = <UsersList />;
         break;
       case DashboardPages.CREATE_DRUG:
-        el = <CreateDrug />
+        el = <CreateDrug />;
         break;
       case DashboardPages.DRUGS_LIST:
-        el = <DrugsList />
-        break;
-      case DashboardPages.CHANGE_USER_PASSWORD:
-        el = <ChangeUserPassword />;
+        el = <DrugsList />;
         break;
       case DashboardPages.PHARMACY_LIST:
         el = <PharmaciesList />;
@@ -118,16 +96,22 @@ const DashboardActivePage: React.FC = () => {
         el = <CreatePharmacy />;
         break;
       case DashboardPages.CATEGORY_LIST:
-        el = <CategoryList />
+        el = <CategoryList />;
+        break;
+      case DashboardPages.EXCHANGE:
+        el = <TransferDrug />;
+        break;
+      case DashboardPages.ACCOUNTING_LIST:
+        el = <AccountingList />;
         break;
       default:
         el = <></>;
     }
 
     return el;
-  }
+  };
 
   return displayActivePage();
-}
+};
 
 export default DashboardActivePage;

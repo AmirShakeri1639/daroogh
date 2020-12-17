@@ -1,5 +1,7 @@
-import { TableColumnInterface } from ".";
+import {DrugInterface, TableColumnInterface} from ".";
+import { AllPharmacyDrugInterface } from "./AllPharmacyDrugInterface";
 import { NewUserData } from "./user";
+import {PharmacyDrugInterface} from "./pharmacyDrug";
 
 export interface SelectPropsInterface {
   value: string;
@@ -15,6 +17,7 @@ export interface ButtonPropsInterface {
   variant?: 'outlined' | 'text' | 'contained';
   className?: any;
   color?: 'pink' | 'blue';
+  onClick?: () => void;
 }
 
 export interface ModalPropsInterface {
@@ -22,9 +25,7 @@ export interface ModalPropsInterface {
   toggle: () => void;
 }
 
-export interface ModalContentPropsInterface extends ModalPropsInterface {
-  //
-}
+export type ModalContentPropsInterface = ModalPropsInterface
 
 export interface CategoriesInterface {
   id: number;
@@ -34,7 +35,7 @@ export interface CategoriesInterface {
 }
 
 export interface DataTableProps{
-  columns: Array<TableColumnInterface>;
+  columns: any;
   whereClause?: [];
   extraParam?: {};
   isLoading?: boolean;
@@ -51,9 +52,63 @@ export interface DataTableProps{
   editAction?: (() => void) | void | any;
   removeAction?: (() => void) | void | any;
   addAction?: (() => void) | void | any;
+  stateAction?: (() => void) | void | any;
 }
 
 export interface UserDataProps {
   userData?: NewUserData;
   noShowInput?: string[];
+}
+
+export interface ExCardContentProps {
+  pharmacyDrug?: AllPharmacyDrugInterface;
+  formType: number;
+  packInfo?: AllPharmacyDrugInterface[];
+}
+
+export interface CardPropsInterface {
+  isPack?: boolean;
+  basicDetail: JSX.Element;
+  collapsableContent?: JSX.Element;
+  pharmacyDrug: AllPharmacyDrugInterface;
+}
+
+export interface CardContainerRelatedPharmacyDrugsInterface {
+  data: PharmacyDrugInterface;
+}
+
+export interface CardHeaderInterface {
+  province: string;
+  city: string;
+  guaranty: string | number;
+  star: number | string;
+  itemsCount: number | string;
+}
+
+export interface ItemContainerPropsInterface {
+  drug: DrugInterface;
+  amount: number;
+  offer2: number | string;
+  offer1: string | number;
+  expireDate: string;
+}
+
+export interface MaterialDrawerPropsInterface {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export interface SwitchComponentPropsInterface {
+  id: string;
+  checked: boolean;
+  onChange: () => void;
+}
+
+export interface CountyPropsInterface {
+  countyHandler?: (val?: number) => void;
+}
+
+export interface ProvincePropsInterface {
+  provinceHandler?: (val?: number) => void;
+  countyId?: number;
 }

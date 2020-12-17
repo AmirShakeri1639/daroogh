@@ -38,6 +38,28 @@ export default {
         postalCode: 'کد پستی',
         close: 'بستن',
         id: 'شناسه',
+        nextLevel: 'مرحله بعد',
+        prevLevel: 'مرحله قبل',
+        sendExchange: 'ارسال',
+        date: 'تاریخ',
+        loading: 'در حال بارگذاری ... ',
+        more: 'بیشتر',
+        noMoreData: 'داده دیگری موجود نیست',
+        name: 'نام',
+        location: 'مکان',
+        filter: 'فیلتر',
+        justOffer: 'فقط دارای آفر',
+        noData: 'اطلاعات موجود نیست',
+      },
+      date: {
+        minDateAsMonth: 'حداقل تاریخ به ماه',
+      },
+      province: {
+        selectCounty: 'انتخاب استان',
+        selectProvince: 'انتخاب شهر',
+        selectCity: 'انتخاب شهر',
+        province: 'شهرستان',
+        county: 'استان',
       },
       action: {
         insert: 'درج',
@@ -55,7 +77,7 @@ export default {
         'fill-requireds': 'لطفا مقادیر لازم را وارد کنید.',
         'loading-data': 'خطایی در دریافت اطلاعات به وجود آمد.',
         save: 'خطایی در ذخیره اطلاعات رخ داد.',
-        remove: 'خطایی در حذف اطلاعات پیش آمد.'
+        remove: 'خطایی در حذف اطلاعات پیش آمد.',
       },
       login: {
         login: 'ورود',
@@ -71,11 +93,17 @@ export default {
         username: 'نام کاربری',
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
-        failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        failed:
+          'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
       },
       user: {
         role: 'نقش',
         user: 'کاربر',
+        name: 'نام کاربر',
+        family: 'نام خانوادگی',
+        nationalCode: 'کد ملی',
+        birthDate: 'تاریخ تولد',
         'user-role': 'نقش کاربر',
         users: 'کاربران',
         profile: 'پروفایل',
@@ -89,11 +117,12 @@ export default {
         'edit-user': 'ویرایش کاربر',
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
+        admin: 'ادمین',
       },
       drug: {
         drug: 'دارو',
         category: 'دسته‌بندی',
-        categoryId: 'شناسه دسته‌بندی',
+        categoryID: 'شناسه دسته‌بندی',
         name: 'نام دارو',
         genericName: 'نام عمومی',
         companyName: 'نام شرکت',
@@ -113,11 +142,14 @@ export default {
         notification: 'ناتیفیکیشن',
         detail: 'جزییات پیام',
       },
-      category:{
+      category: {
         category: 'دسته‌بندی',
         list: 'لیست دسته‌بندی',
         'edit-category': 'ویرایش دسته بندی',
         'new-category': 'ایجاد دسته بندی',
+      },
+      exchange: {
+        exchange: 'تبادل',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -129,6 +161,10 @@ export default {
         successfulEditTextMessage: 'با موفقیت به روزرسانی شد',
         successfulSave: 'با موفقیت ذخیره شد',
         successfulDelete: 'با موفقیت حذف شد.',
+        successAddDrug: 'داروی مورد نظر با موفقیت ثبت شد',
+        successAddPack: 'بسته مورد نظر با موفقیت ثبت شد',
+        removeAddDrug: 'داروی مورد نظر با موفقیت حذف شد',
+        removeAddPack: 'بسته مورد نظر با موفقیت حذف شد',
         remove: 'آیا از حذف مطمئن هستید؟',
         failedEdit: 'ویرایش با خطا روبرو شد',
         fillFormCarefully: 'در پر کردن مقادیر فرم بیشتر دقت کنید.',
@@ -142,7 +178,36 @@ export default {
         hix: 'HIX',
         gli: 'GLI',
         workTime: 'ساعت کار',
-      }
-    }
-  }
-}
+        request: 'درخواست ایجاد',
+        manager: 'مدیر داروخانه',
+      },
+      PharmacyTypeEnum: {
+        NONGOVERNMENTAL: 'خصوصی',
+        GOVERNMENTAL: 'دولتی',
+      },
+      WorkTimeEnum: {
+        PART_TIME: 'نیمه وقت',
+        FULL_TIME: 'تمام وقت',
+        NIGHTLY: 'شبانه‌روزی',
+      },
+      CategoryTypeEnum: {
+        MEDICAL: 'پزشکی',
+        MAKEUP: 'آرایشی بهداشتی',
+      },
+      PackStatusEnum: {
+        ARZESHODEH: 'عرضه شده',
+        FOROOKHTEHSHODEH: 'فروخته شده',
+      },
+      accounting: {
+        accounting: 'مالی',
+        amount: 'مبلغ',
+        list: 'لیست تراکنش‌های مالی',
+        transactions: 'تراکنش‌ها',
+      },
+      countryDivision: {
+        province: 'استان',
+        city: 'شهر',
+      },
+    },
+  },
+};

@@ -7,13 +7,14 @@ const Input: React.FC<InputInterface> = (props) => {
   const {
     type, value, label, onChange, isMultiLine, rows,
     placeholder, dir, readOnly, onClick, required,
-    error,
+    error, className,
   } = props;
 
   const inuptGenerator = useCallback((): JSX.Element => {
     return (
       <TextField
         error={error}
+        className={className || ''}
         type={type}
         value={value}
         size="small"

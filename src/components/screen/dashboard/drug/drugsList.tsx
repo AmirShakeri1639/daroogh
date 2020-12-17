@@ -1,20 +1,12 @@
-import React, {useReducer, useState} from 'react';
-import {useMutation, useQuery, useQueryCache} from "react-query";
+import React, { useReducer, useState } from 'react';
+import { useMutation, useQueryCache } from "react-query";
 import Drug from '../../../../services/api/Drug';
 import {
   Container,
   Grid,
   IconButton,
-  Tooltip,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Checkbox,
+  Switch,
   CardHeader,
   Card,
   CardContent,
@@ -22,38 +14,30 @@ import {
   Box,
   TextField,
   Button,
-  FormControl,
   FormControlLabel,
-  CardActions,
-  Select,
-  MenuItem
+  CardActions
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
-import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import Modal from '../../../public/modal/Modal';
-import {errorHandler, successSweetAlert, sweetAlert, warningSweetAlert} from "../../../../utils";
+import { errorHandler, successSweetAlert, warningSweetAlert } from "../../../../utils";
 import CircleLoading from "../../../public/loading/CircleLoading";
-import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
-import CheckIcon from '@material-ui/icons/Check';
-import {useTranslation} from "react-i18next";
-import {useClasses} from "../classes";
+import { useTranslation } from "react-i18next";
+import { useClasses } from "../classes";
 
 import {
-  ActionInterface, CategoryInterface,
-  DrugInterface, LabelValue,
+  ActionInterface,
+  DrugInterface,
   TableColumnInterface
 } from "../../../../interfaces";
 import useDataTableRef from "../../../../hooks/useDataTableRef";
 import DataTable from "../../../public/datatable/DataTable";
-import {CategoryQueryEnum, DrugEnum} from "../../../../enum/query";
-import {CheckBox} from "@material-ui/icons";
-import {Category} from "../../../../services/api";
-import {DaroogDropdown} from "../common/daroogDropdown";
+import { DrugEnum } from "../../../../enum/query";
+import { Category } from "../../../../services/api";
+import { DaroogDropdown } from "../../../public/daroog-dropdown/DaroogDropdown";
 
 const initialState: DrugInterface = {
   id: 0,
-  categoryId: 1,
+  categoryID: 1,
   name: '',
   genericName: '',
   companyName: '',
@@ -61,11 +45,11 @@ const initialState: DrugInterface = {
   description: '',
   active: false,
   enName: '',
-  type: ''
+  type: 'شربت'
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
-  const {value} = action;
+  const { value } = action;
 
   switch (action.type) {
     case 'id':
@@ -73,10 +57,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         id: value,
       };
-    case 'categoryId':
+    case 'categoryID':
       return {
         ...state,
-        categoryId: value,
+        categoryID: value,
       };
     case 'name':
       return {
@@ -127,18 +111,20 @@ function reducer(state = initialState, action: ActionInterface): any {
 
 const DrugsList: React.FC = () => {
   const ref = useDataTableRef();
-  const {t} = useTranslation();
+  const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
   const {
-    container, root, formContainer, box, addButton, cancelButton
+    container, root, formContainer, box, addButton, cancelButton, dropdown
   } = useClasses();
   const queryCache = useQueryCache();
+
   const {
     save,
     all,
-    remove
+    remove,
+    types
   } = new Drug();
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
 
@@ -147,14 +133,22 @@ const DrugsList: React.FC = () => {
   React.useEffect(() => {
     async function getCategories() {
       const result = await allCategories(0, 1000);
-      console.log('RESULT:', result);
-      setCategories(result.items.map((item: any) => ({value: item.id, label: item.name})));
+      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
     }
     getCategories();
   }, []);
 
+  const [drugTypes, setDrugTypes] = useState([]);
+  React.useEffect(() => {
+    async function getTypes() {
+      const result = await types();
+      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
+    }
+    getTypes();
+  }, []);
+
   const [_remove,
-    {isLoading: isLoadingRemove, reset: resetRemove}] = useMutation(remove, {
+    { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
       ref.current?.loadItems()
       await queryCache.invalidateQueries('drugsList');
@@ -163,23 +157,23 @@ const DrugsList: React.FC = () => {
   });
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await queryCache.invalidateQueries('drugsList');
       await successSweetAlert(t('alert.successfulSave'));
-      dispatch({type: 'reset'});
+      dispatch({ type: 'reset' });
     }
   });
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      {field: 'id', title: t('general.id'), type: 'number',
-        cellStyle: {textAlign: 'right'}},
-      {field: 'name', title: t('drug.name'), type: 'string'},
-      {field: 'genericName', title: t('drug.genericName'), type: 'string'},
+      { field: 'id', title: t('general.id'), type: 'number',
+        cellStyle: { textAlign: 'right' } },
+      { field: 'name', title: t('drug.name'), type: 'string' },
+      { field: 'genericName', title: t('drug.genericName'), type: 'string' },
       // { id: 'companyName', label: t('drug.companyName') },
-      {field: 'active', title: t('general.active'), type: 'boolean'},
-      {field: 'enName', title: t('drug.enName'), type: 'string'},
-      {field: 'type', title: t('general.type'), type: 'string'},
+      { field: 'active', title: t('general.active'), type: 'boolean' },
+      { field: 'enName', title: t('drug.enName'), type: 'string' },
+      { field: 'type', title: t('general.type'), type: 'string' },
     ];
   }
 
@@ -193,32 +187,36 @@ const DrugsList: React.FC = () => {
     }
   }
 
-  const toggleDrugActivationHandler = async (drugId: number): Promise<any> => {
+  const toggleDrugActivationHandler = async (row: any): Promise<any> => {
     try {
-      console.log('categoryid in _save:', state.categoryId)
+      const {
+        id,
+        name,
+        genericName,
+        companyName,
+        barcode,
+        description,
+        enName,
+        type
+      } = row;
+      const categoryID = row.category.id;
+      let { active } = row;
+      active = !active;
+
       await _save({
-        id: drugId,
-        categoryId: state.categoryId,
-        name: state.name,
-        genericName: state.genericName,
-        companyName: state.companyName,
-        barcode: state.barcode,
-        description: state.description,
-        active: !state.active,
-        enName: state.enName,
-        type: state.type
+        id, name, categoryID, genericName, companyName,
+        barcode, description, enName, type, active,
       });
     } catch (e) {
       errorHandler(e);
     }
   }
 
-  const saveHandler = (item: DrugInterface): void => {
+  const saveHandler = (item: any): void => {
     toggleIsOpenSaveModalForm();
     const {
       id,
       name,
-      categoryId,
       genericName,
       companyName,
       barcode,
@@ -227,18 +225,18 @@ const DrugsList: React.FC = () => {
       enName,
       type
     } = item;
+    const categoryID = item.category.id;
 
-    console.log('categoryid in saveHandler:', categoryId)
-    dispatch({type: 'id', value: id});
-    dispatch({type: 'name', value: name});
-    dispatch({type: 'categoryId', value: categoryId});
-    dispatch({type: 'genericName', value: genericName});
-    dispatch({type: 'companyName', value: companyName});
-    dispatch({type: 'barcode', value: barcode});
-    dispatch({type: 'description', value: description});
-    dispatch({type: 'active', value: active});
-    dispatch({type: 'enName', value: enName});
-    dispatch({type: 'type', value: type});
+    dispatch({ type: 'id', value: id });
+    dispatch({ type: 'name', value: name });
+    dispatch({ type: 'categoryID', value: categoryID });
+    dispatch({ type: 'genericName', value: genericName });
+    dispatch({ type: 'companyName', value: companyName });
+    dispatch({ type: 'barcode', value: barcode });
+    dispatch({ type: 'description', value: description });
+    dispatch({ type: 'active', value: active });
+    dispatch({ type: 'enName', value: enName });
+    dispatch({ type: 'type', value: type });
   }
 
   const isFormValid = (): boolean => {
@@ -253,7 +251,7 @@ const DrugsList: React.FC = () => {
     const {
       id,
       name,
-      categoryId,
+      categoryID,
       genericName,
       companyName,
       barcode,
@@ -263,15 +261,13 @@ const DrugsList: React.FC = () => {
       type
     } = state;
 
-    console.log('categoryid in submitSave:', categoryId)
     if (isFormValid()) {
       try {
         await _save({
-          id, name, categoryId, genericName, companyName,
+          id, name, categoryID, genericName, companyName,
           barcode, description, active, enName, type
         });
-        dispatch({type: 'reset'});
-        toggleIsOpenSaveModalForm();
+        dispatch({ type: 'reset' });
         ref.current?.loadItems();
       } catch (e) {
         errorHandler(e);
@@ -314,12 +310,12 @@ const DrugsList: React.FC = () => {
                     />
                     <div className="row">
                       <DaroogDropdown
-                        defaultValue={1}
+                        defaultValue={state.categoryID}
                         data={categories}
+                        className={dropdown}
                         label={t('drug.category')}
                         onChangeHandler={(v): void => {
-                          console.log('vvv:', v)
-                          return dispatch({type: 'categoryId', value: v})
+                          return dispatch({ type: 'categoryID', value: v })
                         }}
                       />
                     </div>
@@ -370,11 +366,11 @@ const DrugsList: React.FC = () => {
                     <div className="row">
                       <FormControlLabel
                         control={
-                          <Checkbox
+                          <Switch
                             checked={state.active}
                             onChange={
                               (e): void =>
-                                dispatch({type: 'active', value: e.target.checked})
+                                dispatch({ type: 'active', value: e.target.checked })
                             }
                           />
                         }
@@ -390,14 +386,14 @@ const DrugsList: React.FC = () => {
                           dispatch({ type: 'enName', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
+                    <DaroogDropdown
+                      defaultValue={state.type}
+                      data={drugTypes}
+                      className={dropdown}
                       label={t('general.type')}
-                      value={state.type}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'type', value: e.target.value })
-                      }
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'type', value: v })
+                      }}
                     />
                   </Box>
                 </Grid>
@@ -456,6 +452,8 @@ const DrugsList: React.FC = () => {
               columns={tableColumns()}
               addAction={(): void => saveHandler(initialState)}
               editAction={(e: any, row: any): void => saveHandler(row)}
+              stateAction={async (e: any, row: any):
+                Promise<void> => await toggleDrugActivationHandler(row)}
               removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
               queryKey={DrugEnum.GET_ALL}
               queryCallback={all}
