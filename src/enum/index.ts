@@ -22,6 +22,7 @@ export enum DashboardPages {
   PHARMACY_LIST = 'pharmaciesList',
   CATEGORY_LIST = 'categoryList',
   EXCHANGE = 'exchange',
+  EXCHANGE_LIST = 'exchangesList',
   ACCOUNTING_LIST = 'accounting',
 }
 
@@ -65,4 +66,4 @@ export enum RolesEnum {
   ADMIN = '2'
 }
 
-export type { ExchangeStatesEnum } from './ExchangeStatesEnum';
+export { ExchangeStatesEnum, CancellerEnum } from './ExchangeStatesEnum';

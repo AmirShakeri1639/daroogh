@@ -149,6 +149,7 @@ export default {
       },
       exchange: {
         exchange: 'تبادل',
+        desktop: 'کارتابل',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -205,6 +206,12 @@ export default {
         CONFIRMA_AND_B_PAYMENTA: 'تائید طرفین و پرداخت طرف اول',
         CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و پرداخت طرف دوم',
         CONFIRMALL_AND_PAYMENTALL: 'تائید و پرداخت هر دو طرف',
+      },
+      CancellerEnum: {
+        PHARMACYA_NOTRESPONSE: '- عدم پاسخگوئی داروخانه طرف اول',
+        PHARMACYB_NOTRESPONSE: 'عدم پاسخگوئی داروخانه طرف دوم',
+        BYSUPPORUSER: 'لغو توسط پشتیبانی',
+        PHARMACYA_AFTERSEND: 'پشیمان شدن داروخانه طرف اول',
       },
       accounting: {
         accounting: 'مالی',

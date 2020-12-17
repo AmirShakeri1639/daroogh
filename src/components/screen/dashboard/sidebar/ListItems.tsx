@@ -15,9 +15,10 @@ import {
   Dashboard as DashboardIcon,
   ExpandLess, EnhancedEncryption,
   ExpandMore, Extension,
-  LocalPharmacy, Business
+  LocalPharmacy, Business,
 } from "@material-ui/icons";
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import InboxIcon from '@material-ui/icons/Inbox';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
@@ -279,6 +280,20 @@ const ListItems: React.FC = () => {
           <ListItemText primary={ t('exchange.exchange') } />
           { isOpenExchange ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
+        <Collapse in={ isOpenExchange } timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem
+              button
+              className={ nested }
+              onClick={ (): void => setActivePage(DashboardPages.EXCHANGE_LIST) }
+            >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={ t('exchange.desktop') } />
+            </ListItem>
+          </List>
+        </Collapse>
         <Collapse in={ isOpenExchange } timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem

@@ -104,4 +104,9 @@ export const useClasses = makeStyles((theme) => createStyles({
     justifySelf: 'stretch',
     margin: theme.spacing(1)
   },
+  paper: {
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
 }));

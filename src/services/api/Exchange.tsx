@@ -1,5 +1,5 @@
 import Api from "./Api";
-import {errorHandler} from "../../utils";
+import { errorHandler } from "../../utils";
 
 class Exchange extends Api {
   readonly urls = {
