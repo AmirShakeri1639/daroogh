@@ -60,4 +60,7 @@ export const MessageTypeArray = (textArray: string[]) => [
   { val: MessageTypeEnum.SMS_AND_NOTIFICATION, text: textArray[3] },
 ]
 
-
+export enum RolesEnum {
+  PHARMACY = '1',
+  ADMIN = '2'
+}
