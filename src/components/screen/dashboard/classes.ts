@@ -109,4 +109,20 @@ export const useClasses = makeStyles((theme) => createStyles({
     textAlign: 'center',
     color: theme.palette.text.secondary,
   },
+  stickyToolbox: {
+    position: 'sticky',
+    margin: 0,
+    top: 70,
+    zIndex: 999,
+    backgroundColor: '#f3f3f3',
+    boxShadow: '0px 0px 3px 3px silver',
+  },
+  stickyRecommendation: {
+    position: 'sticky',
+    margin: 0,
+    padding: 10,
+    paddingTop: 0,
+    top: 135,
+    zIndex: 999,
+  },
 }));

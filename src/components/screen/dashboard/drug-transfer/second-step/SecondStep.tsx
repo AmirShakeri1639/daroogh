@@ -24,37 +24,12 @@ import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useQuery } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
+import { AllPharmacyDrugInterface } from '../../../../../interfaces';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import { useQueryCache, useInfiniteQuery, ReactQueryCacheProvider } from 'react-query';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
-
-const style = makeStyles(theme =>
-  createStyles({
-    paper: {
-      padding: 0,
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-    stickyToolbox: {
-      position: 'sticky',
-      margin: 0,
-      top: 70,
-      zIndex: 999,
-      backgroundColor: '#f3f3f3',
-      boxShadow: '0px 0px 3px 3px silver',
-    },
-    stickyRecommendation: {
-      position: 'sticky',
-      margin: 0,
-      padding: 10,
-      paddingTop: 0,
-      top: 135,
-      zIndex: 999,
-    },
-  }),
-);
+import { useClasses } from '../../classes';
 
 const SecondStep: React.FC = () => {
   const { getAllPharmacyDrug } = new PharmacyDrug();
@@ -77,7 +52,7 @@ const SecondStep: React.FC = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { paper, stickyToolbox, stickyRecommendation } = style();
+  const { paper, stickyToolbox, stickyRecommendation } = useClasses();
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
@@ -103,7 +78,7 @@ const SecondStep: React.FC = () => {
     isFetching,
     isFetchingMore,
     fetchMore,
-    refetch,
+    //refetch,
     canFetchMore,
   } = useInfiniteQuery(
     'key',
@@ -125,9 +100,10 @@ const SecondStep: React.FC = () => {
 
   const loadMoreButtonRef = React.useRef<any>(null);
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  // TODO: check this
+  //   refetch();
+  // }, []);
 
   useIntersectionObserver({
     target: loadMoreButtonRef,
@@ -247,7 +223,36 @@ const SecondStep: React.FC = () => {
           <Grid item xs={12} md={9}>
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
-              {cardListGenerator()}
+              { status === 'loading'
+                ? (<CircleLoading/>)
+                : status === 'error' ?
+                  (<span>{ t('error.loading-data') }</span>
+                  ) : (
+                    <>
+                      { cardListGenerator() }
+                      <div>
+                        <button
+                          className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
+                          ref={ loadMoreButtonRef }
+                          onClick={ fetchMore }
+                          disabled={ !canFetchMore }
+                        >
+                          { isFetchingMore
+                            ? t('general.loading')
+                            : canFetchMore
+                              ? t('general.more')
+                              : t('general.noMoreData') }
+                        </button>
+                      </div>
+                      <div>
+                        { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+                      </div>
+                    </>
+                  )
+              }
+              <div>
+                { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+              </div>
             </Grid>
           </Grid>
           <Grid item xs={12} sm={12} md={3}>
