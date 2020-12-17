@@ -42,7 +42,7 @@ const ToolBox: React.FC = () => {
     <ul className={ul}>
       <li>
         <Tooltip title="سبد دارو">
-          <IconButton color="inherit">
+          <IconButton color="inherit" style={{ paddingTop: 0 }}>
             <Badge badgeContent={basketCount.length} color="secondary">
               <ShoppingBasketIcon className={icons} />
             </Badge>

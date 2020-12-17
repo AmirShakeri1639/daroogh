@@ -7,20 +7,36 @@ export interface TransferDrugContextInterface {
   searchQuery?: string;
   allPharmacyDrug: AllPharmacyDrugInterface[];
   setAllPharmacyDrug: (items: AllPharmacyDrugInterface[]) => void;
-  basketCount: any[];
-  setBasketCount: (count: any) => any[];
+  basketCount: AllPharmacyDrugInterface[];
+  setBasketCount: (count: AllPharmacyDrugInterface[]) => void;
+  uBasketCount: AllPharmacyDrugInterface[];
+  setUbasketCount: (count: AllPharmacyDrugInterface[]) => void;
+  openDialog: boolean;
+  setOpenDialog: (isOpen: boolean) => void;
+  recommendationMessage: string;
+  setRecommendationMessage: (value: string) => void;
+  exchangeId: number;
+  setExchangeId: (value: number) => void;
   selectedPharmacyForTransfer: number;
   setSelectedPharmacyForTransfer: (num: number) => void;
 }
 
 const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   activeStep: 0,
-  setActiveStep: () => void 0,
+  setActiveStep: () => 0,
   allPharmacyDrug: [],
-  setAllPharmacyDrug: () => void 0,
+  setAllPharmacyDrug: () => [],
   basketCount: [],
   setBasketCount: () => [],
+  uBasketCount: [],
+  setUbasketCount: () => [],
   searchQuery: '',
+  openDialog: false,
+  setOpenDialog: () => 0,
+  recommendationMessage: '',
+  setRecommendationMessage: () => '',
+  exchangeId: 0,
+  setExchangeId: () => 0,
   setSelectedPharmacyForTransfer: () => void 0,
   selectedPharmacyForTransfer: 0,
 });

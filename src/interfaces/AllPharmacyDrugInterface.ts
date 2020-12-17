@@ -4,6 +4,7 @@ export interface AllPharmacyDrugInterface {
   packID?: number;
   expireDate: any;
   amount: number;
+  totalAmount: number;
   totalCount: number;
   cnt: number;
   offer1: number;
@@ -12,6 +13,10 @@ export interface AllPharmacyDrugInterface {
   drug: DrugI;
   currentCnt: number;
   packName?: string;
+  packCategoryName?: string;
+  order: number;
+  buttonName: string;
+  cardColor: string;
 }
 
 export interface DrugI {

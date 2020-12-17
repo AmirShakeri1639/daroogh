@@ -62,6 +62,8 @@ export interface UserDataProps {
 
 export interface ExCardContentProps {
   pharmacyDrug?: AllPharmacyDrugInterface;
+  formType: number;
+  packInfo?: AllPharmacyDrugInterface[];
 }
 
 export interface CardPropsInterface {
