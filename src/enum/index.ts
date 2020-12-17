@@ -64,3 +64,5 @@ export enum RolesEnum {
   PHARMACY = '1',
   ADMIN = '2'
 }
+
+export type { ExchangeStatesEnum } from './ExchangeStatesEnum';
