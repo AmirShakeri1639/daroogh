@@ -125,4 +125,43 @@ export const useClasses = makeStyles((theme) => createStyles({
     top: 135,
     zIndex: 999,
   },
+  cardContent: {
+    borderRadius: 15,
+    backgroundColor: '#dadada',
+    width: '100%',
+    padding: 0,
+  },
+  cardContainer: {
+    padding: 5,
+    minHeight: 170,
+    alignItems: 'center',
+    fontSize: 11,
+  },
+  ulCardName: {
+    padding: 0,
+    textAlign: 'left',
+    listStyleType: 'none',
+  },
+  rowRight: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  rowLeft: {
+    display: 'table',
+    textAlign: 'right',
+  },
+  colLeft: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  cardRoot: {
+    width: '100%',
+    minHeight: 110,
+    borderRadius: 14,
+    display: 'inline-block',
+    position: 'relative',
+    margin: theme.spacing(1),
+    boxShadow: '0 0 5px #cecece',
+  },
 }));
