@@ -2,6 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
+        emal: 'اعمال',
         daroog: 'داروگ',
         tabadol: 'تبادل',
         special: 'متن آزمایشی داروگ',
@@ -49,6 +50,7 @@ export default {
         filter: 'فیلتر',
         justOffer: 'فقط دارای آفر',
         noData: 'اطلاعات موجود نیست',
+        start: 'شروع',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -117,6 +119,10 @@ export default {
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
         admin: 'ادمین',
+        goldUser: 'کاربر طلایی',
+        silverUser: 'کاربر نقره ای',
+        boronzeUser: 'کاربر برنزی',
+        platiniumUser: 'کاربر پلاتینیوم',
       },
       drug: {
         drug: 'دارو',

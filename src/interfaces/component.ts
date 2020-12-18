@@ -1,7 +1,7 @@
-import {DrugInterface, TableColumnInterface} from ".";
+import { DrugInterface, TableColumnInterface } from ".";
 import { AllPharmacyDrugInterface } from "./AllPharmacyDrugInterface";
 import { NewUserData } from "./user";
-import {PharmacyDrugInterface} from "./pharmacyDrug";
+import { PharmacyDrugInterface } from "./pharmacyDrug";
 
 export interface SelectPropsInterface {
   value: string;
@@ -81,11 +81,12 @@ export interface CardHeaderInterface {
   guaranty: string | number;
   star: number | string;
   itemsCount: number | string;
+  userType: number;
 }
 
 export interface ItemContainerPropsInterface {
-  drug: DrugInterface;
-  amount: number;
+  drugGenericName: string;
+  cnt: number;
   offer2: number | string;
   offer1: string | number;
   expireDate: string;

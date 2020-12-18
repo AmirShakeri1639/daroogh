@@ -10,20 +10,25 @@ import FirstStep from './first-step/FirstStep';
 import ThirdStep from './third-step/ThirdStep';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
 
-const style = makeStyles(theme =>
+const style = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#f7f7f7',
       padding: theme.spacing(2, 1),
     },
-  }),
+  })
 );
 
 const TransferDrug: React.FC = () => {
   const [activeStep, setActiveStep] = useState<number>(0);
-  const [allPharmacyDrug, setAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [allPharmacyDrug, setAllPharmacyDrug] = useState<
+    AllPharmacyDrugInterface[]
+  >([]);
   const [basketCount, setBasketCount] = useState<number[]>([]);
-  const [selectedPharmacyForTransfer, setSelectedPharmacyForTransfer] = useState<number>(0);
+  const [
+    selectedPharmacyForTransfer,
+    setSelectedPharmacyForTransfer,
+  ] = useState<string>('');
 
   const { root } = style();
 
@@ -36,6 +41,7 @@ const TransferDrug: React.FC = () => {
     setBasketCount,
     selectedPharmacyForTransfer,
     setSelectedPharmacyForTransfer,
+
   });
 
   return (
@@ -43,13 +49,11 @@ const TransferDrug: React.FC = () => {
       <div className={root}>
         <MaterialContainer>
           <Grid container spacing={1}>
-            {
-              activeStep > 0 && (
-                <Grid item xs={12}>
-                  <ProgressBar />
-                </Grid>
-              )
-            }
+            {activeStep > 0 && (
+              <Grid item xs={12}>
+                <ProgressBar />
+              </Grid>
+            )}
 
             {activeStep === 0 && <FirstStep />}
             {activeStep === 1 && <SecondStep />}

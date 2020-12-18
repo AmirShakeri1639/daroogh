@@ -2,7 +2,6 @@ import React, { useContext, useState, useEffect } from 'react';
 import {
   createStyles,
   Grid,
-  Hidden,
   Slider,
   Accordion,
   AccordionSummary,
@@ -15,7 +14,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '../../../../public/button/Button';
 import DrugTransferContext from '../Context';
 import { useTranslation } from 'react-i18next';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useQuery } from 'react-query';
 import { PharmacyDrug } from '../../../../../services/api';
 import { PharmacyDrugEnum } from '../../../../../enum/query';
@@ -23,13 +21,11 @@ import CircleLoading from '../../../../public/loading/CircleLoading';
 import CardContainer from './CardContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { PharmacyDrugInterface } from '../../../../../interfaces/pharmacyDrug';
-import { DaroogSearchBar } from '../DaroogSearchBar';
 import { makeStyles } from '@material-ui/core/styles';
 import { County, MaterialDrawer, Province, Switch } from '../../../../public';
 import CloseIcon from '@material-ui/icons/Close';
 import ReactSelect from '../../../../public/react-select/ReactSelect';
 import Input from '../../../../public/input/Input';
-import { CountryDivisionSelect } from '../../../../public/country-division/CountryDivisionSelect';
 import { errorHandler, sanitizeReactSelect } from '../../../../../utils';
 import Search from '../../../../../services/api/Search';
 import { useEffectOnce } from '../../../../../hooks';
@@ -108,28 +104,43 @@ const useStyle = makeStyles((theme) =>
         padding: theme.spacing(0, 2),
       },
     },
+    noContent: {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    }
   })
 );
 
 const FirstStep: React.FC = () => {
-  const { activeStep, setActiveStep } = useContext(DrugTransferContext);
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const [isCheckedJustOffer, setIsCheckedJustOffer] = useState<boolean>(false);
   const [selectedCounty, setSelectedCounty] = useState<number>(0);
   const [selectedProvince, setSelectedProvince] = useState<number>(0);
-  const [searchOptions, setSearchOptions] = useState<object[] | undefined>(undefined);
+  const [searchOptions, setSearchOptions] = useState<object[] | undefined>(
+    undefined
+  );
   const [searchedDrugs, setSearchedDrugs] = useState<SelectOption[]>([]);
   const [searchedDrugsReesult, setSearchedDrugsReesult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
-  const [searchedCategory, setSearchedCategory] = useState<SelectOption | undefined>(undefined);
-  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(undefined);
+  const [searchedCategory, setSearchedCategory] = useState<
+    SelectOption | undefined
+  >(undefined);
+  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(
+    undefined
+  );
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
-  const [remainingExpireDays, setRemainingExpireDays] = useState<number | null>(null);
+  const [remainingExpireDays, setRemainingExpireDays] = useState<number | null>(
+    null
+  );
+  const [isInSearchMode, setIsInSearchMode] = useState<boolean>(false);
 
   const { t } = useTranslation();
 
-  const setDataOfSearch = (item: AdvancedSearchInterface): AdvancedSearchInterface => {
+  const setDataOfSearch = (
+    item: AdvancedSearchInterface
+  ): AdvancedSearchInterface => {
     const drugsIdsArray = searchedDrugs.map((d) => ({ drugID: d.value }));
 
     if (drugsIdsArray.length > 0) {
@@ -153,10 +164,11 @@ const FirstStep: React.FC = () => {
     }
 
     return item;
-  }
+  };
 
   async function advancedSearchItems(): Promise<any> {
     setIsLoading(true);
+    setIsInSearchMode(true);
 
     const data: AdvancedSearchInterface = {};
     const searchData = setDataOfSearch(data);
@@ -181,7 +193,7 @@ const FirstStep: React.FC = () => {
     }
   }, [searchedDrugs]);
 
-   const drugSearch = async (title: string): Promise<any> => {
+  const drugSearch = async (title: string): Promise<any> => {
     try {
       if (title.length < 2) {
         return;
@@ -216,29 +228,60 @@ const FirstStep: React.FC = () => {
     monthInput,
     distanceContainer,
     divider,
+    noContent,
   } = useStyle();
 
   const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
     PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG,
-    getRelatedPharmacyDrug,
+    () => getRelatedPharmacyDrug(),
     {
       enabled: searchedDrugs.length === 0,
     },
   );
 
-  const toggleCheckbox = (): void => setIsCheckedJustOffer((v) => !v);
+  const toggleCheckbox = (): void => {
+    setIsCheckedJustOffer((v) => !v);
+  }
 
   const contentHandler = (): JSX.Element => {
-    if (isLoadingRelatedDrugs) {
+    if (isLoadingRelatedDrugs || isLoading) {
       return <CircleLoading />;
     }
 
     let items = [];
-    if (searchedDrugsReesult === null) {
-      if (data === undefined || data.length === 0) {
-        return <p>اطلاعاتی موجود نیست</p>;
-      }
 
+    if (isInSearchMode) {
+      if (searchedDrugsReesult === null || searchedDrugsReesult.length === 0) {
+        return (
+          <div className={`${noContent} w-100`}>
+            <p>اطلاعاتی موجود نیست</p>
+            <Button
+              variant="outlined"
+              color="blue"
+              type="button"
+              onClick={(): void => {
+                setSearchedDrugs([]);
+                setIsInSearchMode(false);
+              }}
+            >
+              نمایش کارت ها بدون فیلتر
+            </Button>
+          </div>
+        )
+      }
+      else {
+        items = searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
+          return (
+            <>
+              <Grid item xs={12} lg={6} xl={4}>
+                <CardContainer data={d} />
+              </Grid>
+            </>
+          );
+        });
+      }
+    }
+    else {
       items = data.map((d: PharmacyDrugInterface) => {
         return (
           <>
@@ -248,17 +291,6 @@ const FirstStep: React.FC = () => {
           </>
         );
       });
-    }
-    else {
-      items = searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
-        return (
-          <>
-            <Grid item xs={12} lg={6} xl={4}>
-              <CardContainer data={d} />
-            </Grid>
-          </>
-        );
-      })
     }
 
     return items;
@@ -276,13 +308,18 @@ const FirstStep: React.FC = () => {
             <div className={searchContainer}>
               <Button onClick={(): void => setIsOpenDrawer(true)}>
                 <FilterListIcon fontSize="small" />
-                {t('general.filter')}
+                {t('general.emal')} {t('general.filter')}
               </Button>
 
               <ReactSelect
                 value={searchedDrugs}
                 onChange={(e): void => {
-                  setSearchedDrugs(e);
+                  if (Array.isArray(e)) {
+                    setIsInSearchMode(true);
+                  } else {
+                    setIsInSearchMode(false);
+                  }
+                  setSearchedDrugs(e === null ? [] : e);
                 }}
                 noOptionsMessage={t('general.noData')}
                 isMulti
@@ -296,7 +333,7 @@ const FirstStep: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Hidden smDown>
+      {/* <Hidden smDown>
         <Grid lg={3} item>
           <Grid container justify="center" spacing={1}>
             <Grid item xs={12}>
@@ -307,7 +344,7 @@ const FirstStep: React.FC = () => {
             </Grid>
           </Grid>
         </Grid>
-      </Hidden>
+      </Hidden> */}
 
       <MaterialDrawer
         onClose={(): void => setIsOpenDrawer(false)}
@@ -373,7 +410,9 @@ const FirstStep: React.FC = () => {
               <Input
                 value={remainingExpireDays || ''}
                 className={monthInput}
-                onChange={(e): any => setRemainingExpireDays(Number(e.target.value))}
+                onChange={(e): any =>
+                  setRemainingExpireDays(Number(e.target.value))
+                }
               />
             </div>
 
