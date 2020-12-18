@@ -28,7 +28,14 @@ const Desktop: React.FC = () => {
     async function getExchanges() {
       const result = await getDashboard();
       console.log('result in get DAshborad', result);
-      setExchanges(result?.items);
+      if (result != undefined) {
+        // const r = result?.items?.map((i: any) => {
+        //   return { ...i, state: Math.floor(Math.random() * 10) };
+        // });
+        // console.log('r', r);
+        // setExchanges(r);
+        setExchanges(result.items);
+      }
     }
 
     getExchanges();

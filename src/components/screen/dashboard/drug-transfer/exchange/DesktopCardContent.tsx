@@ -8,6 +8,7 @@ import EventBusyIcon from '@material-ui/icons/EventBusy';
 import moment from 'jalali-moment';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import { useTranslation } from 'react-i18next';
+import { ExchangeStatesEnum } from '../../../../../enum';
 
 interface Props {
   item: ExchangeInterface;
@@ -21,7 +22,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   const {
     cardContent, cardContainer, ulCardName,
     rowRight, rowLeft, colLeft, cardRoot,
-    cardTitle,
+    cardTitle, titleCode,
   } = useClasses();
 
   const ExchangeInfo = (): JSX.Element => {
@@ -59,19 +60,19 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   };
 
   const backColor = [
-    'white', // uknown = 0
-    'silver', // NOSEND = 1,
-    'lime', // WAITFORB = 2,
-    'green', //CONFIRMB_AND_WAITFORA = 3,
-    'darkgreen', //CONFIRMA_AND_B = 4,
-    'red', //NOCONFIRMB = 5,
-    'maroon', //CONFIRMB_AND_NOCONFIRMA = 6,
-    'darkred', //CANCELLED = 7,
-    'lightblue', //CONFIRMA_AND_B_PAYMENTA = 8,
-    'skyblue', //CONFIRMA_AND_B_PAYMENTB = 9,
-    'yellow', //CONFIRMALL_AND_PAYMENTALL = 10
+    'white', // unknown = 0
+    '#e0e0e0', // NOSEND = 1,
+    '#cddc39', // WAITFORB = 2,
+    '#4caf50', //CONFIRMB_AND_WAITFORA = 3,
+    '#009688', //CONFIRMA_AND_B = 4,
+    '#f44336', //NOCONFIRMB = 5,
+    '#d32f2f', //CONFIRMB_AND_NOCONFIRMA = 6,
+    '#a53030', //CANCELLED = 7,
+    '#03a9f4', //CONFIRMA_AND_B_PAYMENTA = 8,
+    '#00bcd4', //CONFIRMA_AND_B_PAYMENTB = 9,
+    '#ffeb3b', //CONFIRMALL_AND_PAYMENTALL = 10
   ]
-  
+
   return (
     <Card className={ `${ cardRoot }` }>
       <CardContent>
@@ -79,6 +80,9 @@ const DesktopCardContent = (props: Props): JSX.Element => {
           style={{ background: backColor[item.state != undefined ? item.state : 0] }}>
           { item.stateString }
         </Typography>
+        <div className={titleCode}>
+          T-4212
+        </div>
         <Container className={ formType === 1 || formType === 2 ? `${ cardContent }` : '' }>
           <>
             { item &&

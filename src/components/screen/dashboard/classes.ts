@@ -127,7 +127,6 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   cardContent: {
     borderRadius: 15,
-    backgroundColor: '#dadada',
     width: '100%',
     padding: 0,
   },
@@ -165,8 +164,14 @@ export const useClasses = makeStyles((theme) => createStyles({
     boxShadow: '0 0 5px #cecece',
   },
   cardTitle: {
-    padding: '.5em 1em',
+    padding: '1em',
     borderRadius: '.5em',
     margin: '.3em 0',
+  },
+  titleCode: {
+    color: '#444',
+    position: 'absolute',
+    top: '2em',
+    right: '1.5em',
   },
 }));
