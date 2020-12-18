@@ -2,6 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
+        emal: 'اعمال',
         daroog: 'داروگ',
         tabadol: 'تبادل',
         special: 'متن آزمایشی داروگ',
@@ -50,6 +51,7 @@ export default {
         filter: 'فیلتر',
         justOffer: 'فقط دارای آفر',
         noData: 'اطلاعات موجود نیست',
+        start: 'شروع',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -118,6 +120,10 @@ export default {
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
         admin: 'ادمین',
+        goldUser: 'کاربر طلایی',
+        silverUser: 'کاربر نقره ای',
+        boronzeUser: 'کاربر برنزی',
+        platiniumUser: 'کاربر پلاتینیوم',
       },
       drug: {
         drug: 'دارو',
@@ -150,6 +156,7 @@ export default {
       },
       exchange: {
         exchange: 'تبادل',
+        desktop: 'کارتابل',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -197,6 +204,25 @@ export default {
       PackStatusEnum: {
         ARZESHODEH: 'عرضه شده',
         FOROOKHTEHSHODEH: 'فروخته شده',
+      },
+      ExchangeStatesEnum: {
+        UNKNOWN: 'نامشخص',
+        NOSEND: 'ارسال نشده',
+        WAITFORB: 'منتظر تائید طرف دوم',
+        CONFIRMB_AND_WAITFORA: 'منتظر تائید طرف اول',
+        CONFIRMA_AND_B: 'تائید هر دو طرف و منتظر پرداخت',
+        NOCONFIRMB: 'مخالفت توسط طرف دوم',
+        CONFIRMB_AND_NOCONFIRMA: 'مخالفت توسط طرف اول',
+        CANCELLED: 'لغو شده',
+        CONFIRMA_AND_B_PAYMENTA: 'تائید طرفین و پرداخت طرف اول',
+        CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و پرداخت طرف دوم',
+        CONFIRMALL_AND_PAYMENTALL: 'تائید و پرداخت هر دو طرف',
+      },
+      CancellerEnum: {
+        PHARMACYA_NOTRESPONSE: '- عدم پاسخگوئی داروخانه طرف اول',
+        PHARMACYB_NOTRESPONSE: 'عدم پاسخگوئی داروخانه طرف دوم',
+        BYSUPPORUSER: 'لغو توسط پشتیبانی',
+        PHARMACYA_AFTERSEND: 'پشیمان شدن داروخانه طرف اول',
       },
       accounting: {
         accounting: 'مالی',
