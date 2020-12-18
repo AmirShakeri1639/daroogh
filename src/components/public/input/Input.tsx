@@ -3,11 +3,20 @@ import { InputInterface } from '../../../interfaces/MaterialUI';
 import { TextField } from '@material-ui/core';
 
 const Input: React.FC<InputInterface> = (props) => {
-
   const {
-    type, value, label, onChange, isMultiLine, rows,
-    placeholder, dir, readOnly, onClick, required,
-    error, className,
+    type,
+    value,
+    label,
+    onChange,
+    isMultiLine,
+    rows,
+    placeholder,
+    dir,
+    readOnly,
+    onClick,
+    required,
+    error,
+    className,
   } = props;
 
   const inuptGenerator = useCallback((): JSX.Element => {
@@ -27,7 +36,7 @@ const Input: React.FC<InputInterface> = (props) => {
         required={required}
         onClick={onClick}
         inputProps={{
-          readOnly
+          readOnly,
         }}
         onChange={onChange}
       />
@@ -35,7 +44,7 @@ const Input: React.FC<InputInterface> = (props) => {
   }, [value]);
 
   return inuptGenerator();
-}
+};
 
 Input.defaultProps = {
   type: 'text',
@@ -49,6 +58,6 @@ Input.defaultProps = {
   readOnly: false,
   placeholder: '',
   error: null,
-}
+};
 
 export default Input;

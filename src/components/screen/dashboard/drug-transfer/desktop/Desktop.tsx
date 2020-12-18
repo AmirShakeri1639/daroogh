@@ -43,9 +43,7 @@ const Desktop: React.FC = () => {
             <div className={ paper }>
               <CardContainer
                 basicDetail={
-                  <ExCardContent
-                    pharmacyDrug={ item }
-                  />
+                  <></>
                 }
                 isPack={ item.packID }
                 pharmacyDrug={ Object.assign(item, { currentCnt: item.cnt }) }

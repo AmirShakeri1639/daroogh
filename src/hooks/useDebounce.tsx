@@ -10,10 +10,10 @@ const useDebounce = (value: any, delay: number): any => {
 
     return (): void => {
       clearTimeout(timeoutId);
-    }
+    };
   }, [value, delay]);
 
   return debouncedValue;
-}
+};
 
 export default useDebounce;
