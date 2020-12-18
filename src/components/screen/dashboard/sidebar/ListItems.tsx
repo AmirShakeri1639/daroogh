@@ -336,7 +336,6 @@ const ListItems: React.FC = () => {
 
   return (
     <div>
-      {console.log('rolesarray:', rolesArray)}
       {rolesArray && rolesArray?.length > 0 &&
         <>
           {rolesArray.indexOf(RolesEnum.ADMIN) >= 0 &&

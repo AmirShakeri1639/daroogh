@@ -50,6 +50,7 @@ export default {
         filter: 'فیلتر',
         justOffer: 'فقط دارای آفر',
         noData: 'اطلاعات موجود نیست',
+        unknown: 'نامشخص',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -151,6 +152,7 @@ export default {
       exchange: {
         exchange: 'تبادل',
         desktop: 'کارتابل',
+        expirationDate: 'تاریخ انقضای تبادل',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',

@@ -164,4 +164,9 @@ export const useClasses = makeStyles((theme) => createStyles({
     margin: theme.spacing(1),
     boxShadow: '0 0 5px #cecece',
   },
+  cardTitle: {
+    padding: '.5em 1em',
+    borderRadius: '.5em',
+    margin: '.3em 0',
+  },
 }));

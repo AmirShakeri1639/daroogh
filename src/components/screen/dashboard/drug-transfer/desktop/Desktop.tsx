@@ -28,7 +28,7 @@ const Desktop: React.FC = () => {
     async function getExchanges() {
       const result = await getDashboard();
       console.log('result in get DAshborad', result);
-      setExchanges(result.items);
+      setExchanges(result?.items);
     }
 
     getExchanges();
