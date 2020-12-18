@@ -7,9 +7,9 @@ import { useClasses } from '../classes';
 
 const SearchInAList: React.FC = () => {
   const { container } = useClasses();
-  const { allPharmacyDrug, setAllPharmacyDrug } = useContext<
-    TransferDrugContextInterface
-  >(DrugTransferContext);
+  const { allPharmacyDrug, setAllPharmacyDrug } = useContext<TransferDrugContextInterface>(
+    DrugTransferContext,
+  );
 
   const searchHandler = (v: string) => {
     if (allPharmacyDrug && allPharmacyDrug.length > 0) {
