@@ -11,7 +11,8 @@ import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  AddBox, AddCircle,
+  AddBox,
+  AddCircle,
   Dashboard as DashboardIcon,
   ExpandLess, EnhancedEncryption,
   ExpandMore, Extension,
@@ -31,10 +32,10 @@ import AddIcon from '@material-ui/icons/Add';
 import ListIcon from '@material-ui/icons/List';
 import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
-import { JwtData } from "../../../../utils";
-import { useClasses } from "../classes";
+import { JwtData } from '../../../../utils';
+import { useClasses } from '../classes';
 
-const useStyles = makeStyles(theme =>
+const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       width: '100%',
@@ -44,7 +45,7 @@ const useStyles = makeStyles(theme =>
     nested: {
       paddingLeft: theme.spacing(4),
     },
-  }),
+  })
 );
 
 const ListItems: React.FC = () => {
@@ -62,9 +63,7 @@ const ListItems: React.FC = () => {
   const { nested } = useStyles();
   const { t } = useTranslation();
 
-  const {
-    spacing3
-  } = useClasses();
+  const { spacing3 } = useClasses();
 
   const redirectDashboardHandler = (): void => {
     setActivePage('dashboard');

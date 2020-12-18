@@ -1,9 +1,7 @@
 import React from 'react';
 import { ItemContainerPropsInterface } from '../../../../../interfaces';
 import { Box, createStyles, Grid } from '@material-ui/core';
-import EventNoteIcon from '@material-ui/icons/EventNote';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
-import PaymentIcon from '@material-ui/icons/Payment';
 import { makeStyles } from '@material-ui/core/styles';
 import Convertor from '../../../../../utils/Convertor';
 
@@ -36,9 +34,7 @@ const useStyle = makeStyles((theme) =>
 const { convertISOTime, zeroSeparator } = Convertor;
 
 const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
-  const { expireDate, offer1, offer2, amount, drug } = props;
-
-  const { name } = drug;
+  const { offer1, offer2, drugGenericName } = props;
 
   const { box, gridItem, detailContainer } = useStyle();
 
@@ -46,7 +42,7 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
     <Box component="div" className={box}>
       <Grid container spacing={1}>
         <Grid item xs={6} className={gridItem}>
-          <span className="txt-xs text-nowrap">{name}</span>
+          <span className="txt-xs text-nowrap">{drugGenericName}</span>
         </Grid>
 
         <Grid item xs={6}>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SwitchComponentPropsInterface } from "../../../interfaces";
+import { SwitchComponentPropsInterface } from '../../../interfaces';
 import styled from 'styled-components';
 
 const Label = styled.label`
@@ -11,14 +11,14 @@ const Label = styled.label`
   }
   #circle-container {
     position: relative;
-    transition: .1s ease;
+    transition: 0.1s ease;
     border-radius: 16px;
     display: inline-block;
-    background-color: #CECECE;
+    background-color: #cecece;
     width: 40px;
     height: 22px;
     span {
-      transition: all .25s ease;
+      transition: all 0.25s ease;
       top: 3px;
       right: 3px;
       position: absolute;
@@ -30,11 +30,11 @@ const Label = styled.label`
     }
   }
 
-  input[type="checkbox"]:checked {
+  input[type='checkbox']:checked {
     & + #circle-container {
-      background-color: #6200EE;
+      background-color: #6200ee;
       span {
-        transition: all .25s ease;
+        transition: all 0.25s ease;
         right: 21px;
       }
     }
@@ -46,17 +46,12 @@ const Switch: React.FC<SwitchComponentPropsInterface> = (props) => {
 
   return (
     <Label htmlFor={id}>
-      <input
-        id={id}
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-      />
+      <input id={id} type="checkbox" checked={checked} onChange={onChange} />
       <span id="circle-container">
         <span />
       </span>
     </Label>
   );
-}
+};
 
 export default Switch;
