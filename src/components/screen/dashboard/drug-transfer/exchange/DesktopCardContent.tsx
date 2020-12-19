@@ -5,6 +5,8 @@ import { useClasses } from '../../classes';
 import StorageIcon from '@material-ui/icons/Storage';
 import MoneyIcon from '@material-ui/icons/Money';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
+import LabelIcon from '@material-ui/icons/Label';
+import PaymentIcon from '@material-ui/icons/Payment';
 import moment from 'jalali-moment';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import { useTranslation } from 'react-i18next';
@@ -22,38 +24,64 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   const {
     cardContent, cardContainer, ulCardName,
     rowRight, rowLeft, colLeft, cardRoot,
-    cardTitle, titleCode,
+    cardTitle, titleCode, cardTop,
   } = useClasses();
 
   const ExchangeInfo = (): JSX.Element => {
     return (
       <Grid container spacing={ 1 } className={ cardContainer }>
-        <Grid item xs={ 12 } sm={ 12 }>
-          <ul className={ ulCardName }>
-            <li style={ { fontWeight: 'bold' } }>{ t('exchange.expirationDate') }</li>
-            <li>{ t('general.unknown') }</li>
-          </ul>
+        <Grid container xs={12} className={cardTop}>
+          <Grid container xs={6} className={rowRight}>
+            <Grid xs={12} className={rowRight}>
+              <LabelIcon />
+              <span>{t('exchange.goldenUser')}</span>
+            </Grid>
+            <Grid xs={12} className={rowRight}>
+              <div>{item.pharmacyProvinceB} {item.pharmacyCityB}</div>
+            </Grid>
+          </Grid>
+          <Grid container xs={6} className={colLeft}>
+            <Grid xs={12} className={rowLeft}>
+              Guaranty
+            </Grid>
+            <Grid xs={12} className={rowLeft}>
+              5star
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={ 12 } sm={ 6 } className={ rowRight }>
-          <StorageIcon /> موجودی : { item.pharmacyCityB }
-        </Grid>
-        <Grid item xs={ 12 } sm={ 6 } className={ colLeft }>
-          <MoneyIcon /> قیمت : { item.pharmacyProvinceA }
-        </Grid>
-        <Grid item xs={ 12 } sm={ 4 } className={ rowRight }>
-          <EventBusyIcon />
-          تاریخ انقضا
-        </Grid>
-        <Grid item xs={ 12 } sm={ 4 }>
-          <hr />
-        </Grid>
-        <Grid item xs={ 12 } sm={ 4 } className={ rowLeft }>
-        </Grid>
-        <Grid item xs={ 12 } sm={ 4 } className={ rowRight }>
-          <CardGiftcardIcon /> پیشنهاد
-        </Grid>
-        <Grid item xs={ 12 } sm={ 4 }>
-          <hr />
+        <Grid container xs={12}>
+          <Grid item xs={ 4 } className={ rowRight }>
+            <EventBusyIcon /> { t('exchange.expirationDate') }
+          </Grid>
+          <Grid item xs={ 4 }>
+            <hr />
+          </Grid>
+          <Grid item xs={ 4 } className={ rowLeft }>
+            {item?.sendDate == null ? '' :
+              moment(item?.sendDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
+          </Grid>
+          <Grid item xs={ 12 } sm={ 4 } className={ rowRight }>
+            <MoneyIcon />
+            { t('exchange.commission') }
+          </Grid>
+          <Grid item xs={ 12 } sm={ 4 }>
+            <hr />
+          </Grid>
+          <Grid item xs={ 12 } sm={ 4 } className={ rowLeft }>
+            {/* TODO: should be A or B */}
+            { item?.totalPourcentageA }
+          </Grid>
+          <Grid item xs={ 12 } sm={ 4 } className={ rowRight }>
+            <PaymentIcon />
+            { t('exchange.paymentStatus') }
+          </Grid>
+          <Grid item xs={ 12 } sm={ 4 }>
+            <hr />
+          </Grid>
+          <Grid item xs={ 12 } sm={ 4 } className={ rowLeft }>
+            {/* TODO: paymentstatus field */}
+            { item?.description }
+          </Grid>
         </Grid>
       </Grid>
     );

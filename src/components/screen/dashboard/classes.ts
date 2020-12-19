@@ -143,7 +143,7 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   rowRight: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'right',
   },
   rowLeft: {
     display: 'table',
@@ -151,7 +151,7 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   colLeft: {
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'left',
     justifyContent: 'flex-end',
   },
   cardRoot: {
@@ -173,5 +173,8 @@ export const useClasses = makeStyles((theme) => createStyles({
     position: 'absolute',
     top: '2em',
     right: '1.5em',
+  },
+  cardTop: {
+    margin: '0 .5em 1em .5em',
   },
 }));

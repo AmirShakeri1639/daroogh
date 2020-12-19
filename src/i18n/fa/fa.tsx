@@ -159,6 +159,13 @@ export default {
         exchange: 'تبادل',
         desktop: 'کارتابل',
         expirationDate: 'تاریخ انقضای تبادل',
+        goldenUser: 'کاربر طلایی',
+        silverUser: 'کاربر نقره‌ای',
+        bronzeUser: 'کاربر برنزی',
+        platinum: 'کاربر پلاتینوم',
+        amount: 'مبلغ تبادل',
+        commission: 'مبلغ پورسانت',
+        paymentStatus: 'وضعیت پرداخت',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
