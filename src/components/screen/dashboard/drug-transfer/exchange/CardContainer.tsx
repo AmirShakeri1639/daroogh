@@ -28,7 +28,7 @@ import { errorHandler, sweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { AddDrog1, AddPack1 } from '../../../../../model/exchange';
 
-const style = makeStyles(theme =>
+const style = makeStyles((theme) =>
   createStyles({
     root: {
       width: '100%',
@@ -97,7 +97,7 @@ const style = makeStyles(theme =>
     orderCard: {
       backgroundColor: 'white',
     },
-  }),
+  })
 );
 
 const initialState: AddDrugInterface = {
@@ -132,10 +132,17 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
-const CardContainer: React.FC<CardPropsInterface> = props => {
+const CardContainer: React.FC<CardPropsInterface> = (props) => {
   const [expanded, setExpanded] = React.useState(false);
   const [drugInfo, setDrugInfo] = useState<AllPharmacyDrugInterface>();
-  const { addDrug1, addPack1, removePack1, addDrug2, addPack2, removePack2 } = new PharmacyDrug();
+  const {
+    addDrug1,
+    addPack1,
+    removePack1,
+    addDrug2,
+    addPack2,
+    removePack2,
+  } = new PharmacyDrug();
   const [state, dispatch] = useReducer(reducer, initialState);
   const { t } = useTranslation();
 
@@ -144,6 +151,8 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
     setAllPharmacyDrug,
     basketCount,
     setBasketCount,
+    uBasketCount,
+    setUbasketCount,
     activeStep,
     recommendationMessage,
     setRecommendationMessage,
@@ -153,27 +162,33 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
 
-  const [_addDrug1, { isLoading: isLoadingAddDrug1, data }] = useMutation(addDrug1, {
-    onSuccess: async res => {
-      setExchangeId(res.data.exchangeId);
-      setRecommendationMessage(res.data.recommendationMessage);
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.successAddDrug'),
-      });
-    },
-  });
+  const [_addDrug1, { isLoading: isLoadingAddDrug1, data }] = useMutation(
+    addDrug1,
+    {
+      onSuccess: async (res) => {
+        setExchangeId(res.data.exchangeId);
+        setRecommendationMessage(res.data.recommendationMessage);
+        dispatch({ type: 'reset' });
+        await sweetAlert({
+          type: 'success',
+          text: t('alert.successAddDrug'),
+        });
+      },
+    }
+  );
 
-  const [_removeDrug1, { isLoading: isLoadingRemoveDrug1 }] = useMutation(addDrug1, {
-    onSuccess: async () => {
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.removeAddDrug'),
-      });
-    },
-  });
+  const [_removeDrug1, { isLoading: isLoadingRemoveDrug1 }] = useMutation(
+    addDrug1,
+    {
+      onSuccess: async () => {
+        dispatch({ type: 'reset' });
+        await sweetAlert({
+          type: 'success',
+          text: t('alert.removeAddDrug'),
+        });
+      },
+    }
+  );
 
   const [_addPack1, { isLoading: isLoadingAddPack1 }] = useMutation(addPack1, {
     onSuccess: async () => {
@@ -185,15 +200,18 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
     },
   });
 
-  const [_removePack1, { isLoading: isLoadingRemovePack1 }] = useMutation(removePack1, {
-    onSuccess: async () => {
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.removeAddPack'),
-      });
-    },
-  });
+  const [_removePack1, { isLoading: isLoadingRemovePack1 }] = useMutation(
+    removePack1,
+    {
+      onSuccess: async () => {
+        dispatch({ type: 'reset' });
+        await sweetAlert({
+          type: 'success',
+          text: t('alert.removeAddPack'),
+        });
+      },
+    }
+  );
 
   const [_addDrug2, { isLoading: isLoadingAddDrug2 }] = useMutation(addDrug2, {
     onSuccess: async () => {
@@ -215,15 +233,18 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
     },
   });
 
-  const [_removePack2, { isLoading: isLoadingRemovePack2 }] = useMutation(removePack2, {
-    onSuccess: async () => {
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.successfulCreateTextMessage'),
-      });
-    },
-  });
+  const [_removePack2, { isLoading: isLoadingRemovePack2 }] = useMutation(
+    removePack2,
+    {
+      onSuccess: async () => {
+        dispatch({ type: 'reset' });
+        await sweetAlert({
+          type: 'success',
+          text: t('alert.successfulCreateTextMessage'),
+        });
+      },
+    }
+  );
 
   useEffect(() => {
     setDrugInfo(pharmacyDrug);
@@ -244,16 +265,21 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
   } = style();
 
   const counterHandle = (e: string): void => {
-    const index = allPharmacyDrug.findIndex(x => x == pharmacyDrug);
     switch (e) {
       case '+':
         if (pharmacyDrug.cnt > pharmacyDrug.currentCnt) {
-          setDrugInfo({ ...pharmacyDrug, currentCnt: pharmacyDrug.currentCnt += 1 });
+          setDrugInfo({
+            ...pharmacyDrug,
+            currentCnt: pharmacyDrug.currentCnt += 1,
+          });
         }
         break;
       case '-':
         if (pharmacyDrug.currentCnt > 1) {
-          setDrugInfo({ ...pharmacyDrug, currentCnt: pharmacyDrug.currentCnt -= 1 });
+          setDrugInfo({
+            ...pharmacyDrug,
+            currentCnt: pharmacyDrug.currentCnt -= 1,
+          });
         }
         break;
       default:
@@ -268,30 +294,45 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
       inputmodel.pharmacyKey = 'test::17';
       inputmodel.count = drugInfo.currentCnt;
 
-      const index = allPharmacyDrug.findIndex(x => x == pharmacyDrug);
-      if (!basketCount.find(x=>x.id == pharmacyDrug.id)) {
-        drugInfo.order = 0;
-        drugInfo.cardColor = '#89fd89';
-        drugInfo.buttonName = 'حذف از تبادل';
-        drugInfo.currentCnt = pharmacyDrug.currentCnt; 
-        setBasketCount([...basketCount, drugInfo]);
-        allPharmacyDrug[index].order = 0;
-        allPharmacyDrug[index].buttonName = 'حذف از تبادل';
-        allPharmacyDrug[index].cardColor = '#89fd89';
-        allPharmacyDrug[index].currentCnt = pharmacyDrug.currentCnt;        
+      const index = allPharmacyDrug.findIndex((x) => x.id == pharmacyDrug.id);
+      if (
+        ((activeStep === 0 || activeStep === 1) &&
+          !basketCount.find((x) => x.id == pharmacyDrug.id)) ||
+        (activeStep === 2 && !uBasketCount.find((x) => x.id == pharmacyDrug.id))
+      ) {
+        // ----------------------------------------------------------------------
+        pharmacyDrug.buttonName = 'حذف از تبادل';
+        pharmacyDrug.cardColor = '#89fd89';
+        pharmacyDrug.order = 0;
+        if (activeStep === 0 || activeStep === 1)
+          setBasketCount([...basketCount, pharmacyDrug]);
+        else setUbasketCount([...uBasketCount, pharmacyDrug]);
+        // ----------------------------------------------------------------------
       } else {
-        if (basketCount.length === 1) {
-          setBasketCount([]);
+        // ----------------------------------------------------------------------
+        pharmacyDrug.buttonName = 'افزودن به تبادل';
+        pharmacyDrug.cardColor = 'white';
+        pharmacyDrug.order = allPharmacyDrug.length;
+        pharmacyDrug.currentCnt = pharmacyDrug.cnt;
+        if (
+          ((activeStep === 1 || activeStep === 0) && basketCount.length === 1) ||
+          (activeStep === 2 && uBasketCount.length === 1)
+        ) {
+          if (activeStep === 1 || activeStep === 0) setBasketCount([]);
+          else setUbasketCount([]);
         } else {
-          setBasketCount([...basketCount.filter(x => x.id !== pharmacyDrug.id)]);
+          if (activeStep === 1 || activeStep === 0)
+            setBasketCount([
+              ...basketCount.filter((x) => x.id !== pharmacyDrug.id),
+            ]);
+          else
+            setUbasketCount([
+              ...uBasketCount.filter((x) => x.id !== pharmacyDrug.id),
+            ]);
         }
         inputmodel.count = 0;
-        allPharmacyDrug[index].order = 1;
-        allPharmacyDrug[index].buttonName = 'افزودن به تبادل';
-        allPharmacyDrug[index].cardColor = 'white';
-        allPharmacyDrug[index].currentCnt = pharmacyDrug.currentCnt;
+        // ----------------------------------------------------------------------
       }
-      setAllPharmacyDrug(allPharmacyDrug);
 
       try {
         if (inputmodel.count > 0) await _addDrug1(inputmodel);
@@ -309,11 +350,21 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
       inputmodel.packID = drugInfo.packID;
       inputmodel.pharmacyKey = 'test::17';
 
-      if (basketCount.indexOf(drugInfo) === -1) {
-        setBasketCount([...basketCount, drugInfo]);
-        const index = allPharmacyDrug.findIndex(x => x.packID === drugInfo.packID);
+      debugger;
+      const index = allPharmacyDrug.findIndex(
+        (x) => x.packID === pharmacyDrug.packID
+      );
+      if (
+        (activeStep === 1 &&
+          !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
+        (activeStep === 2 &&
+          !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
+      ) {
+        if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
+        else setUbasketCount([...basketCount, pharmacyDrug]);
         allPharmacyDrug[index].order = 0;
         allPharmacyDrug[index].cardColor = '#89fd89';
+        allPharmacyDrug[index].buttonName = 'حذف از تبادل';
         setAllPharmacyDrug(allPharmacyDrug);
         try {
           await _addPack1(inputmodel);
@@ -322,7 +373,18 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
           errorHandler(e);
         }
       } else {
-        setBasketCount([...basketCount.splice(basketCount.indexOf(drugInfo), 1)]);
+        if (activeStep === 1)
+          setBasketCount([
+            ...basketCount.filter((x) => x.packID !== pharmacyDrug.packID),
+          ]);
+        else
+          setUbasketCount([
+            ...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID),
+          ]);
+        allPharmacyDrug[index].order = allPharmacyDrug.length;
+        allPharmacyDrug[index].buttonName = 'افزودن به تبادل';
+        allPharmacyDrug[index].cardColor = 'white';
+        setAllPharmacyDrug(allPharmacyDrug);
         try {
           await _removePack1(inputmodel);
           dispatch({ type: 'reset' });
@@ -336,13 +398,25 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
   const CounterButton = (): JSX.Element => {
     return (
       <ButtonGroup variant="contained" color="primary">
-        <Button size="small" className={counterButton} onClick={(): void => counterHandle('+')}>
+        <Button
+          size="small"
+          className={counterButton}
+          onClick={(): void => counterHandle('+')}
+        >
           <AddIcon />
         </Button>
-        <Button variant="outlined" size="small" style={{ paddingTop: 5, backgroundColor: 'white' }}>
+        <Button
+          variant="outlined"
+          size="small"
+          style={{ paddingTop: 5, backgroundColor: 'white' }}
+        >
           {pharmacyDrug.currentCnt}
         </Button>
-        <Button size="small" className={counterButton} onClick={(): void => counterHandle('-')}>
+        <Button
+          size="small"
+          className={counterButton}
+          onClick={(): void => counterHandle('-')}
+        >
           <RemoveIcon />
         </Button>
       </ButtonGroup>
@@ -390,7 +464,12 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
               <ExpandMoreIcon />
             </IconButton>
           </CardActions>
-          <Collapse in={expanded} timeout="auto" unmountOnExit className={collapse}>
+          <Collapse
+            in={expanded}
+            timeout="auto"
+            unmountOnExit
+            className={collapse}
+          >
             <div> {collapsableContent} </div>
             <Button
               variant="contained"
@@ -399,11 +478,7 @@ const CardContainer: React.FC<CardPropsInterface> = props => {
               style={{ marginBottom: 5 }}
               onClick={async (): Promise<any> => await packHandle()}
             >
-              {drugInfo !== undefined && drugInfo.packID !== undefined
-                ? basketCount.indexOf(drugInfo) === -1
-                  ? 'افزودن به تبادل'
-                  : 'حذف از تبادل'
-                : 0}
+              {pharmacyDrug.buttonName}
             </Button>
           </Collapse>
         </>

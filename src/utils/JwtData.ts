@@ -5,7 +5,8 @@ class JwtData {
   userData: LoggedInUserInterface = {
     name: '',
     family: '',
-    token: ''
+    token: '',
+    currentPharmacyKey: ''
   };
 
   parsedToken: TokenInterface = {
@@ -13,7 +14,7 @@ class JwtData {
     'http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata': '',
   };
 
-  parseJwt = (token: string) => {
+  parseJwt = (token: string): any => {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
@@ -34,7 +35,8 @@ class JwtData {
       this.userData = {
         name: userFromStorageJSON.name,
         family: userFromStorageJSON.family,
-        token: userFromStorageJSON.token
+        token: userFromStorageJSON.token,
+        currentPharmacyKey: userFromStorageJSON.currentPharmacyKey
       };
 
       this.parsedToken = this.parseJwt(this.userData.token);
@@ -44,7 +46,7 @@ class JwtData {
     }
   }
 
-  roles = () => {
+  roles = (): any => {
     const rolesArray =
       this.parsedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 

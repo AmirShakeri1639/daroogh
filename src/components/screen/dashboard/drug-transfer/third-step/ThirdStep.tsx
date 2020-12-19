@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   CardContent,
   CardHeader,
@@ -25,13 +25,14 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { useTranslation } from 'react-i18next';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import SendIcon from '@material-ui/icons/Send';
-import { useQuery, useQueryCache } from 'react-query';
+import { useInfiniteQuery, useQuery, useQueryCache } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
+import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 
-const style = makeStyles(theme =>
+const style = makeStyles((theme) =>
   createStyles({
     paper: {
       padding: theme.spacing(1),
@@ -52,7 +53,7 @@ const style = makeStyles(theme =>
       top: 135,
       zIndex: 999,
     },
-  }),
+  })
 );
 
 const ThirdStep: React.FC = () => {
@@ -60,77 +61,148 @@ const ThirdStep: React.FC = () => {
 
   const [isSelected, setIsSelected] = React.useState(false);
 
-  const { activeStep, setActiveStep, allPharmacyDrug, setAllPharmacyDrug } = useContext<
-    TransferDrugContextInterface
-  >(DrugTransferContext);
+  const {
+    activeStep,
+    setActiveStep,
+    allPharmacyDrug,
+    setAllPharmacyDrug,
+    uBasketCount,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { paper, stickyToolbox, stickyRecommendation } = style();
 
   const queryCache = useQueryCache();
 
-  const { isLoading, error, data, refetch, isFetched = false } = useQuery(
-    ['key'],
-    () => getAllPharmacyDrug(''),
+  const [listPageNo, setListPage] = useState(0);
+  const [listCount, setListCount] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+
+  const {
+    status,
+    isLoading,
+    error,
+    data,
+    isFetching,
+    isFetchingMore,
+    fetchMore,
+    refetch,
+    canFetchMore,
+  } = useInfiniteQuery(
+    'key',
+    async (k) => {
+      const data = await getAllPharmacyDrug('', listPageNo, pageSize);
+      setListPage(listPageNo + 1);
+      const allItemsTillNow = [...allPharmacyDrug, ...data.items];
+      setAllPharmacyDrug(allItemsTillNow);
+      setListCount(data.count);
+      return data.items;
+    },
     {
-      onSuccess: data => {
-        const { items, count } = data;
-        setAllPharmacyDrug(items);
+      getFetchMore: () => {
+        return (
+          allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount
+        );
       },
       enabled: false,
-    },
+    }
   );
 
-  // const reFetchData = (): any => queryCache.invalidateQueries('key');
+  const loadMoreButtonRef = React.useRef<any>(null);
 
   useEffect(() => {
     setAllPharmacyDrug([]);
   }, []);
 
+  useIntersectionObserver({
+    target: loadMoreButtonRef,
+    onIntersect: fetchMore,
+    enabled: canFetchMore,
+  });
+
   const { t } = useTranslation();
 
   const cardListGenerator = (): JSX.Element[] | null => {
-    if (allPharmacyDrug.length > 0) {
+    if (allPharmacyDrug.length > 0 && data && data.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
-      return allPharmacyDrug
-        .sort((a, b) => (a.order > b.order ? 1 : -1))
-        .map((item: AllPharmacyDrugInterface, index: number) => {
-          Object.assign(item, {
-            order: index + 1,
-            buttonName: !item.buttonName ? 'افزودن به تبادل' : item.buttonName,
-            cardColor: !item.cardColor ? 'white' : item.cardColor
+      return data.map((item: any) => {
+        return item
+          ?.sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
+          .map((item: AllPharmacyDrugInterface, index: number) => {
+            Object.assign(item, {
+              order: index + 1,
+              buttonName: 'افزودن به تبادل',
+              cardColor: 'white',
+              currentCnt: item.cnt,
+            });
+
+            if (uBasketCount.length > 0) {
+              const basket = uBasketCount.find((x) => x.id == item.id);
+              if (basket) {
+                item.currentCnt = basket.currentCnt;
+                item.order = -1;
+                item.buttonName = 'حذف از تبادل';
+                item.cardColor = '#89fd89';
+              }
+            }
+
+            let isPack = false;
+            let totalAmount = 0;
+            let ignore = true;
+            if (
+              item.packID &&
+              !packList.find((x) => x.packID === item.packID)
+            ) {
+              allPharmacyDrug
+                .filter((x) => x.packID === item.packID)
+                .forEach((p: AllPharmacyDrugInterface) => {
+                  packList.push(p);
+                  totalAmount += p.amount;
+                });
+              item.totalAmount = totalAmount;
+              isPack = true;
+              ignore = false;
+              const basket = uBasketCount.find((x) => x.packID == item.packID);
+              if (basket) {
+                item.currentCnt = basket.currentCnt;
+                // item.order = -1;
+                item.buttonName = 'حذف از تبادل';
+                item.cardColor = '#89fd89';
+              }
+            }
+            if (
+              ignore &&
+              item.packID &&
+              packList.find((x) => x.id === item.id)
+            ) {
+              return;
+            }
+            return (
+              <Grid item xs={12} sm={6} xl={4} key={index}>
+                <div className={paper}>
+                  {isPack ? (
+                    <CardContainer
+                      basicDetail={
+                        <ExCardContent formType={1} pharmacyDrug={item} />
+                      }
+                      isPack={true}
+                      pharmacyDrug={item}
+                      collapsableContent={
+                        <ExCardContent formType={3} packInfo={packList} />
+                      }
+                    />
+                  ) : (
+                    <CardContainer
+                      basicDetail={
+                        <ExCardContent formType={2} pharmacyDrug={item} />
+                      }
+                      isPack={false}
+                      pharmacyDrug={item}
+                    />
+                  )}
+                </div>
+              </Grid>
+            );
           });
-          let isPack = false;
-          let totalAmount = 0;
-          if (item.packID && !packList.find(x => x.packID === item.packID)) {
-            allPharmacyDrug
-              .filter(x => x.packID === item.packID)
-              .forEach((p: AllPharmacyDrugInterface) => {
-                packList.push(p);
-                totalAmount += p.amount;
-              });
-            item.totalAmount = totalAmount;
-            isPack = true;
-          }
-        return (
-          <Grid item xs={12} sm={6} xl={4} key={index}>
-            <div className={paper}>
-              {isPack ? (
-                <CardContainer
-                  basicDetail={<ExCardContent formType={1} pharmacyDrug={item} />}
-                  isPack={true}
-                  pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                  collapsableContent={<ExCardContent formType={3} packInfo={packList} />}
-                />
-              ) : (
-                <CardContainer
-                  basicDetail={<ExCardContent formType={2} pharmacyDrug={item} />}
-                  isPack={false}
-                  pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                />
-              )}
-            </div>
-          </Grid>
-        );
       });
     }
 
@@ -155,7 +227,12 @@ const ThirdStep: React.FC = () => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} xs={12}>
-          <Grid item xs={12} md={12} style={{ marginBottom: -25, paddingBottom: 0 }}>
+          <Grid
+            item
+            xs={12}
+            md={12}
+            style={{ marginBottom: -25, paddingBottom: 0 }}
+          >
             <FormControlLabel
               control={
                 <Switch

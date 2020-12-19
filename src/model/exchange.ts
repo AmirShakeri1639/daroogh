@@ -13,3 +13,8 @@ export class RemovePack1 {
   packID: number = 0;
   pharmacyKey: string = '';
 }
+
+export class Send {
+  exchangeID: number = 0;
+  lockSuggestion: boolean = false;
+}

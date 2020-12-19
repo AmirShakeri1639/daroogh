@@ -27,10 +27,15 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import { useQueryCache, useInfiniteQuery, ReactQueryCacheProvider } from 'react-query';
+import {
+  useQueryCache,
+  useInfiniteQuery,
+  ReactQueryCacheProvider,
+} from 'react-query';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
+import JwtData from '../../../../../utils/JwtData';
 
-const style = makeStyles(theme =>
+const style = makeStyles((theme) =>
   createStyles({
     paper: {
       padding: 0,
@@ -53,12 +58,14 @@ const style = makeStyles(theme =>
       top: 135,
       zIndex: 999,
     },
-  }),
+  })
 );
 
 const SecondStep: React.FC = () => {
-  const { getAllPharmacyDrug } = new PharmacyDrug();
+  const { getAllPharmacyDrug, getViewExchange } = new PharmacyDrug();
   const { t } = useTranslation();
+
+  const [viewExhcnage, setViewExchange] = useState([]);
 
   const {
     activeStep,
@@ -73,6 +80,8 @@ const SecondStep: React.FC = () => {
     setExchangeId,
     basketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const { userData } = new JwtData();
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -107,7 +116,7 @@ const SecondStep: React.FC = () => {
     canFetchMore,
   } = useInfiniteQuery(
     'key',
-    async k => {
+    async (k) => {
       const data = await getAllPharmacyDrug('test::17', listPageNo, pageSize);
       setListPage(listPageNo + 1);
       const allItemsTillNow = [...allPharmacyDrug, ...data.items];
@@ -117,10 +126,12 @@ const SecondStep: React.FC = () => {
     },
     {
       getFetchMore: () => {
-        return allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount;
+        return (
+          allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount
+        );
       },
       enabled: false,
-    },
+    }
   );
 
   const loadMoreButtonRef = React.useRef<any>(null);
@@ -128,6 +139,15 @@ const SecondStep: React.FC = () => {
   useEffect(() => {
     refetch();
   }, []);
+
+  useEffect(() => {
+    (async (): Promise<void> => {
+      if (exchangeId > 0) {
+        const result = await getViewExchange(exchangeId);
+        setViewExchange(result);
+      }
+    })();
+  }, [exchangeId]);
 
   useIntersectionObserver({
     target: loadMoreButtonRef,
@@ -137,55 +157,95 @@ const SecondStep: React.FC = () => {
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (data && data.length > 0) {
+      const onlyA = data.filter(comparer(basketCount));
+      if (basketCount.length > 0)
+        basketCount.forEach((a) => {
+          if (onlyA.find((z) => z.id === a.id)) onlyA[0].unshift(a);
+        });
+
       const packList = new Array<AllPharmacyDrugInterface>();
-      return data.map((item: any, index: number) => {
-        return item
-          ?.sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
-          .map((item: any, index: number) => {
-            Object.assign(item, {
-              order: index + 1,
-              buttonName: !item.buttonName ? 'افزودن به تبادل' : item.buttonName,
-              cardColor: !item.cardColor ? 'white' : item.cardColor,
-            });
-
-            if (basketCount) {
-              const c = basketCount.find(x => x.id == item.id)?.currentCnt;
-              if (c) item.currentCnt = c;
-            }
-
-            let isPack = false;
-            let totalAmount = 0;
-            if (item.packID && !packList.find(x => x.packID === item.packID)) {
-              allPharmacyDrug
-                .filter(x => x.packID === item.packID)
-                .forEach((p: AllPharmacyDrugInterface) => {
-                  packList.push(p);
-                  totalAmount += p.amount;
+      return onlyA.map((item: any) => {
+        return (
+          item
+            ?.sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
+            .map((item: AllPharmacyDrugInterface, index: number) => {
+              if (!item.buttonName)
+                Object.assign(item, {
+                  order: index + 1,
+                  buttonName: 'افزودن به تبادل',
+                  cardColor: 'white',
+                  currentCnt: item.cnt,
                 });
-              item.totalAmount = totalAmount;
-              isPack = true;
-            }
-            return (
-              <Grid item xs={12} sm={6} xl={4} key={index}>
-                <div className={paper}>
-                  {isPack ? (
-                    <CardContainer
-                      basicDetail={<ExCardContent formType={1} pharmacyDrug={item} />}
-                      isPack={true}
-                      pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                      collapsableContent={<ExCardContent formType={3} packInfo={packList} />}
-                    />
-                  ) : (
-                    <CardContainer
-                      basicDetail={<ExCardContent formType={2} pharmacyDrug={item} />}
-                      isPack={false}
-                      pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                    />
-                  )}
-                </div>
-              </Grid>
-            );
-          });
+
+              // if (basketCount.length > 0) {
+              //   const basket = basketCount.find((x) => x.id == item.id);
+              //   if (basket) {
+              //     item.currentCnt = basket.currentCnt;
+              //     // item.order = -1;
+              //     item.buttonName = 'حذف از تبادل';
+              //     item.cardColor = '#89fd89';
+              //   }
+              // }
+
+              let isPack = false;
+              let totalAmount = 0;
+              let ignore = true;
+              if (
+                item.packID &&
+                !packList.find((x) => x.packID === item.packID)
+              ) {
+                allPharmacyDrug
+                  .filter((x) => x.packID === item.packID)
+                  .forEach((p: AllPharmacyDrugInterface) => {
+                    packList.push(p);
+                    totalAmount += p.amount;
+                  });
+                item.totalAmount = totalAmount;
+                isPack = true;
+                ignore = false;
+                const basket = basketCount.find((x) => x.packID == item.packID);
+                if (basket) {
+                  item.currentCnt = basket.currentCnt;
+                  // item.order = -1;
+                  item.buttonName = 'حذف از تبادل';
+                  item.cardColor = '#89fd89';
+                }
+              }
+              if (
+                ignore &&
+                item.packID &&
+                packList.find((x) => x.id === item.id)
+              ) {
+                return;
+              }
+              return (
+                <Grid item xs={12} sm={6} xl={4} key={index}>
+                  <div className={paper}>
+                    {isPack ? (
+                      <CardContainer
+                        basicDetail={
+                          <ExCardContent formType={1} pharmacyDrug={item} />
+                        }
+                        isPack={true}
+                        pharmacyDrug={item}
+                        collapsableContent={
+                          <ExCardContent formType={3} packInfo={packList} />
+                        }
+                      />
+                    ) : (
+                      <CardContainer
+                        basicDetail={
+                          <ExCardContent formType={2} pharmacyDrug={item} />
+                        }
+                        isPack={false}
+                        pharmacyDrug={item}
+                      />
+                    )}
+                  </div>
+                </Grid>
+              );
+            })
+        );
       });
     }
 

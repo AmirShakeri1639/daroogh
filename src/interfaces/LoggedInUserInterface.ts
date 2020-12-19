@@ -2,6 +2,7 @@ export interface LoggedInUserInterface {
   name: string;
   family: string;
   token: string;
+  currentPharmacyKey: string;
 }
 
 export interface TokenInterface {

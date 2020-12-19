@@ -1,5 +1,12 @@
 import React, { useContext } from 'react';
-import { Badge, createStyles, Grid, IconButton, makeStyles, Tooltip } from '@material-ui/core';
+import {
+  Badge,
+  createStyles,
+  Grid,
+  IconButton,
+  makeStyles,
+  Tooltip,
+} from '@material-ui/core';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
 import SortIcon from '@material-ui/icons/Sort';
 import ListIcon from '@material-ui/icons/List';
@@ -7,7 +14,7 @@ import ViewComfyIcon from '@material-ui/icons/ViewComfy';
 import ViewStreamIcon from '@material-ui/icons/ViewStream';
 import DrugTransferContext, { TransferDrugContextInterface } from './Context';
 
-const styles = makeStyles(theme =>
+const styles = makeStyles((theme) =>
   createStyles({
     ul: {
       listStyle: 'none',
@@ -28,22 +35,31 @@ const styles = makeStyles(theme =>
     icons: {
       color: theme.palette.gray.dark,
     },
-  }),
+  })
 );
 
 const ToolBox: React.FC = () => {
   const { ul, icons } = styles();
 
-  const { basketCount, setBasketCount } = useContext<TransferDrugContextInterface>(
-    DrugTransferContext,
-  );
+  const {
+    basketCount,
+    setBasketCount,
+    uBasketCount,
+    setUbasketCount,
+    activeStep,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   return (
     <ul className={ul}>
       <li>
         <Tooltip title="سبد دارو">
           <IconButton color="inherit" style={{ paddingTop: 0 }}>
-            <Badge badgeContent={basketCount.length} color="secondary">
+            <Badge
+              badgeContent={
+                activeStep === 1 ? basketCount.length : uBasketCount.length
+              }
+              color="secondary"
+            >
               <ShoppingBasketIcon className={icons} />
             </Badge>
           </IconButton>
