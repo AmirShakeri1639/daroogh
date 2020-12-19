@@ -199,7 +199,11 @@ const FirstStep: React.FC = () => {
         return;
       }
       const result = await searchDrug(title);
-      const options = sanitizeReactSelect(result, 'id', 'genericName');
+      const mappedItems = result.map(
+        (item: any) =>
+          ({ ...item, genericName: `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${item.companyName !== null ? `-${item.companyName}` : ''}${item.type !== null ? ` - ${item.type}` : ''}` })
+      );
+      const options = sanitizeReactSelect(mappedItems, 'id', 'genericName');
       setSearchOptions(options);
     } catch (e) {
       errorHandler(e);
@@ -308,7 +312,7 @@ const FirstStep: React.FC = () => {
             <div className={searchContainer}>
               <Button onClick={(): void => setIsOpenDrawer(true)}>
                 <FilterListIcon fontSize="small" />
-                {t('general.emal')} {t('general.filter')}
+                {t('general.filter')}
               </Button>
 
               <ReactSelect
@@ -359,7 +363,7 @@ const FirstStep: React.FC = () => {
               type="button"
               color="pink"
             >
-              {t('general.filter')}
+              {t('general.emal')} {t('general.filter')}
             </Button>
 
             <CloseIcon
