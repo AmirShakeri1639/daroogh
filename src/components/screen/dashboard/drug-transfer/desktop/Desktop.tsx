@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { ExchangeStatesEnum, CancellerEnum } from "../../../../../enum";
-import { ExchangeInterface } from "../../../../../interfaces";
-import { Grid } from "@material-ui/core";
-import CardContainer from "../exchange/CardContainer";
-import ExCardContent from "../exchange/ExCardContent";
-import ToolBox from "../Toolbox";
-import SearchInAList from "../SearchInAList";
-import CircleLoading from "../../../../public/loading/CircleLoading";
-import Button from "../../../../public/button/Button";
-import ArrowRightAltIcon from "@material-ui/icons/ArrowRightAlt";
-import KeyboardBackspaceIcon from "@material-ui/icons/KeyboardBackspace";
-import { useTranslation } from "react-i18next";
-import { useQueryCache } from "react-query";
-import { useClasses } from "../../classes";
-import { Exchange } from "../../../../../services/api";
+import { ExchangeStatesEnum, CancellerEnum } from '../../../../../enum';
+import { ExchangeInterface } from '../../../../../interfaces';
+import { Container, Grid } from '@material-ui/core';
+import CardContainer from '../exchange/CardContainer';
+import ExCardContent from '../exchange/ExCardContent';
+import ToolBox from '../Toolbox';
+import SearchInAList from '../SearchInAList';
+import CircleLoading from '../../../../public/loading/CircleLoading';
+import Button from '../../../../public/button/Button';
+import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import { useTranslation } from 'react-i18next';
+import { useQueryCache } from 'react-query';
+import { useClasses } from '../../classes';
+import { Exchange } from '../../../../../services/api';
+import DesktopCardContent from '../exchange/DesktopCardContent';
 
 const Desktop: React.FC = () => {
   const { t } = useTranslation();
@@ -26,32 +27,29 @@ const Desktop: React.FC = () => {
   React.useEffect(() => {
     async function getExchanges() {
       const result = await getDashboard();
-      setExchanges(result.items);
+      console.log('result in get DAshborad', result);
+      if (result != undefined) {
+        // const r = result?.items?.map((i: any) => {
+        //   return { ...i, state: Math.floor(Math.random() * 10) };
+        // });
+        // console.log('r', r);
+        // setExchanges(r);
+        setExchanges(result.items);
+      }
     }
+
     getExchanges();
     console.log('exchanges: ', exchanges);
   }, []);
 
   const cardListGenerator = (): JSX.Element[] | null => {
-    return (
-      [<h1>LIST OF EXCHANGES...</h1>]
-    )
     if (exchanges && exchanges.length > 0) {
-      return exchanges.map((item: any, index: number) => {
-        return (
-          <Grid item xs={ 12 } sm={ 4 } key={ index }>
-            <div className={ paper }>
-              <CardContainer
-                basicDetail={
-                  <></>
-                }
-                isPack={ item.packID }
-                pharmacyDrug={ Object.assign(item, { currentCnt: item.cnt }) }
-                collapsableContent={ item.collapsableContent }
-              />
-            </div>
-          </Grid>
-        )
+      return exchanges.map((item, index) => {
+        return (<Grid item xs={ 12 } sm={ 6 } xl={ 4 } key={ index }>
+          <div className={ paper }>
+            <DesktopCardContent item={ item } />
+          </div>
+        </Grid>);
       });
     }
 
@@ -63,10 +61,10 @@ const Desktop: React.FC = () => {
       <Grid item xs={ 9 }>
         <Grid container spacing={ 1 }>
           <Grid item xs={ 5 }>
-            <ToolBox/>
+            <ToolBox />
           </Grid>
           <Grid item xs={ 7 }>
-            <SearchInAList/>
+            <SearchInAList />
           </Grid>
         </Grid>
 
@@ -76,7 +74,7 @@ const Desktop: React.FC = () => {
       </Grid>
     </>
   );
-
-}
+};
 
 export default Desktop;
+
