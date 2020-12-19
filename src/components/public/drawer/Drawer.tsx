@@ -30,7 +30,13 @@ const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
   };
 
   return (
-    <SwipeableDrawer anchor="left" open={isOpen} onOpen={onClose} onClose={onClose}>
+    <SwipeableDrawer
+      disableBackdropTransition
+      anchor="left"
+      open={isOpen}
+      onOpen={onClose}
+      onClose={onClose}
+    >
       <div className={container}>{children}</div>
     </SwipeableDrawer>
   );
