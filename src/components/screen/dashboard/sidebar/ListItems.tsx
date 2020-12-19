@@ -34,6 +34,7 @@ import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
+import { ListItemsPropsInterface } from '../../../../interfaces';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -58,7 +59,7 @@ const ListItems: React.FC = () => {
   const [isOpenExchange, setIsOpenExchange] = useState<boolean>(false);
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
 
-  const { setActivePage } = useContext(Context);
+  const { activePageHandler: setActivePage } = useContext(Context);
 
   const { nested } = useStyles();
   const { t } = useTranslation();
