@@ -34,7 +34,6 @@ import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
-import { ListItemsPropsInterface } from '../../../../interfaces';
 
 const useStyles = makeStyles((theme) =>
   createStyles({

@@ -17,8 +17,8 @@ class Search extends Api {
     return result.data;
   }
 
-  searchCategory = async (): Promise<any> => {
-    const result = await this.getData('/Search/SearchCategory');
+  searchCategory = async (name: string, count = 10): Promise<any> => {
+    const result = await this.getData(`/Search/SearchCategory?name=${name}&count=${count}`);
     return result.data;
   }
 }
