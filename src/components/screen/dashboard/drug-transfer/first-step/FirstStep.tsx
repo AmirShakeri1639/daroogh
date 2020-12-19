@@ -9,7 +9,7 @@ import {
   Divider,
   Typography,
 } from '@material-ui/core';
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '../../../../public/button/Button';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +27,6 @@ import ReactSelect from '../../../../public/react-select/ReactSelect';
 import Input from '../../../../public/input/Input';
 import { errorHandler, sanitizeReactSelect } from '../../../../../utils';
 import Search from '../../../../../services/api/Search';
-import { useEffectOnce } from '../../../../../hooks';
 import { SelectOption } from '../../../../../interfaces';
 import { AdvancedSearchInterface } from '../../../../../interfaces/search';
 
@@ -207,19 +206,19 @@ const FirstStep: React.FC = () => {
     }
   };
 
-  const categorySearch = async (): Promise<any> => {
+  const categorySearch = async (title: string): Promise<any> => {
+    if (title.length < 2) {
+      return;
+    }
     try {
-      const result = await searchCategory();
+      const result = await searchCategory(title);
+
       const options = sanitizeReactSelect(result, 'id', 'name');
       setCategoryOptions(options);
     } catch (e) {
       errorHandler(e);
     }
   };
-
-  useEffectOnce(() => {
-    categorySearch();
-  });
 
   const {
     searchContainer,
