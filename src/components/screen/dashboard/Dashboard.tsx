@@ -117,16 +117,21 @@ const Dashboard: React.FC = () => {
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
 
+  const toggleIsOpenDrawer = (): void => setIsOpenDrawer(v => !v);
+
+  const activePageHandler = (page: string): void => {
+    toggleIsOpenDrawer()
+    setActivePage(page);
+  }
+
   const contextInitialValues = (): any => ({
     anchorEl,
     setAnchorEl,
     activePage,
-    setActivePage,
+    activePageHandler,
   });
 
   const { t } = useTranslation();
-
-  const toggleIsOpenDrawer = (): void => setIsOpenDrawer(v => !v);
 
   const handleUserIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(e.currentTarget);
