@@ -99,6 +99,16 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     '#03a9f4', //CONFIRMA_AND_B_PAYMENTA = 8,
     '#00bcd4', //CONFIRMA_AND_B_PAYMENTB = 9,
     '#ffeb3b', //CONFIRMALL_AND_PAYMENTALL = 10
+    '#e0e0e0', // NOSEND = 1+10,
+    '#a0dc39', // WAITFORB = 2+10,
+    '#4ca2af', //CONFIRMB_AND_WAITFORA = 3+10,
+    '#419600', //CONFIRMA_AND_B = 4+10,
+    '#f43665', //NOCONFIRMB = 5+10,
+    '#d32f3d', //CONFIRMB_AND_NOCONFIRMA = 6+10,
+    '#b00827', //CANCELLED = 7+10,
+    '#03a9f4', //CONFIRMA_AND_B_PAYMENTA = 8+10,
+    '#00bcd4', //CONFIRMA_AND_B_PAYMENTB = 9+10,
+    '#8dff3b', //CONFIRMALL_AND_PAYMENTALL = 10+10
   ]
 
   return (

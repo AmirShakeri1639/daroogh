@@ -27,19 +27,12 @@ const Desktop: React.FC = () => {
   React.useEffect(() => {
     async function getExchanges() {
       const result = await getDashboard();
-      console.log('result in get DAshborad', result);
       if (result != undefined) {
-        // const r = result?.items?.map((i: any) => {
-        //   return { ...i, state: Math.floor(Math.random() * 10) };
-        // });
-        // console.log('r', r);
-        // setExchanges(r);
         setExchanges(result.items);
       }
     }
 
     getExchanges();
-    console.log('exchanges: ', exchanges);
   }, []);
 
   const cardListGenerator = (): JSX.Element[] | null => {
