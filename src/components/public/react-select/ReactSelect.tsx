@@ -14,7 +14,7 @@ interface SelectProps {
   isMulti?: boolean;
   isInvalid?: boolean;
   isDropUp?: boolean;
-};
+}
 
 const ReactSelect: React.FC<SelectProps> = ({
   onInputChange,
@@ -58,7 +58,7 @@ const ReactSelect: React.FC<SelectProps> = ({
             borderLeft: '0 solid white !important',
             borderBottom: '1px solid #e7e7e7 !important',
             borderRadius: '0 !important',
-          }
+          };
         } else {
           return {
             borderTop: '0 solid white !important',
@@ -66,21 +66,21 @@ const ReactSelect: React.FC<SelectProps> = ({
             borderLeft: '0 solid white !important',
             borderBottom: '1px solid red !important',
             borderRadius: '0 !important',
-          }
+          };
         }
       default:
         if (isInvalid !== true) {
-          return {}
+          return {};
         } else {
           return {
             borderTop: '1px solid red !important',
             borderRight: '1px solid red !important',
             borderLeft: '1px solid red !important',
             borderBottom: '1px solid red !important',
-          }
+          };
         }
     }
-  }
+  };
 
   const customStyles = {
     control: (styles: any): any => ({
@@ -99,7 +99,7 @@ const ReactSelect: React.FC<SelectProps> = ({
       return {
         ...styles,
         backgroundColor: 'rgba(103, 58, 183, 0.25)',
-        borderRadius: 5
+        borderRadius: 5,
       };
     },
   };
@@ -113,7 +113,9 @@ const ReactSelect: React.FC<SelectProps> = ({
       options={options || []}
       classNamePrefix="react-select"
       placeholder={'حداقل سه کارکتر وارد کنید'}
-      noOptionsMessage={(): string => (noOptionsMessage || 'چیزی برای نمایش وجود ندارد')}
+      noOptionsMessage={(): string =>
+        noOptionsMessage || 'چیزی برای نمایش وجود ندارد'
+      }
       isDisabled={typeof disabled === 'boolean' ? disabled : false}
       isMulti={isMulti}
       closeMenuOnSelect={!isMulti}

@@ -2,6 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
+        emal: 'اعمال',
         daroog: 'داروگ',
         tabadol: 'تبادل',
         special: 'متن آزمایشی داروگ',
@@ -50,6 +51,8 @@ export default {
         filter: 'فیلتر',
         justOffer: 'فقط دارای آفر',
         noData: 'اطلاعات موجود نیست',
+        start: 'شروع',
+        unknown: 'نامشخص',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -118,6 +121,10 @@ export default {
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
         admin: 'ادمین',
+        goldUser: 'کاربر طلایی',
+        silverUser: 'کاربر نقره ای',
+        boronzeUser: 'کاربر برنزی',
+        platiniumUser: 'کاربر پلاتینیوم',
       },
       drug: {
         drug: 'دارو',
@@ -150,6 +157,15 @@ export default {
       },
       exchange: {
         exchange: 'تبادل',
+        desktop: 'کارتابل',
+        expirationDate: 'تاریخ انقضای تبادل',
+        goldenUser: 'کاربر طلایی',
+        silverUser: 'کاربر نقره‌ای',
+        bronzeUser: 'کاربر برنزی',
+        platinum: 'کاربر پلاتینوم',
+        amount: 'مبلغ تبادل',
+        commission: 'مبلغ پورسانت',
+        paymentStatus: 'وضعیت پرداخت',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -198,6 +214,34 @@ export default {
       PackStatusEnum: {
         ARZESHODEH: 'عرضه شده',
         FOROOKHTEHSHODEH: 'فروخته شده',
+      },
+      ExchangeStatesEnum: {
+        UNKNOWN: 'نامشخص',
+        NOSEND: 'ارسال نشده',
+        WAITFORB: 'منتظر تائید طرف مقابل',
+        CONFIRMB_AND_WAITFORA: 'منتظر تائید شما',
+        CONFIRMA_AND_B: 'تائید شده و در انتظار پرداخت',
+        NOCONFIRMB: 'مخالفت شده توسط طرف مقابل',
+        CONFIRMB_AND_NOCONFIRMA: 'مخالفت شده توسط شما',
+        CANCELLED: 'لغو شده',
+        CONFIRMA_AND_B_PAYMENTA: 'تائید طرفین و در انتظار پرداخت شما',
+        CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
+        WAITFORB_FORB: 'منتظر تائید شما',
+        CONFIRMB_AND_WAITFORA_FORB: 'منتظر تائید طرف مقابل',
+        CONFIRMA_AND_B_FORB: 'تائید شده و در انتظار پرداخت',
+        NOCONFIRMB_FORB: 'مخالفت شده توسط شما',
+        CONFIRMB_AND_NOCONFIRMA_FORB: 'مخالفت شده توسط طرف مقابل',
+        CANCELLED_FORB: 'لغو شده',
+        CONFIRMA_AND_B_PAYMENTA_FORB: 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        CONFIRMA_AND_B_PAYMENTB_FORB: 'تائید طرفین و در انتظار پرداخت شما',
+        CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
+      },
+      CancellerEnum: {
+        PHARMACYA_NOTRESPONSE: '- عدم پاسخگوئی داروخانه طرف اول',
+        PHARMACYB_NOTRESPONSE: 'عدم پاسخگوئی داروخانه طرف دوم',
+        BYSUPPORUSER: 'لغو توسط پشتیبانی',
+        PHARMACYA_AFTERSEND: 'پشیمان شدن داروخانه طرف اول',
       },
       accounting: {
         accounting: 'مالی',

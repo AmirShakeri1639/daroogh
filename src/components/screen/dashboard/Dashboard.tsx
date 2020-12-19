@@ -3,7 +3,7 @@ import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Drawer, List } from '@material-ui/core';
+import { List } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -11,13 +11,14 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
-import { AccountCircle, ChevronLeft as ChevronLeftIcon } from '@material-ui/icons';
+import { AccountCircle, ChevronRight as ChevronRightIcon } from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { useTranslation } from "react-i18next";
 import Context from './Context';
 import UserMenu from "./appbar/UserMenu";
 import ListItems from "./sidebar/ListItems";
 import DashboardActivePage from "./DashboardActivePage";
+import { MaterialDrawer } from '../../public';
 
 const drawerWidth = 240;
 
@@ -107,7 +108,7 @@ type DashboardActivePage =
   | 'accountingList';
 
 const Dashboard: React.FC = () => {
-  const [isOpenDrawer, setIsOpenDrawer] = React.useState(true);
+  const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [activePage, setActivePage] = useState<string>('dashboard');
 
@@ -116,11 +117,18 @@ const Dashboard: React.FC = () => {
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
 
+  const toggleIsOpenDrawer = (): void => setIsOpenDrawer(v => !v);
+
+  const activePageHandler = (page: string): void => {
+    toggleIsOpenDrawer()
+    setActivePage(page);
+  }
+
   const contextInitialValues = (): any => ({
     anchorEl,
     setAnchorEl,
     activePage,
-    setActivePage,
+    activePageHandler,
   });
 
   const { t } = useTranslation();
@@ -140,7 +148,7 @@ const Dashboard: React.FC = () => {
         <AppBar
           elevation={0}
           position="absolute"
-          className={clsx(classes.appBar, isOpenDrawer && classes.appBarShift)}
+          className={classes.appBar}
         >
           <Toolbar className={classes.toolbar}>
             <IconButton
@@ -174,12 +182,9 @@ const Dashboard: React.FC = () => {
           </Toolbar>
 
         </AppBar>
-        <Drawer
-          variant="permanent"
-          classes={{
-            paper: clsx(classes.drawerPaper, !isOpenDrawer && classes.drawerPaperClose),
-          }}
-          open={isOpenDrawer}
+        <MaterialDrawer
+          onClose={toggleIsOpenDrawer}
+          isOpen={isOpenDrawer}
         >
           <div className={classes.toolbarIcon}>
             <img
@@ -188,7 +193,7 @@ const Dashboard: React.FC = () => {
               alt="logo-daroog"
             />
             <IconButton onClick={handleDrawerClose}>
-              <ChevronLeftIcon />
+              <ChevronRightIcon />
             </IconButton>
           </div>
           <Divider />
@@ -199,7 +204,7 @@ const Dashboard: React.FC = () => {
             {listItemsGenerator()}
           </List>
           <Divider />
-        </Drawer>
+        </MaterialDrawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
           <DashboardActivePage />

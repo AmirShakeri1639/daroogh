@@ -63,6 +63,7 @@ export type { PharmacyWithUserInterface } from './PharmacyWithUserInterface';
 export type { CountryDivisionInterface } from './CountryDivisionInterface';
 export type { LoggedInUserInterface } from './LoggedInUserInterface';
 export type { TokenInterface } from './LoggedInUserInterface';
+export type { ExchangeInterface } from './ExchangeInterface';
 
 export * from './component';
 export * from './general';

@@ -20,6 +20,7 @@ import CategoryList from './category/CategoryList';
 import Exchange from './drug-transfer/exchange/Exchange';
 import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
+import Desktop from "./drug-transfer/desktop/Desktop";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -112,6 +113,9 @@ const DashboardActivePage: React.FC = () => {
         break;
       case DashboardPages.EXCHANGE:
         el = <TransferDrug />;
+        break;
+      case DashboardPages.EXCHANGE_LIST:
+        el = <Desktop />;
         break;
       case DashboardPages.ACCOUNTING_LIST:
         el = <AccountingList />;

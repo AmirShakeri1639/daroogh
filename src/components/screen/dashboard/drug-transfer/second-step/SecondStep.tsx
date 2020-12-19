@@ -24,7 +24,7 @@ import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useQuery } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
+import { AllPharmacyDrugInterface } from '../../../../../interfaces';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import {
@@ -35,7 +35,7 @@ import {
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 import JwtData from '../../../../../utils/JwtData';
 
-const style = makeStyles((theme) =>
+const style = makeStyles(theme =>
   createStyles({
     paper: {
       padding: 0,
@@ -58,7 +58,7 @@ const style = makeStyles((theme) =>
       top: 135,
       zIndex: 999,
     },
-  })
+  }),
 );
 
 const SecondStep: React.FC = () => {
@@ -86,7 +86,7 @@ const SecondStep: React.FC = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { paper, stickyToolbox, stickyRecommendation } = style();
+  const { paper, stickyToolbox, stickyRecommendation } = useClasses();
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
@@ -112,7 +112,7 @@ const SecondStep: React.FC = () => {
     isFetching,
     isFetchingMore,
     fetchMore,
-    refetch,
+    //refetch,
     canFetchMore,
   } = useInfiniteQuery(
     'key',
@@ -136,9 +136,10 @@ const SecondStep: React.FC = () => {
 
   const loadMoreButtonRef = React.useRef<any>(null);
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  // TODO: check this
+  //   refetch();
+  // }, []);
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -307,7 +308,36 @@ const SecondStep: React.FC = () => {
           <Grid item xs={12} md={9}>
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
-              {cardListGenerator()}
+              { status === 'loading'
+                ? (<CircleLoading/>)
+                : status === 'error' ?
+                  (<span>{ t('error.loading-data') }</span>
+                  ) : (
+                    <>
+                      { cardListGenerator() }
+                      <div>
+                        <button
+                          className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
+                          ref={ loadMoreButtonRef }
+                          onClick={ fetchMore }
+                          disabled={ !canFetchMore }
+                        >
+                          { isFetchingMore
+                            ? t('general.loading')
+                            : canFetchMore
+                              ? t('general.more')
+                              : t('general.noMoreData') }
+                        </button>
+                      </div>
+                      <div>
+                        { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+                      </div>
+                    </>
+                  )
+              }
+              <div>
+                { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+              </div>
             </Grid>
           </Grid>
           <Grid item xs={12} sm={12} md={3}>

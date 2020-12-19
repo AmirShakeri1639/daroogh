@@ -22,6 +22,7 @@ export enum DashboardPages {
   PHARMACY_LIST = 'pharmaciesList',
   CATEGORY_LIST = 'categoryList',
   EXCHANGE = 'exchange',
+  EXCHANGE_LIST = 'exchangesList',
   ACCOUNTING_LIST = 'accounting',
 }
 
@@ -60,4 +61,9 @@ export const MessageTypeArray = (textArray: string[]) => [
   { val: MessageTypeEnum.SMS_AND_NOTIFICATION, text: textArray[3] },
 ]
 
+export enum RolesEnum {
+  PHARMACY = '1',
+  ADMIN = '2'
+}
 
+export { ExchangeStatesEnum, CancellerEnum } from './ExchangeStatesEnum';

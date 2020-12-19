@@ -40,7 +40,6 @@ class JwtData {
       };
 
       this.parsedToken = this.parseJwt(this.userData.token);
-      console.log('parsed token:', this.parsedToken);
     } catch (e) {
       errorHandler(e);
     }

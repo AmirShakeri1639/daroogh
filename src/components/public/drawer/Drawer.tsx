@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import {createStyles, Drawer} from '@material-ui/core';
-import { MaterialDrawerPropsInterface } from "../../../interfaces";
-import {makeStyles} from "@material-ui/core/styles";
+import { createStyles, Drawer } from '@material-ui/core';
+import { MaterialDrawerPropsInterface } from '../../../interfaces';
+import { makeStyles } from '@material-ui/core/styles';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
-const useStyle = makeStyles((theme) => createStyles({
-  container: {
-    width: 300,
-  },
-}));
+const useStyle = makeStyles((theme) =>
+  createStyles({
+    container: {
+      width: 300,
+    },
+  })
+);
 
 const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
   const { children, onClose, isOpen } = props;
@@ -15,7 +18,7 @@ const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
   const { container } = useStyle();
 
   const toggleDrawer = (open: boolean) => (
-    event: React.KeyboardEvent | React.MouseEvent,
+    event: React.KeyboardEvent | React.MouseEvent
   ) => {
     if (
       event.type === 'keydown' &&
@@ -27,16 +30,16 @@ const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
   };
 
   return (
-    <Drawer
+    <SwipeableDrawer
+      disableBackdropTransition
       anchor="left"
       open={isOpen}
+      onOpen={onClose}
       onClose={onClose}
     >
-      <div className={container}>
-        {children}
-      </div>
-    </Drawer>
+      <div className={container}>{children}</div>
+    </SwipeableDrawer>
   );
-}
+};
 
 export default MaterialDrawer;
