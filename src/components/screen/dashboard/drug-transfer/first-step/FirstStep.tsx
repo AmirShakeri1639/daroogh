@@ -138,6 +138,8 @@ const FirstStep: React.FC = () => {
 
   const { t } = useTranslation();
 
+  const toggleIsOpenDrawer = (): void => setIsOpenDrawer(v => !v);
+
   const setDataOfSearch = (
     item: AdvancedSearchInterface
   ): AdvancedSearchInterface => {
@@ -347,7 +349,7 @@ const FirstStep: React.FC = () => {
       </Hidden> */}
 
       <MaterialDrawer
-        onClose={(): void => setIsOpenDrawer(false)}
+        onClose={toggleIsOpenDrawer}
         isOpen={isOpenDrawer}
       >
         <div className={drawerContainer}>

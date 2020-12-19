@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createStyles, Drawer } from '@material-ui/core';
 import { MaterialDrawerPropsInterface } from '../../../interfaces';
 import { makeStyles } from '@material-ui/core/styles';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -29,9 +30,9 @@ const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
   };
 
   return (
-    <Drawer anchor="left" open={isOpen} onClose={onClose}>
+    <SwipeableDrawer anchor="left" open={isOpen} onOpen={onClose} onClose={onClose}>
       <div className={container}>{children}</div>
-    </Drawer>
+    </SwipeableDrawer>
   );
 };
 
