@@ -7,6 +7,8 @@ import MoneyIcon from '@material-ui/icons/Money';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
 import LabelIcon from '@material-ui/icons/Label';
 import PaymentIcon from '@material-ui/icons/Payment';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import StarIcon from '@material-ui/icons/Star';
 import moment from 'jalali-moment';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +27,19 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     state = item?.state == undefined ? 0 : item?.state;
   } else {
     state = item?.state == undefined ? 0 : (item?.state + 10);
+  }
+
+  // TODO: get star from item, when it's added in API
+  const star = 4;
+  const stars =  () => {
+    const starsArray: JSX.Element[] = [];
+      for (let i = 0; i < star; i++) {
+        starsArray.push(<StarIcon />);
+      }
+      for (let i = star; i < 5; i++) {
+        starsArray.push(<StarBorderIcon />);
+      }
+    return starsArray;
   }
 
   const {
@@ -50,8 +65,8 @@ const DesktopCardContent = (props: Props): JSX.Element => {
             <Grid xs={ 12 } className={ rowLeft }>
               Guaranty
             </Grid>
-            <Grid xs={ 12 } className={ rowLeft }>
-              5star
+            <Grid xs={ 12 } className={ rowLeft } style={{ direction: 'ltr' }}>
+              { stars() }
             </Grid>
           </Grid>
         </Grid>
