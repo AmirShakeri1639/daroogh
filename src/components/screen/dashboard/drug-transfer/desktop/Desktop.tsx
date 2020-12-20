@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryCache } from 'react-query';
 import { useClasses } from '../../classes';
 import { Exchange } from '../../../../../services/api';
-import DesktopCardContent from '../exchange/DesktopCardContent';
+import DesktopCardContent from './DesktopCardContent';
 
 const Desktop: React.FC = () => {
   const { t } = useTranslation();

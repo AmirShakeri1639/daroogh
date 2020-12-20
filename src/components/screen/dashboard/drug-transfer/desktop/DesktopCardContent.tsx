@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Card, CardContent, Container, Grid, Typography } from '@material-ui/core';
 import { ExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
@@ -12,7 +12,11 @@ import StarIcon from '@material-ui/icons/Star';
 import moment from 'jalali-moment';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import { useTranslation } from 'react-i18next';
-import { Colors, ExchangeStatesEnum } from '../../../../../enum';
+import { Colors, DashboardPages, ExchangeStatesEnum } from '../../../../../enum';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import Context from '../../Context';
+import Button from '../../../../public/button/Button';
+import TransferDrug from '../Transfer';
 
 interface Props {
   item: ExchangeInterface;
@@ -21,12 +25,30 @@ interface Props {
 const DesktopCardContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { item } = props;
+  const {
+    setSelectedPharmacyForTransfer,
+    setActiveStep,
+    activeStep,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const { activePageHandler: setActivePage } = useContext(Context);
 
   let state: number = 0;
+  let pharmacyKey: string = '';
   if (item?.currentPharmacyIsA) {
     state = item?.state == undefined ? 0 : item?.state;
+    pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
   } else {
     state = item?.state == undefined ? 0 : (item?.state + 10);
+    pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
+  }
+
+  const transferStart = (): void => {
+    // console.log('key:', pharmacyKey);
+    // console.log('step:', activeStep);
+    setSelectedPharmacyForTransfer(pharmacyKey);
+    setActiveStep(activeStep + 1);
+    setActivePage(DashboardPages.EXCHANGE);
   }
 
   // TODO: get star from item, when it's added in API
@@ -45,13 +67,13 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   const {
     cardContent, cardContainer, ulCardName,
     rowRight, rowLeft, colLeft, cardRoot,
-    cardTitle, titleCode, cardTop,
+    cardTitle, titleCode, cardTop, pointer,
   } = useClasses();
 
   const ExchangeInfo = (): JSX.Element => {
     return (
       <Grid container spacing={ 1 } className={ cardContainer }>
-        <Grid container xs={ 12 } className={ cardTop }>
+        <Grid container className={ cardTop }>
           <Grid container xs={ 6 } className={ rowRight }>
             <Grid xs={ 12 } className={ rowRight }>
               <LabelIcon/>
@@ -149,8 +171,9 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   return (
     <Card className={ `${ cardRoot }` }>
       <CardContent>
-        <Typography variant="h5" component="h2" className={ cardTitle }
-                    style={ { background: backColor[item.state != undefined ? item.state : 0] } }>
+        <Typography variant="h5" component="h2" className={ `${cardTitle} ${pointer}` }
+                    style={ { background: backColor[item.state != undefined ? item.state : 0] } }
+                    onClick={(): void => transferStart()}>
             { t(`ExchangeStatesEnum.${ ExchangeStatesEnum[state] }`) }
         </Typography>
         <div className={ titleCode }>
