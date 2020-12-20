@@ -20,7 +20,29 @@ export enum ExchangeStatesEnum {
   // تایید شده - در انتظار پرداخت طرف دوم
   CONFIRMA_AND_B_PAYMENTB = 9,
   // تبادل کامل شده
-  CONFIRMALL_AND_PAYMENTALL = 10
+  CONFIRMALL_AND_PAYMENTALL = 10,
+
+  //// _FORB
+  NOSEND_FORB = 11,
+  // منتظر پاسخ داروخانه مقابل - طرف دوم
+  WAITFORB_FORB = 12,
+  // تایید داروخانه مقابل (طرف دوم) - در انتظار پاسخ شما
+  CONFIRMB_AND_WAITFORA_FORB = 13,
+  // تایید شده - در انتظار پرداخت
+  CONFIRMA_AND_B_FORB = 14,
+  // مخالفت شده توسط طرف دوم
+  NOCONFIRMB_FORB = 15,
+  // مخالفت شده توسط طرف اول
+  CONFIRMB_AND_NOCONFIRMA_FORB = 16,
+  // لغو شده
+  CANCELLED_FORB = 17,
+  // تایید شده - در انتظار پرداخت طرف اول
+  CONFIRMA_AND_B_PAYMENTA_FORB = 18,
+  // تایید شده - در انتظار پرداخت طرف دوم
+  CONFIRMA_AND_B_PAYMENTB_FORB = 19,
+  // تبادل کامل شده
+  CONFIRMALL_AND_PAYMENTALL_FORB = 20,
+
 }
 
 export enum CancellerEnum {

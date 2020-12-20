@@ -19,7 +19,13 @@ interface Props {
 const DesktopCardContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { item } = props;
-  const formType = 1;
+
+  let state: number = 0;
+  if (item?.currentPharmacyIsA) {
+    state = item?.state == undefined ? 0 : item?.state;
+  } else {
+    state = item?.state == undefined ? 0 : (item?.state + 10);
+  }
 
   const {
     cardContent, cardContainer, ulCardName,
@@ -30,57 +36,60 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   const ExchangeInfo = (): JSX.Element => {
     return (
       <Grid container spacing={ 1 } className={ cardContainer }>
-        <Grid container xs={12} className={cardTop}>
-          <Grid container xs={6} className={rowRight}>
-            <Grid xs={12} className={rowRight}>
-              <LabelIcon />
-              <span>{t('exchange.goldenUser')}</span>
+        <Grid container xs={ 12 } className={ cardTop }>
+          <Grid container xs={ 6 } className={ rowRight }>
+            <Grid xs={ 12 } className={ rowRight }>
+              <LabelIcon/>
+              <span>{ t('exchange.goldenUser') }</span>
             </Grid>
-            <Grid xs={12} className={rowRight}>
-              <div>{item.pharmacyProvinceB} {item.pharmacyCityB}</div>
+            <Grid xs={ 12 } className={ rowRight }>
+              <div>{ item.pharmacyProvinceB } { item.pharmacyCityB }</div>
             </Grid>
           </Grid>
-          <Grid container xs={6} className={colLeft}>
-            <Grid xs={12} className={rowLeft}>
+          <Grid container xs={ 6 } className={ colLeft }>
+            <Grid xs={ 12 } className={ rowLeft }>
               Guaranty
             </Grid>
-            <Grid xs={12} className={rowLeft}>
+            <Grid xs={ 12 } className={ rowLeft }>
               5star
             </Grid>
           </Grid>
         </Grid>
-        <Grid container xs={12}>
+        <Grid container xs={ 12 }>
           <Grid item xs={ 4 } className={ rowRight }>
-            <EventBusyIcon /> { t('exchange.expirationDate') }
+            <EventBusyIcon/> { t('exchange.expirationDate') }
           </Grid>
           <Grid item xs={ 4 }>
-            <hr />
+            <hr/>
           </Grid>
           <Grid item xs={ 4 } className={ rowLeft }>
-            {item?.sendDate == null ? '' :
-              moment(item?.sendDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
+            { item?.currentPharmacyIsA ?
+              (item?.expireDateA == null ? '' :
+                moment(item?.expireDateA, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD'))
+              : (item?.expireDateB == null ? '' :
+                moment(item?.expireDateB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')) }
           </Grid>
           <Grid item xs={ 12 } sm={ 4 } className={ rowRight }>
-            <MoneyIcon />
+            <MoneyIcon/>
             { t('exchange.commission') }
           </Grid>
           <Grid item xs={ 12 } sm={ 4 }>
-            <hr />
+            <hr/>
           </Grid>
           <Grid item xs={ 12 } sm={ 4 } className={ rowLeft }>
-            {/* TODO: should be A or B */}
-            { item?.totalPourcentageA }
+            { item?.currentPharmacyIsA ? item?.totalPourcentageA : item?.totalPourcentageB }
           </Grid>
           <Grid item xs={ 12 } sm={ 4 } className={ rowRight }>
-            <PaymentIcon />
+            <PaymentIcon/>
             { t('exchange.paymentStatus') }
           </Grid>
           <Grid item xs={ 12 } sm={ 4 }>
-            <hr />
+            <hr/>
           </Grid>
           <Grid item xs={ 12 } sm={ 4 } className={ rowLeft }>
-            {/* TODO: paymentstatus field */}
-            { item?.description }
+            { item?.currentPharmacyIsA
+              ? item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed')
+              : item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed') }
           </Grid>
         </Grid>
       </Grid>
@@ -114,17 +123,17 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   return (
     <Card className={ `${ cardRoot }` }>
       <CardContent>
-        <Typography variant="h5" component="h2" className={cardTitle}
-          style={{ background: backColor[item.state != undefined ? item.state : 0] }}>
-          { item.stateString }
+        <Typography variant="h5" component="h2" className={ cardTitle }
+                    style={ { background: backColor[item.state != undefined ? item.state : 0] } }>
+            { t(`ExchangeStatesEnum.${ ExchangeStatesEnum[state] }`) }
         </Typography>
-        <div className={titleCode}>
-          T-4212
+        <div className={ titleCode }>
+          { item?.currentPharmacyIsA ? item?.numberA : item?.numberB }
         </div>
-        <Container className={ formType === 1 || formType === 2 ? `${ cardContent }` : '' }>
+        <Container className={ cardContent }>
           <>
             { item &&
-              <ExchangeInfo />
+            <ExchangeInfo/>
             }
           </>
         </Container>
