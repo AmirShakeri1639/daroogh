@@ -7,6 +7,7 @@ import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import MoneyIcon from '@material-ui/icons/Money';
 import moment from 'jalali-moment';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
+import ListIcon from '@material-ui/icons/List';
 
 const useClasses = makeStyles(theme =>
   createStyles({
@@ -43,6 +44,11 @@ const useClasses = makeStyles(theme =>
       alignItems: 'center',
       justifyContent: 'flex-end',
     },
+    colLeftIcon: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
     ulCardName: {
       padding: 0,
       textAlign: 'left',
@@ -62,27 +68,28 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
     rowLeft,
     ulCardName,
     colLeft,
+    colLeftIcon
   } = useClasses();
 
   const PackContent = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
-        <Grid item xs={12} sm={4}>
-          📦 نام دسته
+        <Grid item xs={12} sm={4} className={rowRight}>
+          <ListIcon /> نام دسته
         </Grid>
         <Grid item xs={12} sm={4}>
           <hr />
         </Grid>
-        <Grid item xs={12} sm={4}>
-          {pharmacyDrug?.packCategoryName}
+        <Grid item xs={12} sm={4} className={rowLeft}>
+          {pharmacyDrug?.packName}
         </Grid>
-        <Grid item xs={12} sm={4}>
-          💰 قیمت کل
+        <Grid item xs={12} sm={4} className={rowRight}>
+          <MoneyIcon /> قیمت کل
         </Grid>
         <Grid item xs={12} sm={4}>
           <hr />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={4} className={rowLeft}>
           {pharmacyDrug?.totalAmount}
         </Grid>
       </Grid>
@@ -101,13 +108,18 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
                   <ul className={ulCardName}>
-                    <li>
+                    <li className={colLeftIcon}>
+                      <EventBusyIcon />
                       {moment(item.expireDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
                     </li>
-                    <li>
+                    <li className={colLeftIcon}>
+                      <CardGiftcardIcon />
                       {item.offer1} به {item.offer2}
                     </li>
-                    <li>{item.amount}</li>
+                    <li className={colLeftIcon}>
+                      <MoneyIcon />
+                      {item.amount}
+                    </li>
                   </ul>
                 </Grid>
               </Grid>

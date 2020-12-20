@@ -27,13 +27,46 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import { useQueryCache, useInfiniteQuery, ReactQueryCacheProvider } from 'react-query';
+import {
+  useQueryCache,
+  useInfiniteQuery,
+  ReactQueryCacheProvider,
+} from 'react-query';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
+import JwtData from '../../../../../utils/JwtData';
 import { useClasses } from '../../classes';
 
+const style = makeStyles((theme) =>
+  createStyles({
+    paper: {
+      padding: 0,
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+    stickyToolbox: {
+      position: 'sticky',
+      margin: 0,
+      top: 70,
+      zIndex: 999,
+      backgroundColor: '#f3f3f3',
+      boxShadow: '0px 0px 3px 3px silver',
+    },
+    stickyRecommendation: {
+      position: 'sticky',
+      margin: 0,
+      padding: 10,
+      paddingTop: 0,
+      top: 135,
+      zIndex: 999,
+    },
+  })
+);
+
 const SecondStep: React.FC = () => {
-  const { getAllPharmacyDrug } = new PharmacyDrug();
+  const { getAllPharmacyDrug, getViewExchange } = new PharmacyDrug();
   const { t } = useTranslation();
+
+  const [viewExhcnage, setViewExchange] = useState([]);
 
   const {
     activeStep,
@@ -47,7 +80,10 @@ const SecondStep: React.FC = () => {
     exchangeId,
     setExchangeId,
     basketCount,
+    selectedPharmacyForTransfer,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const { userData } = new JwtData();
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -69,6 +105,7 @@ const SecondStep: React.FC = () => {
   const [listPageNo, setListPage] = useState(0);
   const [listCount, setListCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [dataInfo, setDataInfo] = useState<any>([]);
 
   const {
     status,
@@ -78,32 +115,54 @@ const SecondStep: React.FC = () => {
     isFetching,
     isFetchingMore,
     fetchMore,
-    //refetch,
+    refetch,
     canFetchMore,
   } = useInfiniteQuery(
     'key',
-    async k => {
-      const data = await getAllPharmacyDrug('test::17', listPageNo, pageSize);
+    async (k) => {
+      const data = await getAllPharmacyDrug(
+        selectedPharmacyForTransfer,
+        listPageNo,
+        pageSize
+      );
       setListPage(listPageNo + 1);
       const allItemsTillNow = [...allPharmacyDrug, ...data.items];
       setAllPharmacyDrug(allItemsTillNow);
       setListCount(data.count);
+
+      const onlyA = data.items.filter(comparer(basketCount));
+      if (basketCount.length > 0)
+        basketCount.forEach((a) => {
+          if (data.items.find((z: any) => z.id === a.id)) onlyA.splice(0, 0, a);
+        });
+      console.log('data---> ', onlyA);
+      setDataInfo(onlyA);
       return data.items;
     },
     {
       getFetchMore: () => {
-        return allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount;
+        return (
+          allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount
+        );
       },
       enabled: false,
-    },
+    }
   );
 
   const loadMoreButtonRef = React.useRef<any>(null);
 
-  // useEffect(() => {
-  // TODO: check this
-  //   refetch();
-  // }, []);
+  useEffect(() => {
+    (async (): Promise<void> => {
+      if (exchangeId > 0) {
+        const result = await getViewExchange(exchangeId);
+        setViewExchange(result);
+      }
+    })();
+  }, [exchangeId]);
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   useIntersectionObserver({
     target: loadMoreButtonRef,
@@ -112,57 +171,79 @@ const SecondStep: React.FC = () => {
   });
 
   const cardListGenerator = (): JSX.Element[] | null => {
-    if (data && data.length > 0) {
+    if (dataInfo && dataInfo.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
-      return data.map((item: any, index: number) => {
-        return item
-          ?.sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
-          .map((item: any, index: number) => {
-            Object.assign(item, {
-              order: index + 1,
-              buttonName: !item.buttonName ? 'افزودن به تبادل' : item.buttonName,
-              cardColor: !item.cardColor ? 'white' : item.cardColor,
-            });
-
-            if (basketCount) {
-              const c = basketCount.find(x => x.id == item.id)?.currentCnt;
-              if (c) item.currentCnt = c;
-            }
+      return (
+        dataInfo
+          .sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
+          .map((item: AllPharmacyDrugInterface, index: number) => {
+            if (!item.buttonName)
+              Object.assign(item, {
+                order: index + 1,
+                buttonName: 'افزودن به تبادل',
+                // cardColor: 'white',
+                currentCnt: item.cnt,
+              });
 
             let isPack = false;
             let totalAmount = 0;
-            if (item.packID && !packList.find(x => x.packID === item.packID)) {
+            let ignore = true;
+            if (
+              item.packID &&
+              !packList.find((x) => x.packID === item.packID)
+            ) {
               allPharmacyDrug
-                .filter(x => x.packID === item.packID)
+                .filter((x) => x.packID === item.packID)
                 .forEach((p: AllPharmacyDrugInterface) => {
                   packList.push(p);
                   totalAmount += p.amount;
                 });
               item.totalAmount = totalAmount;
               isPack = true;
+              ignore = false;
+              const basket = basketCount.find((x) => x.packID == item.packID);
+              if (basket) {
+                item.currentCnt = basket.currentCnt;
+                // item.order = -1;
+                item.buttonName = 'حذف از تبادل';
+                item.cardColor = '#89fd89';
+              }
+            }
+            if (
+              ignore &&
+              item.packID &&
+              packList.find((x) => x.id === item.id)
+            ) {
+              return;
             }
             return (
               <Grid item xs={12} sm={6} xl={4} key={index}>
                 <div className={paper}>
                   {isPack ? (
                     <CardContainer
-                      basicDetail={<ExCardContent formType={1} pharmacyDrug={item} />}
+                      basicDetail={
+                        <ExCardContent formType={1} pharmacyDrug={item} />
+                      }
                       isPack={true}
-                      pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
-                      collapsableContent={<ExCardContent formType={3} packInfo={packList} />}
+                      pharmacyDrug={item}
+                      collapsableContent={
+                        <ExCardContent formType={3} packInfo={packList} />
+                      }
                     />
                   ) : (
                     <CardContainer
-                      basicDetail={<ExCardContent formType={2} pharmacyDrug={item} />}
+                      basicDetail={
+                        <ExCardContent formType={2} pharmacyDrug={item} />
+                      }
                       isPack={false}
-                      pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                      pharmacyDrug={item}
                     />
                   )}
                 </div>
               </Grid>
             );
-          });
-      });
+          })
+      );
     }
 
     return null;
@@ -223,35 +304,34 @@ const SecondStep: React.FC = () => {
           <Grid item xs={12} md={9}>
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
-              { status === 'loading'
-                ? (<CircleLoading/>)
-                : status === 'error' ?
-                  (<span>{ t('error.loading-data') }</span>
-                  ) : (
-                    <>
-                      { cardListGenerator() }
-                      <div>
-                        <button
-                          className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
-                          ref={ loadMoreButtonRef }
-                          onClick={ fetchMore }
-                          disabled={ !canFetchMore }
-                        >
-                          { isFetchingMore
-                            ? t('general.loading')
-                            : canFetchMore
-                              ? t('general.more')
-                              : t('general.noMoreData') }
-                        </button>
-                      </div>
-                      <div>
-                        { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
-                      </div>
-                    </>
-                  )
-              }
+              {status === 'loading' ? (
+                <CircleLoading />
+              ) : status === 'error' ? (
+                <span>{t('error.loading-data')}</span>
+              ) : (
+                <>
+                  {cardListGenerator()}
+                  <div>
+                    <button
+                      className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
+                      ref={loadMoreButtonRef}
+                      onClick={fetchMore}
+                      disabled={!canFetchMore}
+                    >
+                      {isFetchingMore
+                        ? t('general.loading')
+                        : canFetchMore
+                        ? t('general.more')
+                        : t('general.noMoreData')}
+                    </button>
+                  </div>
+                  <div>
+                    {isFetching && !isFetchingMore ? <CircleLoading /> : null}
+                  </div>
+                </>
+              )}
               <div>
-                { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+                {isFetching && !isFetchingMore ? <CircleLoading /> : null}
               </div>
             </Grid>
           </Grid>

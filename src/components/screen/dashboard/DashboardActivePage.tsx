@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
@@ -22,7 +22,7 @@ import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
 import Desktop from "./drug-transfer/desktop/Desktop";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
@@ -40,19 +40,29 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardActivePage: React.FC = () => {
   const { activePage } = useContext(Context);
+  const [isShowTransfer, setIsShowTransfer] = useState<boolean>(false);
 
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const transferComponent = (): JSX.Element => {
+    return <TransferDrug />;
+  };
+
+  const showTransfer = (): void => {
+    setIsShowTransfer(true);
+  };
 
   const displayActivePage = (): JSX.Element => {
     let el: JSX.Element;
     switch (activePage) {
       case DashboardPages.DASHBOARD:
-        el = (
+        el = !isShowTransfer ? (
           <Container maxWidth="lg" className={classes.container}>
             <Grid container spacing={3}>
               <Grid item xs={12} md={8} lg={9}>
                 <Paper className={fixedHeightPaper}>Data</Paper>
+                <button onClick={showTransfer}>نمایش تبادل</button>
               </Grid>
 
               <Grid item xs={12} md={4} lg={3}>
@@ -64,6 +74,8 @@ const DashboardActivePage: React.FC = () => {
               </Grid>
             </Grid>
           </Container>
+        ) : (
+          <TransferDrug viewExchangeId={9} />
         );
         break;
       case DashboardPages.CREATE_ROLE:
