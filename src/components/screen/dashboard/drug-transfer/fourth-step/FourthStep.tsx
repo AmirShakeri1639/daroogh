@@ -17,23 +17,49 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import Button from '../../../../public/button/Button';
 import { default as MatButton } from '@material-ui/core/Button';
+import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
+import { useMutation } from 'react-query';
+import { errorHandler, sweetAlert } from '../../../../../utils';
+import { Send } from '../../../../../model/exchange';
 
 const FourthStep: React.FC = () => {
-  const { activeStep, setActiveStep } = useContext<TransferDrugContextInterface>(
-    DrugTransferContext,
-  );
+  const { activeStep, setActiveStep, exchangeId } = useContext<
+    TransferDrugContextInterface
+  >(DrugTransferContext);
+  const { send } = new PharmacyDrug();
+
+  const { t } = useTranslation();
+
+  const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
+    onSuccess: async () => {
+      await sweetAlert({
+        type: 'success',
+        text: t('alert.send'),
+      });
+    },
+  });
   const [open, setOpen] = React.useState(true);
   const [isSelected, setIsSelected] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const { t } = useTranslation();
 
   const handleClickOpen = (): void => {
     setOpen(true);
   };
 
   const handleClose = (): void => {
+    setOpen(false);
+  };
+
+  const handleSend = async (): Promise<any> => {
+    const inputmodel = new Send();
+    inputmodel.exchangeID = exchangeId;
+    inputmodel.lockSuggestion = isSelected;
+    try {
+      await _send(inputmodel);
+    } catch (e) {
+      errorHandler(e);
+    }
     setOpen(false);
   };
 
@@ -83,7 +109,7 @@ const FourthStep: React.FC = () => {
             <MatButton autoFocus onClick={handleClose} color="primary">
               لغو
             </MatButton>
-            <MatButton onClick={handleClose} color="primary" autoFocus>
+            <MatButton onClick={handleSend} color="primary" autoFocus>
               ارسال
             </MatButton>
           </DialogActions>

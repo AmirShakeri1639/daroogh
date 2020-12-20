@@ -1,7 +1,7 @@
-import { DrugInterface, TableColumnInterface } from ".";
-import { AllPharmacyDrugInterface } from "./AllPharmacyDrugInterface";
-import { NewUserData } from "./user";
-import { PharmacyDrugInterface } from "./pharmacyDrug";
+import { DrugInterface, TableColumnInterface } from '.';
+import { AllPharmacyDrugInterface } from './AllPharmacyDrugInterface';
+import { NewUserData } from './user';
+import { PharmacyDrugInterface } from './pharmacyDrug';
 
 export interface SelectPropsInterface {
   value: string;
@@ -25,7 +25,7 @@ export interface ModalPropsInterface {
   toggle: () => void;
 }
 
-export type ModalContentPropsInterface = ModalPropsInterface
+export type ModalContentPropsInterface = ModalPropsInterface;
 
 export interface CategoriesInterface {
   id: number;
@@ -34,7 +34,7 @@ export interface CategoriesInterface {
   typeString: string;
 }
 
-export interface DataTableProps{
+export interface DataTableProps {
   columns: any;
   whereClause?: [];
   extraParam?: {};
@@ -112,4 +112,8 @@ export interface CountyPropsInterface {
 export interface ProvincePropsInterface {
   provinceHandler?: (val?: number) => void;
   countyId?: number;
+}
+
+export interface TransferPropsInterface {
+  viewExchangeId?: number;
 }
