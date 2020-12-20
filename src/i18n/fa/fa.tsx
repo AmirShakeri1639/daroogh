@@ -166,6 +166,8 @@ export default {
         amount: 'مبلغ تبادل',
         commission: 'مبلغ پورسانت',
         paymentStatus: 'وضعیت پرداخت',
+        payed: 'پرداخت شده',
+        notPayed: 'پرداخت نشده',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -227,6 +229,7 @@ export default {
         CONFIRMA_AND_B_PAYMENTA: 'تائید طرفین و در انتظار پرداخت شما',
         CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و در انتظار پرداخت طرف مقابل',
         CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
+        NOSEND_FORB: 'ارسال نشده',
         WAITFORB_FORB: 'منتظر تائید شما',
         CONFIRMB_AND_WAITFORA_FORB: 'منتظر تائید طرف مقابل',
         CONFIRMA_AND_B_FORB: 'تائید شده و در انتظار پرداخت',

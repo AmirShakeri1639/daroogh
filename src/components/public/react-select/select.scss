@@ -19,8 +19,8 @@
   box-shadow: none !important;
   font-size: 15px !important;
   min-height: auto !important;
-  // height: calc(1.5em + 0.75rem + 1px);
-  height: 37px;
+  // height: fit-content;
+  min-height: 37px;
 }
 
 .react-select__input {
