@@ -27,6 +27,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [allPharmacyDrug, setAllPharmacyDrug] = useState<
     AllPharmacyDrugInterface[]
   >([]);
+  const [uAllPharmacyDrug, setUAllPharmacyDrug] = useState<
+    AllPharmacyDrugInterface[]
+  >([]);
   const [basketCount, setBasketCount] = useState<AllPharmacyDrugInterface[]>(
     []
   );
@@ -38,7 +41,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [
     selectedPharmacyForTransfer,
     setSelectedPharmacyForTransfer,
-  ] = useState<number>(0);
+  ] = useState<string>('');
   const { viewExchangeId } = props;
 
   useEffect(() => {
@@ -52,6 +55,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setActiveStep,
     allPharmacyDrug,
     setAllPharmacyDrug,
+    uAllPharmacyDrug,
+    setUAllPharmacyDrug,
     basketCount,
     setBasketCount,
     uBasketCount,
@@ -77,7 +82,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               </Grid>
             )}
 
-            {activeStep === 0 && <SecondStep />}
+            {activeStep === 0 && <FirstStep />}
             {activeStep === 1 && <SecondStep />}
             {activeStep === 2 && <ThirdStep />}
             {activeStep === 3 && <FourthStep />}

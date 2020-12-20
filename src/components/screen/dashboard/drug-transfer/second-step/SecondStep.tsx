@@ -34,8 +34,9 @@ import {
 } from 'react-query';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 import JwtData from '../../../../../utils/JwtData';
+import { useClasses } from '../../classes';
 
-const style = makeStyles(theme =>
+const style = makeStyles((theme) =>
   createStyles({
     paper: {
       padding: 0,
@@ -58,7 +59,7 @@ const style = makeStyles(theme =>
       top: 135,
       zIndex: 999,
     },
-  }),
+  })
 );
 
 const SecondStep: React.FC = () => {
@@ -79,6 +80,7 @@ const SecondStep: React.FC = () => {
     exchangeId,
     setExchangeId,
     basketCount,
+    selectedPharmacyForTransfer,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { userData } = new JwtData();
@@ -103,6 +105,7 @@ const SecondStep: React.FC = () => {
   const [listPageNo, setListPage] = useState(0);
   const [listCount, setListCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+  const [dataInfo, setDataInfo] = useState<any>([]);
 
   const {
     status,
@@ -112,16 +115,28 @@ const SecondStep: React.FC = () => {
     isFetching,
     isFetchingMore,
     fetchMore,
-    //refetch,
+    refetch,
     canFetchMore,
   } = useInfiniteQuery(
     'key',
     async (k) => {
-      const data = await getAllPharmacyDrug('test::17', listPageNo, pageSize);
+      const data = await getAllPharmacyDrug(
+        selectedPharmacyForTransfer,
+        listPageNo,
+        pageSize
+      );
       setListPage(listPageNo + 1);
       const allItemsTillNow = [...allPharmacyDrug, ...data.items];
       setAllPharmacyDrug(allItemsTillNow);
       setListCount(data.count);
+
+      const onlyA = data.items.filter(comparer(basketCount));
+      if (basketCount.length > 0)
+        basketCount.forEach((a) => {
+          if (data.items.find((z: any) => z.id === a.id)) onlyA.splice(0, 0, a);
+        });
+      console.log('data---> ', onlyA);
+      setDataInfo(onlyA);
       return data.items;
     },
     {
@@ -136,11 +151,6 @@ const SecondStep: React.FC = () => {
 
   const loadMoreButtonRef = React.useRef<any>(null);
 
-  // useEffect(() => {
-  // TODO: check this
-  //   refetch();
-  // }, []);
-
   useEffect(() => {
     (async (): Promise<void> => {
       if (exchangeId > 0) {
@@ -150,6 +160,10 @@ const SecondStep: React.FC = () => {
     })();
   }, [exchangeId]);
 
+  useEffect(() => {
+    refetch();
+  }, []);
+
   useIntersectionObserver({
     target: loadMoreButtonRef,
     onIntersect: fetchMore,
@@ -157,97 +171,79 @@ const SecondStep: React.FC = () => {
   });
 
   const cardListGenerator = (): JSX.Element[] | null => {
-    if (data && data.length > 0) {
-      const onlyA = data.filter(comparer(basketCount));
-      if (basketCount.length > 0)
-        basketCount.forEach((a) => {
-          if (onlyA.find((z) => z.id === a.id)) onlyA[0].unshift(a);
-        });
-
+    if (dataInfo && dataInfo.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
-      return onlyA.map((item: any) => {
-        return (
-          item
-            ?.sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
-            .map((item: AllPharmacyDrugInterface, index: number) => {
-              if (!item.buttonName)
-                Object.assign(item, {
-                  order: index + 1,
-                  buttonName: 'افزودن به تبادل',
-                  cardColor: 'white',
-                  currentCnt: item.cnt,
+      return (
+        dataInfo
+          .sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
+          .map((item: AllPharmacyDrugInterface, index: number) => {
+            if (!item.buttonName)
+              Object.assign(item, {
+                order: index + 1,
+                buttonName: 'افزودن به تبادل',
+                // cardColor: 'white',
+                currentCnt: item.cnt,
+              });
+
+            let isPack = false;
+            let totalAmount = 0;
+            let ignore = true;
+            if (
+              item.packID &&
+              !packList.find((x) => x.packID === item.packID)
+            ) {
+              allPharmacyDrug
+                .filter((x) => x.packID === item.packID)
+                .forEach((p: AllPharmacyDrugInterface) => {
+                  packList.push(p);
+                  totalAmount += p.amount;
                 });
-
-              // if (basketCount.length > 0) {
-              //   const basket = basketCount.find((x) => x.id == item.id);
-              //   if (basket) {
-              //     item.currentCnt = basket.currentCnt;
-              //     // item.order = -1;
-              //     item.buttonName = 'حذف از تبادل';
-              //     item.cardColor = '#89fd89';
-              //   }
-              // }
-
-              let isPack = false;
-              let totalAmount = 0;
-              let ignore = true;
-              if (
-                item.packID &&
-                !packList.find((x) => x.packID === item.packID)
-              ) {
-                allPharmacyDrug
-                  .filter((x) => x.packID === item.packID)
-                  .forEach((p: AllPharmacyDrugInterface) => {
-                    packList.push(p);
-                    totalAmount += p.amount;
-                  });
-                item.totalAmount = totalAmount;
-                isPack = true;
-                ignore = false;
-                const basket = basketCount.find((x) => x.packID == item.packID);
-                if (basket) {
-                  item.currentCnt = basket.currentCnt;
-                  // item.order = -1;
-                  item.buttonName = 'حذف از تبادل';
-                  item.cardColor = '#89fd89';
-                }
+              item.totalAmount = totalAmount;
+              isPack = true;
+              ignore = false;
+              const basket = basketCount.find((x) => x.packID == item.packID);
+              if (basket) {
+                item.currentCnt = basket.currentCnt;
+                // item.order = -1;
+                item.buttonName = 'حذف از تبادل';
+                item.cardColor = '#89fd89';
               }
-              if (
-                ignore &&
-                item.packID &&
-                packList.find((x) => x.id === item.id)
-              ) {
-                return;
-              }
-              return (
-                <Grid item xs={12} sm={6} xl={4} key={index}>
-                  <div className={paper}>
-                    {isPack ? (
-                      <CardContainer
-                        basicDetail={
-                          <ExCardContent formType={1} pharmacyDrug={item} />
-                        }
-                        isPack={true}
-                        pharmacyDrug={item}
-                        collapsableContent={
-                          <ExCardContent formType={3} packInfo={packList} />
-                        }
-                      />
-                    ) : (
-                      <CardContainer
-                        basicDetail={
-                          <ExCardContent formType={2} pharmacyDrug={item} />
-                        }
-                        isPack={false}
-                        pharmacyDrug={item}
-                      />
-                    )}
-                  </div>
-                </Grid>
-              );
-            })
-        );
-      });
+            }
+            if (
+              ignore &&
+              item.packID &&
+              packList.find((x) => x.id === item.id)
+            ) {
+              return;
+            }
+            return (
+              <Grid item xs={12} sm={6} xl={4} key={index}>
+                <div className={paper}>
+                  {isPack ? (
+                    <CardContainer
+                      basicDetail={
+                        <ExCardContent formType={1} pharmacyDrug={item} />
+                      }
+                      isPack={true}
+                      pharmacyDrug={item}
+                      collapsableContent={
+                        <ExCardContent formType={3} packInfo={packList} />
+                      }
+                    />
+                  ) : (
+                    <CardContainer
+                      basicDetail={
+                        <ExCardContent formType={2} pharmacyDrug={item} />
+                      }
+                      isPack={false}
+                      pharmacyDrug={item}
+                    />
+                  )}
+                </div>
+              </Grid>
+            );
+          })
+      );
     }
 
     return null;
@@ -308,35 +304,34 @@ const SecondStep: React.FC = () => {
           <Grid item xs={12} md={9}>
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
-              { status === 'loading'
-                ? (<CircleLoading/>)
-                : status === 'error' ?
-                  (<span>{ t('error.loading-data') }</span>
-                  ) : (
-                    <>
-                      { cardListGenerator() }
-                      <div>
-                        <button
-                          className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
-                          ref={ loadMoreButtonRef }
-                          onClick={ fetchMore }
-                          disabled={ !canFetchMore }
-                        >
-                          { isFetchingMore
-                            ? t('general.loading')
-                            : canFetchMore
-                              ? t('general.more')
-                              : t('general.noMoreData') }
-                        </button>
-                      </div>
-                      <div>
-                        { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
-                      </div>
-                    </>
-                  )
-              }
+              {status === 'loading' ? (
+                <CircleLoading />
+              ) : status === 'error' ? (
+                <span>{t('error.loading-data')}</span>
+              ) : (
+                <>
+                  {cardListGenerator()}
+                  <div>
+                    <button
+                      className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
+                      ref={loadMoreButtonRef}
+                      onClick={fetchMore}
+                      disabled={!canFetchMore}
+                    >
+                      {isFetchingMore
+                        ? t('general.loading')
+                        : canFetchMore
+                        ? t('general.more')
+                        : t('general.noMoreData')}
+                    </button>
+                  </div>
+                  <div>
+                    {isFetching && !isFetchingMore ? <CircleLoading /> : null}
+                  </div>
+                </>
+              )}
               <div>
-                { isFetching && !isFetchingMore ? (<CircleLoading/>) : null }
+                {isFetching && !isFetchingMore ? <CircleLoading /> : null}
               </div>
             </Grid>
           </Grid>

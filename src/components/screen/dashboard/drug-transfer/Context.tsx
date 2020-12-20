@@ -7,6 +7,8 @@ export interface TransferDrugContextInterface {
   searchQuery?: string;
   allPharmacyDrug: AllPharmacyDrugInterface[];
   setAllPharmacyDrug: (items: AllPharmacyDrugInterface[]) => void;
+  uAllPharmacyDrug: AllPharmacyDrugInterface[];
+  setUAllPharmacyDrug: (items: AllPharmacyDrugInterface[]) => void;
   selectedPharmacyForTransfer: string;
   setSelectedPharmacyForTransfer: (num: string) => void;
   basketCount: AllPharmacyDrugInterface[];
@@ -26,6 +28,8 @@ const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   setActiveStep: () => 0,
   allPharmacyDrug: [],
   setAllPharmacyDrug: () => [],
+  uAllPharmacyDrug: [],
+  setUAllPharmacyDrug: () => [],
   basketCount: [],
   setBasketCount: () => [],
   uBasketCount: [],

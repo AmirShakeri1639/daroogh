@@ -149,6 +149,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   const {
     allPharmacyDrug,
     setAllPharmacyDrug,
+    uAllPharmacyDrug,
     basketCount,
     setBasketCount,
     uBasketCount,
@@ -158,6 +159,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     setRecommendationMessage,
     exchangeId,
     setExchangeId,
+    selectedPharmacyForTransfer
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
@@ -291,12 +293,11 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     const inputmodel = new AddDrog1();
     if (drugInfo !== undefined) {
       inputmodel.pharmacyDrugID = drugInfo.id;
-      inputmodel.pharmacyKey = 'test::17';
+      inputmodel.pharmacyKey = selectedPharmacyForTransfer;
       inputmodel.count = drugInfo.currentCnt;
 
-      const index = allPharmacyDrug.findIndex((x) => x.id == pharmacyDrug.id);
       if (
-        ((activeStep === 0 || activeStep === 1) &&
+        (activeStep === 1 &&
           !basketCount.find((x) => x.id == pharmacyDrug.id)) ||
         (activeStep === 2 && !uBasketCount.find((x) => x.id == pharmacyDrug.id))
       ) {
@@ -304,24 +305,23 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
         pharmacyDrug.buttonName = 'حذف از تبادل';
         pharmacyDrug.cardColor = '#89fd89';
         pharmacyDrug.order = 0;
-        if (activeStep === 0 || activeStep === 1)
-          setBasketCount([...basketCount, pharmacyDrug]);
+        if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
         else setUbasketCount([...uBasketCount, pharmacyDrug]);
         // ----------------------------------------------------------------------
       } else {
         // ----------------------------------------------------------------------
         pharmacyDrug.buttonName = 'افزودن به تبادل';
         pharmacyDrug.cardColor = 'white';
-        pharmacyDrug.order = allPharmacyDrug.length;
+        pharmacyDrug.order = activeStep === 1 ? allPharmacyDrug.length : uAllPharmacyDrug.length;
         pharmacyDrug.currentCnt = pharmacyDrug.cnt;
         if (
-          ((activeStep === 1 || activeStep === 0) && basketCount.length === 1) ||
+          (activeStep === 1 && basketCount.length === 1) ||
           (activeStep === 2 && uBasketCount.length === 1)
         ) {
-          if (activeStep === 1 || activeStep === 0) setBasketCount([]);
+          if (activeStep === 1) setBasketCount([]);
           else setUbasketCount([]);
         } else {
-          if (activeStep === 1 || activeStep === 0)
+          if (activeStep === 1)
             setBasketCount([
               ...basketCount.filter((x) => x.id !== pharmacyDrug.id),
             ]);
@@ -348,24 +348,19 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     const inputmodel = new AddPack1();
     if (drugInfo !== undefined && drugInfo.packID !== undefined) {
       inputmodel.packID = drugInfo.packID;
-      inputmodel.pharmacyKey = 'test::17';
+      inputmodel.pharmacyKey = selectedPharmacyForTransfer;
 
-      debugger;
-      const index = allPharmacyDrug.findIndex(
-        (x) => x.packID === pharmacyDrug.packID
-      );
       if (
         (activeStep === 1 &&
           !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
         (activeStep === 2 &&
           !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
       ) {
+        pharmacyDrug.buttonName = 'حذف از تبادل';
+        pharmacyDrug.cardColor = '#89fd89';
+        pharmacyDrug.order = 0;
         if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
         else setUbasketCount([...basketCount, pharmacyDrug]);
-        allPharmacyDrug[index].order = 0;
-        allPharmacyDrug[index].cardColor = '#89fd89';
-        allPharmacyDrug[index].buttonName = 'حذف از تبادل';
-        setAllPharmacyDrug(allPharmacyDrug);
         try {
           await _addPack1(inputmodel);
           dispatch({ type: 'reset' });
@@ -373,6 +368,9 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
           errorHandler(e);
         }
       } else {
+        pharmacyDrug.buttonName = 'افزودن به تبادل';
+        pharmacyDrug.cardColor = 'white';
+        pharmacyDrug.order = activeStep === 1 ? allPharmacyDrug.length : uAllPharmacyDrug.length;
         if (activeStep === 1)
           setBasketCount([
             ...basketCount.filter((x) => x.packID !== pharmacyDrug.packID),
@@ -381,10 +379,6 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
           setUbasketCount([
             ...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID),
           ]);
-        allPharmacyDrug[index].order = allPharmacyDrug.length;
-        allPharmacyDrug[index].buttonName = 'افزودن به تبادل';
-        allPharmacyDrug[index].cardColor = 'white';
-        setAllPharmacyDrug(allPharmacyDrug);
         try {
           await _removePack1(inputmodel);
           dispatch({ type: 'reset' });
