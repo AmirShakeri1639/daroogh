@@ -31,3 +31,7 @@ export enum RoleQueryEnum {
 export enum PharmacyDrugEnum {
   GET_RELATED_PHARMACY_DRUG = 'getRelatedPharmacyDrug',
 }
+
+export enum AllPharmacyDrug {
+  GET_ALL_PHARMACY_DRUG = 'allPharmacyDrug',
+}

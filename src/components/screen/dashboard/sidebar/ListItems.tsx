@@ -17,6 +17,7 @@ import {
   ExpandLess, EnhancedEncryption,
   ExpandMore, Extension,
   LocalPharmacy, Business,
+  Apps as AppsIcon,
 } from "@material-ui/icons";
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import InboxIcon from '@material-ui/icons/Inbox';
@@ -304,6 +305,17 @@ const ListItems: React.FC = () => {
                 <AddToPhotosIcon />
               </ListItemIcon>
               <ListItemText primary={ t('exchange.exchange') } />
+            </ListItem>
+
+            <ListItem
+              button
+              className={ nested }
+              onClick={ (): void => setActivePage(DashboardPages.SUPPLY_LIST) }
+            >
+              <ListItemIcon>
+                <AppsIcon />
+              </ListItemIcon>
+              <ListItemText primary={ t('exchange.supplyList') } />
             </ListItem>
           </List>
         </Collapse>
