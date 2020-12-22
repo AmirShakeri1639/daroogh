@@ -30,6 +30,11 @@ const ReactSelect: React.FC<SelectProps> = ({
   isDropUp,
 }) => {
   const [selectedOption, setSelectedOption] = useState<object | null>(null);
+  const [importedOptions, setImportedOptions] = useState<any>([]);
+
+  useEffect(() => {
+    setImportedOptions(options);
+  }, [options]);
 
   useEffect(() => {
     setSelectedOption(value || null);
@@ -110,7 +115,7 @@ const ReactSelect: React.FC<SelectProps> = ({
       value={selectedOption}
       onChange={handleChange}
       onInputChange={handleInputChange}
-      options={options || []}
+      options={importedOptions || []}
       classNamePrefix="react-select"
       placeholder={'حداقل سه کارکتر وارد کنید'}
       noOptionsMessage={(): string =>

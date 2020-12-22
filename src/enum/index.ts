@@ -24,6 +24,7 @@ export enum DashboardPages {
   EXCHANGE = 'exchange',
   EXCHANGE_LIST = 'exchangesList',
   ACCOUNTING_LIST = 'accounting',
+  SUPPLY_LIST = 'supplyList',
 }
 
 export enum PharmacyTypeEnum {
@@ -67,3 +68,4 @@ export enum RolesEnum {
 }
 
 export { ExchangeStatesEnum, CancellerEnum } from './ExchangeStatesEnum';
+export { Colors } from './colors';

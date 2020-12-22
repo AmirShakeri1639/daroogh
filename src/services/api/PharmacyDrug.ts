@@ -124,6 +124,20 @@ class PharmacyDrug extends Api {
       errorHandler(e);
     }
   };
+
+  allPharmacyDrug = async (pharmacyKey: string, isFull = true): Promise<any> => {
+    const result = await this.postData(
+      `/PharmacyDrug/AllPharmacyDrug?full=${isFull}&pharmacyKey=${pharmacyKey}`
+    );
+    return result.data;
+  }
+
+  removePharmacyDrug = async (id: string | number): Promise<any> => {
+    const result = await this.postData(
+      `/PharmacyDrug/Remove/${id}`
+    );
+    return result.data;
+  }
 }
 
 export default PharmacyDrug;

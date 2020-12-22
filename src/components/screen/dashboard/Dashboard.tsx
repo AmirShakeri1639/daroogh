@@ -105,6 +105,7 @@ type DashboardActivePage =
   | 'pharmaciesList'
   | 'exchange'
   | 'createPharmacy'
+  | 'supplyList'
   | 'accountingList';
 
 const Dashboard: React.FC = () => {

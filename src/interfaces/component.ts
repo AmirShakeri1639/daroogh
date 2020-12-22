@@ -117,3 +117,30 @@ export interface ProvincePropsInterface {
 export interface TransferPropsInterface {
   viewExchangeId?: number;
 }
+
+export interface MaterialSearchPropsInterface {
+  onRequestSearch: (term: string) => void;
+}
+
+export interface SupplyListCardContainer {
+  drug: AllPharmacyDrugInterface;
+};
+
+export interface DetailSupplyInterface {
+  drugName: string;
+  expireDate: string;
+  count: number;
+  offer1: number;
+  amount: number;
+  offer2: number;
+}
+
+export interface TextLinePropsInterface {
+  rightText: string | React.ReactNode;
+  leftText: string | React.ReactNode;
+}
+
+export interface BackDropPropsInterface {
+  isOpen: boolean;
+  onClick?: () => void;
+}
