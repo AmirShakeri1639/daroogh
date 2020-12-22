@@ -1,3 +1,5 @@
+import { DrugI } from "./AllPharmacyDrugInterface";
+
 export interface ViewExchangeInterface {
     id: number;
     state: number;
@@ -20,13 +22,14 @@ export interface ViewExchangeInterface {
     description: string;
     lockSuggestion: boolean;
     allowShowPharmacyInfo: boolean;
-    cardA: CardInfo[];
-    cardB: CardInfo[];
+    cartA: CardInfo[];
+    cartB: CardInfo[];
 }
 
 export interface CardInfo {
     id: number;
     drugID: number;
+    drug: DrugI;
     phamacyKey: string;
     addedByA: string;
     addedByB: string;

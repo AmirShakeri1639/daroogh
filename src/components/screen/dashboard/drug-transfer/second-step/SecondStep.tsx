@@ -24,7 +24,7 @@ import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import { useQuery } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import { AllPharmacyDrugInterface } from '../../../../../interfaces';
+import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import {
@@ -34,7 +34,6 @@ import {
 } from 'react-query';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 import JwtData from '../../../../../utils/JwtData';
-import { useClasses } from '../../classes';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -87,8 +86,9 @@ const SecondStep: React.FC = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [dataInfo, setDataInfo] = useState<any>([]);
 
-  const { paper, stickyToolbox, stickyRecommendation } = useClasses();
+  const { paper, stickyToolbox, stickyRecommendation } = style();
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
@@ -105,7 +105,6 @@ const SecondStep: React.FC = () => {
   const [listPageNo, setListPage] = useState(0);
   const [listCount, setListCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
-  const [dataInfo, setDataInfo] = useState<any>([]);
 
   const {
     status,
@@ -129,14 +128,7 @@ const SecondStep: React.FC = () => {
       const allItemsTillNow = [...allPharmacyDrug, ...data.items];
       setAllPharmacyDrug(allItemsTillNow);
       setListCount(data.count);
-
-      const onlyA = data.items.filter(comparer(basketCount));
-      if (basketCount.length > 0)
-        basketCount.forEach((a) => {
-          if (data.items.find((z: any) => z.id === a.id)) onlyA.splice(0, 0, a);
-        });
-      console.log('data---> ', onlyA);
-      setDataInfo(onlyA);
+      setDataInfo(data.items);
       return data.items;
     },
     {
@@ -152,6 +144,10 @@ const SecondStep: React.FC = () => {
   const loadMoreButtonRef = React.useRef<any>(null);
 
   useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
     (async (): Promise<void> => {
       if (exchangeId > 0) {
         const result = await getViewExchange(exchangeId);
@@ -160,28 +156,41 @@ const SecondStep: React.FC = () => {
     })();
   }, [exchangeId]);
 
-  useEffect(() => {
-    refetch();
-  }, []);
-
   useIntersectionObserver({
     target: loadMoreButtonRef,
     onIntersect: fetchMore,
     enabled: canFetchMore,
   });
 
-  const cardListGenerator = (): JSX.Element[] | null => {
-    if (dataInfo && dataInfo.length > 0) {
+  // useEffect(()=> {
+  //   const onlyA = data?.filter(comparer(basketCount));
+  //   if (basketCount.length > 0)
+  //     basketCount.forEach((a) => {
+  //       if (onlyA?.find((z) => z.id === a.id)) onlyA[0].unshift(a);
+  //     });
+  //   console.log('Basket--->',basketCount);
+  //   setDataInfo(onlyA);
+  // }, [basketCount])
+
+  const cardListGenerator = (
+    cardinfo: any[] | undefined
+  ): JSX.Element[] | null => {
+    if (cardinfo && cardinfo.length === 1) {
+      // const onlyA = cardinfo.filter(comparer(basketCount));
+      // if (basketCount.length > 0)
+      //   basketCount.forEach((a) => {
+      //     if (onlyA.find((z) => z.id === a.id)) onlyA[0].unshift(a);
+      //   });
       const packList = new Array<AllPharmacyDrugInterface>();
-      return (
-        dataInfo
-          .sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
+      return cardinfo.map((item: any) => {
+        return item
+          ?.sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
           .map((item: AllPharmacyDrugInterface, index: number) => {
             if (!item.buttonName)
               Object.assign(item, {
                 order: index + 1,
                 buttonName: 'افزودن به تبادل',
-                // cardColor: 'white',
+                cardColor: 'white',
                 currentCnt: item.cnt,
               });
 
@@ -204,7 +213,7 @@ const SecondStep: React.FC = () => {
               const basket = basketCount.find((x) => x.packID == item.packID);
               if (basket) {
                 item.currentCnt = basket.currentCnt;
-                // item.order = -1;
+                item.order = -1;
                 item.buttonName = 'حذف از تبادل';
                 item.cardColor = '#89fd89';
               }
@@ -242,8 +251,8 @@ const SecondStep: React.FC = () => {
                 </div>
               </Grid>
             );
-          })
-      );
+          });
+      });
     }
 
     return null;
@@ -310,7 +319,8 @@ const SecondStep: React.FC = () => {
                 <span>{t('error.loading-data')}</span>
               ) : (
                 <>
-                  {cardListGenerator()}
+                  {cardListGenerator(basketCount)}
+                  {cardListGenerator(data)}
                   <div>
                     <button
                       className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
@@ -325,14 +335,8 @@ const SecondStep: React.FC = () => {
                         : t('general.noMoreData')}
                     </button>
                   </div>
-                  <div>
-                    {isFetching && !isFetchingMore ? <CircleLoading /> : null}
-                  </div>
                 </>
               )}
-              <div>
-                {isFetching && !isFetchingMore ? <CircleLoading /> : null}
-              </div>
             </Grid>
           </Grid>
           <Grid item xs={12} sm={12} md={3}>

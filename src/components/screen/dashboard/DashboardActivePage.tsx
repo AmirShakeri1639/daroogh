@@ -75,7 +75,7 @@ const DashboardActivePage: React.FC = () => {
             </Grid>
           </Container>
         ) : (
-          <TransferDrug viewExchangeId={9} />
+          <TransferDrug viewExchangeId={26} />
         );
         break;
       case DashboardPages.CREATE_ROLE:

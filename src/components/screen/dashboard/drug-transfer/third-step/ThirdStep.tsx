@@ -148,7 +148,7 @@ const ThirdStep: React.FC = () => {
             Object.assign(item, {
               order: index + 1,
               buttonName: 'افزودن به تبادل',
-              // cardColor: 'white',
+              cardColor: 'white',
               currentCnt: item.cnt,
             });
 

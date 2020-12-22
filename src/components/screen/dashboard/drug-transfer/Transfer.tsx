@@ -11,6 +11,8 @@ import ThirdStep from './third-step/ThirdStep';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
 import FourthStep from './fourth-step/FourthStep';
 import { TransferPropsInterface } from '../../../../interfaces/component';
+import PharmacyDrug from '../../../../services/api/PharmacyDrug';
+import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -22,6 +24,14 @@ const style = makeStyles((theme) =>
 );
 
 const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
+  const { getViewExchange } = new PharmacyDrug();
+  const [allStepName, setAllStepName] = useState<string[]>([
+    'انتخاب داروخانه',
+    'انتخاب از سبد طرف مقابل',
+    'انتخاب از سبد شما',
+    'تایید نهایی',
+    '',
+  ]);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [allPharmacyDrug, setAllPharmacyDrug] = useState<
@@ -42,10 +52,45 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     selectedPharmacyForTransfer,
     setSelectedPharmacyForTransfer,
   ] = useState<string>('');
+
+  const [viewExhcnage, setViewExchange] = useState<ViewExchangeInterface>();
+
   const { viewExchangeId } = props;
 
   useEffect(() => {
-    if (viewExchangeId !== undefined) setExchangeId(viewExchangeId);
+    (async (): Promise<void> => {
+      if (viewExchangeId !== undefined) {
+        setExchangeId(viewExchangeId);
+        setActiveStep(1);
+        debugger;
+        const result = await getViewExchange(viewExchangeId);
+        if (result) {
+          const res: ViewExchangeInterface = result.data;
+          const basket1: AllPharmacyDrugInterface[] = [];
+          res.cartA.forEach((item) => {
+            basket1.push({
+              id: item.id,
+              drugID: item.drugID,
+              drug: item.drug,
+              cnt: item.cnt,
+              batchNO: '',
+              expireDate: item.expireDate,
+              amount: item.amount,
+              buttonName: 'حذف از تبادل',
+              cardColor: 'green',
+              currentCnt: item.cnt,
+              offer1: item.offer1,
+              offer2: item.offer2,
+              order: 0,
+              totalAmount: 0,
+              totalCount: 0,
+            });
+          });
+          setBasketCount(basket1);
+        }
+        setViewExchange(result);
+      }
+    })();
   }, [viewExchangeId]);
 
   const { root } = style();
@@ -53,6 +98,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const initialContextValues = (): TransferDrugContextInterface => ({
     activeStep,
     setActiveStep,
+    allStepName,
+    setAllStepName,
     allPharmacyDrug,
     setAllPharmacyDrug,
     uAllPharmacyDrug,
@@ -69,6 +116,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setExchangeId,
     selectedPharmacyForTransfer,
     setSelectedPharmacyForTransfer,
+    viewExhcnage,
+    setViewExchange,
   });
 
   return (

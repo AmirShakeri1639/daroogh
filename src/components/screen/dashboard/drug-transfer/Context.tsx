@@ -1,9 +1,12 @@
 import React from 'react';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
+import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 
 export interface TransferDrugContextInterface {
   activeStep: number;
   setActiveStep: (page: number) => void;
+  allStepName: string[];
+  setAllStepName: (name: string[]) => void;
   searchQuery?: string;
   allPharmacyDrug: AllPharmacyDrugInterface[];
   setAllPharmacyDrug: (items: AllPharmacyDrugInterface[]) => void;
@@ -21,11 +24,15 @@ export interface TransferDrugContextInterface {
   setRecommendationMessage: (value: string) => void;
   exchangeId: number;
   setExchangeId: (value: number) => void;
+  viewExhcnage: ViewExchangeInterface | any; 
+  setViewExchange: (view: ViewExchangeInterface) => void;
 }
 
 const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   activeStep: 0,
   setActiveStep: () => 0,
+  allStepName: [],
+  setAllStepName: () => [],
   allPharmacyDrug: [],
   setAllPharmacyDrug: () => [],
   uAllPharmacyDrug: [],
@@ -43,6 +50,8 @@ const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   setRecommendationMessage: () => '',
   exchangeId: 0,
   setExchangeId: () => 0,
+  viewExhcnage: {},
+  setViewExchange: () => 0
 });
 
 export default DrugTransferContext;
