@@ -53,6 +53,10 @@ export default {
         noData: 'اطلاعات موجود نیست',
         start: 'شروع',
         unknown: 'نامشخص',
+        inventory: 'موجودی',
+        price: 'قیمت',
+        offer: 'آفر',
+        to: 'به'
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -139,6 +143,7 @@ export default {
         suggest: 'پیشنهاد دارو',
         list: 'لیست دارو',
         newDrug: 'داروی جدید',
+        SuppliedDrugsList: 'لیست داروهای عرضه شده توسط شما',
       },
       message: {
         message: 'پیام',
@@ -168,6 +173,7 @@ export default {
         paymentStatus: 'وضعیت پرداخت',
         payed: 'پرداخت شده',
         notPayed: 'پرداخت نشده',
+        supplyList: 'لیست عرضه',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -187,6 +193,7 @@ export default {
         remove: 'آیا از حذف مطمئن هستید؟',
         failedEdit: 'ویرایش با خطا روبرو شد',
         fillFormCarefully: 'در پر کردن مقادیر فرم بیشتر دقت کنید.',
+        failedRemove: 'حذف با خطا روبرو شد',
       },
       pharmacy: {
         pharmacy: 'داروخانه',
@@ -199,6 +206,7 @@ export default {
         workTime: 'ساعت کار',
         request: 'درخواست ایجاد',
         manager: 'مدیر داروخانه',
+        addToTransferList: 'اضافه کردن به لیست عرضه',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',

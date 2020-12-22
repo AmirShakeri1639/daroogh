@@ -8,3 +8,8 @@ export interface SelectOption {
   label: string;
   value: string | number;
 }
+
+export interface ServerResponseError {
+  data: null;
+  message: string;
+}

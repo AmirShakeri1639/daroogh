@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Card, CardContent, Container, Grid, Typography } from '@material-ui/core';
 import { ExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
@@ -12,7 +12,11 @@ import StarIcon from '@material-ui/icons/Star';
 import moment from 'jalali-moment';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import { useTranslation } from 'react-i18next';
-import { ExchangeStatesEnum } from '../../../../../enum';
+import { Colors, DashboardPages, ExchangeStatesEnum } from '../../../../../enum';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import Context from '../../Context';
+import Button from '../../../../public/button/Button';
+import TransferDrug from '../Transfer';
 
 interface Props {
   item: ExchangeInterface;
@@ -21,12 +25,30 @@ interface Props {
 const DesktopCardContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { item } = props;
+  const {
+    setSelectedPharmacyForTransfer,
+    setActiveStep,
+    activeStep,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const { activePageHandler: setActivePage } = useContext(Context);
 
   let state: number = 0;
+  let pharmacyKey: string = '';
   if (item?.currentPharmacyIsA) {
     state = item?.state == undefined ? 0 : item?.state;
+    pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
   } else {
     state = item?.state == undefined ? 0 : (item?.state + 10);
+    pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
+  }
+
+  const transferStart = (): void => {
+    // console.log('key:', pharmacyKey);
+    // console.log('step:', activeStep);
+    setSelectedPharmacyForTransfer(pharmacyKey);
+    setActiveStep(activeStep + 1);
+    setActivePage(DashboardPages.EXCHANGE);
   }
 
   // TODO: get star from item, when it's added in API
@@ -45,13 +67,13 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   const {
     cardContent, cardContainer, ulCardName,
     rowRight, rowLeft, colLeft, cardRoot,
-    cardTitle, titleCode, cardTop,
+    cardTitle, titleCode, cardTop, pointer,
   } = useClasses();
 
   const ExchangeInfo = (): JSX.Element => {
     return (
       <Grid container spacing={ 1 } className={ cardContainer }>
-        <Grid container xs={ 12 } className={ cardTop }>
+        <Grid container className={ cardTop }>
           <Grid container xs={ 6 } className={ rowRight }>
             <Grid xs={ 12 } className={ rowRight }>
               <LabelIcon/>
@@ -63,6 +85,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
           </Grid>
           <Grid container xs={ 6 } className={ colLeft }>
             <Grid xs={ 12 } className={ rowLeft }>
+              {/* TODO: get guarantee from API */}
               Guaranty
             </Grid>
             <Grid xs={ 12 } className={ rowLeft } style={{ direction: 'ltr' }}>
@@ -111,35 +134,46 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     );
   };
 
+  const CardProgressbar = (): JSX.Element => {
+    const thisState =  (item?.state == undefined) ? 0 : item?.state;
+    return (
+      <>
+        <div style={{ borderTop: `3px solid ${Colors.Green}`, width: `${thisState * 10}%`, display: 'inline-block' }}></div>
+        <div style={{ borderTop: `3px solid ${Colors.Red}`, width: `${100 - (thisState * 10)}%`, display: 'inline-block' }}></div>
+      </>
+    )
+  };
+
   const backColor = [
-    'white', // unknown = 0
-    '#e0e0e0', // NOSEND = 1,
-    '#cddc39', // WAITFORB = 2,
-    '#4caf50', //CONFIRMB_AND_WAITFORA = 3,
-    '#009688', //CONFIRMA_AND_B = 4,
-    '#f44336', //NOCONFIRMB = 5,
-    '#d32f2f', //CONFIRMB_AND_NOCONFIRMA = 6,
-    '#a53030', //CANCELLED = 7,
-    '#03a9f4', //CONFIRMA_AND_B_PAYMENTA = 8,
-    '#00bcd4', //CONFIRMA_AND_B_PAYMENTB = 9,
-    '#ffeb3b', //CONFIRMALL_AND_PAYMENTALL = 10
-    '#e0e0e0', // NOSEND = 1+10,
-    '#a0dc39', // WAITFORB = 2+10,
-    '#4ca2af', //CONFIRMB_AND_WAITFORA = 3+10,
-    '#419600', //CONFIRMA_AND_B = 4+10,
-    '#f43665', //NOCONFIRMB = 5+10,
-    '#d32f3d', //CONFIRMB_AND_NOCONFIRMA = 6+10,
-    '#b00827', //CANCELLED = 7+10,
-    '#03a9f4', //CONFIRMA_AND_B_PAYMENTA = 8+10,
-    '#00bcd4', //CONFIRMA_AND_B_PAYMENTB = 9+10,
-    '#8dff3b', //CONFIRMALL_AND_PAYMENTALL = 10+10
+    Colors.White, // unknown = 0
+    Colors.Silver, // NOSEND = 1,
+    Colors.Yellow, // WAITFORB = 2,
+    Colors.Green, //CONFIRMB_AND_WAITFORA = 3,
+    Colors.DarkGreen, //CONFIRMA_AND_B = 4,
+    Colors.Red, //NOCONFIRMB = 5,
+    Colors.LightRed, //CONFIRMB_AND_NOCONFIRMA = 6,
+    Colors.DarkRed, //CANCELLED = 7,
+    Colors.Blue, //CONFIRMA_AND_B_PAYMENTA = 8,
+    Colors.LightBlue, //CONFIRMA_AND_B_PAYMENTB = 9,
+    Colors.DarkYellow, //CONFIRMALL_AND_PAYMENTALL = 10
+    Colors.Silver, // NOSEND = 1+10,
+    Colors.Maroon, // WAITFORB = 2+10,
+    Colors.Cyan, //CONFIRMB_AND_WAITFORA = 3+10,
+    Colors.DarkCyan, //CONFIRMA_AND_B = 4+10,
+    Colors.Purple, //NOCONFIRMB = 5+10,
+    Colors.DarkRed, //CONFIRMB_AND_NOCONFIRMA = 6+10,
+    Colors.DarkRed, //CANCELLED = 7+10,
+    Colors.DarkBlue, //CONFIRMA_AND_B_PAYMENTA = 8+10,
+    Colors.Navy, //CONFIRMA_AND_B_PAYMENTB = 9+10,
+    Colors.Lime, //CONFIRMALL_AND_PAYMENTALL = 10+10
   ]
 
   return (
     <Card className={ `${ cardRoot }` }>
       <CardContent>
-        <Typography variant="h5" component="h2" className={ cardTitle }
-                    style={ { background: backColor[item.state != undefined ? item.state : 0] } }>
+        <Typography variant="h5" component="h2" className={ `${cardTitle} ${pointer}` }
+                    style={ { background: backColor[item.state != undefined ? item.state : 0] } }
+                    onClick={(): void => transferStart()}>
             { t(`ExchangeStatesEnum.${ ExchangeStatesEnum[state] }`) }
         </Typography>
         <div className={ titleCode }>
@@ -148,7 +182,10 @@ const DesktopCardContent = (props: Props): JSX.Element => {
         <Container className={ cardContent }>
           <>
             { item &&
-            <ExchangeInfo/>
+              <>
+                <ExchangeInfo/>
+                <CardProgressbar />
+              </>
             }
           </>
         </Container>

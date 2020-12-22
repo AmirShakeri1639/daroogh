@@ -51,7 +51,9 @@ const useStyle = makeStyles((theme) =>
       },
     },
     drawerContainer: {
-      padding: theme.spacing(1, 0),
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '8px 0 0',
       '& > #titleContainer': {
         padding: theme.spacing(0, 1, 1),
         display: 'flex',
@@ -64,7 +66,7 @@ const useStyle = makeStyles((theme) =>
       },
       '& > #content': {
         overflowY: 'auto',
-        height: 'calc(100vh - 55px)',
+        height: 'calc(100vh - 95px)',
         padding: theme.spacing(1),
         '&::-webkit-scrollbar': {
           display: 'none',
@@ -106,6 +108,15 @@ const useStyle = makeStyles((theme) =>
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+    },
+    buttonWrapper: {
+      borderTop: '1px solid #cecece',
+      padding: 10,
+      textAlign: 'center',
+      '& button': {
+        width: '100%',
+        padding: 5,
+      }
     }
   })
 );
@@ -204,7 +215,8 @@ const FirstStep: React.FC = () => {
           ({ ...item, genericName: `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${item.companyName !== null ? `-${item.companyName}` : ''}${item.type !== null ? ` - ${item.type}` : ''}` })
       );
       const options = sanitizeReactSelect(mappedItems, 'id', 'genericName');
-      setSearchOptions(options);
+      console.log('options', options)
+      setSearchOptions([...options]);
     } catch (e) {
       errorHandler(e);
     }
@@ -233,6 +245,7 @@ const FirstStep: React.FC = () => {
     distanceContainer,
     divider,
     noContent,
+    buttonWrapper,
   } = useStyle();
 
   const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
@@ -357,15 +370,6 @@ const FirstStep: React.FC = () => {
         <div className={drawerContainer}>
           <div id="titleContainer">
             <h6 className="txt-md">فیلترهای جستجو</h6>
-            <Button
-              onClick={advancedSearchItems}
-              variant="outlined"
-              type="button"
-              color="pink"
-            >
-              {t('general.emal')} {t('general.filter')}
-            </Button>
-
             <CloseIcon
               onClick={(): void => setIsOpenDrawer(false)}
               className="cursor-pointer"
@@ -458,7 +462,22 @@ const FirstStep: React.FC = () => {
               />
             </div>
           </div>
+
+          <Grid container spacing={0}>
+            <Grid item xs={12} className={buttonWrapper}>
+              <Button
+                onClick={advancedSearchItems}
+                variant="outlined"
+                type="button"
+                color="pink"
+              >
+                {t('general.emal')} {t('general.filter')}
+              </Button>
+            </Grid>
+          </Grid>
         </div>
+
+
       </MaterialDrawer>
     </>
   );

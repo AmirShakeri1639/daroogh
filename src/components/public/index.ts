@@ -4,3 +4,6 @@ export { default as MaterialDrawer } from './drawer/Drawer';
 export { default as Switch } from './switch/Switch';
 export { default as County } from './county/County';
 export { default as Province } from './province/Province';
+export { default as MaterialContainer } from './material-container/MaterialContainer';
+export { default as TextLine } from './text-line/TextLine';
+export { default as BackDrop } from './backdrop/BackDrop';

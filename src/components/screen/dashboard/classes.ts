@@ -177,4 +177,7 @@ export const useClasses = makeStyles((theme) => createStyles({
   cardTop: {
     margin: '0 .5em 1em .5em',
   },
+  pointer: {
+    cursor: 'Pointer',
+  },
 }));
