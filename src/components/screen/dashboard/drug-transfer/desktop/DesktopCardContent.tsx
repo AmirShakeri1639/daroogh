@@ -6,7 +6,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSun, faStar, faMoneyBillAlt,
   faCalendarTimes, faCreditCard,
 } from '@fortawesome/free-regular-svg-icons';
-import { faStar as solidStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
+import { faStar as solidStar, faStarHalfAlt,
+  faMedal,
+} from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
 import { ColorsEnum, ExchangeStatesEnum, UserGrades } from '../../../../../enum';
@@ -21,23 +23,25 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
   let state: number = 0;
   let pharmacyKey: string = '';
-  // let pharmacyGradeNumber: number = 4;
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
   let star: number = 0;
+  let pharmacyWarranty: number;
   if (item?.currentPharmacyIsA) {
     state = item?.state == undefined ? 0 : item?.state;
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
     
-    // Should show B's grade and star
+    // Should show B's grade and star and warranty
     pharmacyGrade = item?.pharmacyGradeB == undefined ? 4 : item?.pharmacyGradeB;
     star = item?.pharmacyStarB == undefined ? 0 : item?.pharmacyStarB;
+    pharmacyWarranty = item?.pharmacyWarrantyB == undefined ? 0 : item?.pharmacyWarrantyB;
   } else {
     state = item?.state == undefined ? 0 : (item?.state + 10);
     pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
-
-    // Should show A's grade and star
+    
+    // Should show A's grade and star and warranty
     pharmacyGrade = item?.pharmacyGradeA == undefined ? 4 : item?.pharmacyGradeA;
     star = item?.pharmacyStarA == undefined ? 0 : item?.pharmacyStarA;
+    pharmacyWarranty = item?.pharmacyWarrantyA == undefined ? 0 : item?.pharmacyWarrantyA;
   }
 
   // random grade for test
@@ -112,11 +116,11 @@ const DesktopCardContent = (props: Props): JSX.Element => {
           </Grid>
           <Grid container xs={ 6 } className={ colLeft }>
             <Grid xs={ 12 } className={ rowLeft }>
-              {/* TODO: get guarantee from API */}
-              Guaranty
+              {pharmacyWarranty} تومان
+              <FontAwesomeIcon icon={faMedal} size="lg" />
             </Grid>
             <Grid xs={ 12 } className={ rowLeft } style={{ direction: 'ltr' }}>
-              { stars() } / { star }
+              { stars() }
             </Grid>
           </Grid>
         </Grid>

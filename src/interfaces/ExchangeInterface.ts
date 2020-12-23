@@ -20,10 +20,12 @@ export interface ExchangeInterface {
   pharmacyProvinceA?: string;
   pharmacyCityB?: string;
   pharmacyProvinceB?: string;
-  pharmacyGradeA: number;
-  pharmacyGradeB: number;
-  pharmacyStarA: number;
-  pharmacyStarB: number;
+  pharmacyGradeA?: number;
+  pharmacyGradeB?: number;
+  pharmacyStarA?: number;
+  pharmacyStarB?: number;
+  pharmacyWarrantyA?: number;
+  pharmacyWarrantyB?: number;
   totalPourcentageA: number;
   totalPourcentageB: number;
   totalAmountA: number;
