@@ -67,6 +67,12 @@ export const useClasses = makeStyles((theme) => createStyles({
   spacing3: {
     margin: theme.spacing(3)
   },
+  spacingVertical1: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    marginLeft: 0,
+    marginRight: 0,
+  },
   formControl: {
     minWidth: 190,
     margin: theme.spacing(1),
