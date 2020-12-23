@@ -39,7 +39,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
       moment(item?.expireDateA, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     totalPourcentage = item?.totalPourcentageA;
     paymentStatus = item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
-    
+
     // Should show B's grade and star and warranty
     pharmacyGrade = item?.pharmacyGradeB == undefined ? 4 : item?.pharmacyGradeB;
     star = item?.pharmacyStarB == undefined ? 0 : item?.pharmacyStarB;
@@ -48,10 +48,10 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     state = item?.state == undefined ? 0 : (item?.state + 10);
     pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
     expireDate = item?.expireDateB == null ? '' :
-    moment(item?.expireDateB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')
+      moment(item?.expireDateB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')
     totalPourcentage = item?.totalPourcentageB
     paymentStatus = item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
-    
+
     // Should show A's grade and star and warranty
     pharmacyGrade = item?.pharmacyGradeA == undefined ? 4 : item?.pharmacyGradeA;
     star = item?.pharmacyStarA == undefined ? 0 : item?.pharmacyStarA;
