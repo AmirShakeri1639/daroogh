@@ -3,13 +3,10 @@ import { Card, CardContent, Container, Grid, Typography } from '@material-ui/cor
 import { ExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import MoneyIcon from '@material-ui/icons/Money';
-import EventBusyIcon from '@material-ui/icons/EventBusy';
-import PaymentIcon from '@material-ui/icons/Payment';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
-import StarIcon from '@material-ui/icons/Star';
-import StarHalfIcon from '@material-ui/icons/StarHalf';
+import { faSun, faStar, faMoneyBillAlt,
+  faCalendarTimes, faCreditCard,
+} from '@fortawesome/free-regular-svg-icons';
+import { faStar as solidStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
 import { ColorsEnum, ExchangeStatesEnum, UserGrades } from '../../../../../enum';
@@ -59,7 +56,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
   const stars =  () => {
     star = Math.floor(star * 10) / 10;
-    const flooredStar = Math.floor(star);
+    let flooredStar = Math.floor(star);
     let decimal = (star * 10) % 10;
     /*
     x < 4.3 => 4
@@ -68,15 +65,19 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     */
     decimal = decimal > 7 ? 1 : decimal >= 3 ? .5 : 0;
     star = flooredStar + decimal;
+    if (decimal === 1) {
+      flooredStar++;
+    }
     const starsArray: JSX.Element[] = [];
       for (let i = 0; i < flooredStar; i++) {
-        starsArray.push(<StarIcon />);
+        starsArray.push(<FontAwesomeIcon icon={solidStar} size="lg" />);
       }
       if (decimal === .5) {
-        starsArray.push(<StarHalfIcon />);
+        starsArray.push(<FontAwesomeIcon icon={faStarHalfAlt} size="lg" />);
+        flooredStar++;
       }
-      for (let i = flooredStar +1; i < 5; i++) {
-        starsArray.push(<StarBorderIcon />);
+      for (let i = flooredStar; i < 5; i++) {
+        starsArray.push(<FontAwesomeIcon icon={faStar} size="lg" />);
       }
     return starsArray;
   }
@@ -115,13 +116,14 @@ const DesktopCardContent = (props: Props): JSX.Element => {
               Guaranty
             </Grid>
             <Grid xs={ 12 } className={ rowLeft } style={{ direction: 'ltr' }}>
-              { stars() }
+              { stars() } / { star }
             </Grid>
           </Grid>
         </Grid>
         <Grid container xs={ 12 }>
           <Grid item xs={ 4 } className={ rowRight }>
-            <EventBusyIcon/> { t('exchange.expirationDate') }
+            <FontAwesomeIcon icon={faCalendarTimes} size="lg" className={faIcons} />
+             { t('exchange.expirationDate') }
           </Grid>
           <Grid item xs={ 4 }>
             <hr/>
@@ -134,7 +136,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
                 moment(item?.expireDateB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')) }
           </Grid>
           <Grid item xs={ 12 } sm={ 4 } className={ rowRight }>
-            <MoneyIcon/>
+            <FontAwesomeIcon icon={faMoneyBillAlt} className={faIcons} size="lg" />
             { t('exchange.commission') }
           </Grid>
           <Grid item xs={ 12 } sm={ 4 }>
@@ -144,7 +146,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
             { item?.currentPharmacyIsA ? item?.totalPourcentageA : item?.totalPourcentageB }
           </Grid>
           <Grid item xs={ 12 } sm={ 4 } className={ rowRight }>
-            <PaymentIcon/>
+            <FontAwesomeIcon icon={faCreditCard} size="lg" className={faIcons} />
             { t('exchange.paymentStatus') }
           </Grid>
           <Grid item xs={ 12 } sm={ 4 }>
