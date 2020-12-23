@@ -72,7 +72,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   // }
   // end of test star setting
 
-  const stars = () => {
+  const stars = (): JSX.Element[] => {
     star = Math.floor(star * 10) / 10;
     let flooredStar = Math.floor(star);
     let decimal = (star * 10) % 10;
