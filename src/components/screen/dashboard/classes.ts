@@ -180,4 +180,8 @@ export const useClasses = makeStyles((theme) => createStyles({
   pointer: {
     cursor: 'Pointer',
   },
+  faIcons: {
+    margin: '.3em', 
+    marginTop: '0',
+  },
 }));

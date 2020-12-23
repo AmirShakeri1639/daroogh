@@ -1,22 +1,18 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { Card, CardContent, Container, Grid, Typography } from '@material-ui/core';
 import { ExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
-import StorageIcon from '@material-ui/icons/Storage';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSun, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import MoneyIcon from '@material-ui/icons/Money';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
-import LabelIcon from '@material-ui/icons/Label';
 import PaymentIcon from '@material-ui/icons/Payment';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import StarIcon from '@material-ui/icons/Star';
+import StarHalfIcon from '@material-ui/icons/StarHalf';
 import moment from 'jalali-moment';
-import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import { useTranslation } from 'react-i18next';
-import { Colors, DashboardPages, ExchangeStatesEnum } from '../../../../../enum';
-import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
-import Context from '../../Context';
-import Button from '../../../../public/button/Button';
-import TransferDrug from '../Transfer';
+import { ColorsEnum, ExchangeStatesEnum, UserGrades } from '../../../../../enum';
 
 interface Props {
   item: ExchangeInterface;
@@ -25,50 +21,79 @@ interface Props {
 const DesktopCardContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { item } = props;
-  const {
-    setSelectedPharmacyForTransfer,
-    setActiveStep,
-    activeStep,
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
-
-  const { activePageHandler: setActivePage } = useContext(Context);
 
   let state: number = 0;
   let pharmacyKey: string = '';
+  // let pharmacyGradeNumber: number = 4;
+  let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
+  let star: number = 0;
   if (item?.currentPharmacyIsA) {
     state = item?.state == undefined ? 0 : item?.state;
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
+    
+    // Should show B's grade and star
+    pharmacyGrade = item?.pharmacyGradeB == undefined ? 4 : item?.pharmacyGradeB;
+    star = item?.pharmacyStarB == undefined ? 0 : item?.pharmacyStarB;
   } else {
     state = item?.state == undefined ? 0 : (item?.state + 10);
     pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
+
+    // Should show A's grade and star
+    pharmacyGrade = item?.pharmacyGradeA == undefined ? 4 : item?.pharmacyGradeA;
+    star = item?.pharmacyStarA == undefined ? 0 : item?.pharmacyStarA;
   }
+
+  // random grade for test
+  // pharmacyGrade = Math.floor(Math.random() * 10 ) % 4 + 1;
 
   const transferStart = (): void => {
-    // console.log('key:', pharmacyKey);
-    // console.log('step:', activeStep);
-    setSelectedPharmacyForTransfer(pharmacyKey);
-    setActiveStep(activeStep + 1);
-    setActivePage(DashboardPages.EXCHANGE);
+    // setSelectedPharmacyForTransfer(pharmacyKey);
   }
 
-  // TODO: get star from item, when it's added in API
-  const star = 4;
+  // set test random stars
+  // star = Math.random() * 10;
+  // if (star > 5) {
+  //   star = star - (star - 5);
+  // }
+  // end of test star setting
+
   const stars =  () => {
+    star = Math.floor(star * 10) / 10;
+    const flooredStar = Math.floor(star);
+    let decimal = (star * 10) % 10;
+    /*
+    x < 4.3 => 4
+    4.3 <= x < 4.7 => 4.5
+    x > 4.7 => 5
+    */
+    decimal = decimal > 7 ? 1 : decimal >= 3 ? .5 : 0;
+    star = flooredStar + decimal;
     const starsArray: JSX.Element[] = [];
-      for (let i = 0; i < star; i++) {
+      for (let i = 0; i < flooredStar; i++) {
         starsArray.push(<StarIcon />);
       }
-      for (let i = star; i < 5; i++) {
+      if (decimal === .5) {
+        starsArray.push(<StarHalfIcon />);
+      }
+      for (let i = flooredStar +1; i < 5; i++) {
         starsArray.push(<StarBorderIcon />);
       }
     return starsArray;
   }
 
   const {
-    cardContent, cardContainer, ulCardName,
+    cardContent, cardContainer, faIcons,
     rowRight, rowLeft, colLeft, cardRoot,
     cardTitle, titleCode, cardTop, pointer,
   } = useClasses();
+
+  const UserColors = [
+    ColorsEnum.White,
+    ColorsEnum.GOLD,
+    ColorsEnum.SILVER,
+    ColorsEnum.BRONZE,
+    ColorsEnum.PLATINUM
+  ];
 
   const ExchangeInfo = (): JSX.Element => {
     return (
@@ -76,8 +101,9 @@ const DesktopCardContent = (props: Props): JSX.Element => {
         <Grid container className={ cardTop }>
           <Grid container xs={ 6 } className={ rowRight }>
             <Grid xs={ 12 } className={ rowRight }>
-              <LabelIcon/>
-              <span>{ t('exchange.goldenUser') }</span>
+             <FontAwesomeIcon icon={faSun} size="lg" className={faIcons} 
+               style={{ color: UserColors[pharmacyGrade] }} />
+              <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
             </Grid>
             <Grid xs={ 12 } className={ rowRight }>
               <div>{ item.pharmacyProvinceB } { item.pharmacyCityB }</div>
@@ -138,34 +164,40 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     const thisState =  (item?.state == undefined) ? 0 : item?.state;
     return (
       <>
-        <div style={{ borderTop: `3px solid ${Colors.Green}`, width: `${thisState * 10}%`, display: 'inline-block' }}></div>
-        <div style={{ borderTop: `3px solid ${Colors.Red}`, width: `${100 - (thisState * 10)}%`, display: 'inline-block' }}></div>
+        <div style={{ 
+          borderTop: `3px solid ${ColorsEnum.Green}`,
+          width: `${thisState * 10}%`,
+          display: 'inline-block' }}></div>
+        <div style={{
+          borderTop: `3px solid ${ColorsEnum.Red}`,
+          width: `${100 - (thisState * 10)}%`, 
+          display: 'inline-block' }}></div>
       </>
     )
   };
 
   const backColor = [
-    Colors.White, // unknown = 0
-    Colors.Silver, // NOSEND = 1,
-    Colors.Yellow, // WAITFORB = 2,
-    Colors.Green, //CONFIRMB_AND_WAITFORA = 3,
-    Colors.DarkGreen, //CONFIRMA_AND_B = 4,
-    Colors.Red, //NOCONFIRMB = 5,
-    Colors.LightRed, //CONFIRMB_AND_NOCONFIRMA = 6,
-    Colors.DarkRed, //CANCELLED = 7,
-    Colors.Blue, //CONFIRMA_AND_B_PAYMENTA = 8,
-    Colors.LightBlue, //CONFIRMA_AND_B_PAYMENTB = 9,
-    Colors.DarkYellow, //CONFIRMALL_AND_PAYMENTALL = 10
-    Colors.Silver, // NOSEND = 1+10,
-    Colors.Maroon, // WAITFORB = 2+10,
-    Colors.Cyan, //CONFIRMB_AND_WAITFORA = 3+10,
-    Colors.DarkCyan, //CONFIRMA_AND_B = 4+10,
-    Colors.Purple, //NOCONFIRMB = 5+10,
-    Colors.DarkRed, //CONFIRMB_AND_NOCONFIRMA = 6+10,
-    Colors.DarkRed, //CANCELLED = 7+10,
-    Colors.DarkBlue, //CONFIRMA_AND_B_PAYMENTA = 8+10,
-    Colors.Navy, //CONFIRMA_AND_B_PAYMENTB = 9+10,
-    Colors.Lime, //CONFIRMALL_AND_PAYMENTALL = 10+10
+    ColorsEnum.White, // unknown = 0
+    ColorsEnum.Silver, // NOSEND = 1,
+    ColorsEnum.Yellow, // WAITFORB = 2,
+    ColorsEnum.Green, //CONFIRMB_AND_WAITFORA = 3,
+    ColorsEnum.DarkGreen, //CONFIRMA_AND_B = 4,
+    ColorsEnum.Red, //NOCONFIRMB = 5,
+    ColorsEnum.LightRed, //CONFIRMB_AND_NOCONFIRMA = 6,
+    ColorsEnum.DarkRed, //CANCELLED = 7,
+    ColorsEnum.Blue, //CONFIRMA_AND_B_PAYMENTA = 8,
+    ColorsEnum.LightBlue, //CONFIRMA_AND_B_PAYMENTB = 9,
+    ColorsEnum.DarkYellow, //CONFIRMALL_AND_PAYMENTALL = 10
+    ColorsEnum.Silver, // NOSEND = 1+10,
+    ColorsEnum.Maroon, // WAITFORB = 2+10,
+    ColorsEnum.Cyan, //CONFIRMB_AND_WAITFORA = 3+10,
+    ColorsEnum.DarkCyan, //CONFIRMA_AND_B = 4+10,
+    ColorsEnum.Purple, //NOCONFIRMB = 5+10,
+    ColorsEnum.DarkRed, //CONFIRMB_AND_NOCONFIRMA = 6+10,
+    ColorsEnum.DarkRed, //CANCELLED = 7+10,
+    ColorsEnum.DarkBlue, //CONFIRMA_AND_B_PAYMENTA = 8+10,
+    ColorsEnum.Navy, //CONFIRMA_AND_B_PAYMENTB = 9+10,
+    ColorsEnum.Lime, //CONFIRMALL_AND_PAYMENTALL = 10+10
   ]
 
   return (

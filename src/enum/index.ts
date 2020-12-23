@@ -68,4 +68,5 @@ export enum RolesEnum {
 }
 
 export { ExchangeStatesEnum, CancellerEnum } from './ExchangeStatesEnum';
-export { Colors } from './colors';
+export { ColorsEnum } from './colors';
+export { UserGrades } from './UserGrades';
