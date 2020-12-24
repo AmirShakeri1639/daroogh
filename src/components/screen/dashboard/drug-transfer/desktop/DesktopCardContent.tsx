@@ -181,7 +181,9 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   };
 
   const CardProgressbar = (): JSX.Element => {
-    const thisState = (item?.state == undefined) ? 0 : item?.state;
+    let thisState = (item?.state == undefined) ? 0 : item?.state;
+    thisState %= 10;
+    
     return (
       <>
         <div style={{
