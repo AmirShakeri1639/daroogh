@@ -21,6 +21,8 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { useMutation } from 'react-query';
 import { errorHandler, sweetAlert } from '../../../../../utils';
 import { Send } from '../../../../../model/exchange';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const FourthStep: React.FC = () => {
   const { activeStep, setActiveStep, exchangeId } = useContext<
@@ -30,18 +32,12 @@ const FourthStep: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
-    onSuccess: async () => {
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.send'),
-      });
-    },
-  });
   const [open, setOpen] = React.useState(true);
   const [isSelected, setIsSelected] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [openSnack, setOpenSnack] = React.useState(false);
+  const [message, setMessage] = React.useState<string>('');
 
   const handleClickOpen = (): void => {
     setOpen(true);
@@ -49,6 +45,40 @@ const FourthStep: React.FC = () => {
 
   const handleClose = (): void => {
     setOpen(false);
+  };
+
+  const snackBarHandleClick = (): any => {
+    setOpenSnack(true);
+  };
+
+  const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
+    onSuccess: async () => {
+      setMessage(t('alert.send'));
+      snackBarHandleClick();
+      // await sweetAlert({
+      //   type: 'success',
+      //   text: t('alert.send'),
+      // });
+    },
+  });
+
+  const snackBarHandleClose = (event: any, reason: any): any => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnack(false);
+  };
+
+  const Alert = (props: any): JSX.Element => {
+    return (
+      <MuiAlert
+        style={{ zIndex: 99999 }}
+        elevation={6}
+        variant="filled"
+        {...props}
+      />
+    );
   };
 
   const handleSend = async (): Promise<any> => {
@@ -115,6 +145,15 @@ const FourthStep: React.FC = () => {
           </DialogActions>
         </Dialog>
       </Grid>
+      <Snackbar
+        open={openSnack}
+        autoHideDuration={5000}
+        onClose={snackBarHandleClose}
+      >
+        <Alert onClose={snackBarHandleClose} severity="success">
+          {message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

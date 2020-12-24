@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
+  ButtonBase,
   createStyles,
   Dialog,
   DialogActions,
@@ -34,6 +35,7 @@ import {
 } from 'react-query';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 import JwtData from '../../../../../utils/JwtData';
+import ExchangeApprove from '../exchange/ExchangeApprove';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -58,6 +60,22 @@ const style = makeStyles((theme) =>
       top: 135,
       zIndex: 999,
     },
+    actionContainer: {
+      display: 'flex',
+      marginTop: 5,
+      width: '100%',
+    },
+    cancelButton: {
+      width: '100%',
+    },
+    cancelButton4: {
+      width: '50%',
+      marginRight: 10,
+    },
+    confirmButton4: {
+      width: '50%',
+      marginLeft: 10,
+    },
   })
 );
 
@@ -79,7 +97,12 @@ const SecondStep: React.FC = () => {
     exchangeId,
     setExchangeId,
     basketCount,
+    setBasketCount,
     selectedPharmacyForTransfer,
+    exchangeStateCode,
+    messageOfExchangeState,
+    showApproveModalForm,
+    setShowApproveModalForm
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { userData } = new JwtData();
@@ -87,172 +110,227 @@ const SecondStep: React.FC = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dataInfo, setDataInfo] = useState<any>([]);
+  const [isGetData, setIsGetData] = useState<boolean>(false);
+  const [showApprove, setShowApprove] = useState<boolean>(false);
 
-  const { paper, stickyToolbox, stickyRecommendation } = style();
+  const {
+    paper,
+    stickyToolbox,
+    stickyRecommendation,
+    actionContainer,
+    cancelButton,
+    cancelButton4,
+    confirmButton4,
+  } = style();
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
-      return (
-        otherArray.filter((other: any) => {
-          return other.id == current.id;
-        }).length == 0
-      );
+      if (current.packID)
+        return (
+          otherArray.filter((other: any) => {
+            return other.packID == current.packID;
+          }).length == 0
+        );
+      else
+        return (
+          otherArray.filter((other: any) => {
+            return other.id == current.id;
+          }).length == 0
+        );
     };
   };
 
-  const queryCache = useQueryCache();
-
   const [listPageNo, setListPage] = useState(0);
   const [listCount, setListCount] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(100);
 
-  const {
-    status,
-    isLoading,
-    error,
-    data,
-    isFetching,
-    isFetchingMore,
-    fetchMore,
-    refetch,
-    canFetchMore,
-  } = useInfiniteQuery(
-    'key',
-    async (k) => {
-      const data = await getAllPharmacyDrug(
-        selectedPharmacyForTransfer,
-        listPageNo,
-        pageSize
-      );
-      setListPage(listPageNo + 1);
-      const allItemsTillNow = [...allPharmacyDrug, ...data.items];
-      setAllPharmacyDrug(allItemsTillNow);
-      setListCount(data.count);
-      setDataInfo(data.items);
-      return data.items;
-    },
+  const { isLoading, error, data, refetch } = useQuery(
+    ['key'],
+    () => getAllPharmacyDrug(selectedPharmacyForTransfer, listPageNo, pageSize),
     {
-      getFetchMore: () => {
-        return (
-          allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount
-        );
+      onSuccess: (data) => {
+        const { items, count } = data;
+        setAllPharmacyDrug(items);
+        setDataInfo(items);
       },
       enabled: false,
     }
   );
 
+  // const {
+  //   status,
+  //   isLoading,
+  //   error,
+  //   data,
+  //   isFetching,
+  //   isFetchingMore,
+  //   fetchMore,
+  //   refetch,
+  //   canFetchMore,
+  // } = useInfiniteQuery(
+  //   'key',
+  //   async (k) => {
+  //     const data = await getAllPharmacyDrug(
+  //       selectedPharmacyForTransfer,
+  //       listPageNo,
+  //       pageSize
+  //     );
+  //     setListPage(listPageNo + 1);
+  //     const allItemsTillNow = [...allPharmacyDrug, ...data.items];
+  //     setAllPharmacyDrug(allItemsTillNow);
+  //     setListCount(data.count);
+  //     setDataInfo(data.items);
+  //     return data.items;
+  //   },
+  //   {
+  //     getFetchMore: () => {
+  //       return (
+  //         allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount
+  //       );
+  //     },
+  //     enabled: false,
+  //     refetchOnWindowFocus: false,
+  //   }
+  // );
+
   const loadMoreButtonRef = React.useRef<any>(null);
+
+  // useEffect(() => {
+  //   (async (): Promise<void> => {
+  //     if (exchangeId > 0) {
+  //       const result = await getViewExchange(exchangeId);
+  //       setViewExchange(result);
+  //     }
+  //   })();
+  // }, [exchangeId]);
+
+  // useIntersectionObserver({
+  //   target: loadMoreButtonRef,
+  //   onIntersect: fetchMore,
+  //   enabled: canFetchMore,
+  // });
 
   useEffect(() => {
     refetch();
   }, []);
 
   useEffect(() => {
-    (async (): Promise<void> => {
-      if (exchangeId > 0) {
-        const result = await getViewExchange(exchangeId);
-        setViewExchange(result);
-      }
-    })();
-  }, [exchangeId]);
+    const onlyA = dataInfo.filter(comparer(basketCount));
+    setAllPharmacyDrug(onlyA);
+  }, [basketCount]);
 
-  useIntersectionObserver({
-    target: loadMoreButtonRef,
-    onIntersect: fetchMore,
-    enabled: canFetchMore,
-  });
-
-  // useEffect(()=> {
-  //   const onlyA = data?.filter(comparer(basketCount));
-  //   if (basketCount.length > 0)
-  //     basketCount.forEach((a) => {
-  //       if (onlyA?.find((z) => z.id === a.id)) onlyA[0].unshift(a);
-  //     });
-  //   console.log('Basket--->',basketCount);
-  //   setDataInfo(onlyA);
-  // }, [basketCount])
-
-  const cardListGenerator = (
-    cardinfo: any[] | undefined
-  ): JSX.Element[] | null => {
-    if (cardinfo && cardinfo.length === 1) {
-      // const onlyA = cardinfo.filter(comparer(basketCount));
-      // if (basketCount.length > 0)
-      //   basketCount.forEach((a) => {
-      //     if (onlyA.find((z) => z.id === a.id)) onlyA[0].unshift(a);
-      //   });
+  const cardListGenerator = (): JSX.Element[] | null => {
+    if (allPharmacyDrug.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
-      return cardinfo.map((item: any) => {
-        return item
-          ?.sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
-          .map((item: AllPharmacyDrugInterface, index: number) => {
-            if (!item.buttonName)
-              Object.assign(item, {
-                order: index + 1,
-                buttonName: 'افزودن به تبادل',
-                cardColor: 'white',
-                currentCnt: item.cnt,
-              });
-
-            let isPack = false;
-            let totalAmount = 0;
-            let ignore = true;
-            if (
-              item.packID &&
-              !packList.find((x) => x.packID === item.packID)
-            ) {
-              allPharmacyDrug
-                .filter((x) => x.packID === item.packID)
-                .forEach((p: AllPharmacyDrugInterface) => {
-                  packList.push(p);
-                  totalAmount += p.amount;
-                });
-              item.totalAmount = totalAmount;
-              isPack = true;
-              ignore = false;
-              const basket = basketCount.find((x) => x.packID == item.packID);
-              if (basket) {
-                item.currentCnt = basket.currentCnt;
-                item.order = -1;
-                item.buttonName = 'حذف از تبادل';
-                item.cardColor = '#89fd89';
-              }
-            }
-            if (
-              ignore &&
-              item.packID &&
-              packList.find((x) => x.id === item.id)
-            ) {
-              return;
-            }
-            return (
-              <Grid item xs={12} sm={6} xl={4} key={index}>
-                <div className={paper}>
-                  {isPack ? (
-                    <CardContainer
-                      basicDetail={
-                        <ExCardContent formType={1} pharmacyDrug={item} />
-                      }
-                      isPack={true}
-                      pharmacyDrug={item}
-                      collapsableContent={
-                        <ExCardContent formType={3} packInfo={packList} />
-                      }
-                    />
-                  ) : (
-                    <CardContainer
-                      basicDetail={
-                        <ExCardContent formType={2} pharmacyDrug={item} />
-                      }
-                      isPack={false}
-                      pharmacyDrug={item}
-                    />
-                  )}
-                </div>
-              </Grid>
-            );
+      return allPharmacyDrug
+        .sort((a, b) => (a.order > b.order ? 1 : -1))
+        .map((item: AllPharmacyDrugInterface, index: number) => {
+          Object.assign(item, {
+            order: index + 1,
+            buttonName: 'افزودن به تبادل',
+            cardColor: 'white',
           });
-      });
+
+          let isPack = false;
+          let totalAmount = 0;
+          if (item.packID && !packList.find((x) => x.packID === item.packID)) {
+            allPharmacyDrug
+              .filter((x) => x.packID === item.packID)
+              .forEach((p: AllPharmacyDrugInterface) => {
+                packList.push(p);
+                totalAmount += p.amount;
+              });
+            item.totalAmount = totalAmount;
+            isPack = true;
+          }
+          return (
+            <Grid item xs={12} sm={6} xl={4} key={index}>
+              <div className={paper}>
+                {isPack ? (
+                  <CardContainer
+                    basicDetail={
+                      <ExCardContent formType={1} pharmacyDrug={item} />
+                    }
+                    isPack={true}
+                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                    collapsableContent={
+                      <ExCardContent formType={3} packInfo={packList} />
+                    }
+                  />
+                ) : (
+                  <CardContainer
+                    basicDetail={
+                      <ExCardContent formType={2} pharmacyDrug={item} />
+                    }
+                    isPack={false}
+                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                  />
+                )}
+              </div>
+            </Grid>
+          );
+        });
+    }
+
+    return null;
+  };
+
+  const basketCardListGenerator = (): any => {
+    if (basketCount && basketCount.length > 0) {
+      const packList = new Array<AllPharmacyDrugInterface>();
+      return basketCount.map(
+        (item: AllPharmacyDrugInterface, index: number) => {
+          item.order = index + 1;
+          item.buttonName = 'حذف از تبادل';
+          item.cardColor = '#89fd89';
+
+          let isPack = false;
+          let totalAmount = 0;
+          let ignore = true;
+          if (item.packID && !packList.find((x) => x.packID === item.packID)) {
+            dataInfo
+              .filter((x: any) => x.packID === item.packID)
+              .forEach((p: AllPharmacyDrugInterface) => {
+                packList.push(p);
+                totalAmount += p.amount;
+              });
+            item.totalAmount = totalAmount;
+            isPack = true;
+            ignore = false;
+            item.buttonName = 'حذف از تبادل';
+            item.cardColor = '#89fd89';
+          }
+          if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
+            return;
+          }
+          return (
+            <Grid item xs={12} sm={6} xl={4} key={index}>
+              <div className={paper}>
+                {isPack ? (
+                  <CardContainer
+                    basicDetail={
+                      <ExCardContent formType={1} pharmacyDrug={item} />
+                    }
+                    isPack={true}
+                    pharmacyDrug={item}
+                    collapsableContent={
+                      <ExCardContent formType={3} packInfo={packList} />
+                    }
+                  />
+                ) : (
+                  <CardContainer
+                    basicDetail={
+                      <ExCardContent formType={2} pharmacyDrug={item} />
+                    }
+                    isPack={false}
+                    pharmacyDrug={item}
+                  />
+                )}
+              </div>
+            </Grid>
+          );
+        }
+      );
     }
 
     return null;
@@ -313,15 +391,10 @@ const SecondStep: React.FC = () => {
           <Grid item xs={12} md={9}>
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
-              {status === 'loading' ? (
-                <CircleLoading />
-              ) : status === 'error' ? (
-                <span>{t('error.loading-data')}</span>
-              ) : (
-                <>
-                  {cardListGenerator(basketCount)}
-                  {cardListGenerator(data)}
-                  <div>
+              <>
+                {basketCardListGenerator()}
+                {cardListGenerator()}
+                {/* <div>
                     <button
                       className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
                       ref={loadMoreButtonRef}
@@ -334,22 +407,56 @@ const SecondStep: React.FC = () => {
                         ? t('general.more')
                         : t('general.noMoreData')}
                     </button>
-                  </div>
-                </>
-              )}
+                  </div> */}
+              </>
             </Grid>
           </Grid>
           <Grid item xs={12} sm={12} md={3}>
             <Grid container className={stickyRecommendation}>
               <TextField
-                style={{ width: '100%', marginTop: 15 }}
+                style={{ width: '100%', marginTop: 15, fontSize: 10 }}
                 label="توضیحات"
                 multiline
-                rows={15}
+                rows={8}
                 defaultValue="توصیه ها"
                 variant="outlined"
                 value={recommendationMessage}
               />
+              {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
+                <>
+                  <TextField
+                    style={{ width: '100%', marginTop: 15 }}
+                    multiline
+                    rows={4}
+                    defaultValue={messageOfExchangeState}
+                    variant="outlined"
+                  />
+                  <div className={actionContainer}>
+                    <Button
+                      className={
+                        exchangeStateCode !== 4 ? cancelButton : cancelButton4
+                      }
+                      type="button"
+                      variant="outlined"
+                      color="red"
+                    >
+                      لغو درخواست
+                    </Button>
+                    {exchangeStateCode === 4 && (
+                      <Button
+                        className={confirmButton4}
+                        type="button"
+                        variant="outlined"
+                        color="green"
+                        onClick={(): any => {setShowApproveModalForm(true)}}
+                      >
+                        تایید نهایی
+                      </Button>
+                    )}
+                  </div>
+                  {showApproveModalForm && <ExchangeApprove />}
+                </>
+              )}
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
                   <Grid item sm={6}>

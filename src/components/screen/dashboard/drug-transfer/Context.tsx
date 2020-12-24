@@ -24,8 +24,14 @@ export interface TransferDrugContextInterface {
   setRecommendationMessage: (value: string) => void;
   exchangeId: number;
   setExchangeId: (value: number) => void;
-  viewExhcnage: ViewExchangeInterface | any; 
+  viewExhcnage: ViewExchangeInterface | any;
   setViewExchange: (view: ViewExchangeInterface) => void;
+  exchangeStateCode: number;
+  setExchangeStateCode: (value: number) => void;
+  messageOfExchangeState: string;
+  setMessageOfExchangeState: (value: string) => void;
+  showApproveModalForm: boolean;
+  setShowApproveModalForm: (isOpen: boolean) => void;
 }
 
 const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
@@ -51,7 +57,13 @@ const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   exchangeId: 0,
   setExchangeId: () => 0,
   viewExhcnage: {},
-  setViewExchange: () => 0
+  setViewExchange: () => 0,
+  exchangeStateCode: 0,
+  setExchangeStateCode: () => 0,
+  messageOfExchangeState: '',
+  setMessageOfExchangeState: () => '',
+  showApproveModalForm: false,
+  setShowApproveModalForm: () => 0,
 });
 
 export default DrugTransferContext;

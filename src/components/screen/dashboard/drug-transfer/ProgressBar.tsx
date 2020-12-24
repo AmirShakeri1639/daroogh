@@ -69,7 +69,6 @@ const ProgressBar: React.FC = () => {
 
   useEffect(() => {
     stepHandler();
-    console.log('data');
   }, [allStepName]);
 
   const mobileNextButton = (): JSX.Element => {

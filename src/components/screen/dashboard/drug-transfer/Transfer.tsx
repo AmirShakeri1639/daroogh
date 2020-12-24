@@ -55,20 +55,27 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   const [viewExhcnage, setViewExchange] = useState<ViewExchangeInterface>();
 
-  const { viewExchangeId } = props;
+  const [exchangeStateCode, setExchangeStateCode] = React.useState(0);
+  const [messageOfExchangeState, setMessageOfExchangeState] = React.useState(
+    ''
+  );
+  const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
+
+  const { viewExchangeId, exchangeState } = props;
 
   useEffect(() => {
     (async (): Promise<void> => {
       if (viewExchangeId !== undefined) {
         setExchangeId(viewExchangeId);
         setActiveStep(1);
-        debugger;
         const result = await getViewExchange(viewExchangeId);
         if (result) {
           const res: ViewExchangeInterface = result.data;
-          const basket1: AllPharmacyDrugInterface[] = [];
+          const basketA: AllPharmacyDrugInterface[] = [];
+          const basketB: AllPharmacyDrugInterface[] = [];
+
           res.cartA.forEach((item) => {
-            basket1.push({
+            basketA.push({
               id: item.id,
               drugID: item.drugID,
               drug: item.drug,
@@ -77,7 +84,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               expireDate: item.expireDate,
               amount: item.amount,
               buttonName: 'حذف از تبادل',
-              cardColor: 'green',
+              cardColor: '#89fd89',
               currentCnt: item.cnt,
               offer1: item.offer1,
               offer2: item.offer2,
@@ -86,12 +93,55 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               totalCount: 0,
             });
           });
-          setBasketCount(basket1);
+          res.cartB.forEach((item) => {
+            basketB.push({
+              id: item.id,
+              drugID: item.drugID,
+              drug: item.drug,
+              cnt: item.cnt,
+              batchNO: '',
+              expireDate: item.expireDate,
+              amount: item.amount,
+              buttonName: 'حذف از تبادل',
+              cardColor: '#89fd89',
+              currentCnt: item.cnt,
+              offer1: item.offer1,
+              offer2: item.offer2,
+              order: 0,
+              totalAmount: 0,
+              totalCount: 0,
+            });
+          });
+          if (!res.currentPharmacyIsA) {
+            setBasketCount(basketA);
+            setUbasketCount(basketB);
+          } else {
+            setUbasketCount(basketA);
+            setBasketCount(basketB);
+          }
         }
         setViewExchange(result);
       }
+      if (exchangeState !== undefined) {
+        // alert('کد وضعیت تبادل : ' + '' + exchangeState);
+        setExchangeStateCode(exchangeState);
+        switch (exchangeState) {
+          case 2:
+            setMessageOfExchangeState(
+              'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
+            );
+            break;
+          case 4:
+            setMessageOfExchangeState(
+              'داروخانه مقابل لیست های انتخاب شده شما را تایید/ویرایش نموده است. لطفا پس از بررسی تایید نهایی نمایید.'
+            );
+            break;
+          default:
+            break;
+        }
+      }
     })();
-  }, [viewExchangeId]);
+  }, [viewExchangeId, exchangeState]);
 
   const { root } = style();
 
@@ -118,6 +168,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setSelectedPharmacyForTransfer,
     viewExhcnage,
     setViewExchange,
+    exchangeStateCode,
+    setExchangeStateCode,
+    messageOfExchangeState,
+    setMessageOfExchangeState,
+    showApproveModalForm,
+    setShowApproveModalForm,
   });
 
   return (

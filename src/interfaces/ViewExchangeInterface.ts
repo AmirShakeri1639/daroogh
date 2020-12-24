@@ -5,6 +5,7 @@ export interface ViewExchangeInterface {
     state: number;
     canceller: any;
     stateString: string;
+    currentPharmacyIsA: boolean;
     pharmacyKeyA: string;
     pharmacyKeyB: string;
     pharmacyCityA: string;

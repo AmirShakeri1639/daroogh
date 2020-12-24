@@ -20,7 +20,7 @@ import CategoryList from './category/CategoryList';
 import Exchange from './drug-transfer/exchange/Exchange';
 import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
-import Desktop from "./drug-transfer/desktop/Desktop";
+import Desktop from './drug-transfer/desktop/Desktop';
 import SupplyList from './supply-list/SupplyList';
 
 const useStyles = makeStyles((theme) => ({
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 const DashboardActivePage: React.FC = () => {
   const { activePage } = useContext(Context);
   const [isShowTransfer, setIsShowTransfer] = useState<boolean>(false);
+  const [exchangeStateCode, setExchangeStateCode] = useState(0);
 
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -50,7 +51,8 @@ const DashboardActivePage: React.FC = () => {
     return <TransferDrug />;
   };
 
-  const showTransfer = (): void => {
+  const showTransfer = (state: number): void => {
+    setExchangeStateCode(state);
     setIsShowTransfer(true);
   };
 
@@ -63,7 +65,23 @@ const DashboardActivePage: React.FC = () => {
             <Grid container spacing={3}>
               <Grid item xs={12} md={8} lg={9}>
                 <Paper className={fixedHeightPaper}>Data</Paper>
-                <button onClick={showTransfer}>نمایش تبادل</button>
+                <button onClick={(): any => showTransfer(1)}>ارسال نشده</button>
+                <button onClick={(): any => showTransfer(2)}>
+                  منتظر ارسال پاسخ داروخانه طرف مقابل
+                </button>
+                <button onClick={(): any => showTransfer(3)}>
+                  عدم تایید داروخانه مقابل
+                </button>
+                <button onClick={(): any => showTransfer(4)}>
+                  تایید دارخانه مقابل/در انتظار پاسخ شما
+                </button>
+                <button onClick={(): any => showTransfer(5)}>
+                  مخالفت شده توسط شما
+                </button>
+                <button onClick={(): any => showTransfer(6)}>
+                  فرآیند تبادل کامل شده/منتظر پرداخت شما
+                </button>
+                <button onClick={(): any => showTransfer(7)}>لغو شده</button>
               </Grid>
 
               <Grid item xs={12} md={4} lg={3}>
@@ -76,7 +94,7 @@ const DashboardActivePage: React.FC = () => {
             </Grid>
           </Container>
         ) : (
-          <TransferDrug viewExchangeId={26} />
+          <TransferDrug viewExchangeId={35} exchangeState={exchangeStateCode} />
         );
         break;
       case DashboardPages.CREATE_ROLE:

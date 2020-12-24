@@ -1,7 +1,11 @@
 import React from 'react';
 import { create } from 'jss';
 import rtl from 'jss-rtl';
-import { StylesProvider, jssPreset, createMuiTheme } from '@material-ui/core/styles';
+import {
+  StylesProvider,
+  jssPreset,
+  createMuiTheme,
+} from '@material-ui/core/styles';
 import Vazir from './assets/fonts/Vazir.woff';
 import VazirBold from './assets/fonts/Vazir-Bold.woff';
 import VazirFDMedium from './assets/fonts/Vazir-Medium-FD-WOL.woff';
@@ -13,11 +17,7 @@ interface RTLProps {
 }
 
 function RTL(props: RTLProps): JSX.Element {
-  return (
-    <StylesProvider jss={jss}>
-      {props.children}
-    </StylesProvider>
-  );
+  return <StylesProvider jss={jss}>{props.children}</StylesProvider>;
 }
 
 const vazirFont = {
@@ -38,7 +38,7 @@ const vazirBold = {
   src: `url(${VazirBold}) format(woff)`,
 };
 
-declare module "@material-ui/core/styles/createPalette" {
+declare module '@material-ui/core/styles/createPalette' {
   interface Palette {
     gray: Palette['primary'];
   }
@@ -54,8 +54,16 @@ declare module "@material-ui/core/styles/createPalette" {
   interface Palette {
     pinkLinearGradient: Palette['primary'];
   }
+  interface Palette {
+    redLinearGradient: Palette['primary'];
+  }
+  interface Palette {
+    greenLinearGradient: Palette['primary'];
+  }
   interface PaletteOptions {
     pinkLinearGradient: PaletteOptions['primary'];
+    redLinearGradient: PaletteOptions['primary'];
+    greenLinearGradient: PaletteOptions['primary'];
   }
 }
 
@@ -73,19 +81,23 @@ export const theme = createMuiTheme({
     },
     pinkLinearGradient: {
       main: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    }
+    },
+    redLinearGradient: {
+      main:
+        'linear-gradient(45deg, rgba(208,15,15,1) 0%, rgba(121,9,13,1) 50%, rgba(255,0,0,1) 100%);',
+    },
+    greenLinearGradient: {
+      main:
+        'linear-gradient(45deg, rgba(15,208,47,1) 0%, rgba(9,121,39,1) 50%, rgba(0,255,29,1) 100%);',
+    },
   },
   typography: {
-    fontFamily: 'Vazir'
+    fontFamily: 'Vazir',
   },
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@font-face': [
-          vazirFont,
-          vazirBold,
-          vazirFontNumber,
-        ],
+        '@font-face': [vazirFont, vazirBold, vazirFontNumber],
       },
     },
   },
