@@ -175,6 +175,7 @@ export default {
         notPayed: 'پرداخت نشده',
         supplyList: 'لیست عرضه',
         sendDate: 'تاریخ شروع تبادل',
+        completionDate: 'تاریخ تکمیل تبادل',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',

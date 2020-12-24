@@ -15,6 +15,7 @@ import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
 import { ColorsEnum, ExchangeStatesEnum, UserGrades } from '../../../../../enum';
 import { TextLine } from '../../../../public';
+import { isNullOrEmpty } from '../../../../../utils';
 
 interface Props {
   item: ExchangeInterface;
@@ -30,14 +31,13 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
   let star: number = 0;
   let pharmacyWarranty: number;
-  let expireDate: string = '';
+  let expireDate: string | undefined = '';
   let totalPourcentage: number = 0;
   let paymentStatus: string = '';
   if (item?.currentPharmacyIsA) {
     state = item?.state == undefined ? 0 : item?.state;
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
-    expireDate = item?.expireDateA == null ? '' :
-      moment(item?.expireDateA, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    expireDate = item?.expireDateA == null ? '' : item?.expireDateA;
     totalPourcentage = item?.totalPourcentageA;
     paymentStatus = item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
 
@@ -48,8 +48,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   } else {
     state = item?.state == undefined ? 0 : (item?.state + 10);
     pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
-    expireDate = item?.expireDateB == null ? '' :
-      moment(item?.expireDateB, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')
+    expireDate = item?.expireDateB == null ? '' : item?.expireDateB;
     totalPourcentage = item?.totalPourcentageB
     paymentStatus = item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
 
@@ -58,6 +57,35 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     star = item?.pharmacyStarA == undefined ? 0 : item?.pharmacyStarA;
     pharmacyWarranty = item?.pharmacyWarrantyA == undefined ? 0 : item?.pharmacyWarrantyA;
   }
+
+  let expireDateText: string = t('exchange.expirationDate');
+  const isExchangeCompletedOrCancelled = (): boolean => {
+    return ([
+      ExchangeStatesEnum.CONFIRMA_AND_B,
+      ExchangeStatesEnum.NOCONFIRMB,
+      ExchangeStatesEnum.CONFIRMB_AND_NOCONFIRMA,
+      ExchangeStatesEnum.CANCELLED,
+      ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA,
+      ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB,
+      ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL,
+      ExchangeStatesEnum.CONFIRMA_AND_B_FORB,
+      ExchangeStatesEnum.NOCONFIRMB_FORB,
+      ExchangeStatesEnum.CONFIRMB_AND_NOCONFIRMA_FORB,
+      ExchangeStatesEnum.CANCELLED_FORB,
+      ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
+      ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
+      ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
+    ].indexOf(state) > -1);
+  };
+
+  if (isExchangeCompletedOrCancelled()) {
+    expireDateText = t('exchange.completionDate');
+    expireDate = expireDate > (
+      item?.cancelDate == undefined ? '' : item?.cancelDate
+      ) ? expireDate : item?.cancelDate;
+  }
+  expireDate = isNullOrEmpty(expireDate) ? '' 
+    : moment(expireDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
 
   // random grade for test
   // pharmacyGrade = Math.floor(Math.random() * 10 ) % 4 + 1;
@@ -159,7 +187,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
               rightText={
                 <>
                   <FontAwesomeIcon icon={faCalendarTimes} size="lg" className={faIcons} />
-                  {t('exchange.expirationDate')}
+                  {expireDateText}
                 </>
               }
               leftText={expireDate} />
