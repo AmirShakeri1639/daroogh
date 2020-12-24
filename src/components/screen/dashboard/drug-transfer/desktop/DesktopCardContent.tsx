@@ -4,7 +4,7 @@ import { ExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSun, faStar, faMoneyBillAlt,
+  faSun, faStar, faMoneyBillAlt, faCalendarPlus,
   faCalendarTimes, faCreditCard,
 } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -143,11 +143,15 @@ const DesktopCardContent = (props: Props): JSX.Element => {
             <TextLine backColor={ColorsEnum.White}
               rightText={
                 <>
-                  <FontAwesomeIcon icon={faCalendarTimes} size="lg" className={faIcons} />
-                  {t('exchange.expirationDate')}
+                  <FontAwesomeIcon icon={faCalendarPlus} size="lg" className={faIcons} />
+                  {t('exchange.sendDate')}
                 </>
               }
-              leftText={expireDate} />
+              leftText={
+                item?.sendDate == null ? ''
+                : moment(item?.sendDate, 'YYYY/MM/DD').
+                    locale('fa').format('YYYY/MM/DD')
+              } />
           </Grid>
 
           <Grid item xs={12} className={spacingVertical1}>

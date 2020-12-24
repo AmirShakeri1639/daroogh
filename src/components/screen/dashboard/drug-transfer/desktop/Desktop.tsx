@@ -41,8 +41,6 @@ const Desktop: React.FC = () => {
   const [exchangeState, setExchangeState] = useState<number | undefined>(undefined);
 
   const cardClickHandler = (id: number | undefined, state: number | undefined = 1): void => {
-    console.log('id clicked: ', id);
-    console.log('state clicked: ', state);
     setExchangeState(state);
     setExchangeId(id);
     setShowTransfer(true);
