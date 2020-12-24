@@ -18,11 +18,12 @@ import { TextLine } from '../../../../public';
 
 interface Props {
   item: ExchangeInterface;
+  onCardClick: ((id: number | undefined, state: number | undefined) => void) | void | any;
 }
 
 const DesktopCardContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { item } = props;
+  const { item, onCardClick } = props;
 
   let state: number = 0;
   let pharmacyKey: string = '';
@@ -60,10 +61,6 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
   // random grade for test
   // pharmacyGrade = Math.floor(Math.random() * 10 ) % 4 + 1;
-
-  const transferStart = (): void => {
-    // setSelectedPharmacyForTransfer(pharmacyKey);
-  }
 
   // set test random stars
   // star = Math.random() * 10;
@@ -157,6 +154,17 @@ const DesktopCardContent = (props: Props): JSX.Element => {
             <TextLine backColor={ColorsEnum.White}
               rightText={
                 <>
+                  <FontAwesomeIcon icon={faCalendarTimes} size="lg" className={faIcons} />
+                  {t('exchange.expirationDate')}
+                </>
+              }
+              leftText={expireDate} />
+          </Grid>
+
+          <Grid item xs={12} className={spacingVertical1}>
+            <TextLine backColor={ColorsEnum.White}
+              rightText={
+                <>
                   <FontAwesomeIcon icon={faMoneyBillAlt} className={faIcons} size="lg" />
                   {t('exchange.commission')}
                 </>
@@ -229,7 +237,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
       <CardContent>
         <Typography variant="h5" component="h2" className={`${cardTitle} ${pointer}`}
           style={{ background: backColor[item.state != undefined ? item.state : 0] }}
-          onClick={(): void => transferStart()}>
+          onClick={(): void => onCardClick(item.id, (state > 10 ? state - 10 : state))}>
           {t(`ExchangeStatesEnum.${ExchangeStatesEnum[state]}`)}
         </Typography>
         <div className={titleCode}>
