@@ -4,7 +4,7 @@ import { createStyles } from "@material-ui/core";
 export const useClasses = makeStyles((theme) => createStyles({
   root: {
     minWidth: 500,
-    width: '50%',
+    width: '100%',
     maxWidth: 1000,
     '& > .MuiCardContent-root': {
       padding: 0

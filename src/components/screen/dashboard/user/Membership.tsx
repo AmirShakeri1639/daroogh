@@ -85,7 +85,7 @@ const Membership: React.FC = () => {
 
   const {
     container, root, formContainer, formItem,
-    box, addButton, cancelButton, dropdown
+    addButton, cancelButton,
   } = useClasses();
 
   const tableColumns = (): TableColumnInterface[] => {
