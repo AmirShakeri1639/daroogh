@@ -56,7 +56,8 @@ export default {
         inventory: 'موجودی',
         price: 'قیمت',
         offer: 'آفر',
-        to: 'به'
+        to: 'به',
+        comment: 'شرح',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
