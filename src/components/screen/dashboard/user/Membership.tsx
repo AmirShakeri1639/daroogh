@@ -1,6 +1,8 @@
 import React, { useState, useReducer } from 'react';
 import {
-  Container, Grid, Paper, Card, CardHeader, IconButton, Divider, CardContent, TextField, FormControlLabel, Switch, CardActions, Button,
+  Container, Grid, Paper, Card, CardHeader, IconButton,
+  Divider, CardContent, TextField, FormControlLabel,
+  Switch, CardActions, Button,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +12,9 @@ import {
   ActionInterface, MembershipRequestInterface, TableColumnInterface
 } from '../../../../interfaces';
 import { MembershipRequest } from '../../../../services/api';
-import { errorHandler, successSweetAlert, warningSweetAlert } from '../../../../utils';
+import { 
+  errorHandler, successSweetAlert, warningSweetAlert
+} from '../../../../utils';
 import { useClasses } from '../classes';
 import Modal from '../../../public/modal/Modal';
 import DataTable from '../../../public/datatable/DataTable';
@@ -106,7 +110,7 @@ const Membership: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      await queryCache.invalidateQueries('membershipRequestsList');
+      await queryCache.invalidateQueries('membershipRequestsList');      
       await successSweetAlert(result.message);
       dispatch({ type: 'reset' });
     }

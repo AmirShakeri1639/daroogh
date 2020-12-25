@@ -29,7 +29,7 @@ const initialState = {
   url: '',
 };
 
-function reducer(state = initialState, action: ActionInterface) {
+function reducer(state = initialState, action: ActionInterface): any {
   const { type, value } = action;
   switch (type) {
     case 'subject':
@@ -225,7 +225,7 @@ const MessageForm: React.FC = () => {
             <Select
               error={state.userID === '' && showError}
               required
-              onChange={(e) => dispatch({ type: 'userID', value: e.target.value })}
+              onChange={ (e): void => dispatch({ type: 'userID', value: e.target.value }) }
               value={state.userID}
               labelId="users-list"
               label={t('user.user')}
@@ -255,13 +255,13 @@ const MessageForm: React.FC = () => {
             />
             <Select
               error={state.type === '' && showError}
-              onChange={(e) => dispatch({ type: 'type', value: e.target.value })}
+              onChange={ (e): void => dispatch({ type: 'type', value: e.target.value })}
               value={state.type}
               labelId="user-type"
               label={t('general.type')}
               required
             >
-              {MessageTypeArray(messageTypeArrayValues).map(item => {
+              {MessageTypeArray(messageTypeArrayValues).map((item: any): any => {
                 return (
                   <MenuItem key={item.val} value={item.val}>
                     {item.text}
@@ -283,7 +283,7 @@ const MessageForm: React.FC = () => {
               label={t('message.message')}
               value={state.message1}
               rows={4}
-              onChange={(e) => dispatch({ type: 'message1', value: e.target.value })}
+              onChange={ (e): void => dispatch({ type: 'message1', value: e.target.value }) }
             />
             <br />
             <Button

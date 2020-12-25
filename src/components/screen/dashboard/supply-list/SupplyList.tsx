@@ -53,7 +53,7 @@ const SupplyList: React.FC = () => {
     setFilteredItems(_filteredItems);
   }
 
-  const displayHandler = () => {
+  const displayHandler = (): any => {
     let items;
     if (filteredItems.length > 0) {
       items = filteredItems.map((item: AllPharmacyDrugInterface) => {

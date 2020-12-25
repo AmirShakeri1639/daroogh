@@ -75,7 +75,7 @@ const ListItems: React.FC = () => {
   const { userData, roles } = new JwtData();
   const rolesArray = roles();
 
-  const adminMenu = () => {
+  const adminMenu = (): JSX.Element => {
     return (
       <>
         <h3 className={spacing3}>{ t('user.admin') }</h3>
@@ -271,7 +271,7 @@ const ListItems: React.FC = () => {
     )
   }
 
-  const pharmacyMenu = () => {
+  const pharmacyMenu = (): JSX.Element => {
     return (
       <>
         <h3 className={spacing3}>{ t('pharmacy.pharmacy') }</h3>

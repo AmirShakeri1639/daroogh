@@ -22,7 +22,7 @@ import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
 import Desktop from "./drug-transfer/desktop/Desktop";
 import SupplyList from './supply-list/SupplyList';
-import Membership from './user/membership';
+import Membership from './user/Membership';
 
 const useStyles = makeStyles((theme) => ({
   container: {

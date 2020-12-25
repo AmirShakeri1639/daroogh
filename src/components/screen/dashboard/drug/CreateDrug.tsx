@@ -102,7 +102,7 @@ const CreateDrug: React.FC = () => {
   const { getAllCategories: allCategories } = new Category();
   const [categories, setCategories] = useState([]);
   React.useEffect(() => {
-    async function getCategories() {
+    async function getCategories(): Promise<any> {
       const result = await allCategories(0, 1000);
       setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
     }
@@ -111,7 +111,7 @@ const CreateDrug: React.FC = () => {
 
   const [drugTypes, setDrugTypes] = useState([]);
   React.useEffect(() => {
-    async function getTypes() {
+    async function getTypes(): Promise<any> {
       const result = await types();
       setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
     }

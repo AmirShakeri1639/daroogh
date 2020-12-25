@@ -56,7 +56,7 @@ export enum MessageTypeEnum {
   SMS_AND_NOTIFICATION,
 }
 
-export const MessageTypeArray = (textArray: string[]) => [
+export const MessageTypeArray = (textArray: string[]): any => [
   { val: MessageTypeEnum.PROFILE, text: textArray[0] },
   { val: MessageTypeEnum.SMS, text: textArray[1] },
   { val: MessageTypeEnum.NOTIFICATION, text: textArray[2] },
