@@ -7,7 +7,7 @@ class MembershipRequest extends Api {
     all: '/MembershipRequest/GetPharmacyRequests',
     userRequests: '/MembershipRequest/GetUserRequests',
     send: '/MembershipRequest/SendRequest',
-    accept: '/MembershipRequest/AccecptRequest'
+    accept: '/MembershipRequest/AcceptRequest'
   };
 
   all = async (skip: number, top: number = 10): Promise<any> => {

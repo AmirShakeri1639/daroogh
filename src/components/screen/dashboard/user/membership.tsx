@@ -1,6 +1,6 @@
 import React, { useState, useReducer } from 'react';
 import {
-  Container, Grid, Paper, Card, CardHeader, IconButton, Divider, CardContent, TextField, FormControlLabel, Switch,
+  Container, Grid, Paper, Card, CardHeader, IconButton, Divider, CardContent, TextField, FormControlLabel, Switch, CardActions, Button,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { useTranslation } from 'react-i18next';
@@ -102,12 +102,12 @@ const Membership: React.FC = () => {
   } = new MembershipRequest();
 
   const [_accept, { isLoading }] = useMutation(accept, {
-    onSuccess: async () => {
+    onSuccess: async (result: any) => {
       if (showError) {
         setShowError(false);
       }
       await queryCache.invalidateQueries('membershipRequestsList');
-      await successSweetAlert(t('alert.successfulSave'));
+      await successSweetAlert(result.message);
       dispatch({ type: 'reset' });
     }
   });
@@ -173,7 +173,7 @@ const Membership: React.FC = () => {
               <Grid container spacing={ 3 }>
                 <Grid item xs={ 12 } sm={ 6 }>
                   <TextField
-                    error={ state.pharmacyComment.length < 2 && showError }
+                    error={ state.pharmacyComment?.length < 2 && showError }
                     label={ t('general.comment') }
                     required
                     variant="outlined"
@@ -196,6 +196,35 @@ const Membership: React.FC = () => {
                     }
                     label={ t('user.accepted') }
                   />
+                </Grid>
+                <Divider />
+                <Grid item xs={ 12 }>
+                  <CardActions>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      variant="contained"
+                      className={ addButton }
+                    >
+                      {
+                        isLoading
+                          ? t('general.pleaseWait')
+                          : t('general.save')
+                      }
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="contained"
+                      className={ cancelButton }
+                      onClick={ (): void => {
+                        dispatch({ type: 'reset' });
+                        toggleIsOpenSaveModalForm();
+                      } }
+                    >
+                      { t('general.cancel') }
+                    </Button>
+                  </CardActions>
                 </Grid>
               </Grid>
             </form>
