@@ -64,7 +64,7 @@ const ViewPharmacyInfo: React.FC = () => {
 
     const { data: {
       address, description, name, telphon,
-    }} = data;
+    } } = data;
     return (
       <div className="paperContainer">
         <ul>

@@ -129,6 +129,11 @@ export default {
         silverUser: 'کاربر نقره ای',
         boronzeUser: 'کاربر برنزی',
         platiniumUser: 'کاربر پلاتینیوم',
+        membershipRequest: 'تقاضای عضویت',
+        membershipRequestsList: 'لیست تقاضای عضویت',
+        sendDate: 'تاریخ درخواست',
+        accepted: 'پذیرفته شده',
+        members: 'اعضا',
       },
       drug: {
         drug: 'دارو',

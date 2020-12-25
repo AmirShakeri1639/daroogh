@@ -35,3 +35,7 @@ export enum PharmacyDrugEnum {
 export enum AllPharmacyDrug {
   GET_ALL_PHARMACY_DRUG = 'allPharmacyDrug',
 }
+
+export enum MembershipRequestEnum {
+  GET_ALL = 'all'
+}
