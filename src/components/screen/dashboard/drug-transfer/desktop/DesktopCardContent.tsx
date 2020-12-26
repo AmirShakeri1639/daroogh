@@ -13,7 +13,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
-import { ColorsEnum, ExchangeStatesEnum, UserGrades } from '../../../../../enum';
+import {
+  CardColors,
+  ColorsEnum, ExchangeStatesEnum, UserColors, UserGrades
+} from '../../../../../enum';
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
 
@@ -58,6 +61,22 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     pharmacyWarranty = item?.pharmacyWarrantyA == undefined ? 0 : item?.pharmacyWarrantyA;
   }
 
+
+  // test data for completed exchanges
+  // const states = [
+  //   ExchangeStatesEnum.CONFIRMA_AND_B,
+  //   ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA,
+  //   ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB,
+  //   ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL,
+  //   ExchangeStatesEnum.CONFIRMA_AND_B_FORB,
+  //   ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
+  //   ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
+  //   ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
+  // ];
+  // state = states[Math.floor(Math.random() * states.length)];
+  // console.log('new state:', state);
+  
+
   let expireDateText: string = t('exchange.expirationDate');
   const isExchangeCompletedOrCancelled = (): boolean => {
     return ([
@@ -82,10 +101,43 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     expireDateText = t('exchange.completionDate');
     expireDate = expireDate > (
       item?.cancelDate == undefined ? '' : item?.cancelDate
-      ) ? expireDate : item?.cancelDate;
+    ) ? expireDate : item?.cancelDate;
   }
-  expireDate = isNullOrEmpty(expireDate) ? '' 
+  expireDate = isNullOrEmpty(expireDate) ? ''
     : moment(expireDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+
+
+  const isExchangeComplete = (): boolean => {
+    return (
+      [
+        ExchangeStatesEnum.CONFIRMA_AND_B,
+        ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA,
+        ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB,
+        ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL,
+        ExchangeStatesEnum.CONFIRMA_AND_B_FORB,
+        ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
+        ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
+        ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
+      ].indexOf(state) > -1
+    )
+  }
+
+  const getExchangeTitle = (): string => {
+    if (isExchangeComplete()) {
+      return t(`ExchangeStatesEnum.` +
+        `${ExchangeStatesEnum[ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL]}`)
+    } else {
+      return t(`ExchangeStatesEnum.${ExchangeStatesEnum[state]}`)
+    };
+  }
+
+  const getExchangeTitleColor = (): string => {
+    return (
+      isExchangeComplete()
+      ? CardColors[ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL]
+      : CardColors[state]
+    )
+  }
 
   // random grade for test
   // pharmacyGrade = Math.floor(Math.random() * 10 ) % 4 + 1;
@@ -113,14 +165,14 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     }
     const starsArray: JSX.Element[] = [];
     for (let i = 0; i < flooredStar; i++) {
-      starsArray.push(<FontAwesomeIcon icon={solidStar} size="lg" />);
+      starsArray.push(<FontAwesomeIcon icon={ solidStar } size="lg" />);
     }
     if (decimal === .5) {
-      starsArray.push(<FontAwesomeIcon icon={faStarHalfAlt} size="lg" />);
+      starsArray.push(<FontAwesomeIcon icon={ faStarHalfAlt } size="lg" />);
       flooredStar++;
     }
     for (let i = flooredStar; i < 5; i++) {
-      starsArray.push(<FontAwesomeIcon icon={faStar} size="lg" />);
+      starsArray.push(<FontAwesomeIcon icon={ faStar } size="lg" />);
     }
     return starsArray;
   }
@@ -131,88 +183,80 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     cardTitle, titleCode, cardTop, pointer,
   } = useClasses();
 
-  const UserColors = [
-    ColorsEnum.White,
-    ColorsEnum.GOLD,
-    ColorsEnum.SILVER,
-    ColorsEnum.BRONZE,
-    ColorsEnum.PLATINUM
-  ];
-
   const ExchangeInfo = (): JSX.Element => {
     return (
-      <Grid container spacing={1} className={cardContainer}>
-        <Grid container className={cardTop}>
-          <Grid container xs={6} className={rowRight}>
-            <Grid xs={12} className={rowRight}>
-              <FontAwesomeIcon icon={faSun} size="lg" className={faIcons}
-                style={{ color: UserColors[pharmacyGrade] }} />
-              <span>{t(`exchange.${UserGrades[pharmacyGrade]}`)}</span>
+      <Grid container spacing={ 1 } className={ cardContainer }>
+        <Grid container className={ cardTop }>
+          <Grid container xs={ 6 } className={ rowRight }>
+            <Grid xs={ 12 } className={ rowRight }>
+              <FontAwesomeIcon icon={ faSun } size="lg" className={ faIcons }
+                style={ { color: UserColors[pharmacyGrade] } } />
+              <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
             </Grid>
-            <Grid xs={12} className={rowRight}>
-              <div>{item.pharmacyProvinceB} {item.pharmacyCityB}</div>
+            <Grid xs={ 12 } className={ rowRight }>
+              <div>{ item.pharmacyProvinceB } { item.pharmacyCityB }</div>
             </Grid>
           </Grid>
-          <Grid container xs={6} className={colLeft}>
-            <Grid xs={12} className={rowLeft}>
-              {pharmacyWarranty} تومان
-              <FontAwesomeIcon icon={faMedal} size="lg" />
+          <Grid container xs={ 6 } className={ colLeft }>
+            <Grid xs={ 12 } className={ rowLeft }>
+              { pharmacyWarranty } تومان
+              <FontAwesomeIcon icon={ faMedal } size="lg" />
             </Grid>
-            <Grid xs={12} className={rowLeft} style={{ direction: 'ltr' }}>
-              {stars()}
+            <Grid xs={ 12 } className={ rowLeft } style={ { direction: 'ltr' } }>
+              { stars() }
             </Grid>
           </Grid>
         </Grid>
 
 
-        <Grid container xs={12}>
+        <Grid container xs={ 12 }>
 
-          <Grid item xs={12} className={spacingVertical1}>
-            <TextLine backColor={ColorsEnum.White}
+          <Grid item xs={ 12 } className={ spacingVertical1 }>
+            <TextLine backColor={ ColorsEnum.White }
               rightText={
                 <>
-                  <FontAwesomeIcon icon={faCalendarPlus} size="lg" className={faIcons} />
-                  {t('exchange.sendDate')}
+                  <FontAwesomeIcon icon={ faCalendarPlus } size="lg" className={ faIcons } />
+                  { t('exchange.sendDate') }
                 </>
               }
               leftText={
                 item?.sendDate == null ? ''
-                : moment(item?.sendDate, 'YYYY/MM/DD').
+                  : moment(item?.sendDate, 'YYYY/MM/DD').
                     locale('fa').format('YYYY/MM/DD')
               } />
           </Grid>
 
-          <Grid item xs={12} className={spacingVertical1}>
-            <TextLine backColor={ColorsEnum.White}
+          <Grid item xs={ 12 } className={ spacingVertical1 }>
+            <TextLine backColor={ ColorsEnum.White }
               rightText={
                 <>
-                  <FontAwesomeIcon icon={faCalendarTimes} size="lg" className={faIcons} />
-                  {expireDateText}
+                  <FontAwesomeIcon icon={ faCalendarTimes } size="lg" className={ faIcons } />
+                  { expireDateText }
                 </>
               }
-              leftText={expireDate} />
+              leftText={ expireDate } />
           </Grid>
 
-          <Grid item xs={12} className={spacingVertical1}>
-            <TextLine backColor={ColorsEnum.White}
+          <Grid item xs={ 12 } className={ spacingVertical1 }>
+            <TextLine backColor={ ColorsEnum.White }
               rightText={
                 <>
-                  <FontAwesomeIcon icon={faMoneyBillAlt} className={faIcons} size="lg" />
-                  {t('exchange.commission')}
+                  <FontAwesomeIcon icon={ faMoneyBillAlt } className={ faIcons } size="lg" />
+                  { t('exchange.commission') }
                 </>
               }
-              leftText={totalPourcentage} />
+              leftText={ totalPourcentage } />
           </Grid>
 
-          <Grid item xs={12} className={spacingVertical1}>
-            <TextLine backColor={ColorsEnum.White}
+          <Grid item xs={ 12 } className={ spacingVertical1 }>
+            <TextLine backColor={ ColorsEnum.White }
               rightText={
                 <>
-                  <FontAwesomeIcon icon={faCreditCard} size="lg" className={faIcons} />
-                  {t('exchange.paymentStatus')}
+                  <FontAwesomeIcon icon={ faCreditCard } size="lg" className={ faIcons } />
+                  { t('exchange.paymentStatus') }
                 </>
               }
-              leftText={paymentStatus} />
+              leftText={ paymentStatus } />
           </Grid>
 
         </Grid>
@@ -221,63 +265,39 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   };
 
   const CardProgressbar = (): JSX.Element => {
-    let thisState = (item?.state == undefined) ? 0 : item?.state;
+    let thisState = (item?.state == undefined) ? 0 : state;
     thisState %= 10;
-    
+
     return (
       <>
-        <div style={{
+        <div style={ {
           borderTop: `3px solid ${ColorsEnum.Green}`,
           width: `${thisState * 10}%`,
           display: 'inline-block'
-        }}></div>
-        <div style={{
+        } }></div>
+        <div style={ {
           borderTop: `3px solid ${ColorsEnum.Red}`,
           width: `${100 - (thisState * 10)}%`,
           display: 'inline-block'
-        }}></div>
+        } }></div>
       </>
     )
   };
 
-  const backColor = [
-    ColorsEnum.White, // unknown = 0
-    ColorsEnum.Silver, // NOSEND = 1,
-    ColorsEnum.Yellow, // WAITFORB = 2,
-    ColorsEnum.Green, //CONFIRMB_AND_WAITFORA = 3,
-    ColorsEnum.DarkGreen, //CONFIRMA_AND_B = 4,
-    ColorsEnum.Red, //NOCONFIRMB = 5,
-    ColorsEnum.LightRed, //CONFIRMB_AND_NOCONFIRMA = 6,
-    ColorsEnum.DarkRed, //CANCELLED = 7,
-    ColorsEnum.Blue, //CONFIRMA_AND_B_PAYMENTA = 8,
-    ColorsEnum.LightBlue, //CONFIRMA_AND_B_PAYMENTB = 9,
-    ColorsEnum.DarkYellow, //CONFIRMALL_AND_PAYMENTALL = 10
-    ColorsEnum.Silver, // NOSEND = 1+10,
-    ColorsEnum.Maroon, // WAITFORB = 2+10,
-    ColorsEnum.Cyan, //CONFIRMB_AND_WAITFORA = 3+10,
-    ColorsEnum.DarkCyan, //CONFIRMA_AND_B = 4+10,
-    ColorsEnum.Purple, //NOCONFIRMB = 5+10,
-    ColorsEnum.DarkRed, //CONFIRMB_AND_NOCONFIRMA = 6+10,
-    ColorsEnum.DarkRed, //CANCELLED = 7+10,
-    ColorsEnum.DarkBlue, //CONFIRMA_AND_B_PAYMENTA = 8+10,
-    ColorsEnum.Navy, //CONFIRMA_AND_B_PAYMENTB = 9+10,
-    ColorsEnum.Lime, //CONFIRMALL_AND_PAYMENTALL = 10+10
-  ]
-
   return (
-    <Card className={`${cardRoot}`}>
+    <Card className={ `${cardRoot}` }>
       <CardContent>
-        <Typography variant="h5" component="h2" className={`${cardTitle} ${pointer}`}
-          style={{ background: backColor[item.state != undefined ? item.state : 0] }}
-          onClick={(): void => onCardClick(item.id, (state > 10 ? state - 10 : state))}>
-          {t(`ExchangeStatesEnum.${ExchangeStatesEnum[state]}`)}
+        <Typography variant="h5" component="h2" className={ `${cardTitle} ${pointer}` }
+          style={ { background: getExchangeTitleColor() } }
+          onClick={ (): void => onCardClick(item.id, (state > 10 ? state - 10 : state)) }>
+          { getExchangeTitle() }
         </Typography>
-        <div className={titleCode}>
-          {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
+        <div className={ titleCode }>
+          { item?.currentPharmacyIsA ? item?.numberA : item?.numberB }
         </div>
-        <Container className={cardContent}>
+        <Container className={ cardContent }>
           <>
-            {item &&
+            { item &&
               <>
                 <ExchangeInfo />
                 <CardProgressbar />
