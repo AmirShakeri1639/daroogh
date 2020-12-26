@@ -211,53 +211,61 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
         <Grid container xs={ 12 }>
 
-          <Grid item xs={ 12 } className={ spacingVertical1 }>
-            <TextLine backColor={ ColorsEnum.White }
-              rightText={
-                <>
-                  <FontAwesomeIcon icon={ faCalendarPlus } size="lg" className={ faIcons } />
-                  { t('exchange.sendDate') }
-                </>
-              }
-              leftText={
-                item?.sendDate == null ? ''
-                  : moment(item?.sendDate, 'YYYY/MM/DD').
-                    locale('fa').format('YYYY/MM/DD')
-              } />
-          </Grid>
+          { !isNullOrEmpty(item?.sendDate) &&
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
+              <TextLine backColor={ ColorsEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon icon={ faCalendarPlus } size="lg" className={ faIcons } />
+                    { t('exchange.sendDate') }
+                  </>
+                }
+                leftText={
+                  item?.sendDate == null ? ''
+                    : moment(item?.sendDate, 'YYYY/MM/DD').
+                      locale('fa').format('YYYY/MM/DD')
+                } />
+            </Grid>
+          }
 
-          <Grid item xs={ 12 } className={ spacingVertical1 }>
-            <TextLine backColor={ ColorsEnum.White }
-              rightText={
-                <>
-                  <FontAwesomeIcon icon={ faCalendarTimes } size="lg" className={ faIcons } />
-                  { expireDateText }
-                </>
-              }
-              leftText={ expireDate } />
-          </Grid>
+          { !isNullOrEmpty(expireDate) &&
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
+              <TextLine backColor={ ColorsEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon icon={ faCalendarTimes } size="lg" className={ faIcons } />
+                    { expireDateText }
+                  </>
+                }
+                leftText={ expireDate } />
+            </Grid>
+          }
 
-          <Grid item xs={ 12 } className={ spacingVertical1 }>
-            <TextLine backColor={ ColorsEnum.White }
-              rightText={
-                <>
-                  <FontAwesomeIcon icon={ faMoneyBillAlt } className={ faIcons } size="lg" />
-                  { t('exchange.commission') }
-                </>
-              }
-              leftText={ totalPourcentage } />
-          </Grid>
+          { !isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 &&
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
+              <TextLine backColor={ ColorsEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon icon={ faMoneyBillAlt } className={ faIcons } size="lg" />
+                    { t('exchange.commission') }
+                  </>
+                }
+                leftText={ totalPourcentage } />
+            </Grid>
+          }
 
-          <Grid item xs={ 12 } className={ spacingVertical1 }>
-            <TextLine backColor={ ColorsEnum.White }
-              rightText={
-                <>
-                  <FontAwesomeIcon icon={ faCreditCard } size="lg" className={ faIcons } />
-                  { t('exchange.paymentStatus') }
-                </>
-              }
-              leftText={ paymentStatus } />
-          </Grid>
+          { !isNullOrEmpty(paymentStatus) &&
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
+              <TextLine backColor={ ColorsEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon icon={ faCreditCard } size="lg" className={ faIcons } />
+                    { t('exchange.paymentStatus') }
+                  </>
+                }
+                leftText={ paymentStatus } />
+            </Grid>
+          }
 
         </Grid>
       </Grid>
