@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ExchangeInterface } from '../../../../../interfaces';
 import { Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
-import SearchInAList from '../SearchInAList';
 import { useTranslation } from 'react-i18next';
 import { useQueryCache } from 'react-query';
 import { useClasses } from '../../classes';
@@ -11,7 +10,6 @@ import DesktopCardContent from './DesktopCardContent';
 import TransferDrug from '../Transfer';
 import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
 import { getExpireDate } from '../../../../../utils/ExchangeTools';
-import { isNull } from 'lodash';
 import { isNullOrEmpty } from '../../../../../utils';
 
 const Desktop: React.FC = () => {
@@ -56,7 +54,7 @@ const Desktop: React.FC = () => {
     setSortType(sortType);
   }
 
-  const filterChanged = async (v: number): Promise<any> => {
+  const filterChanged = (v: number): void => {
     if (v === 0) {
       setFilter(ExchangeStateEnum.UNKNOWN);
     } else {
@@ -77,10 +75,13 @@ const Desktop: React.FC = () => {
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (exchanges && exchanges.length > 0) {
+
+      // filter
       const listToShow = filter == ExchangeStateEnum.UNKNOWN
         ? [...exchanges]
         : exchanges.filter((ex) => ex.state === filter);
-      
+
+      // sort
       if (sortField == '') {
         listToShow.sort((i, j) => i.id - j.id);
       } else {
@@ -95,6 +96,7 @@ const Desktop: React.FC = () => {
           });
         }
       }
+
       return listToShow.map((item, index) => {
         return (<Grid item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
           <div className={ paper }>
@@ -115,14 +117,11 @@ const Desktop: React.FC = () => {
       {!showTransfer &&
         <Grid item xs={ 11 }>
           <Grid container spacing={ 1 }>
-            <Grid item xs={ 6 }>
+            <Grid item xs={ 12 }>
               <DesktopToolbox
                 onFilterChanged={ filterChanged }
                 onSortSelected={ sortSelected }
               />
-            </Grid>
-            <Grid item xs={ 6 }>
-              <SearchInAList />
             </Grid>
           </Grid>
 

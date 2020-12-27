@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { useClasses } from '../../classes';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,6 +11,7 @@ import {
 import { DaroogDropdown } from '../../../../public/daroog-dropdown/DaroogDropdown';
 import { LabelValue } from '../../../../../interfaces';
 import { ColorEnum, ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
+import { Grid } from '@material-ui/core';
 
 interface Props {
   onFilterChanged?: (v: number) => void;
@@ -72,8 +73,9 @@ const DesktopToolbox: React.FC<Props> = (props) => {
   }
 
   return (
-    <>
-      <ul className={ ul }>
+    <Grid container>
+      <Grid item xs={12} sm={6}>
+        <ul className={ ul }>
         <li>
           <span className="txt-xs position-relative">{ `${t('general.sortWith')}:` }</span>
         </li>
@@ -99,25 +101,28 @@ const DesktopToolbox: React.FC<Props> = (props) => {
           <span className="txt-xs position-relative">{ t('general.descending') }</span>
         </li>
       </ul>
-      <ul className={ ul }>
-        <li>
-          <span className="txt-xs position-relative">{ `${t('general.filterWith')}:` }</span>
-        </li>
-        <li>
-          <FontAwesomeIcon icon={ faSignal } className={ faIcons } />
-          <span className="txt-xs position-relative">{ t('exchange.state') }</span>
-        </li>
-        <li>
-          <DaroogDropdown
-            defaultValue="0"
-            onChangeHandler={ stateFilterSelected }
-            data={ statesFilterList }
-            variant="standard"
-            style={ { marginTop: '-.5em', color: ColorEnum.Silver } }
-          />
-        </li>
-      </ul>
-    </>
+      </Grid>
+      <Grid item xs={12} sm={6}>
+        <ul className={ ul }>
+          <li>
+            <span className="txt-xs position-relative">{ `${t('general.filterWith')}:` }</span>
+          </li>
+          <li>
+            <FontAwesomeIcon icon={ faSignal } className={ faIcons } />
+            <span className="txt-xs position-relative">{ t('exchange.state') }</span>
+          </li>
+          <li>
+            <DaroogDropdown
+              defaultValue="0"
+              onChangeHandler={ stateFilterSelected }
+              data={ statesFilterList }
+              variant="standard"
+              style={ { marginTop: '-.5em', color: ColorEnum.Silver } }
+            />
+          </li>
+        </ul>
+      </Grid>
+    </Grid>
   );
 };
 
