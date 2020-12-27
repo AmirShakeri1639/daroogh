@@ -48,7 +48,7 @@ const Input: React.FC<InputInterface> = (props) => {
 
 Input.defaultProps = {
   type: 'text',
-  onClick: () => null,
+  onClick: (): any => null,
   value: '',
   label: '',
   required: false,

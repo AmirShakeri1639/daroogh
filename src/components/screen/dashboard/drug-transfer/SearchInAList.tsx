@@ -11,7 +11,7 @@ const SearchInAList: React.FC = () => {
     TransferDrugContextInterface
   >(DrugTransferContext);
 
-  const searchHandler = (v: string) => {
+  const searchHandler = (v: string): void => {
     if (allPharmacyDrug && allPharmacyDrug.length > 0) {
       const filtered: AllPharmacyDrugInterface[] = allPharmacyDrug.filter(
         (p) => {
@@ -28,7 +28,7 @@ const SearchInAList: React.FC = () => {
 
   return (
     <Container maxWidth="lg" className={container}>
-      <DaroogSearchBar onRequestSearch={(v: string) => searchHandler(v)} />
+      <DaroogSearchBar onRequestSearch={ (v: string): void => searchHandler(v)} />
     </Container>
   );
 };

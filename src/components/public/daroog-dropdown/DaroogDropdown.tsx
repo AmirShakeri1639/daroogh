@@ -6,9 +6,10 @@ interface Props {
   defaultValue: any;
   onChangeHandler: (value: string) => void;
   data: LabelValue[];
-  label: string;
+  label?: string;
   className?: any;
   variant?: any;
+  style?: any;
 }
 
 export const DaroogDropdown: React.FC<Props> = (props) => {
@@ -19,6 +20,7 @@ export const DaroogDropdown: React.FC<Props> = (props) => {
     label,
     className = '',
     variant = 'outlined',
+    style,
   } = props;
 
   const [finalValue, setValue] = useState(defaultValue);
@@ -32,6 +34,7 @@ export const DaroogDropdown: React.FC<Props> = (props) => {
         variant={variant}
         className={className}
         defaultValue={defaultValue}
+        style={style}
         onChange={(e): void => {
           setValue(e.target.value);
           onChangeHandler(e.target.value as string);

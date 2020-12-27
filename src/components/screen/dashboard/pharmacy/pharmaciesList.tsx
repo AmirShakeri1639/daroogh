@@ -515,9 +515,6 @@ const PharmaciesList: React.FC = () => {
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
-      <div style={{ margin: '2rem', padding: '.5rem' }}>
-        <DaroogSearchBar />
-      </div>
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <div>{t('pharmacy.list')}</div>

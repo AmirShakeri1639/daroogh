@@ -41,12 +41,15 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
   const [allProvinces, setAllProvinces] = useState<LabelValue[]>([]);
   const [allCities, setAllCities] = useState<LabelValue[]>([]);
 
-  function loadCities(provinceId: number | string) {
-    const getCities = async (provinceId: number | string) => {
+  function loadCities(provinceId: number | string): void {
+    const getCities = async (provinceId: number | string): Promise<any> => {
       if (provinceId == null) return;
       const result = await getAllCities(provinceId);
       const selectableCities: Array<LabelValue> = [];
-      const findSelectables = (item: any, cName: string = '') => {
+      const findSelectables = (
+        item: any,
+        cName: string = ''
+      ): LabelValue[] | undefined => {
         if (!item.shahres && !item.regions) return;
         let subItems;
         if (item.shahres) {
@@ -80,7 +83,7 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
   }
 
   React.useEffect(() => {
-    async function getProvinces() {
+    async function getProvinces(): Promise<any> {
       const result = await getAllProvinces();
       setAllProvinces(
         result.items.map((item: any) => ({ value: item.id, label: item.name }))
@@ -91,13 +94,13 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
     loadCities(province?.id);
   }, []);
 
-  const provinceSelectedHandler = (id: number | string) => {
+  const provinceSelectedHandler = (id: number | string): void => {
     const { value, label } = allProvinces.filter((p) => p.value === id)[0];
     setProvince({ id: value, name: label, selectable: false });
     loadCities(id);
   };
 
-  const citySelectedHandler = (id: number | string) => {
+  const citySelectedHandler = (id: number | string): void => {
     const { value, label } = allCities.filter((p) => p.value === id)[0];
     setCity({ id: value, name: label, selectable: true });
     onSelectedHandler(id);
@@ -112,7 +115,7 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
         <Grid item xs={12} sm={6}>
           <DaroogDropdown
             defaultValue={province.id}
-            onChangeHandler={(id) => {
+            onChangeHandler={(id): void => {
               provinceSelectedHandler(id);
             }}
             data={allProvinces}
@@ -122,7 +125,7 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
         <Grid item xs={12} sm={6}>
           <DaroogDropdown
             defaultValue={city.id}
-            onChangeHandler={(id) => {
+            onChangeHandler={(id): void => {
               citySelectedHandler(id);
             }}
             data={allCities}

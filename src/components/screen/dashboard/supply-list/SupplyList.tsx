@@ -1,5 +1,11 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { createStyles, Grid, makeStyles, Paper, MenuItem } from '@material-ui/core';
+import {
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  MenuItem,
+} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { MaterialContainer, Modal, DatePicker } from '../../../public';
 import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
@@ -9,7 +15,11 @@ import { AllPharmacyDrug } from '../../../../enum/query';
 import { Drug, PharmacyDrug, Comission } from '../../../../services/api';
 import CardContainer from './CardContainer';
 import { debounce, has } from 'lodash';
-import { ActionInterface, AllPharmacyDrugInterface, DrugInterface } from '../../../../interfaces';
+import {
+  ActionInterface,
+  AllPharmacyDrugInterface,
+  DrugInterface,
+} from '../../../../interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
@@ -17,8 +27,13 @@ import Button from '../../../public/button/Button';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import ReactSelect from '../../../public/react-select/ReactSelect';
 import { useEffectOnce } from '../../../../hooks';
-import { Convertor, errorHandler, sanitizeReactSelect, successSweetAlert } from '../../../../utils';
-import { utils } from "react-modern-calendar-datepicker";
+import {
+  Convertor,
+  errorHandler,
+  sanitizeReactSelect,
+  successSweetAlert,
+} from '../../../../utils';
+import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 
@@ -31,42 +46,42 @@ function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
       return {
         ...state,
         id: value,
-      }
+      };
     case 'drugID':
       return {
         ...state,
         drugID: value,
-      }
+      };
     case 'expireDate':
       return {
         ...state,
         expireDate: value,
-      }
+      };
     case 'offer1':
       return {
         ...state,
         offer1: value,
-      }
+      };
     case 'offer2':
       return {
         ...state,
         offer2: value,
-      }
+      };
     case 'amount':
       return {
         ...state,
         amount: value,
-      }
+      };
     case 'cnt':
       return {
         ...state,
         cnt: value,
-      }
+      };
     case 'batchNO':
       return {
         ...state,
         batchNO: value,
-      }
+      };
     case 'reset':
       return new PharmacyDrugSupplyList();
     default:
@@ -110,7 +125,7 @@ const useStyle = makeStyles((theme) =>
       color: '#6d6d6d',
       '& legend': {
         color: '#7e7e7e',
-      }
+      },
     },
     buttonContainer: {
       marginTop: 15,
@@ -124,7 +139,7 @@ const useStyle = makeStyles((theme) =>
     },
     drugTitle: {
       marginBottom: theme.spacing(1),
-    }
+    },
   })
 );
 
@@ -136,12 +151,17 @@ const { getComissionAndRecommendation } = new Comission();
 
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
-  const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
+  const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(
+    false
+  );
   const [state, dispatch] = useReducer(reducer, new PharmacyDrugSupplyList());
   const [drugList, setDrugList] = useState<DrugInterface[]>([]);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
-  const [selectedDrug, setSelectedDrug] = useState<{ label: string; value: string } | null>(null);
+  const [selectedDrug, setSelectedDrug] = useState<{
+    label: string;
+    value: string;
+  } | null>(null);
   const [daysDiff, setDaysDiff] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isoDate, setIsoDate] = useState<string>('');
@@ -165,7 +185,7 @@ const SupplyList: React.FC = () => {
   useEffectOnce(() => {
     (async (): Promise<any> => {
       try {
-        const result = await all(0, 10^3);
+        const result = await all(0, 10 ^ 3);
         setDrugList(result.items);
       } catch (e) {
         errorHandler(e);
@@ -179,14 +199,15 @@ const SupplyList: React.FC = () => {
         const { offer1, offer2, amount, cnt } = state;
         const { value: drugId } = selectedDrug;
         if (
-          (offer1 !== '' && offer2 !== '' && Number(cnt) > 0)
-          || (drugId && Number(amount) > 0)) {
+          (offer1 !== '' && offer2 !== '' && Number(cnt) > 0) ||
+          (drugId && Number(amount) > 0)
+        ) {
           const result = await getComissionAndRecommendation({
             drugId: selectedDrug!.value,
             price: state?.amount,
             offer1: state?.offer1,
             offer2: state?.offer2,
-            pharmacyId: '0'
+            pharmacyId: '0',
           });
           const { data } = result;
           if (has(data, 'commissionPercent')) {
@@ -202,29 +223,39 @@ const SupplyList: React.FC = () => {
     })();
   }, [selectedDrug, state?.amount, state?.offer1, state?.offer1, state?.cnt]);
 
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
-  const toggleIsOpenModalOfNewList = (): void => setIsOpenModalOfNewList(v => !v);
+  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
+  const toggleIsOpenModalOfNewList = (): void =>
+    setIsOpenModalOfNewList((v) => !v);
 
-  const { isLoading, data, isFetched } = useQuery(
-    AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () => allPharmacyDrug()
-  );
+  const {
+    isLoading,
+    data,
+    isFetched,
+  } = useQuery(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () => allPharmacyDrug());
 
-  const [_savePharmacyDrug, { isLoading: isLoadingSave }] = useMutation(savePharmacyDrug, {
-    onSuccess: async () => {
-      queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
-      toggleIsOpenModalOfNewList();
-      await successSweetAlert(t('alert.successfulSave'));
+  const [_savePharmacyDrug, { isLoading: isLoadingSave }] = useMutation(
+    savePharmacyDrug,
+    {
+      onSuccess: async () => {
+        queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
+        toggleIsOpenModalOfNewList();
+        await successSweetAlert(t('alert.successfulSave'));
+      },
     }
-  });
+  );
 
   const calculatDateDiference = (e: string, dateSeparator: string): void => {
     const date = new Date();
-    const todayMomentObject = moment([date.getFullYear(), date.getMonth(), date.getDate()]);
-    const convertedArray = e.split(dateSeparator).map(i => Number(i));
+    const todayMomentObject = moment([
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    ]);
+    const convertedArray = e.split(dateSeparator).map((i) => Number(i));
     const selectedDate = jalali.toGregorian(
       convertedArray[0],
       convertedArray[1],
-      convertedArray[2],
+      convertedArray[2]
     );
     const selectedDateMomentObject = moment([
       selectedDate.gy,
@@ -232,13 +263,27 @@ const SupplyList: React.FC = () => {
       selectedDate.gd,
     ]);
 
-    setDaysDiff(String(selectedDateMomentObject.diff(todayMomentObject, 'days')));
+    setDaysDiff(
+      String(selectedDateMomentObject.diff(todayMomentObject, 'days'))
+    );
 
-    setIsoDate(`${selectedDate.gy}-${selectedDate.gm}-${selectedDate.gd}T00:00:00Z`);
-  }
+    setIsoDate(
+      `${selectedDate.gy}-${selectedDate.gm}-${selectedDate.gd}T00:00:00Z`
+    );
+  };
 
   const editHandler = (item: any): any => {
-    const { offer1, offer2, drugID, batchNO, amount, cnt, expireDate, drug: { name }, id } = item;
+    const {
+      offer1,
+      offer2,
+      drugID,
+      batchNO,
+      amount,
+      cnt,
+      expireDate,
+      drug: { name },
+      id,
+    } = item;
     dispatch({ type: 'expireDate', value: expireDate });
     dispatch({ type: 'drugID', value: drugID });
     dispatch({ type: 'offer1', value: offer1 });
@@ -256,50 +301,45 @@ const SupplyList: React.FC = () => {
     setSelectedDate(shamsiDate);
     calculatDateDiference(shamsiDate, '-');
     toggleIsOpenModalOfNewList();
-  }
+  };
 
   const filteredItemsHandler = (e: any): void => {
-    const _filteredItems = data.items
-      .filter((item: any) => item.drug.name.includes(e) || item.drug.genericName.includes(e));
+    const _filteredItems = data.items.filter(
+      (item: any) =>
+        item.drug.name.includes(e) || item.drug.genericName.includes(e)
+    );
     setFilteredItems(_filteredItems);
-  }
+  };
 
   const displayHandler = (): JSX.Element[] => {
     let items;
     if (filteredItems.length > 0) {
       items = filteredItems.map((item: AllPharmacyDrugInterface) => {
         return (
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
-            xl={3}
-          >
-            <CardContainer editHandler={(): void => editHandler(item)} drug={item} />
+          <Grid item xs={12} sm={6} md={4} xl={3}>
+            <CardContainer
+              editHandler={(): void => editHandler(item)}
+              drug={item}
+            />
           </Grid>
         );
-      })
-    }
-    else {
+      });
+    } else {
       if (isFetched) {
         items = data.items.map((item: AllPharmacyDrugInterface) => {
-        return (
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
-            xl={3}
-          >
-            <CardContainer editHandler={(): void => editHandler(item)} drug={item} />
-          </Grid>
-        );
-      })
+          return (
+            <Grid item xs={12} sm={6} md={4} xl={3}>
+              <CardContainer
+                editHandler={(): void => editHandler(item)}
+                drug={item}
+              />
+            </Grid>
+          );
+        });
+      }
     }
-  }
     return items;
-  }
+  };
 
   const drugListGenerator = (): JSX.Element[] => {
     return drugList.map((item: DrugInterface) => {
@@ -309,7 +349,7 @@ const SupplyList: React.FC = () => {
         </MenuItem>
       );
     });
-  }
+  };
 
   const searchDrugs = async (title: string): Promise<any> => {
     try {
@@ -322,7 +362,7 @@ const SupplyList: React.FC = () => {
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   const formHandler = async (): Promise<any> => {
     try {
@@ -333,7 +373,7 @@ const SupplyList: React.FC = () => {
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   const closeHandler = (): void => {
     dispatch({ type: 'reset' });
@@ -343,56 +383,31 @@ const SupplyList: React.FC = () => {
     setComissionPercent('');
     setDaysDiff('');
     toggleIsOpenModalOfNewList();
-  }
+  };
 
   return (
     <>
       <MaterialContainer>
-        <h1 className="txt-md">
-          {t('drug.SuppliedDrugsList')}
-        </h1>
-        <Grid
-          container
-          spacing={1}
-        >
-          <Grid
-            item
-            xs={12}
-            md={6}
-          >
+        <h1 className="txt-md">{t('drug.SuppliedDrugsList')}</h1>
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
             <MaterialSearchBar onRequestSearch={filteredItemsHandler} />
           </Grid>
         </Grid>
 
-        <Grid
-          container
-          spacing={1}
-          className={contentContainer}
-        >
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            md={4}
-            xl={3}
-          >
+        <Grid container spacing={1} className={contentContainer}>
+          <Grid item xs={12} sm={6} md={4} xl={3}>
             <Paper className={blankCard} onClick={toggleIsOpenModalOfNewList}>
               <FontAwesomeIcon icon={faPlus} size="2x" />
               <span>{t('pharmacy.addToTransferList')}</span>
             </Paper>
           </Grid>
-          {
-            displayHandler()
-          }
+          {displayHandler()}
         </Grid>
       </MaterialContainer>
 
-      <Modal
-        open={isOpenModalOfNewList}
-        toggle={closeHandler}
-      >
+      <Modal open={isOpenModalOfNewList} toggle={closeHandler}>
         <div className={modalContainer}>
-
           <Grid container spacing={1}>
             <Grid item xs={12}>
               <label className={drugTitle}>{t('drug.drugSelection')}</label>
@@ -415,7 +430,9 @@ const SupplyList: React.FC = () => {
                 value={state?.amount}
                 className="w-100"
                 label={t('general.price')}
-                onChange={(e): void => dispatch({ type: 'amount', value: Number(e.target.value) })}
+                onChange={(e): void =>
+                  dispatch({ type: 'amount', value: Number(e.target.value) })
+                }
               />
             </Grid>
 
@@ -423,7 +440,9 @@ const SupplyList: React.FC = () => {
               <Input
                 className="w-100"
                 label={`${t('general.number')} ${t('drug.drug')}`}
-                onChange={(e): void => dispatch({ type: 'cnt', value: Number(e.target.value) })}
+                onChange={(e): void =>
+                  dispatch({ type: 'cnt', value: Number(e.target.value) })
+                }
                 value={state?.cnt}
               />
             </Grid>
@@ -432,13 +451,21 @@ const SupplyList: React.FC = () => {
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={12}>
                   <span>آفر</span>
-                  <span className="txt-sm text-muted">(به ازای هر <span className="txt-bold">آفر2</span> خرید، <span className="txt-bold">آفر1</span> عدد رایگان)</span>
+                  <span className="txt-sm text-muted">
+                    (به ازای هر <span className="txt-bold">آفر2</span> خرید،{' '}
+                    <span className="txt-bold">آفر1</span> عدد رایگان)
+                  </span>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Input
                     value={state?.offer1}
                     label={`${t('general.number')} ${t('general.offer')} 1`}
-                    onChange={(e): void => dispatch({ type: 'offer1', value: Number(e.target.value) })}
+                    onChange={(e): void =>
+                      dispatch({
+                        type: 'offer1',
+                        value: Number(e.target.value),
+                      })
+                    }
                   />
                 </Grid>
                 <span>به</span>
@@ -447,7 +474,12 @@ const SupplyList: React.FC = () => {
                     value={state?.offer2}
                     label={`${t('general.number')} ${t('general.offer')} 2`}
                     // className={offerInput}
-                    onChange={(e): void => dispatch({ type: 'offer2', value: Number(e.target.value) })}
+                    onChange={(e): void =>
+                      dispatch({
+                        type: 'offer2',
+                        value: Number(e.target.value),
+                      })
+                    }
                   />
                 </Grid>
               </Grid>
@@ -471,7 +503,9 @@ const SupplyList: React.FC = () => {
                 className="w-100"
                 label={t('general.barcode')}
                 value={state?.batchNO}
-                onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
+                onChange={(e): void =>
+                  dispatch({ type: 'batchNO', value: e.target.value })
+                }
               />
             </Grid>
 
@@ -483,10 +517,7 @@ const SupplyList: React.FC = () => {
 
             {daroogRecommendation !== '' && (
               <Grid item xs={12}>
-                <FieldSetLegend
-                  className={fieldset}
-                  legend="پیشنهاد داروگ"
-                >
+                <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
                   <span>{daroogRecommendation}</span>
                 </FieldSetLegend>
               </Grid>
@@ -507,21 +538,14 @@ const SupplyList: React.FC = () => {
             >
               {t('general.cancel')}
             </Button>
-            <Button
-              color="blue"
-              type="button"
-              onClick={formHandler}
-            >
+            <Button color="blue" type="button" onClick={formHandler}>
               {isLoadingSave ? t('general.pleaseWait') : t('form.submit')}
             </Button>
           </Grid>
         </div>
       </Modal>
 
-      <Modal
-        open={isOpenDatePicker}
-        toggle={toggleIsOpenDatePicker}
-      >
+      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DatePicker
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
@@ -535,6 +559,6 @@ const SupplyList: React.FC = () => {
       </Modal>
     </>
   );
-}
+};
 
 export default SupplyList;

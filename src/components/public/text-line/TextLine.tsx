@@ -26,6 +26,32 @@ const useStyle = makeStyles((theme) =>
 
 const TextLine: React.FC<TextLinePropsInterface> = (props) => {
   const { leftText, rightText } = props;
+  let { backColor } = props;
+  if (backColor == undefined) {
+    backColor = '#e4e4e4';
+  }
+
+  const useStyle = makeStyles((theme) =>
+    createStyles({
+      root: {
+        position: 'relative',
+        '& span': {
+          position: 'absolute',
+          display: 'inline-block',
+          backgroundColor: backColor,
+          padding: '1px 2px',
+        },
+        '& span.right': {
+          bottom: '-7px',
+          left: 0,
+        },
+        '& span.left': {
+          bottom: '-10px',
+          right: 0,
+        },
+      },
+    })
+  );
 
   const { root } = useStyle();
 

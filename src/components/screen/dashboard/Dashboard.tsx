@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import DaroogLogo from '../../../assets/images/daroog-logo.png';
+import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { List } from '@material-ui/core';
+import { Avatar, Grid, List } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -22,6 +23,11 @@ import UserMenu from './appbar/UserMenu';
 import ListItems from './sidebar/ListItems';
 import DashboardActivePage from './DashboardActivePage';
 import { MaterialDrawer } from '../../public';
+import { JwtData } from '../../../utils';
+import { LoggedInUserInterface } from '../../../interfaces';
+import { logoutUser } from '../../../utils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 
 const drawerWidth = 240;
 
@@ -95,6 +101,23 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     overflow: 'auto',
   },
+  userContainer: {
+    display: 'flex',
+    '& > *': {
+      margin: theme.spacing(3),
+    },
+  },
+  largeSpacing: {
+    margin: theme.spacing(3),
+  },
+  smallAvatar: {
+    width: theme.spacing(3),
+    height: theme.spacing(3),
+  },
+  largeAvatar: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+  },
 }));
 
 type DashboardActivePage =
@@ -109,7 +132,8 @@ type DashboardActivePage =
   | 'exchange'
   | 'createPharmacy'
   | 'supplyList'
-  | 'accountingList';
+  | 'accountingList'
+  | 'membershipRequestsList';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
@@ -142,6 +166,12 @@ const Dashboard: React.FC = () => {
   ): void => {
     setAnchorEl(e.currentTarget);
   };
+
+  const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
+  React.useEffect(() => {
+    const { userData } = new JwtData();
+    setLoggedInUser(userData);
+  }, []);
 
   const listItemsGenerator = (): any => {
     return <ListItems />;
@@ -203,6 +233,30 @@ const Dashboard: React.FC = () => {
               <ChevronRightIcon />
             </IconButton>
           </div>
+          <Divider />
+          <Grid container className={classes.largeSpacing}>
+            <Grid item xs={3}>
+              <Avatar
+                alt={t('user.user')}
+                className={classes.largeAvatar}
+                src={avatarPic}
+              />
+            </Grid>
+            <Grid item xs={9}>
+              <Grid item xs={12}>
+                {loggedInUser?.name} {loggedInUser?.family}
+              </Grid>
+              <Grid item xs={12}>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  onClick={(): void => logoutUser()}
+                >
+                  <FontAwesomeIcon icon={faDoorOpen} />
+                </IconButton>
+              </Grid>
+            </Grid>
+          </Grid>
           <Divider />
           <List component="nav" aria-labelledby="nested-list-items">
             {listItemsGenerator()}
