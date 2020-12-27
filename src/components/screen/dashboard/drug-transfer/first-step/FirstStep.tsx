@@ -116,8 +116,8 @@ const useStyle = makeStyles((theme) =>
       '& button': {
         width: '100%',
         padding: 5,
-      }
-    }
+      },
+    },
   })
 );
 
@@ -147,7 +147,7 @@ const FirstStep: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const toggleIsOpenDrawer = (): void => setIsOpenDrawer(v => !v);
+  const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
   const setDataOfSearch = (
     item: AdvancedSearchInterface
@@ -210,12 +210,16 @@ const FirstStep: React.FC = () => {
         return;
       }
       const result = await searchDrug(title);
-      const mappedItems = result.map(
-        (item: any) =>
-          ({ ...item, genericName: `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${item.companyName !== null ? `-${item.companyName}` : ''}${item.type !== null ? ` - ${item.type}` : ''}` })
-      );
+      const mappedItems = result.map((item: any) => ({
+        ...item,
+        genericName: `${item.name}${
+          item.genericName !== null ? ` (${item.genericName}) ` : ''
+        }${item.companyName !== null ? `-${item.companyName}` : ''}${
+          item.type !== null ? ` - ${item.type}` : ''
+        }`,
+      }));
       const options = sanitizeReactSelect(mappedItems, 'id', 'genericName');
-      console.log('options', options)
+      console.log('options', options);
       setSearchOptions([...options]);
     } catch (e) {
       errorHandler(e);
@@ -253,12 +257,12 @@ const FirstStep: React.FC = () => {
     () => getRelatedPharmacyDrug(),
     {
       enabled: searchedDrugs.length === 0,
-    },
+    }
   );
 
   const toggleCheckbox = (): void => {
     setIsCheckedJustOffer((v) => !v);
-  }
+  };
 
   const contentHandler = (): JSX.Element => {
     if (isLoadingRelatedDrugs || isLoading) {
@@ -284,9 +288,8 @@ const FirstStep: React.FC = () => {
               نمایش کارت ها بدون فیلتر
             </Button>
           </div>
-        )
-      }
-      else {
+        );
+      } else {
         items = searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
           return (
             <>
@@ -297,8 +300,7 @@ const FirstStep: React.FC = () => {
           );
         });
       }
-    }
-    else {
+    } else {
       items = data.map((d: PharmacyDrugInterface) => {
         return (
           <>
@@ -363,10 +365,7 @@ const FirstStep: React.FC = () => {
         </Grid>
       </Hidden> */}
 
-      <MaterialDrawer
-        onClose={toggleIsOpenDrawer}
-        isOpen={isOpenDrawer}
-      >
+      <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
         <div className={drawerContainer}>
           <div id="titleContainer">
             <h6 className="txt-md">فیلترهای جستجو</h6>
@@ -476,8 +475,6 @@ const FirstStep: React.FC = () => {
             </Grid>
           </Grid>
         </div>
-
-
       </MaterialDrawer>
     </>
   );

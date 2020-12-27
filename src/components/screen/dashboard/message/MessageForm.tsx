@@ -225,7 +225,7 @@ const MessageForm: React.FC = () => {
             <Select
               error={state.userID === '' && showError}
               required
-              onChange={(e) => dispatch({ type: 'userID', value: e.target.value })}
+              onChange={(e): void => dispatch({ type: 'userID', value: e.target.value })}
               value={state.userID}
               labelId="users-list"
               label={t('user.user')}

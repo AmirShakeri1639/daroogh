@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from 'react';
-import { useMutation, useQueryCache } from "react-query";
+import { useMutation, useQueryCache } from 'react-query';
 import Drug from '../../../../services/api/Drug';
 import {
   Container,
@@ -15,25 +15,29 @@ import {
   TextField,
   Button,
   FormControlLabel,
-  CardActions
-} from "@material-ui/core";
+  CardActions,
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '../../../public/modal/Modal';
-import { errorHandler, successSweetAlert, warningSweetAlert } from "../../../../utils";
-import CircleLoading from "../../../public/loading/CircleLoading";
-import { useTranslation } from "react-i18next";
-import { useClasses } from "../classes";
+import {
+  errorHandler,
+  successSweetAlert,
+  warningSweetAlert,
+} from '../../../../utils';
+import CircleLoading from '../../../public/loading/CircleLoading';
+import { useTranslation } from 'react-i18next';
+import { useClasses } from '../classes';
 
 import {
   ActionInterface,
   DrugInterface,
-  TableColumnInterface
-} from "../../../../interfaces";
-import useDataTableRef from "../../../../hooks/useDataTableRef";
-import DataTable from "../../../public/datatable/DataTable";
-import { DrugEnum } from "../../../../enum/query";
-import { Category } from "../../../../services/api";
-import { DaroogDropdown } from "../../../public/daroog-dropdown/DaroogDropdown";
+  TableColumnInterface,
+} from '../../../../interfaces';
+import useDataTableRef from '../../../../hooks/useDataTableRef';
+import DataTable from '../../../public/datatable/DataTable';
+import { DrugEnum } from '../../../../enum/query';
+import { Category } from '../../../../services/api';
+import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 
 const initialState: DrugInterface = {
   id: 0,
@@ -45,7 +49,7 @@ const initialState: DrugInterface = {
   description: '',
   active: false,
   enName: '',
-  type: 'شربت'
+  type: 'شربت',
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -116,24 +120,27 @@ const DrugsList: React.FC = () => {
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
   const {
-    container, root, formContainer, box, addButton, cancelButton, dropdown
+    container,
+    root,
+    formContainer,
+    box,
+    addButton,
+    cancelButton,
+    dropdown,
   } = useClasses();
   const queryCache = useQueryCache();
 
-  const {
-    save,
-    all,
-    remove,
-    types
-  } = new Drug();
-  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
+  const { save, all, remove, types } = new Drug();
+  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
   const { getAllCategories: allCategories } = new Category();
   const [categories, setCategories] = useState([]);
   React.useEffect(() => {
     async function getCategories() {
       const result = await allCategories(0, 1000);
-      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
+      setCategories(
+        result.items.map((item: any) => ({ value: item.id, label: item.name }))
+      );
     }
     getCategories();
   }, []);
@@ -142,18 +149,19 @@ const DrugsList: React.FC = () => {
   React.useEffect(() => {
     async function getTypes() {
       const result = await types();
-      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
+      setDrugTypes(
+        result.items.map((item: any) => ({ value: item, label: item }))
+      );
     }
     getTypes();
   }, []);
 
-  const [_remove,
-    { isLoading: isLoadingRemove }] = useMutation(remove, {
+  const [_remove, { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
-      ref.current?.loadItems()
+      ref.current?.loadItems();
       await queryCache.invalidateQueries('drugsList');
       await successSweetAlert(t('alert.successfulDelete'));
-    }
+    },
   });
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
@@ -161,13 +169,17 @@ const DrugsList: React.FC = () => {
       await queryCache.invalidateQueries('drugsList');
       await successSweetAlert(t('alert.successfulSave'));
       dispatch({ type: 'reset' });
-    }
+    },
   });
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { field: 'id', title: t('general.id'), type: 'number',
-        cellStyle: { textAlign: 'right' } },
+      {
+        field: 'id',
+        title: t('general.id'),
+        type: 'number',
+        cellStyle: { textAlign: 'right' },
+      },
       { field: 'name', title: t('drug.name'), type: 'string' },
       { field: 'genericName', title: t('drug.genericName'), type: 'string' },
       // { id: 'companyName', label: t('drug.companyName') },
@@ -175,7 +187,7 @@ const DrugsList: React.FC = () => {
       { field: 'enName', title: t('drug.enName'), type: 'string' },
       { field: 'type', title: t('general.type'), type: 'string' },
     ];
-  }
+  };
 
   const removeHandler = async (userRow: DrugInterface): Promise<any> => {
     try {
@@ -185,7 +197,7 @@ const DrugsList: React.FC = () => {
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   const toggleDrugActivationHandler = async (row: any): Promise<any> => {
     try {
@@ -197,20 +209,28 @@ const DrugsList: React.FC = () => {
         barcode,
         description,
         enName,
-        type
+        type,
       } = row;
       const categoryID = row.category.id;
       let { active } = row;
       active = !active;
 
       await _save({
-        id, name, categoryID, genericName, companyName,
-        barcode, description, enName, type, active,
+        id,
+        name,
+        categoryID,
+        genericName,
+        companyName,
+        barcode,
+        description,
+        enName,
+        type,
+        active,
       });
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   const saveHandler = (item: any): void => {
     toggleIsOpenSaveModalForm();
@@ -223,7 +243,7 @@ const DrugsList: React.FC = () => {
       description,
       active,
       enName,
-      type
+      type,
     } = item;
     const categoryID = item.category.id;
 
@@ -237,15 +257,15 @@ const DrugsList: React.FC = () => {
     dispatch({ type: 'active', value: active });
     dispatch({ type: 'enName', value: enName });
     dispatch({ type: 'type', value: type });
-  }
+  };
 
   const isFormValid = (): boolean => {
-    return (
-      state.name && state.name.trim().length > 0
-    );
-  }
+    return state.name && state.name.trim().length > 0;
+  };
 
-  const submitSave = async (el: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  const submitSave = async (
+    el: React.FormEvent<HTMLFormElement>
+  ): Promise<any> => {
     el.preventDefault();
 
     const {
@@ -258,14 +278,22 @@ const DrugsList: React.FC = () => {
       description,
       active,
       enName,
-      type
+      type,
     } = state;
 
     if (isFormValid()) {
       try {
         await _save({
-          id, name, categoryID, genericName, companyName,
-          barcode, description, active, enName, type
+          id,
+          name,
+          categoryID,
+          genericName,
+          companyName,
+          barcode,
+          description,
+          active,
+          enName,
+          type,
         });
         dispatch({ type: 'reset' });
         ref.current?.loadItems();
@@ -275,7 +303,7 @@ const DrugsList: React.FC = () => {
     } else {
       await warningSweetAlert(t('alert.fillFormCarefully'));
     }
-  }
+  };
 
   const editModal = (): JSX.Element => {
     return (
@@ -285,27 +313,31 @@ const DrugsList: React.FC = () => {
             title={state.id === 0 ? t('action.create') : t('action.edit')}
             action={
               <IconButton onClick={toggleIsOpenSaveModalForm}>
-                <CloseIcon/>
+                <CloseIcon />
               </IconButton>
             }
           />
-          <Divider/>
+          <Divider />
           <CardContent>
             <form
               autoComplete="off"
               className={formContainer}
-              onSubmit={submitSave}>
+              onSubmit={submitSave}
+            >
               <Grid container spacing={1}>
                 <Grid item xs={12}>
-                  <Box display="flex" justifyContent="space-between" className={box}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
                     <TextField
                       required
                       variant="outlined"
                       label={t('drug.name')}
                       value={state.name}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'name', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'name', value: e.target.value })
                       }
                     />
                     <div className="row">
@@ -315,7 +347,7 @@ const DrugsList: React.FC = () => {
                         className={dropdown}
                         label={t('drug.category')}
                         onChangeHandler={(v): void => {
-                          return dispatch({ type: 'categoryID', value: v })
+                          return dispatch({ type: 'categoryID', value: v });
                         }}
                       />
                     </div>
@@ -323,54 +355,60 @@ const DrugsList: React.FC = () => {
                       variant="outlined"
                       label={t('drug.genericName')}
                       value={state.genericName}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'genericName', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'genericName', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
-                  <Box display="flex" justifyContent="space-between" className={box}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
                     <TextField
                       variant="outlined"
                       label={t('drug.companyName')}
                       value={state.companyName}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'companyName', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'companyName', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
                       label={t('drug.barcode')}
                       value={state.barcode}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'barcode', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'barcode', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
                       label={t('general.description')}
                       value={state.description}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'description', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'description', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
-                  <Box display="flex" justifyContent="space-between" className={box}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
                     <div className="row">
                       <FormControlLabel
                         control={
                           <Switch
                             checked={state.active}
-                            onChange={
-                              (e): void =>
-                                dispatch({ type: 'active', value: e.target.checked })
+                            onChange={(e): void =>
+                              dispatch({
+                                type: 'active',
+                                value: e.target.checked,
+                              })
                             }
                           />
                         }
@@ -381,9 +419,8 @@ const DrugsList: React.FC = () => {
                       variant="outlined"
                       label={t('drug.enName')}
                       value={state.enName}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'enName', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'enName', value: e.target.value })
                       }
                     />
                     <DaroogDropdown
@@ -392,7 +429,7 @@ const DrugsList: React.FC = () => {
                       className={dropdown}
                       label={t('general.type')}
                       onChangeHandler={(v): void => {
-                        return dispatch({ type: 'type', value: v })
+                        return dispatch({ type: 'type', value: v });
                       }}
                     />
                   </Box>
@@ -406,11 +443,9 @@ const DrugsList: React.FC = () => {
                       variant="contained"
                       className={addButton}
                     >
-                      {
-                        isLoadingSave
-                          ? t('general.pleaseWait')
-                          : t('general.save')
-                      }
+                      {isLoadingSave
+                        ? t('general.pleaseWait')
+                        : t('general.save')}
                     </Button>
                     <Button
                       type="submit"
@@ -431,20 +466,14 @@ const DrugsList: React.FC = () => {
           </CardContent>
         </Card>
       </Modal>
-    )
-  }
+    );
+  };
 
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
-      <Grid
-        container
-        spacing={0}
-      >
-        <Grid
-          item
-          xs={12}
-        >
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
           <div>{t('drug.list')}</div>
           <Paper>
             <DataTable
@@ -452,20 +481,23 @@ const DrugsList: React.FC = () => {
               columns={tableColumns()}
               addAction={(): void => saveHandler(initialState)}
               editAction={(e: any, row: any): void => saveHandler(row)}
-              stateAction={async (e: any, row: any):
-                Promise<void> => await toggleDrugActivationHandler(row)}
-              removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
+              stateAction={async (e: any, row: any): Promise<void> =>
+                await toggleDrugActivationHandler(row)
+              }
+              removeAction={async (e: any, row: any): Promise<void> =>
+                await removeHandler(row)
+              }
               queryKey={DrugEnum.GET_ALL}
               queryCallback={all}
               initLoad={false}
             />
-            {(isLoadingRemove) && <CircleLoading/>}
+            {isLoadingRemove && <CircleLoading />}
           </Paper>
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
     </Container>
   );
-}
+};
 
 export default DrugsList;

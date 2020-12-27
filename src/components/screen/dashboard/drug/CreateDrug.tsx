@@ -4,17 +4,28 @@ import {
   TextField,
   FormControl,
   Paper,
-  Button, Grid, Typography, Divider, Box, FormControlLabel, Switch
+  Button,
+  Grid,
+  Typography,
+  Divider,
+  Box,
+  FormControlLabel,
+  Switch,
 } from '@material-ui/core';
 import Drug from '../../../../services/api/Drug';
 import { DrugInterface } from '../../../../interfaces';
-import { queryCache, useMutation } from "react-query";
-import { useClasses } from "../classes";
-import { ActionInterface } from "../../../../interfaces";
-import { useTranslation } from "react-i18next";
-import { errorHandler, errorSweetAlert, successSweetAlert, sweetAlert } from "../../../../utils";
-import { DaroogDropdown } from "../../../public/daroog-dropdown/DaroogDropdown";
-import { Category } from "../../../../services/api";
+import { queryCache, useMutation } from 'react-query';
+import { useClasses } from '../classes';
+import { ActionInterface } from '../../../../interfaces';
+import { useTranslation } from 'react-i18next';
+import {
+  errorHandler,
+  errorSweetAlert,
+  successSweetAlert,
+  sweetAlert,
+} from '../../../../utils';
+import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
+import { Category } from '../../../../services/api';
 
 const initialState: DrugInterface = {
   id: 0,
@@ -26,7 +37,7 @@ const initialState: DrugInterface = {
   description: '',
   active: false,
   enName: '',
-  type: 'شربت'
+  type: 'شربت',
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -94,9 +105,14 @@ const CreateDrug: React.FC = () => {
   const { save, types } = new Drug();
 
   const {
-    parent, formContainer, dropdown,
-    addButton, cancelButton, box,
-    titleContainer, formTitle
+    parent,
+    formContainer,
+    dropdown,
+    addButton,
+    cancelButton,
+    box,
+    titleContainer,
+    formTitle,
   } = useClasses();
 
   const { getAllCategories: allCategories } = new Category();
@@ -104,7 +120,9 @@ const CreateDrug: React.FC = () => {
   React.useEffect(() => {
     async function getCategories() {
       const result = await allCategories(0, 1000);
-      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
+      setCategories(
+        result.items.map((item: any) => ({ value: item.id, label: item.name }))
+      );
     }
     getCategories();
   }, []);
@@ -113,7 +131,9 @@ const CreateDrug: React.FC = () => {
   React.useEffect(() => {
     async function getTypes() {
       const result = await types();
-      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
+      setDrugTypes(
+        result.items.map((item: any) => ({ value: item, label: item }))
+      );
     }
     getTypes();
   }, []);
@@ -126,10 +146,12 @@ const CreateDrug: React.FC = () => {
     },
     onError: async () => {
       await errorSweetAlert(t('error.save'));
-    }
-  })
+    },
+  });
 
-  const submitDrug = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  const submitDrug = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<any> => {
     e.preventDefault();
 
     if (state.name.trim().length < 1) {
@@ -146,19 +168,23 @@ const CreateDrug: React.FC = () => {
         description: state.description,
         active: state.active,
         enName: state.enName,
-        type: state.type
+        type: state.type,
       });
     } catch (e) {
-      errorHandler(e)
+      errorHandler(e);
     }
-  }
+  };
 
   return (
     <Container maxWidth="lg" className={parent}>
       <Grid container spacing={0}>
         <Paper>
           <div className={titleContainer}>
-            <Typography variant="h6" component="h6" className={`${formTitle} txt-md`}>
+            <Typography
+              variant="h6"
+              component="h6"
+              className={`${formTitle} txt-md`}
+            >
               {t('drug.newDrug')}
             </Typography>
           </div>
@@ -166,18 +192,22 @@ const CreateDrug: React.FC = () => {
           <form
             autoComplete="off"
             className={formContainer}
-            onSubmit={submitDrug}>
+            onSubmit={submitDrug}
+          >
             <Grid container spacing={1}>
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  className={box}
+                >
                   <TextField
                     required
                     variant="outlined"
                     label={t('drug.name')}
                     value={state.name}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'name', value: e.target.value })
+                    onChange={(e): void =>
+                      dispatch({ type: 'name', value: e.target.value })
                     }
                   />
                   <DaroogDropdown
@@ -186,60 +216,63 @@ const CreateDrug: React.FC = () => {
                     data={categories}
                     label={t('drug.category')}
                     onChangeHandler={(v): void => {
-                      return dispatch({ type: 'categoryID', value: v })
+                      return dispatch({ type: 'categoryID', value: v });
                     }}
                   />
                   <TextField
                     variant="outlined"
                     label={t('drug.genericName')}
                     value={state.genericName}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'genericName', value: e.target.value })
+                    onChange={(e): void =>
+                      dispatch({ type: 'genericName', value: e.target.value })
                     }
                   />
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  className={box}
+                >
                   <TextField
                     variant="outlined"
                     label={t('drug.companyName')}
                     value={state.companyName}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'companyName', value: e.target.value })
+                    onChange={(e): void =>
+                      dispatch({ type: 'companyName', value: e.target.value })
                     }
                   />
                   <TextField
                     variant="outlined"
                     label={t('drug.barcode')}
                     value={state.barcode}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'barcode', value: e.target.value })
+                    onChange={(e): void =>
+                      dispatch({ type: 'barcode', value: e.target.value })
                     }
                   />
                   <TextField
                     variant="outlined"
                     label={t('general.description')}
                     value={state.description}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'description', value: e.target.value })
+                    onChange={(e): void =>
+                      dispatch({ type: 'description', value: e.target.value })
                     }
                   />
                 </Box>
               </Grid>
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  className={box}
+                >
                   <TextField
                     variant="outlined"
                     label={t('drug.enName')}
                     value={state.enName}
-                    onChange={
-                      (e): void =>
-                        dispatch({ type: 'enName', value: e.target.value })
+                    onChange={(e): void =>
+                      dispatch({ type: 'enName', value: e.target.value })
                     }
                   />
                   <DaroogDropdown
@@ -248,35 +281,33 @@ const CreateDrug: React.FC = () => {
                     className={dropdown}
                     label={t('general.type')}
                     onChangeHandler={(v): void => {
-                      return dispatch({ type: 'type', value: v })
+                      return dispatch({ type: 'type', value: v });
                     }}
                   />
                 </Box>
               </Grid>
 
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="space-between" className={box}>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    className={addButton}
-                  >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  className={box}
+                >
+                  <Button type="submit" color="primary" className={addButton}>
                     {t('general.save')}
                   </Button>
-                  {
-                    state.id !== 0 && (
-                      <FormControl>
-                        <Button
-                          type="submit"
-                          color="secondary"
-                          className={cancelButton}
-                          onClick={(): void => dispatch({ type: 'reset' })}
-                        >
-                          {t('general.cancel')}
-                        </Button>
-                      </FormControl>
-                    )
-                  }
+                  {state.id !== 0 && (
+                    <FormControl>
+                      <Button
+                        type="submit"
+                        color="secondary"
+                        className={cancelButton}
+                        onClick={(): void => dispatch({ type: 'reset' })}
+                      >
+                        {t('general.cancel')}
+                      </Button>
+                    </FormControl>
+                  )}
                 </Box>
               </Grid>
             </Grid>
@@ -284,7 +315,7 @@ const CreateDrug: React.FC = () => {
         </Paper>
       </Grid>
     </Container>
-  )
-}
+  );
+};
 
 export default CreateDrug;

@@ -1,9 +1,5 @@
 import React, { useContext } from 'react';
-import {
-  createStyles,
-  Paper,
-  Grid,
-} from '@material-ui/core';
+import { createStyles, Paper, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CardHeader from './CardHeader';
 import { CardContainerRelatedPharmacyDrugsInterface } from '../../../../../interfaces';
@@ -44,7 +40,13 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
 
   const { data } = props;
 
-  const { pharmacyCity, pharmacyProvince, itemsCount, betterItems, userType } = data;
+  const {
+    pharmacyCity,
+    pharmacyProvince,
+    itemsCount,
+    betterItems,
+    userType,
+  } = data;
 
   const { paper, span, buttonContainer } = useStyle();
 
@@ -53,12 +55,10 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
   const transferStart = (): void => {
     setSelectedPharmacyForTransfer(data.pharmacyKey);
     setActiveStep(activeStep + 1);
-  }
+  };
 
   return (
-    <Paper
-      className={`${paper}`}
-    >
+    <Paper className={`${paper}`}>
       <Grid container spacing={1}>
         <CardHeader
           city={pharmacyCity}
@@ -71,7 +71,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
         <span className={`${span} txt-xs`}>نمونه اقلام</span>
         {betterItems.map((item: any) => (
           <ItemContainer
-            drugGenericName={item.drugGenericName}
+            drugGenericName={item.drugName}
             cnt={item.cnt}
             offer2={item.offer2}
             offer1={item.offer1}

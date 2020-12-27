@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,13 +11,16 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
-import { AccountCircle, ChevronRight as ChevronRightIcon } from '@material-ui/icons';
+import {
+  AccountCircle,
+  ChevronRight as ChevronRightIcon,
+} from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import Context from './Context';
-import UserMenu from "./appbar/UserMenu";
-import ListItems from "./sidebar/ListItems";
-import DashboardActivePage from "./DashboardActivePage";
+import UserMenu from './appbar/UserMenu';
+import ListItems from './sidebar/ListItems';
+import DashboardActivePage from './DashboardActivePage';
 import { MaterialDrawer } from '../../public';
 
 const drawerWidth = 240;
@@ -95,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type DashboardActivePage =
-  'dashboard'
+  | 'dashboard'
   | 'createRole'
   | 'createUser'
   | 'usersList'
@@ -118,12 +121,12 @@ const Dashboard: React.FC = () => {
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
 
-  const toggleIsOpenDrawer = (): void => setIsOpenDrawer(v => !v);
+  const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
   const activePageHandler = (page: string): void => {
-    toggleIsOpenDrawer()
+    toggleIsOpenDrawer();
     setActivePage(page);
-  }
+  };
 
   const contextInitialValues = (): any => ({
     anchorEl,
@@ -134,34 +137,41 @@ const Dashboard: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const handleUserIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleUserIconButton = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): void => {
     setAnchorEl(e.currentTarget);
-  }
+  };
 
   const listItemsGenerator = (): any => {
     return <ListItems />;
-  }
+  };
 
   return (
     <Context.Provider value={contextInitialValues()}>
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar
-          elevation={0}
-          position="absolute"
-          className={classes.appBar}
-        >
+        <AppBar elevation={0} position="absolute" className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
             <IconButton
               edge="start"
               color="inherit"
               aria-label="open drawer"
               onClick={handleDrawerOpen}
-              className={clsx(classes.menuButton, isOpenDrawer && classes.menuButtonHidden)}
+              className={clsx(
+                classes.menuButton,
+                isOpenDrawer && classes.menuButtonHidden
+              )}
             >
               <MenuIcon />
             </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.title}
+            >
               {t('general.dashboard')}
             </Typography>
             <IconButton color="inherit">
@@ -181,12 +191,8 @@ const Dashboard: React.FC = () => {
             </IconButton>
             <UserMenu />
           </Toolbar>
-
         </AppBar>
-        <MaterialDrawer
-          onClose={toggleIsOpenDrawer}
-          isOpen={isOpenDrawer}
-        >
+        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
           <div className={classes.toolbarIcon}>
             <img
               className={classes.daroogLogo}
@@ -198,10 +204,7 @@ const Dashboard: React.FC = () => {
             </IconButton>
           </div>
           <Divider />
-          <List
-            component="nav"
-            aria-labelledby="nested-list-items"
-          >
+          <List component="nav" aria-labelledby="nested-list-items">
             {listItemsGenerator()}
           </List>
           <Divider />
@@ -213,6 +216,6 @@ const Dashboard: React.FC = () => {
       </div>
     </Context.Provider>
   );
-}
+};
 
 export default Dashboard;

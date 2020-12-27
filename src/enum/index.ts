@@ -68,3 +68,4 @@ export enum RolesEnum {
 }
 
 export { ExchangeStatesEnum, CancellerEnum } from './ExchangeStatesEnum';
+export * from './query';

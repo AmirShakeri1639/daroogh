@@ -19,11 +19,10 @@ const useStyle = makeStyles((theme) =>
       '& span.left': {
         bottom: '-10px',
         right: 0,
-      }
+      },
     },
   })
 );
-
 
 const TextLine: React.FC<TextLinePropsInterface> = (props) => {
   const { leftText, rightText } = props;
@@ -37,6 +36,6 @@ const TextLine: React.FC<TextLinePropsInterface> = (props) => {
       <span className="left">{leftText}</span>
     </div>
   );
-}
+};
 
 export default TextLine;

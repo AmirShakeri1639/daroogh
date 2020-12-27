@@ -20,7 +20,7 @@ import CategoryList from './category/CategoryList';
 import Exchange from './drug-transfer/exchange/Exchange';
 import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
-import Desktop from "./drug-transfer/desktop/Desktop";
+import Desktop from './drug-transfer/desktop/Desktop';
 import SupplyList from './supply-list/SupplyList';
 
 const useStyles = makeStyles((theme) => ({

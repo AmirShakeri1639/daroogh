@@ -24,17 +24,18 @@ export default {
       },
       action: {
         insert: 'Insert',
-        delete: 'Delete'
+        delete: 'Delete',
       },
       error: {
-        'you-are-lost': 'Oops! You\'re lost.',
+        'you-are-lost': "Oops! You're lost.",
         'page-not-found': 'The page you are looking for was not found.',
         'error-500-line': 'Houston, we have a problem!',
-        'error-500-sub': 'The page you are looking for is temporarily unavailable.',
+        'error-500-sub':
+          'The page you are looking for is temporarily unavailable.',
         'fill-requireds': 'Please fill the required values.',
         'loading-data': 'Something happend in loading data from server.',
-        'save': 'There\'s a problem in saving data.',
-        'remove': 'Error happend in removing data.'
+        save: "There's a problem in saving data.",
+        remove: 'Error happend in removing data.',
       },
       login: {
         login: 'Login',
@@ -50,7 +51,8 @@ export default {
         username: 'Username',
         password: 'Password',
         successful: 'Login was successful. Welcome!',
-        failed: 'Login wasn\'t successful. Please check your username and password.',
+        failed:
+          "Login wasn't successful. Please check your username and password.",
       },
       user: {
         role: 'User Role',

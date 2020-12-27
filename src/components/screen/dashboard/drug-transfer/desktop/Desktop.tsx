@@ -38,11 +38,13 @@ const Desktop: React.FC = () => {
   const cardListGenerator = (): JSX.Element[] | null => {
     if (exchanges && exchanges.length > 0) {
       return exchanges.map((item, index) => {
-        return (<Grid item xs={ 12 } sm={ 6 } xl={ 4 } key={ index }>
-          <div className={ paper }>
-            <DesktopCardContent item={ item } />
-          </div>
-        </Grid>);
+        return (
+          <Grid item xs={12} sm={6} xl={4} key={index}>
+            <div className={paper}>
+              <DesktopCardContent item={item} />
+            </div>
+          </Grid>
+        );
       });
     }
 
@@ -51,18 +53,18 @@ const Desktop: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={ 9 }>
-        <Grid container spacing={ 1 }>
-          <Grid item xs={ 5 }>
+      <Grid item xs={9}>
+        <Grid container spacing={1}>
+          <Grid item xs={5}>
             <ToolBox />
           </Grid>
-          <Grid item xs={ 7 }>
+          <Grid item xs={7}>
             <SearchInAList />
           </Grid>
         </Grid>
 
-        <Grid container spacing={ 1 }>
-          { cardListGenerator() }
+        <Grid container spacing={1}>
+          {cardListGenerator()}
         </Grid>
       </Grid>
     </>
@@ -70,4 +72,3 @@ const Desktop: React.FC = () => {
 };
 
 export default Desktop;
-

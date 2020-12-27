@@ -1,15 +1,23 @@
-@import "fonts";
+@import 'fonts';
 
 .txt-md {
   font-size: 1.1rem !important;
 }
 
 .txt-sm {
-  font-size: .8rem !important;
+  font-size: 0.8rem !important;
 }
 
 .txt-xs {
-  font-size: .65rem !important;
+  font-size: 0.65rem !important;
+}
+
+.txt-bold {
+  font-weight: bold !important;
+}
+
+.text-muted {
+  color: #848484 !important;
 }
 
 .position-relative {
