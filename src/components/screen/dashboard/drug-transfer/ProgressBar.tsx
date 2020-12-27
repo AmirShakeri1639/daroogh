@@ -23,17 +23,23 @@ const style = makeStyles(() =>
       width: '100%',
       flexGrow: 1,
     },
-  }),
+  })
 );
 
 function getSteps(): string[] {
-  return ['انتخاب داروخانه', 'انتخاب از سبد طرف مقابل', 'انتخاب از سبد شما', 'تایید نهایی', ''];
+  return [
+    'انتخاب داروخانه',
+    'انتخاب از سبد طرف مقابل',
+    'انتخاب از سبد شما',
+    'تایید نهایی',
+    '',
+  ];
 }
 
 const ProgressBar: React.FC = () => {
-  const { activeStep, setActiveStep, setOpenDialog } = useContext<TransferDrugContextInterface>(
-    DrugTransferContext,
-  );
+  const { activeStep, setActiveStep, setOpenDialog } = useContext<
+    TransferDrugContextInterface
+  >(DrugTransferContext);
   const [skipped, setSkipped] = React.useState(new Set<number>());
 
   const theme = useTheme();
@@ -69,7 +75,11 @@ const ProgressBar: React.FC = () => {
     return (
       <Button size="small" onClick={handleNext} disabled={activeStep === 5}>
         بعدی
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowLeft />
+        ) : (
+          <KeyboardArrowRight />
+        )}
       </Button>
     );
   };
@@ -77,7 +87,11 @@ const ProgressBar: React.FC = () => {
   const mobilePrevButton = (): JSX.Element => {
     return (
       <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        {theme.direction === 'rtl' ? (
+          <KeyboardArrowRight />
+        ) : (
+          <KeyboardArrowLeft />
+        )}
         قبلی
       </Button>
     );
@@ -97,7 +111,12 @@ const ProgressBar: React.FC = () => {
         <Grid xs item>
           <Grid
             xs={12}
-            style={{ textAlign: 'center', fontWeight: 'bold', marginTop: -20, marginBottom: 5 }}
+            style={{
+              textAlign: 'center',
+              fontWeight: 'bold',
+              marginTop: -20,
+              marginBottom: 5,
+            }}
           >
             {activeStep === 0 && getSteps()[0]}
             {activeStep === 1 && getSteps()[1]}

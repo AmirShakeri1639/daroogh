@@ -57,6 +57,11 @@ export default {
         price: 'قیمت',
         offer: 'آفر',
         to: 'به',
+        number: 'تعداد',
+        barcode: 'بارکد',
+      },
+      form: {
+        submit: 'ثبت',
         comment: 'شرح',
         sort: 'مرتب سازی',
         sortWith: 'مرتب سازی بر اساس ',
@@ -67,6 +72,9 @@ export default {
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
+        shamsi: 'شمسی',
+        gregorian: 'میلادی',
+        date: 'تاریخ',
       },
       province: {
         selectCounty: 'انتخاب استان',
@@ -154,6 +162,7 @@ export default {
         create: 'ایجاد دارو',
         suggest: 'پیشنهاد دارو',
         list: 'لیست دارو',
+        drugSelection: 'انتخاب دارو',
         newDrug: 'داروی جدید',
         SuppliedDrugsList: 'لیست داروهای عرضه شده توسط شما',
       },
@@ -260,7 +269,8 @@ export default {
         NOCONFIRMB_FORB: 'مخالفت شده توسط شما',
         CONFIRMB_AND_NOCONFIRMA_FORB: 'مخالفت شده توسط طرف مقابل',
         CANCELLED_FORB: 'لغو شده',
-        CONFIRMA_AND_B_PAYMENTA_FORB: 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        CONFIRMA_AND_B_PAYMENTA_FORB:
+          'تائید طرفین و در انتظار پرداخت طرف مقابل',
         CONFIRMA_AND_B_PAYMENTB_FORB: 'تائید طرفین و در انتظار پرداخت شما',
         CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
       },

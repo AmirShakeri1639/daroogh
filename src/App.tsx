@@ -1,20 +1,23 @@
 import React, { lazy, Suspense } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch } from 'react-router-dom';
 import PublicRoute from './routes/PublicRoute';
 import CircleLoading from './components/public/loading/CircleLoading';
 import PrivateRoute from './routes/PrivateRoute';
 import { ReactQueryDevtools } from 'react-query-devtools';
 import { CssBaseline } from '@material-ui/core';
-import ViewPharmacyInfo from "./components/screen/dashboard/drug-transfer/ViewPharmacyInfo";
+import ViewPharmacyInfo from './components/screen/dashboard/drug-transfer/ViewPharmacyInfo';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
-const ForgetPassword = lazy(() => import('./components/screen/forget-password/ForgetPassword'));
-const RegisterPharmacyWithUser = lazy(() => import('./components/screen/public/RegisterPharmacyWithUser'));
-const DrugTransfer = lazy(() => import('./components/screen/dashboard/drug-transfer/Transfer'));
+const ForgetPassword = lazy(() =>
+  import('./components/screen/forget-password/ForgetPassword')
+);
+const RegisterPharmacyWithUser = lazy(() =>
+  import('./components/screen/public/RegisterPharmacyWithUser')
+);
+const DrugTransfer = lazy(() =>
+  import('./components/screen/dashboard/drug-transfer/Transfer')
+);
 
 const App = (): JSX.Element => {
   return (
@@ -49,6 +52,6 @@ const App = (): JSX.Element => {
       <ReactQueryDevtools />
     </>
   );
-}
+};
 
 export default App;

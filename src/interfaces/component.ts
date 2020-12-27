@@ -10,6 +10,7 @@ export interface SelectPropsInterface {
   label?: string;
   required?: boolean;
   error: any;
+  children: any;
 }
 
 export interface ButtonPropsInterface {
@@ -125,7 +126,8 @@ export interface MaterialSearchPropsInterface {
 
 export interface SupplyListCardContainer {
   drug: AllPharmacyDrugInterface;
-};
+  editHandler: () => void;
+}
 
 export interface DetailSupplyInterface {
   drugName: string;
@@ -145,4 +147,9 @@ export interface TextLinePropsInterface {
 export interface BackDropPropsInterface {
   isOpen: boolean;
   onClick?: () => void;
+}
+
+export interface FieldSetLegendPropsInterface {
+  legend: string;
+  className?: string;
 }

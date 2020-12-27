@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import DaroogLogo from '../../../assets/images/daroog-logo.png';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
@@ -12,13 +12,16 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
-import { AccountCircle, ChevronRight as ChevronRightIcon } from '@material-ui/icons';
+import {
+  AccountCircle,
+  ChevronRight as ChevronRightIcon,
+} from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import Context from './Context';
-import UserMenu from "./appbar/UserMenu";
-import ListItems from "./sidebar/ListItems";
-import DashboardActivePage from "./DashboardActivePage";
+import UserMenu from './appbar/UserMenu';
+import ListItems from './sidebar/ListItems';
+import DashboardActivePage from './DashboardActivePage';
 import { MaterialDrawer } from '../../public';
 import { JwtData } from '../../../utils';
 import { LoggedInUserInterface } from '../../../interfaces';
@@ -105,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   largeSpacing: {
-    margin: theme.spacing(3)
+    margin: theme.spacing(3),
   },
   smallAvatar: {
     width: theme.spacing(3),
@@ -118,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type DashboardActivePage =
-  'dashboard'
+  | 'dashboard'
   | 'createRole'
   | 'createUser'
   | 'usersList'
@@ -142,12 +145,12 @@ const Dashboard: React.FC = () => {
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
 
-  const toggleIsOpenDrawer = (): void => setIsOpenDrawer(v => !v);
+  const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
   const activePageHandler = (page: string): void => {
-    toggleIsOpenDrawer()
+    toggleIsOpenDrawer();
     setActivePage(page);
-  }
+  };
 
   const contextInitialValues = (): any => ({
     anchorEl,
@@ -158,9 +161,11 @@ const Dashboard: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const handleUserIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleUserIconButton = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): void => {
     setAnchorEl(e.currentTarget);
-  }
+  };
 
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
   React.useEffect(() => {
@@ -168,35 +173,39 @@ const Dashboard: React.FC = () => {
     setLoggedInUser(userData);
   }, []);
 
-
   const listItemsGenerator = (): any => {
     return <ListItems />;
-  }
+  };
 
   return (
-    <Context.Provider value={ contextInitialValues() }>
-      <div className={ classes.root }>
+    <Context.Provider value={contextInitialValues()}>
+      <div className={classes.root}>
         <CssBaseline />
-        <AppBar
-          elevation={ 0 }
-          position="absolute"
-          className={ classes.appBar }
-        >
-          <Toolbar className={ classes.toolbar }>
+        <AppBar elevation={0} position="absolute" className={classes.appBar}>
+          <Toolbar className={classes.toolbar}>
             <IconButton
               edge="start"
               color="inherit"
               aria-label="open drawer"
-              onClick={ handleDrawerOpen }
-              className={ clsx(classes.menuButton, isOpenDrawer && classes.menuButtonHidden) }
+              onClick={handleDrawerOpen}
+              className={clsx(
+                classes.menuButton,
+                isOpenDrawer && classes.menuButtonHidden
+              )}
             >
               <MenuIcon />
             </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={ classes.title }>
-              { t('general.dashboard') }
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.title}
+            >
+              {t('general.dashboard')}
             </Typography>
             <IconButton color="inherit">
-              <Badge badgeContent={ 4 } color="secondary">
+              <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -205,67 +214,62 @@ const Dashboard: React.FC = () => {
               aria-label="account of current user"
               aria-controls="user-menu"
               aria-haspopup="true"
-              onClick={ handleUserIconButton }
+              onClick={handleUserIconButton}
               color="inherit"
             >
               <AccountCircle />
             </IconButton>
             <UserMenu />
           </Toolbar>
-
         </AppBar>
-        <MaterialDrawer
-          onClose={ toggleIsOpenDrawer }
-          isOpen={ isOpenDrawer }
-        >
-          <div className={ classes.toolbarIcon }>
+        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
+          <div className={classes.toolbarIcon}>
             <img
-              className={ classes.daroogLogo }
-              src={ DaroogLogo }
+              className={classes.daroogLogo}
+              src={DaroogLogo}
               alt="logo-daroog"
             />
-            <IconButton onClick={ handleDrawerClose }>
+            <IconButton onClick={handleDrawerClose}>
               <ChevronRightIcon />
             </IconButton>
           </div>
           <Divider />
           <Grid container className={classes.largeSpacing}>
-            <Grid item xs={ 3 }>
-              <Avatar alt={ t('user.user') }
-                className={ classes.largeAvatar }
-                src={ avatarPic } />
+            <Grid item xs={3}>
+              <Avatar
+                alt={t('user.user')}
+                className={classes.largeAvatar}
+                src={avatarPic}
+              />
             </Grid>
             <Grid item xs={9}>
-              <Grid item xs={ 12 }>
-                { loggedInUser?.name } { loggedInUser?.family }
+              <Grid item xs={12}>
+                {loggedInUser?.name} {loggedInUser?.family}
               </Grid>
-              <Grid item xs={ 12 }>
+              <Grid item xs={12}>
                 <IconButton
                   edge="start"
                   color="inherit"
-                  onClick={ (): void => logoutUser() }
+                  onClick={(): void => logoutUser()}
                 >
-                  <FontAwesomeIcon icon={ faDoorOpen } />
+                  <FontAwesomeIcon icon={faDoorOpen} />
                 </IconButton>
               </Grid>
             </Grid>
           </Grid>
           <Divider />
-          <List
-            component="nav"
-            aria-labelledby="nested-list-items"
-          >
-            { listItemsGenerator() }
+          <List component="nav" aria-labelledby="nested-list-items">
+            {listItemsGenerator()}
           </List>
           <Divider />
         </MaterialDrawer>
-        <main className={ classes.content }>
-          <div className={ classes.appBarSpacer } />
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
           <DashboardActivePage />
         </main>
       </div>
     </Context.Provider>
   );
-}
+};
 
 export default Dashboard;

@@ -61,16 +61,18 @@ export const MessageTypeArray = (textArray: string[]): any => [
   { val: MessageTypeEnum.SMS, text: textArray[1] },
   { val: MessageTypeEnum.NOTIFICATION, text: textArray[2] },
   { val: MessageTypeEnum.SMS_AND_NOTIFICATION, text: textArray[3] },
-]
+];
 
 export enum RolesEnum {
   PHARMACY = '1',
-  ADMIN = '2'
+  ADMIN = '2',
 }
+
+export * from './query';
 
 export enum SortTypeEnum {
   ASC,
-  DESC
+  DESC,
 }
 
 export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';

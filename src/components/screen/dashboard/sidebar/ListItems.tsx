@@ -14,11 +14,14 @@ import {
   AddBox,
   AddCircle,
   Dashboard as DashboardIcon,
-  ExpandLess, EnhancedEncryption,
-  ExpandMore, Extension,
-  LocalPharmacy, Business,
+  ExpandLess,
+  EnhancedEncryption,
+  ExpandMore,
+  Extension,
+  LocalPharmacy,
+  Business,
   Apps as AppsIcon,
-} from "@material-ui/icons";
+} from '@material-ui/icons';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import InboxIcon from '@material-ui/icons/Inbox';
 import ReceiptIcon from '@material-ui/icons/Receipt';
@@ -78,268 +81,284 @@ const ListItems: React.FC = () => {
   const adminMenu = (): JSX.Element => {
     return (
       <>
-        <h3 className={spacing3}>{ t('user.admin') }</h3>
-        <ListItem button onClick={ redirectDashboardHandler }>
+        <h3 className={spacing3}>{t('user.admin')}</h3>
+        <ListItem button onClick={redirectDashboardHandler}>
           <ListItemIcon>
             <DashboardIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('general.dashboard') } />
+          <ListItemText primary={t('general.dashboard')} />
         </ListItem>
-        <ListItem button onClick={ (): void => setIsOpenRoleMenu(val => !val) }>
+        <ListItem button onClick={(): void => setIsOpenRoleMenu((val) => !val)}>
           <ListItemIcon>
             <ContactMailTwoToneIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('user.role') } />
-          { isOpenRoleMenu ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('user.role')} />
+          {isOpenRoleMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenRoleMenu } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenRoleMenu} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CREATE_ROLE) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.CREATE_ROLE)}
             >
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('user.create-new-role') } />
+              <ListItemText primary={t('user.create-new-role')} />
             </ListItem>
           </List>
         </Collapse>
 
-        <ListItem button onClick={ (): void => setIsOpenUserMenu(val => !val) }>
+        <ListItem button onClick={(): void => setIsOpenUserMenu((val) => !val)}>
           <ListItemIcon>
             <PermIdentityTwoToneIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('user.user') } />
-          { isOpenUserMenu ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('user.user')} />
+          {isOpenUserMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenUserMenu } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenUserMenu} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CREATE_USER) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.CREATE_USER)}
             >
               <ListItemIcon>
                 <PersonAddTwoToneIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('user.create-user') } />
+              <ListItemText primary={t('user.create-user')} />
             </ListItem>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.USERS_LIST) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.USERS_LIST)}
             >
               <ListItemIcon>
                 <GroupTwoToneIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('user.users-list') } />
+              <ListItemText primary={t('user.users-list')} />
             </ListItem>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CHANGE_USER_PASSWORD) }
+              className={nested}
+              onClick={(): void =>
+                setActivePage(DashboardPages.CHANGE_USER_PASSWORD)
+              }
             >
               <ListItemIcon>
                 <LockIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('user.changeUserPassword') } />
+              <ListItemText primary={t('user.changeUserPassword')} />
             </ListItem>
           </List>
         </Collapse>
 
-        <ListItem button onClick={ (): void => setIsOpenDrugMenu(val => !val) }>
+        <ListItem button onClick={(): void => setIsOpenDrugMenu((val) => !val)}>
           <ListItemIcon>
             <Extension />
           </ListItemIcon>
-          <ListItemText primary={ t('drug.drug') } />
-          { isOpenDrugMenu ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('drug.drug')} />
+          {isOpenDrugMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenDrugMenu } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenDrugMenu} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CREATE_DRUG) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.CREATE_DRUG)}
             >
               <ListItemIcon>
                 <AddCircle />
               </ListItemIcon>
-              <ListItemText primary={ t('drug.suggest') } />
+              <ListItemText primary={t('drug.suggest')} />
             </ListItem>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.DRUGS_LIST) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.DRUGS_LIST)}
             >
               <ListItemIcon>
                 <EnhancedEncryption />
               </ListItemIcon>
-              <ListItemText primary={ t('drug.list') } />
+              <ListItemText primary={t('drug.list')} />
             </ListItem>
           </List>
         </Collapse>
 
-        <ListItem button onClick={ (): void => setIsOpenCategory(val => !val) }>
+        <ListItem button onClick={(): void => setIsOpenCategory((val) => !val)}>
           <ListItemIcon>
             <CategoryIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('category.category') } />
-          { isOpenCategory ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('category.category')} />
+          {isOpenCategory ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenCategory } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenCategory} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CATEGORY_LIST) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.CATEGORY_LIST)}
             >
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('category.list') } />
+              <ListItemText primary={t('category.list')} />
             </ListItem>
           </List>
         </Collapse>
-        <ListItem button onClick={ (): void => setIsOpenPharmacyMenu(val => !val) }>
+        <ListItem
+          button
+          onClick={(): void => setIsOpenPharmacyMenu((val) => !val)}
+        >
           <ListItemIcon>
             <LocalPharmacy />
           </ListItemIcon>
-          <ListItemText primary={ t('pharmacy.pharmacy') } />
-          { isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('pharmacy.pharmacy')} />
+          {isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenPharmacyMenu } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenPharmacyMenu} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.PHARMACY_CREATE) }
+              className={nested}
+              onClick={(): void =>
+                setActivePage(DashboardPages.PHARMACY_CREATE)
+              }
             >
               <ListItemIcon>
                 <AddBox />
               </ListItemIcon>
-              <ListItemText primary={ t('pharmacy.request') } />
+              <ListItemText primary={t('pharmacy.request')} />
             </ListItem>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.PHARMACY_LIST) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.PHARMACY_LIST)}
             >
               <ListItemIcon>
                 <Business />
               </ListItemIcon>
-              <ListItemText primary={ t('pharmacy.list') } />
+              <ListItemText primary={t('pharmacy.list')} />
             </ListItem>
           </List>
         </Collapse>
 
-        <ListItem button onClick={ (): void => setIsOpenMessageMenu(val => !val) }>
+        <ListItem
+          button
+          onClick={(): void => setIsOpenMessageMenu((val) => !val)}
+        >
           <ListItemIcon>
             <MessageIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('message.message') } />
-          { isOpenMessageMenu ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('message.message')} />
+          {isOpenMessageMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenMessageMenu } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenMessageMenu} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              onClick={ (): void => setActivePage(DashboardPages.CREATE_NEW_MESSAGE) }
-              className={ nested }
+              onClick={(): void =>
+                setActivePage(DashboardPages.CREATE_NEW_MESSAGE)
+              }
+              className={nested}
             >
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('message.createMessage') } />
+              <ListItemText primary={t('message.createMessage')} />
             </ListItem>
 
             <ListItem
               button
-              onClick={ (): void => setActivePage(DashboardPages.MESSAGES_LIST) }
-              className={ nested }
+              onClick={(): void => setActivePage(DashboardPages.MESSAGES_LIST)}
+              className={nested}
             >
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('message.messagesList') } />
+              <ListItemText primary={t('message.messagesList')} />
             </ListItem>
           </List>
         </Collapse>
-
       </>
-    )
-  }
+    );
+  };
 
   const pharmacyMenu = (): JSX.Element => {
     return (
       <>
-        <h3 className={spacing3}>{ t('pharmacy.pharmacy') }</h3>
-        <ListItem button onClick={ (): void => setIsOpenExchange(val => !val) }>
+        <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3>
+        <ListItem button onClick={(): void => setIsOpenExchange((val) => !val)}>
           <ListItemIcon>
             <CategoryIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('exchange.exchange') } />
-          { isOpenExchange ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('exchange.exchange')} />
+          {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenExchange } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.EXCHANGE_LIST) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.EXCHANGE_LIST)}
             >
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('exchange.desktop') } />
+              <ListItemText primary={t('exchange.desktop')} />
             </ListItem>
           </List>
         </Collapse>
-        <Collapse in={ isOpenExchange } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.EXCHANGE) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.EXCHANGE)}
             >
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('exchange.exchange') } />
+              <ListItemText primary={t('exchange.exchange')} />
             </ListItem>
 
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.SUPPLY_LIST) }
+              className={nested}
+              onClick={(): void => setActivePage(DashboardPages.SUPPLY_LIST)}
             >
               <ListItemIcon>
                 <AppsIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('exchange.supplyList') } />
+              <ListItemText primary={t('exchange.supplyList')} />
             </ListItem>
           </List>
         </Collapse>
 
-        <ListItem button onClick={ (): void => setIsOpenAccounting(val => !val) }>
+        <ListItem
+          button
+          onClick={(): void => setIsOpenAccounting((val) => !val)}
+        >
           <ListItemIcon>
             <AccountBalanceIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('accounting.accounting') } />
-          { isOpenAccounting ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('accounting.accounting')} />
+          {isOpenAccounting ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenAccounting } timeout="auto" unmountOnExit>
+        <Collapse in={isOpenAccounting} timeout="auto" unmountOnExit>
           <List component="div" disablePadding>
             <ListItem
               button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.ACCOUNTING_LIST) }
+              className={nested}
+              onClick={(): void =>
+                setActivePage(DashboardPages.ACCOUNTING_LIST)
+              }
             >
               <ListItemIcon>
                 <ReceiptIcon />
               </ListItemIcon>
-              <ListItemText primary={ t('accounting.transactions') } />
+              <ListItemText primary={t('accounting.transactions')} />
             </ListItem>
           </List>
         </Collapse>
@@ -367,21 +386,17 @@ const ListItems: React.FC = () => {
         </Collapse>
 
       </>
-    )
-  }
+    );
+  };
 
   return (
     <div>
-      {rolesArray && rolesArray?.length > 0 &&
+      {rolesArray && rolesArray?.length > 0 && (
         <>
-          {rolesArray.indexOf(RolesEnum.ADMIN) >= 0 &&
-            adminMenu()
-          }
-          {rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 &&
-            pharmacyMenu()
-          }
+          {rolesArray.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
+          {rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 && pharmacyMenu()}
         </>
-      }
+      )}
     </div>
   );
 };

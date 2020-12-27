@@ -8,13 +8,13 @@
 
 .react-select__control {
   position: relative;
-  // z-index: 1;
+  // z-index: 10000;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAQCAYAAADj5tSrAAAABHNCSVQICAgIfAhkiAAAAXNJREFUOE+d1M1LlUEUBvDfjb7M6EssEMFNi2gRiIEE4koQwoULzcT/rpUUraIICltY5kIhEITcBRFCuha1NA7Mm8Pw3vve61nNnHOe55nzwbSc2Rhu42PmO8/xMh5jrQK30uEJJtJ5A5/Ow44reI67+IYPwRMi45gsSL/ic49CfVjAYIb7EhWFyB0s4lpBuor1LoUCGxUMFPn7eFG1K4JLqdw8bwWbDULX0yNvFXl7WMZBJRLxe+k1Mbjcoq/R3zq7mTA3iuAuXuKwmkkeH8IzXCpA77FV+GITo839hf9XEjgutyvPG8Y8LmbOU7zDdvJFe0Mghp3bT7zCn9yZtyv3j2AOF2qEfqcWXS0EfuA1/pZ9bScSefcxm9a8wkVFRzULsoM3OKkbXCeRyH+AmUKo5PmeBOIBtdYkEqCHeNpGKGb0th15p8HXYR5hugjEtsXWNVo3lVQko5hKl57+t15Egj8+0sD8/2Eby2gYaDf4rnL+AWWeOBVnLLp/AAAAAElFTkSuQmCC);
   background-color: transparent !important;
   background-size: 8px;
   background-position: 10px center;
   background-repeat: no-repeat;
-  border: 1px rgba(44, 4, 185, 0.30) solid !important;
+  border: 1px rgb(196, 196, 196) solid !important;
   border-radius: 10px !important;
   box-shadow: none !important;
   font-size: 15px !important;

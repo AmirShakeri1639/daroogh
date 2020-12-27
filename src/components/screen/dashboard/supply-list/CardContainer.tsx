@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { makeStyles, Paper, createStyles, Grid } from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,13 +29,18 @@ const useStyle = makeStyles((theme) =>
 
 const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
-
   const { root, redTrash } = useStyle();
-  const { drug } = props;
+  const { drug, editHandler } = props;
 
-  const { drug: {
-    name,
-  }, cnt, expireDate, offer1, offer2, amount, id } = drug;
+  const {
+    drug: { name },
+    cnt,
+    expireDate,
+    offer1,
+    offer2,
+    amount,
+    id,
+  } = drug;
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
@@ -48,7 +53,7 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
     onError: async () => {
       setIsOpenBackDrop(false);
       await errorSweetAlert(t('alert.failedRemove'));
-    }
+    },
   });
 
   const removeHandler = async (): Promise<any> => {
@@ -57,27 +62,32 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
       await _removePharmacyDrug(id);
       setIsOpenBackDrop(false);
     }
+  };
+
+  const openEditModal = (): void => {
+    editHandler();
   }
 
   return (
-    <Paper
-      className={root}
-      elevation={1}
-    >
-      <Grid
-        container
-        spacing={1}
-      >
-        <Grid
-          item
-          xs={12}
-        >
+    <Paper className={root} elevation={1}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
           <Grid justify="flex-end" container spacing={1}>
             <Grid item xs={1}>
-              <FontAwesomeIcon icon={faEdit} size="lg" className="cursor-pointer" />
+              <FontAwesomeIcon
+                icon={faEdit}
+                size="lg"
+                className="cursor-pointer"
+                onClick={openEditModal}
+              />
             </Grid>
             <Grid item xs={1}>
-              <FontAwesomeIcon onClick={removeHandler} icon={faTrashAlt} size="lg" className={`${redTrash} cursor-pointer`} />
+              <FontAwesomeIcon
+                onClick={removeHandler}
+                icon={faTrashAlt}
+                size="lg"
+                className={`${redTrash} cursor-pointer`}
+              />
             </Grid>
           </Grid>
         </Grid>
@@ -94,7 +104,7 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
 
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
-  )
-}
+  );
+};
 
 export default CardContainer;

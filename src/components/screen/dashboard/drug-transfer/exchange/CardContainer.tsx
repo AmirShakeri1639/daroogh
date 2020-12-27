@@ -159,7 +159,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     setRecommendationMessage,
     exchangeId,
     setExchangeId,
-    selectedPharmacyForTransfer
+    selectedPharmacyForTransfer,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
@@ -312,7 +312,8 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
         // ----------------------------------------------------------------------
         pharmacyDrug.buttonName = 'افزودن به تبادل';
         pharmacyDrug.cardColor = 'white';
-        pharmacyDrug.order = activeStep === 1 ? allPharmacyDrug.length : uAllPharmacyDrug.length;
+        pharmacyDrug.order =
+          activeStep === 1 ? allPharmacyDrug.length : uAllPharmacyDrug.length;
         pharmacyDrug.currentCnt = pharmacyDrug.cnt;
         if (
           (activeStep === 1 && basketCount.length === 1) ||
@@ -370,7 +371,8 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
       } else {
         pharmacyDrug.buttonName = 'افزودن به تبادل';
         pharmacyDrug.cardColor = 'white';
-        pharmacyDrug.order = activeStep === 1 ? allPharmacyDrug.length : uAllPharmacyDrug.length;
+        pharmacyDrug.order =
+          activeStep === 1 ? allPharmacyDrug.length : uAllPharmacyDrug.length;
         if (activeStep === 1)
           setBasketCount([
             ...basketCount.filter((x) => x.packID !== pharmacyDrug.packID),

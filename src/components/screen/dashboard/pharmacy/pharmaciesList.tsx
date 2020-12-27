@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react';
-import { useMutation, useQueryCache } from "react-query";
-import Pharmacy from "../../../../services/api/Pharmacy";
+import { useMutation, useQueryCache } from 'react-query';
+import Pharmacy from '../../../../services/api/Pharmacy';
 import {
   Container,
   Grid,
@@ -13,27 +13,34 @@ import {
   Box,
   TextField,
   Button,
-  CardActions, FormControlLabel, Switch
-} from "@material-ui/core";
+  CardActions,
+  FormControlLabel,
+  Switch,
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '../../../public/modal/Modal';
-import CircleLoading from "../../../public/loading/CircleLoading";
-import { errorHandler, successSweetAlert, warningSweetAlert } from "../../../../utils";
-import { useTranslation } from "react-i18next";
-import { useClasses } from "../classes";
+import CircleLoading from '../../../public/loading/CircleLoading';
+import {
+  errorHandler,
+  successSweetAlert,
+  warningSweetAlert,
+} from '../../../../utils';
+import { useTranslation } from 'react-i18next';
+import { useClasses } from '../classes';
 
 import {
   ActionInterface,
   PharmacyInterface,
   TableColumnInterface,
-  ConfirmParams, LabelValue
-} from "../../../../interfaces";
-import useDataTableRef from "../../../../hooks/useDataTableRef";
-import DataTable from "../../../public/datatable/DataTable";
-import { PharmacyEnum } from "../../../../enum/query";
+  ConfirmParams,
+  LabelValue,
+} from '../../../../interfaces';
+import useDataTableRef from '../../../../hooks/useDataTableRef';
+import DataTable from '../../../public/datatable/DataTable';
+import { PharmacyEnum } from '../../../../enum/query';
 import { DaroogSearchBar } from '../drug-transfer/DaroogSearchBar';
-import { DaroogDropdown } from "../../../public/daroog-dropdown/DaroogDropdown";
-import { WorkTimeEnum } from "../../../../enum";
+import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
+import { WorkTimeEnum } from '../../../../enum';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -49,7 +56,7 @@ const initialState: PharmacyInterface = {
   website: '',
   email: '',
   postalCode: '',
-  countryDivisionID: 1
+  countryDivisionID: 1,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -140,34 +147,33 @@ const PharmaciesList: React.FC = () => {
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
   const {
-    container, root, formContainer, box, addButton, cancelButton, dropdown
+    container,
+    root,
+    formContainer,
+    box,
+    addButton,
+    cancelButton,
+    dropdown,
   } = useClasses();
   const queryCache = useQueryCache();
 
-  const {
-    save,
-    all,
-    remove,
-    confirm
-  } = new Pharmacy();
-  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
+  const { save, all, remove, confirm } = new Pharmacy();
+  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
-  const [_remove,
-    { isLoading: isLoadingRemove }] = useMutation(remove, {
+  const [_remove, { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
-      ref.current?.loadItems()
+      ref.current?.loadItems();
       await queryCache.invalidateQueries('pharmaciesList');
       await successSweetAlert(t('alert.successfulDelete'));
-    }
+    },
   });
 
-  const [_confirm,
-    { isLoading: isLoadingConfirm }] = useMutation(confirm, {
+  const [_confirm, { isLoading: isLoadingConfirm }] = useMutation(confirm, {
     onSuccess: async ({ message }) => {
-      ref.current?.loadItems()
+      ref.current?.loadItems();
       await queryCache.invalidateQueries('pharmaciesList');
       await successSweetAlert(message);
-    }
+    },
   });
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
@@ -175,17 +181,21 @@ const PharmaciesList: React.FC = () => {
       await queryCache.invalidateQueries('pharmaciesList');
       await successSweetAlert(t('alert.successfulSave'));
       dispatch({ type: 'reset' });
-    }
+    },
   });
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { field: 'id', title: t('general.id'), type: 'number',
-        cellStyle: { textAlign: 'right' } },
+      {
+        field: 'id',
+        title: t('general.id'),
+        type: 'number',
+        cellStyle: { textAlign: 'right' },
+      },
       { field: 'name', title: t('pharmacy.pharmacy'), type: 'string' },
       { field: 'description', title: t('general.description'), type: 'string' },
     ];
-  }
+  };
 
   const removeHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
@@ -195,19 +205,19 @@ const PharmaciesList: React.FC = () => {
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   const toggleConfirmHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
       const confirmParams: ConfirmParams = {
         id: row.id,
-        status: !row.active
+        status: !row.active,
       };
       await _confirm(confirmParams);
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   const saveHandler = (item: PharmacyInterface): void => {
     toggleIsOpenSaveModalForm();
@@ -225,7 +235,7 @@ const PharmaciesList: React.FC = () => {
       postalCode,
       description,
       active,
-      countryDivisionID
+      countryDivisionID,
     } = item;
 
     dispatch({ type: 'id', value: id });
@@ -242,15 +252,15 @@ const PharmaciesList: React.FC = () => {
     dispatch({ type: 'description', value: description });
     dispatch({ type: 'active', value: active });
     dispatch({ type: 'countryDivisionID', value: countryDivisionID });
-  }
+  };
 
   const isFormValid = (): boolean => {
-    return (
-      state.name && state.name.trim().length > 0
-    );
-  }
+    return state.name && state.name.trim().length > 0;
+  };
 
-  const submitSave = async (el: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  const submitSave = async (
+    el: React.FormEvent<HTMLFormElement>
+  ): Promise<any> => {
     el.preventDefault();
 
     const {
@@ -267,14 +277,26 @@ const PharmaciesList: React.FC = () => {
       postalCode,
       description,
       active,
-      countryDivisionID
+      countryDivisionID,
     } = state;
 
     if (isFormValid()) {
       try {
         await _save({
-          id, name, hix, gli, workTime, address, mobile, telphon, website,
-          email, postalCode, description, active, countryDivisionID
+          id,
+          name,
+          hix,
+          gli,
+          workTime,
+          address,
+          mobile,
+          telphon,
+          website,
+          email,
+          postalCode,
+          description,
+          active,
+          countryDivisionID,
         });
         dispatch({ type: 'reset' });
         ref.current?.loadItems();
@@ -284,13 +306,13 @@ const PharmaciesList: React.FC = () => {
     } else {
       await warningSweetAlert(t('alert.fillFormCarefully'));
     }
-  }
+  };
 
   const [workTimeList, setworkTimeList] = useState(new Array<LabelValue>());
   React.useEffect(() => {
-    const wtList: LabelValue[] = []
+    const wtList: LabelValue[] = [];
     for (const wt in WorkTimeEnum) {
-      wtList.push({ label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),value: wt });
+      wtList.push({ label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`), value: wt });
     }
     setworkTimeList(wtList);
   }, []);
@@ -303,129 +325,136 @@ const PharmaciesList: React.FC = () => {
             title={state?.id === 0 ? t('action.create') : t('action.edit')}
             action={
               <IconButton onClick={toggleIsOpenSaveModalForm}>
-                <CloseIcon/>
+                <CloseIcon />
               </IconButton>
             }
           />
-          <Divider/>
+          <Divider />
           <CardContent>
             <form
               autoComplete="off"
               className={formContainer}
-              onSubmit={submitSave}>
+              onSubmit={submitSave}
+            >
               <Grid container spacing={1}>
                 <Grid item xs={12}>
-                  <Box display="flex" justifyContent="space-between" className={box}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
                     <TextField
                       required
                       variant="outlined"
                       label={t('pharmacy.name')}
                       value={state?.name}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'name', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'name', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
                       label={t('pharmacy.hix')}
                       value={state?.hix}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'hix', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'hix', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
                       label={t('pharmacy.gli')}
                       value={state?.gli}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'gli', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'gli', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
-                  <Box display="flex" justifyContent="space-between" className={box}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
                     <DaroogDropdown
                       defaultValue={state?.workTime}
                       data={workTimeList}
                       className={dropdown}
                       label={t('pharmacy.workTime')}
                       onChangeHandler={(v): void => {
-                        return dispatch({ type: 'workTime', value: v })
+                        return dispatch({ type: 'workTime', value: v });
                       }}
                     />
                     <TextField
                       variant="outlined"
                       label={t('general.address')}
                       value={state?.address}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'address', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'address', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
                       label={t('general.mobile')}
                       value={state?.mobile}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'mobile', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'mobile', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
-                  <Box display="flex" justifyContent="space-between" className={box}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
                     <TextField
                       variant="outlined"
                       label={t('general.phone')}
                       value={state?.telphon}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'telphon', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'telphon', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
                       label={t('general.website')}
                       value={state?.website}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'website', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'website', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
                       label={t('general.email')}
                       value={state?.email}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'email', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'email', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
-                  <Box display="flex" justifyContent="space-between" className={box}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
                     <TextField
                       variant="outlined"
                       label={t('general.postalCode')}
                       value={state?.postalCode}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'postalCode', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'postalCode', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
                       label={t('general.description')}
                       value={state?.description}
-                      onChange={
-                        (e): void =>
-                          dispatch({ type: 'description', value: e.target.value })
+                      onChange={(e): void =>
+                        dispatch({ type: 'description', value: e.target.value })
                       }
                     />
                   </Box>
@@ -436,9 +465,11 @@ const PharmaciesList: React.FC = () => {
                       control={
                         <Switch
                           checked={state?.active}
-                          onChange={
-                            (e): void =>
-                              dispatch({ type: 'active', value: e.target.checked })
+                          onChange={(e): void =>
+                            dispatch({
+                              type: 'active',
+                              value: e.target.checked,
+                            })
                           }
                         />
                       }
@@ -455,11 +486,9 @@ const PharmaciesList: React.FC = () => {
                       variant="contained"
                       className={addButton}
                     >
-                      {
-                        isLoadingSave
-                          ? t('general.pleaseWait')
-                          : t('general.save')
-                      }
+                      {isLoadingSave
+                        ? t('general.pleaseWait')
+                        : t('general.save')}
                     </Button>
                     <Button
                       type="submit"
@@ -480,20 +509,14 @@ const PharmaciesList: React.FC = () => {
           </CardContent>
         </Card>
       </Modal>
-    )
-  }
+    );
+  };
 
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
-      <Grid
-        container
-        spacing={0}
-      >
-        <Grid
-          item
-          xs={12}
-        >
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
           <div>{t('pharmacy.list')}</div>
           <Paper>
             <DataTable
@@ -501,19 +524,25 @@ const PharmaciesList: React.FC = () => {
               columns={tableColumns()}
               addAction={(): void => saveHandler(initialState)}
               editAction={(e: any, row: any): void => saveHandler(row)}
-              removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
-              stateAction={async (e: any, row: any): Promise<void> => await toggleConfirmHandler(row)}
+              removeAction={async (e: any, row: any): Promise<void> =>
+                await removeHandler(row)
+              }
+              stateAction={async (e: any, row: any): Promise<void> =>
+                await toggleConfirmHandler(row)
+              }
               queryKey={PharmacyEnum.GET_ALL}
               queryCallback={all}
               initLoad={false}
             />
-            {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && <CircleLoading/>}
+            {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && (
+              <CircleLoading />
+            )}
           </Paper>
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
     </Container>
   );
-}
+};
 
 export default PharmaciesList;
