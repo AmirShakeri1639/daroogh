@@ -18,7 +18,7 @@ import StarIcon from '@material-ui/icons/Star';
 import moment from 'jalali-moment';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import { useTranslation } from 'react-i18next';
-import { ExchangeStatesEnum } from '../../../../../enum';
+import { ExchangeStateEnum } from '../../../../../enum';
 
 interface Props {
   item: ExchangeInterface;
@@ -173,7 +173,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
             background: backColor[item.state != undefined ? item.state : 0],
           }}
         >
-          {t(`ExchangeStatesEnum.${ExchangeStatesEnum[state]}`)}
+          {t(`ExchangeStateEnum.${ExchangeStateEnum[state]}`)}
         </Typography>
         <div className={titleCode}>
           {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
