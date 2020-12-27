@@ -68,7 +68,7 @@ export enum RolesEnum {
   ADMIN = '2'
 }
 
-export enum SortTypesEnum {
+export enum SortTypeEnum {
   ASC,
   DESC
 }

@@ -63,6 +63,7 @@ export default {
         filterWith: 'فیلتر بر اساس ',
         ascending: 'صعودی',
         descending: 'نزولی',
+        all: 'همه',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',

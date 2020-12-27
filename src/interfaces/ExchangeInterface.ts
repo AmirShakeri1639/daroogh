@@ -12,6 +12,7 @@ export interface ExchangeInterface {
   numberB?: string;
   expireDateA?: string;
   expireDateB?: string;
+  expireDate?: string;
   canceller?: number | null;
   stateString?: string;
   pharmacyKeyA?: string;

@@ -10,23 +10,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { DaroogDropdown } from '../../../../public/daroog-dropdown/DaroogDropdown';
 import { LabelValue } from '../../../../../interfaces';
-import { ExchangeStateEnum, SortTypesEnum } from '../../../../../enum';
-
-/*
-interface Props for dropdown {
-  defaultValue: any;
-  onChangeHandler: (value: string) => void;
-  data: LabelValue[];
-  label: string;
-  className?: any;
-  variant?: any;
-}
-
-*/
+import { ColorEnum, ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
 
 interface Props {
-  onFilterChanged?: (v: number | string) => void;
-  onSortSelected?: (field: string, sortType: SortTypesEnum) => void;
+  onFilterChanged?: (v: number) => void;
+  onSortSelected?: (field: string, sortType: SortTypeEnum) => void;
 }
 
 const DesktopToolbox: React.FC<Props> = (props) => {
@@ -35,28 +23,49 @@ const DesktopToolbox: React.FC<Props> = (props) => {
   const { ul, faIcons } = useClasses();
 
   const [sortField, setSortField] = useState('');
-  const [sortType, setSortType] = useState<SortTypesEnum>(SortTypesEnum.ASC);
-  const [selectedStateFiler, setSelectedStateFiler] = useState('');
+  const [sortType, setSortType] = useState<SortTypeEnum>(SortTypeEnum.ASC);
+  const [selectedSortElement, setSelectedSortElement] = useState<HTMLElement | any>(null);
+  const [selectedSortTypeElement, setSelectedSortTypeElement] = useState<HTMLElement | any>(null);
+  const [selectedStateFiler, setSelectedStateFiler] = useState(0);
 
-  const onStateFilterSelected = (v: string): void => {
-    setSelectedStateFiler(v);
-    console.log('state selected in fitler: ', v);
-    if (onFilterChanged) onFilterChanged(v);
+
+  const stateFilterSelected = (v: string): void => {
+    setSelectedStateFiler(+v);
+    if (onFilterChanged) onFilterChanged(+v);
   }
 
-  const onSortChanged = (
-      field: string, 
-      sortType: SortTypesEnum = SortTypesEnum.ASC
-    ): void => {
+  const sortChanged = (field: string, el: any): void => {
+    if (field === sortField) {
+      field = '';
+      el.className = '';
+      setSelectedSortElement(null);
+      setSortField('');
+    } else {
+      el.className = 'selected-item';
+      if (selectedSortElement) {
+        selectedSortElement.className = '';
+      }
+      setSelectedSortElement(el);
       setSortField(field);
-      setSortType(sortType);
-      if (onSortSelected) onSortSelected(field, sortType);
+    }
+    setSortType(sortType);
+    if (onSortSelected) onSortSelected(field, sortType);
+  }
+
+  const sortTypeChanged = (sType: SortTypeEnum = SortTypeEnum.ASC, el: any): void => {
+    el.className = 'selected-item';
+    if (selectedSortTypeElement) {
+      selectedSortTypeElement.className = '';
+    }
+    setSelectedSortTypeElement(el);
+    setSortType(sType);
+    if (onSortSelected) onSortSelected(sortField, sType);
   }
 
   const statesFilterList: LabelValue[] = [];
-  statesFilterList.push({ label: '', value: -1 });
+  statesFilterList.push({ label: t('general.all'), value: ExchangeStateEnum.UNKNOWN });
   for (let idx = 1; idx <= ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL; idx++) {
-    statesFilterList.push({ 
+    statesFilterList.push({
       label: t(`ExchangeStateEnum.${ExchangeStateEnum[idx]}`),
       value: idx
     });
@@ -68,30 +77,30 @@ const DesktopToolbox: React.FC<Props> = (props) => {
         <li>
           <span className="txt-xs position-relative">{ `${t('general.sortWith')}:` }</span>
         </li>
-        <li>
+        <li onClick={ (e): void => sortChanged('sendDate', e.currentTarget) }>
           <FontAwesomeIcon icon={ faCalendar } className={ faIcons } />
           <span className="txt-xs position-relative">{ t('exchange.sendDate') }</span>
         </li>
-        <li className="selected-item">
+        <li onClick={ (e): void => sortChanged('expireDate', e.currentTarget) }>
           <FontAwesomeIcon icon={ faCalendarAlt } className={ faIcons } />
           <span className="txt-xs position-relative">{ t('exchange.expirationCompletionDate') }</span>
         </li>
-        <li>
+        <li onClick={ (e): void => sortChanged('state', e.currentTarget) }>
           <FontAwesomeIcon icon={ faSignal } className={ faIcons } />
           <span className="txt-xs position-relative">{ t('exchange.state') }</span>
         </li>
         <li>&nbsp;</li>
-        <li>
+        <li onClick={ (e): void => sortTypeChanged(SortTypeEnum.ASC, e.currentTarget) }>
           <FontAwesomeIcon icon={ faSortAmountUpAlt } className={ faIcons } />
           <span className="txt-xs position-relative">{ t('general.ascending') }</span>
         </li>
-        <li>
+        <li onClick={ (e): void => sortTypeChanged(SortTypeEnum.DESC, e.currentTarget) }>
           <FontAwesomeIcon icon={ faSortAmountDown } className={ faIcons } />
           <span className="txt-xs position-relative">{ t('general.descending') }</span>
         </li>
       </ul>
       <ul className={ ul }>
-      <li>
+        <li>
           <span className="txt-xs position-relative">{ `${t('general.filterWith')}:` }</span>
         </li>
         <li>
@@ -100,9 +109,11 @@ const DesktopToolbox: React.FC<Props> = (props) => {
         </li>
         <li>
           <DaroogDropdown
-            defaultValue="-1"
-            onChangeHandler={onStateFilterSelected}
-            data={statesFilterList}
+            defaultValue="0"
+            onChangeHandler={ stateFilterSelected }
+            data={ statesFilterList }
+            variant="standard"
+            style={ { marginTop: '-.5em', color: ColorEnum.Silver } }
           />
         </li>
       </ul>

@@ -19,6 +19,7 @@ import {
 } from '../../../../../enum';
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
+import { getExpireDate, isExchangeComplete, isExchangeCompletedOrCancelled } from '../../../../../utils/ExchangeTools';
 
 interface Props {
   item: ExchangeInterface;
@@ -40,7 +41,6 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   if (item?.currentPharmacyIsA) {
     state = item?.state == undefined ? 0 : item?.state;
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
-    expireDate = item?.expireDateA == null ? '' : item?.expireDateA;
     totalPourcentage = item?.totalPourcentageA;
     paymentStatus = item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
 
@@ -51,7 +51,6 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   } else {
     state = item?.state == undefined ? 0 : (item?.state + 10);
     pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
-    expireDate = item?.expireDateB == null ? '' : item?.expireDateB;
     totalPourcentage = item?.totalPourcentageB
     paymentStatus = item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
 
@@ -60,7 +59,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     star = item?.pharmacyStarA == undefined ? 0 : item?.pharmacyStarA;
     pharmacyWarranty = item?.pharmacyWarrantyA == undefined ? 0 : item?.pharmacyWarrantyA;
   }
-
+  expireDate = getExpireDate(item);
 
   // test data for completed exchanges
   // const states = [
@@ -74,56 +73,14 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   //   ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
   // ];
   // state = states[Math.floor(Math.random() * states.length)];
-  // console.log('new state:', state);
-  
 
   let expireDateText: string = t('exchange.expirationDate');
-  const isExchangeCompletedOrCancelled = (): boolean => {
-    return ([
-      ExchangeStateEnum.CONFIRMA_AND_B,
-      ExchangeStateEnum.NOCONFIRMB,
-      ExchangeStateEnum.CONFIRMB_AND_NOCONFIRMA,
-      ExchangeStateEnum.CANCELLED,
-      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
-      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
-      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
-      ExchangeStateEnum.CONFIRMA_AND_B_FORB,
-      ExchangeStateEnum.NOCONFIRMB_FORB,
-      ExchangeStateEnum.CONFIRMB_AND_NOCONFIRMA_FORB,
-      ExchangeStateEnum.CANCELLED_FORB,
-      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
-      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
-      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
-    ].indexOf(state) > -1);
-  };
-
-  if (isExchangeCompletedOrCancelled()) {
+  if (isExchangeCompletedOrCancelled(state)) {
     expireDateText = t('exchange.completionDate');
-    expireDate = expireDate > (
-      item?.cancelDate == undefined ? '' : item?.cancelDate
-    ) ? expireDate : item?.cancelDate;
-  }
-  expireDate = isNullOrEmpty(expireDate) ? ''
-    : moment(expireDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-
-
-  const isExchangeComplete = (): boolean => {
-    return (
-      [
-        ExchangeStateEnum.CONFIRMA_AND_B,
-        ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
-        ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
-        ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
-        ExchangeStateEnum.CONFIRMA_AND_B_FORB,
-        ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
-        ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
-        ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
-      ].indexOf(state) > -1
-    )
   }
 
   const getExchangeTitle = (): string => {
-    if (isExchangeComplete()) {
+    if (isExchangeComplete(state)) {
       return t(`ExchangeStateEnum.` +
         `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`)
     } else {
@@ -133,7 +90,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
   const getExchangeTitleColor = (): string => {
     return (
-      isExchangeComplete()
+      isExchangeComplete(state)
       ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
       : CardColors[state]
     )
