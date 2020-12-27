@@ -6,7 +6,7 @@ interface Props {
   defaultValue: any;
   onChangeHandler: (value: string) => void;
   data: LabelValue[];
-  label: string;
+  label?: string;
   className?: any;
   variant?: any;
 }

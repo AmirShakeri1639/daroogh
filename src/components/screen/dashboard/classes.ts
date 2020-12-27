@@ -189,7 +189,26 @@ export const useClasses = makeStyles((theme) => createStyles({
     cursor: 'Pointer',
   },
   faIcons: {
-    margin: '.3em', 
-    marginTop: '0',
+    margin: '0 .3em', 
+  },
+  ul: {
+    listStyle: 'none',
+    paddingLeft: 0,
+    '& > li': {
+      display: 'inline',
+      marginLeft: theme.spacing(2),
+      color: theme.palette.gray.dark,
+      '&:hover': {
+        cursor: 'pointer',
+      },
+      '& > span': {
+        color: theme.palette.gray.dark,
+        bottom: 1,
+        left: 3,
+      },
+    },
+  },
+  icons: {
+    color: theme.palette.gray.dark,
   },
 }));

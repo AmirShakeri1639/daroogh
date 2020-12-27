@@ -15,7 +15,7 @@ import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
 import {
   CardColors,
-  ColorsEnum, ExchangeStatesEnum, UserColors, UserGrades
+  ColorEnum, ExchangeStateEnum, UserColors, UserGrades
 } from '../../../../../enum';
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
@@ -64,14 +64,14 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
   // test data for completed exchanges
   // const states = [
-  //   ExchangeStatesEnum.CONFIRMA_AND_B,
-  //   ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA,
-  //   ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB,
-  //   ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL,
-  //   ExchangeStatesEnum.CONFIRMA_AND_B_FORB,
-  //   ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
-  //   ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
-  //   ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
+  //   ExchangeStateEnum.CONFIRMA_AND_B,
+  //   ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
+  //   ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
+  //   ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+  //   ExchangeStateEnum.CONFIRMA_AND_B_FORB,
+  //   ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
+  //   ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
+  //   ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
   // ];
   // state = states[Math.floor(Math.random() * states.length)];
   // console.log('new state:', state);
@@ -80,20 +80,20 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   let expireDateText: string = t('exchange.expirationDate');
   const isExchangeCompletedOrCancelled = (): boolean => {
     return ([
-      ExchangeStatesEnum.CONFIRMA_AND_B,
-      ExchangeStatesEnum.NOCONFIRMB,
-      ExchangeStatesEnum.CONFIRMB_AND_NOCONFIRMA,
-      ExchangeStatesEnum.CANCELLED,
-      ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA,
-      ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB,
-      ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL,
-      ExchangeStatesEnum.CONFIRMA_AND_B_FORB,
-      ExchangeStatesEnum.NOCONFIRMB_FORB,
-      ExchangeStatesEnum.CONFIRMB_AND_NOCONFIRMA_FORB,
-      ExchangeStatesEnum.CANCELLED_FORB,
-      ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
-      ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
-      ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
+      ExchangeStateEnum.CONFIRMA_AND_B,
+      ExchangeStateEnum.NOCONFIRMB,
+      ExchangeStateEnum.CONFIRMB_AND_NOCONFIRMA,
+      ExchangeStateEnum.CANCELLED,
+      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
+      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
+      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+      ExchangeStateEnum.CONFIRMA_AND_B_FORB,
+      ExchangeStateEnum.NOCONFIRMB_FORB,
+      ExchangeStateEnum.CONFIRMB_AND_NOCONFIRMA_FORB,
+      ExchangeStateEnum.CANCELLED_FORB,
+      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
+      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
+      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
     ].indexOf(state) > -1);
   };
 
@@ -110,31 +110,31 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   const isExchangeComplete = (): boolean => {
     return (
       [
-        ExchangeStatesEnum.CONFIRMA_AND_B,
-        ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA,
-        ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB,
-        ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL,
-        ExchangeStatesEnum.CONFIRMA_AND_B_FORB,
-        ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
-        ExchangeStatesEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
-        ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
+        ExchangeStateEnum.CONFIRMA_AND_B,
+        ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
+        ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
+        ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+        ExchangeStateEnum.CONFIRMA_AND_B_FORB,
+        ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
+        ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
+        ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
       ].indexOf(state) > -1
     )
   }
 
   const getExchangeTitle = (): string => {
     if (isExchangeComplete()) {
-      return t(`ExchangeStatesEnum.` +
-        `${ExchangeStatesEnum[ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL]}`)
+      return t(`ExchangeStateEnum.` +
+        `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`)
     } else {
-      return t(`ExchangeStatesEnum.${ExchangeStatesEnum[state]}`)
+      return t(`ExchangeStateEnum.${ExchangeStateEnum[state]}`)
     };
   }
 
   const getExchangeTitleColor = (): string => {
     return (
       isExchangeComplete()
-      ? CardColors[ExchangeStatesEnum.CONFIRMALL_AND_PAYMENTALL]
+      ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
       : CardColors[state]
     )
   }
@@ -213,7 +213,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
           { !isNullOrEmpty(item?.sendDate) &&
             <Grid item xs={ 12 } className={ spacingVertical1 }>
-              <TextLine backColor={ ColorsEnum.White }
+              <TextLine backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon icon={ faCalendarPlus } size="lg" className={ faIcons } />
@@ -230,7 +230,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
           { !isNullOrEmpty(expireDate) &&
             <Grid item xs={ 12 } className={ spacingVertical1 }>
-              <TextLine backColor={ ColorsEnum.White }
+              <TextLine backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon icon={ faCalendarTimes } size="lg" className={ faIcons } />
@@ -243,7 +243,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
           { !isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 &&
             <Grid item xs={ 12 } className={ spacingVertical1 }>
-              <TextLine backColor={ ColorsEnum.White }
+              <TextLine backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon icon={ faMoneyBillAlt } className={ faIcons } size="lg" />
@@ -256,7 +256,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
           { !isNullOrEmpty(paymentStatus) &&
             <Grid item xs={ 12 } className={ spacingVertical1 }>
-              <TextLine backColor={ ColorsEnum.White }
+              <TextLine backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon icon={ faCreditCard } size="lg" className={ faIcons } />
@@ -279,12 +279,12 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     return (
       <>
         <div style={ {
-          borderTop: `3px solid ${ColorsEnum.Green}`,
+          borderTop: `3px solid ${ColorEnum.Green}`,
           width: `${thisState * 10}%`,
           display: 'inline-block'
         } }></div>
         <div style={ {
-          borderTop: `3px solid ${ColorsEnum.Red}`,
+          borderTop: `3px solid ${ColorEnum.Red}`,
           width: `${100 - (thisState * 10)}%`,
           display: 'inline-block'
         } }></div>

@@ -68,8 +68,13 @@ export enum RolesEnum {
   ADMIN = '2'
 }
 
-export { ExchangeStatesEnum, CancellerEnum } from './ExchangeStatesEnum';
-export { ColorsEnum } from './colors';
+export enum SortTypesEnum {
+  ASC,
+  DESC
+}
+
+export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
+export { ColorEnum } from './colors';
+export { CardColors } from './colors';
+export { UserColors } from './colors';
 export { UserGrades } from './UserGrades';
-export { CardColors } from './CardColors';
-export { UserColors } from './UserColors';

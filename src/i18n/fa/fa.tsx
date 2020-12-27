@@ -58,6 +58,11 @@ export default {
         offer: 'آفر',
         to: 'به',
         comment: 'شرح',
+        sort: 'مرتب سازی',
+        sortWith: 'مرتب سازی بر اساس ',
+        filterWith: 'فیلتر بر اساس ',
+        ascending: 'صعودی',
+        descending: 'نزولی',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -170,6 +175,7 @@ export default {
         exchange: 'تبادل',
         desktop: 'کارتابل',
         expirationDate: 'تاریخ انقضای تبادل',
+        expirationCompletionDate: 'تاریخ انقضا/تکمیل',
         GOLD: 'کاربر طلایی',
         SILVER: 'کاربر نقره‌ای',
         BRONZE: 'کاربر برنزی',
@@ -182,6 +188,7 @@ export default {
         supplyList: 'لیست عرضه',
         sendDate: 'تاریخ شروع تبادل',
         completionDate: 'تاریخ تکمیل تبادل',
+        state: 'وضعیت',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -233,7 +240,7 @@ export default {
         ARZESHODEH: 'عرضه شده',
         FOROOKHTEHSHODEH: 'فروخته شده',
       },
-      ExchangeStatesEnum: {
+      ExchangeStateEnum: {
         UNKNOWN: 'نامشخص',
         NOSEND: 'ارسال نشده',
         WAITFORB: 'منتظر تائید طرف مقابل',
