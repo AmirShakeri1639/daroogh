@@ -22,6 +22,7 @@ import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
 import Desktop from './drug-transfer/desktop/Desktop';
 import SupplyList from './supply-list/SupplyList';
+import Map from '../../public/map/Map';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -62,6 +63,7 @@ const DashboardActivePage: React.FC = () => {
       case DashboardPages.DASHBOARD:
         el = !isShowTransfer ? (
           <Container maxWidth="lg" className={classes.container}>
+            {/* <Map /> */}
             <Grid container spacing={3}>
               <Grid item xs={12} md={8} lg={9}>
                 <Paper className={fixedHeightPaper}>Data</Paper>

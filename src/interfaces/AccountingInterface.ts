@@ -3,4 +3,5 @@ export interface AccountingInterface {
   date: string;
   description: string;
   amount: number;
+  isChecked?: boolean;
 }

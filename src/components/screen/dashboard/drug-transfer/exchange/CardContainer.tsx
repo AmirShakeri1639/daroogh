@@ -455,21 +455,23 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
       <CardContent>{basicDetail}</CardContent>
       {!isPack && (
         <CardActions disableSpacing className={action}>
-          <Grid container>
-            <Grid item xs={6} style={{ textAlign: 'right' }}>
-              <CounterButton />
+          {exchangeStateCode === 1 && (
+            <Grid container>
+              <Grid item xs={6} style={{ textAlign: 'right' }}>
+                <CounterButton />
+              </Grid>
+              <Grid item xs={6} style={{ textAlign: 'left' }}>
+                <Button
+                  variant="contained"
+                  className={button}
+                  size="small"
+                  onClick={async (): Promise<any> => await addTransferHandle()}
+                >
+                  {pharmacyDrug.buttonName}
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={6} style={{ textAlign: 'left' }}>
-              <Button
-                variant="contained"
-                className={button}
-                size="small"
-                onClick={async (): Promise<any> => await addTransferHandle()}
-              >
-                {pharmacyDrug.buttonName}
-              </Button>
-            </Grid>
-          </Grid>
+          )}
         </CardActions>
       )}
       {isPack && (
@@ -491,15 +493,17 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
             className={collapse}
           >
             <div> {collapsableContent} </div>
-            <Button
-              variant="contained"
-              size="small"
-              className={button}
-              style={{ marginBottom: 5 }}
-              onClick={async (): Promise<any> => await packHandle()}
-            >
-              {pharmacyDrug.buttonName}
-            </Button>
+            {exchangeStateCode === 1 && (
+              <Button
+                variant="contained"
+                size="small"
+                className={button}
+                style={{ marginBottom: 5 }}
+                onClick={async (): Promise<any> => await packHandle()}
+              >
+                {pharmacyDrug.buttonName}
+              </Button>
+            )}
           </Collapse>
         </>
       )}

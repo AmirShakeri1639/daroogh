@@ -1,6 +1,6 @@
 import { AddDrugInterface } from '../../interfaces/ExchangeInterface';
 import { ViewExchangeInterface } from '../../interfaces/ViewExchangeInterface';
-import { AddDrog1, AddPack1, RemovePack1, Send } from '../../model/exchange';
+import { AddDrog1, AddPack1, Cancel, RemovePack1, Send } from '../../model/exchange';
 import { errorHandler } from '../../utils';
 import Api from './Api';
 
@@ -16,6 +16,7 @@ class PharmacyDrug extends Api {
     removePack2: '/Exchange/RemovePack2',
     send: '/Exchange/Send',
     viewExchange: '/Exchange/ViewExchange',
+    cancelExchange: '/Exchange/CancelExchange'
   };
 
   getAllPharmacyDrug = async (
@@ -119,7 +120,7 @@ class PharmacyDrug extends Api {
       const result = await this.postJsonData(
         `${this.urls.send}?exchangeID=${data.exchangeID}&lockSuggestion=${data.lockSuggestion}`
       );
-      return result.data;
+      return result;
     } catch (e) {
       errorHandler(e);
     }
@@ -138,6 +139,17 @@ class PharmacyDrug extends Api {
     );
     return result.data;
   }
+
+  cancelExchange = async (data: Cancel): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.send}?exchangeID=${data.exchangeID}&comment=${data.comment}`
+      );
+      return result;
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
 }
 
 export default PharmacyDrug;

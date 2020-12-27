@@ -115,9 +115,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           if (!res.currentPharmacyIsA) {
             setBasketCount(basketA);
             setUbasketCount(basketB);
+            setSelectedPharmacyForTransfer(res.pharmacyKeyA);
           } else {
             setUbasketCount(basketA);
             setBasketCount(basketB);
+            setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
         }
         setViewExchange(result);

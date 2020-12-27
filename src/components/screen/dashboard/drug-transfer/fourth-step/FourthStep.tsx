@@ -37,7 +37,10 @@ const FourthStep: React.FC = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [openSnack, setOpenSnack] = React.useState(false);
-  const [message, setMessage] = React.useState<string>('');
+  const [message, setMessage] = React.useState({
+    message: '',
+    type: 'success',
+  });
 
   const handleClickOpen = (): void => {
     setOpen(true);
@@ -52,13 +55,13 @@ const FourthStep: React.FC = () => {
   };
 
   const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
-    onSuccess: async () => {
-      setMessage(t('alert.send'));
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage({ ...message, message: t('alert.send'), type: 'success' });
+      } else {
+        setMessage({ message: 'عملیات ناموفق', type: 'error' });
+      }
       snackBarHandleClick();
-      // await sweetAlert({
-      //   type: 'success',
-      //   text: t('alert.send'),
-      // });
     },
   });
 
@@ -87,6 +90,8 @@ const FourthStep: React.FC = () => {
     inputmodel.lockSuggestion = isSelected;
     try {
       await _send(inputmodel);
+      // setMessage(res.message);
+      // snackBarHandleClick();
     } catch (e) {
       errorHandler(e);
     }
@@ -150,8 +155,8 @@ const FourthStep: React.FC = () => {
         autoHideDuration={5000}
         onClose={snackBarHandleClose}
       >
-        <Alert onClose={snackBarHandleClose} severity="success">
-          {message}
+        <Alert onClose={snackBarHandleClose} severity={message.type}>
+          {message.message}
         </Alert>
       </Snackbar>
     </>

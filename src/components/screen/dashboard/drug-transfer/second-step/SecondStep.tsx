@@ -1,14 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
   ButtonBase,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
   createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   Grid,
   Hidden,
+  IconButton,
   makeStyles,
   TextField,
   useMediaQuery,
@@ -23,7 +29,7 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { useTranslation } from 'react-i18next';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
@@ -36,6 +42,11 @@ import {
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 import JwtData from '../../../../../utils/JwtData';
 import ExchangeApprove from '../exchange/ExchangeApprove';
+import Modal from '../../../../public/modal/Modal';
+import CloseIcon from '@material-ui/icons/Close';
+import sweetAlert from '../../../../../utils/sweetAlert';
+import { Cancel } from '../../../../../model/exchange';
+import { errorHandler } from '../../../../../utils';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -68,6 +79,9 @@ const style = makeStyles((theme) =>
     cancelButton: {
       width: '100%',
     },
+    confirmButton: {
+      width: '100%',
+    },
     cancelButton4: {
       width: '50%',
       marginRight: 10,
@@ -82,6 +96,12 @@ const style = makeStyles((theme) =>
 const SecondStep: React.FC = () => {
   const { getAllPharmacyDrug, getViewExchange } = new PharmacyDrug();
   const { t } = useTranslation();
+
+  const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(
+    false
+  );
+  const toggleIsOpenCancelExchangeModalForm = (): void =>
+    setIsOpenCancelExchangeModal((v) => !v);
 
   const [viewExhcnage, setViewExchange] = useState([]);
 
@@ -102,7 +122,7 @@ const SecondStep: React.FC = () => {
     exchangeStateCode,
     messageOfExchangeState,
     showApproveModalForm,
-    setShowApproveModalForm
+    setShowApproveModalForm,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { userData } = new JwtData();
@@ -112,6 +132,39 @@ const SecondStep: React.FC = () => {
   const [dataInfo, setDataInfo] = useState<any>([]);
   const [isGetData, setIsGetData] = useState<boolean>(false);
   const [showApprove, setShowApprove] = useState<boolean>(false);
+  const [comment, setComment] = useState<string>('');
+  const { cancelExchange } = new PharmacyDrug();
+
+  const [_cancelExchange, { isLoading: isLoadingSend }] = useMutation(
+    cancelExchange,
+    {
+      onSuccess: async (res) => {
+        if (res) {
+          await sweetAlert({
+            type: 'success',
+            text: res.message,
+          });
+        } else {
+          await sweetAlert({
+            type: 'error',
+            text: 'عملیات ناموفق',
+          });
+        }
+      },
+    }
+  );
+
+  const handleCancelExchange = async (): Promise<any> => {
+    const inputmodel = new Cancel();
+    inputmodel.exchangeID = exchangeId;
+    inputmodel.comment = comment;
+    try {
+      await _cancelExchange(inputmodel);
+    } catch (e) {
+      errorHandler(e);
+    }
+    toggleIsOpenCancelExchangeModalForm();
+  };
 
   const {
     paper,
@@ -119,6 +172,7 @@ const SecondStep: React.FC = () => {
     stickyRecommendation,
     actionContainer,
     cancelButton,
+    confirmButton,
     cancelButton4,
     confirmButton4,
   } = style();
@@ -156,59 +210,6 @@ const SecondStep: React.FC = () => {
       enabled: false,
     }
   );
-
-  // const {
-  //   status,
-  //   isLoading,
-  //   error,
-  //   data,
-  //   isFetching,
-  //   isFetchingMore,
-  //   fetchMore,
-  //   refetch,
-  //   canFetchMore,
-  // } = useInfiniteQuery(
-  //   'key',
-  //   async (k) => {
-  //     const data = await getAllPharmacyDrug(
-  //       selectedPharmacyForTransfer,
-  //       listPageNo,
-  //       pageSize
-  //     );
-  //     setListPage(listPageNo + 1);
-  //     const allItemsTillNow = [...allPharmacyDrug, ...data.items];
-  //     setAllPharmacyDrug(allItemsTillNow);
-  //     setListCount(data.count);
-  //     setDataInfo(data.items);
-  //     return data.items;
-  //   },
-  //   {
-  //     getFetchMore: () => {
-  //       return (
-  //         allPharmacyDrug.length === 0 || allPharmacyDrug.length < listCount
-  //       );
-  //     },
-  //     enabled: false,
-  //     refetchOnWindowFocus: false,
-  //   }
-  // );
-
-  const loadMoreButtonRef = React.useRef<any>(null);
-
-  // useEffect(() => {
-  //   (async (): Promise<void> => {
-  //     if (exchangeId > 0) {
-  //       const result = await getViewExchange(exchangeId);
-  //       setViewExchange(result);
-  //     }
-  //   })();
-  // }, [exchangeId]);
-
-  // useIntersectionObserver({
-  //   target: loadMoreButtonRef,
-  //   onIntersect: fetchMore,
-  //   enabled: canFetchMore,
-  // });
 
   useEffect(() => {
     refetch();
@@ -348,6 +349,58 @@ const SecondStep: React.FC = () => {
     setActiveStep(activeStep + 1);
   };
 
+  // TODO : here to move Action Component
+  const cancelExchangeModal = (): JSX.Element => {
+    return (
+      <Modal
+        open={isOpenCancelExchangeModal}
+        toggle={toggleIsOpenCancelExchangeModalForm}
+      >
+        <Card>
+          <CardHeader
+            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
+            title="لغو تبادل"
+            titleTypographyProps={{ variant: 'h6' }}
+            action={
+              <IconButton
+                style={{ marginTop: 10 }}
+                aria-label="settings"
+                onClick={toggleIsOpenCancelExchangeModalForm}
+              >
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={1}>
+              <div>
+                <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
+              </div>
+              <TextField
+                style={{ width: '100%', marginTop: 10, fontSize: 10 }}
+                label="توضیحات"
+                multiline
+                rows={5}
+                variant="outlined"
+              />
+            </Grid>
+          </CardContent>
+          <CardActions>
+            <MatButton
+              onClick={handleCancelExchange}
+              variant="contained"
+              color="primary"
+              autoFocus
+            >
+              لغو تبادل
+            </MatButton>
+          </CardActions>
+        </Card>
+      </Modal>
+    );
+  };
+
   const ConfirmDialog = (): JSX.Element => {
     return (
       <div>
@@ -379,7 +432,7 @@ const SecondStep: React.FC = () => {
   return (
     <>
       <Grid item xs={12}>
-        <Grid container item spacing={3} xs={12} className={stickyToolbox}>
+        <Grid container item spacing={3} xs={9} className={stickyToolbox}>
           <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
             <SearchInAList />
           </Grid>
@@ -394,20 +447,6 @@ const SecondStep: React.FC = () => {
               <>
                 {basketCardListGenerator()}
                 {cardListGenerator()}
-                {/* <div>
-                    <button
-                      className="MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
-                      ref={loadMoreButtonRef}
-                      onClick={fetchMore}
-                      disabled={!canFetchMore}
-                    >
-                      {isFetchingMore
-                        ? t('general.loading')
-                        : canFetchMore
-                        ? t('general.more')
-                        : t('general.noMoreData')}
-                    </button>
-                  </div> */}
               </>
             </Grid>
           </Grid>
@@ -422,33 +461,47 @@ const SecondStep: React.FC = () => {
                 variant="outlined"
                 value={recommendationMessage}
               />
-              {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
+              {(exchangeStateCode === 1 ||
+                exchangeStateCode === 2 ||
+                exchangeStateCode === 4 ||
+                exchangeStateCode === 6) && (
                 <>
-                  <TextField
-                    style={{ width: '100%', marginTop: 15 }}
-                    multiline
-                    rows={4}
-                    defaultValue={messageOfExchangeState}
-                    variant="outlined"
-                  />
-                  <div className={actionContainer}>
-                    <Button
-                      className={
-                        exchangeStateCode !== 4 ? cancelButton : cancelButton4
-                      }
-                      type="button"
+                  {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
+                    <TextField
+                      style={{ width: '100%', marginTop: 15 }}
+                      multiline
+                      rows={4}
+                      defaultValue={messageOfExchangeState}
                       variant="outlined"
-                      color="red"
-                    >
-                      لغو درخواست
-                    </Button>
-                    {exchangeStateCode === 4 && (
+                    />
+                  )}
+                  <div className={actionContainer}>
+                    {exchangeStateCode !== 6 && (
                       <Button
-                        className={confirmButton4}
+                        className={
+                          exchangeStateCode !== 4 ? cancelButton : cancelButton4
+                        }
+                        type="button"
+                        variant="outlined"
+                        color="red"
+                        onClick={toggleIsOpenCancelExchangeModalForm}
+                      >
+                        لغو درخواست
+                      </Button>
+                    )}
+                    {(exchangeStateCode === 4 || exchangeStateCode === 6) && (
+                      <Button
+                        className={
+                          exchangeStateCode === 6
+                            ? confirmButton
+                            : confirmButton4
+                        }
                         type="button"
                         variant="outlined"
                         color="green"
-                        onClick={(): any => {setShowApproveModalForm(true)}}
+                        onClick={(): any => {
+                          setShowApproveModalForm(true);
+                        }}
                       >
                         تایید نهایی
                       </Button>
@@ -457,6 +510,7 @@ const SecondStep: React.FC = () => {
                   {showApproveModalForm && <ExchangeApprove />}
                 </>
               )}
+              {isOpenCancelExchangeModal && cancelExchangeModal()}
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
                   <Grid item sm={6}>
