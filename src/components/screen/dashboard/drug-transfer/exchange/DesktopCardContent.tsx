@@ -37,7 +37,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
   // TODO: get star from item, when it's added in API
   const star = 4;
-  const stars = () => {
+  const stars = (): any => {
     const starsArray: JSX.Element[] = [];
     for (let i = 0; i < star; i++) {
       starsArray.push(<StarIcon />);
