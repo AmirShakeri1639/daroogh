@@ -191,12 +191,12 @@ const SupplyList: React.FC = () => {
         errorHandler(e);
       }
     })();
-  });
-
+  })
   useEffect(() => {
     (async (): Promise<any> => {
       try {
         const { offer1, offer2, amount, cnt } = state;
+        // @ts-ignore
         const { value: drugId } = selectedDrug;
         if (
           (offer1 !== '' && offer2 !== '' && Number(cnt) > 0) ||

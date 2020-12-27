@@ -58,9 +58,7 @@ export default {
         offer: 'آفر',
         to: 'به',
         number: 'تعداد',
-        barcode: 'بارکد',
-      },
-      form: {
+        barcode: 'بارکد', 
         submit: 'ثبت',
         comment: 'شرح',
         sort: 'مرتب سازی',
