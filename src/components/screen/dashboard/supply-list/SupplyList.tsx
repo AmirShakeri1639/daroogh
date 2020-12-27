@@ -451,15 +451,11 @@ const SupplyList: React.FC = () => {
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={12}>
                   <span>آفر</span>
-                  <span className="txt-sm text-muted">
-                    (به ازای هر <span className="txt-bold">آفر2</span> خرید،{' '}
-                    <span className="txt-bold">آفر1</span> عدد رایگان)
-                  </span>
                 </Grid>
                 <Grid item xs={12} sm={3}>
                   <Input
                     value={state?.offer1}
-                    label={`${t('general.number')} ${t('general.offer')} 1`}
+                    label={t('general.number')}
                     onChange={(e): void =>
                       dispatch({
                         type: 'offer1',
@@ -472,7 +468,7 @@ const SupplyList: React.FC = () => {
                 <Grid item xs={12} sm={3}>
                   <Input
                     value={state?.offer2}
-                    label={`${t('general.number')} ${t('general.offer')} 2`}
+                    label={t('general.number')}
                     // className={offerInput}
                     onChange={(e): void =>
                       dispatch({
@@ -481,6 +477,14 @@ const SupplyList: React.FC = () => {
                       })
                     }
                   />
+                </Grid>
+                <Grid item xs={12} sm>
+                  <span className="txt-sm text-muted">
+                    (به ازای هر{' '}
+                    <span className="txt-bold">{state?.offer2}</span> خرید،{' '}
+                    <span className="txt-bold">{state?.offer1}</span> عدد
+                    رایگان)
+                  </span>
                 </Grid>
               </Grid>
             </Grid>
