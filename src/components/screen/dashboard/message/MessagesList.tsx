@@ -43,7 +43,7 @@ const MessagesList: React.FC = () => {
     ];
   }
 
-  const toggleIsOpenModalOfMessage = () => setIsOpenModalOfMessage(v => !v);
+  const toggleIsOpenModalOfMessage = (): any => setIsOpenModalOfMessage(v => !v);
 
   const onRowClickHandler = async (rowData: any): Promise<void> => {
     const {

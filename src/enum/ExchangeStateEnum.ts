@@ -1,4 +1,4 @@
-export enum ExchangeStatesEnum {
+export enum ExchangeStateEnum {
   // نامشخص
   UNKNOWN = 0,
   // ارسال نشده

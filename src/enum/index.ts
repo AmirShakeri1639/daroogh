@@ -20,6 +20,7 @@ export enum DashboardPages {
   CREATE_NEW_MESSAGE = 'createNewMessage',
   PHARMACY_CREATE = 'createPharmacy',
   PHARMACY_LIST = 'pharmaciesList',
+  PHARMACY_MEMBERSHIP_REQUESTS = 'membershipRequestsList',
   CATEGORY_LIST = 'categoryList',
   EXCHANGE = 'exchange',
   EXCHANGE_LIST = 'exchangesList',
@@ -55,7 +56,7 @@ export enum MessageTypeEnum {
   SMS_AND_NOTIFICATION,
 }
 
-export const MessageTypeArray = (textArray: string[]) => [
+export const MessageTypeArray = (textArray: string[]): any => [
   { val: MessageTypeEnum.PROFILE, text: textArray[0] },
   { val: MessageTypeEnum.SMS, text: textArray[1] },
   { val: MessageTypeEnum.NOTIFICATION, text: textArray[2] },
@@ -67,5 +68,13 @@ export enum RolesEnum {
   ADMIN = '2'
 }
 
-export { ExchangeStatesEnum, CancellerEnum } from './ExchangeStatesEnum';
-export { Colors } from './colors';
+export enum SortTypeEnum {
+  ASC,
+  DESC
+}
+
+export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
+export { ColorEnum } from './colors';
+export { CardColors } from './colors';
+export { UserColors } from './colors';
+export { UserGrades } from './UserGrades';

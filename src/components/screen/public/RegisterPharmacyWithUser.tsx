@@ -551,8 +551,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <CountryDivisionSelect
                 countryDivisionID={28367}
                 label={t('general.location')}
-                onSelectedHandler={(id) => {
-                  dispatch({ type: 'pharmacy.countryDivisionID', value: id});
+                onSelectedHandler={ (id): void => {
+                  dispatch({ type: 'pharmacy.countryDivisionID', value: id });
                 }}
                 />
             </Grid>

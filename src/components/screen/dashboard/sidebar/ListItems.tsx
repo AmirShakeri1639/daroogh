@@ -22,6 +22,7 @@ import {
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import InboxIcon from '@material-ui/icons/Inbox';
 import ReceiptIcon from '@material-ui/icons/Receipt';
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
 import { DashboardPages, RolesEnum } from '../../../../enum';
@@ -58,6 +59,7 @@ const ListItems: React.FC = () => {
   const [isOpenPharmacyMenu, setIsOpenPharmacyMenu] = useState<boolean>(false);
   const [isOpenExchange, setIsOpenExchange] = useState<boolean>(false);
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
+  const [isOpenMembers, setIsOpenMembers] = useState<boolean>(false);
 
   const { activePageHandler: setActivePage } = useContext(Context);
 
@@ -73,7 +75,7 @@ const ListItems: React.FC = () => {
   const { userData, roles } = new JwtData();
   const rolesArray = roles();
 
-  const adminMenu = () => {
+  const adminMenu = (): JSX.Element => {
     return (
       <>
         <h3 className={spacing3}>{ t('user.admin') }</h3>
@@ -269,7 +271,7 @@ const ListItems: React.FC = () => {
     )
   }
 
-  const pharmacyMenu = () => {
+  const pharmacyMenu = (): JSX.Element => {
     return (
       <>
         <h3 className={spacing3}>{ t('pharmacy.pharmacy') }</h3>
@@ -341,6 +343,29 @@ const ListItems: React.FC = () => {
             </ListItem>
           </List>
         </Collapse>
+
+        <ListItem button onClick={ (): void => setIsOpenMembers(v => !v) }>
+          <ListItemIcon>
+            <PermIdentityTwoToneIcon />
+          </ListItemIcon>
+          <ListItemText primary={ t('user.members') } />
+          { isOpenMembers ? <ExpandLess /> : <ExpandMore /> }
+        </ListItem>
+        <Collapse in={ isOpenMembers } timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItem>
+              <ListItem button className={ nested }
+                onClick={ (): void => setActivePage(DashboardPages.PHARMACY_MEMBERSHIP_REQUESTS)}
+              >
+                <ListItemIcon>
+                  <BookmarkBorderIcon />
+                </ListItemIcon>
+                <ListItemText primary={ t('user.membershipRequestsList') } />
+              </ListItem>
+            </ListItem>
+          </List>
+        </Collapse>
+
       </>
     )
   }

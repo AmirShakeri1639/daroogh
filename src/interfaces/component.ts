@@ -139,6 +139,7 @@ export interface DetailSupplyInterface {
 export interface TextLinePropsInterface {
   rightText: string | React.ReactNode;
   leftText: string | React.ReactNode;
+  backColor?: string;
 }
 
 export interface BackDropPropsInterface {

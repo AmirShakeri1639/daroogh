@@ -9,7 +9,7 @@ export interface IntersectionObserverProps {
   enabled?: boolean;
 }
 
-export const useIntersectionObserver = (props: IntersectionObserverProps) => {
+export const useIntersectionObserver = (props: IntersectionObserverProps): any => {
   const {
     root,
     target,
@@ -39,7 +39,7 @@ export const useIntersectionObserver = (props: IntersectionObserverProps) => {
       return;
     }
     observer.observe(el)
-    return () => {
+    return (): any => {
       observer.unobserve(el)
     }
   }, [target.current, enabled]);

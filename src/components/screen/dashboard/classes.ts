@@ -3,7 +3,9 @@ import { createStyles } from "@material-ui/core";
 
 export const useClasses = makeStyles((theme) => createStyles({
   root: {
-    width: 500,
+    minWidth: 500,
+    width: '100%',
+    maxWidth: 1000,
     '& > .MuiCardContent-root': {
       padding: 0
     },
@@ -66,6 +68,12 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   spacing3: {
     margin: theme.spacing(3)
+  },
+  spacingVertical1: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+    marginLeft: 0,
+    marginRight: 0,
   },
   formControl: {
     minWidth: 190,
@@ -175,9 +183,32 @@ export const useClasses = makeStyles((theme) => createStyles({
     right: '1.5em',
   },
   cardTop: {
-    margin: '0 .5em 1em .5em',
+    margin: '0 .5em',
   },
   pointer: {
     cursor: 'Pointer',
+  },
+  faIcons: {
+    margin: '0 .3em', 
+  },
+  ul: {
+    listStyle: 'none',
+    paddingLeft: 0,
+    '& > li': {
+      display: 'inline',
+      marginLeft: theme.spacing(2),
+      color: theme.palette.gray.dark,
+      '&:hover': {
+        cursor: 'pointer',
+      },
+      '& > span': {
+        color: theme.palette.gray.dark,
+        bottom: 1,
+        left: 3,
+      },
+    },
+  },
+  icons: {
+    color: theme.palette.gray.dark,
   },
 }));
