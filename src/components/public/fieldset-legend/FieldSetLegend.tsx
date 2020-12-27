@@ -1,5 +1,5 @@
 import React from 'react';
-import { FieldSetLegendPropsInterface } from '../../../interfaces';
+import { FieldSetLegendPropsInterface } from '../../../interfaces/component';
 
 const FieldSetLegend: React.FC<FieldSetLegendPropsInterface> = (props) => {
   const { legend, children, className } = props;
