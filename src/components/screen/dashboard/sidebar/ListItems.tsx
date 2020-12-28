@@ -22,6 +22,7 @@ import {
   Business,
   Apps as AppsIcon,
 } from '@material-ui/icons';
+import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import InboxIcon from '@material-ui/icons/Inbox';
 import ReceiptIcon from '@material-ui/icons/Receipt';
@@ -39,6 +40,7 @@ import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
+import routes from '../../../../routes';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -50,8 +52,27 @@ const useStyles = makeStyles((theme) =>
     nested: {
       paddingLeft: theme.spacing(4),
     },
+    linkWrapper: {
+      display: 'flex',
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, .05)',
+        transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+      },
+      '& a': {
+        color: 'rgba(0, 0, 0, 0.85)',
+        textDecoration: 'none',
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        '& div:nth-child(2)': {
+          display: 'inline-block',
+        },
+      },
+    },
   })
 );
+
+const { transfer, cardboard, supplyList, transactions, membersList } = routes;
 
 const ListItems: React.FC = () => {
   const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
@@ -66,7 +87,7 @@ const ListItems: React.FC = () => {
 
   const { activePageHandler: setActivePage } = useContext(Context);
 
-  const { nested } = useStyles();
+  const { nested, linkWrapper } = useStyles();
   const { t } = useTranslation();
 
   const { spacing3 } = useClasses();
@@ -77,6 +98,11 @@ const ListItems: React.FC = () => {
 
   const { userData, roles } = new JwtData();
   const rolesArray = roles();
+
+  const dashboard = '/dashboard';
+
+  const preventDefault = (event: React.SyntheticEvent) =>
+    event.preventDefault();
 
   const adminMenu = (): JSX.Element => {
     return (
@@ -297,42 +323,31 @@ const ListItems: React.FC = () => {
           {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.EXCHANGE_LIST)}
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={cardboard} className={nested}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary={t('exchange.desktop')} />
-            </ListItem>
+            </Link>
           </List>
-        </Collapse>
-        <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.EXCHANGE)}
-            >
+
+          <List component="div" className={linkWrapper}>
+            <Link to={transfer} className={nested}>
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
               <ListItemText primary={t('exchange.exchange')} />
-            </ListItem>
+            </Link>
+          </List>
 
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.SUPPLY_LIST)}
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={supplyList} className={nested}>
               <ListItemIcon>
                 <AppsIcon />
               </ListItemIcon>
               <ListItemText primary={t('exchange.supplyList')} />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
@@ -347,44 +362,33 @@ const ListItems: React.FC = () => {
           {isOpenAccounting ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenAccounting} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void =>
-                setActivePage(DashboardPages.ACCOUNTING_LIST)
-              }
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={transactions} className={nested}>
               <ListItemIcon>
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary={t('accounting.transactions')} />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
-        <ListItem button onClick={ (): void => setIsOpenMembers(v => !v) }>
+        <ListItem button onClick={(): void => setIsOpenMembers((v) => !v)}>
           <ListItemIcon>
             <PermIdentityTwoToneIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('user.members') } />
-          { isOpenMembers ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('user.members')} />
+          {isOpenMembers ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenMembers } timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem>
-              <ListItem button className={ nested }
-                onClick={ (): void => setActivePage(DashboardPages.PHARMACY_MEMBERSHIP_REQUESTS)}
-              >
-                <ListItemIcon>
-                  <BookmarkBorderIcon />
-                </ListItemIcon>
-                <ListItemText primary={ t('user.membershipRequestsList') } />
-              </ListItem>
-            </ListItem>
+        <Collapse in={isOpenMembers} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={membersList} className={nested}>
+              <ListItemIcon>
+                <BookmarkBorderIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('user.membershipRequestsList')} />
+            </Link>
           </List>
         </Collapse>
-
       </>
     );
   };

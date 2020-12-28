@@ -31,6 +31,10 @@ import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 
 const drawerWidth = 240;
 
+interface DashboardPropsInterface {
+  component: React.ReactNode;
+}
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -135,7 +139,7 @@ type DashboardActivePage =
   | 'accountingList'
   | 'membershipRequestsList';
 
-const Dashboard: React.FC = () => {
+const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [activePage, setActivePage] = useState<string>('dashboard');
@@ -180,7 +184,6 @@ const Dashboard: React.FC = () => {
   return (
     <Context.Provider value={contextInitialValues()}>
       <div className={classes.root}>
-        <CssBaseline />
         <AppBar elevation={0} position="absolute" className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
             <IconButton
@@ -265,7 +268,7 @@ const Dashboard: React.FC = () => {
         </MaterialDrawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
-          <DashboardActivePage />
+          {component}
         </main>
       </div>
     </Context.Provider>
