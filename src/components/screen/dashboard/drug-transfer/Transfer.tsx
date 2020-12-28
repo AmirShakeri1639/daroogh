@@ -125,7 +125,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         setViewExchange(result);
       }
       if (exchangeState !== undefined) {
-        // alert('کد وضعیت تبادل : ' + '' + exchangeState);
+        console.log('کد وضعیت تبادل : ', exchangeState);
         setExchangeStateCode(exchangeState);
         switch (exchangeState) {
           case 2:

@@ -15,7 +15,7 @@ export interface InputInterface {
   required?: boolean;
   isMultiLine?: boolean;
   onClick?: () => void;
-  onChange: (e: any) => void;
+  onChange?: (e: any) => void;
   error?: any;
   className?: any;
 }

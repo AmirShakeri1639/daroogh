@@ -1,10 +1,16 @@
-import { Container, createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
+import {
+  Container,
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+} from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { CardContainer } from '../../../../public';
 import ToolBox from '../Toolbox';
 import ExCardContent from './ExCardContent';
 
-const useClasses = makeStyles(theme =>
+const useClasses = makeStyles((theme) =>
   createStyles({
     root: {
       flexGrow: 1,
@@ -14,7 +20,7 @@ const useClasses = makeStyles(theme =>
       textAlign: 'center',
       color: theme.palette.text.secondary,
     },
-  }),
+  })
 );
 
 const Exchange: React.FC = () => {

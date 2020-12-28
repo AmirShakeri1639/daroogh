@@ -17,6 +17,6 @@ const MaterialSearchBar: React.FC<MaterialSearchPropsInterface> = (props) => {
       onRequestSearch={(): void => onRequestSearch(searchTerm)}
     />
   );
-}
+};
 
 export default MaterialSearchBar;

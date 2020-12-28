@@ -7,9 +7,12 @@ import {
   Container,
   createStyles,
   Divider,
+  FormControl,
   Grid,
   IconButton,
+  InputLabel,
   makeStyles,
+  MenuItem,
   Paper,
 } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
@@ -24,6 +27,9 @@ import {
   faCalendarTimes,
   faMoneyBillWave,
 } from '@fortawesome/free-solid-svg-icons';
+import { Select } from '@material-ui/core';
+import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
+import moment from 'jalali-moment';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -62,8 +68,11 @@ const ExchangeApprove: React.FC = () => {
     AccountingInterface[]
   >([]);
 
+  const { getAccountingForPayment } = new PharmacyDrug();
+
   const [totalAmount, setTotoalAmount] = useState(0);
   const [maxDebt, setMaxDebt] = useState(2000000);
+  const [paymentAmount, setPaymentAmount] = useState(0);
 
   const { showApproveModalForm, setShowApproveModalForm } = useContext<
     TransferDrugContextInterface
@@ -73,48 +82,16 @@ const ExchangeApprove: React.FC = () => {
     setShowApproveModalForm(!showApproveModalForm);
 
   useEffect(() => {
-    const data: AccountingInterface[] = [
-      {
-        id: 1,
-        amount: 250000,
-        description: 'بابت فلان',
-        date: '1399-10-05',
-      },
-      {
-        id: 2,
-        amount: 730000,
-        description: '1بابت فلان',
-        date: '1399-11-05',
-      },
-      {
-        id: 2,
-        amount: 780000,
-        description: '2بابت فلان',
-        date: '1399-11-10',
-      },
-      {
-        id: 3,
-        amount: 250000,
-        description: 'بابت فلان',
-        date: '1399-10-05',
-      },
-      {
-        id: 5,
-        amount: 730000,
-        description: '1بابت فلان',
-        date: '1399-11-05',
-      },
-      {
-        id: 6,
-        amount: 780000,
-        description: '2بابت فلان',
-        date: '1399-11-10',
-      },
-    ];
-    setAccountingForPayment(data);
+    (async (): Promise<void> => {
+      const result = await getAccountingForPayment(10);
+      if (result) {
+        const res: AccountingInterface[] = result.data.accountingForPayment;
+        setAccountingForPayment(res);
+        const md = res.sort((a: any, b: any) => (a > b ? 1 : -1))[0];
+        setPaymentAmount(md.amount);
+      }
+    })();
   }, []);
-
-  const [isShowPaymentForm, setIsShowPaymentForm] = useState(false);
 
   const redirectPaymentPage = (): any => {
     fetch('https://api.sumon.ir/MyVirtualGateway', {
@@ -140,15 +117,19 @@ const ExchangeApprove: React.FC = () => {
 
   const PaymentPage = (): JSX.Element => {
     return (
-      <div>
-        <form onSubmit={handleSubmit}>
-          {/* <form method="post" action="https://api.sumon.ir/MyVirtualGateway" name="paytm">
-            <script type="text/javascript"> {document.paytm.submit()} </script>
-          </form> */}
-          <input type="hidden" name="name" value={123} />
-          <button type="submit">click</button>
-        </form>
-      </div>
+      <form method="post" action="https://api.sumon.ir/MyVirtualGateway">
+        <input type="hidden" value={paymentAmount} name="amount"></input>
+        <input type="hidden" value={'request'} name="commandType"></input>
+        <input type="hidden" value={'1000'} name="trackingNumber"></input>
+        <input
+          type="hidden"
+          value={'https://api.sumon.ir/payment/verify?paymentToken'}
+          name="redirectUrl"
+        ></input>
+        <Button type="submit" variant="outlined" color="green">
+          <span style={{ width: 100 }}>پرداخت</span>
+        </Button>
+      </form>
     );
   };
 
@@ -170,7 +151,7 @@ const ExchangeApprove: React.FC = () => {
           }
         />
         <Divider />
-        <CardContent style={{ marginBottom: 70 }}>
+        <CardContent style={{ marginBottom: 90 }}>
           <Grid container spacing={1}>
             <div>
               <span>
@@ -195,7 +176,9 @@ const ExchangeApprove: React.FC = () => {
                 >
                   <Paper className={paper}>
                     <ul style={{ listStyleType: 'none', padding: 0 }}>
-                      <li>{item.description}</li>
+                      <li style={{ fontSize: 12, minHeight: 50 }}>
+                        {item.description}
+                      </li>
                       <li>
                         <Grid alignItems="flex-end" container spacing={1}>
                           <Grid item xs={1} style={{ textAlign: 'left' }}>
@@ -218,7 +201,9 @@ const ExchangeApprove: React.FC = () => {
                           <Grid item xs={11}>
                             <TextLine
                               rightText={'تاریخ'}
-                              leftText={item.date}
+                              leftText={moment(item.date, 'YYYY/MM/DD')
+                                .locale('fa')
+                                .format('YYYY/MM/DD')}
                             />
                           </Grid>
                         </Grid>
@@ -226,13 +211,22 @@ const ExchangeApprove: React.FC = () => {
                     </ul>
                     <div style={{ marginTop: -10 }}>
                       <Checkbox
+                        disabled={item.amount <= 0}
                         onChange={(
                           e: React.ChangeEvent<HTMLInputElement>
                         ): any => {
                           item.isChecked = e.target.checked;
-                          if (e.target.checked)
-                            setTotoalAmount(totalAmount + item.amount);
-                          else setTotoalAmount(totalAmount - item.amount);
+                          let amount = 0;
+                          if (e.target.checked) {
+                            amount = totalAmount + item.amount;
+                            setTotoalAmount(amount);
+                          } else {
+                            amount = totalAmount - item.amount;
+                            setTotoalAmount(amount);
+                          }
+                          if (amount > paymentAmount)
+                            setPaymentAmount(paymentAmount);
+                          else setPaymentAmount(amount);
                         }}
                       />
                     </div>
@@ -244,27 +238,31 @@ const ExchangeApprove: React.FC = () => {
         </CardContent>
         <CardActions className={stickyCardAction}>
           <Grid container spacing={1}>
-            <Grid
-              item
-              xs={12}
-              xl={12}
-              md={12}
-              style={{ textAlign: 'center', marginBottom: -10 }}
-            >
-              <b>
-                <span>مبلغ انتخابی : </span>
-                <span>{totalAmount}</span>
-              </b>
+            <Grid item xs={12} xl={12} md={12} style={{ marginBottom: -5 }}>
+              <FormControl style={{ width: 120, marginTop: -10 }}>
+                <InputLabel>درگاه پرداخت</InputLabel>
+                <Select>
+                  <MenuItem value={1}>بانک پارسیان</MenuItem>
+                  <MenuItem value={2}>بانک تست</MenuItem>
+                </Select>
+              </FormControl>
+              <ul style={{ display: 'inline-block', margin: 0 }}>
+                <li>
+                  <b style={{ color: 'red' }}>
+                    <span>مبلغ قابل پرداخت: </span>
+                    <span>{paymentAmount}</span>
+                  </b>
+                </li>
+                <li>
+                  <b>
+                    <span>مبلغ انتخابی: </span>
+                    <span>{totalAmount}</span>
+                  </b>
+                </li>
+              </ul>
             </Grid>
             <Grid item xs={6} xl={6} md={6}>
-              <Button
-                type="button"
-                variant="outlined"
-                color="green"
-                onClick={(): any => setIsShowPaymentForm(true)}
-              >
-                <span style={{ width: 100 }}>پرداخت</span>
-              </Button>
+              <PaymentPage />
             </Grid>
             <Grid item xs={6} xl={6} md={6} style={{ textAlign: 'left' }}>
               <Button type="button" variant="outlined" color="red">
@@ -274,7 +272,6 @@ const ExchangeApprove: React.FC = () => {
           </Grid>
         </CardActions>
       </Card>
-      {isShowPaymentForm && <PaymentPage />}
     </Modal>
   );
 };

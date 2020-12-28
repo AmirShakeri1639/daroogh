@@ -2,6 +2,9 @@ import React from 'react';
 import { Box, createStyles, Divider, Grid } from '@material-ui/core';
 import { CardHeaderInterface } from '../../../../../interfaces';
 import { makeStyles } from '@material-ui/core/styles';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@material-ui/icons/Person';
 
@@ -54,11 +57,14 @@ const useStyle = makeStyles((theme) =>
           height: 12,
           marginLeft: 1,
           marginBottom: 1,
-        }
-      }
+        },
+      },
     },
     textLeft: {
       textAlign: 'right',
+    },
+    starIcon: {
+      color: '#ffc65d',
     },
   })
 );
@@ -66,24 +72,26 @@ const useStyle = makeStyles((theme) =>
 const CardHeader: React.FC<CardHeaderInterface> = (props) => {
   const { city, guaranty, province, star, itemsCount, userType } = props;
 
-  const { box, divPosition, userLevelContainer, textLeft } = useStyle();
+  const { box, divPosition, userLevelContainer, textLeft, starIcon } = useStyle();
 
   const { t } = useTranslation();
 
   const handleUserType = (userType: number): any => {
-    const getUserLevel = userType === 1
-      ? t('user.goldUser')
-      : userType === 2
+    const getUserLevel =
+      userType === 1
+        ? t('user.goldUser')
+        : userType === 2
         ? t('user.silverUser')
         : userType === 3
-          ? t('user.boronzeUser')
-          : t('user.platiniumUser');
+        ? t('user.boronzeUser')
+        : t('user.platiniumUser');
 
-    const getUserType = userType === 1
-    ? 'gold'
-    : userType === 2
-      ? 'silver'
-      : userType === 3
+    const getUserType =
+      userType === 1
+        ? 'gold'
+        : userType === 2
+        ? 'silver'
+        : userType === 3
         ? 'boronze'
         : 'platinium';
 
@@ -94,7 +102,32 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
         </span>
         <span className="txt-xs">{getUserLevel}</span>
       </div>
-    )
+    );
+  };
+
+  const starHandler = (star: number): JSX.Element[] | JSX.Element => {
+    if (star === 0) {
+      return (
+        <>
+          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
+          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
+          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
+          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
+          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
+        </>
+      )
+    }
+
+    let item: JSX.Element[] = [];
+
+    while (star > 0) {
+      item = [
+        ...item,
+        <FontAwesomeIcon icon={faStar} size="sm" className={starIcon} />
+      ];
+      star--;
+    }
+    return item;
   }
 
   return (
@@ -116,7 +149,7 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
           </Grid>
 
           <Grid xs={6} item className={textLeft}>
-            <span className="txt-xs">{star} ستاره</span>
+            <span className="txt-xs">{starHandler(Number(star))}</span>
           </Grid>
         </Grid>
       </Grid>

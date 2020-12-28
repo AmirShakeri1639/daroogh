@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
-import { LabelValue } from "../../../interfaces";
+import React, { useState } from 'react';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { LabelValue } from '../../../interfaces';
 
 interface Props {
   defaultValue: any;
@@ -12,37 +12,43 @@ interface Props {
   style?: any;
 }
 
-export const DaroogDropdown: React.FC<Props> =  (props) => {
-  const { defaultValue, onChangeHandler, data, label,
-    className = '', variant = 'outlined', style } = props;
+export const DaroogDropdown: React.FC<Props> = (props) => {
+  const {
+    defaultValue,
+    onChangeHandler,
+    data,
+    label,
+    className = '',
+    variant = 'outlined',
+    style,
+  } = props;
 
   const [finalValue, setValue] = useState(defaultValue);
 
   return (
     <FormControl>
-        <InputLabel className="daroog-dropdown-label">{label}</InputLabel>
-        <Select
-          value={finalValue}
-          label={label}
-          variant={variant}
-          className={className}
-          defaultValue={defaultValue}
-          style={style}
-          onChange={
-            (e): void => {
-              setValue(e.target.value);
-              onChangeHandler(e.target.value as string);
-            }
-          }
-        >
-          {data && data.map((item: LabelValue) => {
+      <InputLabel className="daroog-dropdown-label">{label}</InputLabel>
+      <Select
+        value={finalValue}
+        label={label}
+        variant={variant}
+        className={className}
+        defaultValue={defaultValue}
+        style={style}
+        onChange={(e): void => {
+          setValue(e.target.value);
+          onChangeHandler(e.target.value as string);
+        }}
+      >
+        {data &&
+          data.map((item: LabelValue) => {
             return (
               <MenuItem key={item.value} value={item.value}>
                 {item.label}
               </MenuItem>
-            )
+            );
           })}
-        </Select>
+      </Select>
     </FormControl>
   );
-}
+};

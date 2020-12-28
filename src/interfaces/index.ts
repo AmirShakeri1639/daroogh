@@ -68,3 +68,4 @@ export type { MembershipRequestInterface } from './MembershipRequestInterface';
 
 export * from './component';
 export * from './general';
+export * from './comission';

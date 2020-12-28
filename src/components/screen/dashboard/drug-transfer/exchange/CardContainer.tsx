@@ -189,6 +189,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     setExchangeId,
     selectedPharmacyForTransfer,
     exchangeStateCode,
+    viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
@@ -455,7 +456,9 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
       <CardContent>{basicDetail}</CardContent>
       {!isPack && (
         <CardActions disableSpacing className={action}>
-          {exchangeStateCode === 1 && (
+          {(!viewExhcnage ||
+            !viewExhcnage.lockSuggestion ||
+            exchangeStateCode === 1) && (
             <Grid container>
               <Grid item xs={6} style={{ textAlign: 'right' }}>
                 <CounterButton />
@@ -493,7 +496,9 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
             className={collapse}
           >
             <div> {collapsableContent} </div>
-            {exchangeStateCode === 1 && (
+            {(!viewExhcnage ||
+              !viewExhcnage.lockSuggestion ||
+              exchangeStateCode === 1) && (
               <Button
                 variant="contained"
                 size="small"
