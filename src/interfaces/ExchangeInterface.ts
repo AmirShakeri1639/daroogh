@@ -6,7 +6,7 @@ export interface AddDrugInterface {
 
 export interface ExchangeInterface {
   id: number;
-  state?: number;
+  state: number;
   currentPharmacyIsA?: boolean;
   numberA?: string;
   numberB?: string;

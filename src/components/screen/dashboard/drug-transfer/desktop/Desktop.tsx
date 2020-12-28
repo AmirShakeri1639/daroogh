@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExchangeInterface } from '../../../../../interfaces';
+import { ExchangeInterface, LabelValue } from '../../../../../interfaces';
 import { Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
@@ -9,13 +9,21 @@ import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
 import TransferDrug from '../Transfer';
 import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
-import { getExpireDate } from '../../../../../utils/ExchangeTools';
+import {
+  getExpireDate, isExchangeCompleted, hasLabelValue
+} from '../../../../../utils/ExchangeTools';
 import { isNullOrEmpty } from '../../../../../utils';
+import CircleLoading from '../../../../public/loading/CircleLoading';
+// load test data
+// import d from './testdata.json';
 
 const Desktop: React.FC = () => {
   const { t } = useTranslation();
   const queryCache = useQueryCache();
   const { paper } = useClasses();
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [stateFilterList, setStateFilterList] = useState<LabelValue[]>([]);
 
   const { getDashboard } = new Exchange();
 
@@ -29,12 +37,37 @@ const Desktop: React.FC = () => {
   React.useEffect(() => {
     async function getExchanges(): Promise<any> {
       const result = await getDashboard();
+      // load test data
+      // const result = d;
       if (result != undefined) {
+        const statesList: LabelValue[] = [];
+        let hasCompleted: boolean = false;
         const items = result.items.map((item: any) => {
+          if (!item.currentPharmacyIsA && [
+            ExchangeStateEnum.UNKNOWN,
+            ExchangeStateEnum.NOSEND,
+            ExchangeStateEnum.CANCELLED,
+            ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
+          ].indexOf(item.state) < 0) item.state += 10;
+          if (isExchangeCompleted(item.state)) hasCompleted = true;
+          if (!hasLabelValue(statesList, item.state) && !hasCompleted) {
+            statesList.push({
+              label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
+              value: item.state
+            });
+          }
           return { ...item, expireDate: getExpireDate(item) };
         });
 
+        if (hasCompleted) {
+          statesList.push({
+            label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
+            value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
+          });
+        }
         setExchanges(items);
+        setIsLoading(false);
+        setStateFilterList(statesList);
       }
     }
 
@@ -86,7 +119,9 @@ const Desktop: React.FC = () => {
       const listToShow =
         filter == ExchangeStateEnum.UNKNOWN
           ? [...exchanges]
-          : exchanges.filter((ex) => ex.state === filter);
+          : exchanges.filter((ex) => (ex.state === filter ||
+            (isExchangeCompleted(ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state) &&
+              filter == ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL)));
 
       // sort
       if (sortField == '') {
@@ -104,9 +139,9 @@ const Desktop: React.FC = () => {
 
       return listToShow.map((item, index) => {
         return (
-          <Grid item xs={12} sm={6} md={4} xl={4} key={index}>
-            <div className={paper}>
-              <DesktopCardContent item={item} onCardClick={cardClickHandler} />
+          <Grid item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
+            <div className={ paper }>
+              <DesktopCardContent item={ item } onCardClick={ cardClickHandler } />
             </div>
           </Grid>
         );
@@ -120,26 +155,30 @@ const Desktop: React.FC = () => {
     <>
       {showTransfer && (
         <TransferDrug
-          viewExchangeId={exchangeId}
-          exchangeState={exchangeState}
+          viewExchangeId={ exchangeId }
+          exchangeState={ exchangeState }
         />
-      )}
+      ) }
       {!showTransfer && (
-        <Grid item xs={11}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <DesktopToolbox
-                onFilterChanged={filterChanged}
-                onSortSelected={sortSelected}
-              />
+        <>
+          {isLoading && <CircleLoading /> }
+          <Grid item xs={ 11 }>
+            <Grid container spacing={ 1 }>
+              <Grid item xs={ 12 }>
+                <DesktopToolbox
+                  filterList={ stateFilterList }
+                  onFilterChanged={ filterChanged }
+                  onSortSelected={ sortSelected }
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={ 1 }>
+              { cardListGenerator() }
             </Grid>
           </Grid>
-
-          <Grid container spacing={1}>
-            {cardListGenerator()}
-          </Grid>
-        </Grid>
-      )}
+        </>
+      ) }
     </>
   );
 };
