@@ -47,6 +47,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import { Cancel } from '../../../../../model/exchange';
 import { errorHandler } from '../../../../../utils';
+import DesktopCardContent from '../desktop/DesktopCardContent';
+import { ExchangeInterface } from '../../../../../interfaces/ExchangeInterface';
+import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -58,6 +61,7 @@ const style = makeStyles((theme) =>
     stickyToolbox: {
       position: 'sticky',
       margin: 0,
+      marginLeft: '10px !important',
       top: 70,
       zIndex: 999,
       backgroundColor: '#f3f3f3',
@@ -68,7 +72,7 @@ const style = makeStyles((theme) =>
       margin: 0,
       padding: 10,
       paddingTop: 0,
-      top: 135,
+      top: 60,
       zIndex: 999,
     },
     actionContainer: {
@@ -103,7 +107,7 @@ const SecondStep: React.FC = () => {
   const toggleIsOpenCancelExchangeModalForm = (): void =>
     setIsOpenCancelExchangeModal((v) => !v);
 
-  const [viewExhcnage, setViewExchange] = useState([]);
+  // const [viewExhcnage, setViewExchange] = useState<ViewExchangeInterface>({id});
 
   const {
     activeStep,
@@ -123,6 +127,7 @@ const SecondStep: React.FC = () => {
     messageOfExchangeState,
     showApproveModalForm,
     setShowApproveModalForm,
+    viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { userData } = new JwtData();
@@ -349,6 +354,121 @@ const SecondStep: React.FC = () => {
     setActiveStep(activeStep + 1);
   };
 
+  const ActionButtons = (): JSX.Element => {
+    let element: JSX.Element = <></>;
+    if (!viewExhcnage) return element;
+    const vx: ViewExchangeInterface | undefined = viewExhcnage.data;
+    if (vx) {
+      if (vx.currentPharmacyIsA) {
+        if (exchangeStateCode !== 6 && exchangeStateCode !== 10)
+          element = (
+            <Button
+              className={exchangeStateCode !== 4 ? cancelButton : cancelButton4}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={toggleIsOpenCancelExchangeModalForm}
+            >
+              لغو درخواست
+            </Button>
+          );
+
+        if (exchangeStateCode === 4 || exchangeStateCode === 6)
+          element = (
+            <>
+              <>{element}</>
+              <Button
+                className={
+                  exchangeStateCode === 6 ? confirmButton : confirmButton4
+                }
+                type="button"
+                variant="outlined"
+                color="green"
+                onClick={(): any => {
+                  setShowApproveModalForm(true);
+                }}
+              >
+                تایید نهایی
+              </Button>
+            </>
+          );
+
+        if (exchangeStateCode === 10)
+          element = (
+            <>
+              <>{element}</>
+              <Button
+                className={confirmButton}
+                type="button"
+                variant="outlined"
+                color="green"
+              >
+                نمایش آدرس
+              </Button>
+            </>
+          );
+      } else {
+        if (
+          exchangeStateCode === 2 ||
+          exchangeStateCode === 3 ||
+          exchangeStateCode === 4
+        ) {
+          element = (
+            <Button
+              className={exchangeStateCode === 2 ? cancelButton : cancelButton4}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={toggleIsOpenCancelExchangeModalForm}
+            >
+              لغو درخواست
+            </Button>
+          );
+        }
+        if (
+          exchangeStateCode === 2 ||
+          exchangeStateCode === 4 ||
+          exchangeStateCode === 9
+        )
+          element = (
+            <>
+              <>{element}</>
+              <Button
+                className={
+                  exchangeStateCode === 9 ? confirmButton : confirmButton4
+                }
+                type="button"
+                variant="outlined"
+                color="green"
+                onClick={(): any => {
+                  setShowApproveModalForm(true);
+                }}
+              >
+                تایید نهایی
+              </Button>
+            </>
+          );
+
+        if (exchangeStateCode === 8 || exchangeStateCode === 10)
+          element = (
+            <>
+              <>{element}</>
+              <Button
+                className={confirmButton}
+                type="button"
+                variant="outlined"
+                color="green"
+              >
+                نمایش آدرس
+              </Button>
+            </>
+          );
+      }
+    }
+
+    return element;
+  };
+
   // TODO : here to move Action Component
   const cancelExchangeModal = (): JSX.Element => {
     return (
@@ -432,19 +552,19 @@ const SecondStep: React.FC = () => {
   return (
     <>
       <Grid item xs={12}>
-        <Grid container item spacing={3} xs={9} className={stickyToolbox}>
-          <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
-            <SearchInAList />
-          </Grid>
-          <Grid item xs={12} sm={5} md={5} style={{ padding: 0 }}>
-            <ToolBox />
-          </Grid>
-        </Grid>
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={9}>
-            {isLoading && <CircleLoading />}
+            <Grid container item spacing={1} xs={12} className={stickyToolbox}>
+              <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
+                <SearchInAList />
+              </Grid>
+              <Grid item xs={12} sm={5} md={5} style={{ padding: 0 }}>
+                <ToolBox />
+              </Grid>
+            </Grid>
             <Grid container spacing={1}>
               <>
+                {isLoading && <CircleLoading />}
                 {basketCardListGenerator()}
                 {cardListGenerator()}
               </>
@@ -452,79 +572,52 @@ const SecondStep: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={12} md={3}>
             <Grid container className={stickyRecommendation}>
+              {viewExhcnage && <DesktopCardContent item={viewExhcnage} />}
               <TextField
                 style={{ width: '100%', marginTop: 15, fontSize: 10 }}
                 label="توضیحات"
                 multiline
-                rows={8}
+                rows={4}
                 defaultValue="توصیه ها"
                 variant="outlined"
                 value={recommendationMessage}
               />
-              {(exchangeStateCode === 1 ||
-                exchangeStateCode === 2 ||
-                exchangeStateCode === 4 ||
-                exchangeStateCode === 6) && (
-                <>
-                  {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
-                    <TextField
-                      style={{ width: '100%', marginTop: 15 }}
-                      multiline
-                      rows={4}
-                      defaultValue={messageOfExchangeState}
-                      variant="outlined"
-                    />
-                  )}
-                  <div className={actionContainer}>
-                    {exchangeStateCode !== 6 && (
-                      <Button
-                        className={
-                          exchangeStateCode !== 4 ? cancelButton : cancelButton4
-                        }
-                        type="button"
-                        variant="outlined"
-                        color="red"
-                        onClick={toggleIsOpenCancelExchangeModalForm}
-                      >
-                        لغو درخواست
-                      </Button>
-                    )}
-                    {(exchangeStateCode === 4 || exchangeStateCode === 6) && (
-                      <Button
-                        className={
-                          exchangeStateCode === 6
-                            ? confirmButton
-                            : confirmButton4
-                        }
-                        type="button"
-                        variant="outlined"
-                        color="green"
-                        onClick={(): any => {
-                          setShowApproveModalForm(true);
-                        }}
-                      >
-                        تایید نهایی
-                      </Button>
-                    )}
-                  </div>
-                  {showApproveModalForm && <ExchangeApprove />}
-                </>
-              )}
+              <>
+                {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
+                  <TextField
+                    style={{ width: '100%', marginTop: 15 }}
+                    multiline
+                    rows={4}
+                    defaultValue={messageOfExchangeState}
+                    variant="outlined"
+                  />
+                )}
+                <div className={actionContainer}>
+                  <ActionButtons />
+                </div>
+                {showApproveModalForm && <ExchangeApprove />}
+              </>
               {isOpenCancelExchangeModal && cancelExchangeModal()}
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
-                  <Grid item sm={6}>
-                    <Button
-                      type="button"
-                      variant="outlined"
-                      color="pink"
-                      onClick={(): void => setActiveStep(activeStep - 1)}
-                    >
-                      <ArrowRightAltIcon />
-                      {t('general.prevLevel')}
-                    </Button>
-                  </Grid>
-                  <Grid item sm={6} style={{ textAlign: 'left' }}>
+                  {!viewExhcnage && (
+                    <Grid item sm={6}>
+                      <Button
+                        type="button"
+                        variant="outlined"
+                        color="pink"
+                        onClick={(): void => setActiveStep(activeStep - 1)}
+                      >
+                        <ArrowRightAltIcon />
+                        {t('general.prevLevel')}
+                      </Button>
+                    </Grid>
+                  )}
+                  <Grid
+                    item
+                    sm={!viewExhcnage ? 6 : 12}
+                    style={{ textAlign: 'left' }}
+                  >
                     <Button
                       type="button"
                       variant="outlined"
