@@ -16,7 +16,8 @@ interface Props {
   onClick?: (e: any) => void;
 }
 
-const Map: React.FC = () => {
+const Map: React.FC<Props> = (props) => {
+  const { onClick } = props;
   const { container } = useStyle();
 
   const [map, setMap] = useState(null);
@@ -45,9 +46,7 @@ const Map: React.FC = () => {
       });
 
       map.on('click', (e: any): any => {
-        console.log('map info:', e);
-        
-        alert(e.lngLat);
+        if (onClick) onClick(e);
       });
     };
 
@@ -61,7 +60,8 @@ const Map: React.FC = () => {
       style={{
         width: '90vw',
         height: 'calc(100vh - 150px)',
-        position: 'absolute',
+        maxHeight: '400px',
+        // position: 'absolute',
         direction: 'rtl',
       }}
     />

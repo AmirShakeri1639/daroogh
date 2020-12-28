@@ -37,7 +37,9 @@ const initialState: PharmacyWithUserInterface = {
     website: '',
     email: '',
     postalCode: '',
-    countryDivisionID: 0,
+    countryDivisionID: 28367, // مشهد ثامن
+    x: '',
+    y: '',
   },
   user: {
     id: 0,
@@ -120,6 +122,16 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         pharmacy: { ...state.pharmacy, countryDivisionID: value },
+      };
+    case 'pharmacy.x':
+      return {
+        ...state,
+        pharmacy: { ...state.pharmacy, x: value },
+      };
+    case 'pharmacy.y':
+      return {
+        ...state,
+        pharmacy: { ...state.pharmacy, y: value },
       };
     // USER -------------------
     case 'user.pharmacyID':
@@ -264,10 +276,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
     );
   };
 
-  const mapClickHandler = (e: any): void => {
-    console.log('info recieved from map:', e);
-  }
-
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
@@ -289,6 +297,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
             email: state.pharmacy.email,
             postalCode: state.pharmacy.postalCode,
             countryDivisionID: state.pharmacy.countryDivisionID,
+            x: state.pharmacy.x,
+            y: state.pharmacy.y
           },
           user: {
             id: 0,
@@ -594,7 +604,10 @@ const RegisterPharmacyWithUser: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12}>
-              <Map onClick={mapClickHandler} />
+              <Map onClick={(e: any): void => {
+                dispatch({ type: 'pharmacy.x', value: e.lngLat.lng });
+                dispatch({ type: 'pharmacy.y', value: e.lngLat.lat });
+              }} />
             </Grid>
           </Grid>
           <div className={spacing1}>&nbsp;</div>
