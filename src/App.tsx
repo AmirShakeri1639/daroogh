@@ -19,7 +19,7 @@ const RegisterPharmacyWithUser = lazy(() =>
 const DrugTransfer = lazy(() =>
   import('./components/screen/dashboard/drug-transfer/Transfer')
 );
-const CardBoard = lazy(() =>
+const Desktop = lazy(() =>
   import('./components/screen/dashboard/drug-transfer/desktop/Desktop')
 );
 const Transfer = lazy(() =>
@@ -37,7 +37,7 @@ const MembershipRequests = lazy(() =>
 
 const {
   transfer,
-  cardboard,
+  desktop,
   supplyList,
   transactions,
   membershipRequests,
@@ -74,8 +74,8 @@ const App = (): JSX.Element => {
               <ViewPharmacyInfo />
             </PrivateRoute>
 
-            <PrivateRoute path={cardboard}>
-              <Dashboard component={<CardBoard />} />
+            <PrivateRoute path={desktop}>
+              <Dashboard component={<Desktop />} />
             </PrivateRoute>
 
             <PrivateRoute path={transfer}>

@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) =>
 
 const {
   transfer,
-  cardboard,
+  desktop,
   supplyList,
   transactions,
   membershipRequests,
@@ -331,7 +331,7 @@ const ListItems: React.FC = () => {
         </ListItem>
         <Collapse in={ isOpenExchange } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
-            <Link to={ cardboard } className={ nested }>
+            <Link to={ desktop } className={ nested }>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>

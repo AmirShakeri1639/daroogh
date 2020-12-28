@@ -5,7 +5,7 @@ const members = 'members';
 const pharmacy = 'pharmacy';
 
 export default {
-  cardboard: `/${dashboard}/${exchange}/cardboard`,
+  desktop: `/${dashboard}/${exchange}/desktop`,
   transfer: `/${dashboard}/${exchange}/transfer`,
   supplyList: `/${dashboard}/${exchange}/supply-list`,
   transactions: `/${dashboard}/${finance}/transactions`,
