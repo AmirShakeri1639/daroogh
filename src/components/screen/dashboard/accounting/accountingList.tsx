@@ -1,27 +1,23 @@
 import React, { useReducer } from 'react';
-import { useQueryCache } from "react-query";
+import { useQueryCache } from 'react-query';
 import Accounting from '../../../../services/api/Accounting';
-import { useTranslation } from "react-i18next";
-import { useClasses } from "../classes";
+import { useTranslation } from 'react-i18next';
+import { useClasses } from '../classes';
 import {
   ActionInterface,
   AccountingInterface,
-  TableColumnInterface
-} from "../../../../interfaces";
-import useDataTableRef from "../../../../hooks/useDataTableRef";
-import DataTable from "../../../public/datatable/DataTable";
-import { AccountingEnum } from "../../../../enum/query";
-import {
-  Container,
-  Grid,
-  Paper
-} from "@material-ui/core";
+  TableColumnInterface,
+} from '../../../../interfaces';
+import useDataTableRef from '../../../../hooks/useDataTableRef';
+import DataTable from '../../../public/datatable/DataTable';
+import { AccountingEnum } from '../../../../enum/query';
+import { Container, Grid, Paper } from '@material-ui/core';
 
 const initialState: AccountingInterface = {
   id: 0,
   date: '2020-12-07T21:43:46.103Z',
   description: '',
-  amount: 0
+  amount: 0,
 };
 
 const AccountingList: React.FC = () => {
@@ -33,13 +29,17 @@ const AccountingList: React.FC = () => {
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
-      { field: 'id', title: t('general.id'), type: 'number',
-        cellStyle: { textAlign: 'right' } },
+      {
+        field: 'id',
+        title: t('general.id'),
+        type: 'number',
+        cellStyle: { textAlign: 'right' },
+      },
       { field: 'date', title: t('general.date'), type: 'string' },
       { field: 'description', title: t('general.description'), type: 'string' },
       { field: 'amount', title: t('accounting.amount'), type: 'number' },
     ];
-  }
+  };
 
   return (
     <Container maxWidth="lg" className={container}>
@@ -58,7 +58,7 @@ const AccountingList: React.FC = () => {
         </Grid>
       </Grid>
     </Container>
-  )
-}
+  );
+};
 
 export default AccountingList;

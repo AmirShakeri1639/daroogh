@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import DaroogLogo from '../../../assets/images/daroog-logo.png';
+import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { List } from '@material-ui/core';
+import { Avatar, Grid, List } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -11,14 +12,22 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
-import { AccountCircle, ChevronRight as ChevronRightIcon } from '@material-ui/icons';
+import {
+  AccountCircle,
+  ChevronRight as ChevronRightIcon,
+} from '@material-ui/icons';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import Context from './Context';
-import UserMenu from "./appbar/UserMenu";
-import ListItems from "./sidebar/ListItems";
-import DashboardActivePage from "./DashboardActivePage";
+import UserMenu from './appbar/UserMenu';
+import ListItems from './sidebar/ListItems';
+import DashboardActivePage from './DashboardActivePage';
 import { MaterialDrawer } from '../../public';
+import { JwtData } from '../../../utils';
+import { LoggedInUserInterface } from '../../../interfaces';
+import { logoutUser } from '../../../utils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 
 const drawerWidth = 240;
 
@@ -92,10 +101,27 @@ const useStyles = makeStyles((theme) => ({
     height: '100vh',
     overflow: 'auto',
   },
+  userContainer: {
+    display: 'flex',
+    '& > *': {
+      margin: theme.spacing(3),
+    },
+  },
+  largeSpacing: {
+    margin: theme.spacing(3),
+  },
+  smallAvatar: {
+    width: theme.spacing(3),
+    height: theme.spacing(3),
+  },
+  largeAvatar: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+  },
 }));
 
 type DashboardActivePage =
-  'dashboard'
+  | 'dashboard'
   | 'createRole'
   | 'createUser'
   | 'usersList'
@@ -106,7 +132,8 @@ type DashboardActivePage =
   | 'exchange'
   | 'createPharmacy'
   | 'supplyList'
-  | 'accountingList';
+  | 'accountingList'
+  | 'membershipRequestsList';
 
 const Dashboard: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
@@ -118,12 +145,12 @@ const Dashboard: React.FC = () => {
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
 
-  const toggleIsOpenDrawer = (): void => setIsOpenDrawer(v => !v);
+  const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
   const activePageHandler = (page: string): void => {
-    toggleIsOpenDrawer()
+    toggleIsOpenDrawer();
     setActivePage(page);
-  }
+  };
 
   const contextInitialValues = (): any => ({
     anchorEl,
@@ -134,34 +161,47 @@ const Dashboard: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const handleUserIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleUserIconButton = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): void => {
     setAnchorEl(e.currentTarget);
-  }
+  };
+
+  const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
+  React.useEffect(() => {
+    const { userData } = new JwtData();
+    setLoggedInUser(userData);
+  }, []);
 
   const listItemsGenerator = (): any => {
     return <ListItems />;
-  }
+  };
 
   return (
     <Context.Provider value={contextInitialValues()}>
       <div className={classes.root}>
         <CssBaseline />
-        <AppBar
-          elevation={0}
-          position="absolute"
-          className={classes.appBar}
-        >
+        <AppBar elevation={0} position="absolute" className={classes.appBar}>
           <Toolbar className={classes.toolbar}>
             <IconButton
               edge="start"
               color="inherit"
               aria-label="open drawer"
               onClick={handleDrawerOpen}
-              className={clsx(classes.menuButton, isOpenDrawer && classes.menuButtonHidden)}
+              className={clsx(
+                classes.menuButton,
+                isOpenDrawer && classes.menuButtonHidden
+              )}
             >
               <MenuIcon />
             </IconButton>
-            <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.title}
+            >
               {t('general.dashboard')}
             </Typography>
             <IconButton color="inherit">
@@ -181,12 +221,8 @@ const Dashboard: React.FC = () => {
             </IconButton>
             <UserMenu />
           </Toolbar>
-
         </AppBar>
-        <MaterialDrawer
-          onClose={toggleIsOpenDrawer}
-          isOpen={isOpenDrawer}
-        >
+        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
           <div className={classes.toolbarIcon}>
             <img
               className={classes.daroogLogo}
@@ -198,10 +234,31 @@ const Dashboard: React.FC = () => {
             </IconButton>
           </div>
           <Divider />
-          <List
-            component="nav"
-            aria-labelledby="nested-list-items"
-          >
+          <Grid container className={classes.largeSpacing}>
+            <Grid item xs={3}>
+              <Avatar
+                alt={t('user.user')}
+                className={classes.largeAvatar}
+                src={avatarPic}
+              />
+            </Grid>
+            <Grid item xs={9}>
+              <Grid item xs={12}>
+                {loggedInUser?.name} {loggedInUser?.family}
+              </Grid>
+              <Grid item xs={12}>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  onClick={(): void => logoutUser()}
+                >
+                  <FontAwesomeIcon icon={faDoorOpen} />
+                </IconButton>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Divider />
+          <List component="nav" aria-labelledby="nested-list-items">
             {listItemsGenerator()}
           </List>
           <Divider />
@@ -213,6 +270,6 @@ const Dashboard: React.FC = () => {
       </div>
     </Context.Provider>
   );
-}
+};
 
 export default Dashboard;

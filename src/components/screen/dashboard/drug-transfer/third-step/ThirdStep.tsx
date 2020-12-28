@@ -137,7 +137,7 @@ const ThirdStep: React.FC = () => {
     if (dataInfo && dataInfo.length > 0) {
       const onlyA = dataInfo.filter(comparer(uBasketCount));
       if (uBasketCount.length > 0)
-      uBasketCount.forEach((a) => {
+        uBasketCount.forEach((a) => {
           if (dataInfo.find((z: any) => z.id === a.id)) onlyA.unshift(a);
         });
       const packList = new Array<AllPharmacyDrugInterface>();

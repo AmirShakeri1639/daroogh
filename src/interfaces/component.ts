@@ -10,6 +10,7 @@ export interface SelectPropsInterface {
   label?: string;
   required?: boolean;
   error: any;
+  children: any;
 }
 
 export interface ButtonPropsInterface {
@@ -116,6 +117,7 @@ export interface ProvincePropsInterface {
 
 export interface TransferPropsInterface {
   viewExchangeId?: number;
+  exchangeState?: number;
 }
 
 export interface MaterialSearchPropsInterface {
@@ -124,7 +126,8 @@ export interface MaterialSearchPropsInterface {
 
 export interface SupplyListCardContainer {
   drug: AllPharmacyDrugInterface;
-};
+  editHandler: () => void;
+}
 
 export interface DetailSupplyInterface {
   drugName: string;
@@ -138,9 +141,15 @@ export interface DetailSupplyInterface {
 export interface TextLinePropsInterface {
   rightText: string | React.ReactNode;
   leftText: string | React.ReactNode;
+  backColor?: string;
 }
 
 export interface BackDropPropsInterface {
   isOpen: boolean;
   onClick?: () => void;
+}
+
+export interface FieldSetLegendPropsInterface {
+  legend: string;
+  className?: string;
 }

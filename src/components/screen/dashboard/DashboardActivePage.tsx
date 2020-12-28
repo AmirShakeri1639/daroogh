@@ -20,8 +20,9 @@ import CategoryList from './category/CategoryList';
 import Exchange from './drug-transfer/exchange/Exchange';
 import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
-import Desktop from "./drug-transfer/desktop/Desktop";
+import Desktop from './drug-transfer/desktop/Desktop';
 import SupplyList from './supply-list/SupplyList';
+import Membership from './user/Membership';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -123,6 +124,9 @@ const DashboardActivePage: React.FC = () => {
         break;
       case DashboardPages.SUPPLY_LIST:
         el = <SupplyList />;
+        break;
+      case DashboardPages.PHARMACY_MEMBERSHIP_REQUESTS:
+        el = <Membership />;
         break;
       default:
         el = <></>;

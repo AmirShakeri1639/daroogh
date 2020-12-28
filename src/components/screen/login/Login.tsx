@@ -9,49 +9,54 @@ import {
   IconButton,
   InputAdornment,
   TextField,
-  Typography
-} from "@material-ui/core";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+  Typography,
+} from '@material-ui/core';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 import MailIcon from '@material-ui/icons/Mail';
 import LockIcon from '@material-ui/icons/Lock';
-import { ActionInterface, LoginInitialStateInterface } from "../../../interfaces";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import {
+  ActionInterface,
+  LoginInitialStateInterface,
+} from '../../../interfaces';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 import LockOpenIcon from '@material-ui/icons/LockOpen';
-import CircleLoading from "../../public/loading/CircleLoading";
+import CircleLoading from '../../public/loading/CircleLoading';
 import Account from '../../../services/api/Account';
 import { useMutation } from 'react-query';
-import { errorHandler, errorSweetAlert } from "../../../utils";
+import { errorHandler, errorSweetAlert } from '../../../utils';
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-  paper: {
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-    color: 'white',
-    background: theme.palette.blueLinearGradient.main,
-  },
-  margin: {
-    margin: theme.spacing(1),
-  },
-  link: {
-    textDecoration: 'none'
-  }
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    paper: {
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    avatar: {
+      margin: theme.spacing(1),
+      backgroundColor: theme.palette.secondary.main,
+    },
+    form: {
+      width: '100%',
+      marginTop: theme.spacing(1),
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+      color: 'white',
+      background: theme.palette.blueLinearGradient.main,
+    },
+    margin: {
+      margin: theme.spacing(1),
+    },
+    link: {
+      textDecoration: 'none',
+    },
+  })
+);
 
 const loginInitialState = {
   username: '',
@@ -59,7 +64,10 @@ const loginInitialState = {
   isVisiblePassword: false,
 };
 
-function reducer(state = loginInitialState, action: ActionInterface): LoginInitialStateInterface {
+function reducer(
+  state = loginInitialState,
+  action: ActionInterface
+): LoginInitialStateInterface {
   switch (action.type) {
     case 'username':
       return {
@@ -69,8 +77,8 @@ function reducer(state = loginInitialState, action: ActionInterface): LoginIniti
     case 'password':
       return {
         ...state,
-        password: action.value
-      }
+        password: action.value,
+      };
     case 'isVisiblePassword':
       return {
         ...state,
@@ -87,7 +95,7 @@ const Login: React.FC = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, loginInitialState);
   const [showError, setShowError] = useState<boolean>(false);
 
-  const location  = useLocation();
+  const location = useLocation();
 
   const { t } = useTranslation();
   const { push } = useHistory();
@@ -105,14 +113,16 @@ const Login: React.FC = (): JSX.Element => {
     },
     onError: async () => {
       await errorSweetAlert(t('error.loading-data'));
-    }
+    },
   });
 
-  const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  const formSubmitHandler = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<any> => {
     e.preventDefault();
     if (
-      state.username.trim().length === 0
-      || state.password.trim().length === 0
+      state.username.trim().length === 0 ||
+      state.password.trim().length === 0
     ) {
       setShowError(true);
       return;
@@ -122,15 +132,16 @@ const Login: React.FC = (): JSX.Element => {
         username: state.username,
         password: state.password,
       });
-    }
-    catch (e) {
+    } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
-  const handleMouseDownPassword = (e: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleMouseDownPassword = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): void => {
     e.preventDefault();
-  }
+  };
 
   const handleClickShowPassword = (): void =>
     dispatch({ type: 'isVisiblePassword', value: !state.isVisiblePassword });
@@ -150,11 +161,7 @@ const Login: React.FC = (): JSX.Element => {
         <Typography component="h1" variant="h5">
           ورود
         </Typography>
-        <form
-          className={classes.form}
-          noValidate
-          onSubmit={formSubmitHandler}
-        >
+        <form className={classes.form} noValidate onSubmit={formSubmitHandler}>
           <TextField
             error={state.username.trim().length === 0 && showError}
             variant="outlined"
@@ -171,7 +178,7 @@ const Login: React.FC = (): JSX.Element => {
                 <InputAdornment position="start">
                   <MailIcon />
                 </InputAdornment>
-              )
+              ),
             }}
           />
           <TextField
@@ -200,16 +207,17 @@ const Login: React.FC = (): JSX.Element => {
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
-                    {state.isVisiblePassword ? <Visibility /> : <VisibilityOff />}
+                    {state.isVisiblePassword ? (
+                      <Visibility />
+                    ) : (
+                      <VisibilityOff />
+                    )}
                   </IconButton>
                 </InputAdornment>
-              )
+              ),
             }}
           />
-          <Link
-            className={classes.link}
-            to="/forget-password"
-          >
+          <Link className={classes.link} to="/forget-password">
             رمز عبور را فراموش کردم
           </Link>
           <Button
@@ -220,19 +228,17 @@ const Login: React.FC = (): JSX.Element => {
             className={classes.submit}
             disabled={isLoading}
           >
-            <Typography variant="button">
-              {t('login.login')}
-            </Typography>
-            {
-              isLoading
-                ? <CircleLoading size={16} color="inherit" />
-                : <LockOpenIcon fontSize="inherit" className={classes.margin} />
-            }
+            <Typography variant="button">{t('login.login')}</Typography>
+            {isLoading ? (
+              <CircleLoading size={16} color="inherit" />
+            ) : (
+              <LockOpenIcon fontSize="inherit" className={classes.margin} />
+            )}
           </Button>
           <Link
             className={`${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root`}
             to="/register-pharmacy-with-user"
-            >
+          >
             <Typography variant="button">
               {t('login.registerPharmacyWithUser')}
             </Typography>

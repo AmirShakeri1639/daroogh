@@ -64,6 +64,8 @@ export type { CountryDivisionInterface } from './CountryDivisionInterface';
 export type { LoggedInUserInterface } from './LoggedInUserInterface';
 export type { TokenInterface } from './LoggedInUserInterface';
 export type { ExchangeInterface } from './ExchangeInterface';
+export type { MembershipRequestInterface } from './MembershipRequestInterface';
 
 export * from './component';
 export * from './general';
+export * from './comission';

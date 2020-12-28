@@ -1,6 +1,7 @@
 import { AddDrugInterface } from '../../interfaces/ExchangeInterface';
 import { ViewExchangeInterface } from '../../interfaces/ViewExchangeInterface';
 import { AddDrog1, AddPack1, RemovePack1, Send } from '../../model/exchange';
+import { PharmacyDrugSupplyList } from '../../model/pharmacyDrug';
 import { errorHandler } from '../../utils';
 import Api from './Api';
 
@@ -125,7 +126,7 @@ class PharmacyDrug extends Api {
     }
   };
 
-  allPharmacyDrug = async (pharmacyKey: string, isFull = true): Promise<any> => {
+  allPharmacyDrug = async (pharmacyKey = '', isFull = true): Promise<any> => {
     const result = await this.postData(
       `/PharmacyDrug/AllPharmacyDrug?full=${isFull}&pharmacyKey=${pharmacyKey}`
     );
@@ -135,6 +136,14 @@ class PharmacyDrug extends Api {
   removePharmacyDrug = async (id: string | number): Promise<any> => {
     const result = await this.postData(
       `/PharmacyDrug/Remove/${id}`
+    );
+    return result.data;
+  }
+
+  savePharmacyDrug = async (data: PharmacyDrugSupplyList): Promise<any> => {
+    const result = await this.postJsonData(
+      '/PharmacyDrug/Save',
+      data,
     );
     return result.data;
   }

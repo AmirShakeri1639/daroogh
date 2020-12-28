@@ -1,4 +1,11 @@
-import { Button, Container, createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
+import {
+  Button,
+  Container,
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+} from '@material-ui/core';
 import React from 'react';
 import { ExCardContentProps } from '../../../../../interfaces';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
@@ -9,7 +16,7 @@ import moment from 'jalali-moment';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import ListIcon from '@material-ui/icons/List';
 
-const useClasses = makeStyles(theme =>
+const useClasses = makeStyles((theme) =>
   createStyles({
     root: {
       flexGrow: 1,
@@ -54,7 +61,7 @@ const useClasses = makeStyles(theme =>
       textAlign: 'left',
       listStyleType: 'none',
     },
-  }),
+  })
 );
 
 function ExCardContent(props: ExCardContentProps): JSX.Element {
@@ -68,7 +75,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
     rowLeft,
     ulCardName,
     colLeft,
-    colLeftIcon
+    colLeftIcon,
   } = useClasses();
 
   const PackContent = (): JSX.Element => {
@@ -103,14 +110,20 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           <div className={root}>
             <Paper className={paper}>
               <Grid container item spacing={0} style={{ padding: 2 }}>
-                <Grid item xs={8} style={{ display: 'flex', alignItems: 'center' }}>
+                <Grid
+                  item
+                  xs={8}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
                   {item.drug.name}
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
                   <ul className={ulCardName}>
                     <li className={colLeftIcon}>
                       <EventBusyIcon />
-                      {moment(item.expireDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
+                      {moment(item.expireDate, 'YYYY/MM/DD')
+                        .locale('fa')
+                        .format('YYYY/MM/DD')}
                     </li>
                     <li className={colLeftIcon}>
                       <CardGiftcardIcon />
@@ -154,7 +167,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           <hr />
         </Grid>
         <Grid item xs={12} sm={4} className={rowLeft}>
-          {moment(pharmacyDrug?.expireDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
+          {moment(pharmacyDrug?.expireDate, 'YYYY/MM/DD')
+            .locale('fa')
+            .format('YYYY/MM/DD')}
         </Grid>
         <Grid item xs={12} sm={4} className={rowRight}>
           <CardGiftcardIcon /> پیشنهاد
@@ -170,7 +185,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   return (
-    <Container className={formType === 1 || formType === 2 ? `${cardcontent}` : ''}>
+    <Container
+      className={formType === 1 || formType === 2 ? `${cardcontent}` : ''}
+    >
       {formType === 1 && <PackContent />}
       {formType === 2 && <DrugInfo />}
       {formType === 3 && <PackDetailContent />}

@@ -23,7 +23,7 @@ class Drug extends Api {
     }
   }
 
-  all = async (skip: number, top: number = 10): Promise<any> => {
+  all = async (skip: number = 0, top: number = 10): Promise<any> => {
     try {
       const result = await this.postJsonData(
         `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`);
@@ -58,6 +58,13 @@ class Drug extends Api {
     } catch (e) {
       errorHandler(e);
     }
+  }
+
+  searchDrug = async (name: string, searchType: string = '', count = 100): Promise<any> => {
+    const result = await this.getData(
+      `/Search/SearchMedicalDrug?name=${name}&searchType=${searchType}&count=${count}`
+    );
+    return result.data;
   }
 }
 

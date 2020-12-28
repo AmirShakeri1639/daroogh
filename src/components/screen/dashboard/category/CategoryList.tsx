@@ -29,7 +29,7 @@ import { CategoriesInterface } from '../../../../interfaces/component';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { CategoryQueryEnum } from '../../../../enum/query';
 
-const useClasses = makeStyles(theme =>
+const useClasses = makeStyles((theme) =>
   createStyles({
     root: {
       width: 500,
@@ -91,7 +91,7 @@ const useClasses = makeStyles(theme =>
         padding: 0,
       },
     },
-  }),
+  })
 );
 
 const getColumns = (): DataTableColumns[] => {
@@ -170,22 +170,25 @@ const CategoryList: React.FC = () => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
-  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal(v => !v);
+  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
   const { saveCategory, removeCategory, getAllCategories } = new Category();
   const queryCache = useQueryCache();
 
   const { t } = useTranslation();
 
-  const [_saveNewCategory, { isLoading: isLoadingNewCategory }] = useMutation(saveCategory, {
-    onSuccess: async () => {
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.successfulCreateTextMessage'),
-      });
-    },
-  });
+  const [_saveNewCategory, { isLoading: isLoadingNewCategory }] = useMutation(
+    saveCategory,
+    {
+      onSuccess: async () => {
+        dispatch({ type: 'reset' });
+        await sweetAlert({
+          type: 'success',
+          text: t('alert.successfulCreateTextMessage'),
+        });
+      },
+    }
+  );
 
   const [
     _removeCategory,
@@ -196,16 +199,19 @@ const CategoryList: React.FC = () => {
     },
   });
 
-  const [_editCategory, { isLoading: loadingEditCategory }] = useMutation(saveCategory, {
-    onSuccess: async data => {
-      const { message } = data;
-      await sweetAlert({
-        type: 'success',
-        text: message,
-      });
-      queryCache.invalidateQueries('categoryList');
-    },
-  });
+  const [_editCategory, { isLoading: loadingEditCategory }] = useMutation(
+    saveCategory,
+    {
+      onSuccess: async (data) => {
+        const { message } = data;
+        await sweetAlert({
+          type: 'success',
+          text: message,
+        });
+        queryCache.invalidateQueries('categoryList');
+      },
+    }
+  );
 
   const onHandleEditRow = (row: CategoriesInterface): void => {
     toggleIsOpenSaveModalForm();
@@ -222,7 +228,6 @@ const CategoryList: React.FC = () => {
     dispatch({ type: 'type', value: null });
     dispatch({ type: 'typeString', value: null });
   };
-
 
   const onHandleRemoveRow = async (row: CategoriesInterface): Promise<void> => {
     const { id } = row;
@@ -241,7 +246,9 @@ const CategoryList: React.FC = () => {
     }
   };
 
-  const submitSaveCategory = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  const submitSaveCategory = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<any> => {
     e.preventDefault();
 
     const { id, name, type } = state;
@@ -270,7 +277,13 @@ const CategoryList: React.FC = () => {
     }
   };
 
-  const { container, root, formContainer, addButton, cancelButton } = useClasses();
+  const {
+    container,
+    root,
+    formContainer,
+    addButton,
+    cancelButton,
+  } = useClasses();
 
   const editModal = (): JSX.Element => {
     return (
@@ -292,7 +305,11 @@ const CategoryList: React.FC = () => {
           />
           <Divider />
           <CardContent>
-            <form autoComplete="off" onSubmit={submitSaveCategory} className={formContainer}>
+            <form
+              autoComplete="off"
+              onSubmit={submitSaveCategory}
+              className={formContainer}
+            >
               <Grid container spacing={1}>
                 <Grid item xs={12} sm={8}>
                   <TextField
@@ -301,7 +318,9 @@ const CategoryList: React.FC = () => {
                     size="small"
                     variant="outlined"
                     value={state.name}
-                    onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
+                    onChange={(e): void =>
+                      dispatch({ type: 'name', value: e.target.value })
+                    }
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
@@ -311,13 +330,20 @@ const CategoryList: React.FC = () => {
                     size="small"
                     variant="outlined"
                     value={state.type}
-                    onChange={(e): void => dispatch({ type: 'type', value: e.target.value })}
+                    onChange={(e): void =>
+                      dispatch({ type: 'type', value: e.target.value })
+                    }
                   />
                 </Grid>
                 <Divider />
                 <Grid item xs={12}>
                   <CardActions>
-                    <Button type="submit" variant="contained" color="primary" className={addButton}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      className={addButton}
+                    >
                       {loadingEditCategory || isLoadingNewCategory
                         ? t('general.pleaseWait')
                         : state.id > 0
@@ -356,7 +382,9 @@ const CategoryList: React.FC = () => {
               columns={getColumns()}
               addAction={(): void => onHandleAddAction()}
               editAction={(e: any, row: any): void => onHandleEditRow(row)}
-              removeAction={async (e: any, row: any): Promise<void> => await onHandleRemoveRow(row)}
+              removeAction={async (e: any, row: any): Promise<void> =>
+                await onHandleRemoveRow(row)
+              }
               queryKey={CategoryQueryEnum.GET_ALL_CATEGORIES}
               queryCallback={getAllCategories}
               initLoad={false}

@@ -1,4 +1,9 @@
-import React, { createRef, useImperativeHandle, useState, forwardRef } from 'react';
+import React, {
+  createRef,
+  useImperativeHandle,
+  useState,
+  forwardRef,
+} from 'react';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import { DataTableProps } from '../../../interfaces';
 import { usePaginatedQuery, useQueryCache } from 'react-query';
@@ -12,10 +17,10 @@ type CountdownHandle = {
   loadItems: () => void;
 };
 
-const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (
-  props,
-  forwardedRef,
-) => {
+const DataTable: React.ForwardRefRenderFunction<
+  CountdownHandle,
+  DataTableProps
+> = (props, forwardedRef) => {
   const [page, setPage] = useState<number>(0);
   const [itemsCount, setItemsCount] = useState<number>(0);
   const [entries, setEntries] = useState([]);
@@ -45,7 +50,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     [queryKey, page],
     () => queryCallback(page, pageSize),
     {
-      onSuccess: data => {
+      onSuccess: (data) => {
         const { items, count } = data;
         setEntries(itemsSanitizer(items, queryKey));
         setItemsCount(count);
@@ -55,7 +60,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         await errorSweetAlert(t('error.loading-data'));
         setLoader(false);
       },
-    },
+    }
   );
 
   const materialTableProps = {
@@ -95,7 +100,8 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         iconProps: {
           color: 'error',
         },
-        onClick: (event: any, rowData: any): void => stateAction(event, rowData),
+        onClick: (event: any, rowData: any): void =>
+          stateAction(event, rowData),
       },
     ];
   }

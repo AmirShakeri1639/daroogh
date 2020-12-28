@@ -15,8 +15,8 @@ export const DaroogSearchBar: React.FC<SearchBarProps> = (props) => {
     <SearchBar
       value={searchValue}
       placeholder={t('general.search')}
-      onChange={(v) => setSearchValue(v)}
-      onRequestSearch={() => onRequestSearch(searchValue)}
+      onChange={ (v): void => setSearchValue(v) }
+      onRequestSearch={ (): void => onRequestSearch(searchValue) }
     />
   );
 };
