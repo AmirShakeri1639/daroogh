@@ -53,6 +53,13 @@ const useStyles = makeStyles((theme) => ({
     width: '77% !important',
     height: '35px !important',
   },
+  systemTitle: {
+    textAlign: 'right',
+    display: 'block',
+    fontSize: 'large',
+    width: '100%',
+    padding: '1em',
+  },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
@@ -182,19 +189,19 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   };
 
   return (
-    <Context.Provider value={contextInitialValues()}>
-      <div className={classes.root}>
-        <AppBar elevation={0} position="absolute" className={classes.appBar}>
-          <Toolbar className={classes.toolbar}>
+    <Context.Provider value={ contextInitialValues() }>
+      <div className={ classes.root }>
+        <AppBar elevation={ 0 } position="absolute" className={ classes.appBar }>
+          <Toolbar className={ classes.toolbar }>
             <IconButton
               edge="start"
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(
+              onClick={ handleDrawerOpen }
+              className={ clsx(
                 classes.menuButton,
                 isOpenDrawer && classes.menuButtonHidden
-              )}
+              ) }
             >
               <MenuIcon />
             </IconButton>
@@ -203,12 +210,12 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               variant="h6"
               color="inherit"
               noWrap
-              className={classes.title}
+              className={ classes.title }
             >
-              {t('general.dashboard')}
+              { t('general.dashboard') }
             </Typography>
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
+              <Badge badgeContent={ 4 } color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -217,7 +224,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               aria-label="account of current user"
               aria-controls="user-menu"
               aria-haspopup="true"
-              onClick={handleUserIconButton}
+              onClick={ handleUserIconButton }
               color="inherit"
             >
               <AccountCircle />
@@ -225,50 +232,48 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             <UserMenu />
           </Toolbar>
         </AppBar>
-        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
-          <div className={classes.toolbarIcon}>
-            <img
-              className={classes.daroogLogo}
-              src={DaroogLogo}
-              alt="logo-daroog"
-            />
-            <IconButton onClick={handleDrawerClose}>
+        <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
+          <div className={ classes.toolbarIcon }>
+            <span className={ classes.systemTitle } style={{ textAlign: 'right' }}>
+              { t('general.systemTitle') }
+            </span>
+            <IconButton onClick={ handleDrawerClose }>
               <ChevronRightIcon />
             </IconButton>
           </div>
           <Divider />
-          <Grid container className={classes.largeSpacing}>
-            <Grid item xs={3}>
+          <Grid container className={ classes.largeSpacing }>
+            <Grid item xs={ 3 }>
               <Avatar
-                alt={t('user.user')}
-                className={classes.largeAvatar}
-                src={avatarPic}
+                alt={ t('user.user') }
+                className={ classes.largeAvatar }
+                src={ avatarPic }
               />
             </Grid>
-            <Grid item xs={9}>
-              <Grid item xs={12}>
-                {loggedInUser?.name} {loggedInUser?.family}
+            <Grid item xs={ 9 }>
+              <Grid item xs={ 12 }>
+                { loggedInUser?.name } { loggedInUser?.family }
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={ 12 }>
                 <IconButton
                   edge="start"
                   color="inherit"
-                  onClick={(): void => logoutUser()}
+                  onClick={ (): void => logoutUser() }
                 >
-                  <FontAwesomeIcon icon={faDoorOpen} />
+                  <FontAwesomeIcon icon={ faDoorOpen } />
                 </IconButton>
               </Grid>
             </Grid>
           </Grid>
           <Divider />
           <List component="nav" aria-labelledby="nested-list-items">
-            {listItemsGenerator()}
+            { listItemsGenerator() }
           </List>
           <Divider />
         </MaterialDrawer>
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          {component}
+        <main className={ classes.content }>
+          <div className={ classes.appBarSpacer } />
+          { component }
         </main>
       </div>
     </Context.Provider>
