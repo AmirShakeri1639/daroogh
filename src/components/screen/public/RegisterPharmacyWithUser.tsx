@@ -21,6 +21,7 @@ import { WorkTimeEnum } from '../../../enum';
 import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
+import { Map } from '../../public';
 
 const initialState: PharmacyWithUserInterface = {
   pharmacy: {
@@ -262,6 +263,10 @@ const RegisterPharmacyWithUser: React.FC = () => {
       )
     );
   };
+
+  const mapClickHandler = (e: any): void => {
+    console.log('info recieved from map:', e);
+  }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
@@ -587,6 +592,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
                   dispatch({ type: 'pharmacy.countryDivisionID', value: id });
                 }}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Map onClick={mapClickHandler} />
             </Grid>
           </Grid>
           <div className={spacing1}>&nbsp;</div>
