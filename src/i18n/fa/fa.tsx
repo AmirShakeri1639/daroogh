@@ -3,6 +3,7 @@ export default {
     translation: {
       general: {
         emal: 'اعمال',
+        systemTitle: 'سامانه تبادل دارو',
         daroog: 'داروگ',
         tabadol: 'تبادل',
         special: 'متن آزمایشی داروگ',
