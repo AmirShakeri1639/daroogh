@@ -1,11 +1,12 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Switch } from 'react-router-dom';
+import { HashRouter as Router, Switch } from 'react-router-dom';
 import PublicRoute from './routes/PublicRoute';
 import CircleLoading from './components/public/loading/CircleLoading';
 import PrivateRoute from './routes/PrivateRoute';
 import { ReactQueryDevtools } from 'react-query-devtools';
 import { CssBaseline } from '@material-ui/core';
 import ViewPharmacyInfo from './components/screen/dashboard/drug-transfer/ViewPharmacyInfo';
+import routes from './routes';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -18,8 +19,28 @@ const RegisterPharmacyWithUser = lazy(() =>
 const DrugTransfer = lazy(() =>
   import('./components/screen/dashboard/drug-transfer/Transfer')
 );
+const CardBoard = lazy(() =>
+  import('./components/screen/dashboard/drug-transfer/desktop/Desktop')
+);
+const Transfer = lazy(() =>
+  import('./components/screen/dashboard/drug-transfer/Transfer')
+);
+const SupplyList = lazy(() =>
+  import('./components/screen/dashboard/supply-list/SupplyList')
+);
+const Transactions = lazy(() =>
+  import('./components/screen/dashboard/accounting/accountingList')
+);
+const MembersList = lazy(() =>
+  import('./components/screen/public/RegisterPharmacyWithUser')
+);
+
+const { transfer, cardboard, supplyList, transactions, membersList } = routes;
 
 const App = (): JSX.Element => {
+  const dashboard = 'dashboard';
+  const exchangeBase = 'exchange';
+
   return (
     <>
       <Router>
@@ -39,12 +60,33 @@ const App = (): JSX.Element => {
             </PublicRoute>
 
             <PrivateRoute exact path="/dashboard">
-              <Dashboard />
+              <Dashboard component={<></>} />
             </PrivateRoute>
 
             <PrivateRoute path="/dashboard/drug-transfer">
               <ViewPharmacyInfo />
             </PrivateRoute>
+
+            <PrivateRoute path={cardboard}>
+              <Dashboard component={<CardBoard />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={transfer}>
+              <Dashboard component={<Transfer />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={supplyList}>
+              <Dashboard component={<SupplyList />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={transactions}>
+              <Dashboard component={<Transactions />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={membersList}>
+              <Dashboard component={<MembersList />} />
+            </PrivateRoute>
+
             {/*<Route component={<>404 Not Found</>} />*/}
           </Suspense>
         </Switch>
