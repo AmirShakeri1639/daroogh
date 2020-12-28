@@ -43,7 +43,8 @@ const Desktop: React.FC = () => {
         const statesList: LabelValue[] = [];
         let hasCompleted: boolean = false;
         const items = result.items.map((item: any) => {
-          if (!item.currentPharmacyIsA && [
+          if (!item.currentPharmacyIsA &&
+            item.state <= 10 && [
             ExchangeStateEnum.UNKNOWN,
             ExchangeStateEnum.NOSEND,
             ExchangeStateEnum.CANCELLED,
