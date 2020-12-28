@@ -1,5 +1,7 @@
-import React, { useContext } from 'react';
-import { Card, CardContent, Container, Grid, Typography } from '@material-ui/core';
+import React from 'react';
+import {
+  Card, CardContent, Container, Grid, Typography
+} from '@material-ui/core';
 import { ExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -19,18 +21,20 @@ import {
 } from '../../../../../enum';
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
-import { getExpireDate, isExchangeComplete, isExchangeCompletedOrCancelled } from '../../../../../utils/ExchangeTools';
+import {
+  getExpireDate, isExchangeCompleted, isExchangeCompleteddOrCancelled
+} from '../../../../../utils/ExchangeTools';
 
 interface Props {
   item: ExchangeInterface;
   onCardClick: ((id: number | undefined, state: number | undefined) => void) | void | any;
 }
 
+// @ts-ignore
 const DesktopCardContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { item, onCardClick } = props;
 
-  let state: number = 0;
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
   let star: number = 0;
@@ -39,7 +43,6 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   let totalPourcentage: number = 0;
   let paymentStatus: string = '';
   if (item?.currentPharmacyIsA) {
-    state = item?.state == undefined ? 0 : item?.state;
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
     totalPourcentage = item?.totalPourcentageA;
     paymentStatus = item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
@@ -49,7 +52,6 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     star = item?.pharmacyStarB == undefined ? 0 : item?.pharmacyStarB;
     pharmacyWarranty = item?.pharmacyWarrantyB == undefined ? 0 : item?.pharmacyWarrantyB;
   } else {
-    state = item?.state == undefined ? 0 : (item?.state + 10);
     pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
     totalPourcentage = item?.totalPourcentageB
     paymentStatus = item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
@@ -75,24 +77,24 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   // state = states[Math.floor(Math.random() * states.length)];
 
   let expireDateText: string = t('exchange.expirationDate');
-  if (isExchangeCompletedOrCancelled(state)) {
+  if (isExchangeCompleteddOrCancelled(item.state)) {
     expireDateText = t('exchange.completionDate');
   }
 
   const getExchangeTitle = (): string => {
-    if (isExchangeComplete(state)) {
+    if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
       return t(`ExchangeStateEnum.` +
         `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`)
     } else {
-      return t(`ExchangeStateEnum.${ExchangeStateEnum[state]}`)
+      return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`)
     };
   }
 
   const getExchangeTitleColor = (): string => {
     return (
-      isExchangeComplete(state)
-      ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
-      : CardColors[state]
+      isExchangeCompleted(item.state, item?.currentPharmacyIsA)
+        ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
+        : CardColors[item.state]
     )
   }
 
@@ -230,8 +232,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   };
 
   const CardProgressbar = (): JSX.Element => {
-    let thisState = (item?.state == undefined) ? 0 : state;
-    thisState %= 10;
+    const thisState = item.state > 10 ? item.state - 10 : item.state;
 
     return (
       <>
@@ -254,7 +255,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
       <CardContent>
         <Typography variant="h5" component="h2" className={ `${cardTitle} ${pointer}` }
           style={ { background: getExchangeTitleColor() } }
-          onClick={ (): void => onCardClick(item.id, (state > 10 ? state - 10 : state)) }>
+          onClick={ (): void => onCardClick(item.id, (item.state > 10 ? item.state - 10 : item.state)) }>
           { getExchangeTitle() }
         </Typography>
         <div className={ titleCode }>

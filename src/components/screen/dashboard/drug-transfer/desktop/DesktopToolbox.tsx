@@ -12,14 +12,16 @@ import { DaroogDropdown } from '../../../../public/daroog-dropdown/DaroogDropdow
 import { LabelValue } from '../../../../../interfaces';
 import { ColorEnum, ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
 import { Grid } from '@material-ui/core';
+import { isExchangeCompleted } from '../../../../../utils/ExchangeTools';
 
 interface Props {
   onFilterChanged?: (v: number) => void;
   onSortSelected?: (field: string, sortType: SortTypeEnum) => void;
+  filterList?: LabelValue[];
 }
 
 const DesktopToolbox: React.FC<Props> = (props) => {
-  const { onFilterChanged, onSortSelected } = props;
+  const { onFilterChanged, onSortSelected, filterList } = props;
   const { t } = useTranslation();
   const { ul, faIcons } = useClasses();
 
@@ -65,44 +67,54 @@ const DesktopToolbox: React.FC<Props> = (props) => {
 
   const statesFilterList: LabelValue[] = [];
   statesFilterList.push({ label: t('general.all'), value: ExchangeStateEnum.UNKNOWN });
-  for (let idx = 1; idx <= ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL; idx++) {
+  if (filterList == undefined) {
+    for (let idx = 1; idx <= ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL; idx++) {
+      if (!isExchangeCompleted(idx)) {
+        statesFilterList.push({
+          label: t(`ExchangeStateEnum.${ExchangeStateEnum[idx]}`),
+          value: idx
+        });
+      }
+    }
     statesFilterList.push({
-      label: t(`ExchangeStateEnum.${ExchangeStateEnum[idx]}`),
-      value: idx
-    });
+      label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
+      value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
+    })
+  } else {
+    statesFilterList.push(...filterList);
   }
 
   return (
     <Grid container>
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={ 12 } sm={ 6 }>
         <ul className={ ul }>
-        <li>
-          <span className="txt-xs position-relative">{ `${t('general.sortWith')}:` }</span>
-        </li>
-        <li onClick={ (e): void => sortChanged('sendDate', e.currentTarget) }>
-          <FontAwesomeIcon icon={ faCalendar } className={ faIcons } />
-          <span className="txt-xs position-relative">{ t('exchange.sendDate') }</span>
-        </li>
-        <li onClick={ (e): void => sortChanged('expireDate', e.currentTarget) }>
-          <FontAwesomeIcon icon={ faCalendarAlt } className={ faIcons } />
-          <span className="txt-xs position-relative">{ t('exchange.expirationCompletionDate') }</span>
-        </li>
-        <li onClick={ (e): void => sortChanged('state', e.currentTarget) }>
-          <FontAwesomeIcon icon={ faSignal } className={ faIcons } />
-          <span className="txt-xs position-relative">{ t('exchange.state') }</span>
-        </li>
-        <li>&nbsp;</li>
-        <li onClick={ (e): void => sortTypeChanged(SortTypeEnum.ASC, e.currentTarget) }>
-          <FontAwesomeIcon icon={ faSortAmountUpAlt } className={ faIcons } />
-          <span className="txt-xs position-relative">{ t('general.ascending') }</span>
-        </li>
-        <li onClick={ (e): void => sortTypeChanged(SortTypeEnum.DESC, e.currentTarget) }>
-          <FontAwesomeIcon icon={ faSortAmountDown } className={ faIcons } />
-          <span className="txt-xs position-relative">{ t('general.descending') }</span>
-        </li>
-      </ul>
+          <li>
+            <span className="txt-xs position-relative">{ `${t('general.sortWith')}:` }</span>
+          </li>
+          <li onClick={ (e): void => sortChanged('sendDate', e.currentTarget) }>
+            <FontAwesomeIcon icon={ faCalendar } className={ faIcons } />
+            <span className="txt-xs position-relative">{ t('exchange.sendDate') }</span>
+          </li>
+          <li onClick={ (e): void => sortChanged('expireDate', e.currentTarget) }>
+            <FontAwesomeIcon icon={ faCalendarAlt } className={ faIcons } />
+            <span className="txt-xs position-relative">{ t('exchange.expirationCompletionDate') }</span>
+          </li>
+          <li onClick={ (e): void => sortChanged('state', e.currentTarget) }>
+            <FontAwesomeIcon icon={ faSignal } className={ faIcons } />
+            <span className="txt-xs position-relative">{ t('exchange.state') }</span>
+          </li>
+          <li>&nbsp;</li>
+          <li onClick={ (e): void => sortTypeChanged(SortTypeEnum.ASC, e.currentTarget) }>
+            <FontAwesomeIcon icon={ faSortAmountUpAlt } className={ faIcons } />
+            <span className="txt-xs position-relative">{ t('general.ascending') }</span>
+          </li>
+          <li onClick={ (e): void => sortTypeChanged(SortTypeEnum.DESC, e.currentTarget) }>
+            <FontAwesomeIcon icon={ faSortAmountDown } className={ faIcons } />
+            <span className="txt-xs position-relative">{ t('general.descending') }</span>
+          </li>
+        </ul>
       </Grid>
-      <Grid item xs={12} sm={6}>
+      <Grid item xs={ 12 } sm={ 6 }>
         <ul className={ ul }>
           <li>
             <span className="txt-xs position-relative">{ `${t('general.filterWith')}:` }</span>
