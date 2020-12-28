@@ -70,21 +70,30 @@ const DashboardActivePage: React.FC = () => {
                 <Paper className={fixedHeightPaper}>Data</Paper>
                 <button onClick={(): any => showTransfer(1)}>ارسال نشده</button>
                 <button onClick={(): any => showTransfer(2)}>
-                  منتظر ارسال پاسخ داروخانه طرف مقابل
+                  منتظر تائید طرف مقابل'
                 </button>
                 <button onClick={(): any => showTransfer(3)}>
-                  عدم تایید داروخانه مقابل
+                  منتظر تائید شما
                 </button>
                 <button onClick={(): any => showTransfer(4)}>
-                  تایید دارخانه مقابل/در انتظار پاسخ شما
+                  تائید شده و در انتظار پرداخت
                 </button>
                 <button onClick={(): any => showTransfer(5)}>
-                  مخالفت شده توسط شما
+                  مخالفت شده توسط طرف مقابل
                 </button>
                 <button onClick={(): any => showTransfer(6)}>
-                  فرآیند تبادل کامل شده/منتظر پرداخت شما
+                  مخالفت شده توسط شما
                 </button>
                 <button onClick={(): any => showTransfer(7)}>لغو شده</button>
+                <button onClick={(): any => showTransfer(8)}>
+                  تائید طرفین و در انتظار پرداخت شما
+                </button>
+                <button onClick={(): any => showTransfer(9)}>
+                  تائید طرفین و در انتظار پرداخت طرف مقابل
+                </button>
+                <button onClick={(): any => showTransfer(10)}>
+                  تبادل کامل شده
+                </button>
               </Grid>
 
               <Grid item xs={12} md={4} lg={3}>

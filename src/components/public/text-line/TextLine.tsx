@@ -2,9 +2,8 @@ import { createStyles, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { TextLinePropsInterface } from '../../../interfaces';
 
-
 const TextLine: React.FC<TextLinePropsInterface> = (props) => {
-  const { leftText, rightText } = props;
+  const { leftText, rightText, textAlign = 'left' } = props;
   let { backColor } = props;
   if (backColor == undefined) {
     backColor = '#e4e4e4';
@@ -27,7 +26,7 @@ const TextLine: React.FC<TextLinePropsInterface> = (props) => {
         '& span.left': {
           bottom: '-10px',
           right: 0,
-        }
+        },
       },
     })
   );
@@ -41,6 +40,6 @@ const TextLine: React.FC<TextLinePropsInterface> = (props) => {
       <span className="left">{leftText}</span>
     </div>
   );
-}
+};
 
 export default TextLine;

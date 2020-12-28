@@ -125,7 +125,7 @@ export interface MaterialSearchPropsInterface {
 
 export interface SupplyListCardContainer {
   drug: AllPharmacyDrugInterface;
-};
+}
 
 export interface DetailSupplyInterface {
   drugName: string;
@@ -140,6 +140,7 @@ export interface TextLinePropsInterface {
   rightText: string | React.ReactNode;
   leftText: string | React.ReactNode;
   backColor?: string;
+  textAlign?: string;
 }
 
 export interface BackDropPropsInterface {
