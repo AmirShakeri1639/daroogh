@@ -7,20 +7,23 @@ import { useQueryCache } from 'react-query';
 import { useClasses } from '../../classes';
 import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
-import TransferDrug from '../Transfer';
 import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
 import {
   getExpireDate, isExchangeCompleted, hasLabelValue
 } from '../../../../../utils/ExchangeTools';
 import { isNullOrEmpty } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
+import { useHistory } from "react-router-dom";
+import routes from '../../../../../routes';
 // load test data
 // import d from './testdata.json';
 
 const Desktop: React.FC = () => {
   const { t } = useTranslation();
+  const history = useHistory();
   const queryCache = useQueryCache();
   const { paper } = useClasses();
+  const { transfer } = routes;
 
   const [isLoading, setIsLoading] = useState(true);
   const [stateFilterList, setStateFilterList] = useState<LabelValue[]>([]);
@@ -45,11 +48,11 @@ const Desktop: React.FC = () => {
         const items = result.items.map((item: any) => {
           if (!item.currentPharmacyIsA &&
             item.state <= 10 && [
-            ExchangeStateEnum.UNKNOWN,
-            ExchangeStateEnum.NOSEND,
-            ExchangeStateEnum.CANCELLED,
-            ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
-          ].indexOf(item.state) < 0) item.state += 10;
+              ExchangeStateEnum.UNKNOWN,
+              ExchangeStateEnum.NOSEND,
+              ExchangeStateEnum.CANCELLED,
+              ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
+            ].indexOf(item.state) < 0) item.state += 10;
           if (isExchangeCompleted(item.state)) hasCompleted = true;
           if (!hasLabelValue(statesList, item.state) && !hasCompleted) {
             statesList.push({
@@ -75,19 +78,14 @@ const Desktop: React.FC = () => {
     getExchanges();
   }, []);
 
-  const [showTransfer, setShowTransfer] = useState(false);
   const [exchangeId, setExchangeId] = useState<number | undefined>(undefined);
-  const [exchangeState, setExchangeState] = useState<number | undefined>(
-    undefined
-  );
 
   const cardClickHandler = (
     id: number | undefined,
-    state: number | undefined = 1
+   // state: number | undefined = 1
   ): void => {
-    setExchangeState(state);
     setExchangeId(id);
-    setShowTransfer(true);
+    history.push(transfer);
   };
 
   const sortSelected = (field: string, sortType: SortTypeEnum): void => {
@@ -154,32 +152,22 @@ const Desktop: React.FC = () => {
 
   return (
     <>
-      {showTransfer && (
-        <TransferDrug
-          viewExchangeId={ exchangeId }
-          exchangeState={ exchangeState }
-        />
-      ) }
-      {!showTransfer && (
-        <>
-          {isLoading && <CircleLoading /> }
-          <Grid item xs={ 11 }>
-            <Grid container spacing={ 1 }>
-              <Grid item xs={ 12 }>
-                <DesktopToolbox
-                  filterList={ stateFilterList }
-                  onFilterChanged={ filterChanged }
-                  onSortSelected={ sortSelected }
-                />
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={ 1 }>
-              { cardListGenerator() }
-            </Grid>
+      {isLoading && <CircleLoading /> }
+      <Grid item xs={ 11 }>
+        <Grid container spacing={ 1 }>
+          <Grid item xs={ 12 }>
+            <DesktopToolbox
+              filterList={ stateFilterList }
+              onFilterChanged={ filterChanged }
+              onSortSelected={ sortSelected }
+            />
           </Grid>
-        </>
-      ) }
+        </Grid>
+
+        <Grid container spacing={ 1 }>
+          { cardListGenerator() }
+        </Grid>
+      </Grid>
     </>
   );
 };
