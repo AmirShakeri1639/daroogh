@@ -31,11 +31,18 @@ const SupplyList = lazy(() =>
 const Transactions = lazy(() =>
   import('./components/screen/dashboard/accounting/accountingList')
 );
-const MembersList = lazy(() =>
-  import('./components/screen/public/RegisterPharmacyWithUser')
+const MembershipRequests = lazy(() =>
+  import('./components/screen/dashboard/user/Membership')
 );
 
-const { transfer, cardboard, supplyList, transactions, membersList } = routes;
+const {
+  transfer,
+  cardboard,
+  supplyList,
+  transactions,
+  membershipRequests,
+  registerPharmacyWithUser,
+} = routes;
 
 const App = (): JSX.Element => {
   const dashboard = 'dashboard';
@@ -55,7 +62,7 @@ const App = (): JSX.Element => {
               <ForgetPassword />
             </PublicRoute>
 
-            <PublicRoute exact path="/register-pharmacy-with-user">
+            <PublicRoute exact path={registerPharmacyWithUser}>
               <RegisterPharmacyWithUser />
             </PublicRoute>
 
@@ -83,8 +90,8 @@ const App = (): JSX.Element => {
               <Dashboard component={<Transactions />} />
             </PrivateRoute>
 
-            <PrivateRoute path={membersList}>
-              <Dashboard component={<MembersList />} />
+            <PrivateRoute path={membershipRequests}>
+              <Dashboard component={<MembershipRequests />} />
             </PrivateRoute>
 
             {/*<Route component={<>404 Not Found</>} />*/}
