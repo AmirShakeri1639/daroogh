@@ -605,6 +605,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={12}>
               <Map onClick={(e: any): void => {
+                console.log('e from :', e)
                 dispatch({ type: 'pharmacy.x', value: e.lngLat.lng });
                 dispatch({ type: 'pharmacy.y', value: e.lngLat.lat });
               }} />
