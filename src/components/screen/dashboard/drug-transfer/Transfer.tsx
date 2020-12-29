@@ -61,7 +61,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   );
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
 
-  const { viewExchangeId = 10057, exchangeState } = props;
+  const { viewExchangeId, exchangeState } = props;
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -69,13 +69,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         setExchangeId(viewExchangeId);
         setActiveStep(1);
         const result = await getViewExchange(viewExchangeId);
-        debugger;
         const res: ViewExchangeInterface | undefined = result.data;
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
           const basketB: AllPharmacyDrugInterface[] = [];
 
-          res.cartA.forEach((item) => {
+          res.cardA.forEach((item) => {
             basketA.push({
               id: item.id,
               drugID: item.drugID,
@@ -94,7 +93,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               totalCount: 0,
             });
           });
-          res.cartB.forEach((item) => {
+          res.cardB.forEach((item) => {
             basketB.push({
               id: item.id,
               drugID: item.drugID,

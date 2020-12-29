@@ -7,7 +7,6 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import { ViewExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -37,7 +36,7 @@ import { isNullOrEmpty } from '../../../../../utils';
 import {
   getExpireDate, isExchangeCompleted, isExchangeCompleteddOrCancelled, isStateCommon
 } from '../../../../../utils/ExchangeTools';
-import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
+import { ViewExchangeInterface } from '../../../../../interfaces';
 
 const initialState = {
   id: 0,
@@ -92,7 +91,7 @@ const DesktopCardContent = ({
   onCardClick = undefined
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { setExchangeId } = useContext(Context);
+  const { setExchangeId, activeStep, setActiveStep } = useContext(Context);
   // const { onCardClick } = props;
   // let item = props.item;
   // if (item == undefined) item = initialState;
@@ -370,6 +369,7 @@ const DesktopCardContent = ({
           onClick={ (): void => {
             if (onCardClick) {
               setExchangeId(item.id);
+              if (activeStep <= 0) setActiveStep(1);
               onCardClick(item.id, (item.state > 10 ? item.state - 10 : item.state));
             }
           }}>

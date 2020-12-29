@@ -48,8 +48,7 @@ import sweetAlert from '../../../../../utils/sweetAlert';
 import { Cancel, ConfirmOrNotExchange } from '../../../../../model/exchange';
 import { errorHandler } from '../../../../../utils';
 import DesktopCardContent from '../desktop/DesktopCardContent';
-import { ExchangeInterface } from '../../../../../interfaces/ExchangeInterface';
-import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
+import { ViewExchangeInterface } from '../../../../../interfaces';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -391,7 +390,6 @@ const SecondStep: React.FC = () => {
   const ActionButtons = (): JSX.Element => {
     let element: JSX.Element = <></>;
     if (!viewExhcnage) return element;
-    debugger;
     const vx: ViewExchangeInterface | undefined = viewExhcnage;
     if (vx) {
       if (vx.currentPharmacyIsA) {
