@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import Context from '../Context';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
 import { Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
@@ -47,7 +48,7 @@ const Desktop: React.FC = () => {
         let hasCompleted: boolean = false;
         const items = result.items.map((item: any) => {
           if (!item.currentPharmacyIsA &&
-            item.state <= 10 && 
+            item.state <= 10 &&
             !isStateCommon(item.state)) item.state += 10;
           if (isExchangeCompleted(item.state)) hasCompleted = true;
           if (!hasLabelValue(statesList, item.state) && !hasCompleted) {
@@ -74,11 +75,11 @@ const Desktop: React.FC = () => {
     getExchanges();
   }, []);
 
-  const [exchangeId, setExchangeId] = useState<number | undefined>(undefined);
+  const { setExchangeId } = useContext(Context);
 
   const cardClickHandler = (
-    id: number | undefined,
-   // state: number | undefined = 1
+    id: number,
+    state: number | undefined = 1
   ): void => {
     setExchangeId(id);
     history.push(transfer);

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 const useStyle = makeStyles((theme) =>
@@ -41,48 +42,33 @@ const Map: React.FC<Props> = (props) => {
         zoom: 14
       });
 
+      let marker = new mapboxgl.Marker({
+        draggable: true
+      })
+        .setLngLat(defaultCoordinates)
+        .addTo(map);
+
+      const markerDragHandler = (): void => {
+        const lngLat = marker.getLngLat();
+        if (onClick) onClick({ lngLat: { ...lngLat } });
+      }
+      marker.on('dragend', markerDragHandler);
+
       map.on('load', () => {
         setMap(map);
         map.resize();
       });
 
       map.on('click', (e: any): any => {
-        // geojson.features[0].geometry.coordinates = [e.lngLat.lng, e.lngLat.lat];
-        // map.jumpTo({ center: [e.lngLat.lng, e.lngLat.lat] });
-        console.log('e:', e);
-        const geojson = {
-          features: [
-            {
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: defaultCoordinates
-              }
-            }
-          ]
-        };
-        const marker = new mapboxgl.Marker({
-          draggable: true
-        })
-          .setLngLat(defaultCoordinates)
+        if (marker) {
+          marker.remove();
+        }
+        marker = new mapboxgl.Marker({ draggable: true })
+          .setLngLat(e.lngLat)
           .addTo(map);
-  
-        marker.on('dragend', (e: any) => {
-          const lngLat = marker.getLngLat();
-          if (onClick) onClick({ lngLat: { ...lngLat } });
-        });
-  
-        // map.
-        // new mapboxgl.Marker({
-        //   draggable: true
-        // })
-        //   .setLngLat([e.lngLat.lng, e.lngLat.lat])
-        //   .addTo(map);
-
-        // map.flyTo({
-        //   center: e.features[0].geometry.coordinates
-        //   });
         if (onClick) onClick(e);
+
+        marker.on('dragend', markerDragHandler);
       });
     };
 
