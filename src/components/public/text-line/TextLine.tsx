@@ -25,7 +25,7 @@ const useStyle = makeStyles((theme) =>
 );
 
 const TextLine: React.FC<TextLinePropsInterface> = (props) => {
-  const { leftText, rightText } = props;
+  const { leftText, rightText, textAlign = 'left' } = props;
   let { backColor } = props;
   if (backColor == undefined) {
     backColor = '#e4e4e4';

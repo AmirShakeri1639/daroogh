@@ -5,6 +5,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { ButtonPropsInterface } from '../../../interfaces/component';
+import { green } from '@material-ui/core/colors';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -13,6 +14,12 @@ const useClasses = makeStyles((theme) =>
     },
     pinkButton: {
       background: theme.palette.pinkLinearGradient.main,
+    },
+    redButton: {
+      background: theme.palette.redLinearGradient.main,
+    },
+    greenButton: {
+      background: theme.palette.greenLinearGradient.main,
     },
     button: {
       color: '#fff',
@@ -24,14 +31,26 @@ const useClasses = makeStyles((theme) =>
 const Button: React.FC<ButtonPropsInterface> = (props) => {
   const { type, children, variant, className, color, onClick } = props;
 
-  const { blueButton, pinkButton, button } = useClasses();
+  const {
+    blueButton,
+    pinkButton,
+    button,
+    redButton,
+    greenButton,
+  } = useClasses();
 
   return (
     <MaterialButton
       type={type}
       size="small"
       className={`${className} ${
-        color === 'blue' ? blueButton : pinkButton
+        color === 'blue'
+          ? blueButton
+          : color === 'pink'
+          ? pinkButton
+          : color === 'red'
+          ? redButton
+          : greenButton
       } ${button}`}
       variant={variant}
       onClick={onClick}

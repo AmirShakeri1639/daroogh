@@ -18,3 +18,13 @@ export class Send {
   exchangeID: number = 0;
   lockSuggestion: boolean = false;
 }
+
+export class Cancel {
+  exchangeID: number = 0;
+  comment: string = '';
+}
+
+export class ConfirmOrNotExchange {
+  exchangeID: number = 0;
+  isConfirm: boolean = true;
+}

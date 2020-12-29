@@ -11,6 +11,8 @@ import ThirdStep from './third-step/ThirdStep';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
 import FourthStep from './fourth-step/FourthStep';
 import { TransferPropsInterface } from '../../../../interfaces/component';
+import PharmacyDrug from '../../../../services/api/PharmacyDrug';
+import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -22,6 +24,14 @@ const style = makeStyles((theme) =>
 );
 
 const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
+  const { getViewExchange } = new PharmacyDrug();
+  const [allStepName, setAllStepName] = useState<string[]>([
+    'انتخاب داروخانه',
+    'انتخاب از سبد طرف مقابل',
+    'انتخاب از سبد شما',
+    'تایید نهایی',
+    '',
+  ]);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [openDialog, setOpenDialog] = React.useState(false);
   const [allPharmacyDrug, setAllPharmacyDrug] = useState<
@@ -42,17 +52,106 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     selectedPharmacyForTransfer,
     setSelectedPharmacyForTransfer,
   ] = useState<string>('');
-  const { viewExchangeId } = props;
+
+  const [viewExhcnage, setViewExchange] = useState<ViewExchangeInterface>();
+
+  const [exchangeStateCode, setExchangeStateCode] = React.useState(0);
+  const [messageOfExchangeState, setMessageOfExchangeState] = React.useState(
+    ''
+  );
+  const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
+
+  const { viewExchangeId, exchangeState } = props;
 
   useEffect(() => {
-    if (viewExchangeId !== undefined) setExchangeId(viewExchangeId);
-  }, [viewExchangeId]);
+    (async (): Promise<void> => {
+      if (viewExchangeId !== undefined) {
+        setExchangeId(viewExchangeId);
+        setActiveStep(1);
+        const result = await getViewExchange(viewExchangeId);
+        const res: ViewExchangeInterface | undefined = result.data;
+        if (res) {
+          const basketA: AllPharmacyDrugInterface[] = [];
+          const basketB: AllPharmacyDrugInterface[] = [];
+
+          res.cardA.forEach((item) => {
+            basketA.push({
+              id: item.id,
+              drugID: item.drugID,
+              drug: item.drug,
+              cnt: item.cnt,
+              batchNO: '',
+              expireDate: item.expireDate,
+              amount: item.amount,
+              buttonName: 'حذف از تبادل',
+              cardColor: '#89fd89',
+              currentCnt: item.cnt,
+              offer1: item.offer1,
+              offer2: item.offer2,
+              order: 0,
+              totalAmount: 0,
+              totalCount: 0,
+            });
+          });
+          res.cardB.forEach((item) => {
+            basketB.push({
+              id: item.id,
+              drugID: item.drugID,
+              drug: item.drug,
+              cnt: item.cnt,
+              batchNO: '',
+              expireDate: item.expireDate,
+              amount: item.amount,
+              buttonName: 'حذف از تبادل',
+              cardColor: '#89fd89',
+              currentCnt: item.cnt,
+              offer1: item.offer1,
+              offer2: item.offer2,
+              order: 0,
+              totalAmount: 0,
+              totalCount: 0,
+            });
+          });
+          if (!res.currentPharmacyIsA) {
+            setBasketCount(basketA);
+            setUbasketCount(basketB);
+            setSelectedPharmacyForTransfer(res.pharmacyKeyA);
+          } else {
+            setUbasketCount(basketA);
+            setBasketCount(basketB);
+            setSelectedPharmacyForTransfer(res.pharmacyKeyB);
+          }
+        }
+        setViewExchange(res);
+        if (res) {
+          console.log('کد وضعیت تبادل : ', res.state);
+          setExchangeStateCode(res.state);
+          switch (res.state) {
+            case 2:
+              setMessageOfExchangeState(
+                'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
+              );
+              break;
+            case 4:
+              setMessageOfExchangeState(
+                'داروخانه مقابل لیست های انتخاب شده شما را تایید/ویرایش نموده است. لطفا پس از بررسی تایید نهایی نمایید.'
+              );
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    })();
+  }, [viewExchangeId, exchangeState]);
 
   const { root } = style();
 
   const initialContextValues = (): TransferDrugContextInterface => ({
     activeStep,
     setActiveStep,
+    allStepName,
+    setAllStepName,
     allPharmacyDrug,
     setAllPharmacyDrug,
     uAllPharmacyDrug,
@@ -69,6 +168,14 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setExchangeId,
     selectedPharmacyForTransfer,
     setSelectedPharmacyForTransfer,
+    viewExhcnage,
+    setViewExchange,
+    exchangeStateCode,
+    setExchangeStateCode,
+    messageOfExchangeState,
+    setMessageOfExchangeState,
+    showApproveModalForm,
+    setShowApproveModalForm,
   });
 
   return (

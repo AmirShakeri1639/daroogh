@@ -1,5 +1,4 @@
 import {
-  Button,
   Container,
   createStyles,
   Grid,
@@ -9,12 +8,22 @@ import {
 import React from 'react';
 import { ExCardContentProps } from '../../../../../interfaces';
 import EventBusyIcon from '@material-ui/icons/EventBusy';
-import StorageIcon from '@material-ui/icons/Storage';
 import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
 import MoneyIcon from '@material-ui/icons/Money';
 import moment from 'jalali-moment';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
-import ListIcon from '@material-ui/icons/List';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faBars,
+  faBoxes,
+  faCalendarTimes,
+  faExchangeAlt,
+  faMoneyBillWave,
+  faPills,
+} from '@fortawesome/free-solid-svg-icons';
+import { TextLine } from '../../../../public';
+import { useTranslation } from 'react-i18next';
+import Utils from '../../../../public/utility/Utils';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -25,16 +34,17 @@ const useClasses = makeStyles((theme) =>
     },
     paper: {
       textAlign: 'center',
+      backgroundColor: 'aliceblue',
     },
     container: {
       padding: 5,
       minHeight: 170,
       alignItems: 'center',
-      fontSize: 11,
+      // fontSize: 11,
     },
     cardcontent: {
       borderRadius: 15,
-      backgroundColor: '#dadada',
+      backgroundColor: '#E4E4E4',
       width: '100%',
       padding: 0,
     },
@@ -71,33 +81,40 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
     paper,
     container,
     cardcontent,
-    rowRight,
-    rowLeft,
     ulCardName,
-    colLeft,
     colLeftIcon,
   } = useClasses();
+
+  const { t } = useTranslation();
 
   const PackContent = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
-        <Grid item xs={12} sm={4} className={rowRight}>
-          <ListIcon /> نام دسته
+        <Grid item xs={12}>
+          <Grid alignItems="flex-end" container spacing={1}>
+            <Grid item xs={1} style={{ textAlign: 'left' }}>
+              <FontAwesomeIcon icon={faBars} size="sm" />
+            </Grid>
+            <Grid item xs={11}>
+              <TextLine
+                rightText={'نام دسته'}
+                leftText={pharmacyDrug?.packName}
+              />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <hr />
-        </Grid>
-        <Grid item xs={12} sm={4} className={rowLeft}>
-          {pharmacyDrug?.packName}
-        </Grid>
-        <Grid item xs={12} sm={4} className={rowRight}>
-          <MoneyIcon /> قیمت کل
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <hr />
-        </Grid>
-        <Grid item xs={12} sm={4} className={rowLeft}>
-          {pharmacyDrug?.totalAmount}
+        <Grid item xs={12}>
+          <Grid alignItems="flex-end" container spacing={1}>
+            <Grid item xs={1} style={{ textAlign: 'left' }}>
+              <FontAwesomeIcon icon={faMoneyBillWave} size="sm" />
+            </Grid>
+            <Grid item xs={11}>
+              <TextLine
+                rightText={t('general.price')}
+                leftText={Utils.numberWithCommas(pharmacyDrug?.totalAmount)}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     );
@@ -115,7 +132,8 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                   xs={8}
                   style={{ display: 'flex', alignItems: 'center' }}
                 >
-                  {item.drug.name}
+                  <FontAwesomeIcon icon={faPills} size="1x" />
+                  <span style={{ marginRight: 5 }}>{item.drug.name}</span>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
                   <ul className={ulCardName}>
@@ -131,7 +149,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                     </li>
                     <li className={colLeftIcon}>
                       <MoneyIcon />
-                      {item.amount}
+                      {Utils.numberWithCommas(item.amount)}
                     </li>
                   </ul>
                 </Grid>
@@ -149,36 +167,73 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
       <Grid container spacing={1} className={container}>
         <Grid item xs={12} sm={12}>
           <ul className={ulCardName}>
-            <li style={{ fontWeight: 'bold' }}>{pharmacyDrug?.drug.name}</li>
-            <li>{pharmacyDrug?.drug.genericName}</li>
+            <li style={{ fontWeight: 'bold', fontSize: 14 }}>
+              <FontAwesomeIcon icon={faPills} size="1x" />
+              <span style={{ marginRight: 10 }}>{pharmacyDrug?.drug.name}</span>
+            </li>
+            <li>
+              <span style={{ fontSize: 13 }}>
+                {pharmacyDrug?.drug.genericName}
+              </span>
+            </li>
           </ul>
         </Grid>
-        <Grid item xs={12} sm={6} className={rowRight}>
-          <StorageIcon /> موجودی : {pharmacyDrug?.cnt}
+        <Grid item xs={6}>
+          <Grid alignItems="flex-end" container spacing={1}>
+            <Grid item xs={2} style={{ textAlign: 'left' }}>
+              <FontAwesomeIcon icon={faBoxes} size="sm" />
+            </Grid>
+            <Grid item xs={10}>
+              <TextLine
+                rightText={t('general.inventory')}
+                leftText={pharmacyDrug?.cnt}
+              />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6} className={colLeft}>
-          <MoneyIcon /> قیمت : {pharmacyDrug?.amount}
+
+        <Grid item xs={6}>
+          <Grid alignItems="flex-end" container spacing={1}>
+            <Grid item xs={2} style={{ textAlign: 'left' }}>
+              <FontAwesomeIcon icon={faMoneyBillWave} size="sm" />
+            </Grid>
+            <Grid item xs={10}>
+              <TextLine
+                rightText={t('general.price')}
+                leftText={Utils.numberWithCommas(pharmacyDrug?.amount)}
+              />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={4} className={rowRight}>
-          <EventBusyIcon />
-          تاریخ انقضا
+
+        <Grid item xs={12}>
+          <Grid alignItems="flex-end" container spacing={1}>
+            <Grid item xs={1} style={{ textAlign: 'left' }}>
+              <FontAwesomeIcon icon={faCalendarTimes} size="sm" />
+            </Grid>
+            <Grid item xs={11}>
+              <TextLine
+                rightText={t('general.expireDate')}
+                leftText={moment(pharmacyDrug?.expireDate, 'YYYY/MM/DD')
+                  .locale('fa')
+                  .format('YYYY/MM/DD')}
+              />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <hr />
-        </Grid>
-        <Grid item xs={12} sm={4} className={rowLeft}>
-          {moment(pharmacyDrug?.expireDate, 'YYYY/MM/DD')
-            .locale('fa')
-            .format('YYYY/MM/DD')}
-        </Grid>
-        <Grid item xs={12} sm={4} className={rowRight}>
-          <CardGiftcardIcon /> پیشنهاد
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <hr />
-        </Grid>
-        <Grid item xs={12} sm={4} className={rowLeft}>
-          {`${pharmacyDrug?.offer1} به ${pharmacyDrug?.offer2}`}
+
+        <Grid item xs={12}>
+          <Grid alignItems="flex-end" container spacing={1}>
+            <Grid item xs={1} style={{ textAlign: 'left' }}>
+              <FontAwesomeIcon icon={faExchangeAlt} size="sm" />
+            </Grid>
+            <Grid item xs={11}>
+              <TextLine
+                rightText={t('general.offer')}
+                leftText={`${pharmacyDrug?.offer1} به ${pharmacyDrug?.offer2}`}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     );
