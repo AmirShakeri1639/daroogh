@@ -23,7 +23,7 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { useMutation } from 'react-query';
-import { AddDrugInterface } from '../../../../../interfaces/ExchangeInterface';
+import { AddDrugInterface } from '../../../../../interfaces';
 import { errorHandler, sweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { AddDrog1, AddPack1 } from '../../../../../model/exchange';

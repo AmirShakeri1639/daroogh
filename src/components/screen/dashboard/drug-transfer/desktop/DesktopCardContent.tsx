@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import Context from '../Context';
 import {
   Card,
   CardContent,
@@ -6,7 +7,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import { ExchangeInterface } from '../../../../../interfaces';
+import { ViewExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -34,24 +35,67 @@ import {
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
 import {
-  getExpireDate,
-  isExchangeCompleted,
-  isExchangeCompleteddOrCancelled,
+  getExpireDate, isExchangeCompleted, isExchangeCompleteddOrCancelled, isStateCommon
 } from '../../../../../utils/ExchangeTools';
 import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
 
+const initialState = {
+  id: 0,
+  state: 1,
+  currentPharmacyIsA: false,
+  numberA: '',
+  numberB: '',
+  expireDateA: '',
+  expireDateB: '',
+  expireDate: '',
+  canceller: 0,
+  stateString: '',
+  pharmacyKeyA: '',
+  pharmacyKeyB: '',
+  pharmacyCityA: '',
+  pharmacyProvinceA: '',
+  pharmacyCityB: '',
+  pharmacyProvinceB: '',
+  pharmacyGradeA: 0,
+  pharmacyGradeB: 0,
+  pharmacyStarA: 0,
+  pharmacyStarB: 0,
+  pharmacyWarrantyA: 0,
+  pharmacyWarrantyB: 0,
+  totalPourcentageA: 0,
+  totalPourcentageB: 0,
+  totalAmountA: 0,
+  totalAmountB: 0,
+  confirmA: false,
+  confirmB: false,
+  sendDate: '',
+  confirmDateA: '',
+  confirmDateB: '',
+  paymentDateA: '',
+  paymentDateB: '',
+  cancelDate: '',
+  description: '',
+  lockSuggestion: false,
+  allowShowPharmacyInfo: false,
+  cardA: [],
+  cardB: [],
+}
+
 interface Props {
-  item: ViewExchangeInterface;
-  onCardClick?:
-    | ((id: number | undefined, state: number | undefined) => void)
-    | void
-    | any;
+  item?: ViewExchangeInterface;
+  onCardClick?: ((id: number | undefined, state: number | undefined) => void) | void | any;
 }
 
 // @ts-ignore
-const DesktopCardContent = (props: Props): JSX.Element => {
+const DesktopCardContent = ({
+  item = initialState,
+  onCardClick = undefined
+}: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { item, onCardClick } = props;
+  const { setExchangeId } = useContext(Context);
+  // const { onCardClick } = props;
+  // let item = props.item;
+  // if (item == undefined) item = initialState;
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -78,7 +122,7 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     paymentStatus =
       item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
 
-    item.state = item.state <= 10 ? item.state + 10 : item.state;
+    item.state = item.state <= 10 && !isStateCommon(item.state) ? item.state + 10 : item.state;
 
     // Should show A's grade and star and warranty
     pharmacyGrade =
@@ -321,16 +365,15 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   return (
     <Card className={`${cardRoot}`}>
       <CardContent>
-        <Typography
-          variant="h5"
-          component="h2"
-          className={`${cardTitle} ${pointer}`}
-          style={{ background: getExchangeTitleColor() }}
-          onClick={(): void =>
-            onCardClick(item.id, item.state > 10 ? item.state - 10 : item.state)
-          }
-        >
-          {getExchangeTitle()}
+        <Typography variant="h5" component="h2" className={ `${cardTitle} ${pointer}` }
+          style={ { background: getExchangeTitleColor() } }
+          onClick={ (): void => {
+            if (onCardClick) {
+              setExchangeId(item.id);
+              onCardClick(item.id, (item.state > 10 ? item.state - 10 : item.state));
+            }
+          }}>
+          { getExchangeTitle() }
         </Typography>
         <div className={titleCode}>
           {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
