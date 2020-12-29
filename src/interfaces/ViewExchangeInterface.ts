@@ -38,8 +38,8 @@ export interface ViewExchangeInterface {
     description: string;
     lockSuggestion: boolean;
     allowShowPharmacyInfo: boolean;
-    cardA: CardInfo[];
-    cardB: CardInfo[];
+    cartA: CardInfo[];
+    cartB: CardInfo[];
 }
 
 export interface CardInfo {

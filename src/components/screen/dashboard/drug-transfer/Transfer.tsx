@@ -80,6 +80,16 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   useEffect(() => {
     (async (): Promise<void> => {
+      let eid: any = undefined;
+      // const hasPlus = 
+      const encryptedId = (params.eid == null ? undefined : params.eid);
+      // debugger;
+      // if (encryptedId !== undefined) {
+      //   eid = await encDecService.decrypt(encryptedId)
+      // }
+
+      eid = encryptedId;
+
       if (eid !== undefined) {
         setExchangeId(eid);
         setActiveStep(1);
@@ -90,8 +100,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           const basketA: AllPharmacyDrugInterface[] = [];
           const basketB: AllPharmacyDrugInterface[] = [];
 
-          if (res.cardA !== undefined) {
-            res.cardA.forEach((item) => {
+          if (res.cartA !== undefined) {
+            res.cartA.forEach((item) => {
               basketA.push({
                 id: item.id,
                 drugID: item.drugID,
@@ -111,8 +121,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               });
             });
           }
-          if (res.cardB !== undefined) {
-            res.cardB.forEach((item) => {
+          if (res.cartB !== undefined) {
+            res.cartB.forEach((item) => {
               basketB.push({
                 id: item.id,
                 drugID: item.drugID,
