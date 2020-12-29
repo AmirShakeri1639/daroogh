@@ -25,15 +25,60 @@ import {
   getExpireDate, isExchangeCompleted, isExchangeCompleteddOrCancelled
 } from '../../../../../utils/ExchangeTools';
 
+const initialState = {
+  id: 0,
+  state: 1,
+  currentPharmacyIsA: false,
+  numberA: '',
+  numberB: '',
+  expireDateA: '',
+  expireDateB: '',
+  expireDate: '',
+  canceller: 0,
+  stateString: '',
+  pharmacyKeyA: '',
+  pharmacyKeyB: '',
+  pharmacyCityA: '',
+  pharmacyProvinceA: '',
+  pharmacyCityB: '',
+  pharmacyProvinceB: '',
+  pharmacyGradeA: 0,
+  pharmacyGradeB: 0,
+  pharmacyStarA: 0,
+  pharmacyStarB: 0,
+  pharmacyWarrantyA: 0,
+  pharmacyWarrantyB: 0,
+  totalPourcentageA: 0,
+  totalPourcentageB: 0,
+  totalAmountA: 0,
+  totalAmountB: 0,
+  confirmA: false,
+  confirmB: false,
+  sendDate: '',
+  confirmDateA: '',
+  confirmDateB: '',
+  paymentDateA: '',
+  paymentDateB: '',
+  cancelDate: '',
+  description: '',
+  lockSuggestion: false,
+  allowShowPharmacyInfo: false,
+}
+
 interface Props {
-  item: ExchangeInterface;
-  onCardClick: ((id: number | undefined, state: number | undefined) => void) | void | any;
+  item?: ExchangeInterface;
+  onCardClick?: ((id: number | undefined, state: number | undefined) => void) | void | any;
 }
 
 // @ts-ignore
-const DesktopCardContent = (props: Props): JSX.Element => {
+const DesktopCardContent = ({
+  item = initialState,
+  onCardClick = undefined
+}: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { item, onCardClick } = props;
+  // const { onCardClick } = props;
+  // let item = props.item;
+  // if (item == undefined) item = initialState;
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -257,7 +302,11 @@ const DesktopCardContent = (props: Props): JSX.Element => {
       <CardContent>
         <Typography variant="h5" component="h2" className={ `${cardTitle} ${pointer}` }
           style={ { background: getExchangeTitleColor() } }
-          onClick={ (): void => onCardClick(item.id, (item.state > 10 ? item.state - 10 : item.state)) }>
+          onClick={ (): void => {
+            if (onCardClick) {
+              onCardClick(item.id, (item.state > 10 ? item.state - 10 : item.state));
+            }
+          }}>
           { getExchangeTitle() }
         </Typography>
         <div className={ titleCode }>
