@@ -32,7 +32,7 @@ const Transactions = lazy(() =>
   import('./components/screen/dashboard/accounting/accountingList')
 );
 const MembershipRequests = lazy(() =>
-  import('./components/screen/dashboard/user/Membership')
+  import('./components/screen/dashboard/pharmacy/Membership')
 );
 
 const DashboardActivePage = lazy(() =>
