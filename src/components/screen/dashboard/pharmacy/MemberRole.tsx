@@ -145,13 +145,13 @@ const MemberRole: React.FC = () => {
             >
               <Grid container spacing={ 3 }>
                 <Grid item xs={ 12 } sm={ 6 }>
-                <DaroogDropdown
-                    defaultValue={state.type}
+                  <DaroogDropdown
+                    defaultValue={ state.type }
                     data={ roles }
                     label={ t('general.type') }
-                    onChangeHandler={(v): void => {
+                    onChangeHandler={ (v): void => {
                       return dispatch({ type: 'roleId', value: v });
-                    }}
+                    } }
                   />
                 </Grid>
                 <Divider />
