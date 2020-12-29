@@ -50,6 +50,7 @@ import { errorHandler } from '../../../../../utils';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 import { ExchangeInterface } from '../../../../../interfaces/ExchangeInterface';
 import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
+import ActionButtons from '../exchange/ActionButtons';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -388,201 +389,200 @@ const SecondStep: React.FC = () => {
     setActiveStep(activeStep + 1);
   };
 
-  const ActionButtons = (): JSX.Element => {
-    let element: JSX.Element = <></>;
-    if (!viewExhcnage) return element;
-    debugger;
-    const vx: ViewExchangeInterface | undefined = viewExhcnage;
-    if (vx) {
-      if (vx.currentPharmacyIsA) {
-        if (exchangeStateCode !== 6 && exchangeStateCode !== 10)
-          element = (
-            <Button
-              className={exchangeStateCode !== 4 ? cancelButton : cancelButton4}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={() => toggleIsOpenCancelExchangeModalForm('cancel')}
-            >
-              لغو درخواست
-            </Button>
-          );
+  // const ActionButtons = (): JSX.Element => {
+  //   let element: JSX.Element = <></>;
+  //   if (!viewExhcnage) return element;
+  //   const vx: ViewExchangeInterface | undefined = viewExhcnage;
+  //   if (vx) {
+  //     if (vx.currentPharmacyIsA) {
+  //       if (exchangeStateCode !== 6 && exchangeStateCode !== 10)
+  //         element = (
+  //           <Button
+  //             className={exchangeStateCode !== 4 ? cancelButton : cancelButton4}
+  //             type="button"
+  //             variant="outlined"
+  //             color="red"
+  //             onClick={() => toggleIsOpenCancelExchangeModalForm('cancel')}
+  //           >
+  //             لغو درخواست
+  //           </Button>
+  //         );
 
-        if (exchangeStateCode === 4 || exchangeStateCode === 8)
-          element = (
-            <>
-              <>{element}</>
-              <Button
-                className={
-                  exchangeStateCode === 8 ? confirmButton : confirmButton4
-                }
-                type="button"
-                variant="outlined"
-                color="green"
-                onClick={(): any => {
-                  setShowApproveModalForm(true);
-                }}
-              >
-                پرداخت
-              </Button>
-            </>
-          );
+  //       if (exchangeStateCode === 4 || exchangeStateCode === 8)
+  //         element = (
+  //           <>
+  //             <>{element}</>
+  //             <Button
+  //               className={
+  //                 exchangeStateCode === 8 ? confirmButton : confirmButton4
+  //               }
+  //               type="button"
+  //               variant="outlined"
+  //               color="green"
+  //               onClick={(): any => {
+  //                 setShowApproveModalForm(true);
+  //               }}
+  //             >
+  //               پرداخت
+  //             </Button>
+  //           </>
+  //         );
 
-        if (exchangeStateCode === 10)
-          element = (
-            <>
-              <>{element}</>
-              <Button
-                className={confirmButton}
-                type="button"
-                variant="outlined"
-                color="green"
-              >
-                نمایش آدرس
-              </Button>
-            </>
-          );
-      } else {
-        if (
-          exchangeStateCode === 2 ||
-          exchangeStateCode === 3 ||
-          exchangeStateCode === 4
-        ) {
-          element = (
-            <Button
-              className={exchangeStateCode !== 2 ? cancelButton : cancelButton4}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={() => toggleIsOpenCancelExchangeModalForm('cancel')}
-            >
-              لغو درخواست
-            </Button>
-          );
-        }
-        if (exchangeStateCode === 2)
-          element = (
-            <>
-              <>{element}</>
-              <Button
-                className={confirmButton4}
-                type="button"
-                variant="outlined"
-                color="green"
-                onClick={() => toggleIsOpenCancelExchangeModalForm('approve')}
-              >
-                تایید نهایی
-              </Button>
-            </>
-          );
-        if (exchangeStateCode === 4 || exchangeStateCode === 9)
-          element = (
-            <>
-              <>{element}</>
-              <Button
-                className={
-                  exchangeStateCode === 9 ? confirmButton : confirmButton4
-                }
-                type="button"
-                variant="outlined"
-                color="green"
-                onClick={(): any => {
-                  setShowApproveModalForm(true);
-                }}
-              >
-                پرداخت
-              </Button>
-            </>
-          );
+  //       if (exchangeStateCode === 10)
+  //         element = (
+  //           <>
+  //             <>{element}</>
+  //             <Button
+  //               className={confirmButton}
+  //               type="button"
+  //               variant="outlined"
+  //               color="green"
+  //             >
+  //               نمایش آدرس
+  //             </Button>
+  //           </>
+  //         );
+  //     } else {
+  //       if (
+  //         exchangeStateCode === 2 ||
+  //         exchangeStateCode === 3 ||
+  //         exchangeStateCode === 4
+  //       ) {
+  //         element = (
+  //           <Button
+  //             className={exchangeStateCode !== 2 ? cancelButton : cancelButton4}
+  //             type="button"
+  //             variant="outlined"
+  //             color="red"
+  //             onClick={() => toggleIsOpenCancelExchangeModalForm('cancel')}
+  //           >
+  //             لغو درخواست
+  //           </Button>
+  //         );
+  //       }
+  //       if (exchangeStateCode === 2)
+  //         element = (
+  //           <>
+  //             <>{element}</>
+  //             <Button
+  //               className={confirmButton4}
+  //               type="button"
+  //               variant="outlined"
+  //               color="green"
+  //               onClick={() => toggleIsOpenCancelExchangeModalForm('approve')}
+  //             >
+  //               تایید نهایی
+  //             </Button>
+  //           </>
+  //         );
+  //       if (exchangeStateCode === 4 || exchangeStateCode === 9)
+  //         element = (
+  //           <>
+  //             <>{element}</>
+  //             <Button
+  //               className={
+  //                 exchangeStateCode === 9 ? confirmButton : confirmButton4
+  //               }
+  //               type="button"
+  //               variant="outlined"
+  //               color="green"
+  //               onClick={(): any => {
+  //                 setShowApproveModalForm(true);
+  //               }}
+  //             >
+  //               پرداخت
+  //             </Button>
+  //           </>
+  //         );
 
-        if (exchangeStateCode === 8 || exchangeStateCode === 10)
-          element = (
-            <>
-              <>{element}</>
-              <Button
-                className={confirmButton}
-                type="button"
-                variant="outlined"
-                color="green"
-              >
-                نمایش آدرس
-              </Button>
-            </>
-          );
-      }
-    }
+  //       if (exchangeStateCode === 8 || exchangeStateCode === 10)
+  //         element = (
+  //           <>
+  //             <>{element}</>
+  //             <Button
+  //               className={confirmButton}
+  //               type="button"
+  //               variant="outlined"
+  //               color="green"
+  //             >
+  //               نمایش آدرس
+  //             </Button>
+  //           </>
+  //         );
+  //     }
+  //   }
 
-    return element;
-  };
+  //   return element;
+  // };
 
-  // TODO : here to move Action Component
-  const exchangeModalApproveCancel = (type: string): JSX.Element => {
-    return (
-      <Modal
-        open={isOpenCancelExchangeModal}
-        toggle={() => toggleIsOpenCancelExchangeModalForm(type)}
-      >
-        <Card>
-          <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title={type === 'approve' ? 'تایید تبادل' : 'لغو تبادل'}
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={() => toggleIsOpenCancelExchangeModalForm(type)}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={1}>
-              {type === 'approve' ? (
-                <div>
-                  <span>آیا از انجام تبادل اطمینان دارید؟</span>
-                </div>
-              ) : (
-                <div>
-                  <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
-                  <TextField
-                    style={{ width: '100%', marginTop: 10, fontSize: 10 }}
-                    label="توضیحات"
-                    multiline
-                    rows={5}
-                    variant="outlined"
-                  />
-                </div>
-              )}
-            </Grid>
-          </CardContent>
-          <CardActions>
-            {type === 'approve' ? (
-              <MatButton
-                onClick={() => handleConfirmOrNotExchange(true)}
-                variant="contained"
-                color="primary"
-                autoFocus
-              >
-                تایید
-              </MatButton>
-            ) : (
-              <MatButton
-                onClick={handleCancelExchange}
-                variant="contained"
-                color="primary"
-                autoFocus
-              >
-                لغو تبادل
-              </MatButton>
-            )}
-          </CardActions>
-        </Card>
-      </Modal>
-    );
-  };
+  // // TODO : here to move Action Component
+  // const exchangeModalApproveCancel = (type: string): JSX.Element => {
+  //   return (
+  //     <Modal
+  //       open={isOpenCancelExchangeModal}
+  //       toggle={() => toggleIsOpenCancelExchangeModalForm(type)}
+  //     >
+  //       <Card>
+  //         <CardHeader
+  //           style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
+  //           title={type === 'approve' ? 'تایید تبادل' : 'لغو تبادل'}
+  //           titleTypographyProps={{ variant: 'h6' }}
+  //           action={
+  //             <IconButton
+  //               style={{ marginTop: 10 }}
+  //               aria-label="settings"
+  //               onClick={() => toggleIsOpenCancelExchangeModalForm(type)}
+  //             >
+  //               <CloseIcon />
+  //             </IconButton>
+  //           }
+  //         />
+  //         <Divider />
+  //         <CardContent>
+  //           <Grid container spacing={1}>
+  //             {type === 'approve' ? (
+  //               <div>
+  //                 <span>آیا از انجام تبادل اطمینان دارید؟</span>
+  //               </div>
+  //             ) : (
+  //               <div>
+  //                 <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
+  //                 <TextField
+  //                   style={{ width: '100%', marginTop: 10, fontSize: 10 }}
+  //                   label="توضیحات"
+  //                   multiline
+  //                   rows={5}
+  //                   variant="outlined"
+  //                 />
+  //               </div>
+  //             )}
+  //           </Grid>
+  //         </CardContent>
+  //         <CardActions>
+  //           {type === 'approve' ? (
+  //             <MatButton
+  //               onClick={() => handleConfirmOrNotExchange(true)}
+  //               variant="contained"
+  //               color="primary"
+  //               autoFocus
+  //             >
+  //               تایید
+  //             </MatButton>
+  //           ) : (
+  //             <MatButton
+  //               onClick={handleCancelExchange}
+  //               variant="contained"
+  //               color="primary"
+  //               autoFocus
+  //             >
+  //               لغو تبادل
+  //             </MatButton>
+  //           )}
+  //         </CardActions>
+  //       </Card>
+  //     </Modal>
+  //   );
+  // };
 
   const ConfirmDialog = (): JSX.Element => {
     return (
@@ -660,8 +660,8 @@ const SecondStep: React.FC = () => {
                 </div>
                 {showApproveModalForm && <ExchangeApprove />}
               </>
-              {isOpenCancelExchangeModal &&
-                exchangeModalApproveCancel(modalType)}
+              {/* {isOpenCancelExchangeModal &&
+                exchangeModalApproveCancel(modalType)} */}
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
                   {!viewExhcnage && (

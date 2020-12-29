@@ -65,7 +65,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   useEffect(() => {
     (async (): Promise<void> => {
-      if (viewExchangeId !== undefined) {
+      if (exchangeId !== undefined) {
         setExchangeId(viewExchangeId);
         setActiveStep(1);
         const result = await getViewExchange(viewExchangeId);
