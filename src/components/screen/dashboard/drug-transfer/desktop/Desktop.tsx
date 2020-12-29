@@ -16,7 +16,7 @@ import CircleLoading from '../../../../public/loading/CircleLoading';
 import { useHistory } from "react-router-dom";
 import routes from '../../../../../routes';
 // load test data
-import d from './testdata.json';
+// import d from './testdata.json';
 
 const Desktop: React.FC = () => {
   const { t } = useTranslation();
@@ -39,9 +39,9 @@ const Desktop: React.FC = () => {
   const [exchanges, setExchanges] = useState<ExchangeInterface[]>([]);
   React.useEffect(() => {
     async function getExchanges(): Promise<any> {
-      // const result = await getDashboard();
+      const result = await getDashboard();
       // load test data
-      const result = d;
+      // const result = d;
       if (result != undefined) {
         const statesList: LabelValue[] = [];
         let hasCompleted: boolean = false;
