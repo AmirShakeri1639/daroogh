@@ -56,6 +56,8 @@ const DesktopCardContent = (props: Props): JSX.Element => {
     totalPourcentage = item?.totalPourcentageB
     paymentStatus = item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
 
+    item.state = item.state <= 10 ? item.state + 10 : item.state;
+
     // Should show A's grade and star and warranty
     pharmacyGrade = item?.pharmacyGradeA == undefined ? 4 : item?.pharmacyGradeA;
     star = item?.pharmacyStarA == undefined ? 0 : item?.pharmacyStarA;
