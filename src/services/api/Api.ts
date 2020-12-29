@@ -24,13 +24,14 @@ axiosInstance.interceptors.response.use(undefined, error => {
     (async (): Promise<any> => {
       await errorSweetAlert('پیدا نشد! - 404');
     })();
-  } else if (status === 500) {
-    (async (): Promise<any> => {
-      await errorSweetAlert(
-        error?.message == undefined ? error.response : error.message
-      );
-    })();
-  }
+  } 
+  // else if (status === 500) {
+  //   (async (): Promise<any> => {
+  //     await errorSweetAlert(
+  //       error?.message == undefined ? error.response : error.message
+  //     );
+  //   })();
+  // }
 
   return Promise.reject(error);
 });
