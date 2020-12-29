@@ -21,6 +21,7 @@ import { WorkTimeEnum } from '../../../enum';
 import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
+import { Map } from '../../public';
 
 const initialState: PharmacyWithUserInterface = {
   pharmacy: {
@@ -36,7 +37,9 @@ const initialState: PharmacyWithUserInterface = {
     website: '',
     email: '',
     postalCode: '',
-    countryDivisionID: 0,
+    countryDivisionID: 28367, // مشهد ثامن
+    x: '',
+    y: '',
   },
   user: {
     id: 0,
@@ -119,6 +122,16 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         pharmacy: { ...state.pharmacy, countryDivisionID: value },
+      };
+    case 'pharmacy.x':
+      return {
+        ...state,
+        pharmacy: { ...state.pharmacy, x: value },
+      };
+    case 'pharmacy.y':
+      return {
+        ...state,
+        pharmacy: { ...state.pharmacy, y: value },
       };
     // USER -------------------
     case 'user.pharmacyID':
@@ -284,6 +297,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
             email: state.pharmacy.email,
             postalCode: state.pharmacy.postalCode,
             countryDivisionID: state.pharmacy.countryDivisionID,
+            x: state.pharmacy.x,
+            y: state.pharmacy.y
           },
           user: {
             id: 0,
@@ -587,6 +602,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
                   dispatch({ type: 'pharmacy.countryDivisionID', value: id });
                 }}
               />
+            </Grid>
+            <Grid item xs={12}>
+              <Map onClick={(e: any): void => {
+                console.log('e from :', e)
+                dispatch({ type: 'pharmacy.x', value: e.lngLat.lng });
+                dispatch({ type: 'pharmacy.y', value: e.lngLat.lat });
+              }} />
             </Grid>
           </Grid>
           <div className={spacing1}>&nbsp;</div>
