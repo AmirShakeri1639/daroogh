@@ -9,10 +9,15 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use(undefined, error => {
+  console.log('erRRRRRRRR:', error)
   const { response } = error;
   if (!error.response) {
     console.error('Error in network');
     return Promise.reject(error);
+  }
+
+  if (error.response.data?.message) {
+    console.error(error.response.data.message);
   }
 
   const { status } = response;
@@ -24,14 +29,14 @@ axiosInstance.interceptors.response.use(undefined, error => {
     (async (): Promise<any> => {
       await errorSweetAlert('پیدا نشد! - 404');
     })();
-  } 
-  // else if (status === 500) {
-  //   (async (): Promise<any> => {
-  //     await errorSweetAlert(
-  //       error?.message == undefined ? error.response : error.message
-  //     );
-  //   })();
-  // }
+  } else if (status === 500) {
+    (async (): Promise<any> => {
+      await errorSweetAlert(
+        error?.response?.data?.message == undefined
+          ? 'خطایی رخ داده است.' : error?.response?.data?.message
+      );
+    })();
+  }
 
   return Promise.reject(error);
 });
@@ -54,11 +59,12 @@ class Api {
   }
 
   protected async postJsonData(url: string, data: any = null): Promise<any> {
-    try {
-      return await this.authorizedUserRequest().post(url, data);
-    } catch (e) {
-      throw new Error(e);
-    }
+    // try {
+    return await this.authorizedUserRequest().post(url, data);
+    // } catch (e) {
+    //   console.log('error in postjsondata:', e)
+    //   throw new Error(e);
+    // }
   }
 
   protected async postFormData(_url: string, _data: any): Promise<any> {
