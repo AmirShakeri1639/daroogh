@@ -3,7 +3,7 @@ import Context from '../Context';
 import {
   Card, CardContent, Container, Grid, Typography
 } from '@material-ui/core';
-import { ExchangeInterface } from '../../../../../interfaces';
+import { ViewExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -23,7 +23,7 @@ import {
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
 import {
-  getExpireDate, isExchangeCompleted, isExchangeCompleteddOrCancelled
+  getExpireDate, isExchangeCompleted, isExchangeCompleteddOrCancelled, isStateCommon
 } from '../../../../../utils/ExchangeTools';
 
 const initialState = {
@@ -64,10 +64,12 @@ const initialState = {
   description: '',
   lockSuggestion: false,
   allowShowPharmacyInfo: false,
+  cardA: [],
+  cardB: [],
 }
 
 interface Props {
-  item?: ExchangeInterface;
+  item?: ViewExchangeInterface;
   onCardClick?: ((id: number | undefined, state: number | undefined) => void) | void | any;
 }
 
@@ -103,7 +105,7 @@ const DesktopCardContent = ({
     totalPourcentage = item?.totalPourcentageB
     paymentStatus = item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
 
-    item.state = item.state <= 10 ? item.state + 10 : item.state;
+    item.state = item.state <= 10 && !isStateCommon(item.state) ? item.state + 10 : item.state;
 
     // Should show A's grade and star and warranty
     pharmacyGrade = item?.pharmacyGradeA == undefined ? 4 : item?.pharmacyGradeA;

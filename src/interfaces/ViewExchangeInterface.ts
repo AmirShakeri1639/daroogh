@@ -2,6 +2,12 @@ export interface ViewExchangeInterface {
     id: number;
     state: number;
     canceller: any;
+    currentPharmacyIsA?: boolean;
+    numberA?: string;
+    numberB?: string;
+    expireDateA?: string;
+    expireDateB?: string;
+    expireDate?: string;
     stateString: string;
     pharmacyKeyA: string;
     pharmacyKeyB: string;
@@ -9,6 +15,16 @@ export interface ViewExchangeInterface {
     pharmacyProvinceA: string;
     pharmacyCityB: string;
     pharmacyProvinceB: string;
+    pharmacyGradeA?: number;
+    pharmacyGradeB?: number;
+    pharmacyStarA?: number;
+    pharmacyStarB?: number;
+    pharmacyWarrantyA?: number;
+    pharmacyWarrantyB?: number;
+    totalPourcentageA: number;
+    totalPourcentageB: number;
+    totalAmountA: number;
+    totalAmountB: number;
     confirmA: any;
     confirmB: any;
     sendDate: any;
@@ -40,7 +56,7 @@ export interface CardInfo {
     confirmed?: boolean;
 }
 
-export interface CardDrugInfo{
+export interface CardDrugInfo {
     id: number;
     category: CardCategoryInfo;
     name: string;
@@ -53,10 +69,17 @@ export interface CardDrugInfo{
     description: string;
 }
 
-export interface CardCategoryInfo{
+export interface CardCategoryInfo {
     id: number;
     name: string;
     type: number;
     parent?: number;
     typeString: string;
 }
+
+export interface AddDrugInterface {
+    pharmacyDrugID: number;
+    count: number;
+    pharmacyKey: string;
+}
+

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExchangeInterface, LabelValue } from '../../../../../interfaces';
+import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
 import { Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
@@ -9,7 +9,7 @@ import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
 import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
 import {
-  getExpireDate, isExchangeCompleted, hasLabelValue
+  getExpireDate, isExchangeCompleted, hasLabelValue, isStateCommon
 } from '../../../../../utils/ExchangeTools';
 import { isNullOrEmpty } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
@@ -36,7 +36,7 @@ const Desktop: React.FC = () => {
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
 
-  const [exchanges, setExchanges] = useState<ExchangeInterface[]>([]);
+  const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
   React.useEffect(() => {
     async function getExchanges(): Promise<any> {
       const result = await getDashboard();
@@ -47,12 +47,8 @@ const Desktop: React.FC = () => {
         let hasCompleted: boolean = false;
         const items = result.items.map((item: any) => {
           if (!item.currentPharmacyIsA &&
-            item.state <= 10 && [
-              ExchangeStateEnum.UNKNOWN,
-              ExchangeStateEnum.NOSEND,
-              ExchangeStateEnum.CANCELLED,
-              ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
-            ].indexOf(item.state) < 0) item.state += 10;
+            item.state <= 10 && 
+            !isStateCommon(item.state)) item.state += 10;
           if (isExchangeCompleted(item.state)) hasCompleted = true;
           if (!hasLabelValue(statesList, item.state) && !hasCompleted) {
             statesList.push({

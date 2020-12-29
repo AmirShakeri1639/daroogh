@@ -6,7 +6,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import { ExchangeInterface } from '../../../../../interfaces';
+import { ViewExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import StorageIcon from '@material-ui/icons/Storage';
 import MoneyIcon from '@material-ui/icons/Money';
@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { ExchangeStateEnum } from '../../../../../enum';
 
 interface Props {
-  item: ExchangeInterface;
+  item: ViewExchangeInterface;
 }
 
 const DesktopCardContent = (props: Props): JSX.Element => {
