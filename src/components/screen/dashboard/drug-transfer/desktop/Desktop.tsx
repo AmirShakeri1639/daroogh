@@ -1,5 +1,4 @@
-import React, { useContext, useState } from 'react';
-import Context from '../Context';
+import React, { useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
 import { Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
@@ -12,10 +11,11 @@ import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
 import {
   getExpireDate, isExchangeCompleted, hasLabelValue, isStateCommon
 } from '../../../../../utils/ExchangeTools';
-import { isNullOrEmpty } from '../../../../../utils';
+import { isNullOrEmpty, EncrDecrService } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import { useHistory } from "react-router-dom";
 import routes from '../../../../../routes';
+import { encryptionKey } from '../../../../../enum/consts';
 // load test data
 // import d from './testdata.json';
 
@@ -75,14 +75,14 @@ const Desktop: React.FC = () => {
     getExchanges();
   }, []);
 
-  const { setExchangeId } = useContext(Context);
+  const encDecService = new EncrDecrService();
 
   const cardClickHandler = (
     id: number,
     state: number | undefined = 1
   ): void => {
-    setExchangeId(id);
-    history.push(transfer);
+    const encryptedId = encDecService.encrypt(encryptionKey, id);
+    history.push(`${transfer}?eid=${encryptedId}`);
   };
 
   const sortSelected = (field: string, sortType: SortTypeEnum): void => {

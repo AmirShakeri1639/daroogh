@@ -12,7 +12,7 @@ import {
   ActionInterface, MembershipRequestInterface, TableColumnInterface
 } from '../../../../interfaces';
 import { MembershipRequest } from '../../../../services/api';
-import { 
+import {
   errorHandler, successSweetAlert, warningSweetAlert
 } from '../../../../utils';
 import { useClasses } from '../classes';
@@ -102,7 +102,7 @@ const Membership: React.FC = () => {
   };
 
   const {
-    all, accept
+    notChecked, accept
   } = new MembershipRequest();
 
   const [_accept, { isLoading }] = useMutation(accept, {
@@ -110,7 +110,7 @@ const Membership: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      await queryCache.invalidateQueries('membershipRequestsList');      
+      await queryCache.invalidateQueries('membershipRequestsList');
       await successSweetAlert(result.message);
       dispatch({ type: 'reset' });
     }
@@ -249,8 +249,8 @@ const Membership: React.FC = () => {
               columns={ tableColumns() }
               stateAction={
                 async (e: any, row: any): Promise<void> => await acceptHandler(row) }
-              queryKey={ MembershipRequestEnum.GET_ALL }
-              queryCallback={ all }
+              queryKey={ MembershipRequestEnum.GET_NOT_CHECKED }
+              queryCallback={ notChecked }
               initLoad={ false }
             />
             { isLoading && <CircleLoading /> }

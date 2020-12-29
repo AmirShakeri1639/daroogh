@@ -5,6 +5,8 @@ import { MembershipRequestInterface } from '../../interfaces';
 class MembershipRequest extends Api {
   readonly urls = {
     all: '/MembershipRequest/GetPharmacyRequests',
+    checked: '/MembershipRequest/GetPharmacyRequests?$filter=acceptDate ne null',
+    notChecked: '/MembershipRequest/GetPharmacyRequests?$filter=acceptDate eq null',
     userRequests: '/MembershipRequest/GetUserRequests',
     send: '/MembershipRequest/SendRequest',
     accept: '/MembershipRequest/AcceptRequest'
@@ -13,7 +15,27 @@ class MembershipRequest extends Api {
   all = async (skip: number, top: number = 10): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`);
+        `${this.urls.all}?$top=${top}&$skip=${skip * top}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e)
+    }
+  }
+
+  checked = async (skip: number, top: number = 10): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.checked}&$top=${top}&$skip=${skip * top}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e)
+    }
+  }
+
+  notChecked = async (skip: number, top: number = 10): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.notChecked}&$top=${top}&$skip=${skip * top}`);
       return result.data;
     } catch (e) {
       errorHandler(e)
@@ -23,7 +45,7 @@ class MembershipRequest extends Api {
   userRequests = async (skip: number, top: number = 10): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.userRequests}?$top=${top}&$skip=${skip * top}&$orderby=id desc`);
+        `${this.urls.userRequests}?$top=${top}&$skip=${skip * top}`);
       return result.data;
     } catch (e) {
       errorHandler(e)

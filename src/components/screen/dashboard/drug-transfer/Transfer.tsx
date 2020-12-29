@@ -13,6 +13,10 @@ import FourthStep from './fourth-step/FourthStep';
 import { TransferPropsInterface } from '../../../../interfaces/component';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
 import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
+import queryString from "query-string";
+import { useLocation } from 'react-router-dom';
+import { EncrDecrService } from '../../../../utils';
+import { encryptionKey } from '../../../../enum/consts';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -63,55 +67,70 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   const { viewExchangeId, exchangeState } = props;
 
+  const location = useLocation();
+  const params = queryString.parse(location.search);
+  
+  let eid: number | undefined = undefined;
+  const encryptedId = (params.eid == null ? undefined : params.eid);
+  if (encryptedId !== undefined) {
+    const encDecService = new EncrDecrService();
+    const decryptedId = encDecService.decrypt(encryptionKey, encryptedId);
+    eid = +decryptedId;
+  }
+
   useEffect(() => {
     (async (): Promise<void> => {
-      if (viewExchangeId !== undefined) {
-        setExchangeId(viewExchangeId);
+      if (eid !== undefined) {
+        setExchangeId(eid);
         setActiveStep(1);
-        const result = await getViewExchange(viewExchangeId);
+        const result = await getViewExchange(eid);
         const res: ViewExchangeInterface | undefined = result.data;
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
           const basketB: AllPharmacyDrugInterface[] = [];
 
-          res.cardA.forEach((item) => {
-            basketA.push({
-              id: item.id,
-              drugID: item.drugID,
-              drug: item.drug,
-              cnt: item.cnt,
-              batchNO: '',
-              expireDate: item.expireDate,
-              amount: item.amount,
-              buttonName: 'حذف از تبادل',
-              cardColor: '#89fd89',
-              currentCnt: item.cnt,
-              offer1: item.offer1,
-              offer2: item.offer2,
-              order: 0,
-              totalAmount: 0,
-              totalCount: 0,
+          if (res.cardA !== undefined) {
+            res.cardA.forEach((item) => {
+              basketA.push({
+                id: item.id,
+                drugID: item.drugID,
+                drug: item.drug,
+                cnt: item.cnt,
+                batchNO: '',
+                expireDate: item.expireDate,
+                amount: item.amount,
+                buttonName: 'حذف از تبادل',
+                cardColor: '#89fd89',
+                currentCnt: item.cnt,
+                offer1: item.offer1,
+                offer2: item.offer2,
+                order: 0,
+                totalAmount: 0,
+                totalCount: 0,
+              });
             });
-          });
-          res.cardB.forEach((item) => {
-            basketB.push({
-              id: item.id,
-              drugID: item.drugID,
-              drug: item.drug,
-              cnt: item.cnt,
-              batchNO: '',
-              expireDate: item.expireDate,
-              amount: item.amount,
-              buttonName: 'حذف از تبادل',
-              cardColor: '#89fd89',
-              currentCnt: item.cnt,
-              offer1: item.offer1,
-              offer2: item.offer2,
-              order: 0,
-              totalAmount: 0,
-              totalCount: 0,
+          }
+          if (res.cardB !== undefined) {
+            res.cardB.forEach((item) => {
+              basketB.push({
+                id: item.id,
+                drugID: item.drugID,
+                drug: item.drug,
+                cnt: item.cnt,
+                batchNO: '',
+                expireDate: item.expireDate,
+                amount: item.amount,
+                buttonName: 'حذف از تبادل',
+                cardColor: '#89fd89',
+                currentCnt: item.cnt,
+                offer1: item.offer1,
+                offer2: item.offer2,
+                order: 0,
+                totalAmount: 0,
+                totalCount: 0,
+              });
             });
-          });
+          }
           if (!res.currentPharmacyIsA) {
             setBasketCount(basketA);
             setUbasketCount(basketB);
@@ -179,20 +198,20 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   });
 
   return (
-    <Context.Provider value={initialContextValues()}>
-      <div className={root}>
+    <Context.Provider value={ initialContextValues() }>
+      <div className={ root }>
         <MaterialContainer>
-          <Grid container spacing={1}>
-            {activeStep > 0 && (
-              <Grid item xs={12}>
+          <Grid container spacing={ 1 }>
+            { activeStep > 0 && (
+              <Grid item xs={ 12 }>
                 <ProgressBar />
               </Grid>
-            )}
+            ) }
 
-            {activeStep === 0 && <FirstStep />}
-            {activeStep === 1 && <SecondStep />}
-            {activeStep === 2 && <ThirdStep />}
-            {activeStep === 3 && <FourthStep />}
+            { activeStep === 0 && <FirstStep /> }
+            { activeStep === 1 && <SecondStep /> }
+            { activeStep === 2 && <ThirdStep /> }
+            { activeStep === 3 && <FourthStep /> }
           </Grid>
         </MaterialContainer>
       </div>

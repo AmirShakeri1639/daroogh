@@ -323,3 +323,8 @@ export interface ChangeUserPasswordInterface {
   oldPassword: string;
   newPassword: string;
 }
+
+export interface UserRoleInterface {
+  roleId: number | string;
+  userId: number | string;
+}

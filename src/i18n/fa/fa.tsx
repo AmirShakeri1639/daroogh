@@ -232,6 +232,7 @@ export default {
         request: 'درخواست ایجاد',
         manager: 'مدیر داروخانه',
         addToTransferList: 'اضافه کردن به لیست عرضه',
+        memberRole: 'انتساب نقش‌ها',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
