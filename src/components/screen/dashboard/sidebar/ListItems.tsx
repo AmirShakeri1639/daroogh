@@ -41,6 +41,10 @@ import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUserTag,
+} from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -78,7 +82,7 @@ const {
   supplyList,
   transactions,
   membershipRequests,
-  registerPharmacyWithUser,
+  memberRole,
 } = routes;
 
 const ListItems: React.FC = () => {
@@ -387,12 +391,20 @@ const ListItems: React.FC = () => {
           { isOpenMembers ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
         <Collapse in={ isOpenMembers } timeout="auto" unmountOnExit>
-          <List component="div" className={ linkWrapper }>
+          <List component="div" className={ linkWrapper } >
             <Link to={ membershipRequests } className={ nested }>
               <ListItemIcon>
                 <BookmarkBorderIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.membershipRequestsList') } />
+            </Link>
+          </List>
+          <List component="div" className={ linkWrapper } >
+            <Link to={ memberRole } className={ nested }>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={ faUserTag } size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={ t('pharmacy.memberRole') } />
             </Link>
           </List>
         </Collapse>

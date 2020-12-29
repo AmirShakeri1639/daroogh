@@ -37,5 +37,7 @@ export enum AllPharmacyDrug {
 }
 
 export enum MembershipRequestEnum {
-  GET_ALL = 'all'
+  GET_ALL = 'all',
+  GET_CHECKED = 'checked',
+  GET_NOT_CHECKED = 'notChecked'
 }
