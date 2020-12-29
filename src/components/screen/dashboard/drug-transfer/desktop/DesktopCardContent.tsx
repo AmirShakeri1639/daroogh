@@ -101,7 +101,7 @@ const DesktopCardContent = ({
   let expireDate: string | undefined = '';
   let totalPourcentage: number = 0;
   let paymentStatus: string = '';
-  useEffect(() => {
+  // useEffect(() => {
     if (item?.currentPharmacyIsA) {
       pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
       totalPourcentage = item?.totalPourcentageA;
@@ -130,7 +130,7 @@ const DesktopCardContent = ({
         item?.pharmacyWarrantyA == undefined ? 0 : item?.pharmacyWarrantyA;
     }
     expireDate = getExpireDate(item);
-  }, [item]);
+  // }, [item]);
 
 
   // test data for completed exchanges
