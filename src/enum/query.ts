@@ -17,6 +17,7 @@ export enum DrugEnum {
 
 export enum PharmacyEnum {
   GET_ALL = 'all',
+  GET_MEMBERS = 'members',
 }
 
 export enum AccountingEnum {
