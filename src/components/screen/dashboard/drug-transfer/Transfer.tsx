@@ -13,9 +13,10 @@ import FourthStep from './fourth-step/FourthStep';
 import { TransferPropsInterface } from '../../../../interfaces/component';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
 import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
-import queryString from "query-string";
+import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
+import { encryptionKey } from '../../../../enum/consts';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -68,26 +69,22 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   const location = useLocation();
   const params = queryString.parse(location.search);
-  const encDecService = new EncrDecrService();
+
+  let eid: number | undefined = undefined;
+  const encryptedId = params.eid == null ? undefined : params.eid;
+  if (encryptedId !== undefined) {
+    const encDecService = new EncrDecrService();
+    const decryptedId = encDecService.decrypt(encryptionKey, encryptedId);
+    eid = +decryptedId;
+  }
 
   useEffect(() => {
     (async (): Promise<void> => {
-      let eid: any = undefined;
-      // const hasPlus = 
-      const encryptedId = (params.eid == null ? undefined : params.eid);
-
-      // if (encryptedId !== undefined) {
-      //   eid = await encDecService.decrypt(encryptedId)
-      // }
-
-      eid = encryptedId;
-
       if (eid !== undefined) {
-        // @ts-ignore
-        setExchangeId(+eid);
+        setExchangeId(eid);
         setActiveStep(1);
-        // @ts-ignore
-        const result = await getViewExchange(+eid);
+        const result = await getViewExchange(eid);
+        debugger;
         const res: ViewExchangeInterface | undefined = result.data;
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
@@ -202,20 +199,20 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   });
 
   return (
-    <Context.Provider value={ initialContextValues() }>
-      <div className={ root }>
+    <Context.Provider value={initialContextValues()}>
+      <div className={root}>
         <MaterialContainer>
-          <Grid container spacing={ 1 }>
-            { activeStep > 0 && (
-              <Grid item xs={ 12 }>
+          <Grid container spacing={1}>
+            {activeStep > 0 && (
+              <Grid item xs={12}>
                 <ProgressBar />
               </Grid>
-            ) }
+            )}
 
-            { activeStep === 0 && <FirstStep /> }
-            { activeStep === 1 && <SecondStep /> }
-            { activeStep === 2 && <ThirdStep /> }
-            { activeStep === 3 && <FourthStep /> }
+            {activeStep === 0 && <FirstStep />}
+            {activeStep === 1 && <SecondStep />}
+            {activeStep === 2 && <ThirdStep />}
+            {activeStep === 3 && <FourthStep />}
           </Grid>
         </MaterialContainer>
       </div>
