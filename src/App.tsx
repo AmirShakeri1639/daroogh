@@ -35,6 +35,10 @@ const MembershipRequests = lazy(() =>
   import('./components/screen/dashboard/user/Membership')
 );
 
+const DashboardActivePage = lazy(() =>
+  import('./components/screen/dashboard/DashboardActivePage')
+);
+
 const {
   login,
   transfer,
@@ -69,6 +73,10 @@ const App = (): JSX.Element => {
 
             <PrivateRoute exact path="/dashboard">
               <Dashboard component={<></>} />
+            </PrivateRoute>
+
+            <PrivateRoute exact path="/dashboardActivePage">
+              <Dashboard component={<DashboardActivePage />} />
             </PrivateRoute>
 
             <PrivateRoute path="/dashboard/drug-transfer">

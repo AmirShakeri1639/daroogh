@@ -26,18 +26,12 @@ const style = makeStyles(() =>
   })
 );
 
-function getSteps(): string[] {
-  return [
-    'انتخاب داروخانه',
-    'انتخاب از سبد طرف مقابل',
-    'انتخاب از سبد شما',
-    'تایید نهایی',
-    '',
-  ];
-}
+// function getSteps(): string[] {
+//   return ['انتخاب داروخانه', 'انتخاب از سبد طرف مقابل', 'انتخاب از سبد شما', 'تایید نهایی', ''];
+// }
 
 const ProgressBar: React.FC = () => {
-  const { activeStep, setActiveStep, setOpenDialog } = useContext<
+  const { activeStep, setActiveStep, setOpenDialog, allStepName } = useContext<
     TransferDrugContextInterface
   >(DrugTransferContext);
   const [skipped, setSkipped] = React.useState(new Set<number>());
@@ -56,8 +50,10 @@ const ProgressBar: React.FC = () => {
     setActiveStep(newStep);
   };
 
+  
+
   const stepHandler = (): JSX.Element[] => {
-    return getSteps().map((label, index) => {
+    return allStepName.map((label, index) => {
       const stepProps: { completed?: boolean } = {};
       const labelProps: { optional?: React.ReactNode } = {};
 
@@ -70,6 +66,10 @@ const ProgressBar: React.FC = () => {
       );
     });
   };
+
+  useEffect(() => {
+    stepHandler();
+  }, [allStepName]);
 
   const mobileNextButton = (): JSX.Element => {
     return (
@@ -118,10 +118,10 @@ const ProgressBar: React.FC = () => {
               marginBottom: 5,
             }}
           >
-            {activeStep === 0 && getSteps()[0]}
-            {activeStep === 1 && getSteps()[1]}
-            {activeStep === 2 && getSteps()[2]}
-            {activeStep === 3 && getSteps()[3]}
+            {activeStep === 0 && allStepName[0]}
+            {activeStep === 1 && allStepName[1]}
+            {activeStep === 2 && allStepName[2]}
+            {activeStep === 3 && allStepName[3]}
           </Grid>
           <MobileStepper
             className={mobileStepper}

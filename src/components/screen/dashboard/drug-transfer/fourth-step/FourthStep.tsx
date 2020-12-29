@@ -21,6 +21,8 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { useMutation } from 'react-query';
 import { errorHandler, sweetAlert } from '../../../../../utils';
 import { Send } from '../../../../../model/exchange';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const FourthStep: React.FC = () => {
   const { activeStep, setActiveStep, exchangeId } = useContext<
@@ -30,18 +32,15 @@ const FourthStep: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
-    onSuccess: async () => {
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.send'),
-      });
-    },
-  });
   const [open, setOpen] = React.useState(true);
   const [isSelected, setIsSelected] = React.useState(false);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [openSnack, setOpenSnack] = React.useState(false);
+  const [message, setMessage] = React.useState({
+    message: '',
+    type: 'success',
+  });
 
   const handleClickOpen = (): void => {
     setOpen(true);
@@ -51,12 +50,48 @@ const FourthStep: React.FC = () => {
     setOpen(false);
   };
 
+  const snackBarHandleClick = (): any => {
+    setOpenSnack(true);
+  };
+
+  const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage({ ...message, message: t('alert.send'), type: 'success' });
+      } else {
+        setMessage({ message: 'عملیات ناموفق', type: 'error' });
+      }
+      snackBarHandleClick();
+    },
+  });
+
+  const snackBarHandleClose = (event: any, reason: any): any => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnack(false);
+  };
+
+  const Alert = (props: any): JSX.Element => {
+    return (
+      <MuiAlert
+        style={{ zIndex: 99999 }}
+        elevation={6}
+        variant="filled"
+        {...props}
+      />
+    );
+  };
+
   const handleSend = async (): Promise<any> => {
     const inputmodel = new Send();
     inputmodel.exchangeID = exchangeId;
     inputmodel.lockSuggestion = isSelected;
     try {
       await _send(inputmodel);
+      // setMessage(res.message);
+      // snackBarHandleClick();
     } catch (e) {
       errorHandler(e);
     }
@@ -115,6 +150,15 @@ const FourthStep: React.FC = () => {
           </DialogActions>
         </Dialog>
       </Grid>
+      <Snackbar
+        open={openSnack}
+        autoHideDuration={5000}
+        onClose={snackBarHandleClose}
+      >
+        <Alert onClose={snackBarHandleClose} severity={message.type}>
+          {message.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

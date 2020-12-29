@@ -1,3 +1,5 @@
+import { DrugI } from './AllPharmacyDrugInterface';
+
 export interface ViewExchangeInterface {
     id: number;
     state: number;
@@ -41,19 +43,20 @@ export interface ViewExchangeInterface {
 }
 
 export interface CardInfo {
-    id: number;
-    drugID: number;
-    phamacyKey: string;
-    addedByA: string;
-    addedByB: string;
-    packID?: number;
-    expireDate: any;
-    amount: number;
-    cnt: number;
-    offer1: number;
-    offer2: number;
-    pharmacyDrugID: number;
-    confirmed?: boolean;
+  id: number;
+  drugID: number;
+  drug: DrugI;
+  phamacyKey: string;
+  addedByA: string;
+  addedByB: string;
+  packID?: number;
+  expireDate: any;
+  amount: number;
+  cnt: number;
+  offer1: number;
+  offer2: number;
+  pharmacyDrugID: number;
+  confirmed?: boolean;
 }
 
 export interface CardDrugInfo {
