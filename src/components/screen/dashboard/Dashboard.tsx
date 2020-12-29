@@ -4,7 +4,7 @@ import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Avatar, Grid, List } from '@material-ui/core';
+import { Avatar, Button, Grid, List } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -29,6 +29,8 @@ import { logoutUser } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { ColorEnum } from '../../../enum';
+import { useHistory } from "react-router-dom";
+import routes from '../../../routes';
 
 const drawerWidth = 240;
 
@@ -148,9 +150,12 @@ type DashboardActivePage =
   | 'membershipRequestsList';
 
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
+  const history = useHistory();
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [activePage, setActivePage] = useState<string>('dashboard');
+
+  const { transfer } = routes;
 
   const classes = useStyles();
 
@@ -215,6 +220,13 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             >
               { t('general.dashboard') }
             </Typography>
+            <Button
+              variant="contained"
+              style={{ backgroundColor: ColorEnum.White }}
+              onClick={(): void => history.push(transfer) }
+            >
+              { t('exchange.create') }
+            </Button>
             <IconButton color="inherit">
               <Badge badgeContent={ 4 } color="secondary">
                 <NotificationsIcon />
@@ -262,7 +274,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                   onClick={ (): void => logoutUser() }
                 >
                   {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
-                  <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
+                  <span style={ { color: ColorEnum.Red, fontSize: 'medium' } }>
                     { t('login.exit') }
                   </span>
                 </IconButton>

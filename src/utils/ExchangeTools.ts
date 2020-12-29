@@ -52,6 +52,17 @@ export const isExchangeCompleted = (
   }
 };
 
+export const isStateCommon = (state: number): boolean => {
+  return (
+    [
+      ExchangeStateEnum.UNKNOWN,
+      ExchangeStateEnum.NOSEND,
+      ExchangeStateEnum.CANCELLED,
+      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
+    ].indexOf(state) >= 0
+  );
+};
+
 export const getExpireDate = (item: any): string => {
   let expireDate: string = '';
   if (item?.currentPharmacyIsA) {

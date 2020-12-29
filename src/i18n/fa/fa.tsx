@@ -181,6 +181,7 @@ export default {
         'new-category': 'ایجاد دسته بندی',
       },
       exchange: {
+        create: 'ایجاد تبادل',
         exchange: 'تبادل',
         desktop: 'کارتابل',
         expirationDate: 'تاریخ انقضای تبادل',
