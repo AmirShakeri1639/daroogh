@@ -1,8 +1,10 @@
 import CryptoJS from 'crypto-js';
+import { encryptionKey } from '../enum/consts';
 
 export class EncrDecrService {
 
-  encrypt = (keys: any, value: any): any => {
+  encrypt = async (value: any, keys: any = ''): Promise<any> => {
+    if (keys === '') keys = encryptionKey;
     const key = CryptoJS.enc.Utf8.parse(keys);
     const iv = CryptoJS.enc.Utf8.parse(keys);
     const encrypted = CryptoJS.AES.encrypt(
@@ -17,7 +19,8 @@ export class EncrDecrService {
     return encrypted.toString();
   }
   
-  decrypt = (keys: any, value: any): any => {
+  decrypt = async (value: any, keys: any = ''): Promise<any> => {
+    if (keys === '') keys = encryptionKey;
     const key = CryptoJS.enc.Utf8.parse(keys);
     const iv = CryptoJS.enc.Utf8.parse(keys);
     const decrypted = CryptoJS.AES.decrypt(

@@ -3,6 +3,10 @@ import { errorHandler } from "../../utils";
 import { ChangeUserPasswordInterface, NewUserData } from "../../interfaces/user";
 
 class User extends Api {
+  readonly urls = {
+    currentPharmacyUsers: '/User/AllPharmacyUsers?$filter=active eq true',
+  };
+
   getUserData = async (): Promise<any> => {
     try {
       const result = await this.postJsonData('/User/Profile');
@@ -15,6 +19,16 @@ class User extends Api {
   getAllUsers = async (skip: number = 0, top: number = 1): Promise<any> => {
     try {
       const result = await this.postData(`/User/AllUsers?$top=${top}&$skip=${skip * top}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  getCurrentPharmacyUsers = async (skip: number = 0, top: number = 1): Promise<any> => {
+    try {
+      const result = await this.postData(
+        `${this.urls.currentPharmacyUsers}&$top=${top}&$skip=${skip * top}`);
       return result.data;
     } catch (e) {
       errorHandler(e);

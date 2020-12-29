@@ -15,7 +15,6 @@ import { isNullOrEmpty, EncrDecrService } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import { useHistory } from "react-router-dom";
 import routes from '../../../../../routes';
-import { encryptionKey } from '../../../../../enum/consts';
 // load test data
 // import d from './testdata.json';
 
@@ -81,8 +80,11 @@ const Desktop: React.FC = () => {
     id: number,
     state: number | undefined = 1
   ): void => {
-    const encryptedId = encDecService.encrypt(encryptionKey, id);
-    history.push(`${transfer}?eid=${encryptedId}`);
+    (async (id: number): Promise<any> => {
+      // const encryptedId = await encDecService.encrypt(id)
+      const encryptedId = id;
+      history.push(`${transfer}?eid=${encryptedId}`);
+    })(id);
   };
 
   const sortSelected = (field: string, sortType: SortTypeEnum): void => {
