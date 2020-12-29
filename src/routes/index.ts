@@ -5,6 +5,7 @@ const members = 'members';
 const pharmacy = 'pharmacy';
 
 export default {
+  login: '/login',
   desktop: `/${dashboard}/${exchange}/desktop`,
   transfer: `/${dashboard}/${exchange}/transfer`,
   supplyList: `/${dashboard}/${exchange}/supply-list`,
