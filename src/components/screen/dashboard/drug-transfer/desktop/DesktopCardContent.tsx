@@ -75,8 +75,8 @@ const initialState = {
   description: '',
   lockSuggestion: false,
   allowShowPharmacyInfo: false,
-  cardA: [],
-  cardB: [],
+  cartA: [],
+  cartB: [],
 }
 
 interface Props {
