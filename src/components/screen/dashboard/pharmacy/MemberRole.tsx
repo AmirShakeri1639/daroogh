@@ -10,7 +10,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import {
   ActionInterface, LabelValue, TableColumnInterface, UserRoleInterface
 } from '../../../../interfaces';
-import { MembershipRequest, Role } from '../../../../services/api';
+import { Role, User } from '../../../../services/api';
 import DataTable from '../../../public/datatable/DataTable';
 import { useClasses } from '../classes';
 import { useMutation, useQueryCache } from 'react-query';
@@ -65,16 +65,16 @@ const MemberRole: React.FC = () => {
         field: 'id', title: t('general.id'), type: 'number',
         cellStyle: { textAlign: 'right' }
       },
-      { field: 'user.name', title: t('user.name'), type: 'string' },
-      { field: 'user.family', title: t('user.family'), type: 'string' },
-      { field: 'sendDate', title: t('user.sendDate'), type: 'string' },
-      { field: 'accepted', title: t('user.accepted'), type: 'boolean' },
+      { field: 'name', title: t('name'), type: 'string' },
+      { field: 'family', title: t('family'), type: 'string' },
+      { field: 'mobile', title: t('mobile'), type: 'string' },
+      { field: 'nationalCode', title: t('nationalCode'), type: 'string' },
     ];
   };
 
   const {
-    checked
-  } = new MembershipRequest();
+    getCurrentPharmacyUsers
+  } = new User();
 
   const {
     addUserToRole
@@ -89,12 +89,12 @@ const MemberRole: React.FC = () => {
       await successSweetAlert(result.message);
       dispatch({ type: 'reset' });
     },
-    onError: (e, variables, context) => {
+    onError: (e) => {
       // An error happened!
       errorHandler(e);
       console.log('e:', e);
-      console.log('vars: ', variables);
-      console.log('context:', context);
+      // console.log('vars: ', variables);
+      // console.log('context:', context);
       // await errorSweetAlert(result.message);
     },
   });
@@ -150,7 +150,9 @@ const MemberRole: React.FC = () => {
                     data={ roles }
                     label={ t('general.type') }
                     onChangeHandler={ (v): void => {
-                      return dispatch({ type: 'roleId', value: v });
+                        dispatch({ type: 'roleId', value: v });
+                        console.log('selected role:', v)
+                        console.log('state:', state)
                     } }
                   />
                 </Grid>
@@ -203,7 +205,7 @@ const MemberRole: React.FC = () => {
               editAction={
                 async (e: any, row: any): Promise<void> => await addUserToRoleHandler(row) }
               queryKey={ PharmacyEnum.GET_MEMBERS }
-              queryCallback={ checked }
+              queryCallback={ getCurrentPharmacyUsers }
               initLoad={ false }
             />
           </Paper>

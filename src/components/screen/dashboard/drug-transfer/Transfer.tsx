@@ -16,7 +16,6 @@ import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterf
 import queryString from "query-string";
 import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
-import { encryptionKey } from '../../../../enum/consts';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -69,21 +68,26 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   const location = useLocation();
   const params = queryString.parse(location.search);
-  
-  let eid: number | undefined = undefined;
-  const encryptedId = (params.eid == null ? undefined : params.eid);
-  if (encryptedId !== undefined) {
-    const encDecService = new EncrDecrService();
-    const decryptedId = encDecService.decrypt(encryptionKey, encryptedId);
-    eid = +decryptedId;
-  }
+  const encDecService = new EncrDecrService();
 
   useEffect(() => {
     (async (): Promise<void> => {
+      let eid: any = undefined;
+      // const hasPlus = 
+      const encryptedId = (params.eid == null ? undefined : params.eid);
+
+      // if (encryptedId !== undefined) {
+      //   eid = await encDecService.decrypt(encryptedId)
+      // }
+
+      eid = encryptedId;
+
       if (eid !== undefined) {
-        setExchangeId(eid);
+        // @ts-ignore
+        setExchangeId(+eid);
         setActiveStep(1);
-        const result = await getViewExchange(eid);
+        // @ts-ignore
+        const result = await getViewExchange(+eid);
         const res: ViewExchangeInterface | undefined = result.data;
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];

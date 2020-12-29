@@ -18,19 +18,18 @@ axiosInstance.interceptors.response.use(undefined, error => {
   const { status } = response;
   if (status === 401) {
     (async (): Promise<any> => {
-      await errorSweetAlert('خطایی در عدم دسترسی وجود دارد');
+      await errorSweetAlert('خطای عدم دسترسی');
     })();
   } else if (status === 404) {
     (async (): Promise<any> => {
-      await errorSweetAlert('خطای 404');
+      await errorSweetAlert('پیدا نشد! - 404');
     })();
   } else if (status === 500) {
-    // (async (): Promise<any> => {
-    //   await sweetAlert({
-    //     type: 'error',
-    //     text: data.message
-    //   });
-    // })();
+    (async (): Promise<any> => {
+      await errorSweetAlert(
+        error?.message == undefined ? error.response : error.message
+      );
+    })();
   }
 
   return Promise.reject(error);
