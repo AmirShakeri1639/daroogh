@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { PharmacyEnum } from '../../../../enum';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import {
-  ActionInterface, TableColumnInterface, UserRoleInterface
+  ActionInterface, LabelValue, TableColumnInterface, UserRoleInterface
 } from '../../../../interfaces';
 import { MembershipRequest, Role } from '../../../../services/api';
 import DataTable from '../../../public/datatable/DataTable';
@@ -17,6 +17,7 @@ import { useMutation, useQueryCache } from 'react-query';
 import { errorHandler, errorSweetAlert, successSweetAlert } from '../../../../utils';
 import CloseIcon from '@material-ui/icons/Close';
 import Modal from '../../../public/modal/Modal';
+import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 
 const initialState: UserRoleInterface = {
   roleId: 0,
@@ -98,6 +99,11 @@ const MemberRole: React.FC = () => {
     },
   });
 
+  const roles: LabelValue[] = [
+    { label: 'نقش ۱ داروخانه', value: 50 },
+    { label: 'نقش ۲ داروخانه', value: 51 },
+    { label: 'نقش ۳ داروخانه', value: 52 },
+  ];
 
   const addUserToRoleHandler = async (item: UserRoleInterface): Promise<any> => {
     toggleIsOpenSaveModalForm();
@@ -108,10 +114,6 @@ const MemberRole: React.FC = () => {
 
   const submitAccept = async (el: React.FormEvent<HTMLFormElement>): Promise<any> => {
     el.preventDefault();
-
-    const {
-      roleId, userId
-    } = state;
 
     try {
       await _addUserToRole(state.roleId, state.userId);
@@ -127,7 +129,7 @@ const MemberRole: React.FC = () => {
       <Modal open={ isOpenSaveModal } toggle={ toggleIsOpenSaveModalForm }>
         <Card className={ root }>
           <CardHeader
-            title={ state?.id === 0 ? t('action.create') : t('action.edit') }
+            title={ t('action.edit') }
             action={
               <IconButton onClick={ toggleIsOpenSaveModalForm }>
                 <CloseIcon />
@@ -143,15 +145,13 @@ const MemberRole: React.FC = () => {
             >
               <Grid container spacing={ 3 }>
                 <Grid item xs={ 12 } sm={ 6 }>
-                  <TextField
-                    error={ state.pharmacyComment?.length < 2 && showError }
-                    label={ t('general.comment') }
-                    required
-                    variant="outlined"
-                    value={ state.pharmacyComment }
-                    className={ formItem }
-                    onChange={ (e):
-                      void => dispatch({ type: 'pharmacyComment', value: e.target.value }) }
+                <DaroogDropdown
+                    defaultValue={state.type}
+                    data={ roles }
+                    label={ t('general.type') }
+                    onChangeHandler={(v): void => {
+                      return dispatch({ type: 'roleId', value: v });
+                    }}
                   />
                 </Grid>
                 <Divider />
