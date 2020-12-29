@@ -1,0 +1,33 @@
+import CryptoJS from 'crypto-js';
+
+export class EncrDecrService {
+
+  encrypt = (keys: any, value: any): any => {
+    const key = CryptoJS.enc.Utf8.parse(keys);
+    const iv = CryptoJS.enc.Utf8.parse(keys);
+    const encrypted = CryptoJS.AES.encrypt(
+      CryptoJS.enc.Utf8.parse(value.toString()), key,
+    {
+        keySize: 256 / 8,
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+
+    return encrypted.toString();
+  }
+  
+  decrypt = (keys: any, value: any): any => {
+    const key = CryptoJS.enc.Utf8.parse(keys);
+    const iv = CryptoJS.enc.Utf8.parse(keys);
+    const decrypted = CryptoJS.AES.decrypt(
+      value, key, {
+        keySize: 256 / 8,
+        iv: iv,
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    });
+
+    return decrypted.toString(CryptoJS.enc.Utf8);
+  }
+}
