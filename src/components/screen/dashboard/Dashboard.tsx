@@ -28,6 +28,7 @@ import { LoggedInUserInterface } from '../../../interfaces';
 import { logoutUser } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
+import { ColorEnum } from '../../../enum';
 
 const drawerWidth = 240;
 
@@ -234,7 +235,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
         </AppBar>
         <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
           <div className={ classes.toolbarIcon }>
-            <span className={ classes.systemTitle } style={{ textAlign: 'right' }}>
+            <span className={ classes.systemTitle } style={ { textAlign: 'right' } }>
               { t('general.systemTitle') }
             </span>
             <IconButton onClick={ handleDrawerClose }>
@@ -260,7 +261,10 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                   color="inherit"
                   onClick={ (): void => logoutUser() }
                 >
-                  <FontAwesomeIcon icon={ faDoorOpen } />
+                  {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
+                  <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
+                    { t('login.exit') }
+                  </span>
                 </IconButton>
               </Grid>
             </Grid>

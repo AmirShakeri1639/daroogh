@@ -40,6 +40,7 @@ const DashboardActivePage = lazy(() =>
 );
 
 const {
+  login,
   transfer,
   desktop,
   supplyList,
@@ -58,7 +59,7 @@ const App = (): JSX.Element => {
         <Switch>
           <Suspense fallback={<CircleLoading />}>
             <CssBaseline />
-            <PublicRoute exact path={['/', '/login']}>
+            <PublicRoute exact path={['/', login]}>
               <Login />
             </PublicRoute>
 
