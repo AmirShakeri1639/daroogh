@@ -11,10 +11,11 @@ import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
 import {
   getExpireDate, isExchangeCompleted, hasLabelValue, isStateCommon
 } from '../../../../../utils/ExchangeTools';
-import { isNullOrEmpty } from '../../../../../utils';
+import { isNullOrEmpty, EncrDecrService } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import { useHistory } from "react-router-dom";
 import routes from '../../../../../routes';
+import { encryptionKey } from '../../../../../enum/consts';
 // load test data
 // import d from './testdata.json';
 
@@ -47,7 +48,7 @@ const Desktop: React.FC = () => {
         let hasCompleted: boolean = false;
         const items = result.items.map((item: any) => {
           if (!item.currentPharmacyIsA &&
-            item.state <= 10 && 
+            item.state <= 10 &&
             !isStateCommon(item.state)) item.state += 10;
           if (isExchangeCompleted(item.state)) hasCompleted = true;
           if (!hasLabelValue(statesList, item.state) && !hasCompleted) {
@@ -74,14 +75,14 @@ const Desktop: React.FC = () => {
     getExchanges();
   }, []);
 
-  const [exchangeId, setExchangeId] = useState<number | undefined>(undefined);
+  const encDecService = new EncrDecrService();
 
   const cardClickHandler = (
-    id: number | undefined,
-   // state: number | undefined = 1
+    id: number,
+    state: number | undefined = 1
   ): void => {
-    setExchangeId(id);
-    history.push(transfer);
+    const encryptedId = encDecService.encrypt(encryptionKey, id);
+    history.push(`${transfer}?eid=${encryptedId}`);
   };
 
   const sortSelected = (field: string, sortType: SortTypeEnum): void => {

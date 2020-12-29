@@ -1,6 +1,4 @@
-import { AddDrugInterface } from '../../interfaces';
-import { ViewExchangeInterface } from '../../interfaces';
-import { AddDrog1, AddPack1, RemovePack1, Send } from '../../model/exchange';
+import { AddDrugInterface, ViewExchangeInterface } from '../../interfaces';
 import { PharmacyDrugSupplyList } from '../../model/pharmacyDrug';
 import {
   AddDrog1,

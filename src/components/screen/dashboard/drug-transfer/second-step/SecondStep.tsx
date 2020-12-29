@@ -48,9 +48,9 @@ import sweetAlert from '../../../../../utils/sweetAlert';
 import { Cancel, ConfirmOrNotExchange } from '../../../../../model/exchange';
 import { errorHandler } from '../../../../../utils';
 import DesktopCardContent from '../desktop/DesktopCardContent';
-import { ExchangeInterface } from '../../../../../interfaces/ExchangeInterface';
-import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
 import ActionButtons from '../exchange/ActionButtons';
+import { ExchangeInterface } from '../../../../../interfaces/ExchangeInterface';
+import { ViewExchangeInterface } from '../../../../../interfaces';
 
 const style = makeStyles((theme) =>
   createStyles({

@@ -118,6 +118,7 @@ export interface ProvincePropsInterface {
 export interface TransferPropsInterface {
   viewExchangeId?: number;
   exchangeState?: number;
+  location?: string;
 }
 
 export interface MaterialSearchPropsInterface {

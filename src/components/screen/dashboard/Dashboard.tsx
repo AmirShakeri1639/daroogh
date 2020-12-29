@@ -222,8 +222,8 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             </Typography>
             <Button
               variant="contained"
-              style={{ backgroundColor: ColorEnum.White }}
-              onClick={(): void => history.push(transfer) }
+              style={ { backgroundColor: ColorEnum.White } }
+              onClick={ (): void => history.push(transfer) }
             >
               { t('exchange.create') }
             </Button>
@@ -245,7 +245,8 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             <UserMenu />
           </Toolbar>
         </AppBar>
-        <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
+        <MaterialDrawer onClose={ toggleIsOpenDrawer }
+          isOpen={ isOpenDrawer }>
           <div className={ classes.toolbarIcon }>
             <span className={ classes.systemTitle } style={ { textAlign: 'right' } }>
               { t('general.systemTitle') }

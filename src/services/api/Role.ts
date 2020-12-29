@@ -3,9 +3,18 @@ import { errorHandler } from "../../utils";
 import { NewRoleData } from "../../interfaces";
 
 class Role extends Api {
+  readonly urls = {
+    all: '/Roles/AllRoles',
+    allRolePermissionItems: '/Roles/AllPermissionItems',
+    removeRoleById: '/Roles/Remove/',
+    saveNewRole: '/Roles/Save',
+    roleById: '/Roles/Detail/',
+    addUserToRole: '/Roles/AddUserToRole',
+  }
+
   getAllRoles = async (): Promise<any> => {
     try {
-      const result = await this.postJsonData('/Roles/AllRoles');
+      const result = await this.postJsonData(this.urls.all);
       return result.data;
     } catch (e) {
       errorHandler(e);
@@ -14,7 +23,7 @@ class Role extends Api {
 
   getAllRolePermissionItems = async (): Promise<any> => {
     try {
-      const result = await this.postJsonData('/Roles/AllPermissionItems');
+      const result = await this.postJsonData(this.urls.allRolePermissionItems);
       return result.data;
     } catch (e) {
       errorHandler(e);
@@ -23,7 +32,7 @@ class Role extends Api {
 
   removeRoleById = async (roleId: number | string): Promise<any> => {
     try {
-      const result = await this.postJsonData(`/Roles/Remove/${roleId}`);
+      const result = await this.postJsonData(`${this.urls.removeRoleById}${roleId}`);
       return result.data;
     } catch (e) {
       errorHandler(e);
@@ -33,7 +42,7 @@ class Role extends Api {
   saveNewRole = async (data: NewRoleData): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        '/Roles/Save',
+        this.urls.saveNewRole,
         data,
       );
       return result.data;
@@ -44,7 +53,22 @@ class Role extends Api {
 
   getRoleById = async (roleId: number | string): Promise<any> => {
     try {
-      const result = await this.postJsonData(`/Roles/Detail/${roleId}`);
+      const result = await this.postJsonData(`${this.urls.roleById}${roleId}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  addUserToRole = async (roleId: number | string, userId: number | string): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        this.urls.addUserToRole,
+        {
+          roleID: roleId,
+          userID: userId
+        }
+      );
       return result.data;
     } catch (e) {
       errorHandler(e);
