@@ -30,6 +30,7 @@ import {
 import { Select } from '@material-ui/core';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import moment from 'jalali-moment';
+import Utils from '../../../../public/utility/Utils';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -85,10 +86,12 @@ const ExchangeApprove: React.FC = () => {
     (async (): Promise<void> => {
       const result = await getAccountingForPayment(10);
       if (result) {
-        const res: AccountingInterface[] = result.data.accountingForPayment;
+        const res: AccountingInterface[] = result.data.accountingForPayment.sort(
+          (a: any, b: any) => (a > b ? 1 : -1)
+        );
         setAccountingForPayment(res);
-        const md = res.sort((a: any, b: any) => (a > b ? 1 : -1))[0];
-        setPaymentAmount(md.amount);
+        const amount = res[0].amount > 0 ? res[0].amount : 0;
+        setPaymentAmount(amount);
       }
     })();
   }, []);
@@ -186,8 +189,8 @@ const ExchangeApprove: React.FC = () => {
                           </Grid>
                           <Grid item xs={11}>
                             <TextLine
-                              rightText={'قیمت'}
-                              leftText={item.amount}
+                              rightText={'مبلغ'}
+                              leftText={Utils.numberWithCommas(item.amount)}
                             />
                           </Grid>
                         </Grid>
@@ -209,26 +212,43 @@ const ExchangeApprove: React.FC = () => {
                         </Grid>
                       </li>
                     </ul>
-                    <div style={{ marginTop: -10 }}>
-                      <Checkbox
-                        disabled={item.amount <= 0}
-                        onChange={(
-                          e: React.ChangeEvent<HTMLInputElement>
-                        ): any => {
-                          item.isChecked = e.target.checked;
-                          let amount = 0;
-                          if (e.target.checked) {
-                            amount = totalAmount + item.amount;
-                            setTotoalAmount(amount);
-                          } else {
-                            amount = totalAmount - item.amount;
-                            setTotoalAmount(amount);
-                          }
-                          if (amount > paymentAmount)
-                            setPaymentAmount(paymentAmount);
-                          else setPaymentAmount(amount);
-                        }}
-                      />
+                    <div
+                      style={{
+                        marginTop: item.amount <= 0 ? 0 : -10,
+                        padding: item.amount <= 0 ? 8 : 0,
+                      }}
+                    >
+                      {item.amount <= 0 ? (
+                        <span
+                          style={{
+                            fontWeight: 'bold',
+                            color: 'red',
+                            margin: 11,
+                          }}
+                        >
+                          بستانکار
+                        </span>
+                      ) : (
+                        <Checkbox
+                          disabled={item.amount <= 0}
+                          onChange={(
+                            e: React.ChangeEvent<HTMLInputElement>
+                          ): any => {
+                            item.isChecked = e.target.checked;
+                            let amount = 0;
+                            if (e.target.checked) {
+                              amount = totalAmount + item.amount;
+                              setTotoalAmount(amount);
+                            } else {
+                              amount = totalAmount - item.amount;
+                              setTotoalAmount(amount);
+                            }
+                            if (amount > paymentAmount)
+                              setPaymentAmount(paymentAmount);
+                            else setPaymentAmount(amount);
+                          }}
+                        />
+                      )}
                     </div>
                   </Paper>
                 </Grid>

@@ -61,7 +61,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   );
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
 
-  const { viewExchangeId, exchangeState } = props;
+  const { viewExchangeId = 10057, exchangeState } = props;
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -69,8 +69,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         setExchangeId(viewExchangeId);
         setActiveStep(1);
         const result = await getViewExchange(viewExchangeId);
-        if (result) {
-          const res: ViewExchangeInterface = result.data;
+        debugger;
+        const res: ViewExchangeInterface | undefined = result.data;
+        if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
           const basketB: AllPharmacyDrugInterface[] = [];
 
@@ -122,24 +123,24 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
         }
-        setViewExchange(result);
-      }
-      if (exchangeState !== undefined) {
-        console.log('کد وضعیت تبادل : ', exchangeState);
-        setExchangeStateCode(exchangeState);
-        switch (exchangeState) {
-          case 2:
-            setMessageOfExchangeState(
-              'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
-            );
-            break;
-          case 4:
-            setMessageOfExchangeState(
-              'داروخانه مقابل لیست های انتخاب شده شما را تایید/ویرایش نموده است. لطفا پس از بررسی تایید نهایی نمایید.'
-            );
-            break;
-          default:
-            break;
+        setViewExchange(res);
+        if (res) {
+          console.log('کد وضعیت تبادل : ', res.state);
+          setExchangeStateCode(res.state);
+          switch (res.state) {
+            case 2:
+              setMessageOfExchangeState(
+                'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
+              );
+              break;
+            case 4:
+              setMessageOfExchangeState(
+                'داروخانه مقابل لیست های انتخاب شده شما را تایید/ویرایش نموده است. لطفا پس از بررسی تایید نهایی نمایید.'
+              );
+              break;
+            default:
+              break;
+          }
         }
       }
     })();

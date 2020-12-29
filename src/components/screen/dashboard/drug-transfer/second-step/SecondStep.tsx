@@ -45,7 +45,7 @@ import ExchangeApprove from '../exchange/ExchangeApprove';
 import Modal from '../../../../public/modal/Modal';
 import CloseIcon from '@material-ui/icons/Close';
 import sweetAlert from '../../../../../utils/sweetAlert';
-import { Cancel } from '../../../../../model/exchange';
+import { Cancel, ConfirmOrNotExchange } from '../../../../../model/exchange';
 import { errorHandler } from '../../../../../utils';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 import { ExchangeInterface } from '../../../../../interfaces/ExchangeInterface';
@@ -101,13 +101,14 @@ const SecondStep: React.FC = () => {
   const { getAllPharmacyDrug, getViewExchange } = new PharmacyDrug();
   const { t } = useTranslation();
 
+  const [modalType, setModalType] = useState('');
   const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(
     false
   );
-  const toggleIsOpenCancelExchangeModalForm = (): void =>
+  const toggleIsOpenCancelExchangeModalForm = (type: string): void => {
+    setModalType(type);
     setIsOpenCancelExchangeModal((v) => !v);
-
-  // const [viewExhcnage, setViewExchange] = useState<ViewExchangeInterface>({id});
+  };
 
   const {
     activeStep,
@@ -138,7 +139,7 @@ const SecondStep: React.FC = () => {
   const [isGetData, setIsGetData] = useState<boolean>(false);
   const [showApprove, setShowApprove] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
-  const { cancelExchange } = new PharmacyDrug();
+  const { cancelExchange, confirmOrNotExchange } = new PharmacyDrug();
 
   const [_cancelExchange, { isLoading: isLoadingSend }] = useMutation(
     cancelExchange,
@@ -159,6 +160,25 @@ const SecondStep: React.FC = () => {
     }
   );
 
+  const [
+    _confirmOrNotExchange,
+    { isLoading: isLoadingConfirmOrNotExchange },
+  ] = useMutation(confirmOrNotExchange, {
+    onSuccess: async (res) => {
+      if (res) {
+        await sweetAlert({
+          type: 'success',
+          text: res.message,
+        });
+      } else {
+        await sweetAlert({
+          type: 'error',
+          text: 'عملیات ناموفق',
+        });
+      }
+    },
+  });
+
   const handleCancelExchange = async (): Promise<any> => {
     const inputmodel = new Cancel();
     inputmodel.exchangeID = exchangeId;
@@ -168,7 +188,21 @@ const SecondStep: React.FC = () => {
     } catch (e) {
       errorHandler(e);
     }
-    toggleIsOpenCancelExchangeModalForm();
+    toggleIsOpenCancelExchangeModalForm(modalType);
+  };
+
+  const handleConfirmOrNotExchange = async (
+    isConfirm: boolean
+  ): Promise<any> => {
+    const inputmodel = new ConfirmOrNotExchange();
+    inputmodel.exchangeID = exchangeId;
+    inputmodel.isConfirm = isConfirm;
+    try {
+      await _confirmOrNotExchange(inputmodel);
+    } catch (e) {
+      errorHandler(e);
+    }
+    toggleIsOpenCancelExchangeModalForm(modalType);
   };
 
   const {
@@ -357,7 +391,8 @@ const SecondStep: React.FC = () => {
   const ActionButtons = (): JSX.Element => {
     let element: JSX.Element = <></>;
     if (!viewExhcnage) return element;
-    const vx: ViewExchangeInterface | undefined = viewExhcnage.data;
+    debugger;
+    const vx: ViewExchangeInterface | undefined = viewExhcnage;
     if (vx) {
       if (vx.currentPharmacyIsA) {
         if (exchangeStateCode !== 6 && exchangeStateCode !== 10)
@@ -367,19 +402,19 @@ const SecondStep: React.FC = () => {
               type="button"
               variant="outlined"
               color="red"
-              onClick={toggleIsOpenCancelExchangeModalForm}
+              onClick={() => toggleIsOpenCancelExchangeModalForm('cancel')}
             >
               لغو درخواست
             </Button>
           );
 
-        if (exchangeStateCode === 4 || exchangeStateCode === 6)
+        if (exchangeStateCode === 4 || exchangeStateCode === 8)
           element = (
             <>
               <>{element}</>
               <Button
                 className={
-                  exchangeStateCode === 6 ? confirmButton : confirmButton4
+                  exchangeStateCode === 8 ? confirmButton : confirmButton4
                 }
                 type="button"
                 variant="outlined"
@@ -388,7 +423,7 @@ const SecondStep: React.FC = () => {
                   setShowApproveModalForm(true);
                 }}
               >
-                تایید نهایی
+                پرداخت
               </Button>
             </>
           );
@@ -415,21 +450,32 @@ const SecondStep: React.FC = () => {
         ) {
           element = (
             <Button
-              className={exchangeStateCode === 2 ? cancelButton : cancelButton4}
+              className={exchangeStateCode !== 2 ? cancelButton : cancelButton4}
               type="button"
               variant="outlined"
               color="red"
-              onClick={toggleIsOpenCancelExchangeModalForm}
+              onClick={() => toggleIsOpenCancelExchangeModalForm('cancel')}
             >
               لغو درخواست
             </Button>
           );
         }
-        if (
-          exchangeStateCode === 2 ||
-          exchangeStateCode === 4 ||
-          exchangeStateCode === 9
-        )
+        if (exchangeStateCode === 2)
+          element = (
+            <>
+              <>{element}</>
+              <Button
+                className={confirmButton4}
+                type="button"
+                variant="outlined"
+                color="green"
+                onClick={() => toggleIsOpenCancelExchangeModalForm('approve')}
+              >
+                تایید نهایی
+              </Button>
+            </>
+          );
+        if (exchangeStateCode === 4 || exchangeStateCode === 9)
           element = (
             <>
               <>{element}</>
@@ -444,7 +490,7 @@ const SecondStep: React.FC = () => {
                   setShowApproveModalForm(true);
                 }}
               >
-                تایید نهایی
+                پرداخت
               </Button>
             </>
           );
@@ -470,22 +516,22 @@ const SecondStep: React.FC = () => {
   };
 
   // TODO : here to move Action Component
-  const cancelExchangeModal = (): JSX.Element => {
+  const exchangeModalApproveCancel = (type: string): JSX.Element => {
     return (
       <Modal
         open={isOpenCancelExchangeModal}
-        toggle={toggleIsOpenCancelExchangeModalForm}
+        toggle={() => toggleIsOpenCancelExchangeModalForm(type)}
       >
         <Card>
           <CardHeader
             style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title="لغو تبادل"
+            title={type === 'approve' ? 'تایید تبادل' : 'لغو تبادل'}
             titleTypographyProps={{ variant: 'h6' }}
             action={
               <IconButton
                 style={{ marginTop: 10 }}
                 aria-label="settings"
-                onClick={toggleIsOpenCancelExchangeModalForm}
+                onClick={() => toggleIsOpenCancelExchangeModalForm(type)}
               >
                 <CloseIcon />
               </IconButton>
@@ -494,27 +540,44 @@ const SecondStep: React.FC = () => {
           <Divider />
           <CardContent>
             <Grid container spacing={1}>
-              <div>
-                <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
-              </div>
-              <TextField
-                style={{ width: '100%', marginTop: 10, fontSize: 10 }}
-                label="توضیحات"
-                multiline
-                rows={5}
-                variant="outlined"
-              />
+              {type === 'approve' ? (
+                <div>
+                  <span>آیا از انجام تبادل اطمینان دارید؟</span>
+                </div>
+              ) : (
+                <div>
+                  <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
+                  <TextField
+                    style={{ width: '100%', marginTop: 10, fontSize: 10 }}
+                    label="توضیحات"
+                    multiline
+                    rows={5}
+                    variant="outlined"
+                  />
+                </div>
+              )}
             </Grid>
           </CardContent>
           <CardActions>
-            <MatButton
-              onClick={handleCancelExchange}
-              variant="contained"
-              color="primary"
-              autoFocus
-            >
-              لغو تبادل
-            </MatButton>
+            {type === 'approve' ? (
+              <MatButton
+                onClick={() => handleConfirmOrNotExchange(true)}
+                variant="contained"
+                color="primary"
+                autoFocus
+              >
+                تایید
+              </MatButton>
+            ) : (
+              <MatButton
+                onClick={handleCancelExchange}
+                variant="contained"
+                color="primary"
+                autoFocus
+              >
+                لغو تبادل
+              </MatButton>
+            )}
           </CardActions>
         </Card>
       </Modal>
@@ -597,7 +660,8 @@ const SecondStep: React.FC = () => {
                 </div>
                 {showApproveModalForm && <ExchangeApprove />}
               </>
-              {isOpenCancelExchangeModal && cancelExchangeModal()}
+              {isOpenCancelExchangeModal &&
+                exchangeModalApproveCancel(modalType)}
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
                   {!viewExhcnage && (

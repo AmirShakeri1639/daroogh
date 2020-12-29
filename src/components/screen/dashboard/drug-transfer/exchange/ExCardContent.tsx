@@ -23,6 +23,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
+import Utils from '../../../../public/utility/Utils';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -110,7 +111,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <Grid item xs={11}>
               <TextLine
                 rightText={t('general.price')}
-                leftText={pharmacyDrug?.totalAmount}
+                leftText={Utils.numberWithCommas(pharmacyDrug?.totalAmount)}
               />
             </Grid>
           </Grid>
@@ -148,7 +149,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                     </li>
                     <li className={colLeftIcon}>
                       <MoneyIcon />
-                      {item.amount}
+                      {Utils.numberWithCommas(item.amount)}
                     </li>
                   </ul>
                 </Grid>
@@ -199,7 +200,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <Grid item xs={10}>
               <TextLine
                 rightText={t('general.price')}
-                leftText={pharmacyDrug?.amount}
+                leftText={Utils.numberWithCommas(pharmacyDrug?.amount)}
               />
             </Grid>
           </Grid>

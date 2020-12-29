@@ -34,7 +34,9 @@ import {
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
 import {
-  getExpireDate, isExchangeCompleted, isExchangeCompleteddOrCancelled
+  getExpireDate,
+  isExchangeCompleted,
+  isExchangeCompleteddOrCancelled,
 } from '../../../../../utils/ExchangeTools';
 import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
 
@@ -105,20 +107,20 @@ const DesktopCardContent = (props: Props): JSX.Element => {
 
   const getExchangeTitle = (): string => {
     if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
-      return t(`ExchangeStateEnum.` +
-        `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`)
+      return t(
+        `ExchangeStateEnum.` +
+          `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
+      );
     } else {
-      return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`)
-    };
-  }
+      return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
+    }
+  };
 
   const getExchangeTitleColor = (): string => {
-    return (
-      isExchangeCompleted(item.state, item?.currentPharmacyIsA)
-        ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
-        : CardColors[item.state]
-    )
-  }
+    return isExchangeCompleted(item.state, item?.currentPharmacyIsA)
+      ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
+      : CardColors[item.state];
+  };
 
   // random grade for test
   // pharmacyGrade = Math.floor(Math.random() * 10 ) % 4 + 1;
@@ -317,10 +319,16 @@ const DesktopCardContent = (props: Props): JSX.Element => {
   return (
     <Card className={`${cardRoot}`}>
       <CardContent>
-        <Typography variant="h5" component="h2" className={ `${cardTitle} ${pointer}` }
-          style={ { background: getExchangeTitleColor() } }
-          onClick={ (): void => onCardClick(item.id, (item.state > 10 ? item.state - 10 : item.state)) }>
-          { getExchangeTitle() }
+        <Typography
+          variant="h5"
+          component="h2"
+          className={`${cardTitle} ${pointer}`}
+          style={{ background: getExchangeTitleColor() }}
+          onClick={(): void =>
+            onCardClick(item.id, item.state > 10 ? item.state - 10 : item.state)
+          }
+        >
+          {getExchangeTitle()}
         </Typography>
         <div className={titleCode}>
           {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}

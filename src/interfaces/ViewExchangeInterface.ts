@@ -24,7 +24,7 @@ export interface ViewExchangeInterface {
   // lockSuggestion: boolean;
   // allowShowPharmacyInfo: boolean;
   id: number;
-  state?: number;
+  state: number;
   currentPharmacyIsA?: boolean;
   numberA?: string;
   numberB?: string;
