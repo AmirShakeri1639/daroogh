@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import Context from '../Context';
 import {
   Card, CardContent, Container, Grid, Typography
 } from '@material-ui/core';
@@ -76,6 +77,7 @@ const DesktopCardContent = ({
   onCardClick = undefined
 }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { setExchangeId } = useContext(Context);
   // const { onCardClick } = props;
   // let item = props.item;
   // if (item == undefined) item = initialState;
@@ -304,6 +306,7 @@ const DesktopCardContent = ({
           style={ { background: getExchangeTitleColor() } }
           onClick={ (): void => {
             if (onCardClick) {
+              setExchangeId(item.id);
               onCardClick(item.id, (item.state > 10 ? item.state - 10 : item.state));
             }
           }}>
