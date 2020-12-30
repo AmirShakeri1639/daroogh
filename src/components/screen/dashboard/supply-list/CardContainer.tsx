@@ -65,8 +65,10 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
   };
 
   const openEditModal = (): void => {
-    editHandler();
-  }
+    if (editHandler !== undefined) {
+      editHandler();
+    }
+  };
 
   return (
     <Paper className={root} elevation={1}>

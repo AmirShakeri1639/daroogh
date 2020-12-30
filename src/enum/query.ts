@@ -5,7 +5,7 @@ export enum UserQueryEnum {
 
 export enum CategoryQueryEnum {
   GET_ALL_CATEGORIES = 'getAllCategories',
-};
+}
 
 export enum MessageQueryEnum {
   GET_ALL_MESSAGES = 'getAllMessages',
@@ -31,6 +31,7 @@ export enum RoleQueryEnum {
 
 export enum PharmacyDrugEnum {
   GET_RELATED_PHARMACY_DRUG = 'getRelatedPharmacyDrug',
+  GET_FAVORITE_LIST = 'getFavoriteList',
 }
 
 export enum AllPharmacyDrug {
@@ -40,5 +41,5 @@ export enum AllPharmacyDrug {
 export enum MembershipRequestEnum {
   GET_ALL = 'all',
   GET_CHECKED = 'checked',
-  GET_NOT_CHECKED = 'notChecked'
+  GET_NOT_CHECKED = 'notChecked',
 }
