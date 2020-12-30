@@ -53,6 +53,9 @@ const useStyles = makeStyles((theme) =>
       maxWidth: 360,
       backgroundColor: theme.palette.background.paper,
     },
+    notNested: {
+      paddingLeft: theme.spacing(2),
+    },
     nested: {
       paddingLeft: theme.spacing(4),
     },
@@ -77,6 +80,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const {
+  dashboard,
   transfer,
   desktop,
   supplyList,
@@ -98,14 +102,10 @@ const ListItems: React.FC = () => {
 
   const { activePageHandler: setActivePage } = useContext(Context);
 
-  const { nested, linkWrapper } = useStyles();
+  const { nested, linkWrapper, notNested } = useStyles();
   const { t } = useTranslation();
 
   const { spacing3 } = useClasses();
-
-  const redirectDashboardHandler = (): void => {
-    setActivePage('dashboard');
-  };
 
   const { userData, roles } = new JwtData();
   const rolesArray = roles();
@@ -119,12 +119,14 @@ const ListItems: React.FC = () => {
     return (
       <>
         <h3 className={ spacing3 }>{ t('user.admin') }</h3>
-        <ListItem button onClick={ redirectDashboardHandler }>
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary={ t('general.dashboard') } />
-        </ListItem>
+        <List component="div" className={ linkWrapper }>
+          <Link to={ dashboard } className={ notNested }>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={ t('general.dashboard') } />
+          </Link>
+        </List>
         <ListItem button onClick={ (): void => setIsOpenRoleMenu((val) => !val) }>
           <ListItemIcon>
             <ContactMailTwoToneIcon />
@@ -416,7 +418,7 @@ const ListItems: React.FC = () => {
     <div>
       {rolesArray && rolesArray?.length > 0 && (
         <>
-          {rolesArray.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu() }
+          {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu() }
           {rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 && pharmacyMenu() }
         </>
       ) }

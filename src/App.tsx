@@ -47,6 +47,7 @@ const DashboardActivePage = lazy(() =>
 
 const {
   login,
+  dashboard,
   transfer,
   desktop,
   supplyList,
@@ -57,7 +58,6 @@ const {
 } = routes;
 
 const App = (): JSX.Element => {
-  const dashboard = 'dashboard';
   const exchangeBase = 'exchange';
 
   return (
@@ -78,7 +78,7 @@ const App = (): JSX.Element => {
               <RegisterPharmacyWithUser />
             </PublicRoute>
 
-            <PrivateRoute exact path="/dashboard">
+            <PrivateRoute exact path={ dashboard }>
               <Dashboard component={<></>} />
             </PrivateRoute>
 

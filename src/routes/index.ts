@@ -8,6 +8,7 @@ export default {
   login: '/login',
   registerPharmacyWithUser: `/register-pharmacy-with-user`,
 
+  dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,
   transfer: `/${dashboard}/${exchange}/transfer`,
   supplyList: `/${dashboard}/${exchange}/supply-list`,
