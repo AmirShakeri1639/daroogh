@@ -181,17 +181,38 @@ const SecondStep: React.FC = () => {
             cardColor: 'white',
           });
 
+          // let isPack = false;
+          // let totalAmount = 0;
+          // if (item.packID) {
+          //   if (!packList.find((x) => x.packID === item.packID)) {
+          //     allPharmacyDrug
+          //       .filter((x) => x.packID === item.packID)
+          //       .forEach((p: AllPharmacyDrugInterface) => {
+          //         packList.push(p);
+          //         totalAmount += p.amount;
+          //       });
+          //     item.totalAmount = totalAmount;
+          //     isPack = true;
+          //   } else {
+          //     return <></>;
+          //   }
+          // }
           let isPack = false;
           let totalAmount = 0;
+          let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            allPharmacyDrug
-              .filter((x) => x.packID === item.packID)
+            dataInfo
+              .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);
                 totalAmount += p.amount;
               });
             item.totalAmount = totalAmount;
             isPack = true;
+            ignore = false;
+          }
+          if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
+            return <></>;
           }
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
@@ -204,7 +225,12 @@ const SecondStep: React.FC = () => {
                     isPack={true}
                     pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
                     collapsableContent={
-                      <ExCardContent formType={3} packInfo={packList} />
+                      <ExCardContent
+                        formType={3}
+                        packInfo={packList.filter(
+                          (x) => x.packID === item.packID
+                        )}
+                      />
                     }
                   />
                 ) : (
