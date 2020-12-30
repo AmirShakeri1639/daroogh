@@ -126,7 +126,12 @@ export interface MaterialSearchPropsInterface {
 
 export interface SupplyListCardContainer {
   drug: AllPharmacyDrugInterface;
-  editHandler: () => void;
+  editHandler?: () => void;
+}
+
+export interface FavoriteDrugInterface {
+  data: DrugInterface;
+  formHandler: (item: number) => Promise<any>;
 }
 
 export interface DetailSupplyInterface {

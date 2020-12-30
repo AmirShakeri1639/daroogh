@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   largeSpacing: {
-    margin: theme.spacing(3),
+    padding: theme.spacing(3),
   },
   smallAvatar: {
     width: theme.spacing(3),

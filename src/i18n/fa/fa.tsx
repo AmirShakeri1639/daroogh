@@ -58,7 +58,7 @@ export default {
         offer: 'آفر',
         to: 'به',
         number: 'تعداد',
-        barcode: 'بارکد', 
+        barcode: 'بارکد',
         submit: 'ثبت',
         comment: 'شرح',
         sort: 'مرتب سازی',
@@ -67,6 +67,9 @@ export default {
         ascending: 'صعودی',
         descending: 'نزولی',
         all: 'همه',
+        add: 'اضافه کردن',
+        favorite: 'علاقه مندی',
+        undefined: 'تعریف نشده',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -163,6 +166,7 @@ export default {
         drugSelection: 'انتخاب دارو',
         newDrug: 'داروی جدید',
         SuppliedDrugsList: 'لیست داروهای عرضه شده توسط شما',
+        latinName: 'نام لاتین',
       },
       message: {
         message: 'پیام',
@@ -198,6 +202,9 @@ export default {
         completionDate: 'تاریخ تکمیل تبادل',
         state: 'وضعیت',
       },
+      favorite: {
+        addToDrugList: 'اضافه کردن به لیست دارو',
+      },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
         enableTextAlert: 'آیا میخواهید فعال شود؟',
@@ -230,6 +237,7 @@ export default {
         request: 'درخواست ایجاد',
         manager: 'مدیر داروخانه',
         addToTransferList: 'اضافه کردن به لیست عرضه',
+        favoriteList: 'لیست علاقه مندی ها',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',

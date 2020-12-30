@@ -21,7 +21,11 @@ import {
   LocalPharmacy,
   Business,
   Apps as AppsIcon,
+  Bookmark,
+  List as ListIcon,
 } from '@material-ui/icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPills, faBars } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import InboxIcon from '@material-ui/icons/Inbox';
@@ -35,7 +39,6 @@ import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
 import LockIcon from '@material-ui/icons/Lock';
 import MessageIcon from '@material-ui/icons/Message';
 import AddIcon from '@material-ui/icons/Add';
-import ListIcon from '@material-ui/icons/List';
 import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import { JwtData } from '../../../../utils';
@@ -72,7 +75,20 @@ const useStyles = makeStyles((theme) =>
   })
 );
 
-const { transfer, cardboard, supplyList, transactions, membersList } = routes;
+const {
+  transfer,
+  cardboard,
+  supplyList,
+  transactions,
+  membersList,
+  drugFavoriteList,
+  drugCategoryfavoriteList,
+} = routes;
+
+const isOpenPageOfThisGroup = (item: string): boolean => {
+  const location = window.location.href;
+  return location.includes(`/${item}/`);
+};
 
 const ListItems: React.FC = () => {
   const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
@@ -84,6 +100,9 @@ const ListItems: React.FC = () => {
   const [isOpenExchange, setIsOpenExchange] = useState<boolean>(false);
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
   const [isOpenMembers, setIsOpenMembers] = useState<boolean>(false);
+  const [isopenFavoriteList, setIsopenFavoriteList] = useState(
+    isOpenPageOfThisGroup('favorite')
+  );
 
   const { activePageHandler: setActivePage } = useContext(Context);
 
@@ -386,6 +405,35 @@ const ListItems: React.FC = () => {
                 <BookmarkBorderIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.membershipRequestsList')} />
+            </Link>
+          </List>
+        </Collapse>
+
+        <ListItem button onClick={(): void => setIsopenFavoriteList((v) => !v)}>
+          <ListItemIcon>
+            <Bookmark />
+          </ListItemIcon>
+          <ListItemText primary={t('general.favorite')} />
+          {isopenFavoriteList ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isopenFavoriteList} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={drugFavoriteList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faPills} />
+              </ListItemIcon>
+              <ListItemText primary={t('drug.drug')} />
+            </Link>
+          </List>
+
+          <List component="div" className={linkWrapper}>
+            <Link to={drugCategoryfavoriteList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBars} />
+              </ListItemIcon>
+              <ListItemText
+                primary={`${t('drug.category')} ${t('drug.drug')}`}
+              />
             </Link>
           </List>
         </Collapse>
