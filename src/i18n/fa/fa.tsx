@@ -3,6 +3,7 @@ export default {
     translation: {
       general: {
         emal: 'اعمال',
+        systemTitle: 'سامانه تبادل دارو',
         daroog: 'داروگ',
         tabadol: 'تبادل',
         special: 'متن آزمایشی داروگ',
@@ -184,6 +185,7 @@ export default {
         'new-category': 'ایجاد دسته بندی',
       },
       exchange: {
+        create: 'ایجاد تبادل',
         exchange: 'تبادل',
         desktop: 'کارتابل',
         expirationDate: 'تاریخ انقضای تبادل',
@@ -238,6 +240,7 @@ export default {
         manager: 'مدیر داروخانه',
         addToTransferList: 'اضافه کردن به لیست عرضه',
         favoriteList: 'لیست علاقه مندی ها',
+        memberRole: 'انتساب نقش‌ها',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
@@ -257,27 +260,48 @@ export default {
         FOROOKHTEHSHODEH: 'فروخته شده',
       },
       ExchangeStateEnum: {
+        // 0
         UNKNOWN: 'نامشخص',
+        // 1
         NOSEND: 'ارسال نشده',
+        // 2
         WAITFORB: 'منتظر تائید طرف مقابل',
+        // 3
         CONFIRMB_AND_WAITFORA: 'منتظر تائید شما',
+        // 4
         CONFIRMA_AND_B: 'تائید شده و در انتظار پرداخت',
+        // 5
         NOCONFIRMB: 'مخالفت شده توسط طرف مقابل',
+        // 6
         CONFIRMB_AND_NOCONFIRMA: 'مخالفت شده توسط شما',
+        // 7
         CANCELLED: 'لغو شده',
+        // 8
         CONFIRMA_AND_B_PAYMENTA: 'تائید طرفین و در انتظار پرداخت شما',
+        // 9
         CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        // 10
         CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
+        // 11
         NOSEND_FORB: 'ارسال نشده',
+        // 12
         WAITFORB_FORB: 'منتظر تائید شما',
+        // 13
         CONFIRMB_AND_WAITFORA_FORB: 'منتظر تائید طرف مقابل',
+        // 14
         CONFIRMA_AND_B_FORB: 'تائید شده و در انتظار پرداخت',
+        // 15
         NOCONFIRMB_FORB: 'مخالفت شده توسط شما',
+        // 16
         CONFIRMB_AND_NOCONFIRMA_FORB: 'مخالفت شده توسط طرف مقابل',
+        // 17
         CANCELLED_FORB: 'لغو شده',
+        // 18
         CONFIRMA_AND_B_PAYMENTA_FORB:
           'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        // 19
         CONFIRMA_AND_B_PAYMENTB_FORB: 'تائید طرفین و در انتظار پرداخت شما',
+        // 20
         CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
       },
       CancellerEnum: {

@@ -22,7 +22,8 @@ import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
 import Desktop from './drug-transfer/desktop/Desktop';
 import SupplyList from './supply-list/SupplyList';
-import Membership from './user/Membership';
+import Membership from './pharmacy/Membership';
+import Map from '../../public/map/Map';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -43,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 const DashboardActivePage: React.FC = () => {
   const { activePage } = useContext(Context);
   const [isShowTransfer, setIsShowTransfer] = useState<boolean>(false);
+  const [exchangeStateCode, setExchangeStateCode] = useState(0);
 
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -51,7 +53,8 @@ const DashboardActivePage: React.FC = () => {
     return <TransferDrug />;
   };
 
-  const showTransfer = (): void => {
+  const showTransfer = (state: number): void => {
+    setExchangeStateCode(state);
     setIsShowTransfer(true);
   };
 
@@ -61,10 +64,36 @@ const DashboardActivePage: React.FC = () => {
       case DashboardPages.DASHBOARD:
         el = !isShowTransfer ? (
           <Container maxWidth="lg" className={classes.container}>
+            {/* <Map /> */}
             <Grid container spacing={3}>
               <Grid item xs={12} md={8} lg={9}>
                 <Paper className={fixedHeightPaper}>Data</Paper>
-                <button onClick={showTransfer}>نمایش تبادل</button>
+                <button onClick={(): any => showTransfer(1)}>ارسال نشده</button>
+                <button onClick={(): any => showTransfer(2)}>
+                  منتظر تائید طرف مقابل'
+                </button>
+                <button onClick={(): any => showTransfer(3)}>
+                  منتظر تائید شما
+                </button>
+                <button onClick={(): any => showTransfer(4)}>
+                  تائید شده و در انتظار پرداخت
+                </button>
+                <button onClick={(): any => showTransfer(5)}>
+                  مخالفت شده توسط طرف مقابل
+                </button>
+                <button onClick={(): any => showTransfer(6)}>
+                  مخالفت شده توسط شما
+                </button>
+                <button onClick={(): any => showTransfer(7)}>لغو شده</button>
+                <button onClick={(): any => showTransfer(8)}>
+                  تائید طرفین و در انتظار پرداخت شما
+                </button>
+                <button onClick={(): any => showTransfer(9)}>
+                  تائید طرفین و در انتظار پرداخت طرف مقابل
+                </button>
+                <button onClick={(): any => showTransfer(10)}>
+                  تبادل کامل شده
+                </button>
               </Grid>
 
               <Grid item xs={12} md={4} lg={3}>
@@ -77,7 +106,7 @@ const DashboardActivePage: React.FC = () => {
             </Grid>
           </Container>
         ) : (
-          <TransferDrug viewExchangeId={9} />
+          <TransferDrug viewExchangeId={35} exchangeState={exchangeStateCode} />
         );
         break;
       case DashboardPages.CREATE_ROLE:

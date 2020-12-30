@@ -44,6 +44,7 @@ import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
+import { faUserTag } from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -51,6 +52,9 @@ const useStyles = makeStyles((theme) =>
       width: '100%',
       maxWidth: 360,
       backgroundColor: theme.palette.background.paper,
+    },
+    notNested: {
+      paddingLeft: theme.spacing(2),
     },
     nested: {
       paddingLeft: theme.spacing(4),
@@ -76,13 +80,24 @@ const useStyles = makeStyles((theme) =>
 );
 
 const {
+  dashboard,
   transfer,
-  cardboard,
+  desktop,
   supplyList,
   transactions,
-  membersList,
-  drugFavoriteList,
-  drugCategoryfavoriteList,
+  membershipRequests,
+  memberRole,
+  createRole,
+  createUser,
+  usersList,
+  changeUserPassword,
+  createDrug,
+  drugsList,
+  categoryList,
+  createPharmacy,
+  pharmaciesList,
+  createMessage,
+  messagesList,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -106,33 +121,31 @@ const ListItems: React.FC = () => {
 
   const { activePageHandler: setActivePage } = useContext(Context);
 
-  const { nested, linkWrapper } = useStyles();
+  const { nested, linkWrapper, notNested } = useStyles();
   const { t } = useTranslation();
 
   const { spacing3 } = useClasses();
 
-  const redirectDashboardHandler = (): void => {
-    setActivePage('dashboard');
-  };
-
   const { userData, roles } = new JwtData();
   const rolesArray = roles();
 
-  const dashboard = '/dashboard';
-
-  const preventDefault = (event: React.SyntheticEvent) =>
+  const preventDefault = (event: React.SyntheticEvent): any =>
     event.preventDefault();
 
   const adminMenu = (): JSX.Element => {
     return (
       <>
         <h3 className={spacing3}>{t('user.admin')}</h3>
-        <ListItem button onClick={redirectDashboardHandler}>
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary={t('general.dashboard')} />
-        </ListItem>
+
+        {/* //// Role */}
+        <List component="div" className={linkWrapper}>
+          <Link to={dashboard} className={notNested}>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('general.dashboard')} />
+          </Link>
+        </List>
         <ListItem button onClick={(): void => setIsOpenRoleMenu((val) => !val)}>
           <ListItemIcon>
             <ContactMailTwoToneIcon />
@@ -141,20 +154,17 @@ const ListItems: React.FC = () => {
           {isOpenRoleMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenRoleMenu} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.CREATE_ROLE)}
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={createRole} className={nested}>
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.create-new-role')} />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
+        {/* //// User */}
         <ListItem button onClick={(): void => setIsOpenUserMenu((val) => !val)}>
           <ListItemIcon>
             <PermIdentityTwoToneIcon />
@@ -163,42 +173,33 @@ const ListItems: React.FC = () => {
           {isOpenUserMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenUserMenu} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.CREATE_USER)}
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={createUser} className={nested}>
               <ListItemIcon>
                 <PersonAddTwoToneIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.create-user')} />
-            </ListItem>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.USERS_LIST)}
-            >
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={usersList} className={nested}>
               <ListItemIcon>
                 <GroupTwoToneIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.users-list')} />
-            </ListItem>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void =>
-                setActivePage(DashboardPages.CHANGE_USER_PASSWORD)
-              }
-            >
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={changeUserPassword} className={nested}>
               <ListItemIcon>
                 <LockIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.changeUserPassword')} />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
+        {/* //// Drug */}
         <ListItem button onClick={(): void => setIsOpenDrugMenu((val) => !val)}>
           <ListItemIcon>
             <Extension />
@@ -207,30 +208,25 @@ const ListItems: React.FC = () => {
           {isOpenDrugMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenDrugMenu} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.CREATE_DRUG)}
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={createDrug} className={nested}>
               <ListItemIcon>
                 <AddCircle />
               </ListItemIcon>
               <ListItemText primary={t('drug.suggest')} />
-            </ListItem>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.DRUGS_LIST)}
-            >
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={drugsList} className={nested}>
               <ListItemIcon>
                 <EnhancedEncryption />
               </ListItemIcon>
               <ListItemText primary={t('drug.list')} />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
+        {/* //// Category */}
         <ListItem button onClick={(): void => setIsOpenCategory((val) => !val)}>
           <ListItemIcon>
             <CategoryIcon />
@@ -239,19 +235,17 @@ const ListItems: React.FC = () => {
           {isOpenCategory ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenCategory} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.CATEGORY_LIST)}
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={categoryList} className={nested}>
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
               <ListItemText primary={t('category.list')} />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
+
+        {/* //// Pharmacy */}
         <ListItem
           button
           onClick={(): void => setIsOpenPharmacyMenu((val) => !val)}
@@ -263,32 +257,25 @@ const ListItems: React.FC = () => {
           {isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenPharmacyMenu} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void =>
-                setActivePage(DashboardPages.PHARMACY_CREATE)
-              }
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={createPharmacy} className={nested}>
               <ListItemIcon>
                 <AddBox />
               </ListItemIcon>
-              <ListItemText primary={t('pharmacy.request')} />
-            </ListItem>
-            <ListItem
-              button
-              className={nested}
-              onClick={(): void => setActivePage(DashboardPages.PHARMACY_LIST)}
-            >
+              <ListItemText primary={t('pharmacy.create')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={pharmaciesList} className={nested}>
               <ListItemIcon>
                 <Business />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.list')} />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
+        {/* //// Message */}
         <ListItem
           button
           onClick={(): void => setIsOpenMessageMenu((val) => !val)}
@@ -300,30 +287,21 @@ const ListItems: React.FC = () => {
           {isOpenMessageMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenMessageMenu} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              onClick={(): void =>
-                setActivePage(DashboardPages.CREATE_NEW_MESSAGE)
-              }
-              className={nested}
-            >
+          <List component="div" className={linkWrapper}>
+            <Link to={createMessage} className={nested}>
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
               <ListItemText primary={t('message.createMessage')} />
-            </ListItem>
-
-            <ListItem
-              button
-              onClick={(): void => setActivePage(DashboardPages.MESSAGES_LIST)}
-              className={nested}
-            >
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={messagesList} className={nested}>
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
               <ListItemText primary={t('message.messagesList')} />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
       </>
@@ -343,7 +321,7 @@ const ListItems: React.FC = () => {
         </ListItem>
         <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
-            <Link to={cardboard} className={nested}>
+            <Link to={desktop} className={nested}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
@@ -400,11 +378,19 @@ const ListItems: React.FC = () => {
         </ListItem>
         <Collapse in={isOpenMembers} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
-            <Link to={membersList} className={nested}>
+            <Link to={membershipRequests} className={nested}>
               <ListItemIcon>
                 <BookmarkBorderIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.membershipRequestsList')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={memberRole} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUserTag} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('pharmacy.memberRole')} />
             </Link>
           </List>
         </Collapse>
@@ -445,7 +431,7 @@ const ListItems: React.FC = () => {
     <div>
       {rolesArray && rolesArray?.length > 0 && (
         <>
-          {rolesArray.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
+          {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
           {rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 && pharmacyMenu()}
         </>
       )}

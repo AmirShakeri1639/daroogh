@@ -17,6 +17,7 @@ export enum DrugEnum {
 
 export enum PharmacyEnum {
   GET_ALL = 'all',
+  GET_MEMBERS = 'members',
 }
 
 export enum AccountingEnum {
@@ -39,4 +40,6 @@ export enum AllPharmacyDrug {
 
 export enum MembershipRequestEnum {
   GET_ALL = 'all',
+  GET_CHECKED = 'checked',
+  GET_NOT_CHECKED = 'notChecked',
 }

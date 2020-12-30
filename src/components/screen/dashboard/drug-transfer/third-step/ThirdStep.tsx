@@ -53,11 +53,27 @@ const style = makeStyles((theme) =>
       top: 135,
       zIndex: 999,
     },
+    actionContainer: {
+      display: 'flex',
+      marginTop: 5,
+      width: '100%',
+    },
+    cancelButton: {
+      width: '100%',
+    },
+    cancelButton4: {
+      width: '50%',
+      marginRight: 10,
+    },
+    confirmButton4: {
+      width: '50%',
+      marginLeft: 10,
+    },
   })
 );
 
 const ThirdStep: React.FC = () => {
-  const { getAllPharmacyDrug } = new PharmacyDrug();
+  const { getAllPharmacyDrug, getViewExchange } = new PharmacyDrug();
 
   const [isSelected, setIsSelected] = React.useState(false);
 
@@ -67,9 +83,20 @@ const ThirdStep: React.FC = () => {
     uAllPharmacyDrug,
     setUAllPharmacyDrug,
     uBasketCount,
+    exchangeId,
+    exchangeStateCode,
+    messageOfExchangeState,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
-  const { paper, stickyToolbox, stickyRecommendation } = style();
+  const {
+    paper,
+    stickyToolbox,
+    stickyRecommendation,
+    actionContainer,
+    cancelButton,
+    cancelButton4,
+    confirmButton4,
+  } = style();
 
   const queryCache = useQueryCache();
 
@@ -77,84 +104,72 @@ const ThirdStep: React.FC = () => {
   const [listCount, setListCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [dataInfo, setDataInfo] = useState<any>([]);
+  const [viewExhcnage, setViewExchange] = useState([]);
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
-      return (
-        otherArray.filter((other: any) => {
-          return other.id == current.id;
-        }).length == 0
-      );
+      if (current.packID)
+        return (
+          otherArray.filter((other: any) => {
+            return other.packID == current.packID;
+          }).length == 0
+        );
+      else
+        return (
+          otherArray.filter((other: any) => {
+            return other.id == current.id;
+          }).length == 0
+        );
     };
   };
 
-  const {
-    status,
-    isLoading,
-    error,
-    data,
-    isFetching,
-    isFetchingMore,
-    fetchMore,
-    refetch,
-    canFetchMore,
-  } = useInfiniteQuery(
-    'key',
-    async (k) => {
-      const data = await getAllPharmacyDrug('', listPageNo, pageSize);
-      setListPage(listPageNo + 1);
-      const allItemsTillNow = [...uAllPharmacyDrug, ...data.items];
-      setUAllPharmacyDrug(allItemsTillNow);
-      setListCount(data.count);
-      setDataInfo(data.items);
-      return data.items;
-    },
+  const { isLoading, error, data, refetch } = useQuery(
+    ['key'],
+    () => getAllPharmacyDrug('', listPageNo, pageSize),
     {
-      getFetchMore: () => {
-        return (
-          uAllPharmacyDrug.length === 0 || uAllPharmacyDrug.length < listCount
-        );
+      onSuccess: (data) => {
+        const { items, count } = data;
+        setUAllPharmacyDrug(items);
+        setDataInfo(items);
       },
       enabled: false,
     }
   );
 
-  const loadMoreButtonRef = React.useRef<any>(null);
+  // useEffect(() => {
+  //   setUAllPharmacyDrug([]);
+  // }, []);
 
   useEffect(() => {
-    setUAllPharmacyDrug([]);
-  }, []);
+    (async (): Promise<void> => {
+      if (exchangeId > 0) {
+        const result = await getViewExchange(exchangeId);
+        setViewExchange(result);
+      }
+    })();
+  }, [exchangeId]);
 
-  useIntersectionObserver({
-    target: loadMoreButtonRef,
-    onIntersect: fetchMore,
-    enabled: canFetchMore,
-  });
+  useEffect(() => {
+    const onlyA = dataInfo.filter(comparer(uBasketCount));
+    setUAllPharmacyDrug(onlyA);
+  }, [uBasketCount]);
 
   const { t } = useTranslation();
 
   const cardListGenerator = (): JSX.Element[] | null => {
-    if (dataInfo && dataInfo.length > 0) {
-      const onlyA = dataInfo.filter(comparer(uBasketCount));
-      if (uBasketCount.length > 0)
-        uBasketCount.forEach((a) => {
-          if (dataInfo.find((z: any) => z.id === a.id)) onlyA.unshift(a);
-        });
+    if (uAllPharmacyDrug.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
-      return onlyA
-        .sort((a: any, b: any) => (a.order > b.order ? 1 : -1))
+      return uAllPharmacyDrug
+        .sort((a, b) => (a.order > b.order ? 1 : -1))
         .map((item: AllPharmacyDrugInterface, index: number) => {
-          if (!item.buttonName)
-            Object.assign(item, {
-              order: index + 1,
-              buttonName: 'افزودن به تبادل',
-              // cardColor: 'white',
-              currentCnt: item.cnt,
-            });
+          Object.assign(item, {
+            order: index + 1,
+            buttonName: 'افزودن به تبادل',
+            cardColor: 'white',
+          });
 
           let isPack = false;
           let totalAmount = 0;
-          let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
             uAllPharmacyDrug
               .filter((x) => x.packID === item.packID)
@@ -164,14 +179,63 @@ const ThirdStep: React.FC = () => {
               });
             item.totalAmount = totalAmount;
             isPack = true;
+          }
+          return (
+            <Grid item xs={12} sm={6} xl={4} key={index}>
+              <div className={paper}>
+                {isPack ? (
+                  <CardContainer
+                    basicDetail={
+                      <ExCardContent formType={1} pharmacyDrug={item} />
+                    }
+                    isPack={true}
+                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                    collapsableContent={
+                      <ExCardContent formType={3} packInfo={packList} />
+                    }
+                  />
+                ) : (
+                  <CardContainer
+                    basicDetail={
+                      <ExCardContent formType={2} pharmacyDrug={item} />
+                    }
+                    isPack={false}
+                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                  />
+                )}
+              </div>
+            </Grid>
+          );
+        });
+    }
+
+    return null;
+  };
+
+  const basketCardListGenerator = (): any => {
+    if (uBasketCount && uBasketCount.length > 0) {
+      const packList = new Array<AllPharmacyDrugInterface>();
+      return uBasketCount.map(
+        (item: AllPharmacyDrugInterface, index: number) => {
+          item.order = index + 1;
+          item.buttonName = 'حذف از تبادل';
+          item.cardColor = '#89fd89';
+
+          let isPack = false;
+          let totalAmount = 0;
+          let ignore = true;
+          if (item.packID && !packList.find((x) => x.packID === item.packID)) {
+            dataInfo
+              .filter((x: any) => x.packID === item.packID)
+              .forEach((p: AllPharmacyDrugInterface) => {
+                packList.push(p);
+                totalAmount += p.amount;
+              });
+            item.totalAmount = totalAmount;
+            isPack = true;
             ignore = false;
-            const basket = uBasketCount.find((x) => x.packID == item.packID);
-            if (basket) {
-              item.currentCnt = basket.currentCnt;
-              // item.order = -1;
-              item.buttonName = 'حذف از تبادل';
-              item.cardColor = '#89fd89';
-            }
+            item.buttonName = 'حذف از تبادل';
+            item.cardColor = '#89fd89';
           }
           if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
             return;
@@ -202,7 +266,8 @@ const ThirdStep: React.FC = () => {
               </div>
             </Grid>
           );
-        });
+        }
+      );
     }
 
     return null;
@@ -247,6 +312,7 @@ const ThirdStep: React.FC = () => {
           <Grid item xs={12} md={9}>
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
+              {basketCardListGenerator()}
               {cardListGenerator()}
             </Grid>
           </Grid>
@@ -256,10 +322,43 @@ const ThirdStep: React.FC = () => {
                 style={{ width: '100%', marginTop: 15 }}
                 label="توضیحات"
                 multiline
-                rows={15}
+                rows={8}
                 defaultValue="توصیه ها"
                 variant="outlined"
               />
+              {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
+                <>
+                  <TextField
+                    style={{ width: '100%', marginTop: 15 }}
+                    multiline
+                    rows={4}
+                    defaultValue={messageOfExchangeState}
+                    variant="outlined"
+                  />
+                  <div className={actionContainer}>
+                    <Button
+                      className={
+                        exchangeStateCode !== 4 ? cancelButton : cancelButton4
+                      }
+                      type="button"
+                      variant="outlined"
+                      color="red"
+                    >
+                      لغو درخواست
+                    </Button>
+                    {exchangeStateCode === 4 && (
+                      <Button
+                        className={confirmButton4}
+                        type="button"
+                        variant="outlined"
+                        color="green"
+                      >
+                        تایید نهایی
+                      </Button>
+                    )}
+                  </div>
+                </>
+              )}
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
                   <Grid item sm={6}>
@@ -273,17 +372,19 @@ const ThirdStep: React.FC = () => {
                       {t('general.prevLevel')}
                     </Button>
                   </Grid>
-                  <Grid item sm={6} style={{ textAlign: 'left' }}>
-                    <Button
-                      type="button"
-                      variant="outlined"
-                      color="blue"
-                      onClick={(): void => setActiveStep(activeStep + 1)}
-                    >
-                      {t('general.sendExchange')}
-                      <SendIcon style={{ transform: 'rotate(-180deg)' }} />
-                    </Button>
-                  </Grid>
+                  {exchangeStateCode !== 2 && exchangeStateCode !== 4 && (
+                    <Grid item sm={6} style={{ textAlign: 'left' }}>
+                      <Button
+                        type="button"
+                        variant="outlined"
+                        color="blue"
+                        onClick={(): void => setActiveStep(activeStep + 1)}
+                      >
+                        {t('general.sendExchange')}
+                        <SendIcon style={{ transform: 'rotate(-180deg)' }} />
+                      </Button>
+                    </Grid>
+                  )}
                 </Grid>
               </Hidden>
             </Grid>

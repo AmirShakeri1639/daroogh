@@ -17,7 +17,7 @@ export interface ButtonPropsInterface {
   type?: 'submit' | 'reset' | 'button';
   variant?: 'outlined' | 'text' | 'contained';
   className?: any;
-  color?: 'pink' | 'blue';
+  color?: 'pink' | 'blue' | 'red' | 'green';
   onClick?: () => void;
 }
 
@@ -118,6 +118,7 @@ export interface ProvincePropsInterface {
 export interface TransferPropsInterface {
   viewExchangeId?: number;
   exchangeState?: number;
+  location?: string;
 }
 
 export interface MaterialSearchPropsInterface {
@@ -147,6 +148,7 @@ export interface TextLinePropsInterface {
   rightText: string | React.ReactNode;
   leftText: string | React.ReactNode;
   backColor?: string;
+  textAlign?: string;
 }
 
 export interface BackDropPropsInterface {

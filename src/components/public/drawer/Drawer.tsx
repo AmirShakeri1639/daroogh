@@ -9,13 +9,20 @@ const useStyle = makeStyles((theme) =>
     container: {
       width: 300,
     },
+    noScrollBarDrawer: {
+      '& .MuiDrawer-paper::-webkit-scrollbar': {
+        width: '6px',
+        height: '6px',
+        display: 'none',
+      },
+    },
   })
 );
 
 const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
   const { children, onClose, isOpen } = props;
 
-  const { container } = useStyle();
+  const { container, noScrollBarDrawer } = useStyle();
 
   const toggleDrawer = (open: boolean) => (
     event: React.KeyboardEvent | React.MouseEvent
@@ -33,11 +40,12 @@ const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
     <SwipeableDrawer
       disableBackdropTransition
       anchor="left"
-      open={isOpen}
-      onOpen={onClose}
-      onClose={onClose}
+      open={ isOpen }
+      onOpen={ onClose }
+      onClose={ onClose }
+      className={ noScrollBarDrawer }
     >
-      <div className={container}>{children}</div>
+      <div className={ container }>{ children }</div>
     </SwipeableDrawer>
   );
 };
