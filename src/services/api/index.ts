@@ -10,3 +10,4 @@ export { default as CountryDivision } from './CountryDivision';
 export { default as Search } from './Search';
 export { default as Comission } from './Comission';
 export { default as MembershipRequest } from './MembershipRequest';
+export { default as Favorite } from './Favorite';

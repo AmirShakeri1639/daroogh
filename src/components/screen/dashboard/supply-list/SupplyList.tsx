@@ -191,7 +191,8 @@ const SupplyList: React.FC = () => {
         errorHandler(e);
       }
     })();
-  })
+  });
+
   useEffect(() => {
     (async (): Promise<any> => {
       try {
@@ -543,7 +544,7 @@ const SupplyList: React.FC = () => {
               {t('general.cancel')}
             </Button>
             <Button color="blue" type="button" onClick={formHandler}>
-              {isLoadingSave ? t('general.pleaseWait') : t('form.submit')}
+              {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
             </Button>
           </Grid>
         </div>

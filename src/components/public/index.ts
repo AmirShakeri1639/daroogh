@@ -9,4 +9,5 @@ export { default as TextLine } from './text-line/TextLine';
 export { default as BackDrop } from './backdrop/BackDrop';
 export { default as Select } from './select/Select';
 export { default as DatePicker } from './datepicker/DatePicker';
+export { default as Button } from './button/Button';
 export { default as Map } from './map/Map';
