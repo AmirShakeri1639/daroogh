@@ -1,20 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  ButtonBase,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
   createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
   Grid,
   Hidden,
-  IconButton,
   makeStyles,
   TextField,
   useMediaQuery,
@@ -34,19 +27,8 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import {
-  useQueryCache,
-  useInfiniteQuery,
-  ReactQueryCacheProvider,
-} from 'react-query';
-import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
-import JwtData from '../../../../../utils/JwtData';
 import ExchangeApprove from '../exchange/ExchangeApprove';
-import Modal from '../../../../public/modal/Modal';
-import CloseIcon from '@material-ui/icons/Close';
 import sweetAlert from '../../../../../utils/sweetAlert';
-import { Cancel, ConfirmOrNotExchange } from '../../../../../model/exchange';
-import { errorHandler } from '../../../../../utils';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 import ActionButtons from '../exchange/ActionButtons';
 
@@ -97,17 +79,8 @@ const style = makeStyles((theme) =>
 );
 
 const SecondStep: React.FC = () => {
-  const { getAllPharmacyDrug, getViewExchange } = new PharmacyDrug();
+  const { getAllPharmacyDrug } = new PharmacyDrug();
   const { t } = useTranslation();
-
-  const [modalType, setModalType] = useState('');
-  const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(
-    false
-  );
-  const toggleIsOpenCancelExchangeModalForm = (type: string): void => {
-    setModalType(type);
-    setIsOpenCancelExchangeModal((v) => !v);
-  };
 
   const {
     activeStep,
@@ -117,52 +90,20 @@ const SecondStep: React.FC = () => {
     openDialog,
     setOpenDialog,
     recommendationMessage,
-    setRecommendationMessage,
-    exchangeId,
-    setExchangeId,
     basketCount,
-    setBasketCount,
     selectedPharmacyForTransfer,
     exchangeStateCode,
     messageOfExchangeState,
     showApproveModalForm,
-    setShowApproveModalForm,
     viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
-
-  const { userData } = new JwtData();
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [dataInfo, setDataInfo] = useState<any>([]);
-  const [isGetData, setIsGetData] = useState<boolean>(false);
-  const [showApprove, setShowApprove] = useState<boolean>(false);
-  const [comment, setComment] = useState<string>('');
-  const { cancelExchange, confirmOrNotExchange } = new PharmacyDrug();
+  const { cancelExchange } = new PharmacyDrug();
 
-  const [_cancelExchange, { isLoading: isLoadingSend }] = useMutation(
-    cancelExchange,
-    {
-      onSuccess: async (res) => {
-        if (res) {
-          await sweetAlert({
-            type: 'success',
-            text: res.message,
-          });
-        } else {
-          await sweetAlert({
-            type: 'error',
-            text: 'عملیات ناموفق',
-          });
-        }
-      },
-    }
-  );
-
-  const [
-    _confirmOrNotExchange,
-    { isLoading: isLoadingConfirmOrNotExchange },
-  ] = useMutation(confirmOrNotExchange, {
+  const [] = useMutation(cancelExchange, {
     onSuccess: async (res) => {
       if (res) {
         await sweetAlert({
@@ -178,41 +119,11 @@ const SecondStep: React.FC = () => {
     },
   });
 
-  const handleCancelExchange = async (): Promise<any> => {
-    const inputmodel = new Cancel();
-    inputmodel.exchangeID = exchangeId;
-    inputmodel.comment = comment;
-    try {
-      await _cancelExchange(inputmodel);
-    } catch (e) {
-      errorHandler(e);
-    }
-    toggleIsOpenCancelExchangeModalForm(modalType);
-  };
-
-  const handleConfirmOrNotExchange = async (
-    isConfirm: boolean
-  ): Promise<any> => {
-    const inputmodel = new ConfirmOrNotExchange();
-    inputmodel.exchangeID = exchangeId;
-    inputmodel.isConfirm = isConfirm;
-    try {
-      await _confirmOrNotExchange(inputmodel);
-    } catch (e) {
-      errorHandler(e);
-    }
-    toggleIsOpenCancelExchangeModalForm(modalType);
-  };
-
   const {
     paper,
     stickyToolbox,
     stickyRecommendation,
     actionContainer,
-    cancelButton,
-    confirmButton,
-    cancelButton4,
-    confirmButton4,
   } = style();
 
   const comparer = (otherArray: any): any => {
@@ -232,16 +143,16 @@ const SecondStep: React.FC = () => {
     };
   };
 
-  const [listPageNo, setListPage] = useState(0);
-  const [listCount, setListCount] = useState(0);
-  const [pageSize, setPageSize] = useState(100);
+  const [listPageNo] = useState(0);
+  const [] = useState(0);
+  const [pageSize] = useState(100);
 
-  const { isLoading, error, data, refetch } = useQuery(
+  const { isLoading, refetch } = useQuery(
     ['key'],
     () => getAllPharmacyDrug(selectedPharmacyForTransfer, listPageNo, pageSize),
     {
       onSuccess: (data) => {
-        const { items, count } = data;
+        const { items } = data;
         setAllPharmacyDrug(items);
         setDataInfo(items);
       },
@@ -375,10 +286,6 @@ const SecondStep: React.FC = () => {
     return null;
   };
 
-  const handleClickOpen = (): any => {
-    setOpenDialog(true);
-  };
-
   const handleClose = (): any => {
     setOpenDialog(false);
   };
@@ -386,201 +293,6 @@ const SecondStep: React.FC = () => {
   const handleAgree = (): any => {
     setActiveStep(activeStep + 1);
   };
-
-  // const ActionButtons = (): JSX.Element => {
-  //   let element: JSX.Element = <></>;
-  //   if (!viewExhcnage) return element;
-  //   const vx: ViewExchangeInterface | undefined = viewExhcnage;
-  //   if (vx) {
-  //     if (vx.currentPharmacyIsA) {
-  //       if (exchangeStateCode !== 6 && exchangeStateCode !== 10)
-  //         element = (
-  //           <Button
-  //             className={exchangeStateCode !== 4 ? cancelButton : cancelButton4}
-  //             type="button"
-  //             variant="outlined"
-  //             color="red"
-  //             onClick={() => toggleIsOpenCancelExchangeModalForm('cancel')}
-  //           >
-  //             لغو درخواست
-  //           </Button>
-  //         );
-
-  //       if (exchangeStateCode === 4 || exchangeStateCode === 8)
-  //         element = (
-  //           <>
-  //             <>{element}</>
-  //             <Button
-  //               className={
-  //                 exchangeStateCode === 8 ? confirmButton : confirmButton4
-  //               }
-  //               type="button"
-  //               variant="outlined"
-  //               color="green"
-  //               onClick={(): any => {
-  //                 setShowApproveModalForm(true);
-  //               }}
-  //             >
-  //               پرداخت
-  //             </Button>
-  //           </>
-  //         );
-
-  //       if (exchangeStateCode === 10)
-  //         element = (
-  //           <>
-  //             <>{element}</>
-  //             <Button
-  //               className={confirmButton}
-  //               type="button"
-  //               variant="outlined"
-  //               color="green"
-  //             >
-  //               نمایش آدرس
-  //             </Button>
-  //           </>
-  //         );
-  //     } else {
-  //       if (
-  //         exchangeStateCode === 2 ||
-  //         exchangeStateCode === 3 ||
-  //         exchangeStateCode === 4
-  //       ) {
-  //         element = (
-  //           <Button
-  //             className={exchangeStateCode !== 2 ? cancelButton : cancelButton4}
-  //             type="button"
-  //             variant="outlined"
-  //             color="red"
-  //             onClick={() => toggleIsOpenCancelExchangeModalForm('cancel')}
-  //           >
-  //             لغو درخواست
-  //           </Button>
-  //         );
-  //       }
-  //       if (exchangeStateCode === 2)
-  //         element = (
-  //           <>
-  //             <>{element}</>
-  //             <Button
-  //               className={confirmButton4}
-  //               type="button"
-  //               variant="outlined"
-  //               color="green"
-  //               onClick={() => toggleIsOpenCancelExchangeModalForm('approve')}
-  //             >
-  //               تایید نهایی
-  //             </Button>
-  //           </>
-  //         );
-  //       if (exchangeStateCode === 4 || exchangeStateCode === 9)
-  //         element = (
-  //           <>
-  //             <>{element}</>
-  //             <Button
-  //               className={
-  //                 exchangeStateCode === 9 ? confirmButton : confirmButton4
-  //               }
-  //               type="button"
-  //               variant="outlined"
-  //               color="green"
-  //               onClick={(): any => {
-  //                 setShowApproveModalForm(true);
-  //               }}
-  //             >
-  //               پرداخت
-  //             </Button>
-  //           </>
-  //         );
-
-  //       if (exchangeStateCode === 8 || exchangeStateCode === 10)
-  //         element = (
-  //           <>
-  //             <>{element}</>
-  //             <Button
-  //               className={confirmButton}
-  //               type="button"
-  //               variant="outlined"
-  //               color="green"
-  //             >
-  //               نمایش آدرس
-  //             </Button>
-  //           </>
-  //         );
-  //     }
-  //   }
-
-  //   return element;
-  // };
-
-  // // TODO : here to move Action Component
-  // const exchangeModalApproveCancel = (type: string): JSX.Element => {
-  //   return (
-  //     <Modal
-  //       open={isOpenCancelExchangeModal}
-  //       toggle={() => toggleIsOpenCancelExchangeModalForm(type)}
-  //     >
-  //       <Card>
-  //         <CardHeader
-  //           style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-  //           title={type === 'approve' ? 'تایید تبادل' : 'لغو تبادل'}
-  //           titleTypographyProps={{ variant: 'h6' }}
-  //           action={
-  //             <IconButton
-  //               style={{ marginTop: 10 }}
-  //               aria-label="settings"
-  //               onClick={() => toggleIsOpenCancelExchangeModalForm(type)}
-  //             >
-  //               <CloseIcon />
-  //             </IconButton>
-  //           }
-  //         />
-  //         <Divider />
-  //         <CardContent>
-  //           <Grid container spacing={1}>
-  //             {type === 'approve' ? (
-  //               <div>
-  //                 <span>آیا از انجام تبادل اطمینان دارید؟</span>
-  //               </div>
-  //             ) : (
-  //               <div>
-  //                 <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
-  //                 <TextField
-  //                   style={{ width: '100%', marginTop: 10, fontSize: 10 }}
-  //                   label="توضیحات"
-  //                   multiline
-  //                   rows={5}
-  //                   variant="outlined"
-  //                 />
-  //               </div>
-  //             )}
-  //           </Grid>
-  //         </CardContent>
-  //         <CardActions>
-  //           {type === 'approve' ? (
-  //             <MatButton
-  //               onClick={() => handleConfirmOrNotExchange(true)}
-  //               variant="contained"
-  //               color="primary"
-  //               autoFocus
-  //             >
-  //               تایید
-  //             </MatButton>
-  //           ) : (
-  //             <MatButton
-  //               onClick={handleCancelExchange}
-  //               variant="contained"
-  //               color="primary"
-  //               autoFocus
-  //             >
-  //               لغو تبادل
-  //             </MatButton>
-  //           )}
-  //         </CardActions>
-  //       </Card>
-  //     </Modal>
-  //   );
-  // };
 
   const ConfirmDialog = (): JSX.Element => {
     return (
@@ -658,8 +370,6 @@ const SecondStep: React.FC = () => {
                 </div>
                 {showApproveModalForm && <ExchangeApprove />}
               </>
-              {/* {isOpenCancelExchangeModal &&
-                exchangeModalApproveCancel(modalType)} */}
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
                   {!viewExhcnage && (

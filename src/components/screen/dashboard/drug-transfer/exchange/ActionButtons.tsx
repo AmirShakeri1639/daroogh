@@ -203,11 +203,12 @@ const ActionButtons = (): JSX.Element => {
   if (!viewExhcnage) return element;
   const vx: ViewExchangeInterface | undefined = viewExhcnage;
   if (vx) {
+    let state = vx.state;
     if (vx.currentPharmacyIsA) {
-      if (exchangeStateCode !== 6 && exchangeStateCode !== 10)
+      if (state !== 6 && state !== 10)
         element = (
           <Button
-            className={exchangeStateCode !== 4 ? cancelButton : cancelButton4}
+            className={state !== 4 ? cancelButton : cancelButton4}
             type="button"
             variant="outlined"
             color="red"
@@ -217,14 +218,12 @@ const ActionButtons = (): JSX.Element => {
           </Button>
         );
 
-      if (exchangeStateCode === 4 || exchangeStateCode === 8)
+      if (state === 4 || state === 8)
         element = (
           <>
             <>{element}</>
             <Button
-              className={
-                exchangeStateCode === 8 ? confirmButton : confirmButton4
-              }
+              className={state === 8 ? confirmButton : confirmButton4}
               type="button"
               variant="outlined"
               color="green"
@@ -237,7 +236,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (exchangeStateCode === 10)
+      if (state === 10)
         element = (
           <>
             <>{element}</>
@@ -252,14 +251,11 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
     } else {
-      if (
-        exchangeStateCode === 2 ||
-        exchangeStateCode === 3 ||
-        exchangeStateCode === 4
-      ) {
+      if (state > 10) state = state - 10;
+      if (state === 2 || state === 3 || state === 4) {
         element = (
           <Button
-            className={exchangeStateCode !== 2 ? cancelButton : cancelButton4}
+            className={state !== 2 ? cancelButton : cancelButton4}
             type="button"
             variant="outlined"
             color="red"
@@ -269,7 +265,7 @@ const ActionButtons = (): JSX.Element => {
           </Button>
         );
       }
-      if (exchangeStateCode === 2)
+      if (state === 2)
         element = (
           <>
             <>{element}</>
@@ -286,14 +282,12 @@ const ActionButtons = (): JSX.Element => {
             </Button>
           </>
         );
-      if (exchangeStateCode === 4 || exchangeStateCode === 9)
+      if (state === 4 || state === 9)
         element = (
           <>
             <>{element}</>
             <Button
-              className={
-                exchangeStateCode === 9 ? confirmButton : confirmButton4
-              }
+              className={state === 9 ? confirmButton : confirmButton4}
               type="button"
               variant="outlined"
               color="green"
@@ -306,7 +300,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (exchangeStateCode === 8 || exchangeStateCode === 10)
+      if (state === 8 || state === 10)
         element = (
           <>
             <>{element}</>

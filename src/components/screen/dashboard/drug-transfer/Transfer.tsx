@@ -81,12 +81,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   useEffect(() => {
     (async (): Promise<void> => {
       let eid: any = undefined;
-      // const hasPlus = 
-      const encryptedId = (params.eid == null ? undefined : params.eid);
-      // debugger;
-      // if (encryptedId !== undefined) {
-      //   eid = await encDecService.decrypt(encryptedId)
-      // }
+      const encryptedId = params.eid == null ? undefined : params.eid;
 
       eid = encryptedId;
 
