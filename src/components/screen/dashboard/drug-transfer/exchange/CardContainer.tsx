@@ -8,17 +8,18 @@ import {
   Collapse,
   createStyles,
   Grid,
-  Icon,
   IconButton,
   makeStyles,
-  TextField,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-import { ActionInterface, CardPropsInterface } from '../../../../../interfaces';
-import { styles } from '@material-ui/pickers/views/Calendar/Calendar';
+import {
+  ActionInterface,
+  CardPropsInterface,
+  ViewExchangeInterface,
+} from '../../../../../interfaces';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
@@ -29,7 +30,6 @@ import { useTranslation } from 'react-i18next';
 import { AddDrog1, AddPack1 } from '../../../../../model/exchange';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { SnackbarProvider, useSnackbar } from 'notistack';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -146,7 +146,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     addPack2,
     removePack2,
   } = new PharmacyDrug();
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [, dispatch] = useReducer(reducer, initialState);
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState<string>('');
@@ -175,52 +175,45 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   };
 
   const {
-    allPharmacyDrug,
-    setAllPharmacyDrug,
-    uAllPharmacyDrug,
     basketCount,
     setBasketCount,
     uBasketCount,
     setUbasketCount,
     activeStep,
-    recommendationMessage,
     setRecommendationMessage,
-    exchangeId,
     setExchangeId,
     selectedPharmacyForTransfer,
     exchangeStateCode,
     viewExhcnage,
+    setViewExchange,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
+  const { getViewExchange } = new PharmacyDrug();
 
-  const [_addDrug1, { isLoading: isLoadingAddDrug1, data }] = useMutation(
-    addDrug1,
-    {
-      onSuccess: async (res) => {
-        setExchangeId(res.data.exchangeId);
-        setRecommendationMessage(res.data.recommendationMessage);
-        setMessage(t('alert.successAddDrug'));
-        snackBarHandleClick();
-        // await sweetAlert({
-        //   type: 'success',
-        //   text: t('alert.successAddDrug'),
-        // });
-      },
-    }
-  );
+  const [_addDrug1] = useMutation(addDrug1, {
+    onSuccess: async (res) => {
+      setExchangeId(res.data.exchangeId);
+      setRecommendationMessage(res.data.recommendationMessage);
+      setMessage(t('alert.successAddDrug'));
+      snackBarHandleClick();
 
-  const [_removeDrug1, { isLoading: isLoadingRemoveDrug1 }] = useMutation(
-    addDrug1,
-    {
-      onSuccess: async () => {
-        setMessage(t('alert.removeAddDrug'));
-        snackBarHandleClick();
-      },
-    }
-  );
+      if (!viewExhcnage) {
+        const viewExResult = await getViewExchange(res.data.exchangeId);
+        const result: ViewExchangeInterface | undefined = viewExResult.data;
+        if (result) setViewExchange(result);
+      }
+    },
+  });
 
-  const [_addPack1, { isLoading: isLoadingAddPack1 }] = useMutation(addPack1, {
+  const [_removeDrug1] = useMutation(addDrug1, {
+    onSuccess: async () => {
+      setMessage(t('alert.removeAddDrug'));
+      snackBarHandleClick();
+    },
+  });
+
+  const [_addPack1] = useMutation(addPack1, {
     onSuccess: async () => {
       setMessage(t('alert.successAddPack'));
       snackBarHandleClick();
@@ -231,17 +224,14 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     },
   });
 
-  const [_removePack1, { isLoading: isLoadingRemovePack1 }] = useMutation(
-    removePack1,
-    {
-      onSuccess: async () => {
-        setMessage(t('alert.removeAddPack'));
-        snackBarHandleClick();
-      },
-    }
-  );
+  const [_removePack1] = useMutation(removePack1, {
+    onSuccess: async () => {
+      setMessage(t('alert.removeAddPack'));
+      snackBarHandleClick();
+    },
+  });
 
-  const [_addDrug2, { isLoading: isLoadingAddDrug2 }] = useMutation(addDrug2, {
+  const [] = useMutation(addDrug2, {
     onSuccess: async () => {
       dispatch({ type: 'reset' });
       await sweetAlert({
@@ -251,7 +241,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     },
   });
 
-  const [_addPack2, { isLoading: isLoadingAddPack2 }] = useMutation(addPack2, {
+  const [] = useMutation(addPack2, {
     onSuccess: async () => {
       dispatch({ type: 'reset' });
       await sweetAlert({
@@ -261,18 +251,15 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     },
   });
 
-  const [_removePack2, { isLoading: isLoadingRemovePack2 }] = useMutation(
-    removePack2,
-    {
-      onSuccess: async () => {
-        dispatch({ type: 'reset' });
-        await sweetAlert({
-          type: 'success',
-          text: t('alert.successfulCreateTextMessage'),
-        });
-      },
-    }
-  );
+  const [] = useMutation(removePack2, {
+    onSuccess: async () => {
+      dispatch({ type: 'reset' });
+      await sweetAlert({
+        type: 'success',
+        text: t('alert.successfulCreateTextMessage'),
+      });
+    },
+  });
 
   useEffect(() => {
     setDrugInfo(pharmacyDrug);
@@ -288,8 +275,6 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     collapse,
     button,
     counterButton,
-    textBoxCounter,
-    orderCard,
   } = style();
 
   const counterHandle = (e: string): void => {
@@ -315,12 +300,12 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     }
   };
 
-  const lockState = async (): Promise<any> => {
-    await sweetAlert({
-      type: 'warning',
-      text: 'در این مرحله امکان هیچگونه عملیاتی وجود ندارد',
-    });
-  };
+  // const lockState = async (): Promise<any> => {
+  //   await sweetAlert({
+  //     type: 'warning',
+  //     text: 'در این مرحله امکان هیچگونه عملیاتی وجود ندارد',
+  //   });
+  // };
 
   const addTransferHandle = async (): Promise<any> => {
     const inputmodel = new AddDrog1();
@@ -336,32 +321,28 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     }
 
     try {
-      if (exchangeStateCode !== 2 && exchangeStateCode !== 4) {
-        if (inputmodel.count > 0) {
-          await _addDrug1(inputmodel);
-          if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
-          else setUbasketCount([...uBasketCount, pharmacyDrug]);
-        } else {
-          await _removeDrug1(inputmodel);
-          if (
-            (activeStep === 1 && basketCount.length === 1) ||
-            (activeStep === 2 && uBasketCount.length === 1)
-          ) {
-            if (activeStep === 1) setBasketCount([]);
-            else setUbasketCount([]);
-          } else {
-            if (activeStep === 1)
-              setBasketCount([
-                ...basketCount.filter((x) => x.id !== pharmacyDrug.id),
-              ]);
-            else
-              setUbasketCount([
-                ...uBasketCount.filter((x) => x.id !== pharmacyDrug.id),
-              ]);
-          }
-        }
+      if (inputmodel.count > 0) {
+        await _addDrug1(inputmodel);
+        if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
+        else setUbasketCount([...uBasketCount, pharmacyDrug]);
       } else {
-        await lockState();
+        await _removeDrug1(inputmodel);
+        if (
+          (activeStep === 1 && basketCount.length === 1) ||
+          (activeStep === 2 && uBasketCount.length === 1)
+        ) {
+          if (activeStep === 1) setBasketCount([]);
+          else setUbasketCount([]);
+        } else {
+          if (activeStep === 1)
+            setBasketCount([
+              ...basketCount.filter((x) => x.id !== pharmacyDrug.id),
+            ]);
+          else
+            setUbasketCount([
+              ...uBasketCount.filter((x) => x.id !== pharmacyDrug.id),
+            ]);
+        }
       }
     } catch (e) {
       errorHandler(e);
@@ -370,45 +351,41 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
 
   const packHandle = async (): Promise<any> => {
     const inputmodel = new AddPack1();
-    if (exchangeStateCode !== 2 && exchangeStateCode !== 4) {
-      if (drugInfo !== undefined && drugInfo.packID !== undefined) {
-        inputmodel.packID = drugInfo.packID;
-        inputmodel.pharmacyKey = selectedPharmacyForTransfer;
+    if (drugInfo !== undefined && drugInfo.packID !== undefined) {
+      inputmodel.packID = drugInfo.packID;
+      inputmodel.pharmacyKey = selectedPharmacyForTransfer;
 
-        if (
-          (activeStep === 1 &&
-            !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
-          (activeStep === 2 &&
-            !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
-        ) {
-          drugInfo.packID = pharmacyDrug.packID;
-          drugInfo.packName = pharmacyDrug.packName;
-          try {
-            await _addPack1(inputmodel);
-            if (activeStep === 1) setBasketCount([...basketCount, drugInfo]);
-            else setUbasketCount([...basketCount, drugInfo]);
-          } catch (e) {
-            errorHandler(e);
-          }
-        } else {
-          try {
-            await _removePack1(inputmodel);
-            // dispatch({ type: 'reset' });
-            if (activeStep === 1)
-              setBasketCount([
-                ...basketCount.filter((x) => x.packID !== pharmacyDrug.packID),
-              ]);
-            else
-              setUbasketCount([
-                ...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID),
-              ]);
-          } catch (e) {
-            errorHandler(e);
-          }
+      if (
+        (activeStep === 1 &&
+          !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
+        (activeStep === 2 &&
+          !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
+      ) {
+        drugInfo.packID = pharmacyDrug.packID;
+        drugInfo.packName = pharmacyDrug.packName;
+        try {
+          await _addPack1(inputmodel);
+          if (activeStep === 1) setBasketCount([...basketCount, drugInfo]);
+          else setUbasketCount([...basketCount, drugInfo]);
+        } catch (e) {
+          errorHandler(e);
+        }
+      } else {
+        try {
+          await _removePack1(inputmodel);
+          // dispatch({ type: 'reset' });
+          if (activeStep === 1)
+            setBasketCount([
+              ...basketCount.filter((x) => x.packID !== pharmacyDrug.packID),
+            ]);
+          else
+            setUbasketCount([
+              ...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID),
+            ]);
+        } catch (e) {
+          errorHandler(e);
         }
       }
-    } else {
-      await lockState();
     }
   };
 

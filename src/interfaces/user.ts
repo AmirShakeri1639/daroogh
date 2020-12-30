@@ -325,6 +325,6 @@ export interface ChangeUserPasswordInterface {
 }
 
 export interface UserRoleInterface {
-  roleId: number | string;
-  userId: number | string;
+  roleID: number | string;
+  userID: number | string;
 }

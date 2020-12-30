@@ -23,8 +23,12 @@ import { errorHandler, sweetAlert } from '../../../../../utils';
 import { Send } from '../../../../../model/exchange';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import routes from '../../../../../routes';
+import { useHistory } from 'react-router-dom';
 
 const FourthStep: React.FC = () => {
+  const { desktop } = routes;
+  const history = useHistory();
   const { activeStep, setActiveStep, exchangeId } = useContext<
     TransferDrugContextInterface
   >(DrugTransferContext);
@@ -58,6 +62,7 @@ const FourthStep: React.FC = () => {
     onSuccess: async (res) => {
       if (res) {
         setMessage({ ...message, message: t('alert.send'), type: 'success' });
+        history.push(desktop);
       } else {
         setMessage({ message: 'عملیات ناموفق', type: 'error' });
       }
