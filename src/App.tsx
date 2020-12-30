@@ -45,19 +45,78 @@ const DashboardActivePage = lazy(() =>
   import('./components/screen/dashboard/DashboardActivePage')
 );
 
+const CreateRole = lazy(() =>
+  import('./components/screen/dashboard/roles/CreateRole')
+);
+
+const CreateUser = lazy(() =>
+  import('./components/screen/dashboard/user/CreateUser')
+);
+
+const UsersList = lazy(() =>
+  import('./components/screen/dashboard/user/UsersList')
+);
+
+const ChangeUserPassword = lazy(() =>
+  import('./components/screen/dashboard/user/ChangePassword')
+);
+
+const CreateDrug = lazy(() =>
+  import('./components/screen/dashboard/drug/CreateDrug')
+);
+
+const DrugsList = lazy(() =>
+  import('./components/screen/dashboard/drug/drugsList')
+);
+
+const CategoryList = lazy(() =>
+  import('./components/screen/dashboard/category/CategoryList')
+);
+const FavoriteList = lazy(() =>
+  import('./components/screen/dashboard/favorite-list/Drug')
+);
+
+const CreatePharmacy = lazy(() =>
+  import('./components/screen/dashboard/pharmacy/createPharmacy')
+);
+
+const PharmaciesList = lazy(() =>
+  import('./components/screen/dashboard/pharmacy/pharmaciesList')
+);
+
+const CreateMessage = lazy(() =>
+  import('./components/screen/dashboard/message/CreateMessage')
+);
+
+const MessagesList = lazy(() =>
+  import('./components/screen/dashboard/message/MessagesList')
+);
+
 const {
   login,
+  drugFavoriteList,
+  dashboard,
   transfer,
   desktop,
   supplyList,
   transactions,
   membershipRequests,
   registerPharmacyWithUser,
-  memberRole
+  memberRole,
+  createRole,
+  createUser,
+  usersList,
+  changeUserPassword,
+  createDrug,
+  drugsList,
+  categoryList,
+  createPharmacy,
+  pharmaciesList,
+  createMessage,
+  messagesList,
 } = routes;
 
 const App = (): JSX.Element => {
-  const dashboard = 'dashboard';
   const exchangeBase = 'exchange';
 
   return (
@@ -78,7 +137,7 @@ const App = (): JSX.Element => {
               <RegisterPharmacyWithUser />
             </PublicRoute>
 
-            <PrivateRoute exact path="/dashboard">
+            <PrivateRoute exact path={dashboard}>
               <Dashboard component={<></>} />
             </PrivateRoute>
 
@@ -112,6 +171,54 @@ const App = (): JSX.Element => {
 
             <PrivateRoute path={memberRole}>
               <Dashboard component={<MemberRole />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={createRole}>
+              <Dashboard component={<CreateRole />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={createUser}>
+              <Dashboard component={<CreateUser />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={usersList}>
+              <Dashboard component={<UsersList />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={changeUserPassword}>
+              <Dashboard component={<ChangeUserPassword />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={createDrug}>
+              <Dashboard component={<CreateDrug />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={drugsList}>
+              <Dashboard component={<DrugsList />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={categoryList}>
+              <Dashboard component={<CategoryList />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={createPharmacy}>
+              <Dashboard component={<CreatePharmacy />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={pharmaciesList}>
+              <Dashboard component={<PharmaciesList />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={createMessage}>
+              <Dashboard component={<CreateMessage />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={messagesList}>
+              <Dashboard component={<MessagesList />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={drugFavoriteList}>
+              <Dashboard component={<FavoriteList />} />
             </PrivateRoute>
 
             {/*<Route component={<>404 Not Found</>} />*/}
