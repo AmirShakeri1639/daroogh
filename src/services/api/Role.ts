@@ -60,13 +60,13 @@ class Role extends Api {
     }
   }
 
-  addUserToRole = async (roleId: number | string, userId: number | string): Promise<any> => {
+  addUserToRole = async (roleID: number | string, userID: number | string): Promise<any> => {
     try {
       const result = await this.postJsonData(
         this.urls.addUserToRole,
         {
-          roleID: roleId,
-          userID: userId
+          'roleID': roleID,
+          'userID': userID
         }
       );
       return result.data;

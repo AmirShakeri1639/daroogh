@@ -89,7 +89,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         setExchangeId(eid);
         setActiveStep(1);
         const result = await getViewExchange(eid);
-        debugger;
         const res: ViewExchangeInterface | undefined = result.data;
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
