@@ -87,18 +87,29 @@ const {
   transactions,
   membershipRequests,
   memberRole,
+  createRole,
+  createUser,
+  usersList,
+  changeUserPassword,
+  createDrug,
+  drugsList,
+  categoryList,
+  createPharmacy,
+  pharmaciesList,
+  createMessage,
+  messagesList,
 } = routes;
 
 const ListItems: React.FC = () => {
-  const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
-  const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
-  const [isOpenDrugMenu, setIsOpenDrugMenu] = useState<boolean>(false);
-  const [isOpenMessageMenu, setIsOpenMessageMenu] = useState<boolean>(false);
-  const [isOpenCategory, setIsOpenCategory] = useState<boolean>(false);
-  const [isOpenPharmacyMenu, setIsOpenPharmacyMenu] = useState<boolean>(false);
-  const [isOpenExchange, setIsOpenExchange] = useState<boolean>(false);
-  const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
-  const [isOpenMembers, setIsOpenMembers] = useState<boolean>(false);
+  const [ isOpenRoleMenu, setIsOpenRoleMenu ] = useState<boolean>(false);
+  const [ isOpenUserMenu, setIsOpenUserMenu ] = useState<boolean>(false);
+  const [ isOpenDrugMenu, setIsOpenDrugMenu ] = useState<boolean>(false);
+  const [ isOpenMessageMenu, setIsOpenMessageMenu ] = useState<boolean>(false);
+  const [ isOpenCategory, setIsOpenCategory ] = useState<boolean>(false);
+  const [ isOpenPharmacyMenu, setIsOpenPharmacyMenu ] = useState<boolean>(false);
+  const [ isOpenExchange, setIsOpenExchange ] = useState<boolean>(false);
+  const [ isOpenAccounting, setIsOpenAccounting ] = useState<boolean>(false);
+  const [ isOpenMembers, setIsOpenMembers ] = useState<boolean>(false);
 
   const { activePageHandler: setActivePage } = useContext(Context);
 
@@ -110,8 +121,6 @@ const ListItems: React.FC = () => {
   const { userData, roles } = new JwtData();
   const rolesArray = roles();
 
-  const dashboard = '/dashboard';
-
   const preventDefault = (event: React.SyntheticEvent): any =>
     event.preventDefault();
 
@@ -119,6 +128,8 @@ const ListItems: React.FC = () => {
     return (
       <>
         <h3 className={ spacing3 }>{ t('user.admin') }</h3>
+
+        {/* //// Role */ }
         <List component="div" className={ linkWrapper }>
           <Link to={ dashboard } className={ notNested }>
             <ListItemIcon>
@@ -135,20 +146,17 @@ const ListItems: React.FC = () => {
           { isOpenRoleMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
         <Collapse in={ isOpenRoleMenu } timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CREATE_ROLE) }
-            >
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createRole } className={ nested }>
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.create-new-role') } />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
+        {/* //// User */ }
         <ListItem button onClick={ (): void => setIsOpenUserMenu((val) => !val) }>
           <ListItemIcon>
             <PermIdentityTwoToneIcon />
@@ -157,42 +165,33 @@ const ListItems: React.FC = () => {
           { isOpenUserMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
         <Collapse in={ isOpenUserMenu } timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CREATE_USER) }
-            >
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createUser } className={ nested }>
               <ListItemIcon>
                 <PersonAddTwoToneIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.create-user') } />
-            </ListItem>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.USERS_LIST) }
-            >
+            </Link>
+          </List>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ usersList } className={ nested }>
               <ListItemIcon>
                 <GroupTwoToneIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.users-list') } />
-            </ListItem>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void =>
-                setActivePage(DashboardPages.CHANGE_USER_PASSWORD)
-              }
-            >
+            </Link>
+          </List>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ changeUserPassword } className={ nested }>
               <ListItemIcon>
                 <LockIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.changeUserPassword') } />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
+        {/* //// Drug */ }
         <ListItem button onClick={ (): void => setIsOpenDrugMenu((val) => !val) }>
           <ListItemIcon>
             <Extension />
@@ -201,30 +200,25 @@ const ListItems: React.FC = () => {
           { isOpenDrugMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
         <Collapse in={ isOpenDrugMenu } timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CREATE_DRUG) }
-            >
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createDrug } className={ nested }>
               <ListItemIcon>
                 <AddCircle />
               </ListItemIcon>
               <ListItemText primary={ t('drug.suggest') } />
-            </ListItem>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.DRUGS_LIST) }
-            >
+            </Link>
+          </List>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ drugsList } className={ nested }>
               <ListItemIcon>
                 <EnhancedEncryption />
               </ListItemIcon>
               <ListItemText primary={ t('drug.list') } />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
+        {/* //// Category */ }
         <ListItem button onClick={ (): void => setIsOpenCategory((val) => !val) }>
           <ListItemIcon>
             <CategoryIcon />
@@ -233,19 +227,17 @@ const ListItems: React.FC = () => {
           { isOpenCategory ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
         <Collapse in={ isOpenCategory } timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.CATEGORY_LIST) }
-            >
+          <List component="div" className={ linkWrapper }>
+            <Link to={ categoryList } className={ nested }>
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
               <ListItemText primary={ t('category.list') } />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
+
+        {/* //// Pharmacy */ }
         <ListItem
           button
           onClick={ (): void => setIsOpenPharmacyMenu((val) => !val) }
@@ -257,32 +249,25 @@ const ListItems: React.FC = () => {
           { isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
         <Collapse in={ isOpenPharmacyMenu } timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void =>
-                setActivePage(DashboardPages.PHARMACY_CREATE)
-              }
-            >
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createPharmacy } className={ nested }>
               <ListItemIcon>
                 <AddBox />
               </ListItemIcon>
-              <ListItemText primary={ t('pharmacy.request') } />
-            </ListItem>
-            <ListItem
-              button
-              className={ nested }
-              onClick={ (): void => setActivePage(DashboardPages.PHARMACY_LIST) }
-            >
+              <ListItemText primary={ t('pharmacy.create') } />
+            </Link>
+          </List>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ pharmaciesList } className={ nested }>
               <ListItemIcon>
                 <Business />
               </ListItemIcon>
               <ListItemText primary={ t('pharmacy.list') } />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
 
+        {/* //// Message */ }
         <ListItem
           button
           onClick={ (): void => setIsOpenMessageMenu((val) => !val) }
@@ -294,30 +279,21 @@ const ListItems: React.FC = () => {
           { isOpenMessageMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
         <Collapse in={ isOpenMessageMenu } timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItem
-              button
-              onClick={ (): void =>
-                setActivePage(DashboardPages.CREATE_NEW_MESSAGE)
-              }
-              className={ nested }
-            >
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createMessage } className={ nested }>
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
               <ListItemText primary={ t('message.createMessage') } />
-            </ListItem>
-
-            <ListItem
-              button
-              onClick={ (): void => setActivePage(DashboardPages.MESSAGES_LIST) }
-              className={ nested }
-            >
+            </Link>
+          </List>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ messagesList } className={ nested }>
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
               <ListItemText primary={ t('message.messagesList') } />
-            </ListItem>
+            </Link>
           </List>
         </Collapse>
       </>
