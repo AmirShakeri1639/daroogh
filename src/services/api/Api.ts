@@ -9,7 +9,6 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.response.use(undefined, error => {
-  console.log('erRRRRRRRR:', error)
   const { response } = error;
   if (!error.response) {
     console.error('Error in network');

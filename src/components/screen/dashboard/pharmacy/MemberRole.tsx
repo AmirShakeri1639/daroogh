@@ -90,12 +90,7 @@ const MemberRole: React.FC = () => {
       dispatch({ type: 'reset' });
     },
     onError: (e) => {
-      // An error happened!
       errorHandler(e);
-      console.log('e:', e);
-      // console.log('vars: ', variables);
-      // console.log('context:', context);
-      // await errorSweetAlert(result.message);
     },
   });
 
@@ -116,7 +111,7 @@ const MemberRole: React.FC = () => {
     el.preventDefault();
 
     try {
-      await _addUserToRole(state.roleID, state.userID);
+      await _addUserToRole({ roleID: state.roleID, userID: state.userID });
       dispatch({ type: 'reset' });
       ref.current?.loadItems();
     } catch (e) {
@@ -151,8 +146,6 @@ const MemberRole: React.FC = () => {
                     label={ t('general.type') }
                     onChangeHandler={ (v): void => {
                       dispatch({ type: 'roleID', value: v });
-                      console.log('selected role:', v)
-                      console.log('state:', state)
                     } }
                   />
                 </Grid>
