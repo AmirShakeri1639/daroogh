@@ -1,6 +1,6 @@
 import Api from './Api';
 import { errorHandler } from "../../utils";
-import { NewRoleData } from "../../interfaces";
+import { NewRoleData, UserRoleInterface } from "../../interfaces";
 
 class Role extends Api {
   readonly urls = {
@@ -60,14 +60,11 @@ class Role extends Api {
     }
   }
 
-  addUserToRole = async (roleID: number | string, userID: number | string): Promise<any> => {
+  addUserToRole = async (data: UserRoleInterface): Promise<any> => {
     try {
       const result = await this.postJsonData(
         this.urls.addUserToRole,
-        {
-          'roleID': roleID,
-          'userID': userID
-        }
+        data
       );
       return result.data;
     } catch (e) {
