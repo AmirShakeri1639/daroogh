@@ -203,6 +203,7 @@ export default {
         sendDate: 'تاریخ شروع تبادل',
         completionDate: 'تاریخ تکمیل تبادل',
         state: 'وضعیت',
+        totalPrice: 'مجموع قیمت',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',

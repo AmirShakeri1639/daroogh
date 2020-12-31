@@ -38,9 +38,9 @@ import {
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { PharmacyEnum } from '../../../../enum/query';
-import { DaroogSearchBar } from '../drug-transfer/DaroogSearchBar';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import { WorkTimeEnum } from '../../../../enum';
+import { DefaultCountryDivisionID } from '../../../../enum/consts';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -56,7 +56,7 @@ const initialState: PharmacyInterface = {
   website: '',
   email: '',
   postalCode: '',
-  countryDivisionID: 1,
+  countryDivisionID: DefaultCountryDivisionID,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
