@@ -83,8 +83,6 @@ const {
   dashboard,
   transfer,
   desktop,
-  drugFavoriteList,
-  drugCategoryfavoriteList,
   supplyList,
   transactions,
   membershipRequests,
