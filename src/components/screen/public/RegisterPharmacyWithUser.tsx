@@ -22,6 +22,7 @@ import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
 import { Map } from '../../public';
+import { DefaultCountryDivisionID } from '../../../enum/consts';
 
 const initialState: PharmacyWithUserInterface = {
   pharmacy: {
@@ -37,7 +38,7 @@ const initialState: PharmacyWithUserInterface = {
     website: '',
     email: '',
     postalCode: '',
-    countryDivisionID: 28367, // مشهد ثامن
+    countryDivisionID: DefaultCountryDivisionID,
     x: '',
     y: '',
   },
@@ -596,7 +597,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <CountryDivisionSelect
-                countryDivisionID={ 28367 }
+                countryDivisionID={ DefaultCountryDivisionID }
                 label={ t('general.location') }
                 onSelectedHandler={ (id): void => {
                   dispatch({ type: 'pharmacy.countryDivisionID', value: id });
