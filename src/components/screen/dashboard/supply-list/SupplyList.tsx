@@ -161,7 +161,7 @@ const SupplyList: React.FC = () => {
   const [drugList, setDrugList] = useState<DrugInterface[]>([]);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
-  const [selectedDrug, setSelectedDrug] = useState<string>('');
+  const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isoDate, setIsoDate] = useState<string>('');
@@ -235,9 +235,14 @@ const SupplyList: React.FC = () => {
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
   const toggleIsOpenModalOfNewList = (): void => {
-    dispatch({ type: 'reset' });
-    setSelectedDate('');
-    setSelectedDrug('');
+    if (isOpenModalOfNewList) {
+      dispatch({ type: 'reset' });
+      setSelectedDate('');
+      setSelectedDrug('');
+      setDaroogRecommendation('');
+      setComissionPercent('');
+      setDaysDiff('');
+    }
     setIsOpenModalOfNewList((v) => !v);
   };
 
@@ -300,6 +305,7 @@ const SupplyList: React.FC = () => {
       drug: { name },
       id,
     } = item;
+    console.log(item);
     dispatch({ type: 'expireDate', value: expireDate });
     dispatch({ type: 'drugID', value: drugID });
     dispatch({ type: 'offer1', value: offer1 });
@@ -309,10 +315,8 @@ const SupplyList: React.FC = () => {
     dispatch({ type: 'cnt', value: cnt });
     dispatch({ type: 'id', value: id });
 
-    setSelectedDrug({
-      label: name,
-      value: drugID,
-    });
+    setSelectedDrug(Number(drugID));
+    searchDrug(name);
     const shamsiDate = convertISOTime(expireDate);
     setSelectedDate(shamsiDate);
     calculatDateDiference(shamsiDate, '-');
@@ -395,16 +399,6 @@ const SupplyList: React.FC = () => {
     }
   };
 
-  const closeHandler = (): void => {
-    dispatch({ type: 'reset' });
-    setSelectedDate('');
-    setSelectedDrug('');
-    setDaroogRecommendation('');
-    setComissionPercent('');
-    setDaysDiff('');
-    toggleIsOpenModalOfNewList();
-  };
-
   return (
     <>
       <MaterialContainer>
@@ -426,7 +420,7 @@ const SupplyList: React.FC = () => {
         </Grid>
       </MaterialContainer>
 
-      <Modal open={isOpenModalOfNewList} toggle={closeHandler}>
+      <Modal open={isOpenModalOfNewList} toggle={toggleIsOpenModalOfNewList}>
         <div className={modalContainer}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
@@ -449,6 +443,7 @@ const SupplyList: React.FC = () => {
                     size="small"
                     label={t('drug.name')}
                     variant="outlined"
+                    value={selectedDrug}
                     onChange={debounce(
                       (e: any) => searchDrugs(e.target.value),
                       500
@@ -580,7 +575,7 @@ const SupplyList: React.FC = () => {
             <Button
               color="pink"
               type="button"
-              onClick={closeHandler}
+              onClick={toggleIsOpenModalOfNewList}
               className={cancelButton}
             >
               {t('general.cancel')}
