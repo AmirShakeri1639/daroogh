@@ -9,9 +9,11 @@ class Convertor {
     const convertedDate: JalaliInterface = jalali.toJalaali(
       Number(gregorianDate[0]),
       Number(gregorianDate[1]),
-      Number(gregorianDate[2]),
+      Number(gregorianDate[2])
     );
-    return `${convertedDate.jy}-${convertedDate.jm < 10 ? `0${convertedDate.jm}` : convertedDate.jm}-${convertedDate.jd < 10 ? `0${convertedDate.jd}` : convertedDate.jd}`;
+    return `${convertedDate.jy}-${
+      convertedDate.jm < 10 ? `0${convertedDate.jm}` : convertedDate.jm
+    }-${convertedDate.jd < 10 ? `0${convertedDate.jd}` : convertedDate.jd}`;
   }
 
   zeroSeparator(price: number | string): string {
@@ -20,6 +22,10 @@ class Convertor {
       currency: 'IRR',
     });
     return formatter.format(Number(price));
+  }
+
+  numberWithZero(number: number | string): string | number {
+    return number < 10 ? `0${number}` : number;
   }
 }
 
