@@ -8,8 +8,10 @@ const axiosInstance = axios.create({
   timeout: 0,
 });
 
-axiosInstance.interceptors.response.use(undefined, error => {
-  console.log('erRRRRRRRR:', error)
+const CancelToken = axios.CancelToken;
+
+axiosInstance.interceptors.response.use(undefined, (error) => {
+  console.log('erRRRRRRRR:', error);
   const { response } = error;
   if (!error.response) {
     console.error('Error in network');
@@ -33,7 +35,8 @@ axiosInstance.interceptors.response.use(undefined, error => {
     (async (): Promise<any> => {
       await errorSweetAlert(
         error?.response?.data?.message == undefined
-          ? 'خطایی رخ داده است.' : error?.response?.data?.message
+          ? 'خطایی رخ داده است.'
+          : error?.response?.data?.message
       );
     })();
   }
@@ -43,6 +46,7 @@ axiosInstance.interceptors.response.use(undefined, error => {
 
 class Api {
   protected axiosInstance: AxiosInstance = axiosInstance;
+  protected axiosSource = CancelToken.source();
 
   private authorizedUserRequest(): AxiosInstance {
     const user = localStorage.getItem('user') || '{}';
@@ -60,7 +64,9 @@ class Api {
 
   protected async postJsonData(url: string, data: any = null): Promise<any> {
     // try {
-    return await this.authorizedUserRequest().post(url, data);
+    return await this.authorizedUserRequest().post(url, data, {
+      cancelToken: this.axiosSource.token,
+    });
     // } catch (e) {
     //   console.log('error in postjsondata:', e)
     //   throw new Error(e);
@@ -76,7 +82,9 @@ class Api {
       }
     }
     try {
-      return await this.authorizedUserRequest().post(_url, formData);
+      return await this.authorizedUserRequest().post(_url, formData, {
+        cancelToken: this.axiosSource.token,
+      });
     } catch (e) {
       errorHandler(e);
     }
@@ -84,7 +92,9 @@ class Api {
 
   protected async getData(url: string): Promise<any> {
     try {
-      return await this.authorizedUserRequest().get(url);
+      return await this.authorizedUserRequest().get(url, {
+        cancelToken: this.axiosSource.token,
+      });
     } catch (e) {
       errorHandler(e);
     }
@@ -92,7 +102,9 @@ class Api {
 
   protected async postData(url: string): Promise<any> {
     try {
-      return await this.authorizedUserRequest().post(url);
+      return await this.authorizedUserRequest().post(url, null, {
+        cancelToken: this.axiosSource.token,
+      });
     } catch (e) {
       throw new Error(e);
     }

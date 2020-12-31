@@ -4,4 +4,5 @@ export interface RecommendationAndComission {
   pharmacyId?: string | number;
   drugId?: string | number;
   price?: string | number;
+  expireDate?: string;
 }

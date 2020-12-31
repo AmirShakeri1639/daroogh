@@ -5,6 +5,7 @@ import {
   makeStyles,
   Paper,
   MenuItem,
+  TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { MaterialContainer, Modal, DatePicker } from '../../../public';
@@ -25,7 +26,6 @@ import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
 import Button from '../../../public/button/Button';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
-import ReactSelect from '../../../public/react-select/ReactSelect';
 import { useEffectOnce } from '../../../../hooks';
 import {
   Convertor,
@@ -36,6 +36,7 @@ import {
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
+import { Autocomplete } from '@material-ui/lab';
 
 const { convertISOTime } = Convertor;
 
@@ -149,6 +150,8 @@ const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 
 const { getComissionAndRecommendation } = new Comission();
 
+const { numberWithZero } = Convertor;
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(
@@ -158,10 +161,7 @@ const SupplyList: React.FC = () => {
   const [drugList, setDrugList] = useState<DrugInterface[]>([]);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
-  const [selectedDrug, setSelectedDrug] = useState<{
-    label: string;
-    value: string;
-  } | null>(null);
+  const [selectedDrug, setSelectedDrug] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isoDate, setIsoDate] = useState<string>('');
@@ -204,10 +204,11 @@ const SupplyList: React.FC = () => {
           (drugId && Number(amount) > 0)
         ) {
           const result = await getComissionAndRecommendation({
-            drugId: selectedDrug!.value,
+            drugId: Number(selectedDrug),
             price: state?.amount,
             offer1: state?.offer1,
             offer2: state?.offer2,
+            expireDate: isoDate,
             pharmacyId: '0',
           });
           const { data } = result;
@@ -222,11 +223,23 @@ const SupplyList: React.FC = () => {
         errorHandler(e);
       }
     })();
-  }, [selectedDrug, state?.amount, state?.offer1, state?.offer1, state?.cnt]);
+  }, [
+    selectedDrug,
+    state?.amount,
+    state?.offer1,
+    state?.offer2,
+    state?.cnt,
+    state?.expireDate,
+    isoDate,
+  ]);
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
-  const toggleIsOpenModalOfNewList = (): void =>
+  const toggleIsOpenModalOfNewList = (): void => {
+    dispatch({ type: 'reset' });
+    setSelectedDate('');
+    setSelectedDrug('');
     setIsOpenModalOfNewList((v) => !v);
+  };
 
   const {
     isLoading,
@@ -269,7 +282,9 @@ const SupplyList: React.FC = () => {
     );
 
     setIsoDate(
-      `${selectedDate.gy}-${selectedDate.gm}-${selectedDate.gd}T00:00:00Z`
+      `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
+        selectedDate.gd
+      )}T00:00:00Z`
     );
   };
 
@@ -358,8 +373,12 @@ const SupplyList: React.FC = () => {
         return;
       }
       const result = await searchDrug(title);
-      const options = sanitizeReactSelect(result, 'id', 'name');
-      setOptions(options);
+      const items = result.map((item: any) => ({
+        id: item.id,
+        genericName: item.genericName,
+      }));
+      // const options = sanitizeReactSelect(result, 'id', 'name');
+      setOptions(items);
     } catch (e) {
       errorHandler(e);
     }
@@ -369,7 +388,7 @@ const SupplyList: React.FC = () => {
     try {
       state.expireDate = isoDate;
       //@ts-ignore
-      state.drugID = selectedDrug.value;
+      state.drugID = selectedDrug;
       await _savePharmacyDrug(state);
     } catch (e) {
       errorHandler(e);
@@ -379,7 +398,7 @@ const SupplyList: React.FC = () => {
   const closeHandler = (): void => {
     dispatch({ type: 'reset' });
     setSelectedDate('');
-    setSelectedDrug(null);
+    setSelectedDrug('');
     setDaroogRecommendation('');
     setComissionPercent('');
     setDaysDiff('');
@@ -414,7 +433,30 @@ const SupplyList: React.FC = () => {
               <label className={drugTitle}>{t('drug.drugSelection')}</label>
             </Grid>
             <Grid item xs={12}>
-              <ReactSelect
+              <Autocomplete
+                id="drug-list"
+                noOptionsText={t('general.noData')}
+                loadingText={t('general.loading')}
+                options={options}
+                onChange={(event, value, reason): void => {
+                  setSelectedDrug(value.id);
+                  // dispatch({ type: 'drugID', value: value.id });
+                }}
+                getOptionLabel={(option: any) => option.genericName}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label={t('drug.name')}
+                    variant="outlined"
+                    onChange={debounce(
+                      (e: any) => searchDrugs(e.target.value),
+                      500
+                    )}
+                  />
+                )}
+              />
+              {/* <ReactSelect
                 options={options}
                 onChange={(e): void => {
                   setSelectedDrug(e);
@@ -423,7 +465,7 @@ const SupplyList: React.FC = () => {
                 value={selectedDrug}
                 noOptionsMessage="اطلاعات موجود نیست"
                 placeholder="حداقل 3 کاراکتر وارد کنید"
-              />
+              /> */}
             </Grid>
 
             <Grid item xs={12}>
@@ -499,7 +541,7 @@ const SupplyList: React.FC = () => {
                 label={t('general.expireDate')}
               />
             </Grid>
-            <Grid item xs={1} className={expireDate}>
+            <Grid item xs={2} className={expireDate}>
               {daysDiff !== '' && <span>{daysDiff} روز</span>}
             </Grid>
 
