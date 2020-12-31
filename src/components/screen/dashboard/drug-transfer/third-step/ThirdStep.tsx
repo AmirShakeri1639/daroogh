@@ -31,6 +31,7 @@ import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyD
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
+import routes from '../../../../../routes';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -135,10 +136,6 @@ const ThirdStep: React.FC = () => {
       enabled: false,
     }
   );
-
-  // useEffect(() => {
-  //   setUAllPharmacyDrug([]);
-  // }, []);
 
   useEffect(() => {
     (async (): Promise<void> => {

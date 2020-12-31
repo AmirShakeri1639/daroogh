@@ -20,20 +20,20 @@ import Modal from '../../../public/modal/Modal';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 
 const initialState: UserRoleInterface = {
-  roleId: 0,
-  userId: 0
+  roleID: 0,
+  userID: 0
 }
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
 
   switch (action.type) {
-    case 'roleId':
+    case 'roleID':
       return {
         ...state,
-        id: value,
+        roleID: value,
       };
-    case 'userId':
+    case 'userID':
       return {
         ...state,
         userID: value,
@@ -65,10 +65,10 @@ const MemberRole: React.FC = () => {
         field: 'id', title: t('general.id'), type: 'number',
         cellStyle: { textAlign: 'right' }
       },
-      { field: 'name', title: t('name'), type: 'string' },
-      { field: 'family', title: t('family'), type: 'string' },
-      { field: 'mobile', title: t('mobile'), type: 'string' },
-      { field: 'nationalCode', title: t('nationalCode'), type: 'string' },
+      { field: 'name', title: t('user.name'), type: 'string' },
+      { field: 'family', title: t('user.family'), type: 'string' },
+      { field: 'mobile', title: t('general.mobile'), type: 'string' },
+      { field: 'nationalCode', title: t('user.nationalCode'), type: 'string' },
     ];
   };
 
@@ -90,12 +90,7 @@ const MemberRole: React.FC = () => {
       dispatch({ type: 'reset' });
     },
     onError: (e) => {
-      // An error happened!
       errorHandler(e);
-      console.log('e:', e);
-      // console.log('vars: ', variables);
-      // console.log('context:', context);
-      // await errorSweetAlert(result.message);
     },
   });
 
@@ -105,18 +100,18 @@ const MemberRole: React.FC = () => {
     { label: 'نقش ۳ داروخانه', value: 52 },
   ];
 
-  const addUserToRoleHandler = async (item: UserRoleInterface): Promise<any> => {
+  const addUserToRoleHandler = async (item: any): Promise<any> => {
     toggleIsOpenSaveModalForm();
 
-    const { userId } = item;
-    dispatch({ type: 'userId', value: userId });
+    dispatch({ type: 'userID', value: item.id });
+    dispatch({ type: 'roleID', value: state.roleID });
   }
 
   const submitAccept = async (el: React.FormEvent<HTMLFormElement>): Promise<any> => {
     el.preventDefault();
 
     try {
-      await _addUserToRole(state.roleId, state.userId);
+      await _addUserToRole({ roleID: state.roleID, userID: state.userID });
       dispatch({ type: 'reset' });
       ref.current?.loadItems();
     } catch (e) {
@@ -150,9 +145,7 @@ const MemberRole: React.FC = () => {
                     data={ roles }
                     label={ t('general.type') }
                     onChangeHandler={ (v): void => {
-                        dispatch({ type: 'roleId', value: v });
-                        console.log('selected role:', v)
-                        console.log('state:', state)
+                      dispatch({ type: 'roleID', value: v });
                     } }
                   />
                 </Grid>

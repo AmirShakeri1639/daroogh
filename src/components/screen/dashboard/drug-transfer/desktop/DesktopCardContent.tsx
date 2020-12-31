@@ -102,34 +102,34 @@ const DesktopCardContent = ({
   let totalPourcentage: number = 0;
   let paymentStatus: string = '';
   // useEffect(() => {
-    if (item?.currentPharmacyIsA) {
-      pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
-      totalPourcentage = item?.totalPourcentageA;
-      paymentStatus =
-        item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
+  if (item?.currentPharmacyIsA) {
+    pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
+    totalPourcentage = item?.totalPourcentageA;
+    paymentStatus =
+      item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
 
-      // Should show B's grade and star and warranty
-      pharmacyGrade =
-        item?.pharmacyGradeB == undefined ? 4 : item?.pharmacyGradeB;
-      star = item?.pharmacyStarB == undefined ? 0 : item?.pharmacyStarB;
-      pharmacyWarranty =
-        item?.pharmacyWarrantyB == undefined ? 0 : item?.pharmacyWarrantyB;
-    } else {
-      pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
-      totalPourcentage = item?.totalPourcentageB;
-      paymentStatus =
-        item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
+    // Should show B's grade and star and warranty
+    pharmacyGrade =
+      item?.pharmacyGradeB == undefined ? 4 : item?.pharmacyGradeB;
+    star = item?.pharmacyStarB == undefined ? 0 : item?.pharmacyStarB;
+    pharmacyWarranty =
+      item?.pharmacyWarrantyB == undefined ? 0 : item?.pharmacyWarrantyB;
+  } else {
+    pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
+    totalPourcentage = item?.totalPourcentageB;
+    paymentStatus =
+      item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
 
-      item.state = item.state <= 10 && !isStateCommon(item.state) ? item.state + 10 : item.state;
+    item.state = item.state <= 10 && !isStateCommon(item.state) ? item.state + 10 : item.state;
 
-      // Should show A's grade and star and warranty
-      pharmacyGrade =
-        item?.pharmacyGradeA == undefined ? 4 : item?.pharmacyGradeA;
-      star = item?.pharmacyStarA == undefined ? 0 : item?.pharmacyStarA;
-      pharmacyWarranty =
-        item?.pharmacyWarrantyA == undefined ? 0 : item?.pharmacyWarrantyA;
-    }
-    expireDate = getExpireDate(item);
+    // Should show A's grade and star and warranty
+    pharmacyGrade =
+      item?.pharmacyGradeA == undefined ? 4 : item?.pharmacyGradeA;
+    star = item?.pharmacyStarA == undefined ? 0 : item?.pharmacyStarA;
+    pharmacyWarranty =
+      item?.pharmacyWarrantyA == undefined ? 0 : item?.pharmacyWarrantyA;
+  }
+  expireDate = getExpireDate(item);
   // }, [item]);
 
 
@@ -237,7 +237,9 @@ const DesktopCardContent = ({
             </Grid>
             <Grid xs={ 12 } className={ rowRight }>
               <div>
-                { item.pharmacyProvinceB } { item.pharmacyCityB }
+                { item.currentPharmacyIsA
+                  ? `${item.pharmacyProvinceB}، ${item.pharmacyCityB}`
+                  : `${item.pharmacyProvinceA}، ${item.pharmacyCityA}` }
               </div>
             </Grid>
           </Grid>

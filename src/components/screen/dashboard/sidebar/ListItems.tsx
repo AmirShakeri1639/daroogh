@@ -100,6 +100,8 @@ const {
   pharmaciesList,
   createMessage,
   messagesList,
+  drugFavoriteList,
+  drugCategoryfavoriteList,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
