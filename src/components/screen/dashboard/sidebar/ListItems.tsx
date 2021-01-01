@@ -414,7 +414,7 @@ const ListItems: React.FC = () => {
             </Link>
           </List>
 
-          <List component="div" className={linkWrapper}>
+          {/* <List component="div" className={linkWrapper}>
             <Link to={drugCategoryfavoriteList} className={nested}>
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBars} />
@@ -423,7 +423,7 @@ const ListItems: React.FC = () => {
                 primary={`${t('drug.category')} ${t('drug.drug')}`}
               />
             </Link>
-          </List>
+          </List> */}
         </Collapse>
       </>
     );

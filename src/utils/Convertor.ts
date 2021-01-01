@@ -16,13 +16,9 @@ class Convertor {
     }-${convertedDate.jd < 10 ? `0${convertedDate.jd}` : convertedDate.jd}`;
   }
 
-  zeroSeparator(price: number | string): string {
-    const formatter = new Intl.NumberFormat('fa-IR', {
-      style: 'currency',
-      currency: 'IRR',
-    });
-    return formatter.format(Number(price));
-  };
+  thousandsSeperator(number: string | number): string {
+    return new Intl.NumberFormat('en-US').format(Number(number));
+  }
 
   numberWithZero(number: number | string): string | number {
     return number < 10 ? `0${number}` : number;
