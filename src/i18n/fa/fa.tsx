@@ -205,7 +205,7 @@ export default {
         completionDate: 'تاریخ تکمیل تبادل',
         state: 'وضعیت',
         totalPrice: 'مجموع قیمت',
-        exCalculator: 'ماشین حساب',
+        exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
       },

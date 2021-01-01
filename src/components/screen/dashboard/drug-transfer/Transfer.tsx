@@ -208,7 +208,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setShowApproveModalForm,
   });
 
-  const toggleShowExCalculator = () => setShowExCalculator(!showExCalculator);
+  const toggleShowExCalculator = (): void => setShowExCalculator(!showExCalculator);
 
   const exchangeCalculator = (): JSX.Element => {
     return (
@@ -223,7 +223,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           showExCalculator &&
           <Modal open={ showExCalculator }
             toggle={ (): any => setShowExCalculator(!showExCalculator) }>
-            <ExCalculator exchange={ viewExhcnage } />
+            <ExCalculator exchange={ viewExhcnage } basketCount={ basketCount.length } uBasketCount={ uBasketCount.length } />
             <Divider />
             <div style={ { padding: '1em' } }>
               <Button variant="outlined" color="primary" onClick={ toggleShowExCalculator }>
