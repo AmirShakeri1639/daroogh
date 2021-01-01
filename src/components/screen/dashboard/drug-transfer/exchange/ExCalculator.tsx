@@ -65,9 +65,9 @@ const ExCalculator: React.FC<Props> = (props) => {
     }
   }
 
-  useEffect(() => {
-    reCheckData();
-  }, [exchange, basketCount, uBasketCount]);
+  // useEffect(() => {
+  reCheckData();
+  // }, [exchange, basketCount, uBasketCount]);
 
   const getOneSideData = (isA: boolean): JSX.Element => {
     let card;
@@ -105,7 +105,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                           { row.drug.genericName }
                         </TableCell>
                         <TableCell align="right">{ row.cnt }</TableCell>
-                        <TableCell align="right">{ row.amount.toLocaleString() }</TableCell>
+                        <TableCell align="right">{  Convertor.zeroSeparator(row.amount) }</TableCell>
                       </TableRow>
                     )
                   }) }
@@ -146,7 +146,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                   {t('exchange.totalPrice') }
                 </>
               }
-              leftText={ totalPrice.toLocaleString() }
+              leftText={ Convertor.zeroSeparator(totalPrice) }
             />
           </Grid>
         ) }
