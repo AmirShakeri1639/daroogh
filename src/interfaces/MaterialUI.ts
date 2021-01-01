@@ -10,6 +10,7 @@ export interface InputInterface {
   value?: string | number;
   readOnly?: boolean;
   label?: string;
+  numberFormat?: boolean;
   dir?: 'ltr' | 'rtl';
   rows?: number;
   required?: boolean;

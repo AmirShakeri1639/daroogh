@@ -71,6 +71,7 @@ export default {
         add: 'اضافه کردن',
         favorite: 'علاقه مندی',
         undefined: 'تعریف نشده',
+        toman: 'تومان',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
