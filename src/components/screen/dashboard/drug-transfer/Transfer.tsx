@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, createStyles, makeStyles } from '@material-ui/core';
+import { Button, createStyles, makeStyles, Divider } from '@material-ui/core';
 import './transfer.scss';
 import Context, { TransferDrugContextInterface } from './Context';
 import { Grid } from '@material-ui/core';
@@ -26,7 +26,7 @@ const style = makeStyles((theme) =>
     root: {
       backgroundColor: '#f7f7f7',
       padding: theme.spacing(2, 1),
-    },
+    }
   })
 );
 
@@ -208,6 +208,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setShowApproveModalForm,
   });
 
+  const toggleShowExCalculator = () => setShowExCalculator(!showExCalculator);
+
   const exchangeCalculator = (): JSX.Element => {
     return (
       <>
@@ -222,6 +224,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           <Modal open={ showExCalculator }
             toggle={ (): any => setShowExCalculator(!showExCalculator) }>
             <ExCalculator exchange={ viewExhcnage } />
+            <Divider />
+            <div style={ { padding: '1em' } }>
+              <Button variant="outlined" color="primary" onClick={ toggleShowExCalculator }>
+                { t('general.ok') }
+              </Button>
+            </div>
           </Modal>
         }
       </>

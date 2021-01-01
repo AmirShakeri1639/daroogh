@@ -30,6 +30,12 @@ export const useClasses = makeStyles((theme) => createStyles({
   checkIcon: {
     color: theme.palette.success.main,
   },
+  rtl: {
+    direction: 'rtl'
+  },
+  ltr: {
+    direction: 'ltr'
+  },
   formContainer: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -68,6 +74,9 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   spacing3: {
     margin: theme.spacing(3)
+  },
+  padding2: {
+    padding: theme.spacing(2)
   },
   spacingVertical1: {
     marginTop: theme.spacing(1),
