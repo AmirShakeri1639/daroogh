@@ -20,7 +20,6 @@ export const DaroogTabPanel: React.FC<DaroogTabPanelProps> = (props) => {
     >
       {value == index && (
         <Box p={3}>
-          {console.log('in box of tabpanel, value:', value)}
           <Typography>{children}</Typography>
         </Box>
       )}
