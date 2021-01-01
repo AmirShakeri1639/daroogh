@@ -1,8 +1,26 @@
 import React, { useCallback } from 'react';
 import { InputInterface } from '../../../interfaces/MaterialUI';
-import { TextField } from '@material-ui/core';
+import { createStyles, makeStyles, TextField } from '@material-ui/core';
+import NumberFormat from 'react-number-format';
+
+const useStyle = makeStyles((theme) =>
+  createStyles({
+    numberInput: {
+      width: '100%',
+      borderRadius: 4,
+      border: '1px solid rgb(200, 200, 200)',
+      padding: '2px 12px',
+      '& >  div.MuiInputBase-root': {
+        '&::before, &:after': {
+          display: 'none',
+        },
+      },
+    },
+  })
+);
 
 const Input: React.FC<InputInterface> = (props) => {
+  const { numberInput } = useStyle();
   const {
     type,
     value,
@@ -13,6 +31,7 @@ const Input: React.FC<InputInterface> = (props) => {
     placeholder,
     dir,
     readOnly,
+    numberFormat,
     onClick,
     required,
     error,
@@ -20,6 +39,19 @@ const Input: React.FC<InputInterface> = (props) => {
   } = props;
 
   const inuptGenerator = useCallback((): JSX.Element => {
+    if (numberFormat) {
+      return (
+        <NumberFormat
+          className={numberInput}
+          value={value}
+          placeholder={String(placeholder)}
+          thousandSeparator
+          // @ts-ignore
+          onValueChange={(value): void => onChange(value?.value)}
+          customInput={TextField}
+        />
+      );
+    }
     return (
       <TextField
         error={error}

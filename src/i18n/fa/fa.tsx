@@ -71,6 +71,7 @@ export default {
         add: 'اضافه کردن',
         favorite: 'علاقه مندی',
         undefined: 'تعریف نشده',
+        toman: 'تومان',
         ok: 'خب',
       },
       date: {
