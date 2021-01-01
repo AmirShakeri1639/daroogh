@@ -204,6 +204,7 @@ export default {
         completionDate: 'تاریخ تکمیل تبادل',
         state: 'وضعیت',
         totalPrice: 'مجموع قیمت',
+        exCalculator: 'ماشین حساب',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
