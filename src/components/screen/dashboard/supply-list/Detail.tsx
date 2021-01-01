@@ -13,7 +13,7 @@ import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
 
-const { convertISOTime } = Convertor;
+const { convertISOTime, thousandsSeperator } = Convertor;
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -70,7 +70,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                     <Grid item xs={10}>
                       <TextLine
                         rightText={t('general.inventory')}
-                        leftText={count}
+                        leftText={thousandsSeperator(count)}
                       />
                     </Grid>
                   </Grid>
@@ -88,7 +88,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                     <Grid item xs={10}>
                       <TextLine
                         rightText={t('general.price')}
-                        leftText={amount}
+                        leftText={thousandsSeperator(amount)}
                       />
                     </Grid>
                   </Grid>
