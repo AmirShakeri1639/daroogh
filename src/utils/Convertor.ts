@@ -22,7 +22,7 @@ class Convertor {
       currency: 'IRR',
     });
     return formatter.format(Number(price));
-  }
+  };
 
   numberWithZero(number: number | string): string | number {
     return number < 10 ? `0${number}` : number;

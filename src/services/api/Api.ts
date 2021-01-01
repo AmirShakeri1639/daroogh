@@ -11,7 +11,6 @@ const axiosInstance = axios.create({
 const CancelToken = axios.CancelToken;
 
 axiosInstance.interceptors.response.use(undefined, (error) => {
-  console.log('erRRRRRRRR:', error);
   const { response } = error;
   if (!error.response) {
     console.error('Error in network');

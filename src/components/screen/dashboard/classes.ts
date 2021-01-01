@@ -30,6 +30,12 @@ export const useClasses = makeStyles((theme) => createStyles({
   checkIcon: {
     color: theme.palette.success.main,
   },
+  rtl: {
+    direction: 'rtl'
+  },
+  ltr: {
+    direction: 'ltr'
+  },
   formContainer: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -69,9 +75,18 @@ export const useClasses = makeStyles((theme) => createStyles({
   spacing3: {
     margin: theme.spacing(3)
   },
+  padding2: {
+    padding: theme.spacing(2)
+  },
   spacingVertical1: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
+    marginLeft: 0,
+    marginRight: 0,
+  },
+  spacingVertical3: {
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
     marginLeft: 0,
     marginRight: 0,
   },
@@ -209,6 +224,9 @@ export const useClasses = makeStyles((theme) => createStyles({
     },
   },
   icons: {
+    color: theme.palette.gray.dark,
+  },
+  darkText: {
     color: theme.palette.gray.dark,
   },
 }));

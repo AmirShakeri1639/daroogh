@@ -148,7 +148,6 @@ const Drug: React.FC = () => {
     if (!isLoading && data !== undefined && isFetched) {
       return data.items.map((item: any) => {
         const { drug } = item;
-        console.log('item', item);
         return (
           <Grid key={drug.id} item xs={12} sm={6} md={4} xl={3}>
             <CardContainer data={drug} formHandler={formHandler} />

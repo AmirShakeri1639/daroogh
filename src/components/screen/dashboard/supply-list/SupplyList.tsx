@@ -305,7 +305,6 @@ const SupplyList: React.FC = () => {
       drug: { name },
       id,
     } = item;
-    console.log(item);
     dispatch({ type: 'expireDate', value: expireDate });
     dispatch({ type: 'drugID', value: drugID });
     dispatch({ type: 'offer1', value: offer1 });
