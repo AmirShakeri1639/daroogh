@@ -46,6 +46,7 @@ const Input: React.FC<InputInterface> = (props) => {
           value={value}
           placeholder={String(placeholder)}
           thousandSeparator
+          // @ts-ignore
           onValueChange={(value): void => onChange(value?.value)}
           customInput={TextField}
         />
