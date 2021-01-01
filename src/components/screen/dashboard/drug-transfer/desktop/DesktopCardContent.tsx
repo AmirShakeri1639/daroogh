@@ -33,51 +33,13 @@ import {
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
 import {
-  getExpireDate, isExchangeCompleted, isExchangeCompleteddOrCancelled, isStateCommon
+  getExpireDate, 
+  isExchangeCompleted,
+  isStateCommon,
+  getExpireDateTitle,
+  ViewExchangeInitialState
 } from '../../../../../utils/ExchangeTools';
 import { ViewExchangeInterface } from '../../../../../interfaces';
-
-const initialState = {
-  id: 0,
-  state: 1,
-  currentPharmacyIsA: false,
-  numberA: '',
-  numberB: '',
-  expireDateA: '',
-  expireDateB: '',
-  expireDate: '',
-  canceller: 0,
-  stateString: '',
-  pharmacyKeyA: '',
-  pharmacyKeyB: '',
-  pharmacyCityA: '',
-  pharmacyProvinceA: '',
-  pharmacyCityB: '',
-  pharmacyProvinceB: '',
-  pharmacyGradeA: 0,
-  pharmacyGradeB: 0,
-  pharmacyStarA: 0,
-  pharmacyStarB: 0,
-  pharmacyWarrantyA: 0,
-  pharmacyWarrantyB: 0,
-  totalPourcentageA: 0,
-  totalPourcentageB: 0,
-  totalAmountA: 0,
-  totalAmountB: 0,
-  confirmA: false,
-  confirmB: false,
-  sendDate: '',
-  confirmDateA: '',
-  confirmDateB: '',
-  paymentDateA: '',
-  paymentDateB: '',
-  cancelDate: '',
-  description: '',
-  lockSuggestion: false,
-  allowShowPharmacyInfo: false,
-  cartA: [],
-  cartB: [],
-}
 
 interface Props {
   item?: ViewExchangeInterface;
@@ -86,7 +48,7 @@ interface Props {
 
 // @ts-ignore
 const DesktopCardContent = ({
-  item = initialState,
+  item = ViewExchangeInitialState,
   onCardClick
 }: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -101,12 +63,14 @@ const DesktopCardContent = ({
   let expireDate: string | undefined = '';
   let totalPourcentage: number = 0;
   let paymentStatus: string = '';
+  let totalAmount: any;
   // useEffect(() => {
   if (item?.currentPharmacyIsA) {
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
     totalPourcentage = item?.totalPourcentageA;
     paymentStatus =
       item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
+    totalAmount = item.totalAmountA;
 
     // Should show B's grade and star and warranty
     pharmacyGrade =
@@ -119,6 +83,7 @@ const DesktopCardContent = ({
     totalPourcentage = item?.totalPourcentageB;
     paymentStatus =
       item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
+    totalAmount = item.totalAmountB;
 
     item.state = item.state <= 10 && !isStateCommon(item.state) ? item.state + 10 : item.state;
 
@@ -146,10 +111,7 @@ const DesktopCardContent = ({
   // ];
   // state = states[Math.floor(Math.random() * states.length)];
 
-  let expireDateText: string = t('exchange.expirationDate');
-  if (isExchangeCompleteddOrCancelled(item.state)) {
-    expireDateText = t('exchange.completionDate');
-  }
+  const expireDateText: string = t(getExpireDateTitle(item.state));
 
   const getExchangeTitle = (): string => {
     if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
@@ -314,6 +276,25 @@ const DesktopCardContent = ({
                   </>
                 }
                 leftText={ totalPourcentage }
+              />
+            </Grid>
+          ) }
+
+          { !isNullOrEmpty(totalAmount) && totalAmount > 0 && (
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
+              <TextLine
+                backColor={ ColorEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon
+                      icon={ faMoneyBillAlt }
+                      className={ faIcons }
+                      size="lg"
+                    />
+                    {t('exchange.totalPrice') }
+                  </>
+                }
+                leftText={ totalAmount }
               />
             </Grid>
           ) }

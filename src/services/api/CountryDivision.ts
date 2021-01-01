@@ -1,5 +1,6 @@
 import Api from './Api';
 import { errorHandler } from "../../utils";
+import { DefaultProvince } from '../../enum/consts';
 
 class CountryDivision extends Api {
   readonly urls = {
@@ -27,8 +28,7 @@ class CountryDivision extends Api {
     }
   }
 
-  getAllCities = async (provinceId: number | string = 9): Promise<any> => {
-    // provinceId of Xorasan Razavi is 9
+  getAllCities = async (provinceId: number | string = DefaultProvince): Promise<any> => {
     try {
       const result = await this.postJsonData(
         `${ this.urls.allCities }?provinceID=${ provinceId }`);
@@ -38,7 +38,7 @@ class CountryDivision extends Api {
     }
   }
 
-  getAllCities2 = async (provinceId: number | string = 9): Promise<any> => {
+  getAllCities2 = async (provinceId: number | string = DefaultProvince): Promise<any> => {
     try {
       const result = await this.postJsonData(
         `${ this.urls.allCities2 }?provinceCode=${ provinceId }`);

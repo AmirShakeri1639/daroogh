@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { errorHandler, sweetAlert } from '../../../../utils';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import { WorkTimeEnum } from '../../../../enum';
+import { DefaultCountryDivisionID } from '../../../../enum/consts';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -34,7 +35,7 @@ const initialState: PharmacyInterface = {
   website: '',
   email: '',
   postalCode: '',
-  countryDivisionID: 1,
+  countryDivisionID: DefaultCountryDivisionID,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -104,6 +105,11 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         postalCode: value,
+      };
+    case 'countryDivisionID':
+      return {
+        ...state,
+        countryDivisionID: value,
       };
     case 'reset':
       return initialState;
@@ -187,173 +193,173 @@ const CreatePharmacy: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" className={parent}>
-      <Grid container spacing={0}>
+    <Container maxWidth="lg" className={ parent }>
+      <Grid container spacing={ 0 }>
         <Paper>
-          <div className={titleContainer}>
+          <div className={ titleContainer }>
             <Typography
               variant="h6"
               component="h6"
-              className={`${formTitle} txt-md`}
+              className={ `${formTitle} txt-md` }
             >
-              {t('pharmacy.new')}
+              { t('pharmacy.new') }
             </Typography>
           </div>
           <Divider />
-          <form autoComplete="off" className={formContainer} onSubmit={submit}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
+          <form autoComplete="off" className={ formContainer } onSubmit={ submit }>
+            <Grid container spacing={ 1 }>
+              <Grid item xs={ 12 }>
                 <Box
                   display="flex"
                   justifyContent="space-between"
-                  className={box}
+                  className={ box }
                 >
                   <TextField
                     required
                     variant="outlined"
-                    label={t('pharmacy.name')}
-                    value={state.name}
-                    onChange={(e): void =>
+                    label={ t('pharmacy.name') }
+                    value={ state.name }
+                    onChange={ (e): void =>
                       dispatch({ type: 'name', value: e.target.value })
                     }
                   />
                   <TextField
                     required
                     variant="outlined"
-                    label={t('pharmacy.hix')}
-                    value={state.hix}
-                    onChange={(e): void =>
+                    label={ t('pharmacy.hix') }
+                    value={ state.hix }
+                    onChange={ (e): void =>
                       dispatch({ type: 'hix', value: e.target.value })
                     }
                   />
                   <TextField
                     required
                     variant="outlined"
-                    label={t('pharmacy.gli')}
-                    value={state.gli}
-                    onChange={(e): void =>
+                    label={ t('pharmacy.gli') }
+                    value={ state.gli }
+                    onChange={ (e): void =>
                       dispatch({ type: 'gli', value: e.target.value })
                     }
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={ 12 }>
                 <Box
                   display="flex"
                   justifyContent="space-between"
-                  className={box}
+                  className={ box }
                 >
                   <DaroogDropdown
-                    defaultValue={state?.workTime}
-                    data={workTimeList}
-                    className={dropdown}
-                    label={t('pharmacy.workTime')}
-                    onChangeHandler={(v): void => {
+                    defaultValue={ state?.workTime }
+                    data={ workTimeList }
+                    className={ dropdown }
+                    label={ t('pharmacy.workTime') }
+                    onChangeHandler={ (v): void => {
                       return dispatch({ type: 'workTime', value: v });
-                    }}
+                    } }
                   />
                   <TextField
                     required
                     variant="outlined"
-                    label={t('general.address')}
-                    value={state.address}
-                    onChange={(e): void =>
+                    label={ t('general.address') }
+                    value={ state.address }
+                    onChange={ (e): void =>
                       dispatch({ type: 'address', value: e.target.value })
                     }
                   />
                   <TextField
                     required
                     variant="outlined"
-                    label={t('general.mobile')}
-                    value={state.mobile}
-                    onChange={(e): void =>
+                    label={ t('general.mobile') }
+                    value={ state.mobile }
+                    onChange={ (e): void =>
                       dispatch({ type: 'mobile', value: e.target.value })
                     }
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={ 12 }>
                 <Box
                   display="flex"
                   justifyContent="space-between"
-                  className={box}
+                  className={ box }
                 >
                   <TextField
                     required
                     variant="outlined"
-                    label={t('general.phone')}
-                    value={state.telphon}
-                    onChange={(e): void =>
+                    label={ t('general.phone') }
+                    value={ state.telphon }
+                    onChange={ (e): void =>
                       dispatch({ type: 'telphon', value: e.target.value })
                     }
                   />
                   <TextField
                     required
                     variant="outlined"
-                    label={t('general.website')}
-                    value={state.website}
-                    onChange={(e): void =>
+                    label={ t('general.website') }
+                    value={ state.website }
+                    onChange={ (e): void =>
                       dispatch({ type: 'website', value: e.target.value })
                     }
                   />
                   <TextField
                     required
                     variant="outlined"
-                    label={t('general.email')}
-                    value={state.email}
-                    onChange={(e): void =>
+                    label={ t('general.email') }
+                    value={ state.email }
+                    onChange={ (e): void =>
                       dispatch({ type: 'email', value: e.target.value })
                     }
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={ 12 }>
                 <Box
                   display="flex"
                   justifyContent="space-between"
-                  className={box}
+                  className={ box }
                 >
                   <TextField
                     required
                     variant="outlined"
-                    label={t('general.postalCode')}
-                    value={state.postalCode}
-                    onChange={(e): void =>
+                    label={ t('general.postalCode') }
+                    value={ state.postalCode }
+                    onChange={ (e): void =>
                       dispatch({ type: 'postalCode', value: e.target.value })
                     }
                   />
                   <TextField
                     required
                     variant="outlined"
-                    label={t('general.description')}
-                    value={state.description}
-                    onChange={(e): void =>
+                    label={ t('general.description') }
+                    value={ state.description }
+                    onChange={ (e): void =>
                       dispatch({ type: 'description', value: e.target.value })
                     }
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={ 12 }>
                 <Box
                   display="flex"
                   justifyContent="space-between"
-                  className={box}
+                  className={ box }
                 >
-                  <Button type="submit" color="primary" className={addButton}>
-                    {t('general.save')}
+                  <Button type="submit" color="primary" className={ addButton }>
+                    { t('general.save') }
                   </Button>
-                  {state.id !== 0 && (
+                  { state.id !== 0 && (
                     <FormControl>
                       <Button
                         type="submit"
                         color="secondary"
-                        className={cancelButton}
-                        onClick={(): void => dispatch({ type: 'reset' })}
+                        className={ cancelButton }
+                        onClick={ (): void => dispatch({ type: 'reset' }) }
                       >
-                        {t('general.cancel')}
+                        { t('general.cancel') }
                       </Button>
                     </FormControl>
-                  )}
+                  ) }
                 </Box>
               </Grid>
             </Grid>

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { CountryDivision } from '../../../services/api';
 import { CountryDivisionInterface, LabelValue } from '../../../interfaces';
 import { useQueryCache } from 'react-query';
+import { DefaultCountryDivisionID, DefaultProvince } from '../../../enum/consts';
 
 interface Props {
   countryDivisionID?: number | null;
@@ -14,20 +15,19 @@ interface Props {
 }
 
 const initialProvince: CountryDivisionInterface = {
-  id: 9,
+  id: DefaultProvince,
   name: 'خراسان رضوی',
   selectable: false,
 };
 
 const initialCity: CountryDivisionInterface = {
-  id: 28367,
+  id: DefaultCountryDivisionID,
   name: 'مشهد ثامن',
   selectable: true,
 };
 
 export const CountryDivisionSelect: React.FC<Props> = (props) => {
-  const { countryDivisionID = 28367, label = '', onSelectedHandler } = props;
-  // countryDivisionID of Xorasan Razavi - Mashhad - district 1 is 28368
+  const { countryDivisionID = DefaultCountryDivisionID, label = '', onSelectedHandler } = props;
   const [province, setProvince] = useState<CountryDivisionInterface>(
     initialProvince
   );
