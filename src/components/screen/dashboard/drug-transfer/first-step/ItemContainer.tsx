@@ -31,7 +31,7 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const { convertISOTime, zeroSeparator } = Convertor;
+const { convertISOTime } = Convertor;
 
 const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
   const { offer1, offer2, drugGenericName } = props;
