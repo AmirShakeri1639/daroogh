@@ -1,21 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  CardContent,
-  CardHeader,
   createStyles,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControlLabel,
   Grid,
   Hidden,
   makeStyles,
   Switch,
   TextField,
-  useMediaQuery,
-  useTheme,
 } from '@material-ui/core';
 import ToolBox from '../Toolbox';
 import CardContainer from '../exchange/CardContainer';
@@ -24,14 +15,11 @@ import Button from '../../../../public/button/Button';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { useTranslation } from 'react-i18next';
 import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
-import SendIcon from '@material-ui/icons/Send';
-import { useInfiniteQuery, useQuery, useQueryCache } from 'react-query';
+import { useQuery, useQueryCache } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
-import routes from '../../../../../routes';
 import ActionButtons from '../exchange/ActionButtons';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 
@@ -76,7 +64,7 @@ const style = makeStyles((theme) =>
 );
 
 const ThirdStep: React.FC = () => {
-  const { getAllPharmacyDrug, getViewExchange } = new PharmacyDrug();
+  const { getAllPharmacyDrug } = new PharmacyDrug();
 
   const [isSelected, setIsSelected] = React.useState(false);
 
@@ -86,28 +74,17 @@ const ThirdStep: React.FC = () => {
     uAllPharmacyDrug,
     setUAllPharmacyDrug,
     uBasketCount,
-    exchangeId,
     exchangeStateCode,
     messageOfExchangeState,
     viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
-  const {
-    paper,
-    stickyToolbox,
-    stickyRecommendation,
-    actionContainer,
-    cancelButton,
-    cancelButton4,
-    confirmButton4,
-  } = style();
+  const { paper, stickyToolbox, stickyRecommendation } = style();
 
-  const queryCache = useQueryCache();
-
-  const [listPageNo, setListPage] = useState(0);
-  const [listCount, setListCount] = useState(0);
-  const [pageSize, setPageSize] = useState(10);
-  const [dataInfo, setDataInfo] = useState<any>([]);
+  const [listPageNo] = useState(0);
+  const [] = useState(0);
+  const [pageSize] = useState(10);
+  const [] = useState<any>([]);
   // const [viewExhcnage, setViewExchange] = useState([]);
 
   const comparer = (otherArray: any): any => {
@@ -127,12 +104,12 @@ const ThirdStep: React.FC = () => {
     };
   };
 
-  const { isLoading, error, data, refetch } = useQuery(
+  const { isLoading, refetch } = useQuery(
     ['key'],
     () => getAllPharmacyDrug('', listPageNo, pageSize),
     {
       onSuccess: (data) => {
-        const { items, count } = data;
+        const { items } = data;
         setUAllPharmacyDrug(items);
         // setDataInfo(items);
       },
@@ -150,15 +127,15 @@ const ThirdStep: React.FC = () => {
   // }, [exchangeId]);
 
   useEffect(() => {
-    // uBasketCount.forEach((x) => {
-    //   if (!x.packID) {
-    //     debugger;
-    //     const pharmacyDrug = uAllPharmacyDrug.find((a) => a.id === x.id);
-    //     if (pharmacyDrug) {
-    //       x.cnt = pharmacyDrug.cnt;
-    //     }
-    //   }
-    // });
+    uBasketCount.forEach((x) => {
+      if (!x.packID) {
+        debugger;
+        const pharmacyDrug = uAllPharmacyDrug.find((a) => a.id === x.id);
+        if (pharmacyDrug) {
+          x.cnt = pharmacyDrug.cnt;
+        }
+      }
+    });
     const onlyA = uAllPharmacyDrug.filter(comparer(uBasketCount));
     setUAllPharmacyDrug(onlyA);
   }, [uBasketCount]);
@@ -304,53 +281,35 @@ const ThirdStep: React.FC = () => {
   return (
     <>
       <Grid item xs={12}>
-        <Grid container item spacing={3} xs={12} className={stickyToolbox}>
-          <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
-            <SearchInAList />
-          </Grid>
-          <Grid item xs={12} sm={5} md={5} style={{ padding: 0 }}>
-            <ToolBox />
-          </Grid>
-        </Grid>
-        <Grid container item spacing={3} xs={12}>
-          {!viewExhcnage ||
-            (!viewExhcnage.lockSuggestion && (
-              <Grid
-                item
-                xs={12}
-                md={12}
-                style={{ marginBottom: -25, paddingBottom: 0 }}
-              >
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={isSelected}
-                      onChange={handleChange}
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label="انتخاب دارو از سبد عرضه خود"
-                />
-              </Grid>
-            ))}
+        <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={9}>
-            {isLoading && <CircleLoading />}
+            <Grid container item spacing={1} xs={12} className={stickyToolbox}>
+              <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
+                <SearchInAList />
+              </Grid>
+              <Grid item xs={12} sm={5} md={5} style={{ padding: 0 }}>
+                <ToolBox />
+              </Grid>
+            </Grid>
             <Grid container spacing={1}>
-              {basketCardListGenerator()}
-              {cardListGenerator()}
+              <>
+                {isLoading && <CircleLoading />}
+                {basketCardListGenerator()}
+                {cardListGenerator()}
+              </>
             </Grid>
           </Grid>
           <Grid item xs={12} sm={12} md={3}>
             <Grid container className={stickyRecommendation}>
               {viewExhcnage && <DesktopCardContent item={viewExhcnage} />}
               {/* <TextField
-                style={{ width: '100%', marginTop: 15 }}
+                style={{ width: '100%', marginTop: 15, fontSize: 10 }}
                 label="توضیحات"
                 multiline
-                rows={8}
+                rows={4}
                 defaultValue="توصیه ها"
                 variant="outlined"
+                value={recommendationMessage}
               /> */}
               <>
                 {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
@@ -367,30 +326,19 @@ const ThirdStep: React.FC = () => {
               </>
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
-                  <Grid item sm={6}>
-                    <Button
-                      type="button"
-                      variant="outlined"
-                      color="pink"
-                      onClick={(): void => setActiveStep(activeStep - 1)}
-                    >
-                      <ArrowRightAltIcon />
-                      {t('general.prevLevel')}
-                    </Button>
-                  </Grid>
-                  {/* {exchangeStateCode !== 2 && exchangeStateCode !== 4 && (
-                    <Grid item sm={6} style={{ textAlign: 'left' }}>
+                  {!viewExhcnage && (
+                    <Grid item sm={6}>
                       <Button
                         type="button"
                         variant="outlined"
-                        color="blue"
-                        onClick={(): void => setActiveStep(activeStep + 1)}
+                        color="pink"
+                        onClick={(): void => setActiveStep(activeStep - 1)}
                       >
-                        {t('general.sendExchange')}
-                        <SendIcon style={{ transform: 'rotate(-180deg)' }} />
+                        <ArrowRightAltIcon />
+                        {t('general.prevLevel')}
                       </Button>
                     </Grid>
-                  )} */}
+                  )}
                 </Grid>
               </Hidden>
             </Grid>

@@ -27,7 +27,6 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import ExchangeApprove from '../exchange/ExchangeApprove';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 import ActionButtons from '../exchange/ActionButtons';
@@ -89,18 +88,16 @@ const SecondStep: React.FC = () => {
     setAllPharmacyDrug,
     openDialog,
     setOpenDialog,
-    recommendationMessage,
     basketCount,
     selectedPharmacyForTransfer,
     exchangeStateCode,
     messageOfExchangeState,
-    showApproveModalForm,
     viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [dataInfo, setDataInfo] = useState<AllPharmacyDrugInterface[]>([]);
+  const [] = useState<AllPharmacyDrugInterface[]>([]);
   const { cancelExchange } = new PharmacyDrug();
 
   const [] = useMutation(cancelExchange, {
@@ -119,12 +116,7 @@ const SecondStep: React.FC = () => {
     },
   });
 
-  const {
-    paper,
-    stickyToolbox,
-    stickyRecommendation,
-    actionContainer,
-  } = style();
+  const { paper, stickyToolbox, stickyRecommendation } = style();
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
@@ -172,7 +164,6 @@ const SecondStep: React.FC = () => {
   useEffect(() => {
     basketCount.forEach((x) => {
       if (!x.packID) {
-        debugger;
         const pharmacyDrug = allPharmacyDrug.find((a) => a.id === x.id);
         if (pharmacyDrug) {
           x.cnt = pharmacyDrug.cnt;
@@ -268,12 +259,7 @@ const SecondStep: React.FC = () => {
   };
 
   const basketCardListGenerator = (): any => {
-    if (
-      basketCount &&
-      basketCount.length > 0 &&
-      allPharmacyDrug &&
-      allPharmacyDrug.length > 0
-    ) {
+    if (basketCount && basketCount.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
