@@ -37,7 +37,6 @@ class PharmacyDrug extends Api {
     top: number = 10
   ): Promise<any> => {
     try {
-      debugger;
       let query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
       query += `&$top=${top}&$skip=${skip * top}`;
       const result = await this.postJsonData(query);
@@ -205,7 +204,6 @@ class PharmacyDrug extends Api {
   };
 
   getPayment = async (data: Payment): Promise<any> => {
-    debugger;
     const result = await this.postJsonData(`${this.urls.payment}`, data);
     return result.data;
   };

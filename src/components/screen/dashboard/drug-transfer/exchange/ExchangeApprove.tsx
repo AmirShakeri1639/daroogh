@@ -162,7 +162,6 @@ const ExchangeApprove: React.FC = () => {
           variant="outlined"
           color="green"
           onClick={async (): Promise<any> => {
-            debugger;
             const res = await getPayment(payment);
           }}
         >
