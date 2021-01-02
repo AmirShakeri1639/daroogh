@@ -5,9 +5,15 @@ import {
   makeStyles,
   Paper,
   MenuItem,
+  TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { MaterialContainer, Modal, DatePicker } from '../../../public';
+import {
+  MaterialContainer,
+  Modal,
+  DatePicker,
+  BackDrop,
+} from '../../../public';
 import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -25,17 +31,12 @@ import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
 import Button from '../../../public/button/Button';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
-import ReactSelect from '../../../public/react-select/ReactSelect';
 import { useEffectOnce } from '../../../../hooks';
-import {
-  Convertor,
-  errorHandler,
-  sanitizeReactSelect,
-  successSweetAlert,
-} from '../../../../utils';
+import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
+import { Autocomplete } from '@material-ui/lab';
 
 const { convertISOTime } = Convertor;
 
@@ -109,7 +110,7 @@ const useStyle = makeStyles((theme) =>
     modalContainer: {
       backgroundColor: '#fff',
       borderRadius: 5,
-      padding: theme.spacing(2, 3),
+      padding: theme.spacing(2),
       maxWidth: 600,
     },
     offerInput: {
@@ -140,6 +141,12 @@ const useStyle = makeStyles((theme) =>
     drugTitle: {
       marginBottom: theme.spacing(1),
     },
+    formContent: {
+      height: 450,
+      overflow: 'hidden',
+      overflowY: 'auto',
+      display: 'flex',
+    },
   })
 );
 
@@ -149,24 +156,32 @@ const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 
 const { getComissionAndRecommendation } = new Comission();
 
+const { numberWithZero } = Convertor;
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(
     false
   );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, new PharmacyDrugSupplyList());
   const [drugList, setDrugList] = useState<DrugInterface[]>([]);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
-  const [selectedDrug, setSelectedDrug] = useState<{
-    label: string;
-    value: string;
-  } | null>(null);
+  const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [isoDate, setIsoDate] = useState<string>('');
   const [daroogRecommendation, setDaroogRecommendation] = useState<string>('');
   const [comissionPercent, setComissionPercent] = useState<string>('');
+  const [selectDrugForEdit, setSelectDrugForEdit] = useState<{
+    id: number;
+    genericName: string;
+  }>({
+    id: -1,
+    genericName: '',
+  });
+  const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
 
   const { t } = useTranslation();
   const queryCache = useQueryCache();
@@ -179,7 +194,7 @@ const SupplyList: React.FC = () => {
     fieldset,
     buttonContainer,
     cancelButton,
-    drugTitle,
+    formContent,
   } = useStyle();
 
   useEffectOnce(() => {
@@ -204,10 +219,11 @@ const SupplyList: React.FC = () => {
           (drugId && Number(amount) > 0)
         ) {
           const result = await getComissionAndRecommendation({
-            drugId: selectedDrug!.value,
+            drugId: Number(selectedDrug),
             price: state?.amount,
             offer1: state?.offer1,
             offer2: state?.offer2,
+            expireDate: isoDate,
             pharmacyId: '0',
           });
           const { data } = result;
@@ -222,14 +238,33 @@ const SupplyList: React.FC = () => {
         errorHandler(e);
       }
     })();
-  }, [selectedDrug, state?.amount, state?.offer1, state?.offer1, state?.cnt]);
+  }, [
+    selectedDrug,
+    state?.amount,
+    state?.offer1,
+    state?.offer2,
+    state?.cnt,
+    // state?.expireDate,
+    isoDate,
+  ]);
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
-  const toggleIsOpenModalOfNewList = (): void =>
+  const toggleIsOpenModalOfNewList = (): void => {
+    if (isOpenModalOfNewList) {
+      dispatch({ type: 'reset' });
+      setSelectedDate('');
+      setSelectedDrug('');
+      setDaroogRecommendation('');
+      setComissionPercent('');
+      setDaysDiff('');
+      setIsoDate('');
+      setOptions([]);
+    }
     setIsOpenModalOfNewList((v) => !v);
+  };
 
   const {
-    isLoading,
+    isLoading: isLoadingFetchData,
     data,
     isFetched,
   } = useQuery(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () => allPharmacyDrug());
@@ -238,9 +273,9 @@ const SupplyList: React.FC = () => {
     savePharmacyDrug,
     {
       onSuccess: async () => {
-        queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
         toggleIsOpenModalOfNewList();
         await successSweetAlert(t('alert.successfulSave'));
+        queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
       },
     }
   );
@@ -269,11 +304,32 @@ const SupplyList: React.FC = () => {
     );
 
     setIsoDate(
-      `${selectedDate.gy}-${selectedDate.gm}-${selectedDate.gd}T00:00:00Z`
+      `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
+        selectedDate.gd
+      )}T00:00:00Z`
     );
   };
 
-  const editHandler = (item: any): any => {
+  const searchDrugs = async (title: string): Promise<any> => {
+    try {
+      if (title.length < 2) {
+        return;
+      }
+      setIsLoading(true);
+      const result = await searchDrug(title);
+      const items = result.map((item: any) => ({
+        id: item.id,
+        genericName: item.genericName,
+      }));
+      setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
+      setIsLoading(false);
+      setOptions(items);
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  const editHandler = async (item: any): Promise<any> => {
     const {
       offer1,
       offer2,
@@ -294,13 +350,13 @@ const SupplyList: React.FC = () => {
     dispatch({ type: 'cnt', value: cnt });
     dispatch({ type: 'id', value: id });
 
-    setSelectedDrug({
-      label: name,
-      value: drugID,
-    });
+    setIsOpenBackDrop(true);
+    await searchDrugs(name);
+    setSelectedDrug(Number(drugID));
     const shamsiDate = convertISOTime(expireDate);
     setSelectedDate(shamsiDate);
     calculatDateDiference(shamsiDate, '-');
+    setIsOpenBackDrop(false);
     toggleIsOpenModalOfNewList();
   };
 
@@ -317,9 +373,9 @@ const SupplyList: React.FC = () => {
     if (filteredItems.length > 0) {
       items = filteredItems.map((item: AllPharmacyDrugInterface) => {
         return (
-          <Grid item xs={12} sm={6} md={4} xl={3}>
+          <Grid item xs={12} sm={6} md={4} xl={3} key={item.id}>
             <CardContainer
-              editHandler={(): void => editHandler(item)}
+              editHandler={(): Promise<any> => editHandler(item)}
               drug={item}
             />
           </Grid>
@@ -331,7 +387,7 @@ const SupplyList: React.FC = () => {
           return (
             <Grid item xs={12} sm={6} md={4} xl={3}>
               <CardContainer
-                editHandler={(): void => editHandler(item)}
+                editHandler={(): Promise<any> => editHandler(item)}
                 drug={item}
               />
             </Grid>
@@ -352,38 +408,15 @@ const SupplyList: React.FC = () => {
     });
   };
 
-  const searchDrugs = async (title: string): Promise<any> => {
-    try {
-      if (title.length < 2) {
-        return;
-      }
-      const result = await searchDrug(title);
-      const options = sanitizeReactSelect(result, 'id', 'name');
-      setOptions(options);
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
-
   const formHandler = async (): Promise<any> => {
     try {
       state.expireDate = isoDate;
       //@ts-ignore
-      state.drugID = selectedDrug.value;
+      state.drugID = selectedDrug;
       await _savePharmacyDrug(state);
     } catch (e) {
       errorHandler(e);
     }
-  };
-
-  const closeHandler = (): void => {
-    dispatch({ type: 'reset' });
-    setSelectedDate('');
-    setSelectedDrug(null);
-    setDaroogRecommendation('');
-    setComissionPercent('');
-    setDaysDiff('');
-    toggleIsOpenModalOfNewList();
   };
 
   return (
@@ -407,45 +440,75 @@ const SupplyList: React.FC = () => {
         </Grid>
       </MaterialContainer>
 
-      <Modal open={isOpenModalOfNewList} toggle={closeHandler}>
+      <Modal open={isOpenModalOfNewList} toggle={toggleIsOpenModalOfNewList}>
         <div className={modalContainer}>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} className={formContent}>
             <Grid item xs={12}>
-              <label className={drugTitle}>{t('drug.drugSelection')}</label>
-            </Grid>
-            <Grid item xs={12}>
-              <ReactSelect
+              <Autocomplete
+                loading={isLoading}
+                id="drug-list"
+                noOptionsText={t('general.noData')}
+                loadingText={t('general.loading')}
                 options={options}
-                onChange={(e): void => {
-                  setSelectedDrug(e);
+                onChange={(event, value, reason): void => {
+                  setSelectedDrug(value?.id);
                 }}
-                onInputChange={debounce(searchDrugs, 500)}
-                value={selectedDrug}
-                noOptionsMessage="اطلاعات موجود نیست"
-                placeholder="حداقل 3 کاراکتر وارد کنید"
+                getOptionLabel={(option: any) => option.genericName}
+                // value={selectDrugForEdit}
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label={t('drug.name')}
+                    variant="outlined"
+                    onChange={debounce(
+                      (e): Promise<any> => searchDrugs(e.target.value),
+                      500
+                    )}
+                  />
+                )}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <Input
-                value={state?.amount}
-                className="w-100"
-                label={t('general.price')}
-                onChange={(e): void =>
-                  dispatch({ type: 'amount', value: Number(e.target.value) })
-                }
-              />
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label htmlFor="">{t('general.price')}</label>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Input
+                    numberFormat
+                    value={state?.amount}
+                    className="w-100"
+                    label={t('general.price')}
+                    onChange={(e): void =>
+                      dispatch({ type: 'amount', value: Number(e) })
+                    }
+                  />
+                </Grid>
+              </Grid>
             </Grid>
 
             <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={`${t('general.number')} ${t('drug.drug')}`}
-                onChange={(e): void =>
-                  dispatch({ type: 'cnt', value: Number(e.target.value) })
-                }
-                value={state?.cnt}
-              />
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.number')}</label>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Input
+                    numberFormat
+                    className="w-100"
+                    label={`${t('general.number')} ${t('drug.drug')}`}
+                    onChange={(e): void =>
+                      dispatch({ type: 'cnt', value: Number(e) })
+                    }
+                    value={state?.cnt}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
 
             <Grid item xs={12}>
@@ -499,7 +562,7 @@ const SupplyList: React.FC = () => {
                 label={t('general.expireDate')}
               />
             </Grid>
-            <Grid item xs={1} className={expireDate}>
+            <Grid item xs={2} className={expireDate}>
               {daysDiff !== '' && <span>{daysDiff} روز</span>}
             </Grid>
 
@@ -538,7 +601,7 @@ const SupplyList: React.FC = () => {
             <Button
               color="pink"
               type="button"
-              onClick={closeHandler}
+              onClick={toggleIsOpenModalOfNewList}
               className={cancelButton}
             >
               {t('general.cancel')}
@@ -562,6 +625,8 @@ const SupplyList: React.FC = () => {
           }}
         />
       </Modal>
+
+      <BackDrop isOpen={isOpenBackDrop} />
     </>
   );
 };

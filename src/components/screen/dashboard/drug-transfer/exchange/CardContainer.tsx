@@ -234,6 +234,8 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
           if (result) setViewExchange(result);
         }
       }
+      console.log('cartA len in adddrug:', viewExhcnage.cartA.length)
+      console.log('cartB len in adddrug:', viewExhcnage.cartB.length)
     },
   });
 

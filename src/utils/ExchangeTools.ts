@@ -1,7 +1,7 @@
 import { isNullOrEmpty } from ".";
 import { ExchangeStateEnum } from "../enum";
 import moment from 'jalali-moment';
-import { LabelValue } from "../interfaces";
+import { LabelValue, ViewExchangeInterface } from "../interfaces";
 
 export const isExchangeCompleteddOrCancelled = (state: number): boolean => {
   return ([
@@ -80,6 +80,13 @@ export const getExpireDate = (item: any): string => {
   return expireDate;
 };
 
+export const getExpireDateTitle = (state: number): string => {
+  return (
+    isExchangeCompleteddOrCancelled(state)
+    ? 'exchange.completionDate' : 'exchange.expirationDate'
+  );
+};
+
 /// Checks if a list of LavelValue has x value
 export const hasLabelValue = (list: LabelValue[], x: any): boolean => {
   for (let i = 0; i < list.length; i++) {
@@ -87,4 +94,46 @@ export const hasLabelValue = (list: LabelValue[], x: any): boolean => {
   }
 
   return false;
+};
+
+export const ViewExchangeInitialState: ViewExchangeInterface = {
+  id: 0,
+  state: 1,
+  currentPharmacyIsA: true,
+  numberA: '',
+  numberB: '',
+  expireDateA: '',
+  expireDateB: '',
+  expireDate: '',
+  canceller: 0,
+  stateString: '',
+  pharmacyKeyA: '',
+  pharmacyKeyB: '',
+  pharmacyCityA: '',
+  pharmacyProvinceA: '',
+  pharmacyCityB: '',
+  pharmacyProvinceB: '',
+  pharmacyGradeA: 0,
+  pharmacyGradeB: 0,
+  pharmacyStarA: 0,
+  pharmacyStarB: 0,
+  pharmacyWarrantyA: 0,
+  pharmacyWarrantyB: 0,
+  totalPourcentageA: 0,
+  totalPourcentageB: 0,
+  totalAmountA: 0,
+  totalAmountB: 0,
+  confirmA: false,
+  confirmB: false,
+  sendDate: '',
+  confirmDateA: '',
+  confirmDateB: '',
+  paymentDateA: '',
+  paymentDateB: '',
+  cancelDate: '',
+  description: '',
+  lockSuggestion: false,
+  allowShowPharmacyInfo: false,
+  cartA: [],
+  cartB: [],
 };

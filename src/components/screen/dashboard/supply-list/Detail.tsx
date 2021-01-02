@@ -45,6 +45,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
   const { paper, container, textLeft, icon } = useStyle();
 
   const { t } = useTranslation();
+  const { thousandsSeperator } = Convertor;
 
   return (
     <Grid item xs={12}>
@@ -70,7 +71,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                     <Grid item xs={10}>
                       <TextLine
                         rightText={t('general.inventory')}
-                        leftText={count}
+                        leftText={thousandsSeperator(count)}
                       />
                     </Grid>
                   </Grid>
@@ -88,7 +89,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                     <Grid item xs={10}>
                       <TextLine
                         rightText={t('general.price')}
-                        leftText={amount}
+                        leftText={thousandsSeperator(amount)}
                       />
                     </Grid>
                   </Grid>

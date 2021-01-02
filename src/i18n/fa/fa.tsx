@@ -71,6 +71,8 @@ export default {
         add: 'اضافه کردن',
         favorite: 'علاقه مندی',
         undefined: 'تعریف نشده',
+        toman: 'تومان',
+        ok: 'خب',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -203,6 +205,10 @@ export default {
         sendDate: 'تاریخ شروع تبادل',
         completionDate: 'تاریخ تکمیل تبادل',
         state: 'وضعیت',
+        totalPrice: 'مجموع قیمت',
+        exCalculator: 'فاکتور تبادل',
+        you: 'شما',
+        otherSide: 'طرف مقابل',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',

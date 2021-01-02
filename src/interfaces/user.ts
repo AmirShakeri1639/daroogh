@@ -4,6 +4,7 @@ import {
   PharmacyTypeEnum,
   WorkTimeEnum,
 } from "../enum";
+import { DefaultCountryDivisionID, DefaultProvince } from "../enum/consts";
 
 export class DateUserId {
   public _date: string = '';
@@ -223,7 +224,7 @@ export class Pharmacy {
   public type: PharmacyTypeEnum = PharmacyTypeEnum.NONGOVERNMENTAL;
   public workTime: WorkTimeEnum = WorkTimeEnum.PART_TIME;
   public address: string = '';
-  public countryDivisionID: number = 0;
+  public countryDivisionID: number = DefaultCountryDivisionID;
   public x?: string = '';
   public y?: string = '';
   public mobile?: string = '';

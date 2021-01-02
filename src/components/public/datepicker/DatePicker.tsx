@@ -3,7 +3,7 @@ import { createStyles, makeStyles, Switch } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Calendar } from 'react-modern-calendar-datepicker';
-import "react-modern-calendar-datepicker/lib/DatePicker.css";
+import 'react-modern-calendar-datepicker/lib/DatePicker.css';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -11,9 +11,9 @@ const useStyle = makeStyles((theme) =>
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-    }
-  }
-));
+    },
+  })
+);
 
 interface DateTimePickerProps {
   selectedDateHandler: (date: string) => void;
@@ -30,7 +30,12 @@ const DateTimePicker: React.FC<DateTimePickerProps> = (props) => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedDateType, setSelectedDateType] = useState<'fa' | 'en'>('fa');
 
-  const { selectedDateHandler, locale, dateTypeIsSelectable, minimumDate } = props;
+  const {
+    selectedDateHandler,
+    locale,
+    dateTypeIsSelectable,
+    minimumDate,
+  } = props;
 
   const datePickerHandler = (_selectedDate): void => {
     const { day: d, month: m, year: y } = _selectedDate;
@@ -44,14 +49,13 @@ const DateTimePicker: React.FC<DateTimePickerProps> = (props) => {
   const dateTypeButtons = (): any => {
     return (
       <div className={buttonContainer}>
-      <span>{t('date.gregorian')}</span>
+        <span>{t('date.gregorian')}</span>
         <Switch
           disabled={true}
           checked={selectedDateType === 'fa'}
           onChange={(): void => {
             setSelectedDateType(selectedDateType === 'fa' ? 'en' : 'fa');
             const { getFullYear, getMonth, getDate } = new Date();
-            console.log(getFullYear, getMonth, getDate)
             // setSelectedDate({
             //   year: date.getFullYear(),
             //   month: date.getMonth() + 1,
@@ -64,7 +68,7 @@ const DateTimePicker: React.FC<DateTimePickerProps> = (props) => {
         <span>{t('date.shamsi')}</span>
       </div>
     );
-  }
+  };
 
   return (
     <div>

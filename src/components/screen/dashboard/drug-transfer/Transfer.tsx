@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createStyles, makeStyles } from '@material-ui/core';
+import { Button, createStyles, makeStyles, Divider } from '@material-ui/core';
 import './transfer.scss';
 import Context, { TransferDrugContextInterface } from './Context';
 import { Grid } from '@material-ui/core';
@@ -17,17 +17,21 @@ import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
 import { encryptionKey } from '../../../../enum/consts';
+import ExCalculator from './exchange/ExCalculator';
+import { useTranslation } from 'react-i18next';
+import Modal from '../../../public/modal/Modal';
 
 const style = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#f7f7f7',
       padding: theme.spacing(2, 1),
-    },
+    }
   })
 );
 
 const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
+  const { t } = useTranslation();
   const { getViewExchange } = new PharmacyDrug();
   const [allStepName, setAllStepName] = useState<string[]>([
     'انتخاب داروخانه',
@@ -69,6 +73,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   const location = useLocation();
   const params = queryString.parse(location.search);
+
+  const [showExCalculator, setShowExCalculator] = useState(false);
 
   let eid: number | undefined = undefined;
   const encryptedId = params.eid == null ? undefined : params.eid;
@@ -207,21 +213,55 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setShowApproveModalForm,
   });
 
-  return (
-    <Context.Provider value={initialContextValues()}>
-      <div className={root}>
-        <MaterialContainer>
-          <Grid container spacing={1}>
-            {activeStep > 0 && (
-              <Grid item xs={12}>
-                <ProgressBar />
-              </Grid>
-            )}
+  const toggleShowExCalculator = (): void => setShowExCalculator(!showExCalculator);
 
-            {activeStep === 0 && <FirstStep />}
-            {activeStep === 1 && <SecondStep />}
-            {activeStep === 2 && <ThirdStep />}
-            {activeStep === 3 && <FourthStep />}
+  const exchangeCalculator = (): JSX.Element => {
+    return (
+      <>
+        <Button variant="contained"
+          onClick={
+            (): void => { setShowExCalculator(!showExCalculator); }
+          }>
+          { t('exchange.exCalculator') }
+        </Button>
+        {
+          showExCalculator &&
+          <Modal open={ showExCalculator }
+            toggle={ (): any => setShowExCalculator(!showExCalculator) }>
+            <ExCalculator exchange={ viewExhcnage } basketCount={ basketCount.length } uBasketCount={ uBasketCount.length } />
+            <Divider />
+            <div style={ { padding: '1em' } }>
+              <Button variant="outlined" color="primary" onClick={ toggleShowExCalculator }>
+                { t('general.ok') }
+              </Button>
+            </div>
+          </Modal>
+        }
+      </>
+    )
+  }
+
+  return (
+    <Context.Provider value={ initialContextValues() }>
+      <div className={ root }>
+        <MaterialContainer>
+          <Grid container spacing={ 1 }>
+            { activeStep > 0 && (
+              <>
+                <Grid item xs={ 11 }>
+                  <ProgressBar />
+                </Grid>
+                <Grid item xs={ 1 }>
+                  { exchangeCalculator() }
+                </Grid>
+              </>
+            ) }
+
+            { activeStep === 0 && <FirstStep /> }
+            { activeStep === 1 && <SecondStep /> }
+            { activeStep === 2 && <ThirdStep /> }
+            { activeStep === 3 && <FourthStep /> }
+
           </Grid>
         </MaterialContainer>
       </div>
