@@ -10,6 +10,7 @@ import {
   Grid,
   IconButton,
   makeStyles,
+  TextField,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -51,8 +52,36 @@ const style = makeStyles((theme) =>
     counterButton: {
       height: 32,
       width: 20,
+      minWidth: 30,
       fontSize: 11,
       fontWeight: 'bold',
+      backgroundColor: '#3f51b5',
+      color: '#ffffff',
+      '&:hover': {
+        backgroundColor: '#8787f5',
+      },
+    },
+    counterButtonRight: {
+      borderRadius: '5px 0 0 5px',
+    },
+    counterButtonLeft: {
+      borderRadius: '0 5px 5px 0',
+    },
+    textCounter: {
+      width: 50,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      '& > .MuiOutlinedInput-inputMarginDense': {
+        textAlign: 'center !important',
+      },
+      '& > .MuiOutlinedInput-root': {
+        height: 32,
+        borderRadius: 0,
+        fontSize: 11,
+      },
+      '& input::-webkit-clear-button, & input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
+        display: 'none',
+      },
     },
     expand: {
       transform: 'rotate(0deg)',
@@ -193,15 +222,17 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
 
   const [_addDrug1] = useMutation(addDrug1, {
     onSuccess: async (res) => {
-      setExchangeId(res.data.exchangeId);
-      setRecommendationMessage(res.data.recommendationMessage);
-      setMessage(t('alert.successAddDrug'));
-      snackBarHandleClick();
+      if (res) {
+        setExchangeId(res.data.exchangeId);
+        setRecommendationMessage(res.data.recommendationMessage);
+        setMessage(t('alert.successAddDrug'));
+        snackBarHandleClick();
 
-      if (!viewExhcnage) {
-        const viewExResult = await getViewExchange(res.data.exchangeId);
-        const result: ViewExchangeInterface | undefined = viewExResult.data;
-        if (result) setViewExchange(result);
+        if (!viewExhcnage) {
+          const viewExResult = await getViewExchange(res.data.exchangeId);
+          const result: ViewExchangeInterface | undefined = viewExResult.data;
+          if (result) setViewExchange(result);
+        }
       }
     },
   });
@@ -214,13 +245,11 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   });
 
   const [_addPack1] = useMutation(addPack1, {
-    onSuccess: async () => {
-      setMessage(t('alert.successAddPack'));
-      snackBarHandleClick();
-      // await sweetAlert({
-      //   type: 'success',
-      //   text: t('alert.successAddPack'),
-      // });
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage(t('alert.successAddPack'));
+        snackBarHandleClick();
+      }
     },
   });
 
@@ -275,6 +304,9 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     collapse,
     button,
     counterButton,
+    counterButtonRight,
+    counterButtonLeft,
+    textCounter,
   } = style();
 
   const counterHandle = (e: string): void => {
@@ -307,8 +339,9 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   //   });
   // };
 
-  const addTransferHandle = async (): Promise<any> => {
+  const addDrugHandle = async (): Promise<any> => {
     const inputmodel = new AddDrog1();
+    debugger;
     inputmodel.pharmacyDrugID = pharmacyDrug.id;
     inputmodel.pharmacyKey = selectedPharmacyForTransfer;
     inputmodel.count = pharmacyDrug.currentCnt;
@@ -322,9 +355,12 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
 
     try {
       if (inputmodel.count > 0) {
-        await _addDrug1(inputmodel);
-        if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
-        else setUbasketCount([...uBasketCount, pharmacyDrug]);
+        const res = await _addDrug1(inputmodel);
+        if (res) {
+          pharmacyDrug.currentCnt = inputmodel.count;
+          if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
+          else setUbasketCount([...uBasketCount, pharmacyDrug]);
+        }
       } else {
         await _removeDrug1(inputmodel);
         if (
@@ -364,9 +400,12 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
         drugInfo.packID = pharmacyDrug.packID;
         drugInfo.packName = pharmacyDrug.packName;
         try {
-          await _addPack1(inputmodel);
-          if (activeStep === 1) setBasketCount([...basketCount, drugInfo]);
-          else setUbasketCount([...basketCount, drugInfo]);
+          const res = await _addPack1(inputmodel);
+          if (res) {
+            if (activeStep === 1)
+              setBasketCount([...basketCount, pharmacyDrug]);
+            else setUbasketCount([...basketCount, pharmacyDrug]);
+          }
         } catch (e) {
           errorHandler(e);
         }
@@ -391,29 +430,36 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
 
   const CounterButton = (): JSX.Element => {
     return pharmacyDrug.buttonName === 'افزودن به تبادل' ? (
-      <ButtonGroup variant="contained" color="primary">
+      <>
         <Button
           size="small"
-          className={counterButton}
+          variant="outlined"
+          className={`${counterButton} ${counterButtonRight}`}
           onClick={(): void => counterHandle('+')}
         >
           <AddIcon />
         </Button>
-        <Button
+        <TextField
+          type="number"
           variant="outlined"
           size="small"
-          style={{ paddingTop: 5, backgroundColor: 'white' }}
+          className={textCounter}
+          defaultValue={pharmacyDrug.currentCnt}
+          onChange={(e): void => {
+            pharmacyDrug.currentCnt = +e.target.value;
+          }}
         >
           {pharmacyDrug.currentCnt}
-        </Button>
+        </TextField>
         <Button
           size="small"
-          className={counterButton}
+          variant="outlined"
+          className={`${counterButton} ${counterButtonLeft}`}
           onClick={(): void => counterHandle('-')}
         >
           <RemoveIcon />
         </Button>
-      </ButtonGroup>
+      </>
     ) : (
       <>
         <b>{pharmacyDrug.currentCnt}</b> عدد انتخاب شده
@@ -425,6 +471,45 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     setExpanded(!expanded);
   };
 
+  const AddRemoveAction = (): JSX.Element => {
+    let element = <></>;
+    if (
+      !viewExhcnage ||
+      (viewExhcnage.state !== 7 && viewExhcnage.lockSuggestion === false)
+    ) {
+      element = (
+        <Grid container>
+          <Grid item xs={6} style={{ textAlign: 'right' }}>
+            {!isPack && <CounterButton />}
+          </Grid>
+          <Grid
+            item
+            xs={!isPack ? 6 : 12}
+            style={{
+              textAlign: !isPack ? 'left' : 'center',
+              marginBottom: !isPack ? 0 : 10,
+              marginTop: !isPack ? 0 : 5,
+            }}
+          >
+            <Button
+              variant="contained"
+              className={button}
+              size="small"
+              onClick={async (): Promise<any> => {
+                if (!isPack) await addDrugHandle();
+                else await packHandle();
+              }}
+            >
+              {pharmacyDrug.buttonName}
+            </Button>
+          </Grid>
+        </Grid>
+      );
+    }
+
+    return element;
+  };
+
   return (
     <Card
       className={`${root} ${isPack ? pack : ''}`}
@@ -433,25 +518,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
       <CardContent>{basicDetail}</CardContent>
       {!isPack && (
         <CardActions disableSpacing className={action}>
-          {(!viewExhcnage ||
-            !viewExhcnage.lockSuggestion ||
-            exchangeStateCode === 1) && (
-            <Grid container>
-              <Grid item xs={6} style={{ textAlign: 'right' }}>
-                <CounterButton />
-              </Grid>
-              <Grid item xs={6} style={{ textAlign: 'left' }}>
-                <Button
-                  variant="contained"
-                  className={button}
-                  size="small"
-                  onClick={async (): Promise<any> => await addTransferHandle()}
-                >
-                  {pharmacyDrug.buttonName}
-                </Button>
-              </Grid>
-            </Grid>
-          )}
+          <AddRemoveAction />
         </CardActions>
       )}
       {isPack && (
@@ -473,19 +540,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
             className={collapse}
           >
             <div> {collapsableContent} </div>
-            {(!viewExhcnage ||
-              !viewExhcnage.lockSuggestion ||
-              exchangeStateCode === 1) && (
-              <Button
-                variant="contained"
-                size="small"
-                className={button}
-                style={{ marginBottom: 5 }}
-                onClick={async (): Promise<any> => await packHandle()}
-              >
-                {pharmacyDrug.buttonName}
-              </Button>
-            )}
+            <AddRemoveAction />
           </Collapse>
         </>
       )}

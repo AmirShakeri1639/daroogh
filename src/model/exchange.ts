@@ -28,3 +28,8 @@ export class ConfirmOrNotExchange {
   exchangeID: number = 0;
   isConfirm: boolean = true;
 }
+
+export class Payment {
+  accountingIds: number[] = [];
+  bankGetway: string = '';
+}

@@ -62,11 +62,9 @@ const FourthStep: React.FC = () => {
     onSuccess: async (res) => {
       if (res) {
         setMessage({ ...message, message: t('alert.send'), type: 'success' });
+        snackBarHandleClick();
         history.push(desktop);
-      } else {
-        setMessage({ message: 'عملیات ناموفق', type: 'error' });
       }
-      snackBarHandleClick();
     },
   });
 

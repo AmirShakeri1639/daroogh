@@ -32,6 +32,8 @@ import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import { useIntersectionObserver } from '../../../../../hooks/useIntersectionObserver';
 import routes from '../../../../../routes';
+import ActionButtons from '../exchange/ActionButtons';
+import DesktopCardContent from '../desktop/DesktopCardContent';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -87,6 +89,7 @@ const ThirdStep: React.FC = () => {
     exchangeId,
     exchangeStateCode,
     messageOfExchangeState,
+    viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const {
@@ -105,7 +108,7 @@ const ThirdStep: React.FC = () => {
   const [listCount, setListCount] = useState(0);
   const [pageSize, setPageSize] = useState(10);
   const [dataInfo, setDataInfo] = useState<any>([]);
-  const [viewExhcnage, setViewExchange] = useState([]);
+  // const [viewExhcnage, setViewExchange] = useState([]);
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
@@ -131,23 +134,32 @@ const ThirdStep: React.FC = () => {
       onSuccess: (data) => {
         const { items, count } = data;
         setUAllPharmacyDrug(items);
-        setDataInfo(items);
+        // setDataInfo(items);
       },
       enabled: false,
     }
   );
 
-  useEffect(() => {
-    (async (): Promise<void> => {
-      if (exchangeId > 0) {
-        const result = await getViewExchange(exchangeId);
-        setViewExchange(result);
-      }
-    })();
-  }, [exchangeId]);
+  // useEffect(() => {
+  //   (async (): Promise<void> => {
+  //     if (exchangeId > 0) {
+  //       const result = await getViewExchange(exchangeId);
+  //       setViewExchange(result);
+  //     }
+  //   })();
+  // }, [exchangeId]);
 
   useEffect(() => {
-    const onlyA = dataInfo.filter(comparer(uBasketCount));
+    // uBasketCount.forEach((x) => {
+    //   if (!x.packID) {
+    //     debugger;
+    //     const pharmacyDrug = uAllPharmacyDrug.find((a) => a.id === x.id);
+    //     if (pharmacyDrug) {
+    //       x.cnt = pharmacyDrug.cnt;
+    //     }
+    //   }
+    // });
+    const onlyA = uAllPharmacyDrug.filter(comparer(uBasketCount));
     setUAllPharmacyDrug(onlyA);
   }, [uBasketCount]);
 
@@ -167,15 +179,19 @@ const ThirdStep: React.FC = () => {
 
           let isPack = false;
           let totalAmount = 0;
-          if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            uAllPharmacyDrug
-              .filter((x) => x.packID === item.packID)
-              .forEach((p: AllPharmacyDrugInterface) => {
-                packList.push(p);
-                totalAmount += p.amount;
-              });
-            item.totalAmount = totalAmount;
-            isPack = true;
+          if (item.packID) {
+            if (!packList.find((x) => x.packID === item.packID)) {
+              uAllPharmacyDrug
+                .filter((x) => x.packID === item.packID)
+                .forEach((p: AllPharmacyDrugInterface) => {
+                  packList.push(p);
+                  totalAmount += p.amount;
+                });
+              item.totalAmount = totalAmount;
+              isPack = true;
+            } else {
+              return <></>;
+            }
           }
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
@@ -188,7 +204,12 @@ const ThirdStep: React.FC = () => {
                     isPack={true}
                     pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
                     collapsableContent={
-                      <ExCardContent formType={3} packInfo={packList} />
+                      <ExCardContent
+                        formType={3}
+                        packInfo={packList.filter(
+                          (x) => x.packID === item.packID
+                        )}
+                      />
                     }
                   />
                 ) : (
@@ -197,7 +218,9 @@ const ThirdStep: React.FC = () => {
                       <ExCardContent formType={2} pharmacyDrug={item} />
                     }
                     isPack={false}
-                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                    pharmacyDrug={Object.assign(item, {
+                      currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
+                    })}
                   />
                 )}
               </div>
@@ -222,7 +245,7 @@ const ThirdStep: React.FC = () => {
           let totalAmount = 0;
           let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            dataInfo
+            uAllPharmacyDrug
               .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);
@@ -257,7 +280,9 @@ const ThirdStep: React.FC = () => {
                       <ExCardContent formType={2} pharmacyDrug={item} />
                     }
                     isPack={false}
-                    pharmacyDrug={item}
+                    pharmacyDrug={Object.assign(item, {
+                      currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
+                    })}
                   />
                 )}
               </div>
@@ -288,24 +313,27 @@ const ThirdStep: React.FC = () => {
           </Grid>
         </Grid>
         <Grid container item spacing={3} xs={12}>
-          <Grid
-            item
-            xs={12}
-            md={12}
-            style={{ marginBottom: -25, paddingBottom: 0 }}
-          >
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={isSelected}
-                  onChange={handleChange}
-                  name="checkedB"
-                  color="primary"
+          {!viewExhcnage ||
+            (!viewExhcnage.lockSuggestion && (
+              <Grid
+                item
+                xs={12}
+                md={12}
+                style={{ marginBottom: -25, paddingBottom: 0 }}
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={isSelected}
+                      onChange={handleChange}
+                      name="checkedB"
+                      color="primary"
+                    />
+                  }
+                  label="انتخاب دارو از سبد عرضه خود"
                 />
-              }
-              label="انتخاب دارو از سبد عرضه خود"
-            />
-          </Grid>
+              </Grid>
+            ))}
           <Grid item xs={12} md={9}>
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
@@ -315,16 +343,17 @@ const ThirdStep: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={12} md={3}>
             <Grid container className={stickyRecommendation}>
-              <TextField
+              {viewExhcnage && <DesktopCardContent item={viewExhcnage} />}
+              {/* <TextField
                 style={{ width: '100%', marginTop: 15 }}
                 label="توضیحات"
                 multiline
                 rows={8}
                 defaultValue="توصیه ها"
                 variant="outlined"
-              />
-              {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
-                <>
+              /> */}
+              <>
+                {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
                   <TextField
                     style={{ width: '100%', marginTop: 15 }}
                     multiline
@@ -332,30 +361,10 @@ const ThirdStep: React.FC = () => {
                     defaultValue={messageOfExchangeState}
                     variant="outlined"
                   />
-                  <div className={actionContainer}>
-                    <Button
-                      className={
-                        exchangeStateCode !== 4 ? cancelButton : cancelButton4
-                      }
-                      type="button"
-                      variant="outlined"
-                      color="red"
-                    >
-                      لغو درخواست
-                    </Button>
-                    {exchangeStateCode === 4 && (
-                      <Button
-                        className={confirmButton4}
-                        type="button"
-                        variant="outlined"
-                        color="green"
-                      >
-                        تایید نهایی
-                      </Button>
-                    )}
-                  </div>
-                </>
-              )}
+                )}
+                <ActionButtons />
+                {/* {showApproveModalForm && <ExchangeApprove />} */}
+              </>
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
                   <Grid item sm={6}>
@@ -369,7 +378,7 @@ const ThirdStep: React.FC = () => {
                       {t('general.prevLevel')}
                     </Button>
                   </Grid>
-                  {exchangeStateCode !== 2 && exchangeStateCode !== 4 && (
+                  {/* {exchangeStateCode !== 2 && exchangeStateCode !== 4 && (
                     <Grid item sm={6} style={{ textAlign: 'left' }}>
                       <Button
                         type="button"
@@ -381,7 +390,7 @@ const ThirdStep: React.FC = () => {
                         <SendIcon style={{ transform: 'rotate(-180deg)' }} />
                       </Button>
                     </Grid>
-                  )}
+                  )} */}
                 </Grid>
               </Hidden>
             </Grid>

@@ -100,7 +100,7 @@ const SecondStep: React.FC = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [dataInfo, setDataInfo] = useState<any>([]);
+  const [dataInfo, setDataInfo] = useState<AllPharmacyDrugInterface[]>([]);
   const { cancelExchange } = new PharmacyDrug();
 
   const [] = useMutation(cancelExchange, {
@@ -149,12 +149,17 @@ const SecondStep: React.FC = () => {
 
   const { isLoading, refetch } = useQuery(
     ['key'],
-    () => getAllPharmacyDrug(selectedPharmacyForTransfer, listPageNo, pageSize),
+    () => {
+      return getAllPharmacyDrug(
+        selectedPharmacyForTransfer,
+        listPageNo,
+        pageSize
+      );
+    },
     {
       onSuccess: (data) => {
         const { items } = data;
         setAllPharmacyDrug(items);
-        setDataInfo(items);
       },
       enabled: false,
     }
@@ -162,10 +167,19 @@ const SecondStep: React.FC = () => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [selectedPharmacyForTransfer]);
 
   useEffect(() => {
-    const onlyA = dataInfo.filter(comparer(basketCount));
+    basketCount.forEach((x) => {
+      if (!x.packID) {
+        debugger;
+        const pharmacyDrug = allPharmacyDrug.find((a) => a.id === x.id);
+        if (pharmacyDrug) {
+          x.cnt = pharmacyDrug.cnt;
+        }
+      }
+    });
+    const onlyA = allPharmacyDrug.filter(comparer(basketCount));
     setAllPharmacyDrug(onlyA);
   }, [basketCount]);
 
@@ -181,39 +195,39 @@ const SecondStep: React.FC = () => {
             cardColor: 'white',
           });
 
-          // let isPack = false;
-          // let totalAmount = 0;
-          // if (item.packID) {
-          //   if (!packList.find((x) => x.packID === item.packID)) {
-          //     allPharmacyDrug
-          //       .filter((x) => x.packID === item.packID)
-          //       .forEach((p: AllPharmacyDrugInterface) => {
-          //         packList.push(p);
-          //         totalAmount += p.amount;
-          //       });
-          //     item.totalAmount = totalAmount;
-          //     isPack = true;
-          //   } else {
-          //     return <></>;
-          //   }
-          // }
           let isPack = false;
           let totalAmount = 0;
-          let ignore = true;
-          if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            dataInfo
-              .filter((x: any) => x.packID === item.packID)
-              .forEach((p: AllPharmacyDrugInterface) => {
-                packList.push(p);
-                totalAmount += p.amount;
-              });
-            item.totalAmount = totalAmount;
-            isPack = true;
-            ignore = false;
+          if (item.packID) {
+            if (!packList.find((x) => x.packID === item.packID)) {
+              allPharmacyDrug
+                .filter((x) => x.packID === item.packID)
+                .forEach((p: AllPharmacyDrugInterface) => {
+                  packList.push(p);
+                  totalAmount += p.amount;
+                });
+              item.totalAmount = totalAmount;
+              isPack = true;
+            } else {
+              return <></>;
+            }
           }
-          if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
-            return <></>;
-          }
+          // let isPack = false;
+          // let totalAmount = 0;
+          // let ignore = true;
+          // if (item.packID && !packList.find((x) => x.packID === item.packID)) {
+          //   dataInfo
+          //     .filter((x: any) => x.packID === item.packID)
+          //     .forEach((p: AllPharmacyDrugInterface) => {
+          //       packList.push(p);
+          //       totalAmount += p.amount;
+          //     });
+          //   item.totalAmount = totalAmount;
+          //   isPack = true;
+          //   ignore = false;
+          // }
+          // if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
+          //   return <></>;
+          // }
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
               <div className={paper}>
@@ -239,7 +253,9 @@ const SecondStep: React.FC = () => {
                       <ExCardContent formType={2} pharmacyDrug={item} />
                     }
                     isPack={false}
-                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                    pharmacyDrug={Object.assign(item, {
+                      currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
+                    })}
                   />
                 )}
               </div>
@@ -252,24 +268,33 @@ const SecondStep: React.FC = () => {
   };
 
   const basketCardListGenerator = (): any => {
-    if (basketCount && basketCount.length > 0) {
+    if (
+      basketCount &&
+      basketCount.length > 0 &&
+      allPharmacyDrug &&
+      allPharmacyDrug.length > 0
+    ) {
       const packList = new Array<AllPharmacyDrugInterface>();
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
           item.cardColor = '#89fd89';
-
           let isPack = false;
           let totalAmount = 0;
           let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            dataInfo
+            basketCount
               .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);
                 totalAmount += p.amount;
               });
+            // if (item.packName === undefined)
+            //   item.packName = dataInfo.find(
+            //     (x) => x.packID == item.packID
+            //   )?.packName;
+
             item.totalAmount = totalAmount;
             isPack = true;
             ignore = false;
@@ -372,7 +397,7 @@ const SecondStep: React.FC = () => {
           <Grid item xs={12} sm={12} md={3}>
             <Grid container className={stickyRecommendation}>
               {viewExhcnage && <DesktopCardContent item={viewExhcnage} />}
-              <TextField
+              {/* <TextField
                 style={{ width: '100%', marginTop: 15, fontSize: 10 }}
                 label="توضیحات"
                 multiline
@@ -380,7 +405,7 @@ const SecondStep: React.FC = () => {
                 defaultValue="توصیه ها"
                 variant="outlined"
                 value={recommendationMessage}
-              />
+              /> */}
               <>
                 {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
                   <TextField
@@ -391,10 +416,8 @@ const SecondStep: React.FC = () => {
                     variant="outlined"
                   />
                 )}
-                <div className={actionContainer}>
-                  <ActionButtons />
-                </div>
-                {showApproveModalForm && <ExchangeApprove />}
+                <ActionButtons />
+                {/* {showApproveModalForm && <ExchangeApprove />} */}
               </>
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>

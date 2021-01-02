@@ -97,7 +97,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           if (res.cartA !== undefined) {
             res.cartA.forEach((item) => {
               basketA.push({
-                id: item.id,
+                id: item.pharmacyDrugID,
+                packID: item.packID,
+                packName: item.packName,
                 drugID: item.drugID,
                 drug: item.drug,
                 cnt: item.cnt,
@@ -118,7 +120,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           if (res.cartB !== undefined) {
             res.cartB.forEach((item) => {
               basketB.push({
-                id: item.id,
+                id: item.pharmacyDrugID,
+                packID: item.packID,
+                packName: item.packName,
                 drugID: item.drugID,
                 drug: item.drug,
                 cnt: item.cnt,
@@ -136,6 +140,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               });
             });
           }
+          debugger;
           if (!res.currentPharmacyIsA) {
             setBasketCount(basketA);
             setUbasketCount(basketB);
