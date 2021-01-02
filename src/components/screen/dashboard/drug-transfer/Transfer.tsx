@@ -146,7 +146,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               });
             });
           }
-          debugger;
           if (!res.currentPharmacyIsA) {
             setBasketCount(basketA);
             setUbasketCount(basketB);
@@ -210,7 +209,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     messageOfExchangeState,
     setMessageOfExchangeState,
     showApproveModalForm,
-    setShowApproveModalForm,
+    setShowApproveModalForm
   });
 
   const toggleShowExCalculator = (): void => setShowExCalculator(!showExCalculator);
@@ -228,7 +227,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           showExCalculator &&
           <Modal open={ showExCalculator }
             toggle={ (): any => setShowExCalculator(!showExCalculator) }>
-            <ExCalculator exchange={ viewExhcnage } basketCount={ basketCount.length } uBasketCount={ uBasketCount.length } />
+            <ExCalculator exchange={ viewExhcnage } />
             <Divider />
             <div style={ { padding: '1em' } }>
               <Button variant="outlined" color="primary" onClick={ toggleShowExCalculator }>

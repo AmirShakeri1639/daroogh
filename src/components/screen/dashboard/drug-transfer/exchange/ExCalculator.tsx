@@ -18,26 +18,24 @@ import moment from 'jalali-moment';
 import {
   getExpireDateTitle, getExpireDate, ViewExchangeInitialState
 } from '../../../../../utils/ExchangeTools';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
-  basketCount: any;
-  uBasketCount: any;
 }
 
 const ExCalculator: React.FC<Props> = (props) => {
   const exchange: ViewExchangeInterface =
     props.exchange == undefined ? ViewExchangeInitialState : props.exchange;
-  const { basketCount, uBasketCount } = props;
 
   const { t } = useTranslation();
   const {
     root, padding2, ltr, rtl, spacingVertical3, faIcons, darkText
   } = useClasses();
 
-  console.log('exchange in calc:', exchange);
-  console.log('cartA len: ', exchange.cartA.length);
-  console.log('cartB len: ', exchange.cartB.length);
+  const {
+    activeStep, is3PercentOk, setIs3PercentOk, basketCount, uBasketCount
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
@@ -51,8 +49,6 @@ const ExCalculator: React.FC<Props> = (props) => {
   }
 
   const reCheckData = (): any => {
-    console.log('basketCount:', basketCount);
-    console.log('uBasketCount:', uBasketCount);
     expireDate = getExpireDate(exchange);
     expireDateText = t(getExpireDateTitle(exchange.state));
 
@@ -69,14 +65,23 @@ const ExCalculator: React.FC<Props> = (props) => {
   reCheckData();
   // }, [exchange, basketCount, uBasketCount]);
 
+  let totalPriceA = 0;
+  let totalPriceB = 0;
+
+  useEffect(() => {
+    const threePercent = totalPriceA * .03;
+    const diff = Math.abs(totalPriceA - totalPriceB);
+    if (setIs3PercentOk) setIs3PercentOk(diff < threePercent);
+  }, [totalPriceA, totalPriceB]);
+
   const getOneSideData = (isA: boolean): JSX.Element => {
     let card;
     let totalPourcentage;
     if (isA) {
-      card = exchange.cartA;
+      card = basketCount; // exchange.cartA;
       totalPourcentage = exchange.totalPourcentageA;
     } else {
-      card = exchange.cartB;
+      card = uBasketCount; // exchange.cartB;
       totalPourcentage = exchange.totalPourcentageB;
     }
     let totalCount = 0;
@@ -109,6 +114,8 @@ const ExCalculator: React.FC<Props> = (props) => {
                       </TableRow>
                     )
                   }) }
+                  { isA && (() => {totalPriceA = totalPrice})() }
+                  { !isA && (() => {totalPriceB = totalPrice})() }
                 </TableBody>
               </Table>
             </TableContainer>
@@ -255,6 +262,12 @@ const ExCalculator: React.FC<Props> = (props) => {
                 />
               </Grid>
             ) }
+            { !is3PercentOk &&
+              <Grid item xs={12} className={ spacingVertical3 }>
+                <b>{t('general.warning')}</b>:<br/>
+                { t('exchange.threePercentWarning') }
+              </Grid>
+            }
           </Grid>
         </Grid>
       </CardContent>

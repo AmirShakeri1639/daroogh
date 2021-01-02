@@ -73,6 +73,7 @@ export default {
         undefined: 'تعریف نشده',
         toman: 'تومان',
         ok: 'خب',
+        warning: 'هشدار',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -209,6 +210,7 @@ export default {
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
+        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
