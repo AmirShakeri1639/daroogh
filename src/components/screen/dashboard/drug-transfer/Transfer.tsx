@@ -210,7 +210,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     messageOfExchangeState,
     setMessageOfExchangeState,
     showApproveModalForm,
-    setShowApproveModalForm,
+    setShowApproveModalForm
   });
 
   const toggleShowExCalculator = (): void => setShowExCalculator(!showExCalculator);
