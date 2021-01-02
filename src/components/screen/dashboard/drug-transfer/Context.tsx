@@ -32,6 +32,8 @@ export interface TransferDrugContextInterface {
   setMessageOfExchangeState: (value: string) => void;
   showApproveModalForm: boolean;
   setShowApproveModalForm: (isOpen: boolean) => void;
+  is3PercentOk? : boolean; // if it's less than 3%, it's ok.
+  setIs3PercentOk?: (v: boolean) => void;
 }
 
 const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
@@ -64,6 +66,8 @@ const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   setMessageOfExchangeState: () => '',
   showApproveModalForm: false,
   setShowApproveModalForm: () => 0,
+  is3PercentOk: true,
+  setIs3PercentOk: () => 0,
 });
 
 export default DrugTransferContext;

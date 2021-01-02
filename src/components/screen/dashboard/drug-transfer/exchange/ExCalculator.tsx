@@ -18,6 +18,7 @@ import moment from 'jalali-moment';
 import {
   getExpireDateTitle, getExpireDate, ViewExchangeInitialState
 } from '../../../../../utils/ExchangeTools';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
@@ -46,6 +47,10 @@ const ExCalculator: React.FC<Props> = (props) => {
   let expireDate: string = '';
   let expireDateText: string = '';
 
+  const {
+    activeStep, is3PercentOk, setIs3PercentOk
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number): void => {
     setCurrentTabIndex(newValue);
   }
@@ -68,6 +73,15 @@ const ExCalculator: React.FC<Props> = (props) => {
   // useEffect(() => {
   reCheckData();
   // }, [exchange, basketCount, uBasketCount]);
+
+  let totalPriceA = 0;
+  let totalPriceB = 0;
+
+  useEffect(() => {
+    const threePercent = totalPriceA * .03;
+    const diff = Math.abs(totalPriceA - totalPriceB);
+    if (setIs3PercentOk) setIs3PercentOk(diff < threePercent);
+  }, [totalPriceA, totalPriceB]);
 
   const getOneSideData = (isA: boolean): JSX.Element => {
     let card;
@@ -109,6 +123,11 @@ const ExCalculator: React.FC<Props> = (props) => {
                       </TableRow>
                     )
                   }) }
+                  { isA && (() => {totalPriceA = totalPrice})() }
+                  { !isA && (() => {totalPriceB = totalPrice})() }
+                  {isA &&  console.log(`total: ${totalPrice}, A: ${totalPriceA}`) }
+                  {!isA && console.log(`total: ${totalPrice}, B: ${totalPriceB}`) }
+                  
                 </TableBody>
               </Table>
             </TableContainer>
@@ -255,6 +274,12 @@ const ExCalculator: React.FC<Props> = (props) => {
                 />
               </Grid>
             ) }
+            { !is3PercentOk &&
+              <Grid item xs={12} className={ spacingVertical3 }>
+                <b>{t('general.warning')}</b>:<br/>
+                { t('exchange.threePercentWarning') }
+              </Grid>
+            }
           </Grid>
         </Grid>
       </CardContent>
