@@ -5,6 +5,7 @@ import {
   AddPack1,
   Cancel,
   ConfirmOrNotExchange,
+  Payment,
   RemovePack1,
   Send,
 } from '../../model/exchange';
@@ -24,8 +25,10 @@ class PharmacyDrug extends Api {
     send: '/Exchange/Send',
     viewExchange: '/Exchange/ViewExchange',
     cancelExchange: '/Exchange/CancelExchange',
+    removeExchange: '/Exchange/RemoveExchange',
     confirmOrNotExchange: '/Exchange/ConfirmExchange',
     getAccountingForPayment: '/Accounting/GetAccountingForPayment',
+    payment: '/Accounting/Payment',
   };
 
   getAllPharmacyDrug = async (
@@ -34,6 +37,7 @@ class PharmacyDrug extends Api {
     top: number = 10
   ): Promise<any> => {
     try {
+      debugger;
       let query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
       query += `&$top=${top}&$skip=${skip * top}`;
       const result = await this.postJsonData(query);
@@ -53,9 +57,9 @@ class PharmacyDrug extends Api {
     }
   };
 
-  getAccountingForPayment = async (pharmacyId: number): Promise<any> => {
+  getAccountingForPayment = async (): Promise<any> => {
     try {
-      const query = `${this.urls.getAccountingForPayment}?pharmacyId=${pharmacyId}`;
+      const query = `${this.urls.getAccountingForPayment}`;
       const result = await this.postJsonData(query);
       return result;
     } catch (error) {
@@ -173,6 +177,17 @@ class PharmacyDrug extends Api {
     }
   };
 
+  removeExchange = async (exchangeId: number): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.removeExchange}?exchangeID=${exchangeId}`
+      );
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
   confirmOrNotExchange = async (data: ConfirmOrNotExchange): Promise<any> => {
     try {
       const result = await this.postJsonData(
@@ -186,6 +201,12 @@ class PharmacyDrug extends Api {
 
   savePharmacyDrug = async (data: PharmacyDrugSupplyList): Promise<any> => {
     const result = await this.postJsonData('/PharmacyDrug/Save', data);
+    return result.data;
+  };
+
+  getPayment = async (data: Payment): Promise<any> => {
+    debugger;
+    const result = await this.postJsonData(`${this.urls.payment}`, data);
     return result.data;
   };
 }

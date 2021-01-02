@@ -56,7 +56,10 @@ const ToolBox: React.FC = () => {
           <IconButton color="inherit" style={{ paddingTop: 0 }}>
             <Badge
               badgeContent={
-                activeStep === 1 ? basketCount.length : uBasketCount.length
+                activeStep === 1
+                  ? Array.from(new Set(basketCount.map((x) => x.packID))).length
+                  : Array.from(new Set(uBasketCount.map((x) => x.packID)))
+                      .length
               }
               color="secondary"
             >

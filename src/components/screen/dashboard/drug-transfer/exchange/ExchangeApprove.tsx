@@ -31,6 +31,9 @@ import { Select } from '@material-ui/core';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import moment from 'jalali-moment';
 import Utils from '../../../../public/utility/Utils';
+import { Payment } from '../../../../../model/exchange';
+import routes from '../../../../../routes';
+import { useHistory } from 'react-router-dom';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -69,11 +72,15 @@ const ExchangeApprove: React.FC = () => {
     AccountingInterface[]
   >([]);
 
-  const { getAccountingForPayment } = new PharmacyDrug();
+  const { desktop } = routes;
+  const history = useHistory();
+
+  const { getAccountingForPayment, getPayment } = new PharmacyDrug();
 
   const [totalAmount, setTotoalAmount] = useState(0);
   const [maxDebt, setMaxDebt] = useState(2000000);
   const [paymentAmount, setPaymentAmount] = useState(0);
+  const [payment, setPayment] = useState<Payment>(new Payment());
 
   const { showApproveModalForm, setShowApproveModalForm } = useContext<
     TransferDrugContextInterface
@@ -82,9 +89,29 @@ const ExchangeApprove: React.FC = () => {
   const toggleIsOpenModalForm = (): void =>
     setShowApproveModalForm(!showApproveModalForm);
 
+  const handleChangeBank = (
+    id: React.ChangeEvent<{ value: unknown }>
+  ): void => {
+    const pay = payment;
+    pay.bankGetway = String(id.target.value);
+    setPayment(pay);
+  };
+
+  const handleAccountingIds = (type: string, id: number): void => {
+    const pay = payment;
+    if (type === 'add') pay.accountingIds.push(id);
+    else {
+      const index = pay.accountingIds.indexOf(id);
+      if (index > -1) {
+        pay.accountingIds.splice(index, 1);
+      }
+    }
+    setPayment(pay);
+  };
+
   useEffect(() => {
     (async (): Promise<void> => {
-      const result = await getAccountingForPayment(10);
+      const result = await getAccountingForPayment();
       if (result) {
         const res: AccountingInterface[] = result.data.accountingForPayment.sort(
           (a: any, b: any) => (a > b ? 1 : -1)
@@ -119,6 +146,7 @@ const ExchangeApprove: React.FC = () => {
   };
 
   const PaymentPage = (): JSX.Element => {
+    // const res = await getPayment(payment);
     return (
       <form method="post" action="https://api.sumon.ir/MyVirtualGateway">
         <input type="hidden" value={paymentAmount} name="amount"></input>
@@ -129,7 +157,15 @@ const ExchangeApprove: React.FC = () => {
           value={'https://api.sumon.ir/payment/verify?paymentToken'}
           name="redirectUrl"
         ></input>
-        <Button type="submit" variant="outlined" color="green">
+        <Button
+          type="submit"
+          variant="outlined"
+          color="green"
+          onClick={async (): Promise<any> => {
+            debugger;
+            const res = await getPayment(payment);
+          }}
+        >
           <span style={{ width: 100 }}>پرداخت</span>
         </Button>
       </form>
@@ -239,9 +275,11 @@ const ExchangeApprove: React.FC = () => {
                             if (e.target.checked) {
                               amount = totalAmount + item.amount;
                               setTotoalAmount(amount);
+                              handleAccountingIds('add', item.id);
                             } else {
                               amount = totalAmount - item.amount;
                               setTotoalAmount(amount);
+                              handleAccountingIds('remove', item.id);
                             }
                             if (amount > paymentAmount)
                               setPaymentAmount(paymentAmount);
@@ -261,7 +299,7 @@ const ExchangeApprove: React.FC = () => {
             <Grid item xs={12} xl={12} md={12} style={{ marginBottom: -5 }}>
               <FormControl style={{ width: 120, marginTop: -10 }}>
                 <InputLabel>درگاه پرداخت</InputLabel>
-                <Select>
+                <Select onChange={handleChangeBank}>
                   <MenuItem value={1}>بانک پارسیان</MenuItem>
                   <MenuItem value={2}>بانک تست</MenuItem>
                 </Select>
@@ -285,7 +323,12 @@ const ExchangeApprove: React.FC = () => {
               <PaymentPage />
             </Grid>
             <Grid item xs={6} xl={6} md={6} style={{ textAlign: 'left' }}>
-              <Button type="button" variant="outlined" color="red">
+              <Button
+                type="button"
+                variant="outlined"
+                color="red"
+                onClick={(): any => history.push(desktop)}
+              >
                 بعدا پرداخت میکنم
               </Button>
             </Grid>

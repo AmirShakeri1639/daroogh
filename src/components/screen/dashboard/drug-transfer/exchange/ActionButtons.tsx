@@ -23,14 +23,28 @@ import { useMutation } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import Modal from '../../../../public/modal/Modal';
+import ExchangeApprove from './ExchangeApprove';
+import { useTranslation } from 'react-i18next';
+import routes from '../../../../../routes';
+import { useHistory } from 'react-router-dom';
 
 const style = makeStyles((theme) =>
   createStyles({
+    actionContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      marginTop: 5,
+      width: '100%',
+    },
     cancelButton: {
       width: '100%',
     },
     confirmButton: {
       width: '100%',
+    },
+    fullRow: {
+      width: '100%',
+      marginBottom: 5,
     },
     cancelButton4: {
       width: '50%',
@@ -44,20 +58,29 @@ const style = makeStyles((theme) =>
 );
 
 const ActionButtons = (): JSX.Element => {
+  const { t } = useTranslation();
+  const { desktop } = routes;
+  const history = useHistory();
   const {
     cancelButton,
     confirmButton,
     cancelButton4,
     confirmButton4,
+    actionContainer,
+    fullRow,
   } = style();
   const {
+    activeStep,
+    setActiveStep,
     exchangeStateCode,
     setShowApproveModalForm,
     viewExhcnage,
     exchangeId,
+    showApproveModalForm,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   const [comment, setComment] = useState<string>('');
   const [modalType, setModalType] = useState('');
+
   const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(
     false
   );
@@ -65,7 +88,17 @@ const ActionButtons = (): JSX.Element => {
     setModalType(type);
     setIsOpenCancelExchangeModal((v) => !v);
   };
-  const { cancelExchange, confirmOrNotExchange } = new PharmacyDrug();
+
+  const [isRemoveExchangeModal, setIsRemoveExchangeModal] = useState(false);
+  const toggleIsRemoveExchangeModalForm = (): void => {
+    setIsRemoveExchangeModal((v) => !v);
+  };
+
+  const {
+    cancelExchange,
+    confirmOrNotExchange,
+    removeExchange,
+  } = new PharmacyDrug();
 
   const [_cancelExchange, { isLoading: isLoadingSend }] = useMutation(
     cancelExchange,
@@ -76,11 +109,21 @@ const ActionButtons = (): JSX.Element => {
             type: 'success',
             text: res.message,
           });
-        } else {
+        }
+      },
+    }
+  );
+
+  const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(
+    removeExchange,
+    {
+      onSuccess: async (res) => {
+        if (res) {
           await sweetAlert({
-            type: 'error',
-            text: 'عملیات ناموفق',
+            type: 'success',
+            text: res.message,
           });
+          history.push(desktop);
         }
       },
     }
@@ -96,11 +139,7 @@ const ActionButtons = (): JSX.Element => {
           type: 'success',
           text: res.message,
         });
-      } else {
-        await sweetAlert({
-          type: 'error',
-          text: 'عملیات ناموفق',
-        });
+        history.push(desktop);
       }
     },
   });
@@ -117,6 +156,15 @@ const ActionButtons = (): JSX.Element => {
     toggleIsOpenCancelExchangeModalForm(modalType);
   };
 
+  const handleRemoveExchange = async (): Promise<any> => {
+    try {
+      await _removeExchange(exchangeId);
+    } catch (e) {
+      errorHandler(e);
+    }
+    toggleIsOpenCancelExchangeModalForm(modalType);
+  };
+
   const handleConfirmOrNotExchange = async (
     isConfirm: boolean
   ): Promise<any> => {
@@ -125,10 +173,73 @@ const ActionButtons = (): JSX.Element => {
     inputmodel.isConfirm = isConfirm;
     try {
       await _confirmOrNotExchange(inputmodel);
+      if (viewExhcnage && viewExhcnage.state === 3) {
+        setShowApproveModalForm(true);
+      }
     } catch (e) {
       errorHandler(e);
     }
     toggleIsOpenCancelExchangeModalForm(modalType);
+  };
+
+  const exchangeModalRemove = (): JSX.Element => {
+    return (
+      <Modal
+        open={isRemoveExchangeModal}
+        toggle={toggleIsRemoveExchangeModalForm}
+      >
+        <Card>
+          <CardHeader
+            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
+            title="حذف تبادل"
+            titleTypographyProps={{ variant: 'h6' }}
+            action={
+              <IconButton
+                style={{ marginTop: 10 }}
+                aria-label="settings"
+                onClick={toggleIsRemoveExchangeModalForm}
+              >
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={1}>
+              <div>
+                <span>آیا از حذف تبادل اطمینان دارید؟</span>
+              </div>
+            </Grid>
+          </CardContent>
+          <CardActions>
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <MatButton
+                  onClick={async (): Promise<any> =>
+                    await handleRemoveExchange()
+                  }
+                  variant="contained"
+                  color="primary"
+                  autoFocus
+                >
+                  بله
+                </MatButton>
+              </Grid>
+              <Grid item xs={6} style={{ textAlign: 'left' }}>
+                <MatButton
+                  onClick={toggleIsRemoveExchangeModalForm}
+                  variant="contained"
+                  color="secondary"
+                  autoFocus
+                >
+                  خیر
+                </MatButton>
+              </Grid>
+            </Grid>
+          </CardActions>
+        </Card>
+      </Modal>
+    );
   };
 
   const exchangeModalApproveCancel = (type: string): JSX.Element => {
@@ -176,7 +287,9 @@ const ActionButtons = (): JSX.Element => {
           <CardActions>
             {type === 'approve' ? (
               <MatButton
-                onClick={(): any => handleConfirmOrNotExchange(true)}
+                onClick={async (): Promise<any> =>
+                  handleConfirmOrNotExchange(true)
+                }
                 variant="contained"
                 color="primary"
                 autoFocus
@@ -185,7 +298,7 @@ const ActionButtons = (): JSX.Element => {
               </MatButton>
             ) : (
               <MatButton
-                onClick={handleCancelExchange}
+                onClick={async (): Promise<any> => await handleCancelExchange()}
                 variant="contained"
                 color="primary"
                 autoFocus
@@ -205,17 +318,51 @@ const ActionButtons = (): JSX.Element => {
   if (vx) {
     let state = vx.state;
     if (vx.currentPharmacyIsA) {
-      if (state !== 6 && state !== 10)
+      if (state === 1)
         element = (
           <Button
-            className={state !== 4 ? cancelButton : cancelButton4}
+            className={fullRow}
             type="button"
             variant="outlined"
             color="red"
-            onClick={(): any => toggleIsOpenCancelExchangeModalForm('cancel')}
+            onClick={toggleIsRemoveExchangeModalForm}
           >
-            لغو درخواست
+            حذف تبادل
           </Button>
+        );
+
+      if (state === 2 || state === 10)
+        element = (
+          <>
+            <>{element}</>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => toggleIsOpenCancelExchangeModalForm('cancel')}
+            >
+              لغو درخواست
+            </Button>
+          </>
+        );
+
+      if (state === 3)
+        element = (
+          <>
+            <>{element}</>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="green"
+              onClick={(): any => {
+                toggleIsOpenCancelExchangeModalForm('approve');
+              }}
+            >
+              تایید و پرداخت
+            </Button>
+          </>
         );
 
       if (state === 4 || state === 8)
@@ -223,7 +370,7 @@ const ActionButtons = (): JSX.Element => {
           <>
             <>{element}</>
             <Button
-              className={state === 8 ? confirmButton : confirmButton4}
+              className={fullRow}
               type="button"
               variant="outlined"
               color="green"
@@ -241,7 +388,7 @@ const ActionButtons = (): JSX.Element => {
           <>
             <>{element}</>
             <Button
-              className={confirmButton}
+              className={fullRow}
               type="button"
               variant="outlined"
               color="green"
@@ -250,12 +397,28 @@ const ActionButtons = (): JSX.Element => {
             </Button>
           </>
         );
+
+      if (state !== 2 && state !== 4 && activeStep === 2)
+        element = (
+          <>
+            <>{element}</>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="blue"
+              onClick={(): void => setActiveStep(activeStep + 1)}
+            >
+              {t('general.sendExchange')}
+            </Button>
+          </>
+        );
     } else {
       if (state > 10) state = state - 10;
-      if (state === 2 || state === 3 || state === 4) {
+      if (state === 2 || state === 3) {
         element = (
           <Button
-            className={state !== 2 ? cancelButton : cancelButton4}
+            className={fullRow}
             type="button"
             variant="outlined"
             color="red"
@@ -270,7 +433,7 @@ const ActionButtons = (): JSX.Element => {
           <>
             <>{element}</>
             <Button
-              className={confirmButton4}
+              className={fullRow}
               type="button"
               variant="outlined"
               color="green"
@@ -287,7 +450,7 @@ const ActionButtons = (): JSX.Element => {
           <>
             <>{element}</>
             <Button
-              className={state === 9 ? confirmButton : confirmButton4}
+              className={fullRow}
               type="button"
               variant="outlined"
               color="green"
@@ -305,7 +468,7 @@ const ActionButtons = (): JSX.Element => {
           <>
             <>{element}</>
             <Button
-              className={confirmButton}
+              className={fullRow}
               type="button"
               variant="outlined"
               color="green"
@@ -321,10 +484,12 @@ const ActionButtons = (): JSX.Element => {
     <>
       <>{element}</>
       {isOpenCancelExchangeModal && exchangeModalApproveCancel(modalType)}
+      {isRemoveExchangeModal && exchangeModalRemove()}
+      {showApproveModalForm && <ExchangeApprove />}
     </>
   );
 
-  return element;
+  return <div className={actionContainer}> {element} </div>;
 };
 
 export default ActionButtons;
