@@ -152,7 +152,6 @@ const ThirdStep: React.FC = () => {
   useEffect(() => {
     // uBasketCount.forEach((x) => {
     //   if (!x.packID) {
-    //     debugger;
     //     const pharmacyDrug = uAllPharmacyDrug.find((a) => a.id === x.id);
     //     if (pharmacyDrug) {
     //       x.cnt = pharmacyDrug.cnt;

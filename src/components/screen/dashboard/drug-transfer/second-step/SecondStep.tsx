@@ -172,7 +172,6 @@ const SecondStep: React.FC = () => {
   useEffect(() => {
     basketCount.forEach((x) => {
       if (!x.packID) {
-        debugger;
         const pharmacyDrug = allPharmacyDrug.find((a) => a.id === x.id);
         if (pharmacyDrug) {
           x.cnt = pharmacyDrug.cnt;

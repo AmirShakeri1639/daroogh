@@ -22,23 +22,20 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
-  basketCount: any;
-  uBasketCount: any;
 }
 
 const ExCalculator: React.FC<Props> = (props) => {
   const exchange: ViewExchangeInterface =
     props.exchange == undefined ? ViewExchangeInitialState : props.exchange;
-  const { basketCount, uBasketCount } = props;
 
   const { t } = useTranslation();
   const {
     root, padding2, ltr, rtl, spacingVertical3, faIcons, darkText
   } = useClasses();
 
-  console.log('exchange in calc:', exchange);
-  console.log('cartA len: ', exchange.cartA.length);
-  console.log('cartB len: ', exchange.cartB.length);
+  const {
+    activeStep, is3PercentOk, setIs3PercentOk, basketCount, uBasketCount
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
@@ -47,17 +44,11 @@ const ExCalculator: React.FC<Props> = (props) => {
   let expireDate: string = '';
   let expireDateText: string = '';
 
-  const {
-    activeStep, is3PercentOk, setIs3PercentOk
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
-
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number): void => {
     setCurrentTabIndex(newValue);
   }
 
   const reCheckData = (): any => {
-    console.log('basketCount:', basketCount);
-    console.log('uBasketCount:', uBasketCount);
     expireDate = getExpireDate(exchange);
     expireDateText = t(getExpireDateTitle(exchange.state));
 
@@ -87,10 +78,10 @@ const ExCalculator: React.FC<Props> = (props) => {
     let card;
     let totalPourcentage;
     if (isA) {
-      card = exchange.cartA;
+      card = basketCount; // exchange.cartA;
       totalPourcentage = exchange.totalPourcentageA;
     } else {
-      card = exchange.cartB;
+      card = uBasketCount; // exchange.cartB;
       totalPourcentage = exchange.totalPourcentageB;
     }
     let totalCount = 0;
@@ -125,9 +116,6 @@ const ExCalculator: React.FC<Props> = (props) => {
                   }) }
                   { isA && (() => {totalPriceA = totalPrice})() }
                   { !isA && (() => {totalPriceB = totalPrice})() }
-                  {isA &&  console.log(`total: ${totalPrice}, A: ${totalPriceA}`) }
-                  {!isA && console.log(`total: ${totalPrice}, B: ${totalPriceB}`) }
-                  
                 </TableBody>
               </Table>
             </TableContainer>
