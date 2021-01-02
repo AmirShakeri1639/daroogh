@@ -318,18 +318,18 @@ const ActionButtons = (): JSX.Element => {
   if (vx) {
     let state = vx.state;
     if (vx.currentPharmacyIsA) {
-      if (state === 1)
-        element = (
-          <Button
-            className={fullRow}
-            type="button"
-            variant="outlined"
-            color="red"
-            onClick={toggleIsRemoveExchangeModalForm}
-          >
-            حذف تبادل
-          </Button>
-        );
+      // if (state === 1)
+      //   element = (
+      //     <Button
+      //       className={fullRow}
+      //       type="button"
+      //       variant="outlined"
+      //       color="red"
+      //       onClick={toggleIsRemoveExchangeModalForm}
+      //     >
+      //       حذف تبادل
+      //     </Button>
+      //   );
 
       if (state === 2 || state === 10)
         element = (

@@ -111,33 +111,22 @@ const ThirdStep: React.FC = () => {
       onSuccess: (data) => {
         const { items } = data;
         setUAllPharmacyDrug(items);
-        // setDataInfo(items);
       },
       enabled: false,
     }
   );
 
-  // useEffect(() => {
-  //   (async (): Promise<void> => {
-  //     if (exchangeId > 0) {
-  //       const result = await getViewExchange(exchangeId);
-  //       setViewExchange(result);
-  //     }
-  //   })();
-  // }, [exchangeId]);
-
   useEffect(() => {
     uBasketCount.forEach((x) => {
       if (!x.packID) {
-        debugger;
         const pharmacyDrug = uAllPharmacyDrug.find((a) => a.id === x.id);
         if (pharmacyDrug) {
           x.cnt = pharmacyDrug.cnt;
         }
       }
     });
-    const onlyA = uAllPharmacyDrug.filter(comparer(uBasketCount));
-    setUAllPharmacyDrug(onlyA);
+    // const onlyA = uAllPharmacyDrug.filter(comparer(uBasketCount));
+    // setUAllPharmacyDrug(onlyA);
   }, [uBasketCount]);
 
   const { t } = useTranslation();
@@ -146,6 +135,7 @@ const ThirdStep: React.FC = () => {
     if (uAllPharmacyDrug.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
       return uAllPharmacyDrug
+        .filter(comparer(uBasketCount))
         .sort((a, b) => (a.order > b.order ? 1 : -1))
         .map((item: AllPharmacyDrugInterface, index: number) => {
           Object.assign(item, {
@@ -291,6 +281,27 @@ const ThirdStep: React.FC = () => {
                 <ToolBox />
               </Grid>
             </Grid>
+            {!viewExhcnage ||
+              (!viewExhcnage.lockSuggestion && (
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  style={{ marginBottom: -25, paddingBottom: 0 }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={isSelected}
+                        onChange={handleChange}
+                        name="checkedB"
+                        color="primary"
+                      />
+                    }
+                    label="انتخاب دارو از سبد عرضه خود"
+                  />
+                </Grid>
+              ))}
             <Grid container spacing={1}>
               <>
                 {isLoading && <CircleLoading />}
@@ -326,19 +337,17 @@ const ThirdStep: React.FC = () => {
               </>
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>
-                  {!viewExhcnage && (
-                    <Grid item sm={6}>
-                      <Button
-                        type="button"
-                        variant="outlined"
-                        color="pink"
-                        onClick={(): void => setActiveStep(activeStep - 1)}
-                      >
-                        <ArrowRightAltIcon />
-                        {t('general.prevLevel')}
-                      </Button>
-                    </Grid>
-                  )}
+                  <Grid item sm={6}>
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      color="pink"
+                      onClick={(): void => setActiveStep(activeStep - 1)}
+                    >
+                      <ArrowRightAltIcon />
+                      {t('general.prevLevel')}
+                    </Button>
+                  </Grid>
                 </Grid>
               </Hidden>
             </Grid>

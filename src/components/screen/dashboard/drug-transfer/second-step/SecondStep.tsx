@@ -30,6 +30,8 @@ import CircleLoading from '../../../../public/loading/CircleLoading';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 import ActionButtons from '../exchange/ActionButtons';
+import { useLocation } from 'react-router-dom';
+import queryString from 'query-string';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -157,7 +159,12 @@ const SecondStep: React.FC = () => {
     }
   );
 
+  const location = useLocation();
+  const params = queryString.parse(location.search);
+
   useEffect(() => {
+    const id = params.eid == null ? undefined : params.eid;
+    if (id !== undefined && !selectedPharmacyForTransfer) return;
     refetch();
   }, [selectedPharmacyForTransfer]);
 
@@ -170,14 +177,15 @@ const SecondStep: React.FC = () => {
         }
       }
     });
-    const onlyA = allPharmacyDrug.filter(comparer(basketCount));
-    setAllPharmacyDrug(onlyA);
+    // const onlyA = allPharmacyDrug.filter(comparer(basketCount));
+    // setAllPharmacyDrug(onlyA);
   }, [basketCount]);
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (allPharmacyDrug.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
       return allPharmacyDrug
+        .filter(comparer(basketCount))
         .sort((a, b) => (a.order > b.order ? 1 : -1))
         .map((item: AllPharmacyDrugInterface, index: number) => {
           Object.assign(item, {

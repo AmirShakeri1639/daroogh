@@ -403,7 +403,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
           if (res) {
             if (activeStep === 1)
               setBasketCount([...basketCount, pharmacyDrug]);
-            else setUbasketCount([...basketCount, pharmacyDrug]);
+            else setUbasketCount([...uBasketCount, pharmacyDrug]);
           }
         } catch (e) {
           errorHandler(e);
