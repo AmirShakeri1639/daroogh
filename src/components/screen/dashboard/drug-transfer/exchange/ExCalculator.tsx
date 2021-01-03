@@ -13,6 +13,11 @@ import {
   TableCell,
   TableBody,
   Paper,
+  useMediaQuery,
+  useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
@@ -54,7 +59,10 @@ const ExCalculator: React.FC<Props> = (props) => {
     spacingVertical3,
     faIcons,
     darkText,
+    calcRoot,
   } = useClasses();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const {
     activeStep,
@@ -96,7 +104,7 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   const getOneSideData = (you: boolean): JSX.Element => {
     let card;
-    const totalPourcentage = exchange.currentPharmacyIsA 
+    const totalPourcentage = exchange.currentPharmacyIsA
       ? exchange.totalPourcentageA : exchange.totalPourcentageB;
     if (you) {
       card = uBasketCount; // exchange.cartA;
@@ -207,99 +215,108 @@ const ExCalculator: React.FC<Props> = (props) => {
   };
 
   return (
-    <Card className={ `${root} ${padding2} ${darkText}` }>
-      <h3>
+    <Dialog fullScreen={ fullScreen } open={ true }>
+      <DialogTitle>
+        <h3>
+          { t('exchange.exCalculator') } { t('exchange.exchange') }
+        </h3>
+      </DialogTitle>
+      <DialogContent>
+        <Card className={ `${root} ${padding2} ${darkText} ${calcRoot}` }>
+          {/* <h3>
         { t('exchange.exCalculator') } { t('exchange.exchange') }
-      </h3>
-      <Divider />
-      <CardContent>
-        <Grid container>
-          {/* separate data */ }
-          <Grid item xs={ 12 }>
-            <Tabs
-              value={ currentTabIndex }
-              indicatorColor="primary"
-              textColor="primary"
-              onChange={ handleChange }
-              centered
-            >
-              <Tab label={ t('exchange.you') } />
-              <Tab label={ t('exchange.otherSide') } />
-            </Tabs>
-            {/* <SwipeableViews
+      </h3> */}
+          <Divider />
+          <CardContent>
+            <Grid container>
+              {/* separate data */ }
+              <Grid item xs={ 12 }>
+                <Tabs
+                  value={ currentTabIndex }
+                  indicatorColor="primary"
+                  textColor="primary"
+                  onChange={ handleChange }
+                  centered
+                >
+                  <Tab label={ t('exchange.you') } />
+                  <Tab label={ t('exchange.otherSide') } />
+                </Tabs>
+                {/* <SwipeableViews
               enableMouseEvents
               index={ currentTabIndex }
               onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
             > */}
-            <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-              { getOneSideData(true) }
-            </DaroogTabPanel>
-            <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-              { getOneSideData(false) }
-            </DaroogTabPanel>
-            {/* </SwipeableViews> */ }
-          </Grid>
-          <Divider />
-          {/* common data */ }
-          <Grid item xs={ 12 }>
-            { !isNullOrEmpty(exchange?.sendDate) && (
-              <Grid item xs={ 12 } className={ spacingVertical3 }>
-                <TextLine
-                  backColor={ ColorEnum.White }
-                  rightText={
-                    <>
-                      <FontAwesomeIcon
-                        icon={ faCalendarPlus }
-                        size="lg"
-                        className={ faIcons }
-                      />
-                      {t('exchange.sendDate') }
-                    </>
-                  }
-                  leftText={
-                    exchange?.sendDate == null
-                      ? ''
-                      : moment(exchange?.sendDate, 'YYYY/MM/DD')
-                        .locale('fa')
-                        .format('YYYY/MM/DD')
-                  }
-                />
+                <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+                  { getOneSideData(true) }
+                </DaroogTabPanel>
+                <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+                  { getOneSideData(false) }
+                </DaroogTabPanel>
+                {/* </SwipeableViews> */ }
               </Grid>
-            ) }
-            { !isNullOrEmpty(expireDate) && (
-              <Grid item xs={ 12 } className={ spacingVertical3 }>
-                <TextLine
-                  backColor={ ColorEnum.White }
-                  rightText={
-                    <>
-                      <FontAwesomeIcon
-                        icon={ faCalendarTimes }
-                        size="lg"
-                        className={ faIcons }
-                      />
-                      {expireDateText }
-                    </>
-                  }
-                  leftText={
-                    expireDate == null
-                      ? ''
-                      : moment(expireDate, 'YYYY/MM/DD')
-                        .locale('fa')
-                        .format('YYYY/MM/DD')
-                  }
-                />
+              <Divider />
+              {/* common data */ }
+              <Grid item xs={ 12 }>
+                { !isNullOrEmpty(exchange?.sendDate) && (
+                  <Grid item xs={ 12 } className={ spacingVertical3 }>
+                    <TextLine
+                      backColor={ ColorEnum.White }
+                      rightText={
+                        <>
+                          <FontAwesomeIcon
+                            icon={ faCalendarPlus }
+                            size="lg"
+                            className={ faIcons }
+                          />
+                          {t('exchange.sendDate') }
+                        </>
+                      }
+                      leftText={
+                        exchange?.sendDate == null
+                          ? ''
+                          : moment(exchange?.sendDate, 'YYYY/MM/DD')
+                            .locale('fa')
+                            .format('YYYY/MM/DD')
+                      }
+                    />
+                  </Grid>
+                ) }
+                { !isNullOrEmpty(expireDate) && (
+                  <Grid item xs={ 12 } className={ spacingVertical3 }>
+                    <TextLine
+                      backColor={ ColorEnum.White }
+                      rightText={
+                        <>
+                          <FontAwesomeIcon
+                            icon={ faCalendarTimes }
+                            size="lg"
+                            className={ faIcons }
+                          />
+                          {expireDateText }
+                        </>
+                      }
+                      leftText={
+                        expireDate == null
+                          ? ''
+                          : moment(expireDate, 'YYYY/MM/DD')
+                            .locale('fa')
+                            .format('YYYY/MM/DD')
+                      }
+                    />
+                  </Grid>
+                ) }
+                { !is3PercentOk && (
+                  <Grid item xs={ 12 } className={ spacingVertical3 }>
+                    <b>{ t('general.warning') }</b>:<br />
+                    {t('exchange.threePercentWarning') }
+                  </Grid>
+                ) }
               </Grid>
-            ) }
-            { !is3PercentOk && (
-              <Grid item xs={ 12 } className={ spacingVertical3 }>
-                <b>{ t('general.warning') }</b>:<br />
-                {t('exchange.threePercentWarning') }
-              </Grid>
-            ) }
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
+            </Grid>
+          </CardContent>
+        </Card>
+      </DialogContent>
+    </Dialog>
   );
 };
 

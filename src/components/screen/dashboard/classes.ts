@@ -17,6 +17,10 @@ export const useClasses = makeStyles((theme) => createStyles({
       color: 'red'
     }
   },
+  calcRoot: {
+    minWidth: 'auto',
+    maxHeight: '70vh',
+  },
   container: {
     marginTop: theme.spacing(1),
   },
