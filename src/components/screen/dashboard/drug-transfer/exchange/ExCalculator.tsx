@@ -1,6 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  Grid, Card, CardContent, Divider, Tabs, Tab, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Paper, TextField
+  Grid,
+  Card,
+  CardContent,
+  Divider,
+  Tabs,
+  Tab,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
+  TextField,
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
@@ -11,12 +24,16 @@ import { Convertor, isNullOrEmpty } from '../../../../../utils';
 import { ColorEnum } from '../../../../../enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCalendarPlus, faCalendarTimes, faMoneyBillAlt
+  faCalendarPlus,
+  faCalendarTimes,
+  faMoneyBillAlt,
 } from '@fortawesome/free-regular-svg-icons';
 import { faListOl } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import {
-  getExpireDateTitle, getExpireDate, ViewExchangeInitialState
+  getExpireDateTitle,
+  getExpireDate,
+  ViewExchangeInitialState,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
@@ -30,11 +47,21 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
   const {
-    root, padding2, ltr, rtl, spacingVertical3, faIcons, darkText
+    root,
+    padding2,
+    ltr,
+    rtl,
+    spacingVertical3,
+    faIcons,
+    darkText,
   } = useClasses();
 
   const {
-    activeStep, is3PercentOk, setIs3PercentOk, basketCount, uBasketCount
+    activeStep,
+    is3PercentOk,
+    setIs3PercentOk,
+    basketCount,
+    uBasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
@@ -44,9 +71,12 @@ const ExCalculator: React.FC<Props> = (props) => {
   let expireDate: string = '';
   let expireDateText: string = '';
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number): void => {
+  const handleChange = (
+    event: React.ChangeEvent<{}>,
+    newValue: number
+  ): void => {
     setCurrentTabIndex(newValue);
-  }
+  };
 
   const reCheckData = (): any => {
     expireDate = getExpireDate(exchange);
@@ -59,7 +89,7 @@ const ExCalculator: React.FC<Props> = (props) => {
       tabTitle1 = t('exchange.otherSide');
       tabTitle2 = t('exchange.you');
     }
-  }
+  };
 
   // useEffect(() => {
   reCheckData();
@@ -69,7 +99,7 @@ const ExCalculator: React.FC<Props> = (props) => {
   let totalPriceB = 0;
 
   useEffect(() => {
-    const threePercent = totalPriceA * .03;
+    const threePercent = totalPriceA * 0.03;
     const diff = Math.abs(totalPriceA - totalPriceB);
     if (setIs3PercentOk) setIs3PercentOk(diff < threePercent);
   }, [totalPriceA, totalPriceB]);
@@ -89,190 +119,199 @@ const ExCalculator: React.FC<Props> = (props) => {
 
     return (
       <>
-        { card && card.length > 0 && (
+        {card && card.length > 0 && (
           <>
-            <TableContainer component={ Paper } className={ darkText }>
+            <TableContainer component={Paper} className={darkText}>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">{ t('drug.drug') }</TableCell>
-                    <TableCell align="center">{ t('general.number') }</TableCell>
-                    <TableCell align="center">{ t('general.price') }</TableCell>
+                    <TableCell align="center">{t('drug.drug')}</TableCell>
+                    <TableCell align="center">{t('general.number')}</TableCell>
+                    <TableCell align="center">{t('general.price')}</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  { card.map((row) => {
-                    totalCount += row.cnt;
-                    totalPrice += row.amount * row.cnt;
+                  {card.map((row) => {
+                    totalCount += row.currentCnt;
+                    totalPrice += row.amount * row.currentCnt;
                     return (
-                      <TableRow key={ row.drug.genericName }>
+                      <TableRow key={row.drug.genericName}>
                         <TableCell component="th" scope="row">
-                          { row.drug.genericName }
+                          {row.drug.genericName}
                         </TableCell>
-                        <TableCell align="right">{ row.cnt }</TableCell>
-                        <TableCell align="right">{  Convertor.zeroSeparator(row.amount) }</TableCell>
+                        <TableCell align="right">{row.currentCnt}</TableCell>
+                        <TableCell align="right">
+                          {Convertor.zeroSeparator(row.amount)}
+                        </TableCell>
                       </TableRow>
-                    )
-                  }) }
-                  { isA && (() => {totalPriceA = totalPrice})() }
-                  { !isA && (() => {totalPriceB = totalPrice})() }
+                    );
+                  })}
+                  {isA &&
+                    (() => {
+                      totalPriceA = totalPrice;
+                    })()}
+                  {!isA &&
+                    (() => {
+                      totalPriceB = totalPrice;
+                    })()}
                 </TableBody>
               </Table>
             </TableContainer>
           </>
-        ) }
-        { !isNullOrEmpty(totalCount) && (
-          <Grid item xs={ 12 } className={ spacingVertical3 }>
+        )}
+        {!isNullOrEmpty(totalCount) && (
+          <Grid item xs={12} className={spacingVertical3}>
             <TextLine
-              backColor={ ColorEnum.White }
+              backColor={ColorEnum.White}
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={ faListOl }
+                    icon={faListOl}
                     size="lg"
-                    className={ faIcons }
+                    className={faIcons}
                   />
-                  {t('general.number') }
+                  {t('general.number')}
                 </>
               }
-              leftText={ totalCount.toLocaleString() }
+              leftText={totalCount.toLocaleString()}
             />
           </Grid>
-        ) }
-        { !isNullOrEmpty(totalPrice) && (
-          <Grid item xs={ 12 } className={ spacingVertical3 }>
+        )}
+        {!isNullOrEmpty(totalPrice) && (
+          <Grid item xs={12} className={spacingVertical3}>
             <TextLine
-              backColor={ ColorEnum.White }
+              backColor={ColorEnum.White}
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={ faListOl }
+                    icon={faListOl}
                     size="lg"
-                    className={ faIcons }
+                    className={faIcons}
                   />
-                  {t('exchange.totalPrice') }
+                  {t('exchange.totalPrice')}
                 </>
               }
-              leftText={ Convertor.zeroSeparator(totalPrice) }
+              leftText={Convertor.zeroSeparator(totalPrice)}
             />
           </Grid>
-        ) }
-        { !isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
-          <Grid item xs={ 12 } className={ spacingVertical3 }>
+        )}
+        {!isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
+          <Grid item xs={12} className={spacingVertical3}>
             <TextLine
-              backColor={ ColorEnum.White }
+              backColor={ColorEnum.White}
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={ faMoneyBillAlt }
-                    className={ faIcons }
+                    icon={faMoneyBillAlt}
+                    className={faIcons}
                     size="lg"
                   />
-                  {t('exchange.commission') }
+                  {t('exchange.commission')}
                 </>
               }
-              leftText={ totalPourcentage }
+              leftText={totalPourcentage}
             />
           </Grid>
-        ) }
-
+        )}
       </>
-    )
-  }
+    );
+  };
 
   return (
-    <Card className={ `${root} ${padding2} ${darkText}` }>
-      <h3>{ t('exchange.exCalculator') } { t('exchange.exchange') }</h3>
+    <Card className={`${root} ${padding2} ${darkText}`}>
+      <h3>
+        {t('exchange.exCalculator')} {t('exchange.exchange')}
+      </h3>
       <Divider />
       <CardContent>
         <Grid container>
-          {/* separate data */ }
-          <Grid item xs={ 12 }>
+          {/* separate data */}
+          <Grid item xs={12}>
             <Tabs
-              value={ currentTabIndex }
+              value={currentTabIndex}
               indicatorColor="primary"
               textColor="primary"
-              onChange={ handleChange }
+              onChange={handleChange}
               centered
             >
-              <Tab label={ tabTitle1 } />
-              <Tab label={ tabTitle2 } />
+              <Tab label={tabTitle1} />
+              <Tab label={tabTitle2} />
             </Tabs>
             {/* <SwipeableViews
               enableMouseEvents
               index={ currentTabIndex }
               onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
             > */}
-            <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-              { getOneSideData(true) }
+            <DaroogTabPanel value={currentTabIndex} index={0}>
+              {getOneSideData(true)}
             </DaroogTabPanel>
-            <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-              { getOneSideData(false) }
+            <DaroogTabPanel value={currentTabIndex} index={1}>
+              {getOneSideData(false)}
             </DaroogTabPanel>
-            {/* </SwipeableViews> */ }
+            {/* </SwipeableViews> */}
           </Grid>
           <Divider />
-          {/* common data */ }
-          <Grid item xs={ 12 }>
-            { !isNullOrEmpty(exchange?.sendDate) && (
-              <Grid item xs={ 12 } className={ spacingVertical3 }>
+          {/* common data */}
+          <Grid item xs={12}>
+            {!isNullOrEmpty(exchange?.sendDate) && (
+              <Grid item xs={12} className={spacingVertical3}>
                 <TextLine
-                  backColor={ ColorEnum.White }
+                  backColor={ColorEnum.White}
                   rightText={
                     <>
                       <FontAwesomeIcon
-                        icon={ faCalendarPlus }
+                        icon={faCalendarPlus}
                         size="lg"
-                        className={ faIcons }
+                        className={faIcons}
                       />
-                      {t('exchange.sendDate') }
+                      {t('exchange.sendDate')}
                     </>
                   }
                   leftText={
                     exchange?.sendDate == null
                       ? ''
                       : moment(exchange?.sendDate, 'YYYY/MM/DD')
-                        .locale('fa')
-                        .format('YYYY/MM/DD')
+                          .locale('fa')
+                          .format('YYYY/MM/DD')
                   }
                 />
               </Grid>
-            ) }
-            { !isNullOrEmpty(expireDate) && (
-              <Grid item xs={ 12 } className={ spacingVertical3 }>
+            )}
+            {!isNullOrEmpty(expireDate) && (
+              <Grid item xs={12} className={spacingVertical3}>
                 <TextLine
-                  backColor={ ColorEnum.White }
+                  backColor={ColorEnum.White}
                   rightText={
                     <>
                       <FontAwesomeIcon
-                        icon={ faCalendarTimes }
+                        icon={faCalendarTimes}
                         size="lg"
-                        className={ faIcons }
+                        className={faIcons}
                       />
-                      { expireDateText }
+                      {expireDateText}
                     </>
                   }
                   leftText={
                     expireDate == null
                       ? ''
                       : moment(expireDate, 'YYYY/MM/DD')
-                        .locale('fa')
-                        .format('YYYY/MM/DD')
+                          .locale('fa')
+                          .format('YYYY/MM/DD')
                   }
                 />
               </Grid>
-            ) }
-            { !is3PercentOk &&
-              <Grid item xs={12} className={ spacingVertical3 }>
-                <b>{t('general.warning')}</b>:<br/>
-                { t('exchange.threePercentWarning') }
+            )}
+            {!is3PercentOk && (
+              <Grid item xs={12} className={spacingVertical3}>
+                <b>{t('general.warning')}</b>:<br />
+                {t('exchange.threePercentWarning')}
               </Grid>
-            }
+            )}
           </Grid>
         </Grid>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
 export default ExCalculator;

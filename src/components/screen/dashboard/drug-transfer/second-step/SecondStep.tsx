@@ -27,10 +27,11 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import ExchangeApprove from '../exchange/ExchangeApprove';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 import ActionButtons from '../exchange/ActionButtons';
+import { useLocation } from 'react-router-dom';
+import queryString from 'query-string';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -89,18 +90,16 @@ const SecondStep: React.FC = () => {
     setAllPharmacyDrug,
     openDialog,
     setOpenDialog,
-    recommendationMessage,
     basketCount,
     selectedPharmacyForTransfer,
     exchangeStateCode,
     messageOfExchangeState,
-    showApproveModalForm,
     viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [dataInfo, setDataInfo] = useState<AllPharmacyDrugInterface[]>([]);
+  const [] = useState<AllPharmacyDrugInterface[]>([]);
   const { cancelExchange } = new PharmacyDrug();
 
   const [] = useMutation(cancelExchange, {
@@ -119,12 +118,7 @@ const SecondStep: React.FC = () => {
     },
   });
 
-  const {
-    paper,
-    stickyToolbox,
-    stickyRecommendation,
-    actionContainer,
-  } = style();
+  const { paper, stickyToolbox, stickyRecommendation } = style();
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
@@ -165,7 +159,12 @@ const SecondStep: React.FC = () => {
     }
   );
 
+  const location = useLocation();
+  const params = queryString.parse(location.search);
+
   useEffect(() => {
+    const id = params.eid == null ? undefined : params.eid;
+    if (id !== undefined && !selectedPharmacyForTransfer) return;
     refetch();
   }, [selectedPharmacyForTransfer]);
 
@@ -178,14 +177,15 @@ const SecondStep: React.FC = () => {
         }
       }
     });
-    const onlyA = allPharmacyDrug.filter(comparer(basketCount));
-    setAllPharmacyDrug(onlyA);
+    // const onlyA = allPharmacyDrug.filter(comparer(basketCount));
+    // setAllPharmacyDrug(onlyA);
   }, [basketCount]);
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (allPharmacyDrug.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
       return allPharmacyDrug
+        .filter(comparer(basketCount))
         .sort((a, b) => (a.order > b.order ? 1 : -1))
         .map((item: AllPharmacyDrugInterface, index: number) => {
           Object.assign(item, {
@@ -267,12 +267,7 @@ const SecondStep: React.FC = () => {
   };
 
   const basketCardListGenerator = (): any => {
-    if (
-      basketCount &&
-      basketCount.length > 0 &&
-      allPharmacyDrug &&
-      allPharmacyDrug.length > 0
-    ) {
+    if (basketCount && basketCount.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
