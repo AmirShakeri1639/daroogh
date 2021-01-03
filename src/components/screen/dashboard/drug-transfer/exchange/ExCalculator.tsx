@@ -13,7 +13,6 @@ import {
   TableCell,
   TableBody,
   Paper,
-  TextField,
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
@@ -67,8 +66,6 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   const [currentTabIndex, setCurrentTabIndex] = useState(0);
 
-  let tabTitle1: string = '';
-  let tabTitle2: string = '';
   let expireDate: string = '';
   let expireDateText: string = '';
 
@@ -82,14 +79,6 @@ const ExCalculator: React.FC<Props> = (props) => {
   const reCheckData = (): any => {
     expireDate = getExpireDate(exchange);
     expireDateText = t(getExpireDateTitle(exchange.state));
-
-    if (exchange?.currentPharmacyIsA) {
-      tabTitle1 = t('exchange.you');
-      tabTitle2 = t('exchange.otherSide');
-    } else {
-      tabTitle1 = t('exchange.otherSide');
-      tabTitle2 = t('exchange.you');
-    }
   };
 
   // useEffect(() => {
@@ -105,15 +94,14 @@ const ExCalculator: React.FC<Props> = (props) => {
     if (setIs3PercentOk) setIs3PercentOk(diff < threePercent);
   }, [totalPriceA, totalPriceB]);
 
-  const getOneSideData = (isA: boolean): JSX.Element => {
+  const getOneSideData = (you: boolean): JSX.Element => {
     let card;
-    let totalPourcentage;
-    if (isA) {
-      card = basketCount; // exchange.cartA;
-      totalPourcentage = exchange.totalPourcentageA;
+    const totalPourcentage = exchange.currentPharmacyIsA 
+      ? exchange.totalPourcentageA : exchange.totalPourcentageB;
+    if (you) {
+      card = uBasketCount; // exchange.cartA;
     } else {
-      card = uBasketCount; // exchange.cartB;
-      totalPourcentage = exchange.totalPourcentageB;
+      card = basketCount; // exchange.cartB;
     }
     let totalCount = 0;
     let totalPrice = 0;
@@ -128,7 +116,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                   <TableRow>
                     <TableCell align="center">{ t('drug.drug') }</TableCell>
                     <TableCell align="center">{ t('general.number') }</TableCell>
-                    <TableCell align="center">{ t('general.price') }</TableCell>
+                    <TableCell align="center">{ t('general.price') } ({ t('general.rial') })</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -143,17 +131,17 @@ const ExCalculator: React.FC<Props> = (props) => {
                         <TableCell component="th" scope="row">
                           { row.drug.name }
                         </TableCell>
-                        <TableCell align="right">
+                        <TableCell align="center">
                           { row.currentCnt }
                         </TableCell>
-                        <TableCell align="right">
-                          { Convertor.zeroSeparator(price) }
+                        <TableCell align="center">
+                          { Convertor.thousandsSeperatorFa(price) }
                         </TableCell>
                       </TableRow>
                     );
                   }) }
-                  { isA && ((): any => { totalPriceA = totalPrice; })() }
-                  { !isA && ((): any => { totalPriceB = totalPrice; })() }
+                  { you && ((): any => { totalPriceA = totalPrice; })() }
+                  { !you && ((): any => { totalPriceB = totalPrice; })() }
                 </TableBody>
               </Table>
             </TableContainer>
@@ -235,8 +223,8 @@ const ExCalculator: React.FC<Props> = (props) => {
               onChange={ handleChange }
               centered
             >
-              <Tab label={ tabTitle1 } />
-              <Tab label={ tabTitle2 } />
+              <Tab label={ t('exchange.you') } />
+              <Tab label={ t('exchange.otherSide') } />
             </Tabs>
             {/* <SwipeableViews
               enableMouseEvents
