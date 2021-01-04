@@ -18,6 +18,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
+  Button,
+  Hidden,
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
@@ -43,23 +46,24 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
+  onClose?: () => void;
+  showActions?: boolean;
 }
 
 const ExCalculator: React.FC<Props> = (props) => {
   const exchange: ViewExchangeInterface =
     props.exchange == undefined ? ViewExchangeInitialState : props.exchange;
+  const { onClose, showActions = true } = props;
+  // if (showActions === undefined) showActions = true;
 
   const { t } = useTranslation();
   const {
-    root,
-    padding2,
     ltr,
     rtl,
     spacing3,
     spacingVertical3,
     faIcons,
     darkText,
-    calcRoot,
   } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -122,9 +126,15 @@ const ExCalculator: React.FC<Props> = (props) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">{ t('drug.drug') }</TableCell>
-                    <TableCell align="center">{ t('general.number') }</TableCell>
-                    <TableCell align="center">{ t('general.price') } ({ t('general.rial') })</TableCell>
+                    <TableCell align="center" className={ darkText }>
+                      { t('drug.drug') }
+                    </TableCell>
+                    <TableCell align="center" className={ darkText }>
+                      { t('general.number') }
+                    </TableCell>
+                    <TableCell align="center" className={ darkText }>
+                      { t('general.price') } ({ t('general.rial') })
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -136,13 +146,13 @@ const ExCalculator: React.FC<Props> = (props) => {
                     console.log('row: ', row)
                     return (
                       <TableRow key={ row.drug.name }>
-                        <TableCell component="th" scope="row">
+                        <TableCell scope="row" className={ darkText }>
                           { row.drug.name }
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell align="center" className={ darkText }>
                           { row.currentCnt }
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell align="center" className={ darkText }>
                           { Convertor.thousandsSeperatorFa(price) }
                         </TableCell>
                       </TableRow>
@@ -214,109 +224,117 @@ const ExCalculator: React.FC<Props> = (props) => {
     );
   };
 
+  const [dialogOpen, setDialogOpen] = useState(true);
   return (
-    <Dialog fullScreen={ fullScreen } open={ true }>
-      <DialogTitle>
-        <h3>
-          { t('exchange.exCalculator') } { t('exchange.exchange') }
-        </h3>
-      </DialogTitle>
-      <DialogContent>
-        <Card className={ `${root} ${padding2} ${darkText} ${calcRoot}` }>
-          {/* <h3>
-        { t('exchange.exCalculator') } { t('exchange.exchange') }
-      </h3> */}
-          <Divider />
-          <CardContent>
-            <Grid container>
-              {/* separate data */ }
-              <Grid item xs={ 12 }>
-                <Tabs
-                  value={ currentTabIndex }
-                  indicatorColor="primary"
-                  textColor="primary"
-                  onChange={ handleChange }
-                  centered
-                >
-                  <Tab label={ t('exchange.you') } />
-                  <Tab label={ t('exchange.otherSide') } />
-                </Tabs>
-                {/* <SwipeableViews
+    <>
+      <Dialog open={ dialogOpen } fullScreen={fullScreen}>
+        <DialogTitle>
+          { t('exchange.exCalculator') }
+        </DialogTitle>
+        <Divider />
+        <DialogContent className={ darkText }>
+          <Grid container>
+            {/* separate data */ }
+            <Grid item xs={ 12 }>
+              <Tabs
+                value={ currentTabIndex }
+                indicatorColor="primary"
+                textColor="primary"
+                onChange={ handleChange }
+                centered
+              >
+                <Tab label={ t('exchange.you') } />
+                <Tab label={ t('exchange.otherSide') } />
+              </Tabs>
+              {/* <SwipeableViews
               enableMouseEvents
               index={ currentTabIndex }
               onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
             > */}
-                <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-                  { getOneSideData(true) }
-                </DaroogTabPanel>
-                <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-                  { getOneSideData(false) }
-                </DaroogTabPanel>
-                {/* </SwipeableViews> */ }
-              </Grid>
-              <Divider />
-              {/* common data */ }
-              <Grid item xs={ 12 }>
-                { !isNullOrEmpty(exchange?.sendDate) && (
-                  <Grid item xs={ 12 } className={ spacingVertical3 }>
-                    <TextLine
-                      backColor={ ColorEnum.White }
-                      rightText={
-                        <>
-                          <FontAwesomeIcon
-                            icon={ faCalendarPlus }
-                            size="lg"
-                            className={ faIcons }
-                          />
-                          {t('exchange.sendDate') }
-                        </>
-                      }
-                      leftText={
-                        exchange?.sendDate == null
-                          ? ''
-                          : moment(exchange?.sendDate, 'YYYY/MM/DD')
-                            .locale('fa')
-                            .format('YYYY/MM/DD')
-                      }
-                    />
-                  </Grid>
-                ) }
-                { !isNullOrEmpty(expireDate) && (
-                  <Grid item xs={ 12 } className={ spacingVertical3 }>
-                    <TextLine
-                      backColor={ ColorEnum.White }
-                      rightText={
-                        <>
-                          <FontAwesomeIcon
-                            icon={ faCalendarTimes }
-                            size="lg"
-                            className={ faIcons }
-                          />
-                          {expireDateText }
-                        </>
-                      }
-                      leftText={
-                        expireDate == null
-                          ? ''
-                          : moment(expireDate, 'YYYY/MM/DD')
-                            .locale('fa')
-                            .format('YYYY/MM/DD')
-                      }
-                    />
-                  </Grid>
-                ) }
-                { !is3PercentOk && (
-                  <Grid item xs={ 12 } className={ spacingVertical3 }>
-                    <b>{ t('general.warning') }</b>:<br />
-                    {t('exchange.threePercentWarning') }
-                  </Grid>
-                ) }
-              </Grid>
+              <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+                { getOneSideData(true) }
+              </DaroogTabPanel>
+              <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+                { getOneSideData(false) }
+              </DaroogTabPanel>
+              {/* </SwipeableViews> */ }
             </Grid>
-          </CardContent>
-        </Card>
-      </DialogContent>
-    </Dialog>
+            <Divider />
+            {/* common data */ }
+            <Grid item xs={ 12 }>
+              { !isNullOrEmpty(exchange?.sendDate) && (
+                <Grid item xs={ 12 } className={ spacingVertical3 }>
+                  <TextLine
+                    backColor={ ColorEnum.White }
+                    rightText={
+                      <>
+                        <FontAwesomeIcon
+                          icon={ faCalendarPlus }
+                          size="lg"
+                          className={ faIcons }
+                        />
+                        {t('exchange.sendDate') }
+                      </>
+                    }
+                    leftText={
+                      exchange?.sendDate == null
+                        ? ''
+                        : moment(exchange?.sendDate, 'YYYY/MM/DD')
+                          .locale('fa')
+                          .format('YYYY/MM/DD')
+                    }
+                  />
+                </Grid>
+              ) }
+              { !isNullOrEmpty(expireDate) && (
+                <Grid item xs={ 12 } className={ spacingVertical3 }>
+                  <TextLine
+                    backColor={ ColorEnum.White }
+                    rightText={
+                      <>
+                        <FontAwesomeIcon
+                          icon={ faCalendarTimes }
+                          size="lg"
+                          className={ faIcons }
+                        />
+                        {expireDateText }
+                      </>
+                    }
+                    leftText={
+                      expireDate == null
+                        ? ''
+                        : moment(expireDate, 'YYYY/MM/DD')
+                          .locale('fa')
+                          .format('YYYY/MM/DD')
+                    }
+                  />
+                </Grid>
+              ) }
+              { !is3PercentOk && (
+                <Grid item xs={ 12 } className={ spacingVertical3 }>
+                  <b>{ t('general.warning') }</b>:<br />
+                  {t('exchange.threePercentWarning') }
+                </Grid>
+              ) }
+            </Grid>
+          </Grid>
+        </DialogContent>
+        { showActions &&
+          <DialogActions>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={ (): void => {
+                setDialogOpen(false)
+                if (onClose) onClose();
+              } }
+            >
+              { t('general.ok') }
+            </Button>
+          </DialogActions>
+        }
+      </Dialog >
+    </>
   );
 };
 
