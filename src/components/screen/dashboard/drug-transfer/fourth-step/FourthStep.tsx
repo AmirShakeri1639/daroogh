@@ -131,7 +131,7 @@ const FourthStep: React.FC = () => {
         <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
           <DialogTitle>{'تایید نهایی'}</DialogTitle>
           <DialogContent>
-            <ExCalculator exchange={viewExhcnage} isModal={false} />
+            <ExCalculator exchange={viewExhcnage} full={false} />
             {is3PercentOk && (
               <DialogContentText>
                 آیا می خواهید سبد انتخابی شما قفل باشد یا خیر؟
