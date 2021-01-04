@@ -25,13 +25,18 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import routes from '../../../../../routes';
 import { useHistory } from 'react-router-dom';
+import ExCalculator from '../exchange/ExCalculator';
 
 const FourthStep: React.FC = () => {
   const { desktop } = routes;
   const history = useHistory();
-  const { activeStep, setActiveStep, exchangeId } = useContext<
-    TransferDrugContextInterface
-  >(DrugTransferContext);
+  const {
+    activeStep,
+    setActiveStep,
+    exchangeId,
+    viewExhcnage,
+    is3PercentOk,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   const { send } = new PharmacyDrug();
 
   const { t } = useTranslation();
@@ -126,22 +131,25 @@ const FourthStep: React.FC = () => {
         <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
           <DialogTitle>{'تایید نهایی'}</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              آیا می خواهید سبد انتخابی شما قفل باشد یا خیر؟
-              <Grid item xs={12} md={12}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={isSelected}
-                      onChange={handleChange}
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label={isSelected ? 'بله' : 'خیر'}
-                />
-              </Grid>
-            </DialogContentText>
+            <ExCalculator exchange={viewExhcnage} full={false} />
+            {is3PercentOk && (
+              <DialogContentText>
+                آیا می خواهید سبد انتخابی شما قفل باشد یا خیر؟
+                <Grid item xs={12} md={12}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={isSelected}
+                        onChange={handleChange}
+                        name="checkedB"
+                        color="primary"
+                      />
+                    }
+                    label={isSelected ? 'بله' : 'خیر'}
+                  />
+                </Grid>
+              </DialogContentText>
+            )}
           </DialogContent>
           <DialogActions>
             <MatButton autoFocus onClick={handleClose} color="primary">

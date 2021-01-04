@@ -20,11 +20,10 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Hidden,
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
-import { ViewExchangeInterface, CardInfo } from '../../../../../interfaces';
+import { ViewExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { DaroogTabPanel, TextLine } from '../../../../public';
 import { Convertor, isNullOrEmpty } from '../../../../../utils';
@@ -47,13 +46,13 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 interface Props {
   exchange: ViewExchangeInterface | undefined;
   onClose?: () => void;
-  showActions?: boolean;
+  full?: boolean;
 }
 
 const ExCalculator: React.FC<Props> = (props) => {
   const exchange: ViewExchangeInterface =
     props.exchange == undefined ? ViewExchangeInitialState : props.exchange;
-  const { onClose, showActions = true } = props;
+  const { onClose, full = true } = props;
   // if (showActions === undefined) showActions = true;
 
   const { t } = useTranslation();
@@ -109,7 +108,8 @@ const ExCalculator: React.FC<Props> = (props) => {
   const getOneSideData = (you: boolean): JSX.Element => {
     let card;
     const totalPourcentage = exchange.currentPharmacyIsA
-      ? exchange.totalPourcentageA : exchange.totalPourcentageB;
+      ? exchange.totalPourcentageA
+      : exchange.totalPourcentageB;
     if (you) {
       card = uBasketCount; // exchange.cartA;
     } else {
@@ -140,10 +140,12 @@ const ExCalculator: React.FC<Props> = (props) => {
                 <TableBody>
                   { card.map((row) => {
                     totalCount += row.currentCnt;
-                    const price = row.packID == undefined
-                      ? row.amount * row.currentCnt : row.totalAmount;
+                    const price =
+                      row.packID == undefined
+                        ? row.amount * row.currentCnt
+                        : row.totalAmount;
                     totalPrice += price;
-                    console.log('row: ', row)
+                    console.log('row: ', row);
                     return (
                       <TableRow key={ row.drug.name }>
                         <TableCell scope="row" className={ darkText }>
@@ -158,8 +160,14 @@ const ExCalculator: React.FC<Props> = (props) => {
                       </TableRow>
                     );
                   }) }
-                  { you && ((): any => { totalPriceA = totalPrice; })() }
-                  { !you && ((): any => { totalPriceB = totalPrice; })() }
+                  { you &&
+                    ((): any => {
+                      totalPriceA = totalPrice;
+                    })() }
+                  { !you &&
+                    ((): any => {
+                      totalPriceB = totalPrice;
+                    })() }
                 </TableBody>
               </Table>
             </TableContainer>
@@ -224,116 +232,122 @@ const ExCalculator: React.FC<Props> = (props) => {
     );
   };
 
-  const [dialogOpen, setDialogOpen] = useState(true);
-  return (
-    <>
-      <Dialog open={ dialogOpen } fullScreen={fullScreen}>
-        <DialogTitle>
-          { t('exchange.exCalculator') }
-        </DialogTitle>
-        <Divider />
-        <DialogContent className={ darkText }>
-          <Grid container>
-            {/* separate data */ }
-            <Grid item xs={ 12 }>
-              <Tabs
-                value={ currentTabIndex }
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={ handleChange }
-                centered
-              >
-                <Tab label={ t('exchange.you') } />
-                <Tab label={ t('exchange.otherSide') } />
-              </Tabs>
-              {/* <SwipeableViews
+  const CalcContent = (): JSX.Element => {
+    return (
+      <Grid container>
+        {/* separate data */ }
+        <Grid item xs={ 12 }>
+          <Tabs
+            value={ currentTabIndex }
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={ handleChange }
+            centered
+          >
+            <Tab label={ t('exchange.you') } />
+            <Tab label={ t('exchange.otherSide') } />
+          </Tabs>
+          {/* <SwipeableViews
               enableMouseEvents
               index={ currentTabIndex }
               onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
             > */}
-              <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-                { getOneSideData(true) }
-              </DaroogTabPanel>
-              <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-                { getOneSideData(false) }
-              </DaroogTabPanel>
-              {/* </SwipeableViews> */ }
+          <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+            { getOneSideData(true) }
+          </DaroogTabPanel>
+          <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+            { getOneSideData(false) }
+          </DaroogTabPanel>
+          {/* </SwipeableViews> */ }
+        </Grid>
+        <Divider />
+        {/* common data */ }
+        <Grid item xs={ 12 }>
+          { !isNullOrEmpty(exchange?.sendDate) && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
+              <TextLine
+                backColor={ ColorEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon
+                      icon={ faCalendarPlus }
+                      size="lg"
+                      className={ faIcons }
+                    />
+                    {t('exchange.sendDate') }
+                  </>
+                }
+                leftText={
+                  exchange?.sendDate == null
+                    ? ''
+                    : moment(exchange?.sendDate, 'YYYY/MM/DD')
+                      .locale('fa')
+                      .format('YYYY/MM/DD')
+                }
+              />
             </Grid>
-            <Divider />
-            {/* common data */ }
-            <Grid item xs={ 12 }>
-              { !isNullOrEmpty(exchange?.sendDate) && (
-                <Grid item xs={ 12 } className={ spacingVertical3 }>
-                  <TextLine
-                    backColor={ ColorEnum.White }
-                    rightText={
-                      <>
-                        <FontAwesomeIcon
-                          icon={ faCalendarPlus }
-                          size="lg"
-                          className={ faIcons }
-                        />
-                        {t('exchange.sendDate') }
-                      </>
-                    }
-                    leftText={
-                      exchange?.sendDate == null
-                        ? ''
-                        : moment(exchange?.sendDate, 'YYYY/MM/DD')
-                          .locale('fa')
-                          .format('YYYY/MM/DD')
-                    }
-                  />
-                </Grid>
-              ) }
-              { !isNullOrEmpty(expireDate) && (
-                <Grid item xs={ 12 } className={ spacingVertical3 }>
-                  <TextLine
-                    backColor={ ColorEnum.White }
-                    rightText={
-                      <>
-                        <FontAwesomeIcon
-                          icon={ faCalendarTimes }
-                          size="lg"
-                          className={ faIcons }
-                        />
-                        {expireDateText }
-                      </>
-                    }
-                    leftText={
-                      expireDate == null
-                        ? ''
-                        : moment(expireDate, 'YYYY/MM/DD')
-                          .locale('fa')
-                          .format('YYYY/MM/DD')
-                    }
-                  />
-                </Grid>
-              ) }
-              { !is3PercentOk && (
-                <Grid item xs={ 12 } className={ spacingVertical3 }>
-                  <b>{ t('general.warning') }</b>:<br />
-                  {t('exchange.threePercentWarning') }
-                </Grid>
-              ) }
+          ) }
+          { !isNullOrEmpty(expireDate) && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
+              <TextLine
+                backColor={ ColorEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon
+                      icon={ faCalendarTimes }
+                      size="lg"
+                      className={ faIcons }
+                    />
+                    {expireDateText }
+                  </>
+                }
+                leftText={
+                  expireDate == null
+                    ? ''
+                    : moment(expireDate, 'YYYY/MM/DD')
+                      .locale('fa')
+                      .format('YYYY/MM/DD')
+                }
+              />
             </Grid>
-          </Grid>
-        </DialogContent>
-        { showActions &&
+          ) }
+          { !is3PercentOk && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
+              <b>{ t('general.warning') }</b>:<br />
+              {t('exchange.threePercentWarning') }
+            </Grid>
+          ) }
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const [dialogOpen, setDialogOpen] = useState(true);
+  return (
+    <>
+      {full ? (
+        <Dialog open={ dialogOpen } fullScreen={ fullScreen }>
+          <DialogTitle>{ t('exchange.exCalculator') }</DialogTitle>
+          <Divider />
+          <DialogContent className={ darkText }>
+            <CalcContent />
+          </DialogContent>
           <DialogActions>
             <Button
               variant="outlined"
               color="primary"
               onClick={ (): void => {
-                setDialogOpen(false)
+                setDialogOpen(false);
                 if (onClose) onClose();
               } }
             >
               { t('general.ok') }
             </Button>
           </DialogActions>
-        }
-      </Dialog >
+        </Dialog>
+      ) : (
+          <CalcContent />
+        ) }
     </>
   );
 };
