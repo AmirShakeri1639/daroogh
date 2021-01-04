@@ -20,6 +20,9 @@ deploy_daroog:
     - main
   script:
     - "cp ./build/* C:/daroog/tabadol/front/ -force -recurse"
+  cache:
+    paths:
+      - node_modules/
   environment:
     name: staging
     url: http://sumon.ir
