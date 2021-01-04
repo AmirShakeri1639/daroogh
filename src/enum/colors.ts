@@ -2,6 +2,7 @@ export enum ColorEnum {
   White = '#ffffff',
   Green = '#4caf50',
   Red = '#f44336',
+  Gray = '#455a64',
   Silver = '#e0e0e0',
   Yellow = '#ffeb3b',
   DarkGreen ='#009688',
