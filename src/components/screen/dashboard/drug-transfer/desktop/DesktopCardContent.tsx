@@ -44,9 +44,9 @@ import { ViewExchangeInterface } from '../../../../../interfaces';
 interface Props {
   item?: ViewExchangeInterface;
   onCardClick?:
-    | ((id: number | undefined, state: number | undefined) => void)
-    | void
-    | any;
+  | ((id: number | undefined, state: number | undefined) => void)
+  | void
+  | any;
 }
 
 // @ts-ignore
@@ -122,7 +122,7 @@ const DesktopCardContent = ({
     if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
       return t(
         `ExchangeStateEnum.` +
-          `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
+        `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
       );
     } else {
       return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
@@ -161,14 +161,14 @@ const DesktopCardContent = ({
     }
     const starsArray: JSX.Element[] = [];
     for (let i = 0; i < flooredStar; i++) {
-      starsArray.push(<FontAwesomeIcon icon={solidStar} size="lg" />);
+      starsArray.push(<FontAwesomeIcon icon={ solidStar } size="lg" />);
     }
     if (decimal === 0.5) {
-      starsArray.push(<FontAwesomeIcon icon={faStarHalfAlt} size="lg" />);
+      starsArray.push(<FontAwesomeIcon icon={ faStarHalfAlt } size="lg" />);
       flooredStar++;
     }
     for (let i = flooredStar; i < 5; i++) {
-      starsArray.push(<FontAwesomeIcon icon={faStar} size="lg" />);
+      starsArray.push(<FontAwesomeIcon icon={ faStar } size="lg" />);
     }
     return starsArray;
   };
@@ -190,142 +190,146 @@ const DesktopCardContent = ({
 
   const ExchangeInfo = (): JSX.Element => {
     return (
-      <Grid container spacing={1} className={cardContainer}>
-        <Grid container className={cardTop}>
-          <Grid container xs={6} className={rowRight}>
-            <Grid xs={12} className={rowRight}>
+      <Grid container spacing={ 1 } className={ cardContainer }>
+        <Grid container className={ cardTop }>
+          <Grid container xs={ 6 } className={ rowRight }>
+            <Grid xs={ 12 } className={ rowRight }>
               <FontAwesomeIcon
-                icon={faSun}
+                icon={ faSun }
                 size="lg"
-                className={faIcons}
-                style={{ color: UserColors[pharmacyGrade] }}
+                className={ faIcons }
+                style={ { color: UserColors[pharmacyGrade] } }
               />
-              {pharmacyGrade ? (
-                <span>{t(`exchange.${UserGrades[pharmacyGrade]}`)}</span>
+              { pharmacyGrade ? (
+                <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
               ) : (
-                <></>
-              )}
+                  <></>
+                ) }
             </Grid>
-            <Grid xs={12} className={rowRight}>
+            <Grid xs={ 12 } className={ rowRight }>
               <div>
-                {item.currentPharmacyIsA
+                { item.currentPharmacyIsA
                   ? `${item.pharmacyProvinceB}، ${item.pharmacyCityB}`
-                  : `${item.pharmacyProvinceA}، ${item.pharmacyCityA}`}
+                  : `${item.pharmacyProvinceA}، ${item.pharmacyCityA}` }
               </div>
             </Grid>
           </Grid>
-          <Grid container xs={6} className={colLeft}>
-            <Grid xs={12} className={rowLeft}>
-              {pharmacyWarranty} تومان
-              <FontAwesomeIcon icon={faMedal} size="lg" />
+          <Grid container xs={ 6 } className={ colLeft }>
+            <Grid xs={ 12 } className={ rowLeft }>
+              { pharmacyWarranty !== 0 && (
+                <>
+                  { pharmacyWarranty } { t('general.toman') }
+                  <FontAwesomeIcon icon={ faMedal } size="lg" />
+                </>
+              )}
             </Grid>
-            <Grid xs={12} className={rowLeft} style={{ direction: 'ltr' }}>
-              {stars()}
+            <Grid xs={ 12 } className={ rowLeft } style={ { direction: 'ltr' } }>
+              { stars() }
             </Grid>
           </Grid>
         </Grid>
 
-        <Grid container xs={12}>
-          {!isNullOrEmpty(item?.sendDate) && (
-            <Grid item xs={12} className={spacingVertical1}>
+        <Grid container xs={ 12 }>
+          { !isNullOrEmpty(item?.sendDate) && (
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
-                backColor={ColorEnum.White}
+                backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon
-                      icon={faCalendarPlus}
+                      icon={ faCalendarPlus }
                       size="lg"
-                      className={faIcons}
+                      className={ faIcons }
                     />
-                    {t('exchange.sendDate')}
+                    {t('exchange.sendDate') }
                   </>
                 }
                 leftText={
                   item?.sendDate == null
                     ? ''
                     : moment(item?.sendDate, 'YYYY/MM/DD')
-                        .locale('fa')
-                        .format('YYYY/MM/DD')
+                      .locale('fa')
+                      .format('YYYY/MM/DD')
                 }
               />
             </Grid>
-          )}
+          ) }
 
-          {!isNullOrEmpty(expireDate) && (
-            <Grid item xs={12} className={spacingVertical1}>
+          { !isNullOrEmpty(expireDate) && (
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
-                backColor={ColorEnum.White}
+                backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon
-                      icon={faCalendarTimes}
+                      icon={ faCalendarTimes }
                       size="lg"
-                      className={faIcons}
+                      className={ faIcons }
                     />
-                    {expireDateText}
+                    {expireDateText }
                   </>
                 }
-                leftText={expireDate}
+                leftText={ expireDate }
               />
             </Grid>
-          )}
+          ) }
 
-          {!isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
-            <Grid item xs={12} className={spacingVertical1}>
+          { !isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
-                backColor={ColorEnum.White}
+                backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon
-                      icon={faMoneyBillAlt}
-                      className={faIcons}
+                      icon={ faMoneyBillAlt }
+                      className={ faIcons }
                       size="lg"
                     />
-                    {t('exchange.commission')}
+                    {t('exchange.commission') }
                   </>
                 }
-                leftText={totalPourcentage}
+                leftText={ totalPourcentage }
               />
             </Grid>
-          )}
+          ) }
 
-          {!isNullOrEmpty(totalAmount) && totalAmount > 0 && (
-            <Grid item xs={12} className={spacingVertical1}>
+          { !isNullOrEmpty(totalAmount) && totalAmount > 0 && (
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
-                backColor={ColorEnum.White}
+                backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon
-                      icon={faMoneyBillAlt}
-                      className={faIcons}
+                      icon={ faMoneyBillAlt }
+                      className={ faIcons }
                       size="lg"
                     />
-                    {t('exchange.totalPrice')}
+                    {t('exchange.totalPrice') }
                   </>
                 }
-                leftText={totalAmount}
+                leftText={ totalAmount }
               />
             </Grid>
-          )}
+          ) }
 
-          {!isNullOrEmpty(paymentStatus) && (
-            <Grid item xs={12} className={spacingVertical1}>
+          { !isNullOrEmpty(paymentStatus) && (
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
-                backColor={ColorEnum.White}
+                backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon
-                      icon={faCreditCard}
+                      icon={ faCreditCard }
                       size="lg"
-                      className={faIcons}
+                      className={ faIcons }
                     />
-                    {t('exchange.paymentStatus')}
+                    {t('exchange.paymentStatus') }
                   </>
                 }
-                leftText={paymentStatus}
+                leftText={ paymentStatus }
               />
             </Grid>
-          )}
+          ) }
         </Grid>
       </Grid>
     );
@@ -337,53 +341,53 @@ const DesktopCardContent = ({
     return (
       <>
         <div
-          style={{
+          style={ {
             borderTop: `3px solid ${ColorEnum.Green}`,
             width: `${thisState * 10}%`,
             display: 'inline-block',
-          }}
+          } }
         ></div>
         <div
-          style={{
+          style={ {
             borderTop: `3px solid ${ColorEnum.Red}`,
             width: `${100 - thisState * 10}%`,
             display: 'inline-block',
-          }}
+          } }
         ></div>
       </>
     );
   };
 
   return (
-    <Card className={`${cardRoot}`}>
+    <Card className={ `${cardRoot}` }>
       <CardContent>
         <Typography
           variant="h5"
           component="h2"
-          className={`${cardTitle} ${pointer}`}
-          style={{ background: getExchangeTitleColor() }}
-          onClick={(): void => {
+          className={ `${cardTitle} ${pointer}` }
+          style={ { background: getExchangeTitleColor() } }
+          onClick={ (): void => {
             if (onCardClick) {
               onCardClick(
                 item.id,
                 item.state > 10 ? item.state - 10 : item.state
               );
             }
-          }}
+          } }
         >
-          {getExchangeTitle()}
+          { getExchangeTitle() }
         </Typography>
-        <div className={titleCode}>
-          {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
+        <div className={ titleCode }>
+          { item?.currentPharmacyIsA ? item?.numberA : item?.numberB }
         </div>
-        <Container className={cardContent}>
+        <Container className={ cardContent }>
           <>
-            {item && (
+            { item && (
               <>
                 <ExchangeInfo />
                 <CardProgressbar />
               </>
-            )}
+            ) }
           </>
         </Container>
       </CardContent>
