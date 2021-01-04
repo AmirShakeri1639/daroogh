@@ -135,23 +135,6 @@ const ExchangeApprove: React.FC = () => {
     })();
   }, []);
 
-  const redirectPaymentPage = (): any => {
-    fetch('https://api.sumon.ir/MyVirtualGateway', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        commandType: 'request',
-        trackingNumber: '1000',
-        amount: '23500',
-        redirectUrl: 'https://api.sumon.ir/payment/verify?paymentToken',
-      }),
-    })
-      .then((res) => res.json())
-      .catch((err) => console.log('error'));
-  };
-
   const handleSubmit_temp = async (event: any): Promise<any> => {
     event.preventDefault();
     const res = await getPayment(payment);
@@ -355,12 +338,12 @@ const ExchangeApprove: React.FC = () => {
                 </Select>
               </FormControl>
               <ul style={{ display: 'inline-block', margin: 0 }}>
-                <li>
+                {/* <li>
                   <b style={{ color: 'red' }}>
                     <span>مبلغ قابل پرداخت: </span>
                     <span>{paymentAmount}</span>
                   </b>
-                </li>
+                </li> */}
                 <li>
                   <b>
                     <span>مبلغ انتخابی: </span>

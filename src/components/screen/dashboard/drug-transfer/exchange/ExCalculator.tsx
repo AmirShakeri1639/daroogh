@@ -43,17 +43,19 @@ import {
   ViewExchangeInitialState,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import { JsxEmit } from 'typescript';
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
   onClose?: () => void;
   showActions?: boolean;
+  isModal?: boolean;
 }
 
 const ExCalculator: React.FC<Props> = (props) => {
   const exchange: ViewExchangeInterface =
     props.exchange == undefined ? ViewExchangeInitialState : props.exchange;
-  const { onClose, showActions = true } = props;
+  const { onClose, showActions = true, isModal = true } = props;
   // if (showActions === undefined) showActions = true;
 
   const { t } = useTranslation();
@@ -109,7 +111,8 @@ const ExCalculator: React.FC<Props> = (props) => {
   const getOneSideData = (you: boolean): JSX.Element => {
     let card;
     const totalPourcentage = exchange.currentPharmacyIsA
-      ? exchange.totalPourcentageA : exchange.totalPourcentageB;
+      ? exchange.totalPourcentageA
+      : exchange.totalPourcentageB;
     if (you) {
       card = uBasketCount; // exchange.cartA;
     } else {
@@ -122,218 +125,234 @@ const ExCalculator: React.FC<Props> = (props) => {
       <>
         {card && card.length > 0 && (
           <>
-            <TableContainer component={ Paper } className={ darkText }>
+            <TableContainer component={Paper} className={darkText}>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" className={ darkText }>
-                      { t('drug.drug') }
+                    <TableCell align="center" className={darkText}>
+                      {t('drug.drug')}
                     </TableCell>
-                    <TableCell align="center" className={ darkText }>
-                      { t('general.number') }
+                    <TableCell align="center" className={darkText}>
+                      {t('general.number')}
                     </TableCell>
-                    <TableCell align="center" className={ darkText }>
-                      { t('general.price') } ({ t('general.rial') })
+                    <TableCell align="center" className={darkText}>
+                      {t('general.price')} ({t('general.rial')})
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  { card.map((row) => {
+                  {card.map((row) => {
                     totalCount += row.currentCnt;
-                    const price = row.packID == undefined
-                      ? row.amount * row.currentCnt : row.totalAmount;
+                    const price =
+                      row.packID == undefined
+                        ? row.amount * row.currentCnt
+                        : row.totalAmount;
                     totalPrice += price;
-                    console.log('row: ', row)
+                    console.log('row: ', row);
                     return (
-                      <TableRow key={ row.drug.name }>
-                        <TableCell scope="row" className={ darkText }>
-                          { row.drug.name }
+                      <TableRow key={row.drug.name}>
+                        <TableCell scope="row" className={darkText}>
+                          {row.drug.name}
                         </TableCell>
-                        <TableCell align="center" className={ darkText }>
-                          { row.currentCnt }
+                        <TableCell align="center" className={darkText}>
+                          {row.currentCnt}
                         </TableCell>
-                        <TableCell align="center" className={ darkText }>
-                          { Convertor.thousandsSeperatorFa(price) }
+                        <TableCell align="center" className={darkText}>
+                          {Convertor.thousandsSeperatorFa(price)}
                         </TableCell>
                       </TableRow>
                     );
-                  }) }
-                  { you && ((): any => { totalPriceA = totalPrice; })() }
-                  { !you && ((): any => { totalPriceB = totalPrice; })() }
+                  })}
+                  {you &&
+                    ((): any => {
+                      totalPriceA = totalPrice;
+                    })()}
+                  {!you &&
+                    ((): any => {
+                      totalPriceB = totalPrice;
+                    })()}
                 </TableBody>
               </Table>
             </TableContainer>
           </>
-        ) }
-        <div className={ spacing3 }>&nbsp;</div>
+        )}
+        <div className={spacing3}>&nbsp;</div>
         {!isNullOrEmpty(totalCount) && (
-          <Grid item xs={ 12 } className={ spacingVertical3 }>
+          <Grid item xs={12} className={spacingVertical3}>
             <TextLine
-              backColor={ ColorEnum.White }
+              backColor={ColorEnum.White}
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={ faListOl }
+                    icon={faListOl}
                     size="lg"
-                    className={ faIcons }
+                    className={faIcons}
                   />
-                  {t('general.number') }
+                  {t('general.number')}
                 </>
               }
-              leftText={ totalCount.toLocaleString() }
+              leftText={totalCount.toLocaleString()}
             />
           </Grid>
-        ) }
+        )}
         {!isNullOrEmpty(totalPrice) && (
-          <Grid item xs={ 12 } className={ spacingVertical3 }>
+          <Grid item xs={12} className={spacingVertical3}>
             <TextLine
-              backColor={ ColorEnum.White }
+              backColor={ColorEnum.White}
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={ faListOl }
+                    icon={faListOl}
                     size="lg"
-                    className={ faIcons }
+                    className={faIcons}
                   />
-                  {t('exchange.totalPrice') }
+                  {t('exchange.totalPrice')}
                 </>
               }
-              leftText={ Convertor.zeroSeparator(totalPrice) }
+              leftText={Convertor.zeroSeparator(totalPrice)}
             />
           </Grid>
-        ) }
+        )}
         {!isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
-          <Grid item xs={ 12 } className={ spacingVertical3 }>
+          <Grid item xs={12} className={spacingVertical3}>
             <TextLine
-              backColor={ ColorEnum.White }
+              backColor={ColorEnum.White}
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={ faMoneyBillAlt }
-                    className={ faIcons }
+                    icon={faMoneyBillAlt}
+                    className={faIcons}
                     size="lg"
                   />
-                  {t('exchange.commission') }
+                  {t('exchange.commission')}
                 </>
               }
-              leftText={ totalPourcentage }
+              leftText={totalPourcentage}
             />
           </Grid>
-        ) }
+        )}
       </>
+    );
+  };
+
+  const CalcConternt = (): JSX.Element => {
+    return (
+      <Grid container>
+        {/* separate data */}
+        <Grid item xs={12}>
+          <Tabs
+            value={currentTabIndex}
+            indicatorColor="primary"
+            textColor="primary"
+            onChange={handleChange}
+            centered
+          >
+            <Tab label={t('exchange.you')} />
+            <Tab label={t('exchange.otherSide')} />
+          </Tabs>
+          {/* <SwipeableViews
+              enableMouseEvents
+              index={ currentTabIndex }
+              onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
+            > */}
+          <DaroogTabPanel value={currentTabIndex} index={0}>
+            {getOneSideData(true)}
+          </DaroogTabPanel>
+          <DaroogTabPanel value={currentTabIndex} index={1}>
+            {getOneSideData(false)}
+          </DaroogTabPanel>
+          {/* </SwipeableViews> */}
+        </Grid>
+        <Divider />
+        {/* common data */}
+        <Grid item xs={12}>
+          {!isNullOrEmpty(exchange?.sendDate) && (
+            <Grid item xs={12} className={spacingVertical3}>
+              <TextLine
+                backColor={ColorEnum.White}
+                rightText={
+                  <>
+                    <FontAwesomeIcon
+                      icon={faCalendarPlus}
+                      size="lg"
+                      className={faIcons}
+                    />
+                    {t('exchange.sendDate')}
+                  </>
+                }
+                leftText={
+                  exchange?.sendDate == null
+                    ? ''
+                    : moment(exchange?.sendDate, 'YYYY/MM/DD')
+                        .locale('fa')
+                        .format('YYYY/MM/DD')
+                }
+              />
+            </Grid>
+          )}
+          {!isNullOrEmpty(expireDate) && (
+            <Grid item xs={12} className={spacingVertical3}>
+              <TextLine
+                backColor={ColorEnum.White}
+                rightText={
+                  <>
+                    <FontAwesomeIcon
+                      icon={faCalendarTimes}
+                      size="lg"
+                      className={faIcons}
+                    />
+                    {expireDateText}
+                  </>
+                }
+                leftText={
+                  expireDate == null
+                    ? ''
+                    : moment(expireDate, 'YYYY/MM/DD')
+                        .locale('fa')
+                        .format('YYYY/MM/DD')
+                }
+              />
+            </Grid>
+          )}
+          {!is3PercentOk && (
+            <Grid item xs={12} className={spacingVertical3}>
+              <b>{t('general.warning')}</b>:<br />
+              {t('exchange.threePercentWarning')}
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
     );
   };
 
   const [dialogOpen, setDialogOpen] = useState(true);
   return (
     <>
-      <Dialog open={ dialogOpen } fullScreen={fullScreen}>
-        <DialogTitle>
-          { t('exchange.exCalculator') }
-        </DialogTitle>
-        <Divider />
-        <DialogContent className={ darkText }>
-          <Grid container>
-            {/* separate data */ }
-            <Grid item xs={ 12 }>
-              <Tabs
-                value={ currentTabIndex }
-                indicatorColor="primary"
-                textColor="primary"
-                onChange={ handleChange }
-                centered
+      {isModal ? (
+        <Dialog open={dialogOpen} fullScreen={fullScreen}>
+          <DialogTitle>{t('exchange.exCalculator')}</DialogTitle>
+          <Divider />
+          <DialogContent className={darkText}>
+            <CalcConternt />
+          </DialogContent>
+          {showActions && (
+            <DialogActions>
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={(): void => {
+                  setDialogOpen(false);
+                  if (onClose) onClose();
+                }}
               >
-                <Tab label={ t('exchange.you') } />
-                <Tab label={ t('exchange.otherSide') } />
-              </Tabs>
-              {/* <SwipeableViews
-              enableMouseEvents
-              index={ currentTabIndex }
-              onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
-            > */}
-              <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-                { getOneSideData(true) }
-              </DaroogTabPanel>
-              <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-                { getOneSideData(false) }
-              </DaroogTabPanel>
-              {/* </SwipeableViews> */ }
-            </Grid>
-            <Divider />
-            {/* common data */ }
-            <Grid item xs={ 12 }>
-              { !isNullOrEmpty(exchange?.sendDate) && (
-                <Grid item xs={ 12 } className={ spacingVertical3 }>
-                  <TextLine
-                    backColor={ ColorEnum.White }
-                    rightText={
-                      <>
-                        <FontAwesomeIcon
-                          icon={ faCalendarPlus }
-                          size="lg"
-                          className={ faIcons }
-                        />
-                        {t('exchange.sendDate') }
-                      </>
-                    }
-                    leftText={
-                      exchange?.sendDate == null
-                        ? ''
-                        : moment(exchange?.sendDate, 'YYYY/MM/DD')
-                          .locale('fa')
-                          .format('YYYY/MM/DD')
-                    }
-                  />
-                </Grid>
-              ) }
-              { !isNullOrEmpty(expireDate) && (
-                <Grid item xs={ 12 } className={ spacingVertical3 }>
-                  <TextLine
-                    backColor={ ColorEnum.White }
-                    rightText={
-                      <>
-                        <FontAwesomeIcon
-                          icon={ faCalendarTimes }
-                          size="lg"
-                          className={ faIcons }
-                        />
-                        {expireDateText }
-                      </>
-                    }
-                    leftText={
-                      expireDate == null
-                        ? ''
-                        : moment(expireDate, 'YYYY/MM/DD')
-                          .locale('fa')
-                          .format('YYYY/MM/DD')
-                    }
-                  />
-                </Grid>
-              ) }
-              { !is3PercentOk && (
-                <Grid item xs={ 12 } className={ spacingVertical3 }>
-                  <b>{ t('general.warning') }</b>:<br />
-                  {t('exchange.threePercentWarning') }
-                </Grid>
-              ) }
-            </Grid>
-          </Grid>
-        </DialogContent>
-        { showActions &&
-          <DialogActions>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={ (): void => {
-                setDialogOpen(false)
-                if (onClose) onClose();
-              } }
-            >
-              { t('general.ok') }
-            </Button>
-          </DialogActions>
-        }
-      </Dialog >
+                {t('general.ok')}
+              </Button>
+            </DialogActions>
+          )}
+        </Dialog>
+      ) : (
+        <CalcConternt />
+      )}
     </>
   );
 };
