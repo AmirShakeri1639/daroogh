@@ -107,8 +107,9 @@ const ActionButtons = (): JSX.Element => {
         if (res) {
           await sweetAlert({
             type: 'success',
-            text: res.message,
+            text: res.data.message,
           });
+          history.push(desktop);
         }
       },
     }
@@ -317,7 +318,9 @@ const ActionButtons = (): JSX.Element => {
   const vx: ViewExchangeInterface | undefined = viewExhcnage;
   if (vx) {
     let state = vx.state;
+    // The First Side ==========================================
     if (vx.currentPharmacyIsA) {
+      // این دکمه در تولبار و در هنگام کلیک بر روی سبد هندل شده است
       // if (state === 1)
       //   element = (
       //     <Button
@@ -383,7 +386,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (state === 10)
+      if (state === 10 || state === 9)
         element = (
           <>
             <>{element}</>
@@ -391,7 +394,7 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
+              color="blue"
             >
               نمایش آدرس
             </Button>
@@ -413,6 +416,7 @@ const ActionButtons = (): JSX.Element => {
             </Button>
           </>
         );
+      // The Second Side ==========================================
     } else {
       if (state > 10) state = state - 10;
       if (state === 2 || state === 3) {

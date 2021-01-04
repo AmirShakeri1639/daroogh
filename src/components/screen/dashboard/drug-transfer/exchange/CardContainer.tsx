@@ -28,9 +28,15 @@ import { useMutation } from 'react-query';
 import { AddDrugInterface } from '../../../../../interfaces';
 import { errorHandler, sweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
-import { AddDrog1, AddPack1 } from '../../../../../model/exchange';
+import {
+  AddDrog1,
+  AddDrog2,
+  AddPack1,
+  AddPack2,
+} from '../../../../../model/exchange';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -180,6 +186,8 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState<string>('');
 
+  const [isLoading, setIsLoading] = React.useState(false);
+
   const snackBarHandleClick = (): any => {
     setOpen(true);
   };
@@ -215,6 +223,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     exchangeStateCode,
     viewExhcnage,
     setViewExchange,
+    exchangeId,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
@@ -238,9 +247,11 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   });
 
   const [_removeDrug1] = useMutation(addDrug1, {
-    onSuccess: async () => {
-      setMessage(t('alert.removeAddDrug'));
-      snackBarHandleClick();
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage(t('alert.removeAddDrug'));
+        snackBarHandleClick();
+      }
     },
   });
 
@@ -249,50 +260,64 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
       if (res) {
         setMessage(t('alert.successAddPack'));
         snackBarHandleClick();
+
+        if (!viewExhcnage) {
+          const viewExResult = await getViewExchange(res.data.exchangeId);
+          const result: ViewExchangeInterface | undefined = viewExResult.data;
+          if (result) setViewExchange(result);
+        }
       }
     },
   });
 
   const [_removePack1] = useMutation(removePack1, {
-    onSuccess: async () => {
-      setMessage(t('alert.removeAddPack'));
-      snackBarHandleClick();
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage(t('alert.removeAddPack'));
+        snackBarHandleClick();
+      }
     },
   });
 
-  const [] = useMutation(addDrug2, {
-    onSuccess: async () => {
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.successfulCreateTextMessage'),
-      });
+  const [_addDrug2] = useMutation(addDrug2, {
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage(t('alert.successAddPack'));
+        snackBarHandleClick();
+      }
     },
   });
 
-  const [] = useMutation(addPack2, {
-    onSuccess: async () => {
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.successfulCreateTextMessage'),
-      });
+  const [_removeDrug2] = useMutation(addDrug2, {
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage(t('alert.removeAddPack'));
+        snackBarHandleClick();
+      }
     },
   });
 
-  const [] = useMutation(removePack2, {
-    onSuccess: async () => {
-      dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.successfulCreateTextMessage'),
-      });
+  const [_addPack2] = useMutation(addPack2, {
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage(t('alert.successAddPack'));
+        snackBarHandleClick();
+      }
     },
   });
 
-  useEffect(() => {
-    setDrugInfo(pharmacyDrug);
-  }, []);
+  const [_removePack2] = useMutation(removePack2, {
+    onSuccess: async (res) => {
+      if (res) {
+        setMessage(t('alert.removeAddPack'));
+        snackBarHandleClick();
+      }
+    },
+  });
+
+  // useEffect(() => {
+  //   setDrugInfo(pharmacyDrug);
+  // }, []);
 
   const {
     expand,
@@ -346,12 +371,24 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     inputmodel.count = pharmacyDrug.currentCnt;
 
     if (
+      pharmacyDrug.buttonName === 'افزودن به تبادل' &&
+      (!pharmacyDrug.currentCnt || pharmacyDrug.currentCnt === 0)
+    ) {
+      await sweetAlert({
+        type: 'error',
+        text: 'مقدار وارد شده معتبر نمی باشد',
+      });
+      return;
+    }
+
+    if (
       (activeStep === 1 && basketCount.find((x) => x.id == pharmacyDrug.id)) ||
       (activeStep === 2 && uBasketCount.find((x) => x.id == pharmacyDrug.id))
     ) {
       inputmodel.count = 0;
     }
 
+    setIsLoading(true);
     try {
       if (inputmodel.count > 0) {
         const res = await _addDrug1(inputmodel);
@@ -379,25 +416,85 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
             ]);
         }
       }
+      setIsLoading(false);
     } catch (e) {
+      setIsLoading(false);
+      errorHandler(e);
+    }
+  };
+
+  const addDrug2Handle = async (): Promise<any> => {
+    const inputmodel = new AddDrog2();
+    inputmodel.pharmacyDrugID = pharmacyDrug.id;
+    inputmodel.exchangeID = exchangeId;
+    inputmodel.count = pharmacyDrug.currentCnt;
+
+    if (
+      pharmacyDrug.buttonName === 'افزودن به تبادل' &&
+      (!pharmacyDrug.currentCnt || pharmacyDrug.currentCnt === 0)
+    ) {
+      await sweetAlert({
+        type: 'error',
+        text: 'مقدار وارد شده معتبر نمی باشد',
+      });
+      return;
+    }
+
+    if (
+      (activeStep === 1 && basketCount.find((x) => x.id == pharmacyDrug.id)) ||
+      (activeStep === 2 && uBasketCount.find((x) => x.id == pharmacyDrug.id))
+    ) {
+      inputmodel.count = 0;
+    }
+
+    setIsLoading(true);
+    try {
+      if (inputmodel.count > 0) {
+        const res = await _addDrug2(inputmodel);
+        if (res) {
+          pharmacyDrug.currentCnt = inputmodel.count;
+          if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
+          else setUbasketCount([...uBasketCount, pharmacyDrug]);
+        }
+      } else {
+        await _removeDrug2(inputmodel);
+        if (
+          (activeStep === 1 && basketCount.length === 1) ||
+          (activeStep === 2 && uBasketCount.length === 1)
+        ) {
+          if (activeStep === 1) setBasketCount([]);
+          else setUbasketCount([]);
+        } else {
+          if (activeStep === 1)
+            setBasketCount([
+              ...basketCount.filter((x) => x.id !== pharmacyDrug.id),
+            ]);
+          else
+            setUbasketCount([
+              ...uBasketCount.filter((x) => x.id !== pharmacyDrug.id),
+            ]);
+        }
+      }
+      setIsLoading(false);
+    } catch (e) {
+      setIsLoading(false);
       errorHandler(e);
     }
   };
 
   const packHandle = async (): Promise<any> => {
     const inputmodel = new AddPack1();
-    if (drugInfo !== undefined && drugInfo.packID !== undefined) {
-      inputmodel.packID = drugInfo.packID;
+    if (pharmacyDrug !== undefined && pharmacyDrug.packID !== undefined) {
+      inputmodel.packID = pharmacyDrug.packID;
       inputmodel.pharmacyKey = selectedPharmacyForTransfer;
 
+      setIsLoading(true);
       if (
         (activeStep === 1 &&
           !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
         (activeStep === 2 &&
           !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
       ) {
-        drugInfo.packID = pharmacyDrug.packID;
-        drugInfo.packName = pharmacyDrug.packName;
         try {
           const res = await _addPack1(inputmodel);
           if (res) {
@@ -405,7 +502,9 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
               setBasketCount([...basketCount, pharmacyDrug]);
             else setUbasketCount([...uBasketCount, pharmacyDrug]);
           }
+          setIsLoading(false);
         } catch (e) {
+          setIsLoading(false);
           errorHandler(e);
         }
       } else {
@@ -420,7 +519,55 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
             setUbasketCount([
               ...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID),
             ]);
+          setIsLoading(false);
         } catch (e) {
+          setIsLoading(false);
+          errorHandler(e);
+        }
+      }
+    }
+  };
+
+  const pack2Handle = async (): Promise<any> => {
+    const inputmodel = new AddPack2();
+    if (pharmacyDrug !== undefined && pharmacyDrug.packID !== undefined) {
+      inputmodel.packID = pharmacyDrug.packID;
+      inputmodel.exchangeID = exchangeId;
+
+      setIsLoading(true);
+      if (
+        (activeStep === 1 &&
+          !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
+        (activeStep === 2 &&
+          !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
+      ) {
+        try {
+          const res = await _addPack2(inputmodel);
+          if (res) {
+            if (activeStep === 1)
+              setBasketCount([...basketCount, pharmacyDrug]);
+            else setUbasketCount([...uBasketCount, pharmacyDrug]);
+          }
+          setIsLoading(false);
+        } catch (e) {
+          setIsLoading(false);
+          errorHandler(e);
+        }
+      } else {
+        try {
+          await _removePack2(inputmodel);
+          // dispatch({ type: 'reset' });
+          if (activeStep === 1)
+            setBasketCount([
+              ...basketCount.filter((x) => x.packID !== pharmacyDrug.packID),
+            ]);
+          else
+            setUbasketCount([
+              ...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID),
+            ]);
+          setIsLoading(false);
+        } catch (e) {
+          setIsLoading(false);
           errorHandler(e);
         }
       }
@@ -445,6 +592,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
           className={textCounter}
           defaultValue={pharmacyDrug.currentCnt}
           onChange={(e): void => {
+            const val = +e.target.value;
             pharmacyDrug.currentCnt = +e.target.value;
           }}
         >
@@ -474,7 +622,8 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     let element = <></>;
     if (
       !viewExhcnage ||
-      (viewExhcnage.state !== 7 && viewExhcnage.lockSuggestion === false)
+      (!(viewExhcnage.state === 2 || viewExhcnage.state === 7) &&
+        viewExhcnage.lockSuggestion === false)
     ) {
       element = (
         <Grid container>
@@ -495,8 +644,19 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
               className={button}
               size="small"
               onClick={async (): Promise<any> => {
-                if (!isPack) await addDrugHandle();
-                else await packHandle();
+                if (!isPack) {
+                  if (viewExhcnage && !viewExhcnage.currentPharmacyIsA) {
+                    await addDrug2Handle();
+                  } else {
+                    await addDrugHandle();
+                  }
+                } else {
+                  if (viewExhcnage && !viewExhcnage.currentPharmacyIsA) {
+                    await pack2Handle();
+                  } else {
+                    await packHandle();
+                  }
+                }
               }}
             >
               {pharmacyDrug.buttonName}
@@ -510,49 +670,52 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   };
 
   return (
-    <Card
-      className={`${root} ${isPack ? pack : ''}`}
-      style={{ backgroundColor: pharmacyDrug.cardColor }}
-    >
-      <CardContent>{basicDetail}</CardContent>
-      {!isPack && (
-        <CardActions disableSpacing className={action}>
-          <AddRemoveAction />
-        </CardActions>
-      )}
-      {isPack && (
-        <>
-          <CardActions disableSpacing className={actionExpand}>
-            <IconButton
-              className={clsx(expand, { [expandOpen]: expanded })}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="show more"
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          </CardActions>
-          <Collapse
-            in={expanded}
-            timeout="auto"
-            unmountOnExit
-            className={collapse}
-          >
-            <div> {collapsableContent} </div>
-            <AddRemoveAction />
-          </Collapse>
-        </>
-      )}
-      <Snackbar
-        open={open}
-        autoHideDuration={5000}
-        onClose={snackBarHandleClose}
+    <>
+      <CircleBackdropLoading isOpen={isLoading} />
+      <Card
+        className={`${root} ${isPack ? pack : ''}`}
+        style={{ backgroundColor: pharmacyDrug.cardColor }}
       >
-        <Alert onClose={snackBarHandleClose} severity="success">
-          {message}
-        </Alert>
-      </Snackbar>
-    </Card>
+        <CardContent>{basicDetail}</CardContent>
+        {!isPack && (
+          <CardActions disableSpacing className={action}>
+            <AddRemoveAction />
+          </CardActions>
+        )}
+        {isPack && (
+          <>
+            <CardActions disableSpacing className={actionExpand}>
+              <IconButton
+                className={clsx(expand, { [expandOpen]: expanded })}
+                onClick={handleExpandClick}
+                aria-expanded={expanded}
+                aria-label="show more"
+              >
+                <ExpandMoreIcon />
+              </IconButton>
+            </CardActions>
+            <Collapse
+              in={expanded}
+              timeout="auto"
+              unmountOnExit
+              className={collapse}
+            >
+              <div> {collapsableContent} </div>
+              <AddRemoveAction />
+            </Collapse>
+          </>
+        )}
+        <Snackbar
+          open={open}
+          autoHideDuration={5000}
+          onClose={snackBarHandleClose}
+        >
+          <Alert onClose={snackBarHandleClose} severity="success">
+            {message}
+          </Alert>
+        </Snackbar>
+      </Card>
+    </>
   );
 };
 
