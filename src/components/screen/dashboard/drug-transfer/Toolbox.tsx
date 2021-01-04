@@ -117,19 +117,19 @@ const ToolBox: React.FC = () => {
   const exchangeModalRemove = (): JSX.Element => {
     return (
       <Modal
-        open={isRemoveExchangeModal}
-        toggle={toggleIsRemoveExchangeModalForm}
+        open={ isRemoveExchangeModal }
+        toggle={ toggleIsRemoveExchangeModalForm }
       >
         <Card>
           <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
+            style={ { padding: 0, paddingRight: 10, paddingLeft: 10 } }
             title="حذف تبادل"
-            titleTypographyProps={{ variant: 'h6' }}
+            titleTypographyProps={ { variant: 'h6' } }
             action={
               <IconButton
-                style={{ marginTop: 10 }}
+                style={ { marginTop: 10 } }
                 aria-label="settings"
-                onClick={toggleIsRemoveExchangeModalForm}
+                onClick={ toggleIsRemoveExchangeModalForm }
               >
                 <CloseIcon />
               </IconButton>
@@ -137,17 +137,17 @@ const ToolBox: React.FC = () => {
           />
           <Divider />
           <CardContent>
-            <Grid container spacing={1}>
+            <Grid container spacing={ 1 }>
               <div>
                 <span>آیا از حذف تبادل اطمینان دارید؟</span>
               </div>
             </Grid>
           </CardContent>
           <CardActions>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
+            <Grid container spacing={ 1 }>
+              <Grid item xs={ 6 }>
                 <MatButton
-                  onClick={async (): Promise<any> =>
+                  onClick={ async (): Promise<any> =>
                     await handleRemoveExchange()
                   }
                   variant="contained"
@@ -157,9 +157,9 @@ const ToolBox: React.FC = () => {
                   بله
                 </MatButton>
               </Grid>
-              <Grid item xs={6} style={{ textAlign: 'left' }}>
+              <Grid item xs={ 6 } style={ { textAlign: 'left' } }>
                 <MatButton
-                  onClick={toggleIsRemoveExchangeModalForm}
+                  onClick={ toggleIsRemoveExchangeModalForm }
                   variant="contained"
                   color="secondary"
                   autoFocus
@@ -179,90 +179,82 @@ const ToolBox: React.FC = () => {
       <>
         {showExCalculator && (
           <Modal
-            open={showExCalculator}
-            toggle={(): any => setShowExCalculator(!showExCalculator)}
+            open={ showExCalculator }
+            toggle={ (): any => setShowExCalculator(!showExCalculator) }
           >
-            <ExCalculator exchange={viewExhcnage} />
-            <Divider />
-            <div style={{ padding: '1em' }}>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={toggleShowExCalculator}
-              >
-                {t('general.ok')}
-              </Button>
-            </div>
+            <ExCalculator exchange={ viewExhcnage }
+              onClose={ toggleShowExCalculator }
+            />
           </Modal>
-        )}
+        ) }
       </>
     );
   };
 
   return (
     <>
-      <ul className={ul}>
+      <ul className={ ul }>
         <li>
           <Tooltip title="سبد دارو">
             <IconButton
-              onClick={(): void => {
+              onClick={ (): void => {
                 setShowExCalculator(!showExCalculator);
-              }}
+              } }
             >
               <Badge
                 badgeContent={
                   activeStep === 1
                     ? Array.from(
-                        basketCount.filter(
-                          (thing, i, arr) =>
-                            thing.packID &&
-                            arr.findIndex((t) => t.packID === thing.packID) ===
-                              i
-                        )
-                      ).length +
-                      Array.from(
-                        basketCount.filter(
-                          (thing, i, arr) =>
-                            !thing.packID &&
-                            arr.findIndex(
-                              (t) => t.drug.id === thing.drug.id
-                            ) === i
-                        )
-                      ).length
+                      basketCount.filter(
+                        (thing, i, arr) =>
+                          thing.packID &&
+                          arr.findIndex((t) => t.packID === thing.packID) ===
+                          i
+                      )
+                    ).length +
+                    Array.from(
+                      basketCount.filter(
+                        (thing, i, arr) =>
+                          !thing.packID &&
+                          arr.findIndex(
+                            (t) => t.drug.id === thing.drug.id
+                          ) === i
+                      )
+                    ).length
                     : Array.from(
-                        uBasketCount.filter(
-                          (thing, i, arr) =>
-                            thing.packID &&
-                            arr.findIndex((t) => t.packID === thing.packID) ===
-                              i
-                        )
-                      ).length +
-                      Array.from(
-                        uBasketCount.filter(
-                          (thing, i, arr) =>
-                            !thing.packID &&
-                            arr.findIndex(
-                              (t) => t.drug.id === thing.drug.id
-                            ) === i
-                        )
-                      ).length
+                      uBasketCount.filter(
+                        (thing, i, arr) =>
+                          thing.packID &&
+                          arr.findIndex((t) => t.packID === thing.packID) ===
+                          i
+                      )
+                    ).length +
+                    Array.from(
+                      uBasketCount.filter(
+                        (thing, i, arr) =>
+                          !thing.packID &&
+                          arr.findIndex(
+                            (t) => t.drug.id === thing.drug.id
+                          ) === i
+                      )
+                    ).length
                 }
                 color="secondary"
               >
-                <ShoppingBasketIcon className={icons} />
+                <ShoppingBasketIcon className={ icons } />
               </Badge>
             </IconButton>
           </Tooltip>
         </li>
-        {viewExhcnage && viewExhcnage.currentPharmacyIsA && viewExhcnage.state && (
+        { viewExhcnage && viewExhcnage.currentPharmacyIsA && viewExhcnage.state && (
           <li>
             <Tooltip title="حذف تبادل">
-              <IconButton onClick={toggleIsRemoveExchangeModalForm}>
-                <DeleteForeverIcon className={icons} />
+              <IconButton onClick={ toggleIsRemoveExchangeModalForm }>
+                <DeleteForeverIcon className={ icons } />
               </IconButton>
             </Tooltip>
           </li>
-        )}
+        ) }
         {/* <li>
           <Tooltip title="مرتب سازی">
             <SortIcon className={icons} />
@@ -285,12 +277,12 @@ const ToolBox: React.FC = () => {
           </Tooltip>
         </li> */}
       </ul>
-      <Grid container spacing={1}>
-        <Grid item xs={1}>
-          {exchangeCalculator()}
+      <Grid container spacing={ 1 }>
+        <Grid item xs={ 1 }>
+          { exchangeCalculator() }
         </Grid>
       </Grid>
-      {isRemoveExchangeModal && exchangeModalRemove()}
+      {isRemoveExchangeModal && exchangeModalRemove() }
     </>
   );
 };
