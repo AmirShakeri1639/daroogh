@@ -74,6 +74,7 @@ export default {
         toman: 'تومان',
         ok: 'خب',
         warning: 'هشدار',
+        rial: 'ریال',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
