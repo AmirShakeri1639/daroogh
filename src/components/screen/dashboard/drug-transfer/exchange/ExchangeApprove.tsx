@@ -20,7 +20,10 @@ import Modal from '../../../../public/modal/Modal';
 import CloseIcon from '@material-ui/icons/Close';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import Button from '../../../../public/button/Button';
-import { AccountingInterface } from '../../../../../interfaces/AccountingInterface';
+import {
+  AccountingInterface,
+  BankGetwayesInterface,
+} from '../../../../../interfaces/AccountingInterface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TextLine from '../../../../public/text-line/TextLine';
 import {
@@ -71,6 +74,7 @@ const ExchangeApprove: React.FC = () => {
   const [accountingForPayment, setAccountingForPayment] = useState<
     AccountingInterface[]
   >([]);
+  const [bankGetwayes, setBankGetwayes] = useState<BankGetwayesInterface[]>([]);
 
   const { desktop } = routes;
   const history = useHistory();
@@ -92,6 +96,8 @@ const ExchangeApprove: React.FC = () => {
   const handleChangeBank = (
     id: React.ChangeEvent<{ value: unknown }>
   ): void => {
+    // const currentTarget: any = id.currentTarget;
+    // const name = currentTarget.innerText;
     const pay = payment;
     pay.bankGetway = String(id.target.value);
     setPayment(pay);
@@ -117,8 +123,12 @@ const ExchangeApprove: React.FC = () => {
           (a: any, b: any) => (a > b ? 1 : -1)
         );
         setAccountingForPayment(res);
-        const amount = res[0].amount > 0 ? res[0].amount : 0;
-        setPaymentAmount(amount);
+        if (res && res.length > 0) {
+          const amount = res[0].amount > 0 ? res[0].amount : 0;
+          setPaymentAmount(amount);
+        }
+        const banks: BankGetwayesInterface[] = result.data.bankGetwayes;
+        setBankGetwayes(banks);
       }
     })();
   }, []);
@@ -299,8 +309,9 @@ const ExchangeApprove: React.FC = () => {
               <FormControl style={{ width: 120, marginTop: -10 }}>
                 <InputLabel>درگاه پرداخت</InputLabel>
                 <Select onChange={handleChangeBank}>
-                  <MenuItem value={1}>بانک پارسیان</MenuItem>
-                  <MenuItem value={2}>بانک تست</MenuItem>
+                  {bankGetwayes.map((item: BankGetwayesInterface) => (
+                    <MenuItem value={item.name}>{item.title}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <ul style={{ display: 'inline-block', margin: 0 }}>

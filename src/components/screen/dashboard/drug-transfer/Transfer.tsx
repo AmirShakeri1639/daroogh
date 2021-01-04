@@ -87,12 +87,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     (async (): Promise<void> => {
       let eid: any = undefined;
       const encryptedId = params.eid == null ? undefined : params.eid;
-
       eid = encryptedId;
-
       if (eid !== undefined) {
-        setExchangeId(eid);
-        setActiveStep(1);
         const result = await getViewExchange(eid);
         const res: ViewExchangeInterface | undefined = result.data;
         if (res) {
@@ -174,6 +170,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               break;
           }
         }
+        setExchangeId(eid);
+        setActiveStep(1);
       }
     })();
   }, [viewExchangeId, exchangeState]);
@@ -254,7 +252,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           <Grid container spacing={1}>
             {activeStep > 0 && (
               <>
-                <Grid item xs={12}>
+                <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
                   <ProgressBar />
                 </Grid>
                 {/* <Grid item xs={ 1 }>

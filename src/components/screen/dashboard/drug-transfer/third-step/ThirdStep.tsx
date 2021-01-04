@@ -41,8 +41,16 @@ const style = makeStyles((theme) =>
     stickyRecommendation: {
       position: 'sticky',
       margin: 0,
-      top: 135,
+      padding: 10,
+      paddingTop: 0,
+      top: 60,
       zIndex: 999,
+    },
+    desktopCardContent: {
+      marginTop: 0,
+      [theme.breakpoints.up('md')]: {
+        marginTop: -87,
+      },
     },
     actionContainer: {
       display: 'flex',
@@ -79,7 +87,12 @@ const ThirdStep: React.FC = () => {
     viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
-  const { paper, stickyToolbox, stickyRecommendation } = style();
+  const {
+    paper,
+    stickyToolbox,
+    stickyRecommendation,
+    desktopCardContent,
+  } = style();
 
   const [listPageNo] = useState(0);
   const [] = useState(0);
@@ -310,9 +323,9 @@ const ThirdStep: React.FC = () => {
               </>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={12} md={3}>
+          <Grid item xs={12} sm={12} md={3} className={desktopCardContent}>
             <Grid container className={stickyRecommendation}>
-              {viewExhcnage && <DesktopCardContent item={viewExhcnage} />}
+              <DesktopCardContent item={viewExhcnage} />
               {/* <TextField
                 style={{ width: '100%', marginTop: 15, fontSize: 10 }}
                 label="توضیحات"

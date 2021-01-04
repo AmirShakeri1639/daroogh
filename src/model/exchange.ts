@@ -4,14 +4,30 @@ export class AddDrog1 {
   pharmacyKey: string = '';
 }
 
+export class AddDrog2 {
+  pharmacyDrugID: number = 0;
+  count: number = 0;
+  exchangeID: number = 0;
+}
+
 export class AddPack1 {
   packID: number = 0;
   pharmacyKey: string = '';
 }
 
+export class AddPack2 {
+  packID: number = 0;
+  exchangeID: number = 0;
+}
+
 export class RemovePack1 {
   packID: number = 0;
   pharmacyKey: string = '';
+}
+
+export class RemovePack2 {
+  packID: number = 0;
+  exchangeID: number = 0;
 }
 
 export class Send {
