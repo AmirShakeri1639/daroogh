@@ -201,6 +201,11 @@ export const useClasses = makeStyles((theme) => createStyles({
     position: 'absolute',
     top: '2em',
     right: '1.5em',
+    padding: '.5em',
+    paddingBottom: '.2em',
+    background: 'rgba(225, 245, 254, .7)',
+    borderRadius: '.5em',
+    borderBottomRightRadius: '0',
   },
   cardTop: {
     margin: '0 .5em',
