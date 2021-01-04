@@ -15,7 +15,7 @@ import {
   MenuItem,
   Paper,
 } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Modal from '../../../../public/modal/Modal';
 import CloseIcon from '@material-ui/icons/Close';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
@@ -78,12 +78,14 @@ const ExchangeApprove: React.FC = () => {
 
   const { desktop } = routes;
   const history = useHistory();
+  const refFrom = useRef<any>();
 
   const { getAccountingForPayment, getPayment } = new PharmacyDrug();
 
   const [totalAmount, setTotoalAmount] = useState(0);
   const [maxDebt, setMaxDebt] = useState(2000000);
   const [paymentAmount, setPaymentAmount] = useState(0);
+  const [trackingNumber, setTrackingNumber] = useState<string>('');
   const [payment, setPayment] = useState<Payment>(new Payment());
 
   const { showApproveModalForm, setShowApproveModalForm } = useContext<
@@ -150,34 +152,72 @@ const ExchangeApprove: React.FC = () => {
       .catch((err) => console.log('error'));
   };
 
-  const handleSubmit = (event: any): any => {
+  const handleSubmit_temp = async (event: any): Promise<any> => {
     event.preventDefault();
-    redirectPaymentPage();
+    const res = await getPayment(payment);
+    fetch(res.data.url, {
+      method: 'POST',
+      body: JSON.stringify({
+        commandType: res.data.form.CommandType,
+        trackingNumber: res.data.form.trackingNumber,
+        amount: res.data.form.amount,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((res) => {
+        console.log('123');
+      })
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
+  const handleSubmit = async (): Promise<any> => {
+    const res = await getPayment(payment);
+    setPaymentAmount(res.data.form.amount);
+    setTrackingNumber(res.data.form.trackingNumber);
+    refFrom.current.submit();
   };
 
   const PaymentPage = (): JSX.Element => {
-    // const res = await getPayment(payment);
     return (
-      <form method="post" action="https://api.sumon.ir/MyVirtualGateway">
-        <input type="hidden" value={paymentAmount} name="amount"></input>
-        <input type="hidden" value={'request'} name="commandType"></input>
-        <input type="hidden" value={'1000'} name="trackingNumber"></input>
-        <input
-          type="hidden"
-          value={'https://api.sumon.ir/payment/verify?paymentToken'}
-          name="redirectUrl"
-        ></input>
+      <>
+        <form
+          ref={refFrom}
+          method="post"
+          action="https://api.sumon.ir/MyVirtualGateway"
+        >
+          <input
+            type="hidden"
+            value={`'${paymentAmount}'`}
+            name="amount"
+          ></input>
+          <input type="hidden" value={'request'} name="commandType"></input>
+          <input
+            type="hidden"
+            value={`'${trackingNumber}'`}
+            name="trackingNumber"
+          ></input>
+          <input
+            type="hidden"
+            value={'https://api.sumon.ir/payment/verify?paymentToken'}
+            name="redirectUrl"
+          ></input>
+          {/* <button type="submit" >
+            <span style={{ width: 100 }}>پرداخت</span>
+          </button> */}
+        </form>
         <Button
-          type="submit"
+          type="button"
           variant="outlined"
           color="green"
-          onClick={async (): Promise<any> => {
-            const res = await getPayment(payment);
-          }}
+          onClick={async (): Promise<any> => handleSubmit()}
         >
           <span style={{ width: 100 }}>پرداخت</span>
         </Button>
-      </form>
+      </>
     );
   };
 
