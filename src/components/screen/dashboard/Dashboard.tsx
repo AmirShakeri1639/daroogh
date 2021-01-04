@@ -132,6 +132,9 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(7),
     height: theme.spacing(7),
   },
+  paleText: {
+    color: ColorEnum.PaleGray,
+  },
 }));
 
 type DashboardActivePage =
@@ -267,6 +270,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             <Grid item xs={ 9 }>
               <Grid item xs={ 12 }>
                 { loggedInUser?.name } { loggedInUser?.family }
+              </Grid>
+              <Grid item xs={ 12 } className= { classes.paleText }>
+                { t('pharmacy.pharmacy') } { loggedInUser?.pharmacyName }
               </Grid>
               <Grid item xs={ 12 }>
                 <IconButton

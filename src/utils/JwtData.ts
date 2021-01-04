@@ -6,7 +6,9 @@ class JwtData {
     name: '',
     family: '',
     token: '',
-    currentPharmacyKey: ''
+    currentPharmacyKey: '',
+    imageKey: '',
+    pharmacyName: '',
   };
 
   parsedToken: TokenInterface = {
@@ -36,6 +38,8 @@ class JwtData {
         name: userFromStorageJSON.name,
         family: userFromStorageJSON.family,
         token: userFromStorageJSON.token,
+        imageKey: userFromStorageJSON.imageKey,
+        pharmacyName: userFromStorageJSON.pharmacyName,
         currentPharmacyKey: userFromStorageJSON.currentPharmacyKey
       };
 
