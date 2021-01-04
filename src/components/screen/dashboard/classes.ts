@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import { createStyles } from "@material-ui/core";
+import { ColorEnum } from "../../../enum";
 
 export const useClasses = makeStyles((theme) => createStyles({
   root: {
@@ -16,6 +17,10 @@ export const useClasses = makeStyles((theme) => createStyles({
       marginTop: '-10px !important',
       color: 'red'
     }
+  },
+  calcRoot: {
+    minWidth: 'auto',
+    // maxHeight: '70vh',
   },
   container: {
     marginTop: theme.spacing(1),
@@ -196,6 +201,11 @@ export const useClasses = makeStyles((theme) => createStyles({
     position: 'absolute',
     top: '2em',
     right: '1.5em',
+    padding: '.5em',
+    paddingBottom: '.2em',
+    background: 'rgba(225, 245, 254, .7)',
+    borderRadius: '.5em',
+    borderBottomRightRadius: '0',
   },
   cardTop: {
     margin: '0 .5em',
@@ -227,6 +237,6 @@ export const useClasses = makeStyles((theme) => createStyles({
     color: theme.palette.gray.dark,
   },
   darkText: {
-    color: theme.palette.gray.dark,
+    color: ColorEnum.Gray,
   },
 }));
