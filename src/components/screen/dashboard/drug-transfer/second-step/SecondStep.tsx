@@ -105,7 +105,9 @@ const SecondStep: React.FC = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [] = useState<AllPharmacyDrugInterface[]>([]);
+  const [orginalPharmacyDrug, setOrginalPharmacyDrug] = useState<
+    AllPharmacyDrugInterface[]
+  >([]);
   const { cancelExchange } = new PharmacyDrug();
 
   const [] = useMutation(cancelExchange, {
@@ -165,6 +167,7 @@ const SecondStep: React.FC = () => {
       onSuccess: (data) => {
         const { items } = data;
         setAllPharmacyDrug(items);
+        setOrginalPharmacyDrug(items);
       },
       enabled: false,
     }
@@ -221,23 +224,7 @@ const SecondStep: React.FC = () => {
               return <></>;
             }
           }
-          // let isPack = false;
-          // let totalAmount = 0;
-          // let ignore = true;
-          // if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-          //   dataInfo
-          //     .filter((x: any) => x.packID === item.packID)
-          //     .forEach((p: AllPharmacyDrugInterface) => {
-          //       packList.push(p);
-          //       totalAmount += p.amount;
-          //     });
-          //   item.totalAmount = totalAmount;
-          //   isPack = true;
-          //   ignore = false;
-          // }
-          // if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
-          //   return <></>;
-          // }
+
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
               <div className={paper}>
@@ -279,34 +266,34 @@ const SecondStep: React.FC = () => {
 
   const basketCardListGenerator = (): any => {
     if (basketCount && basketCount.length > 0) {
-      const packList = new Array<AllPharmacyDrugInterface>();
+      let packList = new Array<AllPharmacyDrugInterface>();
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
           item.cardColor = '#89fd89';
+
           let isPack = false;
           let totalAmount = 0;
           let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            basketCount
+            packList = new Array<AllPharmacyDrugInterface>();
+            orginalPharmacyDrug
               .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);
                 totalAmount += p.amount;
               });
-            // if (item.packName === undefined)
-            //   item.packName = dataInfo.find(
-            //     (x) => x.packID == item.packID
-            //   )?.packName;
 
             item.totalAmount = totalAmount;
             isPack = true;
             ignore = false;
-            item.buttonName = 'حذف از تبادل';
-            item.cardColor = '#89fd89';
           }
-          if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
+          if (
+            ignore &&
+            item.packID &&
+            packList.find((x) => x.packID === item.packID)
+          ) {
             return;
           }
           return (

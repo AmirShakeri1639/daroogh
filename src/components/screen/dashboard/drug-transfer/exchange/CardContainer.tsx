@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import React, { useContext, useReducer, useState } from 'react';
 import {
   Button,
-  ButtonGroup,
   Card,
   CardActions,
   CardContent,
@@ -172,7 +171,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 
 const CardContainer: React.FC<CardPropsInterface> = (props) => {
   const [expanded, setExpanded] = React.useState(false);
-  const [drugInfo, setDrugInfo] = useState<AllPharmacyDrugInterface>();
+  const [, setDrugInfo] = useState<AllPharmacyDrugInterface>();
   const {
     addDrug1,
     addPack1,
@@ -181,7 +180,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     addPack2,
     removePack2,
   } = new PharmacyDrug();
-  const [, dispatch] = useReducer(reducer, initialState);
+  const [] = useReducer(reducer, initialState);
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState<string>('');
@@ -220,7 +219,6 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     setRecommendationMessage,
     setExchangeId,
     selectedPharmacyForTransfer,
-    exchangeStateCode,
     viewExhcnage,
     setViewExchange,
     exchangeId,
@@ -592,7 +590,6 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
           className={textCounter}
           defaultValue={pharmacyDrug.currentCnt}
           onChange={(e): void => {
-            const val = +e.target.value;
             pharmacyDrug.currentCnt = +e.target.value;
           }}
         >
@@ -622,8 +619,8 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     let element = <></>;
     if (
       !viewExhcnage ||
-      (!(viewExhcnage.state === 2 || viewExhcnage.state === 7) &&
-        viewExhcnage.lockSuggestion === false)
+      viewExhcnage.state === 1 ||
+      (viewExhcnage.state === 2 && viewExhcnage.lockSuggestion === false)
     ) {
       element = (
         <Grid container>

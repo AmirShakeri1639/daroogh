@@ -97,7 +97,9 @@ const ThirdStep: React.FC = () => {
   const [listPageNo] = useState(0);
   const [] = useState(0);
   const [pageSize] = useState(10);
-  const [] = useState<any>([]);
+  const [orginalUPharmacyDrug, setOrginalUPharmacyDrug] = useState<
+    AllPharmacyDrugInterface[]
+  >([]);
   // const [viewExhcnage, setViewExchange] = useState([]);
 
   const comparer = (otherArray: any): any => {
@@ -124,6 +126,7 @@ const ThirdStep: React.FC = () => {
       onSuccess: (data) => {
         const { items } = data;
         setUAllPharmacyDrug(items);
+        setOrginalUPharmacyDrug(items);
       },
       enabled: false,
     }
@@ -225,17 +228,16 @@ const ThirdStep: React.FC = () => {
           let totalAmount = 0;
           let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            uAllPharmacyDrug
+            orginalUPharmacyDrug
               .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);
                 totalAmount += p.amount;
               });
+
             item.totalAmount = totalAmount;
             isPack = true;
             ignore = false;
-            item.buttonName = 'حذف از تبادل';
-            item.cardColor = '#89fd89';
           }
           if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
             return;

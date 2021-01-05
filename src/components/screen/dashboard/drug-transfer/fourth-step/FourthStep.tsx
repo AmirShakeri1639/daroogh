@@ -56,6 +56,7 @@ const FourthStep: React.FC = () => {
   };
 
   const handleClose = (): void => {
+    setActiveStep(1);
     setOpen(false);
   };
 
@@ -153,7 +154,7 @@ const FourthStep: React.FC = () => {
           </DialogContent>
           <DialogActions>
             <MatButton autoFocus onClick={handleClose} color="primary">
-              لغو
+              بستن
             </MatButton>
             <MatButton onClick={handleSend} color="primary" autoFocus>
               ارسال
