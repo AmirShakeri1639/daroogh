@@ -178,14 +178,9 @@ const ToolBox: React.FC = () => {
     return (
       <>
         {showExCalculator && (
-          <Modal
-            open={ showExCalculator }
-            toggle={ (): any => setShowExCalculator(!showExCalculator) }
-          >
-            <ExCalculator exchange={ viewExhcnage }
-              onClose={ toggleShowExCalculator }
-            />
-          </Modal>
+          <ExCalculator exchange={ viewExhcnage }
+            onClose={ toggleShowExCalculator }
+          />
         ) }
       </>
     );

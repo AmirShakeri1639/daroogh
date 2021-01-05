@@ -17,9 +17,7 @@ import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
 import { encryptionKey } from '../../../../enum/consts';
-import ExCalculator from './exchange/ExCalculator';
 import { useTranslation } from 'react-i18next';
-import Modal from '../../../public/modal/Modal';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -72,8 +70,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   const location = useLocation();
   const params = queryString.parse(location.search);
-
-  const [showExCalculator, setShowExCalculator] = useState(false);
 
   let eid: number | undefined = undefined;
   const encryptedId = params.eid == null ? undefined : params.eid;
@@ -209,42 +205,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setShowApproveModalForm,
   });
 
-  const toggleShowExCalculator = (): void =>
-    setShowExCalculator(!showExCalculator);
-
-  const exchangeCalculator = (): JSX.Element => {
-    return (
-      <>
-        <Button
-          variant="contained"
-          onClick={(): void => {
-            setShowExCalculator(!showExCalculator);
-          }}
-        >
-          {t('exchange.exCalculator')}
-        </Button>
-        {showExCalculator && (
-          <Modal
-            open={showExCalculator}
-            toggle={(): any => setShowExCalculator(!showExCalculator)}
-          >
-            <ExCalculator exchange={viewExhcnage} />
-            <Divider />
-            <div style={{ padding: '1em' }}>
-              <Button
-                variant="outlined"
-                color="primary"
-                onClick={toggleShowExCalculator}
-              >
-                {t('general.ok')}
-              </Button>
-            </div>
-          </Modal>
-        )}
-      </>
-    );
-  };
-
   return (
     <Context.Provider value={initialContextValues()}>
       <div className={root}>
@@ -255,9 +215,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
                   <ProgressBar />
                 </Grid>
-                {/* <Grid item xs={ 1 }>
-                  { exchangeCalculator() }
-                </Grid> */}
               </>
             )}
 
