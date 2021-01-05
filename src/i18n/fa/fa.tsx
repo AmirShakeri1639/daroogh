@@ -287,8 +287,8 @@ export default {
         CONFIRMB_AND_NOCONFIRMA: 'مخالفت شده توسط شما',
         // 7
         CANCELLED: 'لغو شده',
-        // 8
-        CONFIRMA_AND_B_PAYMENTA: 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        // 8 -  'تائید طرفین و در انتظار پرداخت طرف مقابل'
+        CONFIRMA_AND_B_PAYMENTA: 'تبادل کامل شده',
         // 9
         CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و در انتظار پرداخت شما',
         // 10
@@ -310,8 +310,8 @@ export default {
         // 18
         CONFIRMA_AND_B_PAYMENTA_FORB:
           'تائید طرفین و در انتظار پرداخت شما',
-        // 19
-        CONFIRMA_AND_B_PAYMENTB_FORB: 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
         // 20
         CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
       },
