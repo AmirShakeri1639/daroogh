@@ -51,7 +51,7 @@ const style = makeStyles((theme) =>
     },
     button: {
       height: 32,
-      width: 80,
+      width: 90,
       fontSize: 10,
       fontWeight: 'bold',
     },
@@ -74,7 +74,7 @@ const style = makeStyles((theme) =>
       borderRadius: '0 5px 5px 0',
     },
     textCounter: {
-      width: 50,
+      width: 60,
       fontWeight: 'bold',
       textAlign: 'center',
       '& > .MuiOutlinedInput-inputMarginDense': {
