@@ -75,6 +75,7 @@ export default {
         ok: 'خب',
         warning: 'هشدار',
         rial: 'ریال',
+        warrantyTo: 'گارانتی تا ',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',

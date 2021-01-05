@@ -218,7 +218,7 @@ const DesktopCardContent = ({
             <Grid xs={ 12 } className={ rowLeft }>
               { pharmacyWarranty !== 0 && (
                 <>
-                  { pharmacyWarranty } { t('general.toman') }
+                  { t('general.warrantyTo') } { pharmacyWarranty } { t('general.toman') }
                   <FontAwesomeIcon icon={ faMedal } size="lg" />
                 </>
               )}
