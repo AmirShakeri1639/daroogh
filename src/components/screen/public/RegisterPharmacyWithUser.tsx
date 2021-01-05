@@ -23,6 +23,8 @@ import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
 import { Map } from '../../public';
 import { DefaultCountryDivisionID } from '../../../enum/consts';
+import { useHistory } from "react-router-dom";
+import routes from '../../../routes';
 
 const initialState: PharmacyWithUserInterface = {
   pharmacy: {
@@ -190,6 +192,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 const RegisterPharmacyWithUser: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { t } = useTranslation();
+  const history = useHistory();
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
@@ -207,6 +210,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
     titleContainer,
     formTitle,
     rootFull,
+    longItem,
+    centerItem,
   } = useClasses();
 
   const [workTimeList, setWorkTimeList] = useState(new Array<LabelValue>());
@@ -244,13 +249,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
 
   const isFormValid = (): boolean => {
     const { pharmacy, user } = state;
-    const { name, family, userName, nationalCode, birthDate } = user;
+    const { name, family, userName, nationalCode } = user;
     const {
       name: pharmacyName,
-      hix,
-      gli,
-      address,
-      email,
       mobile,
       countryDivisionID,
     } = pharmacy;
@@ -259,9 +260,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
       // pharmacy
       (
         pharmacyName.trim().length < 2 ||
-        hix.trim().length < 2 ||
-        gli.trim().length < 2 ||
-        address.trim().length < 2 ||
         mobile.trim().length < 10 ||
         countryDivisionID === 0 ||
         countryDivisionID === '0' ||
@@ -271,8 +269,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
         // TODO: emailRegex works just sometimes!
         // || !emailRegex.test(email)
         userName.trim().length < 3 ||
-        nationalCode.length !== 10 ||
-        birthDate === ''
+        nationalCode.length !== 10
       )
     );
   };
@@ -313,6 +310,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             password: state.user.password,
           },
         });
+        history.push(routes.login);
       } catch (e) {
         errorHandler(e);
       }
@@ -421,7 +419,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <TextField
                 error={ state.user.birthDate === '' && showError }
                 label={ t('user.birthDate') }
-                required
                 inputProps={ {
                   readOnly: true,
                 } }
@@ -462,7 +459,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 error={
                   state.pharmacy.description.trim().length < 3 && showError
                 }
-                required
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.description') }
@@ -478,7 +474,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             <Grid item xs={ 12 }>
               <TextField
                 error={ state.pharmacy.address.trim().length < 3 && showError }
-                required
                 variant="outlined"
                 label={ t('general.address') }
                 className={ formItem }
@@ -505,7 +500,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 error={ state.pharmacy.telphon.trim().length < 8 && showError }
-                required
                 variant="outlined"
                 label={ t('general.phone') }
                 value={ state.pharmacy.telphon }
@@ -518,7 +512,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 error={ state.pharmacy.website.trim().length < 3 && showError }
-                required
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.website') }
@@ -532,7 +525,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <TextField
                 error={ !emailRegex.test(state.pharmacy.email) && showError }
                 label={ t('general.email') }
-                required
                 type="email"
                 className={ formItem }
                 variant="outlined"
@@ -545,7 +537,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 error={ state.pharmacy.postalCode.trim().length < 3 && showError }
-                required
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.postalCode') }
@@ -561,7 +552,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 error={ state.pharmacy.hix.length < 3 && showError }
-                required
                 variant="outlined"
                 label={ t('pharmacy.hix') }
                 className={ formItem }
@@ -574,7 +564,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 error={ state.pharmacy.gli.length < 3 && showError }
-                required
                 variant="outlined"
                 className={ formItem }
                 label={ t('pharmacy.gli') }
@@ -624,12 +613,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
               type="submit"
               variant="contained"
               color="primary"
-              className={ addButton }
+              size="large"
+              className={ `${addButton} ${longItem} ${centerItem}` }
             >
               { isLoadingNewUser ? (
                 t('general.pleaseWait')
               ) : (
-                  <span>{ t('action.create') }</span>
+                  <span>{ t('action.register') }</span>
                 ) }
             </Button>
           </Grid>

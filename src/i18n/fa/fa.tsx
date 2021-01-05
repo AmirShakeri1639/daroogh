@@ -95,6 +95,7 @@ export default {
         edit: 'ویرایش',
         delete: 'حذف',
         create: 'ایجاد',
+        register: 'ثبت',
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
       },
