@@ -239,4 +239,11 @@ export const useClasses = makeStyles((theme) => createStyles({
   darkText: {
     color: ColorEnum.Gray,
   },
+  longItem: {
+    width: '75%',
+  },
+  centerItem: {
+    display: 'flex',
+    margin: 'auto'
+  },
 }));
