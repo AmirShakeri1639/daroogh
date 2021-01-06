@@ -17,16 +17,14 @@ import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
 import { encryptionKey } from '../../../../enum/consts';
-import ExCalculator from './exchange/ExCalculator';
 import { useTranslation } from 'react-i18next';
-import Modal from '../../../public/modal/Modal';
 
 const style = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#f7f7f7',
       padding: theme.spacing(2, 1),
-    }
+    },
   })
 );
 
@@ -34,11 +32,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const { t } = useTranslation();
   const { getViewExchange } = new PharmacyDrug();
   const [allStepName, setAllStepName] = useState<string[]>([
-    'انتخاب داروخانه',
+    // 'انتخاب داروخانه',
     'انتخاب از سبد طرف مقابل',
     'انتخاب از سبد شما',
     'تایید نهایی',
-    '',
   ]);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -74,8 +71,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const location = useLocation();
   const params = queryString.parse(location.search);
 
-  const [showExCalculator, setShowExCalculator] = useState(false);
-
   let eid: number | undefined = undefined;
   const encryptedId = params.eid == null ? undefined : params.eid;
   if (encryptedId !== undefined) {
@@ -88,12 +83,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     (async (): Promise<void> => {
       let eid: any = undefined;
       const encryptedId = params.eid == null ? undefined : params.eid;
-
       eid = encryptedId;
-
       if (eid !== undefined) {
-        setExchangeId(eid);
-        setActiveStep(1);
         const result = await getViewExchange(eid);
         const res: ViewExchangeInterface | undefined = result.data;
         if (res) {
@@ -103,7 +94,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           if (res.cartA !== undefined) {
             res.cartA.forEach((item) => {
               basketA.push({
-                id: item.id,
+                id: item.pharmacyDrugID,
+                packID: item.packID,
+                packName: item.packName,
                 drugID: item.drugID,
                 drug: item.drug,
                 cnt: item.cnt,
@@ -124,7 +117,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           if (res.cartB !== undefined) {
             res.cartB.forEach((item) => {
               basketB.push({
-                id: item.id,
+                id: item.pharmacyDrugID,
+                packID: item.packID,
+                packName: item.packName,
                 drugID: item.drugID,
                 drug: item.drug,
                 cnt: item.cnt,
@@ -171,6 +166,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               break;
           }
         }
+        setExchangeId(eid);
+        setActiveStep(1);
       }
     })();
   }, [viewExchangeId, exchangeState]);
@@ -208,55 +205,23 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setShowApproveModalForm,
   });
 
-  const toggleShowExCalculator = () => setShowExCalculator(!showExCalculator);
-
-  const exchangeCalculator = (): JSX.Element => {
-    return (
-      <>
-        <Button variant="contained"
-          onClick={
-            (): void => { setShowExCalculator(!showExCalculator); }
-          }>
-          { t('exchange.exCalculator') }
-        </Button>
-        {
-          showExCalculator &&
-          <Modal open={ showExCalculator }
-            toggle={ (): any => setShowExCalculator(!showExCalculator) }>
-            <ExCalculator exchange={ viewExhcnage } />
-            <Divider />
-            <div style={ { padding: '1em' } }>
-              <Button variant="outlined" color="primary" onClick={ toggleShowExCalculator }>
-                { t('general.ok') }
-              </Button>
-            </div>
-          </Modal>
-        }
-      </>
-    )
-  }
-
   return (
-    <Context.Provider value={ initialContextValues() }>
-      <div className={ root }>
+    <Context.Provider value={initialContextValues()}>
+      <div className={root}>
         <MaterialContainer>
-          <Grid container spacing={ 1 }>
-            { activeStep > 0 && (
+          <Grid container spacing={1}>
+            {activeStep > 0 && (
               <>
-                <Grid item xs={ 11 }>
+                <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
                   <ProgressBar />
                 </Grid>
-                <Grid item xs={ 1 }>
-                  { exchangeCalculator() }
-                </Grid>
               </>
-            ) }
+            )}
 
-            { activeStep === 0 && <FirstStep /> }
-            { activeStep === 1 && <SecondStep /> }
-            { activeStep === 2 && <ThirdStep /> }
-            { activeStep === 3 && <FourthStep /> }
-
+            {activeStep === 0 && <FirstStep />}
+            {activeStep === 1 && <SecondStep />}
+            {activeStep === 2 && <ThirdStep />}
+            {activeStep === 3 && <FourthStep />}
           </Grid>
         </MaterialContainer>
       </div>

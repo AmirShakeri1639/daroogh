@@ -1,45 +1,45 @@
 import { DrugI } from './AllPharmacyDrugInterface';
 
 export interface ViewExchangeInterface {
-    id: number;
-    state: number;
-    canceller: any;
-    currentPharmacyIsA?: boolean;
-    numberA?: string;
-    numberB?: string;
-    expireDateA?: string;
-    expireDateB?: string;
-    expireDate?: string;
-    stateString: string;
-    pharmacyKeyA: string;
-    pharmacyKeyB: string;
-    pharmacyCityA: string;
-    pharmacyProvinceA: string;
-    pharmacyCityB: string;
-    pharmacyProvinceB: string;
-    pharmacyGradeA?: number;
-    pharmacyGradeB?: number;
-    pharmacyStarA?: number;
-    pharmacyStarB?: number;
-    pharmacyWarrantyA?: number;
-    pharmacyWarrantyB?: number;
-    totalPourcentageA: number;
-    totalPourcentageB: number;
-    totalAmountA: number;
-    totalAmountB: number;
-    confirmA: any;
-    confirmB: any;
-    sendDate: any;
-    confirmDateA: any;
-    confirmDateB: any;
-    paymentDateA: any;
-    paymentDateB: any;
-    cancelDate: any;
-    description: string;
-    lockSuggestion: boolean;
-    allowShowPharmacyInfo: boolean;
-    cartA: CardInfo[];
-    cartB: CardInfo[];
+  id: number;
+  state: number;
+  canceller: any;
+  currentPharmacyIsA?: boolean;
+  numberA?: string;
+  numberB?: string;
+  expireDateA?: string;
+  expireDateB?: string;
+  expireDate?: string;
+  stateString: string;
+  pharmacyKeyA: string;
+  pharmacyKeyB: string;
+  pharmacyCityA: string;
+  pharmacyProvinceA: string;
+  pharmacyCityB: string;
+  pharmacyProvinceB: string;
+  pharmacyGradeA?: number;
+  pharmacyGradeB?: number;
+  pharmacyStarA?: number;
+  pharmacyStarB?: number;
+  pharmacyWarrantyA?: number;
+  pharmacyWarrantyB?: number;
+  totalPourcentageA: number;
+  totalPourcentageB: number;
+  totalAmountA: number;
+  totalAmountB: number;
+  confirmA: any;
+  confirmB: any;
+  sendDate: any;
+  confirmDateA: any;
+  confirmDateB: any;
+  paymentDateA: any;
+  paymentDateB: any;
+  cancelDate: any;
+  description: string;
+  lockSuggestion: boolean;
+  allowShowPharmacyInfo: boolean;
+  cartA: CardInfo[];
+  cartB: CardInfo[];
 }
 
 export interface CardInfo {
@@ -50,6 +50,7 @@ export interface CardInfo {
   addedByA: string;
   addedByB: string;
   packID?: number;
+  packName?: string;
   expireDate: any;
   amount: number;
   cnt: number;
@@ -60,29 +61,28 @@ export interface CardInfo {
 }
 
 export interface CardDrugInfo {
-    id: number;
-    category: CardCategoryInfo;
-    name: string;
-    enName: string;
-    genericName: string;
-    type: string;
-    active: boolean;
-    companyName: string;
-    barcode: boolean;
-    description: string;
+  id: number;
+  category: CardCategoryInfo;
+  name: string;
+  enName: string;
+  genericName: string;
+  type: string;
+  active: boolean;
+  companyName: string;
+  barcode: boolean;
+  description: string;
 }
 
 export interface CardCategoryInfo {
-    id: number;
-    name: string;
-    type: number;
-    parent?: number;
-    typeString: string;
+  id: number;
+  name: string;
+  type: number;
+  parent?: number;
+  typeString: string;
 }
 
 export interface AddDrugInterface {
-    pharmacyDrugID: number;
-    count: number;
-    pharmacyKey: string;
+  pharmacyDrugID: number;
+  count: number;
+  pharmacyKey: string;
 }
-

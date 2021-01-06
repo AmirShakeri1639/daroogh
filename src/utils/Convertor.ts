@@ -20,6 +20,18 @@ class Convertor {
     return new Intl.NumberFormat('en-US').format(Number(number));
   }
 
+  thousandsSeperatorFa(number: string | number): string {
+    return new Intl.NumberFormat('fa-IR').format(Number(number));
+  }
+
+  zeroSeparator(price: number | string): string {
+    const formatter = new Intl.NumberFormat('fa-IR', {
+      style: 'currency',
+      currency: 'IRR',
+    });
+    return formatter.format(Number(price));
+  }
+
   numberWithZero(number: number | string): string | number {
     return number < 10 ? `0${number}` : number;
   }

@@ -122,9 +122,7 @@ const Desktop: React.FC = () => {
               filter == ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL)));
 
       // sort
-      if (sortField == '') {
-        listToShow.sort((i, j) => i.id - j.id);
-      } else {
+      if (sortField !== '') {
         if (!isNullOrEmpty(sortField)) {
           listToShow.sort((i: any, j: any) => {
             const f: string = isNullOrEmpty(sortField) ? 'id' : sortField;

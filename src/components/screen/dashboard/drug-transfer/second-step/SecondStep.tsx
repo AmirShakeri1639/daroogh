@@ -27,10 +27,11 @@ import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import SearchInAList from '../SearchInAList';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import ExchangeApprove from '../exchange/ExchangeApprove';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 import ActionButtons from '../exchange/ActionButtons';
+import { useLocation } from 'react-router-dom';
+import queryString from 'query-string';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -55,6 +56,12 @@ const style = makeStyles((theme) =>
       paddingTop: 0,
       top: 60,
       zIndex: 999,
+    },
+    desktopCardContent: {
+      marginTop: 0,
+      [theme.breakpoints.up('md')]: {
+        marginTop: -87,
+      },
     },
     actionContainer: {
       display: 'flex',
@@ -89,18 +96,18 @@ const SecondStep: React.FC = () => {
     setAllPharmacyDrug,
     openDialog,
     setOpenDialog,
-    recommendationMessage,
     basketCount,
     selectedPharmacyForTransfer,
     exchangeStateCode,
     messageOfExchangeState,
-    showApproveModalForm,
     viewExhcnage,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [dataInfo, setDataInfo] = useState<any>([]);
+  const [orginalPharmacyDrug, setOrginalPharmacyDrug] = useState<
+    AllPharmacyDrugInterface[]
+  >([]);
   const { cancelExchange } = new PharmacyDrug();
 
   const [] = useMutation(cancelExchange, {
@@ -123,7 +130,7 @@ const SecondStep: React.FC = () => {
     paper,
     stickyToolbox,
     stickyRecommendation,
-    actionContainer,
+    desktopCardContent,
   } = style();
 
   const comparer = (otherArray: any): any => {
@@ -149,30 +156,50 @@ const SecondStep: React.FC = () => {
 
   const { isLoading, refetch } = useQuery(
     ['key'],
-    () => getAllPharmacyDrug(selectedPharmacyForTransfer, listPageNo, pageSize),
+    () => {
+      return getAllPharmacyDrug(
+        selectedPharmacyForTransfer,
+        listPageNo,
+        pageSize
+      );
+    },
     {
       onSuccess: (data) => {
         const { items } = data;
         setAllPharmacyDrug(items);
-        setDataInfo(items);
+        setOrginalPharmacyDrug(items);
       },
       enabled: false,
     }
   );
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  const location = useLocation();
+  const params = queryString.parse(location.search);
 
   useEffect(() => {
-    const onlyA = dataInfo.filter(comparer(basketCount));
-    setAllPharmacyDrug(onlyA);
+    const id = params.eid == null ? undefined : params.eid;
+    if (id !== undefined && !selectedPharmacyForTransfer) return;
+    refetch();
+  }, [selectedPharmacyForTransfer]);
+
+  useEffect(() => {
+    basketCount.forEach((x) => {
+      if (!x.packID) {
+        const pharmacyDrug = allPharmacyDrug.find((a) => a.id === x.id);
+        if (pharmacyDrug) {
+          x.cnt = pharmacyDrug.cnt;
+        }
+      }
+    });
+    // const onlyA = allPharmacyDrug.filter(comparer(basketCount));
+    // setAllPharmacyDrug(onlyA);
   }, [basketCount]);
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (allPharmacyDrug.length > 0) {
       const packList = new Array<AllPharmacyDrugInterface>();
       return allPharmacyDrug
+        .filter(comparer(basketCount))
         .sort((a, b) => (a.order > b.order ? 1 : -1))
         .map((item: AllPharmacyDrugInterface, index: number) => {
           Object.assign(item, {
@@ -181,39 +208,23 @@ const SecondStep: React.FC = () => {
             cardColor: 'white',
           });
 
-          // let isPack = false;
-          // let totalAmount = 0;
-          // if (item.packID) {
-          //   if (!packList.find((x) => x.packID === item.packID)) {
-          //     allPharmacyDrug
-          //       .filter((x) => x.packID === item.packID)
-          //       .forEach((p: AllPharmacyDrugInterface) => {
-          //         packList.push(p);
-          //         totalAmount += p.amount;
-          //       });
-          //     item.totalAmount = totalAmount;
-          //     isPack = true;
-          //   } else {
-          //     return <></>;
-          //   }
-          // }
           let isPack = false;
           let totalAmount = 0;
-          let ignore = true;
-          if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            dataInfo
-              .filter((x: any) => x.packID === item.packID)
-              .forEach((p: AllPharmacyDrugInterface) => {
-                packList.push(p);
-                totalAmount += p.amount;
-              });
-            item.totalAmount = totalAmount;
-            isPack = true;
-            ignore = false;
+          if (item.packID) {
+            if (!packList.find((x) => x.packID === item.packID)) {
+              allPharmacyDrug
+                .filter((x) => x.packID === item.packID)
+                .forEach((p: AllPharmacyDrugInterface) => {
+                  packList.push(p);
+                  totalAmount += p.amount;
+                });
+              item.totalAmount = totalAmount;
+              isPack = true;
+            } else {
+              return <></>;
+            }
           }
-          if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
-            return <></>;
-          }
+
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
               <div className={paper}>
@@ -239,7 +250,9 @@ const SecondStep: React.FC = () => {
                       <ExCardContent formType={2} pharmacyDrug={item} />
                     }
                     isPack={false}
-                    pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
+                    pharmacyDrug={Object.assign(item, {
+                      currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
+                    })}
                   />
                 )}
               </div>
@@ -253,7 +266,7 @@ const SecondStep: React.FC = () => {
 
   const basketCardListGenerator = (): any => {
     if (basketCount && basketCount.length > 0) {
-      const packList = new Array<AllPharmacyDrugInterface>();
+      let packList = new Array<AllPharmacyDrugInterface>();
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
@@ -264,19 +277,23 @@ const SecondStep: React.FC = () => {
           let totalAmount = 0;
           let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            dataInfo
+            packList = new Array<AllPharmacyDrugInterface>();
+            orginalPharmacyDrug
               .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);
                 totalAmount += p.amount;
               });
+
             item.totalAmount = totalAmount;
             isPack = true;
             ignore = false;
-            item.buttonName = 'حذف از تبادل';
-            item.cardColor = '#89fd89';
           }
-          if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
+          if (
+            ignore &&
+            item.packID &&
+            packList.find((x) => x.packID === item.packID)
+          ) {
             return;
           }
           return (
@@ -369,10 +386,10 @@ const SecondStep: React.FC = () => {
               </>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={12} md={3}>
+          <Grid item xs={12} sm={12} md={3} className={desktopCardContent}>
             <Grid container className={stickyRecommendation}>
-              {viewExhcnage && <DesktopCardContent item={viewExhcnage} />}
-              <TextField
+              <DesktopCardContent item={viewExhcnage} />
+              {/* <TextField
                 style={{ width: '100%', marginTop: 15, fontSize: 10 }}
                 label="توضیحات"
                 multiline
@@ -380,7 +397,7 @@ const SecondStep: React.FC = () => {
                 defaultValue="توصیه ها"
                 variant="outlined"
                 value={recommendationMessage}
-              />
+              /> */}
               <>
                 {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
                   <TextField
@@ -391,10 +408,8 @@ const SecondStep: React.FC = () => {
                     variant="outlined"
                   />
                 )}
-                <div className={actionContainer}>
-                  <ActionButtons />
-                </div>
-                {showApproveModalForm && <ExchangeApprove />}
+                <ActionButtons />
+                {/* {showApproveModalForm && <ExchangeApprove />} */}
               </>
               <Hidden smDown>
                 <Grid container item xs={12} sm={12} style={{ marginTop: 5 }}>

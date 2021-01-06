@@ -15,12 +15,15 @@ import {
   MenuItem,
   Paper,
 } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import Modal from '../../../../public/modal/Modal';
 import CloseIcon from '@material-ui/icons/Close';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import Button from '../../../../public/button/Button';
-import { AccountingInterface } from '../../../../../interfaces/AccountingInterface';
+import {
+  AccountingInterface,
+  BankGetwayesInterface,
+} from '../../../../../interfaces/AccountingInterface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TextLine from '../../../../public/text-line/TextLine';
 import {
@@ -31,6 +34,9 @@ import { Select } from '@material-ui/core';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import moment from 'jalali-moment';
 import Utils from '../../../../public/utility/Utils';
+import { Payment } from '../../../../../model/exchange';
+import routes from '../../../../../routes';
+import { useHistory } from 'react-router-dom';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -68,12 +74,19 @@ const ExchangeApprove: React.FC = () => {
   const [accountingForPayment, setAccountingForPayment] = useState<
     AccountingInterface[]
   >([]);
+  const [bankGetwayes, setBankGetwayes] = useState<BankGetwayesInterface[]>([]);
 
-  const { getAccountingForPayment } = new PharmacyDrug();
+  const { desktop } = routes;
+  const history = useHistory();
+  const refFrom = useRef<any>();
+
+  const { getAccountingForPayment, getPayment } = new PharmacyDrug();
 
   const [totalAmount, setTotoalAmount] = useState(0);
   const [maxDebt, setMaxDebt] = useState(2000000);
   const [paymentAmount, setPaymentAmount] = useState(0);
+  const [trackingNumber, setTrackingNumber] = useState<string>('');
+  const [payment, setPayment] = useState<Payment>(new Payment());
 
   const { showApproveModalForm, setShowApproveModalForm } = useContext<
     TransferDrugContextInterface
@@ -82,57 +95,112 @@ const ExchangeApprove: React.FC = () => {
   const toggleIsOpenModalForm = (): void =>
     setShowApproveModalForm(!showApproveModalForm);
 
+  const handleChangeBank = (
+    id: React.ChangeEvent<{ value: unknown }>
+  ): void => {
+    // const currentTarget: any = id.currentTarget;
+    // const name = currentTarget.innerText;
+    const pay = payment;
+    pay.bankGetway = String(id.target.value);
+    setPayment(pay);
+  };
+
+  const handleAccountingIds = (type: string, id: number): void => {
+    const pay = payment;
+    if (type === 'add') pay.accountingIds.push(id);
+    else {
+      const index = pay.accountingIds.indexOf(id);
+      if (index > -1) {
+        pay.accountingIds.splice(index, 1);
+      }
+    }
+    setPayment(pay);
+  };
+
   useEffect(() => {
     (async (): Promise<void> => {
-      const result = await getAccountingForPayment(10);
+      const result = await getAccountingForPayment();
       if (result) {
         const res: AccountingInterface[] = result.data.accountingForPayment.sort(
           (a: any, b: any) => (a > b ? 1 : -1)
         );
         setAccountingForPayment(res);
-        const amount = res[0].amount > 0 ? res[0].amount : 0;
-        setPaymentAmount(amount);
+        if (res && res.length > 0) {
+          const amount = res[0].amount > 0 ? res[0].amount : 0;
+          setPaymentAmount(amount);
+        }
+        const banks: BankGetwayesInterface[] = result.data.bankGetwayes;
+        setBankGetwayes(banks);
       }
     })();
   }, []);
 
-  const redirectPaymentPage = (): any => {
-    fetch('https://api.sumon.ir/MyVirtualGateway', {
+  const handleSubmit_temp = async (event: any): Promise<any> => {
+    event.preventDefault();
+    const res = await getPayment(payment);
+    fetch(res.data.url, {
       method: 'POST',
+      body: JSON.stringify({
+        commandType: res.data.form.CommandType,
+        trackingNumber: res.data.form.trackingNumber,
+        amount: res.data.form.amount,
+      }),
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        commandType: 'request',
-        trackingNumber: '1000',
-        amount: '23500',
-        redirectUrl: 'https://api.sumon.ir/payment/verify?paymentToken',
-      }),
     })
-      .then((res) => res.json())
-      .catch((err) => console.log('error'));
+      .then((res) => {
+        console.log('123');
+      })
+      .then((data) => {
+        console.log(data);
+      });
   };
 
-  const handleSubmit = (event: any): any => {
-    event.preventDefault();
-    redirectPaymentPage();
+  const handleSubmit = async (): Promise<any> => {
+    const res = await getPayment(payment);
+    setPaymentAmount(res.data.form.amount);
+    setTrackingNumber(res.data.form.trackingNumber);
+    refFrom.current.submit();
   };
 
   const PaymentPage = (): JSX.Element => {
     return (
-      <form method="post" action="https://api.sumon.ir/MyVirtualGateway">
-        <input type="hidden" value={paymentAmount} name="amount"></input>
-        <input type="hidden" value={'request'} name="commandType"></input>
-        <input type="hidden" value={'1000'} name="trackingNumber"></input>
-        <input
-          type="hidden"
-          value={'https://api.sumon.ir/payment/verify?paymentToken'}
-          name="redirectUrl"
-        ></input>
-        <Button type="submit" variant="outlined" color="green">
+      <>
+        <form
+          ref={refFrom}
+          method="post"
+          action="https://api.sumon.ir/MyVirtualGateway"
+        >
+          <input
+            type="hidden"
+            value={`'${paymentAmount}'`}
+            name="amount"
+          ></input>
+          <input type="hidden" value={'request'} name="commandType"></input>
+          <input
+            type="hidden"
+            value={`'${trackingNumber}'`}
+            name="trackingNumber"
+          ></input>
+          <input
+            type="hidden"
+            value={'https://api.sumon.ir/payment/verify?paymentToken'}
+            name="redirectUrl"
+          ></input>
+          {/* <button type="submit" >
+            <span style={{ width: 100 }}>پرداخت</span>
+          </button> */}
+        </form>
+        <Button
+          type="button"
+          variant="outlined"
+          color="green"
+          onClick={async (): Promise<any> => handleSubmit()}
+        >
           <span style={{ width: 100 }}>پرداخت</span>
         </Button>
-      </form>
+      </>
     );
   };
 
@@ -239,9 +307,11 @@ const ExchangeApprove: React.FC = () => {
                             if (e.target.checked) {
                               amount = totalAmount + item.amount;
                               setTotoalAmount(amount);
+                              handleAccountingIds('add', item.id);
                             } else {
                               amount = totalAmount - item.amount;
                               setTotoalAmount(amount);
+                              handleAccountingIds('remove', item.id);
                             }
                             if (amount > paymentAmount)
                               setPaymentAmount(paymentAmount);
@@ -261,18 +331,19 @@ const ExchangeApprove: React.FC = () => {
             <Grid item xs={12} xl={12} md={12} style={{ marginBottom: -5 }}>
               <FormControl style={{ width: 120, marginTop: -10 }}>
                 <InputLabel>درگاه پرداخت</InputLabel>
-                <Select>
-                  <MenuItem value={1}>بانک پارسیان</MenuItem>
-                  <MenuItem value={2}>بانک تست</MenuItem>
+                <Select onChange={handleChangeBank}>
+                  {bankGetwayes.map((item: BankGetwayesInterface) => (
+                    <MenuItem value={item.name}>{item.title}</MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <ul style={{ display: 'inline-block', margin: 0 }}>
-                <li>
+                {/* <li>
                   <b style={{ color: 'red' }}>
                     <span>مبلغ قابل پرداخت: </span>
                     <span>{paymentAmount}</span>
                   </b>
-                </li>
+                </li> */}
                 <li>
                   <b>
                     <span>مبلغ انتخابی: </span>
@@ -285,7 +356,12 @@ const ExchangeApprove: React.FC = () => {
               <PaymentPage />
             </Grid>
             <Grid item xs={6} xl={6} md={6} style={{ textAlign: 'left' }}>
-              <Button type="button" variant="outlined" color="red">
+              <Button
+                type="button"
+                variant="outlined"
+                color="red"
+                onClick={(): any => history.push(desktop)}
+              >
                 بعدا پرداخت میکنم
               </Button>
             </Grid>

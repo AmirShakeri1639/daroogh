@@ -33,23 +33,26 @@ import {
 import { TextLine } from '../../../../public';
 import { isNullOrEmpty } from '../../../../../utils';
 import {
-  getExpireDate, 
+  getExpireDate,
   isExchangeCompleted,
   isStateCommon,
   getExpireDateTitle,
-  ViewExchangeInitialState
+  ViewExchangeInitialState,
 } from '../../../../../utils/ExchangeTools';
 import { ViewExchangeInterface } from '../../../../../interfaces';
 
 interface Props {
   item?: ViewExchangeInterface;
-  onCardClick?: ((id: number | undefined, state: number | undefined) => void) | void | any;
+  onCardClick?:
+  | ((id: number | undefined, state: number | undefined) => void)
+  | void
+  | any;
 }
 
 // @ts-ignore
 const DesktopCardContent = ({
   item = ViewExchangeInitialState,
-  onCardClick
+  onCardClick,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   // const { onCardClick } = props;
@@ -85,7 +88,10 @@ const DesktopCardContent = ({
       item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
     totalAmount = item.totalAmountB;
 
-    item.state = item.state <= 10 && !isStateCommon(item.state) ? item.state + 10 : item.state;
+    item.state =
+      item.state <= 10 && !isStateCommon(item.state)
+        ? item.state + 10
+        : item.state;
 
     // Should show A's grade and star and warranty
     pharmacyGrade =
@@ -96,7 +102,6 @@ const DesktopCardContent = ({
   }
   expireDate = getExpireDate(item);
   // }, [item]);
-
 
   // test data for completed exchanges
   // const states = [
@@ -195,7 +200,11 @@ const DesktopCardContent = ({
                 className={ faIcons }
                 style={ { color: UserColors[pharmacyGrade] } }
               />
-              <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
+              { pharmacyGrade ? (
+                <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
+              ) : (
+                  <></>
+                ) }
             </Grid>
             <Grid xs={ 12 } className={ rowRight }>
               <div>
@@ -207,8 +216,12 @@ const DesktopCardContent = ({
           </Grid>
           <Grid container xs={ 6 } className={ colLeft }>
             <Grid xs={ 12 } className={ rowLeft }>
-              { pharmacyWarranty } تومان
-              <FontAwesomeIcon icon={ faMedal } size="lg" />
+              { pharmacyWarranty !== 0 && (
+                <>
+                  { t('general.warrantyTo') } { pharmacyWarranty } { t('general.toman') }
+                  <FontAwesomeIcon icon={ faMedal } size="lg" />
+                </>
+              )}
             </Grid>
             <Grid xs={ 12 } className={ rowLeft } style={ { direction: 'ltr' } }>
               { stars() }
@@ -348,13 +361,20 @@ const DesktopCardContent = ({
   return (
     <Card className={ `${cardRoot}` }>
       <CardContent>
-        <Typography variant="h5" component="h2" className={ `${cardTitle} ${pointer}` }
+        <Typography
+          variant="h5"
+          component="h2"
+          className={ `${cardTitle} ${pointer}` }
           style={ { background: getExchangeTitleColor() } }
           onClick={ (): void => {
             if (onCardClick) {
-              onCardClick(item.id, (item.state > 10 ? item.state - 10 : item.state));
+              onCardClick(
+                item.id,
+                item.state > 10 ? item.state - 10 : item.state
+              );
             }
-          } }>
+          } }
+        >
           { getExchangeTitle() }
         </Typography>
         <div className={ titleCode }>

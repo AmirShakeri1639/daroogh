@@ -2,10 +2,14 @@ import { AddDrugInterface, ViewExchangeInterface } from '../../interfaces';
 import { PharmacyDrugSupplyList } from '../../model/pharmacyDrug';
 import {
   AddDrog1,
+  AddDrog2,
   AddPack1,
+  AddPack2,
   Cancel,
   ConfirmOrNotExchange,
+  Payment,
   RemovePack1,
+  RemovePack2,
   Send,
 } from '../../model/exchange';
 import { errorHandler } from '../../utils';
@@ -24,8 +28,10 @@ class PharmacyDrug extends Api {
     send: '/Exchange/Send',
     viewExchange: '/Exchange/ViewExchange',
     cancelExchange: '/Exchange/CancelExchange',
+    removeExchange: '/Exchange/RemoveExchange',
     confirmOrNotExchange: '/Exchange/ConfirmExchange',
     getAccountingForPayment: '/Accounting/GetAccountingForPayment',
+    payment: '/Accounting/Payment',
   };
 
   getAllPharmacyDrug = async (
@@ -53,9 +59,9 @@ class PharmacyDrug extends Api {
     }
   };
 
-  getAccountingForPayment = async (pharmacyId: number): Promise<any> => {
+  getAccountingForPayment = async (): Promise<any> => {
     try {
-      const query = `${this.urls.getAccountingForPayment}?pharmacyId=${pharmacyId}`;
+      const query = `${this.urls.getAccountingForPayment}`;
       const result = await this.postJsonData(query);
       return result;
     } catch (error) {
@@ -103,10 +109,10 @@ class PharmacyDrug extends Api {
     }
   };
 
-  addDrug2 = async (data: AddDrog1): Promise<any> => {
+  addDrug2 = async (data: AddDrog2): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.addDrug2}?pharmacyDrugID=${data.pharmacyDrugID}&count=${data.count}&pharmacyKey=${data.pharmacyKey}`
+        `${this.urls.addDrug2}?pharmacyDrugID=${data.pharmacyDrugID}&count=${data.count}&exchangeID=${data.exchangeID}`
       );
       return result.data;
     } catch (e) {
@@ -114,10 +120,10 @@ class PharmacyDrug extends Api {
     }
   };
 
-  addPack2 = async (data: AddPack1): Promise<any> => {
+  addPack2 = async (data: AddPack2): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.addPack2}?packID=${data.packID}&pharmacyKey=${data.pharmacyKey}`
+        `${this.urls.addPack2}?packID=${data.packID}&exchangeID=${data.exchangeID}`
       );
       return result.data;
     } catch (e) {
@@ -125,10 +131,10 @@ class PharmacyDrug extends Api {
     }
   };
 
-  removePack2 = async (data: RemovePack1): Promise<any> => {
+  removePack2 = async (data: RemovePack2): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.removePack2}?packID=${data.packID}&pharmacyKey=${data.pharmacyKey}`
+        `${this.urls.removePack2}?packID=${data.packID}&exchangeID=${data.exchangeID}`
       );
       return result.data;
     } catch (e) {
@@ -173,6 +179,17 @@ class PharmacyDrug extends Api {
     }
   };
 
+  removeExchange = async (exchangeId: number): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.removeExchange}?exchangeID=${exchangeId}`
+      );
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
   confirmOrNotExchange = async (data: ConfirmOrNotExchange): Promise<any> => {
     try {
       const result = await this.postJsonData(
@@ -186,6 +203,11 @@ class PharmacyDrug extends Api {
 
   savePharmacyDrug = async (data: PharmacyDrugSupplyList): Promise<any> => {
     const result = await this.postJsonData('/PharmacyDrug/Save', data);
+    return result.data;
+  };
+
+  getPayment = async (data: Payment): Promise<any> => {
+    const result = await this.postJsonData(`${this.urls.payment}`, data);
     return result.data;
   };
 }

@@ -3,6 +3,8 @@ export interface LoggedInUserInterface {
   family: string;
   token: string;
   currentPharmacyKey: string;
+  imageKey: string;
+  pharmacyName: string;
 }
 
 export interface TokenInterface {

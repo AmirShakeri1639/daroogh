@@ -5,3 +5,8 @@ export interface AccountingInterface {
   amount: number;
   isChecked?: boolean;
 }
+
+export interface BankGetwayesInterface {
+  name: string;
+  title: string;
+}

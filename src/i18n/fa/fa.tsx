@@ -73,6 +73,9 @@ export default {
         undefined: 'تعریف نشده',
         toman: 'تومان',
         ok: 'خب',
+        warning: 'هشدار',
+        rial: 'ریال',
+        warrantyTo: 'گارانتی تا ',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -92,6 +95,7 @@ export default {
         edit: 'ویرایش',
         delete: 'حذف',
         create: 'ایجاد',
+        register: 'ثبت',
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
       },
@@ -206,9 +210,10 @@ export default {
         completionDate: 'تاریخ تکمیل تبادل',
         state: 'وضعیت',
         totalPrice: 'مجموع قیمت',
-        exCalculator: 'ماشین حساب',
+        exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
+        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
@@ -282,10 +287,10 @@ export default {
         CONFIRMB_AND_NOCONFIRMA: 'مخالفت شده توسط شما',
         // 7
         CANCELLED: 'لغو شده',
-        // 8
-        CONFIRMA_AND_B_PAYMENTA: 'تائید طرفین و در انتظار پرداخت شما',
+        // 8 -  'تائید طرفین و در انتظار پرداخت طرف مقابل'
+        CONFIRMA_AND_B_PAYMENTA: 'تبادل کامل شده',
         // 9
-        CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و در انتظار پرداخت شما',
         // 10
         CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
         // 11
@@ -304,9 +309,9 @@ export default {
         CANCELLED_FORB: 'لغو شده',
         // 18
         CONFIRMA_AND_B_PAYMENTA_FORB:
-          'تائید طرفین و در انتظار پرداخت طرف مقابل',
-        // 19
-        CONFIRMA_AND_B_PAYMENTB_FORB: 'تائید طرفین و در انتظار پرداخت شما',
+          'تائید طرفین و در انتظار پرداخت شما',
+        // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
+        CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
         // 20
         CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
       },

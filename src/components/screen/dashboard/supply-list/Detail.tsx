@@ -13,7 +13,7 @@ import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
 
-const { convertISOTime, thousandsSeperator } = Convertor;
+const { convertISOTime } = Convertor;
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -45,6 +45,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
   const { paper, container, textLeft, icon } = useStyle();
 
   const { t } = useTranslation();
+  const { thousandsSeperator } = Convertor;
 
   return (
     <Grid item xs={12}>
