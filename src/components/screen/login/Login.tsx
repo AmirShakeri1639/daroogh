@@ -169,7 +169,7 @@ const Login: React.FC = (): JSX.Element => {
             required
             fullWidth
             id="email"
-            label="ایمیل"
+            label="نام کاربری"
             name="email"
             autoComplete="email"
             onChange={usernameHandler}
