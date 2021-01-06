@@ -401,7 +401,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (state !== 2 && state !== 4 && state !== 7 && activeStep === 2)
+      if (state === 1 && activeStep === 2)
         element = (
           <>
             <>{element}</>
