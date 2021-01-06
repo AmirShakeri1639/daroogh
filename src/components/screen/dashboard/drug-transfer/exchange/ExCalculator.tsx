@@ -34,7 +34,7 @@ import {
   faCalendarTimes,
   faMoneyBillAlt,
 } from '@fortawesome/free-regular-svg-icons';
-import { faListOl } from '@fortawesome/free-solid-svg-icons';
+import { faListOl, faPercent } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import {
   getExpireDateTitle,
@@ -92,18 +92,92 @@ const ExCalculator: React.FC<Props> = (props) => {
     expireDateText = t(getExpireDateTitle(exchange.state));
   };
 
+  const l = (v: string | number): string => {
+    return v.toLocaleString('fa-IR');
+  };
+
   // useEffect(() => {
   reCheckData();
   // }, [exchange, basketCount, uBasketCount]);
 
   let totalPriceA = 0;
   let totalPriceB = 0;
+  const percent = 0.03;
 
-  useEffect(() => {
-    const threePercent = totalPriceA * 0.03;
-    const diff = Math.abs(totalPriceA - totalPriceB);
-    if (setIs3PercentOk) setIs3PercentOk(diff < threePercent);
-  }, [totalPriceA, totalPriceB]);
+  const [differenceMessage, setDifferenceMessage] = useState('');
+  const [difference, setDifference] = useState(0);
+  const [diffPercent, setDiffPercent] = useState(0);
+  const differenceCheck = (): void => {
+    let msg = '';
+
+    const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
+      تبادل را رد یا تایید نمایید. سبدها قابل ویرایش نیستند.';
+
+    if (exchange.currentPharmacyIsA && totalPriceA === 0) {
+      msg = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
+        حدود ${l(totalPriceB)} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
+        در غیر این صورت داروخانه مقابل از سبد شما انتخاب خواهد کرد.`;
+    } else {
+      // diff percent of each side
+      const a3p = totalPriceA * percent;
+      const b3p = totalPriceB * percent;
+
+      const difference = Math.abs(totalPriceA - totalPriceB);
+      setDifference(difference);
+      // Maximum between to diff percents
+      const diffPercent = Math.max(a3p, b3p);
+      setDiffPercent(diffPercent);
+
+      // if the difference is less than allowed?
+      const isDiffOk = difference < diffPercent;
+      if (setIs3PercentOk) setIs3PercentOk(isDiffOk);
+
+      // difference to amend for A
+      const diffA = totalPriceA > totalPriceB
+        ? (totalPriceB + b3p) - totalPriceA
+        : totalPriceB - (totalPriceA + b3p);
+
+      // difference to amend for B
+      const diffB = totalPriceA > totalPriceB
+        ? totalPriceA - (totalPriceB + a3p)
+        : (totalPriceA + a3p) - totalPriceB;
+
+      // set messages:
+      const diffAabs = l(Math.abs(diffA));
+      const diffBabs = l(Math.abs(diffB));
+      if (exchange.currentPharmacyIsA) {
+        msg = diffA > 0
+          ? `لطفا ${diffAabs} ریال به سبد خود اضافه کنید `
+          : `لطفا ${diffAabs} ریال از سبد خود کم کنید `
+        msg += diffB > 0
+          ? `یا ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
+          : `یا ${diffBabs} ریال از سبد طرف مقابل کم کنید `
+      } else {
+        msg = diffB > 0
+          ? `لطفا ${diffBabs} ریال به سبد خود اضافه کنید `
+          : `لطفا ${diffBabs} ریال از سبد خود کم کنید `
+        msg += diffA > 0
+          ? `یا ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
+          : `یا ${diffAabs} ریال از سبد طرف مقابل کم کنید `
+      }
+
+      msg += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
+
+      if (exchange.lockSuggestion) {
+        if (isDiffOk) {
+          msg = lockMessage;
+        } else if (!exchange.currentPharmacyIsA) {
+          msg += `\n${lockMessage}`;
+        }
+      }
+    }
+
+    setDifferenceMessage(msg);
+  }
+
+  // useEffect(() => {
+  //   differenceCheck();
+  // }, [totalPriceA, totalPriceB]);
 
   const getOneSideData = (you: boolean): JSX.Element => {
     let card;
@@ -140,12 +214,11 @@ const ExCalculator: React.FC<Props> = (props) => {
                 <TableBody>
                   { card.map((row) => {
                     totalCount += row.currentCnt;
-                    const price =
-                      row.packID == undefined
-                        ? row.amount * row.currentCnt
-                        : row.totalAmount;
+                    const price = row.amount * row.currentCnt;
+                    // row.packID == undefined
+                    //   ? row.amount * row.currentCnt
+                    //   : row.totalAmount;
                     totalPrice += price;
-                    console.log('row: ', row);
                     return (
                       <TableRow key={ row.drug.name }>
                         <TableCell scope="row" className={ darkText }>
@@ -160,17 +233,22 @@ const ExCalculator: React.FC<Props> = (props) => {
                       </TableRow>
                     );
                   }) }
-                  { you &&
+                  { ((exchange.currentPharmacyIsA && you)
+                    || (!exchange.currentPharmacyIsA && !you)
+                  ) &&
                     ((): any => {
                       totalPriceA = totalPrice;
                     })() }
-                  { !you &&
+                  { ((!exchange.currentPharmacyIsA && you)
+                    || (exchange.currentPharmacyIsA && !you)
+                  ) &&
                     ((): any => {
                       totalPriceB = totalPrice;
                     })() }
                 </TableBody>
               </Table>
             </TableContainer>
+            { differenceCheck() }
           </>
         ) }
         <div className={ spacing3 }>&nbsp;</div>
@@ -188,7 +266,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                   {t('general.number') }
                 </>
               }
-              leftText={ totalCount.toLocaleString() }
+              leftText={ l(totalCount) }
             />
           </Grid>
         ) }
@@ -311,10 +389,31 @@ const ExCalculator: React.FC<Props> = (props) => {
               />
             </Grid>
           ) }
-          { !is3PercentOk && (
+          <Grid item xs={ 12 } className={ spacingVertical3 }>
+            <TextLine
+              backColor={ ColorEnum.White }
+              rightText={
+                <>
+                  <FontAwesomeIcon
+                    icon={ faPercent }
+                    size="lg"
+                    className={ faIcons }
+                  />
+                  { t('exchange.difference') }
+                </>
+              }
+              leftText={ `${Convertor.zeroSeparator(difference)} 
+                (${l(diffPercent)}%)` }
+            />
+          </Grid>
+          { differenceMessage !== '' && (
             <Grid item xs={ 12 } className={ spacingVertical3 }>
               <b>{ t('general.warning') }</b>:<br />
-              {t('exchange.threePercentWarning') }
+              { differenceMessage.split('\n').map(i => {
+                return (
+                  <>{ i }<br /></>
+                )
+              }) }
             </Grid>
           ) }
         </Grid>
