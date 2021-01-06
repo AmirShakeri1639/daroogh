@@ -317,9 +317,10 @@ const SupplyList: React.FC = () => {
       }
       setIsLoading(true);
       const result = await searchDrug(title);
+
       const items = result.map((item: any) => ({
         id: item.id,
-        genericName: item.genericName,
+        drugName: item.name,
       }));
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
@@ -369,7 +370,7 @@ const SupplyList: React.FC = () => {
   };
 
   const displayHandler = (): JSX.Element[] => {
-    let items;
+    let items = [];
     if (filteredItems.length > 0) {
       items = filteredItems.map((item: AllPharmacyDrugInterface) => {
         return (
@@ -395,7 +396,7 @@ const SupplyList: React.FC = () => {
         });
       }
     }
-    return items;
+    return items.reverse();
   };
 
   const drugListGenerator = (): JSX.Element[] => {
@@ -453,7 +454,7 @@ const SupplyList: React.FC = () => {
                 onChange={(event, value, reason): void => {
                   setSelectedDrug(value?.id);
                 }}
-                getOptionLabel={(option: any) => option.genericName}
+                getOptionLabel={(option: any) => option.drugName}
                 // value={selectDrugForEdit}
                 openOnFocus
                 renderInput={(params) => (
