@@ -620,7 +620,10 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     if (
       !viewExhcnage ||
       viewExhcnage.state === 1 ||
-      (viewExhcnage.state === 2 && viewExhcnage.lockSuggestion === false)
+      (!viewExhcnage.currentPharmacyIsA &&
+        viewExhcnage.state === 2 &&
+        viewExhcnage.lockSuggestion === false) ||
+      (viewExhcnage.currentPharmacyIsA && viewExhcnage.state !== 2)
     ) {
       element = (
         <Grid container>
