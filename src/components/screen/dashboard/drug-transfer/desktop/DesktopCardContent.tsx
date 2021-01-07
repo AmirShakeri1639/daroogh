@@ -71,14 +71,14 @@ const DesktopCardContent = ({
   let expireDate: string | undefined = '';
   let totalPourcentage: number = 0;
   let paymentStatus: string = '';
-  let totalAmount: any;
+  let totalPrice: any;
   // useEffect(() => {
   if (item?.currentPharmacyIsA) {
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
     totalPourcentage = item?.totalPourcentageA;
     paymentStatus =
       item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
-    totalAmount = item.totalAmountA;
+    totalPrice = item.totalPriceA;
 
     // Should show B's grade and star and warranty
     pharmacyGrade =
@@ -91,7 +91,7 @@ const DesktopCardContent = ({
     totalPourcentage = item?.totalPourcentageB;
     paymentStatus =
       item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
-    totalAmount = item.totalAmountB;
+    totalPrice = item.totalPriceB;
 
     item.state =
       item.state <= 10 && !isStateCommon(item.state)
@@ -320,7 +320,7 @@ const DesktopCardContent = ({
             </Grid>
           ) }
 
-          { !isNullOrEmpty(totalAmount) && totalAmount > 0 && (
+          { !isNullOrEmpty(totalPrice) && totalPrice > 0 && (
             <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
                 backColor={ ColorEnum.White }
@@ -334,7 +334,7 @@ const DesktopCardContent = ({
                     {t('exchange.totalPrice') }
                   </>
                 }
-                leftText={ totalAmount }
+                leftText={ totalPrice }
               />
             </Grid>
           ) }
