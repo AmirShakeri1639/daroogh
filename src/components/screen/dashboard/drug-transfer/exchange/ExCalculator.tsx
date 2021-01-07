@@ -164,18 +164,23 @@ const ExCalculator: React.FC<Props> = (props) => {
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
                     totalPrice += price;
+                    console.log('row:', row);
                     return (
-                      <TableRow key={ row.drug.name }>
-                        <TableCell scope="row" className={ darkText }>
-                          { row.drug.name }
-                        </TableCell>
-                        <TableCell align="center" className={ darkText }>
-                          { row.currentCnt }
-                        </TableCell>
-                        <TableCell align="center" className={ darkText }>
-                          { Convertor.thousandsSeperatorFa(price) }
-                        </TableCell>
-                      </TableRow>
+                      <>
+                        { row.confirmed &&
+                          <TableRow key={ row.drug.name }>
+                            <TableCell scope="row" className={ darkText }>
+                              { row.drug.name }
+                            </TableCell>
+                            <TableCell align="center" className={ darkText }>
+                              { row.currentCnt }
+                            </TableCell>
+                            <TableCell align="center" className={ darkText }>
+                              { Convertor.thousandsSeperatorFa(price) }
+                            </TableCell>
+                          </TableRow>
+                        }
+                      </>
                     );
                   }) }
                   { ((exchange.currentPharmacyIsA && you)
