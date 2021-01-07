@@ -35,6 +35,11 @@ class Convertor {
   numberWithZero(number: number | string): string | number {
     return number < 10 ? `0${number}` : number;
   }
+
+  l(v: string | number): string {
+    return v.toLocaleString('fa-IR');
+  }
+
 }
 
 export default new Convertor();
