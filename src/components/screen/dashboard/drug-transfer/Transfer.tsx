@@ -162,6 +162,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 order: 0,
                 totalAmount: 0,
                 totalCount: 0,
+                confirmed: item.confirmed
               });
             });
           }
