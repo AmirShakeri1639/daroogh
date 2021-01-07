@@ -65,6 +65,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     ''
   );
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
+  const [is3PercentOk, setIs3PercentOk] = React.useState(true);
 
   const { viewExchangeId, exchangeState } = props;
 
@@ -243,6 +244,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setMessageOfExchangeState,
     showApproveModalForm,
     setShowApproveModalForm,
+    is3PercentOk,
+    setIs3PercentOk,
   });
 
   return (

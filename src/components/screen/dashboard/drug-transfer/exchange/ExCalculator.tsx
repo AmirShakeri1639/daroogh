@@ -116,13 +116,19 @@ const ExCalculator: React.FC<Props> = (props) => {
 
     setDifference(diffCheck.difference);
     setDiffPercent(diffCheck.diffPercent);
-    if (setIs3PercentOk) setIs3PercentOk(diffCheck.isDiffOk);
+    setIs3PercentOk(diffCheck.isDiffOk);
     setDifferenceMessage(diffCheck.message);
   }
 
   // useEffect(() => {
   //   differenceCheck();
   // }, [totalPriceA, totalPriceB]);
+
+  // useEffect(() => {
+  //   debugger;
+  //   setDifferenceCheckOutput();
+  //   console.log('is3 percent:', is3PercentOk);
+  // }, [is3PercentOk]);
 
   const getOneSideData = (you: boolean): JSX.Element => {
     let card;
@@ -167,7 +173,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                     console.log('row:', row);
                     return (
                       <>
-                        { row.confirmed &&
+                        { (row.confirmed === undefined || row.confirmed) &&
                           <TableRow key={ row.drug.name }>
                             <TableCell scope="row" className={ darkText }>
                               { row.drug.name }
