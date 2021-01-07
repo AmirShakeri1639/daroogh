@@ -92,6 +92,10 @@ const MessagesList = lazy(() =>
   import('./components/screen/dashboard/message/MessagesList')
 );
 
+const DrugFavoriteCategory = lazy(() =>
+  import('./components/screen/dashboard/favorite-list/category/Category')
+);
+
 const {
   login,
   drugFavoriteList,
@@ -114,6 +118,7 @@ const {
   pharmaciesList,
   createMessage,
   messagesList,
+  drugCategoryfavoriteList,
 } = routes;
 
 const App = (): JSX.Element => {
@@ -219,6 +224,10 @@ const App = (): JSX.Element => {
 
             <PrivateRoute path={drugFavoriteList}>
               <Dashboard component={<FavoriteList />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={drugCategoryfavoriteList}>
+              <Dashboard component={<DrugFavoriteCategory />} />
             </PrivateRoute>
 
             {/*<Route component={<>404 Not Found</>} />*/}
