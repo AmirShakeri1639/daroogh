@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -38,6 +38,7 @@ import {
   isStateCommon,
   getExpireDateTitle,
   ViewExchangeInitialState,
+  differenceCheck
 } from '../../../../../utils/ExchangeTools';
 import { ViewExchangeInterface } from '../../../../../interfaces';
 
@@ -47,12 +48,14 @@ interface Props {
   | ((id: number | undefined, state: number | undefined) => void)
   | void
   | any;
+  full?: boolean;
 }
 
 // @ts-ignore
 const DesktopCardContent = ({
   item = ViewExchangeInitialState,
   onCardClick,
+  full = true
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   // const { onCardClick } = props;
@@ -122,17 +125,17 @@ const DesktopCardContent = ({
     if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
       return t(
         `ExchangeStateEnum.` +
-        `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
+        `${ExchangeStateEnum[ ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL ]}`
       );
     } else {
-      return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
+      return t(`ExchangeStateEnum.${ExchangeStateEnum[ item.state ]}`);
     }
   };
 
   const getExchangeTitleColor = (): string => {
     return isExchangeCompleted(item.state, item?.currentPharmacyIsA)
-      ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
-      : CardColors[item.state];
+      ? CardColors[ ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL ]
+      : CardColors[ item.state ];
   };
 
   // random grade for test
@@ -186,7 +189,28 @@ const DesktopCardContent = ({
     titleCode,
     cardTop,
     pointer,
+    spacingVertical3,
   } = useClasses();
+
+  const [ differenceMessage, setDifferenceMessage ] = useState('');
+  const [ difference, setDifference ] = useState(0);
+  const [ diffPercent, setDiffPercent ] = useState(0);
+  const [ is3PercentOK, setIs3PercentOk ] = useState(true);
+
+  const setDifferenceCheckOutput = (): void => {
+    const diffCheck = differenceCheck({
+      exchange: item, totalPriceA: 0, totalPriceB: 0, percent: 0.03
+    });
+
+    setDifference(diffCheck.difference);
+    setDiffPercent(diffCheck.diffPercent);
+    setIs3PercentOk(diffCheck.isDiffOk);
+    setDifferenceMessage(diffCheck.message);
+  }
+
+  useEffect(() => {
+    setDifferenceCheckOutput();
+  }, []);
 
   const ExchangeInfo = (): JSX.Element => {
     return (
@@ -198,10 +222,10 @@ const DesktopCardContent = ({
                 icon={ faSun }
                 size="lg"
                 className={ faIcons }
-                style={ { color: UserColors[pharmacyGrade] } }
+                style={ { color: UserColors[ pharmacyGrade ] } }
               />
               { pharmacyGrade ? (
-                <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
+                <span>{ t(`exchange.${UserGrades[ pharmacyGrade ]}`) }</span>
               ) : (
                   <></>
                 ) }
@@ -221,7 +245,7 @@ const DesktopCardContent = ({
                   { t('general.warrantyTo') } { pharmacyWarranty } { t('general.toman') }
                   <FontAwesomeIcon icon={ faMedal } size="lg" />
                 </>
-              )}
+              ) }
             </Grid>
             <Grid xs={ 12 } className={ rowLeft } style={ { direction: 'ltr' } }>
               { stars() }
@@ -328,6 +352,16 @@ const DesktopCardContent = ({
                 }
                 leftText={ paymentStatus }
               />
+            </Grid>
+          ) }
+          { full && differenceMessage !== '' && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
+              <b>{ t('general.warning') }</b>:<br />
+              { differenceMessage.split('\n').map(i => {
+                return (
+                  <>{ i }<br /></>
+                )
+              }) }
             </Grid>
           ) }
         </Grid>
