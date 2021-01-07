@@ -40,6 +40,7 @@ import {
   getExpireDateTitle,
   getExpireDate,
   ViewExchangeInitialState,
+  differenceCheck,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
@@ -107,72 +108,16 @@ const ExCalculator: React.FC<Props> = (props) => {
   const [differenceMessage, setDifferenceMessage] = useState('');
   const [difference, setDifference] = useState(0);
   const [diffPercent, setDiffPercent] = useState(0);
-  const differenceCheck = (): void => {
-    let msg = '';
 
-    const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
-      تبادل را رد یا تایید نمایید. سبدها قابل ویرایش نیستند.';
+  const setDifferenceCheckOutput = (): void => {
+    const diffCheck = differenceCheck({
+      exchange, totalPriceA, totalPriceB, percent
+    });
 
-    if (exchange.currentPharmacyIsA && totalPriceA === 0) {
-      msg = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
-        حدود ${l(totalPriceB)} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
-        در غیر این صورت داروخانه مقابل از سبد شما انتخاب خواهد کرد.`;
-    } else {
-      // diff percent of each side
-      const a3p = totalPriceA * percent;
-      const b3p = totalPriceB * percent;
-
-      const difference = Math.abs(totalPriceA - totalPriceB);
-      setDifference(difference);
-      // Maximum between to diff percents
-      const diffPercent = Math.max(a3p, b3p);
-      setDiffPercent(diffPercent);
-
-      // if the difference is less than allowed?
-      const isDiffOk = difference < diffPercent;
-      if (setIs3PercentOk) setIs3PercentOk(isDiffOk);
-
-      // difference to amend for A
-      const diffA = totalPriceA > totalPriceB
-        ? (totalPriceB + b3p) - totalPriceA
-        : totalPriceB - (totalPriceA + b3p);
-
-      // difference to amend for B
-      const diffB = totalPriceA > totalPriceB
-        ? totalPriceA - (totalPriceB + a3p)
-        : (totalPriceA + a3p) - totalPriceB;
-
-      // set messages:
-      const diffAabs = l(Math.abs(diffA));
-      const diffBabs = l(Math.abs(diffB));
-      if (exchange.currentPharmacyIsA) {
-        msg = diffA > 0
-          ? `لطفا ${diffAabs} ریال به سبد خود اضافه کنید `
-          : `لطفا ${diffAabs} ریال از سبد خود کم کنید `
-        msg += diffB > 0
-          ? `یا ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
-          : `یا ${diffBabs} ریال از سبد طرف مقابل کم کنید `
-      } else {
-        msg = diffB > 0
-          ? `لطفا ${diffBabs} ریال به سبد خود اضافه کنید `
-          : `لطفا ${diffBabs} ریال از سبد خود کم کنید `
-        msg += diffA > 0
-          ? `یا ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
-          : `یا ${diffAabs} ریال از سبد طرف مقابل کم کنید `
-      }
-
-      msg += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
-
-      if (exchange.lockSuggestion) {
-        if (isDiffOk) {
-          msg = lockMessage;
-        } else if (!exchange.currentPharmacyIsA) {
-          msg += `\n${lockMessage}`;
-        }
-      }
-    }
-
-    setDifferenceMessage(msg);
+    setDifference(diffCheck.difference);
+    setDiffPercent(diffCheck.diffPercent);
+    if (setIs3PercentOk) setIs3PercentOk(diffCheck.isDiffOk);
+    setDifferenceMessage(diffCheck.message);
   }
 
   // useEffect(() => {
@@ -248,7 +193,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                 </TableBody>
               </Table>
             </TableContainer>
-            { differenceCheck() }
+            { setDifferenceCheckOutput() }
           </>
         ) }
         <div className={ spacing3 }>&nbsp;</div>
@@ -406,7 +351,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                 (${l(diffPercent)}%)` }
             />
           </Grid>
-          { differenceMessage !== '' && (
+          {/* differenceMessage !== '' && (
             <Grid item xs={ 12 } className={ spacingVertical3 }>
               <b>{ t('general.warning') }</b>:<br />
               { differenceMessage.split('\n').map(i => {
@@ -415,7 +360,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                 )
               }) }
             </Grid>
-          ) }
+          ) */}
         </Grid>
       </Grid>
     );

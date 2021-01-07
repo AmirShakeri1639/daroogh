@@ -2,6 +2,7 @@ import { isNullOrEmpty } from ".";
 import { ExchangeStateEnum } from "../enum";
 import moment from 'jalali-moment';
 import { LabelValue, ViewExchangeInterface } from "../interfaces";
+import { Convertor } from './';
 
 export const isExchangeCompleteddOrCancelled = (state: number): boolean => {
   return ([
@@ -165,9 +166,11 @@ export const differenceCheck = (params: DifferenceCheckInterface): DifferenceChe
   let isDiffOk: boolean = true;
   let message: string = '';
 
-  const l = (v: string | number): string => {
-    return v.toLocaleString('fa-IR');
-  };
+  const { l } = Convertor;
+
+  // const l = (v: string | number): string => {
+  //   return v.toLocaleString('fa-IR');
+  // };
 
   const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
     تبادل را رد یا تایید نمایید. سبدها قابل ویرایش نیستند.';
@@ -183,12 +186,15 @@ export const differenceCheck = (params: DifferenceCheckInterface): DifferenceChe
 
     difference = Math.abs(totalPriceA - totalPriceB);
     // setDifference(difference);
+    diffPercent = Math.floor(
+      difference * 100 / Math.max(totalPriceA, totalPriceB)
+    );
     // Maximum between to diff percents
-    diffPercent = Math.max(a3p, b3p);
+    const diffPercentValue = Math.max(a3p, b3p);
     //setDiffPercent(diffPercent);
 
     // if the difference is less than allowed?
-    isDiffOk = difference < diffPercent;
+    isDiffOk = difference < diffPercentValue;
     //if (setIs3PercentOk) setIs3PercentOk(isDiffOk);
 
     // difference to amend for A
