@@ -49,6 +49,8 @@ interface Props {
   | void
   | any;
   full?: boolean;
+  totalPriceA?: number;
+  totalPriceB?: number;
 }
 
 // @ts-ignore
@@ -199,7 +201,8 @@ const DesktopCardContent = ({
 
   const setDifferenceCheckOutput = (): void => {
     const diffCheck = differenceCheck({
-      exchange: item, totalPriceA: 0, totalPriceB: 0, percent: 0.03
+      exchange: item,
+      percent: 0.03
     });
 
     setDifference(diffCheck.difference);

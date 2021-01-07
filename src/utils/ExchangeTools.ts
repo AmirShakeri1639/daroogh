@@ -91,7 +91,7 @@ export const getExpireDateTitle = (state: number): string => {
 /// Checks if a list of LavelValue has x value
 export const hasLabelValue = (list: LabelValue[], x: any): boolean => {
   for (let i = 0; i < list.length; i++) {
-    if (list[ i ].value == x) return true;
+    if (list[i].value == x) return true;
   }
 
   return false;
@@ -141,8 +141,8 @@ export const ViewExchangeInitialState: ViewExchangeInterface = {
 
 export interface DifferenceCheckInterface {
   exchange: ViewExchangeInterface;
-  totalPriceA: number;
-  totalPriceB: number;
+  // totalPriceA: number;
+  // totalPriceB: number;
   percent: number
 }
 
@@ -159,91 +159,93 @@ export interface DifferenceCheckOutputInterface {
 
 /// Checks the difference between total price of two baskets 
 /// and returns proper values and a suitable message
-export const differenceCheck = (params: DifferenceCheckInterface): DifferenceCheckOutputInterface => {
-  const { exchange, totalPriceA, totalPriceB, percent = 0.03 } = params;
-  let difference: number = 0;
-  let diffPercent: number = 0;
-  let isDiffOk: boolean = true;
-  let message: string = '';
+export const differenceCheck =
+  (params: DifferenceCheckInterface): DifferenceCheckOutputInterface => {
+    const { exchange, percent = 0.03 } = params;
+    const { totalPriceA = 0, totalPriceB = 0 } = exchange;
+    let difference: number = 0;
+    let diffPercent: number = 0;
+    let isDiffOk: boolean = true;
+    let message: string = '';
 
-  const { l } = Convertor;
+    const { l } = Convertor;
 
-  // const l = (v: string | number): string => {
-  //   return v.toLocaleString('fa-IR');
-  // };
+    // const l = (v: string | number): string => {
+    //   return v.toLocaleString('fa-IR');
+    // };
 
-  const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
+    const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
     تبادل را رد یا تایید نمایید. سبدها قابل ویرایش نیستند.';
 
-  if (exchange.currentPharmacyIsA && totalPriceA === 0) {
-    message = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
+    if (exchange.currentPharmacyIsA && totalPriceA === 0) {
+      message = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
       حدود ${l(totalPriceB)} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
       در غیر این صورت داروخانه مقابل از سبد شما انتخاب خواهد کرد.`;
-  } else {
-    // diff percent of each side
-    const a3p = totalPriceA * percent;
-    const b3p = totalPriceB * percent;
-
-    difference = Math.abs(totalPriceA - totalPriceB);
-    // setDifference(difference);
-    diffPercent = Math.floor(
-      difference * 100 / Math.max(totalPriceA, totalPriceB)
-    );
-    // Maximum between to diff percents
-    const diffPercentValue = Math.max(a3p, b3p);
-    //setDiffPercent(diffPercent);
-
-    // if the difference is less than allowed?
-    isDiffOk = difference < diffPercentValue;
-    //if (setIs3PercentOk) setIs3PercentOk(isDiffOk);
-
-    // difference to amend for A
-    const diffA = totalPriceA > totalPriceB
-      ? (totalPriceB + b3p) - totalPriceA
-      : totalPriceB - (totalPriceA + b3p);
-
-    // difference to amend for B
-    const diffB = totalPriceA > totalPriceB
-      ? totalPriceA - (totalPriceB + a3p)
-      : (totalPriceA + a3p) - totalPriceB;
-
-    // set messages:
-    const diffAabs = l(Math.abs(diffA));
-    const diffBabs = l(Math.abs(diffB));
-    if (exchange.currentPharmacyIsA) {
-      message = diffA > 0
-        ? `لطفا ${diffAabs} ریال به سبد خود اضافه کنید `
-        : `لطفا ${diffAabs} ریال از سبد خود کم کنید `
-      message += diffB > 0
-        ? `یا ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
-        : `یا ${diffBabs} ریال از سبد طرف مقابل کم کنید `
     } else {
-      message = diffB > 0
-        ? `لطفا ${diffBabs} ریال به سبد خود اضافه کنید `
-        : `لطفا ${diffBabs} ریال از سبد خود کم کنید `
-      message += diffA > 0
-        ? `یا ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
-        : `یا ${diffAabs} ریال از سبد طرف مقابل کم کنید `
-    }
+      // diff percent of each side
+      const a3p = totalPriceA * percent;
+      const b3p = totalPriceB * percent;
 
-    message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
+      difference = Math.abs(totalPriceA - totalPriceB);
+      // setDifference(difference);
+      diffPercent = Math.floor(
+        difference * 100 / Math.max(totalPriceA, totalPriceB)
+      );
+      // Maximum between to diff percents
+      const diffPercentValue = Math.max(a3p, b3p);
+      //setDiffPercent(diffPercent);
 
-    if (exchange.lockSuggestion) {
-      if (isDiffOk) {
-        message = lockMessage;
-      } else if (!exchange.currentPharmacyIsA) {
-        message += `\n${lockMessage}`;
+      // if the difference is less than allowed?
+      isDiffOk = difference < diffPercentValue;
+      //if (setIs3PercentOk) setIs3PercentOk(isDiffOk);
+
+      // difference to amend for A
+      const diffA = totalPriceA > totalPriceB
+        ? (totalPriceB + b3p) - totalPriceA
+        : totalPriceB - (totalPriceA + b3p);
+
+      // difference to amend for B
+      const diffB = totalPriceA > totalPriceB
+        ? totalPriceA - (totalPriceB + a3p)
+        : (totalPriceA + a3p) - totalPriceB;
+
+      // set messages:
+      const diffAabs = l(Math.abs(diffA));
+      const diffBabs = l(Math.abs(diffB));
+      if (exchange.currentPharmacyIsA) {
+        message = diffA > 0
+          ? `لطفا ${diffAabs} ریال به سبد خود اضافه کنید `
+          : `لطفا ${diffAabs} ریال از سبد خود کم کنید `
+        message += diffB > 0
+          ? `یا ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
+          : `یا ${diffBabs} ریال از سبد طرف مقابل کم کنید `
+      } else {
+        message = diffB > 0
+          ? `لطفا ${diffBabs} ریال به سبد خود اضافه کنید `
+          : `لطفا ${diffBabs} ریال از سبد خود کم کنید `
+        message += diffA > 0
+          ? `یا ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
+          : `یا ${diffAabs} ریال از سبد طرف مقابل کم کنید `
       }
+
+      message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
+
+      if (exchange.lockSuggestion) {
+        if (isDiffOk) {
+          message = lockMessage;
+        } else if (!exchange.currentPharmacyIsA) {
+          message += `\n${lockMessage}`;
+        }
+      }
+
     }
 
-  }
+    return {
+      difference,
+      diffPercent,
+      isDiffOk,
+      message
+    }
 
-  return {
-    difference,
-    diffPercent,
-    isDiffOk,
-    message
-  }
-
-  //setDifferenceMessage(message);
-};
+    //setDifferenceMessage(message);
+  };

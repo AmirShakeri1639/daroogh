@@ -101,8 +101,8 @@ const ExCalculator: React.FC<Props> = (props) => {
   reCheckData();
   // }, [exchange, basketCount, uBasketCount]);
 
-  let totalPriceA = 0;
-  let totalPriceB = 0;
+  // let totalPriceA = 0;
+  // let totalPriceB = 0;
   const percent = 0.03;
 
   const [differenceMessage, setDifferenceMessage] = useState('');
@@ -111,7 +111,7 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   const setDifferenceCheckOutput = (): void => {
     const diffCheck = differenceCheck({
-      exchange, totalPriceA, totalPriceB, percent
+      exchange, percent
     });
 
     setDifference(diffCheck.difference);
@@ -182,13 +182,15 @@ const ExCalculator: React.FC<Props> = (props) => {
                     || (!exchange.currentPharmacyIsA && !you)
                   ) &&
                     ((): any => {
-                      totalPriceA = totalPrice;
+                      // totalPriceA = totalPrice;
+                      exchange.totalPriceA = totalPrice;
                     })() }
                   { ((!exchange.currentPharmacyIsA && you)
                     || (exchange.currentPharmacyIsA && !you)
                   ) &&
                     ((): any => {
-                      totalPriceB = totalPrice;
+                      // totalPriceB = totalPrice;
+                      exchange.totalPriceB = totalPrice;
                     })() }
                 </TableBody>
               </Table>
