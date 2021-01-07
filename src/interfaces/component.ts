@@ -19,6 +19,7 @@ export interface ButtonPropsInterface {
   className?: any;
   color?: 'pink' | 'blue' | 'red' | 'green';
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 export interface ModalPropsInterface {
