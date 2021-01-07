@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -38,6 +38,7 @@ import {
   isStateCommon,
   getExpireDateTitle,
   ViewExchangeInitialState,
+  differenceCheck
 } from '../../../../../utils/ExchangeTools';
 import { ViewExchangeInterface } from '../../../../../interfaces';
 
@@ -47,12 +48,16 @@ interface Props {
   | ((id: number | undefined, state: number | undefined) => void)
   | void
   | any;
+  full?: boolean;
+  totalPriceA?: number;
+  totalPriceB?: number;
 }
 
 // @ts-ignore
 const DesktopCardContent = ({
   item = ViewExchangeInitialState,
   onCardClick,
+  full = true
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   // const { onCardClick } = props;
@@ -66,14 +71,14 @@ const DesktopCardContent = ({
   let expireDate: string | undefined = '';
   let totalPourcentage: number = 0;
   let paymentStatus: string = '';
-  let totalAmount: any;
+  let totalPrice: any;
   // useEffect(() => {
   if (item?.currentPharmacyIsA) {
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
     totalPourcentage = item?.totalPourcentageA;
     paymentStatus =
       item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
-    totalAmount = item.totalAmountA;
+    totalPrice = item.totalPriceA;
 
     // Should show B's grade and star and warranty
     pharmacyGrade =
@@ -86,7 +91,7 @@ const DesktopCardContent = ({
     totalPourcentage = item?.totalPourcentageB;
     paymentStatus =
       item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
-    totalAmount = item.totalAmountB;
+    totalPrice = item.totalPriceB;
 
     item.state =
       item.state <= 10 && !isStateCommon(item.state)
@@ -122,17 +127,17 @@ const DesktopCardContent = ({
     if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
       return t(
         `ExchangeStateEnum.` +
-        `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
+        `${ExchangeStateEnum[ ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL ]}`
       );
     } else {
-      return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
+      return t(`ExchangeStateEnum.${ExchangeStateEnum[ item.state ]}`);
     }
   };
 
   const getExchangeTitleColor = (): string => {
     return isExchangeCompleted(item.state, item?.currentPharmacyIsA)
-      ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
-      : CardColors[item.state];
+      ? CardColors[ ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL ]
+      : CardColors[ item.state ];
   };
 
   // random grade for test
@@ -186,7 +191,29 @@ const DesktopCardContent = ({
     titleCode,
     cardTop,
     pointer,
+    spacingVertical3,
   } = useClasses();
+
+  const [ differenceMessage, setDifferenceMessage ] = useState('');
+  const [ difference, setDifference ] = useState(0);
+  const [ diffPercent, setDiffPercent ] = useState(0);
+  const [ is3PercentOK, setIs3PercentOk ] = useState(true);
+
+  const setDifferenceCheckOutput = (): void => {
+    const diffCheck = differenceCheck({
+      exchange: item,
+      percent: 0.03
+    });
+
+    setDifference(diffCheck.difference);
+    setDiffPercent(diffCheck.diffPercent);
+    setIs3PercentOk(diffCheck.isDiffOk);
+    setDifferenceMessage(diffCheck.message);
+  }
+
+  useEffect(() => {
+    setDifferenceCheckOutput();
+  }, []);
 
   const ExchangeInfo = (): JSX.Element => {
     return (
@@ -198,10 +225,10 @@ const DesktopCardContent = ({
                 icon={ faSun }
                 size="lg"
                 className={ faIcons }
-                style={ { color: UserColors[pharmacyGrade] } }
+                style={ { color: UserColors[ pharmacyGrade ] } }
               />
               { pharmacyGrade ? (
-                <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
+                <span>{ t(`exchange.${UserGrades[ pharmacyGrade ]}`) }</span>
               ) : (
                   <></>
                 ) }
@@ -221,7 +248,7 @@ const DesktopCardContent = ({
                   { t('general.warrantyTo') } { pharmacyWarranty } { t('general.toman') }
                   <FontAwesomeIcon icon={ faMedal } size="lg" />
                 </>
-              )}
+              ) }
             </Grid>
             <Grid xs={ 12 } className={ rowLeft } style={ { direction: 'ltr' } }>
               { stars() }
@@ -293,7 +320,7 @@ const DesktopCardContent = ({
             </Grid>
           ) }
 
-          { !isNullOrEmpty(totalAmount) && totalAmount > 0 && (
+          { !isNullOrEmpty(totalPrice) && totalPrice > 0 && (
             <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
                 backColor={ ColorEnum.White }
@@ -307,7 +334,7 @@ const DesktopCardContent = ({
                     {t('exchange.totalPrice') }
                   </>
                 }
-                leftText={ totalAmount }
+                leftText={ totalPrice }
               />
             </Grid>
           ) }
@@ -328,6 +355,16 @@ const DesktopCardContent = ({
                 }
                 leftText={ paymentStatus }
               />
+            </Grid>
+          ) }
+          { full && differenceMessage !== '' && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
+              <b>{ t('general.warning') }</b>:<br />
+              { differenceMessage.split('\n').map(i => {
+                return (
+                  <>{ i }<br /></>
+                )
+              }) }
             </Grid>
           ) }
         </Grid>

@@ -40,6 +40,8 @@ export interface ViewExchangeInterface {
   allowShowPharmacyInfo: boolean;
   cartA: CardInfo[];
   cartB: CardInfo[];
+  totalPriceA?: number;
+  totalPriceB?: number;
 }
 
 export interface CardInfo {
