@@ -156,6 +156,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             exchange: res, uBasketCount, basketCount
           });
         }
+        
         setViewExchange(res);
         if (res) {
           console.log('کد وضعیت تبادل : ', res.state);
