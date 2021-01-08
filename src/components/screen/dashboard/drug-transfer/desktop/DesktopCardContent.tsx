@@ -127,17 +127,17 @@ const DesktopCardContent = ({
     if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
       return t(
         `ExchangeStateEnum.` +
-        `${ExchangeStateEnum[ ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL ]}`
+        `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
       );
     } else {
-      return t(`ExchangeStateEnum.${ExchangeStateEnum[ item.state ]}`);
+      return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
     }
   };
 
   const getExchangeTitleColor = (): string => {
     return isExchangeCompleted(item.state, item?.currentPharmacyIsA)
-      ? CardColors[ ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL ]
-      : CardColors[ item.state ];
+      ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
+      : CardColors[item.state];
   };
 
   // random grade for test
@@ -194,10 +194,10 @@ const DesktopCardContent = ({
     spacingVertical3,
   } = useClasses();
 
-  const [ differenceMessage, setDifferenceMessage ] = useState('');
-  const [ difference, setDifference ] = useState(0);
-  const [ diffPercent, setDiffPercent ] = useState(0);
-  const [ is3PercentOK, setIs3PercentOk ] = useState(true);
+  const [differenceMessage, setDifferenceMessage] = useState('');
+  const [difference, setDifference] = useState(0);
+  const [diffPercent, setDiffPercent] = useState(0);
+  const [is3PercentOK, setIs3PercentOk] = useState(true);
 
   const setDifferenceCheckOutput = (): void => {
     const diffCheck = differenceCheck({
@@ -225,10 +225,10 @@ const DesktopCardContent = ({
                 icon={ faSun }
                 size="lg"
                 className={ faIcons }
-                style={ { color: UserColors[ pharmacyGrade ] } }
+                style={ { color: UserColors[pharmacyGrade] } }
               />
               { pharmacyGrade ? (
-                <span>{ t(`exchange.${UserGrades[ pharmacyGrade ]}`) }</span>
+                <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
               ) : (
                   <></>
                 ) }
@@ -250,7 +250,8 @@ const DesktopCardContent = ({
                 </>
               ) }
             </Grid>
-            <Grid xs={ 12 } className={ rowLeft } style={ { direction: 'ltr' } }>
+            <Grid xs={ 12 } className={ rowLeft }
+              style={ { direction: 'ltr', color: ColorEnum.GOLD } }>
               { stars() }
             </Grid>
           </Grid>
@@ -359,7 +360,6 @@ const DesktopCardContent = ({
           ) }
           { full && differenceMessage !== '' && (
             <Grid item xs={ 12 } className={ spacingVertical3 }>
-              <b>{ t('general.warning') }</b>:<br />
               { differenceMessage.split('\n').map(i => {
                 return (
                   <>{ i }<br /></>
@@ -373,7 +373,8 @@ const DesktopCardContent = ({
   };
 
   const CardProgressbar = (): JSX.Element => {
-    const thisState = item.state > 10 ? item.state - 10 : item.state;
+    let thisState = item.state > 10 ? item.state - 10 : item.state;
+    thisState = thisState === 7 ? 0 : thisState;
 
     return (
       <>
@@ -400,7 +401,7 @@ const DesktopCardContent = ({
       <CardContent>
         <Typography
           variant="h5"
-          component="h2"
+          component="h5"
           className={ `${cardTitle} ${pointer}` }
           style={ { background: getExchangeTitleColor() } }
           onClick={ (): void => {
