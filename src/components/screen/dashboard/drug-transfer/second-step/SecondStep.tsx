@@ -399,11 +399,10 @@ const SecondStep: React.FC = () => {
                 value={recommendationMessage}
               /> */}
               <>
-                {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
+                {(exchangeStateCode !== 1) && (
                   <TextField
                     style={{ width: '100%', marginTop: 15 }}
                     multiline
-                    rows={4}
                     defaultValue={messageOfExchangeState}
                     variant="outlined"
                   />
