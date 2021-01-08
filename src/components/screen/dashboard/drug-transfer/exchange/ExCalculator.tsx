@@ -113,7 +113,6 @@ const ExCalculator: React.FC<Props> = (props) => {
   let diffPercent: number = 0;
 
   const setDifferenceCheckOutput = (): void => {
-    debugger;
     const diffCheck = differenceCheck({
       exchange, percent
     });
@@ -131,9 +130,7 @@ const ExCalculator: React.FC<Props> = (props) => {
   // }, [totalPriceA, totalPriceB]);
 
   // useEffect(() => {
-  //   debugger;
   //   setDifferenceCheckOutput();
-  //   console.log('is3 percent:', is3PercentOk);
   // }, [is3PercentOk]);
 
   const getOneSideData = (you: boolean): JSX.Element => {
@@ -176,7 +173,6 @@ const ExCalculator: React.FC<Props> = (props) => {
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
                     totalPrice += price;
-                    console.log('row:', row);
                     return (
                       <>
                         { (row.confirmed === undefined || row.confirmed) &&

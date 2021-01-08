@@ -137,13 +137,15 @@ export const ViewExchangeInitialState: ViewExchangeInterface = {
   allowShowPharmacyInfo: false,
   cartA: [],
   cartB: [],
+  totalPriceA: 0,
+  totalPriceB: 0,
 };
 
 export interface DifferenceCheckInterface {
   exchange: ViewExchangeInterface;
   // totalPriceA: number;
   // totalPriceB: number;
-  percent: number
+  percent: number;
 }
 
 export interface DifferenceCheckOutputInterface {
@@ -165,10 +167,10 @@ export const differenceCheck = (
   const { exchange, percent = 0.03 } = params;
   let { totalPriceA = 0, totalPriceB = 0 } = exchange;
 
-  if (totalPriceA === 0 && exchange.cartA.length > 0) {
+  if (totalPriceA === 0 && exchange.cartA && exchange.cartA.length > 0) {
     totalPriceA = exchange.cartA.map(i => i.cnt * i.amount).reduce((sum, price) => sum + price);
   }
-  if (totalPriceB === 0 && exchange.cartB.length > 0) {
+  if (totalPriceB === 0 && exchange.cartB && exchange.cartB.length > 0) {
     totalPriceB = exchange.cartB.map(i => i.cnt * i.amount).reduce((sum, price) => sum + price);
   }
 
