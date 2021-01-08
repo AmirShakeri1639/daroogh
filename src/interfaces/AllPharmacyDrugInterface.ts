@@ -17,6 +17,7 @@ export interface AllPharmacyDrugInterface {
   order: number;
   buttonName: string;
   cardColor: string;
+  confirmed?: boolean;
 }
 
 export interface DrugI {

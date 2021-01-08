@@ -137,7 +137,10 @@ const Desktop: React.FC = () => {
         return (
           <Grid item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
             <div className={ paper }>
-              <DesktopCardContent item={ item } onCardClick={ cardClickHandler } />
+              <DesktopCardContent
+                item={ item } 
+                full={false}
+                onCardClick={ cardClickHandler } />
             </div>
           </Grid>
         );

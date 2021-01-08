@@ -214,6 +214,7 @@ export default {
         you: 'شما',
         otherSide: 'طرف مقابل',
         threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
+        difference: 'اختلاف قیمت',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
