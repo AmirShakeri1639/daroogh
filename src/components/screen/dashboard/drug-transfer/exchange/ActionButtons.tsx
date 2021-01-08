@@ -27,6 +27,9 @@ import ExchangeApprove from './ExchangeApprove';
 import { useTranslation } from 'react-i18next';
 import routes from '../../../../../routes';
 import { useHistory } from 'react-router-dom';
+import { PharmacyInfo } from '../../../../../interfaces/PharmacyInfo';
+import { Map, TextLine } from '../../../../public';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -54,6 +57,15 @@ const style = makeStyles((theme) =>
       width: '50%',
       marginLeft: 10,
     },
+    pharmacyInfoStyle: {
+      flexGrow: 1,
+      maxWidth: '100%',
+      maxHeight: '90vh',
+      overflowY: 'auto',
+      [theme.breakpoints.up('md')]: {
+        width: 600,
+      },
+    },
   })
 );
 
@@ -68,6 +80,7 @@ const ActionButtons = (): JSX.Element => {
     confirmButton4,
     actionContainer,
     fullRow,
+    pharmacyInfoStyle,
   } = style();
   const {
     activeStep,
@@ -80,6 +93,10 @@ const ActionButtons = (): JSX.Element => {
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   const [comment, setComment] = useState<string>('');
   const [modalType, setModalType] = useState('');
+  const [
+    pharmacyInfoState,
+    setPharmacyInfoState,
+  ] = useState<PharmacyInfo | null>(null);
 
   const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(
     false
@@ -94,10 +111,16 @@ const ActionButtons = (): JSX.Element => {
     setIsRemoveExchangeModal((v) => !v);
   };
 
+  const [isShowPharmacyInfoModal, setIsShowPharmacyInfoModal] = useState(false);
+  const toggleIsShowPharmacyInfoModalForm = (): void => {
+    setIsShowPharmacyInfoModal((v) => !v);
+  };
+
   const {
     cancelExchange,
     confirmOrNotExchange,
     removeExchange,
+    pharmacyInfo,
   } = new PharmacyDrug();
 
   const [_cancelExchange, { isLoading: isLoadingSend }] = useMutation(
@@ -181,6 +204,96 @@ const ActionButtons = (): JSX.Element => {
       errorHandler(e);
     }
     toggleIsOpenCancelExchangeModalForm(modalType);
+  };
+
+  const handlePharmacyInfo = async (): Promise<any> => {
+    try {
+      const res = await pharmacyInfo(exchangeId);
+      const response: PharmacyInfo = res.data;
+      setPharmacyInfoState(response);
+      toggleIsShowPharmacyInfoModalForm();
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  const Map1 = (): JSX.Element => {
+    return (
+      <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+        <TileLayer
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <Marker position={[51.505, -0.09]}>
+          <Popup>
+            A pretty CSS3 popup. <br /> Easily customizable.
+          </Popup>
+        </Marker>
+      </MapContainer>
+    );
+  };
+
+  const ShowPharmacyInfo = (): JSX.Element => {
+    return (
+      <Modal
+        open={isShowPharmacyInfoModal}
+        toggle={toggleIsShowPharmacyInfoModalForm}
+      >
+        <Card className={pharmacyInfoStyle}>
+          <CardHeader
+            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
+            title="اطلاعات داروخانه مقابل"
+            titleTypographyProps={{ variant: 'h6' }}
+            action={
+              <IconButton
+                style={{ marginTop: 10 }}
+                aria-label="settings"
+                onClick={toggleIsShowPharmacyInfoModalForm}
+              >
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={6}>
+                <span>نام داروخانه : </span>
+                <span style={{ fontWeight: 'bold' }}>
+                  {pharmacyInfoState?.data.name}
+                </span>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <span>آدرس : </span>
+                <span style={{ fontWeight: 'bold' }}>
+                  {pharmacyInfoState?.data.address}
+                </span>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <span>تلفن : </span>
+                <span style={{ fontWeight: 'bold' }}>
+                  {pharmacyInfoState?.data.telphon}
+                </span>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <span>موبایل : </span>
+                <span style={{ fontWeight: 'bold' }}>
+                  {pharmacyInfoState?.data.mobile}
+                </span>
+              </Grid>
+              <Grid item xs={12} sm={12}>
+                <div>
+                  <Map />
+                </div>
+              </Grid>
+            </Grid>
+          </CardContent>
+          <CardActions>
+            <Grid container spacing={1}></Grid>
+          </CardActions>
+        </Card>
+      </Modal>
+    );
   };
 
   const exchangeModalRemove = (): JSX.Element => {
@@ -395,6 +508,7 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               color="blue"
+              onClick={handlePharmacyInfo}
             >
               نمایش آدرس
             </Button>
@@ -490,6 +604,7 @@ const ActionButtons = (): JSX.Element => {
       {isOpenCancelExchangeModal && exchangeModalApproveCancel(modalType)}
       {isRemoveExchangeModal && exchangeModalRemove()}
       {showApproveModalForm && <ExchangeApprove />}
+      {isShowPharmacyInfoModal && <ShowPharmacyInfo />}
     </>
   );
 

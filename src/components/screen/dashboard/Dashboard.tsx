@@ -29,7 +29,7 @@ import { logoutUser } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { ColorEnum } from '../../../enum';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import routes from '../../../routes';
 
 const drawerWidth = 240;
@@ -64,7 +64,8 @@ const useStyles = makeStyles((theme) => ({
     padding: '1em',
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    // zIndex: theme.zIndex.drawer + 1,
+    zIndex: 1040,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -198,19 +199,19 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   };
 
   return (
-    <Context.Provider value={ contextInitialValues() }>
-      <div className={ classes.root }>
-        <AppBar elevation={ 0 } position="absolute" className={ classes.appBar }>
-          <Toolbar className={ classes.toolbar }>
+    <Context.Provider value={contextInitialValues()}>
+      <div className={classes.root}>
+        <AppBar elevation={0} position="absolute" className={classes.appBar}>
+          <Toolbar className={classes.toolbar}>
             <IconButton
               edge="start"
               color="inherit"
               aria-label="open drawer"
-              onClick={ handleDrawerOpen }
-              className={ clsx(
+              onClick={handleDrawerOpen}
+              className={clsx(
                 classes.menuButton,
                 isOpenDrawer && classes.menuButtonHidden
-              ) }
+              )}
             >
               <MenuIcon />
             </IconButton>
@@ -219,19 +220,19 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               variant="h6"
               color="inherit"
               noWrap
-              className={ classes.title }
+              className={classes.title}
             >
-              { t('general.dashboard') }
+              {t('general.dashboard')}
             </Typography>
             <Button
               variant="contained"
-              style={ { backgroundColor: ColorEnum.White } }
-              onClick={ (): void => history.push(transfer) }
+              style={{ backgroundColor: ColorEnum.White }}
+              onClick={(): void => history.push(transfer)}
             >
-              { t('exchange.create') }
+              {t('exchange.create')}
             </Button>
             <IconButton color="inherit">
-              <Badge badgeContent={ 4 } color="secondary">
+              <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge>
             </IconButton>
@@ -240,7 +241,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               aria-label="account of current user"
               aria-controls="user-menu"
               aria-haspopup="true"
-              onClick={ handleUserIconButton }
+              onClick={handleUserIconButton}
               color="inherit"
             >
               <AccountCircle />
@@ -248,41 +249,43 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             <UserMenu />
           </Toolbar>
         </AppBar>
-        <MaterialDrawer onClose={ toggleIsOpenDrawer }
-          isOpen={ isOpenDrawer }>
-          <div className={ classes.toolbarIcon }>
-            <span className={ classes.systemTitle } style={ { textAlign: 'right' } }>
-              { t('general.systemTitle') }
+        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
+          <div className={classes.toolbarIcon}>
+            <span
+              className={classes.systemTitle}
+              style={{ textAlign: 'right' }}
+            >
+              {t('general.systemTitle')}
             </span>
-            <IconButton onClick={ handleDrawerClose }>
+            <IconButton onClick={handleDrawerClose}>
               <ChevronRightIcon />
             </IconButton>
           </div>
           <Divider />
-          <Grid container className={ classes.largeSpacing }>
-            <Grid item xs={ 3 }>
+          <Grid container className={classes.largeSpacing}>
+            <Grid item xs={3}>
               <Avatar
-                alt={ t('user.user') }
-                className={ classes.largeAvatar }
-                src={ avatarPic }
+                alt={t('user.user')}
+                className={classes.largeAvatar}
+                src={avatarPic}
               />
             </Grid>
-            <Grid item xs={ 9 }>
-              <Grid item xs={ 12 }>
-                { loggedInUser?.name } { loggedInUser?.family }
+            <Grid item xs={9}>
+              <Grid item xs={12}>
+                {loggedInUser?.name} {loggedInUser?.family}
               </Grid>
-              <Grid item xs={ 12 } className= { classes.paleText }>
-                { t('pharmacy.pharmacy') } { loggedInUser?.pharmacyName }
+              <Grid item xs={12} className={classes.paleText}>
+                {t('pharmacy.pharmacy')} {loggedInUser?.pharmacyName}
               </Grid>
-              <Grid item xs={ 12 }>
+              <Grid item xs={12}>
                 <IconButton
                   edge="start"
                   color="inherit"
-                  onClick={ (): void => logoutUser() }
+                  onClick={(): void => logoutUser()}
                 >
-                  {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
-                  <span style={ { color: ColorEnum.Red, fontSize: 'medium' } }>
-                    { t('login.exit') }
+                  {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
+                  <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
+                    {t('login.exit')}
                   </span>
                 </IconButton>
               </Grid>
@@ -290,13 +293,13 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
           </Grid>
           <Divider />
           <List component="nav" aria-labelledby="nested-list-items">
-            { listItemsGenerator() }
+            {listItemsGenerator()}
           </List>
           <Divider />
         </MaterialDrawer>
-        <main className={ classes.content }>
-          <div className={ classes.appBarSpacer } />
-          { component }
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          {component}
         </main>
       </div>
     </Context.Provider>
