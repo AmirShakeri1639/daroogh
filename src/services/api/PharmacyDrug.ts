@@ -32,6 +32,7 @@ class PharmacyDrug extends Api {
     confirmOrNotExchange: '/Exchange/ConfirmExchange',
     getAccountingForPayment: '/Accounting/GetAccountingForPayment',
     payment: '/Accounting/Payment',
+    pharmacyInfo: '/Exchange/GetExchangePharmacyInfo',
   };
 
   getAllPharmacyDrug = async (
@@ -209,6 +210,17 @@ class PharmacyDrug extends Api {
   getPayment = async (data: Payment): Promise<any> => {
     const result = await this.postJsonData(`${this.urls.payment}`, data);
     return result.data;
+  };
+
+  pharmacyInfo = async (exchangeID: number): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.pharmacyInfo}?exchangeID=${exchangeID}`
+      );
+      return result;
+    } catch (e) {
+      errorHandler(e);
+    }
   };
 }
 

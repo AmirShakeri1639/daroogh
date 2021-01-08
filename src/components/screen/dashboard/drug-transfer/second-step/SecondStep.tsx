@@ -270,8 +270,8 @@ const SecondStep: React.FC = () => {
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
-          item.buttonName = 'حذف از تبادل';
-          item.cardColor = '#89fd89';
+          // item.buttonName = 'حذف از تبادل';
+          // item.cardColor = '#89fd89';
 
           let isPack = false;
           let totalAmount = 0;
@@ -399,11 +399,10 @@ const SecondStep: React.FC = () => {
                 value={recommendationMessage}
               /> */}
               <>
-                {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
+                {(exchangeStateCode !== 1) && (
                   <TextField
                     style={{ width: '100%', marginTop: 15 }}
                     multiline
-                    rows={4}
                     defaultValue={messageOfExchangeState}
                     variant="outlined"
                   />

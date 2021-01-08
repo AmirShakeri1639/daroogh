@@ -28,6 +28,14 @@ import { useMutation } from 'react-query';
 import { errorHandler, errorSweetAlert } from '../../../utils';
 import { Settings } from '../../../services/api';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUser,
+} from '@fortawesome/free-regular-svg-icons';
+import {
+  faKey,
+} from '@fortawesome/free-solid-svg-icons';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
@@ -65,6 +73,9 @@ const loginInitialState = {
   isVisiblePassword: false,
 };
 
+
+
+
 function reducer(
   state = loginInitialState,
   action: ActionInterface
@@ -93,6 +104,7 @@ function reducer(
 }
 
 const Login: React.FC = (): JSX.Element => {
+
   const [state, dispatch] = useReducer(reducer, loginInitialState);
   const [showError, setShowError] = useState<boolean>(false);
 
@@ -180,15 +192,18 @@ const Login: React.FC = (): JSX.Element => {
             required
             fullWidth
             id="email"
-            label="نام کاربری"
+            label={t('login.username')}
             name="email"
             autoComplete="email"
-            onChange={ usernameHandler }
-            InputProps={ {
-              startAdornment: (
+            onChange={usernameHandler}
+            InputProps={{
+                startAdornment: (
                 <InputAdornment position="start">
-                  <MailIcon />
-                </InputAdornment>
+                  <FontAwesomeIcon
+                  icon={ faUser }
+                  size="lg"
+                  fill="#ccc"/>             
+              </InputAdornment>
               ),
             } }
           />
@@ -207,7 +222,9 @@ const Login: React.FC = (): JSX.Element => {
             InputProps={ {
               startAdornment: (
                 <InputAdornment position="start">
-                  <LockIcon />
+                  <FontAwesomeIcon
+                  icon={ faKey }
+                  size="lg"/>   
                 </InputAdornment>
               ),
               endAdornment: (

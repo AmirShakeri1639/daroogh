@@ -36,7 +36,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     // 'انتخاب داروخانه',
     'انتخاب از سبد طرف مقابل',
     'انتخاب از سبد شما',
-    'تایید نهایی',
+    // 'تایید نهایی',
   ]);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -106,7 +106,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 expireDate: item.expireDate,
                 amount: item.amount,
                 buttonName: 'حذف از تبادل',
-                cardColor: '#89fd89',
+                cardColor:
+                  res && res.currentPharmacyIsA && item.addedByB
+                    ? '#009900'
+                    : item.confirmed !== undefined && item.confirmed === false
+                    ? '#33ff34'
+                    : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
@@ -129,14 +134,19 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 expireDate: item.expireDate,
                 amount: item.amount,
                 buttonName: 'حذف از تبادل',
-                cardColor: '#89fd89',
+                cardColor:
+                  res && res.currentPharmacyIsA && item.addedByB
+                    ? '#009900'
+                    : item.confirmed !== undefined && item.confirmed === false
+                    ? '#33ff34'
+                    : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
                 order: 0,
                 totalAmount: 0,
                 totalCount: 0,
-                confirmed: item.confirmed
+                confirmed: item.confirmed,
               });
             });
           }
@@ -153,27 +163,91 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
         if (res !== undefined) {
           res = calcTotalPrices({
-            exchange: res, uBasketCount, basketCount
+            exchange: res,
+            uBasketCount,
+            basketCount,
           });
         }
         
         setViewExchange(res);
         if (res) {
-          console.log('کد وضعیت تبادل : ', res.state);
+          console.log('کد خیلی مهم : ', res.state);
+          console.log('کد کمی مهم', res.currentPharmacyIsA);
+
           setExchangeStateCode(res.state);
-          switch (res.state) {
-            case 2:
-              setMessageOfExchangeState(
-                'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
-              );
-              break;
-            case 4:
-              setMessageOfExchangeState(
-                'داروخانه مقابل لیست های انتخاب شده شما را تایید/ویرایش نموده است. لطفا پس از بررسی تایید نهایی نمایید.'
-              );
-              break;
-            default:
-              break;
+          if (res.currentPharmacyIsA) {
+            switch (res.state) {
+              case 2:
+                setMessageOfExchangeState(
+                  'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
+                );
+                break;
+              case 3:
+                setMessageOfExchangeState(
+                  'لطفا تغییرات سبدها را بررسی و تایید نموده و نسبت به پرداخت پورسانت اقدام نمایید'
+                );
+                break;
+              case 4 || 9:
+                setMessageOfExchangeState(
+                  'تبادل کامل شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
+                );
+                break;
+              case 5:
+                setMessageOfExchangeState(
+                  'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
+                );
+                break;
+              case 6:
+                setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
+                break;
+              case 7:
+                setMessageOfExchangeState('این تبادل لغو شده است');
+                break;
+              case 8 || 10:
+                setMessageOfExchangeState(
+                  'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+                );
+                break;
+
+              default:
+                break;
+            }
+          } else {
+            switch (res.state) {
+              case 2:
+                setMessageOfExchangeState(
+                  'پس از بررسی سبدها نسبت به تایید یا رد این درخواست اقدام نمایید.'
+                );
+                break;
+              case 3:
+                setMessageOfExchangeState(
+                  'لطفا منتظر تایید نهایی داروخانه مقابل بمانید'
+                );
+                break;
+              case 4 || 8:
+                setMessageOfExchangeState(
+                  'تبادل کامل شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
+                );
+                break;
+              case 6:
+                setMessageOfExchangeState(
+                  'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
+                );
+                break;
+              case 5:
+                setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
+                break;
+              case 7:
+                setMessageOfExchangeState('این تبادل لغو شده است');
+                break;
+              case 9 || 10:
+                setMessageOfExchangeState(
+                  'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+                );
+                break;
+              default:
+                break;
+            }
           }
         }
         setExchangeId(eid);
@@ -184,12 +258,20 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   useEffect(() => {
     if (viewExhcnage !== undefined) {
-      setViewExchange(calcTotalPrices({
-        exchange: viewExhcnage, uBasketCount, basketCount
-      }));
+      setViewExchange(
+        calcTotalPrices({
+          exchange: viewExhcnage,
+          uBasketCount,
+          basketCount,
+        })
+      );
     }
-  }, [basketCount.length, uBasketCount.length, viewExhcnage?.totalPriceA, viewExhcnage?.totalPriceB]);
-
+  }, [
+    basketCount.length,
+    uBasketCount.length,
+    viewExhcnage?.totalPriceA,
+    viewExhcnage?.totalPriceB,
+  ]);
 
   const { root } = style();
 
@@ -227,22 +309,22 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   });
 
   return (
-    <Context.Provider value={ initialContextValues() }>
-      <div className={ root }>
+    <Context.Provider value={initialContextValues()}>
+      <div className={root}>
         <MaterialContainer>
-          <Grid container spacing={ 1 }>
-            { activeStep > 0 && (
+          <Grid container spacing={1}>
+            {activeStep > 0 && (
               <>
-                <Grid item xs={ 12 } sm={ 9 } md={ 9 } style={ { marginRight: 8 } }>
+                <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
                   <ProgressBar />
                 </Grid>
               </>
-            ) }
+            )}
 
-            { activeStep === 0 && <FirstStep /> }
-            { activeStep === 1 && <SecondStep /> }
-            { activeStep === 2 && <ThirdStep /> }
-            { activeStep === 3 && <FourthStep /> }
+            {activeStep === 0 && <FirstStep />}
+            {activeStep === 1 && <SecondStep />}
+            {activeStep === 2 && <ThirdStep />}
+            {activeStep === 3 && <FourthStep />}
           </Grid>
         </MaterialContainer>
       </div>

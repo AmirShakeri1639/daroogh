@@ -23,6 +23,7 @@ import Button from '../../../../public/button/Button';
 import {
   AccountingInterface,
   BankGetwayesInterface,
+  GetAccountingForPaymentInterace,
 } from '../../../../../interfaces/AccountingInterface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TextLine from '../../../../public/text-line/TextLine';
@@ -83,7 +84,7 @@ const ExchangeApprove: React.FC = () => {
   const { getAccountingForPayment, getPayment } = new PharmacyDrug();
 
   const [totalAmount, setTotoalAmount] = useState(0);
-  const [maxDebt, setMaxDebt] = useState(2000000);
+  const [debtAmountAllow, setDebtAmountAllow] = useState(0);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [trackingNumber, setTrackingNumber] = useState<string>('');
   const [payment, setPayment] = useState<Payment>(new Payment());
@@ -121,7 +122,9 @@ const ExchangeApprove: React.FC = () => {
     (async (): Promise<void> => {
       const result = await getAccountingForPayment();
       if (result) {
-        const res: AccountingInterface[] = result.data.accountingForPayment.sort(
+        const response: GetAccountingForPaymentInterace = result.data;
+        setDebtAmountAllow(response.debtAmountAllow);
+        const res: AccountingInterface[] = response.accountingForPayment.sort(
           (a: any, b: any) => (a > b ? 1 : -1)
         );
         setAccountingForPayment(res);
@@ -129,7 +132,7 @@ const ExchangeApprove: React.FC = () => {
           const amount = res[0].amount > 0 ? res[0].amount : 0;
           setPaymentAmount(amount);
         }
-        const banks: BankGetwayesInterface[] = result.data.bankGetwayes;
+        const banks: BankGetwayesInterface[] = response.bankGetwayes;
         setBankGetwayes(banks);
       }
     })();
@@ -172,20 +175,16 @@ const ExchangeApprove: React.FC = () => {
           method="post"
           action="https://api.sumon.ir/MyVirtualGateway"
         >
-          <input
-            type="hidden"
-            value={`'${paymentAmount}'`}
-            name="amount"
-          ></input>
+          <input type="hidden" value={paymentAmount} name="amount"></input>
           <input type="hidden" value={'request'} name="commandType"></input>
           <input
             type="hidden"
-            value={`'${trackingNumber}'`}
+            value={trackingNumber}
             name="trackingNumber"
           ></input>
           <input
             type="hidden"
-            value={'https://api.sumon.ir/payment/verify?paymentToken'}
+            value={'http://sumon.ir/dashboard#/dashboard/exchange/desktop'}
             name="redirectUrl"
           ></input>
           {/* <button type="submit" >
@@ -228,7 +227,7 @@ const ExchangeApprove: React.FC = () => {
               <span>
                 با توجه به اینکه حداکثر بدهی در سیستم داروگ مبلغ
                 <span style={{ marginRight: 5, marginLeft: 5, color: 'red' }}>
-                  <b>{maxDebt}</b>
+                  <b>{debtAmountAllow}</b>
                 </span>
                 <span>
                   تومان می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و

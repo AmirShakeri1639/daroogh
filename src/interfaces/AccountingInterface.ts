@@ -1,3 +1,9 @@
+export interface GetAccountingForPaymentInterace {
+  accountingForPayment: AccountingInterface[];
+  bankGetwayes: BankGetwayesInterface[];
+  debtAmountAllow: number;
+}
+
 export interface AccountingInterface {
   id: number;
   date: string;

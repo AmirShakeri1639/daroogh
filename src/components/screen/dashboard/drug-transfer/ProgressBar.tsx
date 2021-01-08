@@ -4,6 +4,7 @@ import {
   Hidden,
   makeStyles,
   Step,
+  StepButton,
   StepLabel,
   Stepper,
   useTheme,
@@ -50,8 +51,6 @@ const ProgressBar: React.FC = () => {
     setActiveStep(newStep);
   };
 
-  
-
   const stepHandler = (): JSX.Element[] => {
     return allStepName.map((label, index) => {
       const stepProps: { completed?: boolean } = {};
@@ -59,9 +58,13 @@ const ProgressBar: React.FC = () => {
 
       return (
         <Step key={label} {...stepProps}>
-          <StepLabel {...labelProps} className="txt-xs">
+          <StepButton
+            onClick={() => setActiveStep(index + 1)}
+            {...labelProps}
+            className="txt-xs"
+          >
             {label}
-          </StepLabel>
+          </StepButton>
         </Step>
       );
     });
