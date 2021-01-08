@@ -182,13 +182,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   }, [viewExchangeId, exchangeState]);
 
   useEffect(() => {
-    // debugger;
     if (viewExhcnage !== undefined) {
       setViewExchange(calcTotalPrices({
         exchange: viewExhcnage, uBasketCount, basketCount
       }));
     }
-  }, [basketCount.length, uBasketCount.length]);
+  }, [basketCount.length, uBasketCount.length, viewExhcnage?.totalPriceA, viewExhcnage?.totalPriceB]);
 
 
   const { root } = style();

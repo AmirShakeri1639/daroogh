@@ -194,26 +194,38 @@ const DesktopCardContent = ({
     spacingVertical3,
   } = useClasses();
 
-  const [differenceMessage, setDifferenceMessage] = useState('');
-  const [difference, setDifference] = useState(0);
-  const [diffPercent, setDiffPercent] = useState(0);
-  const [is3PercentOK, setIs3PercentOk] = useState(true);
+  // const [differenceMessage, setDifferenceMessage] = useState('');
+  // const [difference, setDifference] = useState(0);
+  // const [diffPercent, setDiffPercent] = useState(0);
+  // const [is3PercentOK, setIs3PercentOk] = useState(true);
+
+  let differenceMessage: string = '';
+  let difference: number = 0;
+  let diffPercent: number = 0;
+  let is3PercentOK: boolean = true;
 
   const setDifferenceCheckOutput = (): void => {
+    debugger;
     const diffCheck = differenceCheck({
       exchange: item,
       percent: 0.03
     });
 
-    setDifference(diffCheck.difference);
-    setDiffPercent(diffCheck.diffPercent);
-    setIs3PercentOk(diffCheck.isDiffOk);
-    setDifferenceMessage(diffCheck.message);
+    // setDifference(diffCheck.difference);
+    // setDiffPercent(diffCheck.diffPercent);
+    // setIs3PercentOk(diffCheck.isDiffOk);
+    // setDifferenceMessage(diffCheck.message);
+
+    ({
+      difference, diffPercent,
+      isDiffOk: is3PercentOK,
+      message: differenceMessage
+    } = diffCheck);
   }
 
   useEffect(() => {
     setDifferenceCheckOutput();
-  }, []);
+  }, [item.totalPriceA, item.totalPriceB]);
 
   const ExchangeInfo = (): JSX.Element => {
     return (

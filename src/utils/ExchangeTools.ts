@@ -163,7 +163,15 @@ export const differenceCheck = (
   params: DifferenceCheckInterface
 ): DifferenceCheckOutputInterface => {
   const { exchange, percent = 0.03 } = params;
-  const { totalPriceA = 0, totalPriceB = 0 } = exchange;
+  let { totalPriceA = 0, totalPriceB = 0 } = exchange;
+
+  if (totalPriceA === 0 && exchange.cartA.length > 0) {
+    totalPriceA = exchange.cartA.map(i => i.cnt * i.amount).reduce((sum, price) => sum + price);
+  }
+  if (totalPriceB === 0 && exchange.cartB.length > 0) {
+    totalPriceB = exchange.cartB.map(i => i.cnt * i.amount).reduce((sum, price) => sum + price);
+  }
+
   let difference: number = 0;
   let diffPercent: number = 0;
   let isDiffOk: boolean = true;
@@ -206,7 +214,7 @@ export const differenceCheck = (
   const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
     تبادل را رد یا تایید نمایید. سبدها قابل ویرایش نیستند.';
 
-  if (exchange.currentPharmacyIsA && totalPriceA === 0) {
+  if (exchange.currentPharmacyIsA && totalPriceA === 0 && totalPriceB !== 0) {
     message = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
       حدود ${l(totalPriceB)} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
       در غیر این صورت داروخانه مقابل از سبد شما انتخاب خواهد کرد.`;
@@ -247,6 +255,10 @@ export const differenceCheck = (
 
   if (isDiffOk && exchange.currentPharmacyIsA) {
     message = ''
+  }
+
+  if (diffPercent === NaN) {
+    diffPercent = 0
   }
 
   return {
