@@ -41,6 +41,7 @@ import {
   getExpireDate,
   ViewExchangeInitialState,
   differenceCheck,
+  percentAllowed,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
@@ -103,7 +104,7 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   // let totalPriceA = 0;
   // let totalPriceB = 0;
-  const percent = 0.03;
+  const percent = percentAllowed();
 
   const [differenceMessage, setDifferenceMessage] = useState('');
   // const [difference, setDifference] = useState(0);
