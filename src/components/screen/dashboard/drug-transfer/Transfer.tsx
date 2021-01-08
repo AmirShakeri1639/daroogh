@@ -81,40 +81,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     eid = +decryptedId;
   }
 
-  const calcTotalPrices = (
-    exchange: ViewExchangeInterface
-  ): ViewExchangeInterface => {
-    if (exchange?.currentPharmacyIsA) {
-      exchange.totalPriceA =
-        uBasketCount.length > 0
-          ? uBasketCount
-              .map((b) => b.currentCnt * b.amount)
-              .reduce((sum, price) => sum + price)
-          : 0;
-      exchange.totalPriceB =
-        basketCount.length > 0
-          ? basketCount
-              .map((b) => b.currentCnt * b.amount)
-              .reduce((sum, price) => sum + price)
-          : 0;
-    } else {
-      exchange.totalPriceA =
-        basketCount.length > 0
-          ? basketCount
-              .map((b) => b.currentCnt * b.amount)
-              .reduce((sum, price) => sum + price)
-          : 0;
-      exchange.totalPriceB =
-        uBasketCount.length > 0
-          ? uBasketCount
-              .map((b) => b.currentCnt * b.amount)
-              .reduce((sum, price) => sum + price)
-          : 0;
-    }
-
-    return exchange;
-  };
-
   useEffect(() => {
     (async (): Promise<void> => {
       let eid: any = undefined;
