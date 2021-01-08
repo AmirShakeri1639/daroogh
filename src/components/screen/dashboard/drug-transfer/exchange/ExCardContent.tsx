@@ -204,7 +204,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                     </li>
                     <li className={colLeftIcon}>
                       <MoneyIcon />
-                      {Utils.numberWithCommas(item.amount)}
+                      <span>
+                        {Utils.numberWithCommas(item.amount)} ({item.cnt} عدد)
+                      </span>
                     </li>
                   </ul>
                 </Grid>
@@ -220,7 +222,8 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   const DrugInfo = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
-        {pharmacyDrug?.cardColor === '#009900' && <Ribbon />}
+        {/* {console.log('cardColor ===> ', pharmacyDrug?.cardColor)} */}
+        {pharmacyDrug?.cardColor === '#89fd89' && <Ribbon />}
         <Grid item xs={12} sm={12}>
           <ul className={ulCardName}>
             <li style={{ fontWeight: 'bold', fontSize: 14 }}>

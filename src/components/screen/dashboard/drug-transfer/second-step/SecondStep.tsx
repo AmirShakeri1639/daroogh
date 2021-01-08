@@ -216,7 +216,7 @@ const SecondStep: React.FC = () => {
                 .filter((x) => x.packID === item.packID)
                 .forEach((p: AllPharmacyDrugInterface) => {
                   packList.push(p);
-                  totalAmount += p.amount;
+                  totalAmount += p.amount * p.cnt;
                 });
               item.totalAmount = totalAmount;
               isPack = true;
@@ -270,8 +270,8 @@ const SecondStep: React.FC = () => {
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
-          // item.buttonName = 'حذف از تبادل';
-          // item.cardColor = '#89fd89';
+          item.buttonName = 'حذف از تبادل';
+          item.cardColor = '#89fd89';
 
           let isPack = false;
           let totalAmount = 0;
@@ -282,7 +282,7 @@ const SecondStep: React.FC = () => {
               .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);
-                totalAmount += p.amount;
+                totalAmount += p.amount * p.cnt;
               });
 
             item.totalAmount = totalAmount;
@@ -399,7 +399,7 @@ const SecondStep: React.FC = () => {
                 value={recommendationMessage}
               /> */}
               <>
-                {(exchangeStateCode !== 1) && (
+                {exchangeStateCode !== 1 && (
                   <TextField
                     style={{ width: '100%', marginTop: 15 }}
                     multiline
