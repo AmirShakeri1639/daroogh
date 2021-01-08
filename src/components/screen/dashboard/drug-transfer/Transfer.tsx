@@ -202,6 +202,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             basketCount,
           });
         }
+        
         setViewExchange(res);
         if (res) {
           console.log('کد خیلی مهم : ', res.state);
