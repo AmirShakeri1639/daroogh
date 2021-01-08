@@ -113,7 +113,8 @@ const Login: React.FC = (): JSX.Element => {
         (async (): Promise<any> => {
           const { get } = new Settings();
           const result = await get();
-          localStorage.setItem('settings', JSON.stringify(result));
+          const { smsAPIkey, ...settings } = result;
+          localStorage.setItem('settings', JSON.stringify(settings));
         })();
 
         push({

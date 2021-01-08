@@ -316,7 +316,6 @@ export const percentAllowed = (): number => {
   try {
     const settings = localStorage.getItem('settings') || '{}';
     const { diffrenceAllowPercentageInExchange } = JSON.parse(settings);
-    console.log('PERCENT:', diffrenceAllowPercentageInExchange / 100)
     return diffrenceAllowPercentageInExchange / 100;
   } catch (e) {
     return 0.03;
