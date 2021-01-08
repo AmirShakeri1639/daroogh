@@ -164,7 +164,7 @@ export interface DifferenceCheckOutputInterface {
 export const differenceCheck = (
   params: DifferenceCheckInterface
 ): DifferenceCheckOutputInterface => {
-  const { exchange, percent = 0.03 } = params;
+  const { exchange, percent } = params;
   let { totalPriceA = 0, totalPriceB = 0 } = exchange;
 
   if (totalPriceA === 0 && exchange.cartA && exchange.cartA.length > 0) {
@@ -310,3 +310,14 @@ export const calcTotalPrices = (
 
   return exchange;
 };
+
+/// Reads max difference percent from localStorage (settings)
+export const percentAllowed = (): number => {
+  try {
+    const settings = localStorage.getItem('settings') || '{}';
+    const { diffrenceAllowPercentageInExchange } = JSON.parse(settings);
+    return diffrenceAllowPercentageInExchange / 100;
+  } catch (e) {
+    return 0.03;
+  }
+}

@@ -39,7 +39,8 @@ import {
   isStateCommon,
   getExpireDateTitle,
   ViewExchangeInitialState,
-  differenceCheck
+  differenceCheck,
+  percentAllowed
 } from '../../../../../utils/ExchangeTools';
 import { ViewExchangeInterface } from '../../../../../interfaces';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
@@ -109,8 +110,6 @@ const DesktopCardContent = ({
       item?.pharmacyWarrantyA == undefined ? 0 : item?.pharmacyWarrantyA;
   }
   expireDate = getExpireDate(item);
-  console.log('totalPriceA:', item.totalPriceA)
-  console.log('totalPriceB:', item.totalPriceB)
   // }, [item]);
 
   // test data for completed exchanges
@@ -210,10 +209,9 @@ const DesktopCardContent = ({
   let is3PercentOK: boolean = true;
 
   const setDifferenceCheckOutput = (): void => {
-    debugger;
     const diffCheck = differenceCheck({
       exchange: item,
-      percent: 0.03
+      percent: percentAllowed()
     });
 
     // setDifference(diffCheck.difference);

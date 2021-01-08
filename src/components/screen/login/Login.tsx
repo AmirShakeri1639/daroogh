@@ -26,6 +26,7 @@ import CircleLoading from '../../public/loading/CircleLoading';
 import Account from '../../../services/api/Account';
 import { useMutation } from 'react-query';
 import { errorHandler, errorSweetAlert } from '../../../utils';
+import { Settings } from '../../../services/api';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -102,10 +103,20 @@ const Login: React.FC = (): JSX.Element => {
   const classes = useStyles();
   const { from }: any = location.state || { from: { pathname: '/dashboard' } };
   const { loginUser } = new Account();
+
   const [_loginUser, { isLoading }] = useMutation(loginUser, {
     onSuccess: (data) => {
       if (data !== undefined) {
         localStorage.setItem('user', JSON.stringify(data));
+
+        // Get settings from SERVER
+        (async (): Promise<any> => {
+          const { get } = new Settings();
+          const result = await get();
+          const { smsAPIkey, ...settings } = result;
+          localStorage.setItem('settings', JSON.stringify(settings));
+        })();
+
         push({
           pathname: from.pathname,
         });
@@ -154,16 +165,16 @@ const Login: React.FC = (): JSX.Element => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+      <div className={ classes.paper }>
+        <Avatar className={ classes.avatar }>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           ورود
         </Typography>
-        <form className={classes.form} noValidate onSubmit={formSubmitHandler}>
+        <form className={ classes.form } noValidate onSubmit={ formSubmitHandler }>
           <TextField
-            error={state.username.trim().length === 0 && showError}
+            error={ state.username.trim().length === 0 && showError }
             variant="outlined"
             margin="normal"
             required
@@ -172,28 +183,28 @@ const Login: React.FC = (): JSX.Element => {
             label="نام کاربری"
             name="email"
             autoComplete="email"
-            onChange={usernameHandler}
-            InputProps={{
+            onChange={ usernameHandler }
+            InputProps={ {
               startAdornment: (
                 <InputAdornment position="start">
                   <MailIcon />
                 </InputAdornment>
               ),
-            }}
+            } }
           />
           <TextField
-            error={state.password.trim().length === 0 && showError}
+            error={ state.password.trim().length === 0 && showError }
             variant="outlined"
             margin="normal"
             required
             fullWidth
             name="password"
             label="کلمه عبور"
-            type={state.isVisiblePassword ? 'text' : 'password'}
+            type={ state.isVisiblePassword ? 'text' : 'password' }
             id="password"
-            onChange={passwordHandler}
+            onChange={ passwordHandler }
             autoComplete="current-password"
-            InputProps={{
+            InputProps={ {
               startAdornment: (
                 <InputAdornment position="start">
                   <LockIcon />
@@ -203,21 +214,21 @@ const Login: React.FC = (): JSX.Element => {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
+                    onClick={ handleClickShowPassword }
+                    onMouseDown={ handleMouseDownPassword }
                     edge="end"
                   >
-                    {state.isVisiblePassword ? (
+                    { state.isVisiblePassword ? (
                       <Visibility />
                     ) : (
-                      <VisibilityOff />
-                    )}
+                        <VisibilityOff />
+                      ) }
                   </IconButton>
                 </InputAdornment>
               ),
-            }}
+            } }
           />
-          <Link className={classes.link} to="/forget-password">
+          <Link className={ classes.link } to="/forget-password">
             رمز عبور را فراموش کردم
           </Link>
           <Button
@@ -225,22 +236,22 @@ const Login: React.FC = (): JSX.Element => {
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
-            disabled={isLoading}
+            className={ classes.submit }
+            disabled={ isLoading }
           >
-            <Typography variant="button">{t('login.login')}</Typography>
-            {isLoading ? (
-              <CircleLoading size={16} color="inherit" />
+            <Typography variant="button">{ t('login.login') }</Typography>
+            { isLoading ? (
+              <CircleLoading size={ 16 } color="inherit" />
             ) : (
-              <LockOpenIcon fontSize="inherit" className={classes.margin} />
-            )}
+                <LockOpenIcon fontSize="inherit" className={ classes.margin } />
+              ) }
           </Button>
           <Link
-            className={`${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root`}
+            className={ `${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root` }
             to="/register-pharmacy-with-user"
           >
             <Typography variant="button">
-              {t('login.registerPharmacyWithUser')}
+              { t('login.registerPharmacyWithUser') }
             </Typography>
           </Link>
         </form>

@@ -11,3 +11,4 @@ export { default as Search } from './Search';
 export { default as Comission } from './Comission';
 export { default as MembershipRequest } from './MembershipRequest';
 export { default as Favorite } from './Favorite';
+export { default as Settings } from './Settings';
