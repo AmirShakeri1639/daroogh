@@ -209,35 +209,42 @@ export const differenceCheck =
         ? totalPriceA - (totalPriceB + a3p)
         : (totalPriceA + a3p) - totalPriceB;
 
+      // TODO: if diffA or diffB === 0 hide message
+
       // set messages:
       const diffAabs = l(Math.abs(diffA));
       const diffBabs = l(Math.abs(diffB));
-      if (exchange.currentPharmacyIsA) {
-        message = diffA > 0
-          ? `لطفا ${diffAabs} ریال به سبد خود اضافه کنید `
-          : `لطفا ${diffAabs} ریال از سبد خود کم کنید `
-        message += diffB > 0
-          ? `یا ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
-          : `یا ${diffBabs} ریال از سبد طرف مقابل کم کنید `
-      } else {
-        message = diffB > 0
-          ? `لطفا ${diffBabs} ریال به سبد خود اضافه کنید `
-          : `لطفا ${diffBabs} ریال از سبد خود کم کنید `
-        message += diffA > 0
-          ? `یا ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
-          : `یا ${diffAabs} ریال از سبد طرف مقابل کم کنید `
+      if (diffA !== 0 && diffB !== 0) {
+        if (exchange.currentPharmacyIsA) {
+          message = diffA > 0
+            ? `لطفا ${diffAabs} ریال به سبد خود اضافه کنید `
+            : `لطفا ${diffAabs} ریال از سبد خود کم کنید `
+          message += diffB > 0
+            ? `یا ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
+            : `یا ${diffBabs} ریال از سبد طرف مقابل کم کنید `
+        } else {
+          message = diffB > 0
+            ? `لطفا ${diffBabs} ریال به سبد خود اضافه کنید `
+            : `لطفا ${diffBabs} ریال از سبد خود کم کنید `
+          message += diffA > 0
+            ? `یا ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
+            : `یا ${diffAabs} ریال از سبد طرف مقابل کم کنید `
+        }
+        message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
       }
 
-      message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
-
-      if (exchange.lockSuggestion) {
+      if (exchange.lockSuggestion && !exchange.currentPharmacyIsA) {
         if (isDiffOk) {
           message = lockMessage;
-        } else if (!exchange.currentPharmacyIsA) {
+        } else {
           message += `\n${lockMessage}`;
         }
       }
 
+    }
+
+    if (isDiffOk && exchange.currentPharmacyIsA) {
+      message = ''
     }
 
     return {
