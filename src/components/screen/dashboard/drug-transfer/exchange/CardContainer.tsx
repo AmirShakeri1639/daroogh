@@ -617,15 +617,6 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
 
   const AddRemoveAction = (): JSX.Element => {
     let element = <></>;
-    console.log('viewExhcnage.state ==> ', viewExhcnage.state);
-    console.log(
-      'viewExhcnage.lockSuggestion ==> ',
-      viewExhcnage.lockSuggestion
-    );
-    console.log(
-      'viewExhcnage.currentPharmacyIsA ==> ',
-      viewExhcnage.currentPharmacyIsA
-    );
     if (
       !viewExhcnage ||
       viewExhcnage.state === 1 ||
