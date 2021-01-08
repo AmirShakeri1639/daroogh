@@ -143,6 +143,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 cardColor:
                   res && res.currentPharmacyIsA && item.addedByB
                     ? '#009900'
+                    : item.confirmed !== undefined && item.confirmed === false
+                    ? '#33ff34'
                     : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
@@ -169,6 +171,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 cardColor:
                   res && res.currentPharmacyIsA && item.addedByB
                     ? '#009900'
+                    : item.confirmed !== undefined && item.confirmed === false
+                    ? '#33ff34'
                     : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
@@ -193,7 +197,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
         if (res !== undefined) {
           res = calcTotalPrices({
-            exchange: res, uBasketCount, basketCount
+            exchange: res,
+            uBasketCount,
+            basketCount,
           });
         }
         setViewExchange(res);
@@ -202,7 +208,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           console.log('کد کمی مهم', res.currentPharmacyIsA);
 
           setExchangeStateCode(res.state);
-          if(res.currentPharmacyIsA){
+          if (res.currentPharmacyIsA) {
             switch (res.state) {
               case 2:
                 setMessageOfExchangeState(
@@ -212,39 +218,34 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               case 3:
                 setMessageOfExchangeState(
                   'لطفا تغییرات سبدها را بررسی و تایید نموده و نسبت به پرداخت پورسانت اقدام نمایید'
-                )
+                );
                 break;
               case 4 || 9:
                 setMessageOfExchangeState(
                   'تبادل کامل شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
                 );
                 break;
-                case 5:
+              case 5:
                 setMessageOfExchangeState(
                   'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
                 );
                 break;
-                case 6:
+              case 6:
+                setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
+                break;
+              case 7:
+                setMessageOfExchangeState('این تبادل لغو شده است');
+                break;
+              case 8 || 10:
                 setMessageOfExchangeState(
-                  'شما با این تبادل مخالفت نموده اید'
+                  'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
                 );
                 break;
-                case 7:
-                  setMessageOfExchangeState(
-                    'این تبادل لغو شده است'
-                  );
-                break;
-                case 8 || 10:
-                  setMessageOfExchangeState(
-                    'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
-                  );
-                break;
-               
+
               default:
                 break;
             }
-          }
-          else{
+          } else {
             switch (res.state) {
               case 2:
                 setMessageOfExchangeState(
@@ -254,7 +255,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               case 3:
                 setMessageOfExchangeState(
                   'لطفا منتظر تایید نهایی داروخانه مقابل بمانید'
-                )
+                );
                 break;
               case 4 || 8:
                 setMessageOfExchangeState(
@@ -267,19 +268,15 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 );
                 break;
               case 5:
-                setMessageOfExchangeState(
-                  'شما با این تبادل مخالفت نموده اید'
-                );
+                setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
                 break;
               case 7:
-                  setMessageOfExchangeState(
-                    'این تبادل لغو شده است'
-                  );
+                setMessageOfExchangeState('این تبادل لغو شده است');
                 break;
-              case 9 || 10 :
-                  setMessageOfExchangeState(
-                    'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
-                  );
+              case 9 || 10:
+                setMessageOfExchangeState(
+                  'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+                );
                 break;
               default:
                 break;
@@ -294,11 +291,20 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   useEffect(() => {
     if (viewExhcnage !== undefined) {
-      setViewExchange(calcTotalPrices({
-        exchange: viewExhcnage, uBasketCount, basketCount
-      }));
+      setViewExchange(
+        calcTotalPrices({
+          exchange: viewExhcnage,
+          uBasketCount,
+          basketCount,
+        })
+      );
     }
-  }, [basketCount.length, uBasketCount.length, viewExhcnage?.totalPriceA, viewExhcnage?.totalPriceB]);
+  }, [
+    basketCount.length,
+    uBasketCount.length,
+    viewExhcnage?.totalPriceA,
+    viewExhcnage?.totalPriceB,
+  ]);
 
   const { root } = style();
 
