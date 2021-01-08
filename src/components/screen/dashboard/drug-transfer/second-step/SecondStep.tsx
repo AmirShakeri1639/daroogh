@@ -271,14 +271,14 @@ const SecondStep: React.FC = () => {
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
-          item.cardColor = '#89fd89';
+          if (item.cardColor === 'white') item.cardColor = '#33ff33';
 
           let isPack = false;
           let totalAmount = 0;
           let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
             packList = new Array<AllPharmacyDrugInterface>();
-            orginalPharmacyDrug
+            basketCount
               .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);

@@ -108,9 +108,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 buttonName: 'حذف از تبادل',
                 cardColor:
                   res && res.currentPharmacyIsA && item.addedByB
-                    ? '#009900'
+                    ? '#00cc00'
                     : item.confirmed !== undefined && item.confirmed === false
-                    ? '#33ff34'
+                    ? '#009900'
                     : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
@@ -136,9 +136,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 buttonName: 'حذف از تبادل',
                 cardColor:
                   res && res.currentPharmacyIsA && item.addedByB
-                    ? '#009900'
+                    ? '#00cc00'
                     : item.confirmed !== undefined && item.confirmed === false
-                    ? '#33ff34'
+                    ? '#009900'
                     : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,

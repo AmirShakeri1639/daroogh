@@ -36,6 +36,7 @@ import {
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
+import Ribbon from '../../../../public/ribbon/Ribbon';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -676,6 +677,12 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
         className={`${root} ${isPack ? pack : ''}`}
         style={{ backgroundColor: pharmacyDrug.cardColor }}
       >
+        {(pharmacyDrug?.cardColor === '#00cc00' ||
+          pharmacyDrug?.cardColor === '#009900') && (
+          <Ribbon
+            text={pharmacyDrug?.cardColor === '#00cc00' ? 'اضافه' : 'حذف'}
+          />
+        )}
         <CardContent>{basicDetail}</CardContent>
         {!isPack && (
           <CardActions disableSpacing className={action}>
