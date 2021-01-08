@@ -18,6 +18,7 @@ import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
 import { encryptionKey } from '../../../../enum/consts';
 import { useTranslation } from 'react-i18next';
+import { calcTotalPrices } from '../../../../utils/ExchangeTools';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -179,9 +180,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               });
             });
           }
-          if (res !== undefined) {
-            res = calcTotalPrices(res);
-          }
           if (!res.currentPharmacyIsA) {
             setBasketCount(basketA);
             setUbasketCount(basketB);
@@ -193,6 +191,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           }
         }
 
+        if (res !== undefined) {
+          res = calcTotalPrices({
+            exchange: res, uBasketCount, basketCount
+          });
+        }
         setViewExchange(res);
         if (res) {
           console.log('کد خیلی مهم : ', res.state);
@@ -291,9 +294,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   useEffect(() => {
     if (viewExhcnage !== undefined) {
-      setViewExchange(calcTotalPrices(viewExhcnage));
+      setViewExchange(calcTotalPrices({
+        exchange: viewExhcnage, uBasketCount, basketCount
+      }));
     }
-  }, [basketCount, uBasketCount]);
+  }, [basketCount.length, uBasketCount.length, viewExhcnage?.totalPriceA, viewExhcnage?.totalPriceB]);
 
   const { root } = style();
 

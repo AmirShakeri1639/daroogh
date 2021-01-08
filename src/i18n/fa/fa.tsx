@@ -98,6 +98,7 @@ export default {
         register: 'ثبت',
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
+        save: 'ذخیره',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
@@ -210,6 +211,7 @@ export default {
         completionDate: 'تاریخ تکمیل تبادل',
         state: 'وضعیت',
         totalPrice: 'مجموع قیمت',
+        basketTotalPrice: 'مجموع قیمت سبد',
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',

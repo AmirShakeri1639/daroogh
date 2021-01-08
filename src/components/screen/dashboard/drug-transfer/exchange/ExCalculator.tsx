@@ -41,6 +41,7 @@ import {
   getExpireDate,
   ViewExchangeInitialState,
   differenceCheck,
+  percentAllowed,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
@@ -103,21 +104,26 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   // let totalPriceA = 0;
   // let totalPriceB = 0;
-  const percent = 0.03;
+  const percent = percentAllowed();
 
   const [differenceMessage, setDifferenceMessage] = useState('');
-  const [difference, setDifference] = useState(0);
-  const [diffPercent, setDiffPercent] = useState(0);
+  // const [difference, setDifference] = useState(0);
+  // const [diffPercent, setDiffPercent] = useState(0);
+
+  let difference: number = 0;
+  let diffPercent: number = 0;
 
   const setDifferenceCheckOutput = (): void => {
     const diffCheck = differenceCheck({
       exchange, percent
     });
 
-    setDifference(diffCheck.difference);
-    setDiffPercent(diffCheck.diffPercent);
+    // setDifference(diffCheck.difference);
+    // setDiffPercent(diffCheck.diffPercent);
     setIs3PercentOk(diffCheck.isDiffOk);
     setDifferenceMessage(diffCheck.message);
+
+    ({ difference, diffPercent } = diffCheck);
   }
 
   // useEffect(() => {
@@ -125,9 +131,7 @@ const ExCalculator: React.FC<Props> = (props) => {
   // }, [totalPriceA, totalPriceB]);
 
   // useEffect(() => {
-  //   debugger;
   //   setDifferenceCheckOutput();
-  //   console.log('is3 percent:', is3PercentOk);
   // }, [is3PercentOk]);
 
   const getOneSideData = (you: boolean): JSX.Element => {
@@ -170,7 +174,6 @@ const ExCalculator: React.FC<Props> = (props) => {
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
                     totalPrice += price;
-                    console.log('row:', row);
                     return (
                       <>
                         { (row.confirmed === undefined || row.confirmed) &&

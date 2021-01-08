@@ -1,7 +1,7 @@
 import { isNullOrEmpty } from ".";
 import { ExchangeStateEnum } from "../enum";
 import moment from 'jalali-moment';
-import { LabelValue, ViewExchangeInterface } from "../interfaces";
+import { AllPharmacyDrugInterface, LabelValue, ViewExchangeInterface } from "../interfaces";
 import { Convertor } from './';
 
 export const isExchangeCompleteddOrCancelled = (state: number): boolean => {
@@ -137,13 +137,15 @@ export const ViewExchangeInitialState: ViewExchangeInterface = {
   allowShowPharmacyInfo: false,
   cartA: [],
   cartB: [],
+  totalPriceA: 0,
+  totalPriceB: 0,
 };
 
 export interface DifferenceCheckInterface {
   exchange: ViewExchangeInterface;
   // totalPriceA: number;
   // totalPriceB: number;
-  percent: number
+  percent: number;
 }
 
 export interface DifferenceCheckOutputInterface {
@@ -159,100 +161,163 @@ export interface DifferenceCheckOutputInterface {
 
 /// Checks the difference between total price of two baskets 
 /// and returns proper values and a suitable message
-export const differenceCheck =
-  (params: DifferenceCheckInterface): DifferenceCheckOutputInterface => {
-    const { exchange, percent = 0.03 } = params;
-    const { totalPriceA = 0, totalPriceB = 0 } = exchange;
-    let difference: number = 0;
-    let diffPercent: number = 0;
-    let isDiffOk: boolean = true;
-    let message: string = '';
+export const differenceCheck = (
+  params: DifferenceCheckInterface
+): DifferenceCheckOutputInterface => {
+  const { exchange, percent } = params;
+  let { totalPriceA = 0, totalPriceB = 0 } = exchange;
 
-    const { l } = Convertor;
+  if (totalPriceA === 0 && exchange.cartA && exchange.cartA.length > 0) {
+    totalPriceA = exchange.cartA.map(i => i.cnt * i.amount).reduce((sum, price) => sum + price);
+  }
+  if (totalPriceB === 0 && exchange.cartB && exchange.cartB.length > 0) {
+    totalPriceB = exchange.cartB.map(i => i.cnt * i.amount).reduce((sum, price) => sum + price);
+  }
 
-    // const l = (v: string | number): string => {
-    //   return v.toLocaleString('fa-IR');
-    // };
+  let difference: number = 0;
+  let diffPercent: number = 0;
+  let isDiffOk: boolean = true;
+  let message: string = '';
 
-    const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
+  const { l } = Convertor;
+
+  // const l = (v: string | number): string => {
+  //   return v.toLocaleString('fa-IR');
+  // };
+
+  // diff percent of each side
+  const a3p = totalPriceA * percent;
+  const b3p = totalPriceB * percent;
+
+  difference = Math.abs(totalPriceA - totalPriceB);
+  // setDifference(difference);
+  diffPercent = Math.floor(
+    difference * 100 / Math.max(totalPriceA, totalPriceB)
+  );
+  // Maximum between to diff percents
+  const diffPercentValue = Math.max(a3p, b3p);
+  //setDiffPercent(diffPercent);
+
+  // if the difference is less than allowed?
+  isDiffOk = difference < diffPercentValue;
+  //if (setIs3PercentOk) setIs3PercentOk(isDiffOk);
+
+  // difference to amend for A
+  const diffA = totalPriceA > totalPriceB
+    ? (totalPriceB + b3p) - totalPriceA
+    : totalPriceB - (totalPriceA + b3p);
+
+  // difference to amend for B
+  const diffB = totalPriceA > totalPriceB
+    ? totalPriceA - (totalPriceB + a3p)
+    : (totalPriceA + a3p) - totalPriceB;
+
+
+  const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
     تبادل را رد یا تایید نمایید. سبدها قابل ویرایش نیستند.';
 
-    if (exchange.currentPharmacyIsA && totalPriceA === 0) {
-      message = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
+  if (exchange.currentPharmacyIsA && totalPriceA === 0 && totalPriceB !== 0) {
+    message = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
       حدود ${l(totalPriceB)} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
       در غیر این صورت داروخانه مقابل از سبد شما انتخاب خواهد کرد.`;
-    } else {
-      // diff percent of each side
-      const a3p = totalPriceA * percent;
-      const b3p = totalPriceB * percent;
+  } else {
+    // TODO: if diffA or diffB === 0 hide message
 
-      difference = Math.abs(totalPriceA - totalPriceB);
-      // setDifference(difference);
-      diffPercent = Math.floor(
-        difference * 100 / Math.max(totalPriceA, totalPriceB)
-      );
-      // Maximum between to diff percents
-      const diffPercentValue = Math.max(a3p, b3p);
-      //setDiffPercent(diffPercent);
-
-      // if the difference is less than allowed?
-      isDiffOk = difference < diffPercentValue;
-      //if (setIs3PercentOk) setIs3PercentOk(isDiffOk);
-
-      // difference to amend for A
-      const diffA = totalPriceA > totalPriceB
-        ? (totalPriceB + b3p) - totalPriceA
-        : totalPriceB - (totalPriceA + b3p);
-
-      // difference to amend for B
-      const diffB = totalPriceA > totalPriceB
-        ? totalPriceA - (totalPriceB + a3p)
-        : (totalPriceA + a3p) - totalPriceB;
-
-      // TODO: if diffA or diffB === 0 hide message
-
-      // set messages:
-      const diffAabs = l(Math.abs(diffA));
-      const diffBabs = l(Math.abs(diffB));
-      if (diffA !== 0 && diffB !== 0) {
-        if (exchange.currentPharmacyIsA) {
-          message = diffA > 0
-            ? `لطفا ${diffAabs} ریال به سبد خود اضافه کنید `
-            : `لطفا ${diffAabs} ریال از سبد خود کم کنید `
-          message += diffB > 0
-            ? `یا ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
-            : `یا ${diffBabs} ریال از سبد طرف مقابل کم کنید `
-        } else {
-          message = diffB > 0
-            ? `لطفا ${diffBabs} ریال به سبد خود اضافه کنید `
-            : `لطفا ${diffBabs} ریال از سبد خود کم کنید `
-          message += diffA > 0
-            ? `یا ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
-            : `یا ${diffAabs} ریال از سبد طرف مقابل کم کنید `
-        }
-        message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
+    // set messages:
+    const diffAabs = l(Math.abs(diffA));
+    const diffBabs = l(Math.abs(diffB));
+    if (diffA !== 0 && diffB !== 0) {
+      if (exchange.currentPharmacyIsA) {
+        message = diffA > 0
+          ? `لطفا ${diffAabs} ریال به سبد خود اضافه کنید `
+          : `لطفا ${diffAabs} ریال از سبد خود کم کنید `
+        message += diffB > 0
+          ? `یا ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
+          : `یا ${diffBabs} ریال از سبد طرف مقابل کم کنید `
+      } else {
+        message = diffB > 0
+          ? `لطفا ${diffBabs} ریال به سبد خود اضافه کنید `
+          : `لطفا ${diffBabs} ریال از سبد خود کم کنید `
+        message += diffA > 0
+          ? `یا ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
+          : `یا ${diffAabs} ریال از سبد طرف مقابل کم کنید `
       }
+      message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
+    }
 
-      if (exchange.lockSuggestion && !exchange.currentPharmacyIsA) {
-        if (isDiffOk) {
-          message = lockMessage;
-        } else {
-          message += `\n${lockMessage}`;
-        }
+    if (exchange.lockSuggestion && !exchange.currentPharmacyIsA) {
+      if (isDiffOk) {
+        message = lockMessage;
+      } else {
+        message += `\n${lockMessage}`;
       }
-
     }
 
-    if (isDiffOk && exchange.currentPharmacyIsA) {
-      message = ''
-    }
+  }
 
-    return {
-      difference,
-      diffPercent,
-      isDiffOk,
-      message
-    }
+  if (isDiffOk && exchange.currentPharmacyIsA) {
+    message = ''
+  }
 
-    //setDifferenceMessage(message);
-  };
+  if (diffPercent === NaN) {
+    diffPercent = 0
+  }
+
+  return {
+    difference,
+    diffPercent,
+    isDiffOk,
+    message
+  }
+
+  //setDifferenceMessage(message);
+};
+
+export interface CalcTotalPricesInterface {
+  exchange: ViewExchangeInterface;
+  uBasketCount?: AllPharmacyDrugInterface[];
+  basketCount?: AllPharmacyDrugInterface[];
+};
+
+/// Calculates total price of two (A & B) baskets for an exchange
+export const calcTotalPrices = (
+  params: CalcTotalPricesInterface
+): ViewExchangeInterface => {
+  const { exchange, uBasketCount = [], basketCount = [] } = params;
+  if (exchange.currentPharmacyIsA) {
+    exchange.totalPriceA = (uBasketCount.length > 0)
+      ? uBasketCount
+        .map(b => b.currentCnt * b.amount)
+        .reduce((sum, price) => sum + price)
+      : 0;
+    exchange.totalPriceB = (basketCount.length > 0)
+      ? basketCount
+        .map(b => b.currentCnt * b.amount)
+        .reduce((sum, price) => sum + price)
+      : 0;
+  } else {
+    exchange.totalPriceA = (basketCount.length > 0)
+      ? basketCount
+        .map(b => b.currentCnt * b.amount)
+        .reduce((sum, price) => sum + price)
+      : 0;
+    exchange.totalPriceB = (uBasketCount.length > 0)
+      ? uBasketCount
+        .map(b => b.currentCnt * b.amount)
+        .reduce((sum, price) => sum + price)
+      : 0;
+  }
+
+  return exchange;
+};
+
+/// Reads max difference percent from localStorage (settings)
+export const percentAllowed = (): number => {
+  try {
+    const settings = localStorage.getItem('settings') || '{}';
+    const { diffrenceAllowPercentageInExchange } = JSON.parse(settings);
+    return diffrenceAllowPercentageInExchange / 100;
+  } catch (e) {
+    return 0.03;
+  }
+}
