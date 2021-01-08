@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import ReactModal from 'react-modal';
 import { ModalPropsInterface } from '../../../interfaces/component';
 import './style.css';
@@ -37,6 +37,6 @@ const Modal: React.FC<ModalPropsInterface> = (props) => {
       {children}
     </ReactModal>
   );
-}
+};
 
 export default Modal;
