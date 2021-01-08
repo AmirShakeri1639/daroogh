@@ -298,7 +298,7 @@ export class NewUserData {
   public nationalCode: string = '';
   public birthDate: string = '';
   // public  pictureFileID: number = 0;
-  public active?: boolean | string = '';
+  public active: boolean = false;
   // public lastChangePassword: string = '';
   // public _date: string = '';
   // public _userid: number = 0;

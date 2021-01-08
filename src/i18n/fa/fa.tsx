@@ -98,6 +98,7 @@ export default {
         register: 'ثبت',
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
+        save: 'ذخیره',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',

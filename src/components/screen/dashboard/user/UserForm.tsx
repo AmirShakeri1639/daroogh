@@ -10,6 +10,7 @@ import {
   RadioGroup,
   Radio,
   FormControl,
+  Switch,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { NewUserData } from "../../../../interfaces/user";
@@ -21,6 +22,7 @@ import Modal from "../../../public/modal/Modal";
 import User from "../../../../services/api/User";
 import { useTranslation } from "react-i18next";
 import { UserDataProps } from '../../../../interfaces';
+import { UserQueryEnum } from '../../../../enum';
 
 const useClasses = makeStyles((theme) => createStyles({
   formContainer: {
@@ -41,7 +43,11 @@ const useClasses = makeStyles((theme) => createStyles({
   },
   formControl: {
     minWidth: 200
-  }
+  },
+  cancelButton: {
+    background: theme.palette.pinkLinearGradient.main,
+    marginLeft: theme.spacing(2),
+  },
 }));
 
 const initialState: NewUserData = {
@@ -55,7 +61,7 @@ const initialState: NewUserData = {
   password: '',
   nationalCode: '',
   birthDate: '',
-  active: '',
+  active: false,
 }
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -120,7 +126,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
   const [showError, setShowError] = useState<boolean>(false);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
 
-  const { userData, noShowInput } = props;
+  const { userData, noShowInput, onSubmit, onCancel } = props;
 
   useEffect(() => {
     if (userData !== undefined) {
@@ -146,7 +152,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
   });
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g;
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const inputValuesValidation = (): boolean => {
     const {
@@ -158,11 +164,10 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       name.trim().length < 2
       || family.trim().length < 2
       || mobile.trim().length < 11
-      || !emailRegex.test(email)
+      || !emailRegex.test(email.toLowerCase())
       || userName.trim().length < 1
       || nationalCode.length !== 10
       || birthDate === ''
-      || active === ''
     );
   }
 
@@ -183,10 +188,11 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       nationalCode: state.nationalCode,
       birthDate: state.birthDate,
       password: state.password,
-      active: state.active === 'true',
+      active: state.active,
     };
     try {
       await _saveNewUser(data);
+      if (onSubmit) onSubmit();
     } catch (e) {
       errorHandler(e);
     }
@@ -198,176 +204,185 @@ const UserForm: React.FC<UserDataProps> = (props) => {
     );
   }
 
-  const { formContainer, addButton, box } = useClasses();
+  const { formContainer, addButton, box, cancelButton } = useClasses();
   return (
     <>
       <form
         autoComplete="off"
-        className={formContainer}
-        onSubmit={formHandler}
+        className={ formContainer }
+        onSubmit={ formHandler }
       >
         <Grid
           container
-          spacing={1}
+          spacing={ 1 }
         >
           <Grid
             item
-            xs={12}
+            xs={ 12 }
           >
-            <Box display="flex" justifyContent="space-between" className={box}>
+            <Box display="flex" justifyContent="space-between" className={ box }>
               <TextField
-                error={state.name.length < 2 && showError}
+                error={ state.name.length < 2 && showError }
                 label="نام کاربر"
                 // required
                 size="small"
                 variant="outlined"
-                value={state.name}
-                onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
+                value={ state.name }
+                onChange={ (e): void => dispatch({ type: 'name', value: e.target.value }) }
               />
               <TextField
-                error={state.family.length < 2 && showError}
+                error={ state.family.length < 2 && showError }
                 label="نام خانوادگی کاربر"
                 // required
                 size="small"
                 variant="outlined"
-                value={state.family}
-                onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
+                value={ state.family }
+                onChange={ (e): void => dispatch({ type: 'family', value: e.target.value }) }
               />
               <TextField
-                error={state.mobile.trim().length < 11 && showError}
+                error={ state.mobile.trim().length < 11 && showError }
                 label="موبایل"
                 type="number"
                 // required
                 size="small"
                 variant="outlined"
-                value={state.mobile}
-                onChange={(e): void => dispatch({ type: 'mobile', value: e.target.value })}
+                value={ state.mobile }
+                onChange={ (e): void => dispatch({ type: 'mobile', value: e.target.value }) }
               />
             </Box>
           </Grid>
           <Grid
             item
-            xs={12}
+            xs={ 12 }
           >
-            <Box display="flex" flexWrap="flexWrap" justifyContent="space-between" className={box}>
+            <Box display="flex" flexWrap="flexWrap" justifyContent="space-between" className={ box }>
               <TextField
-                error={!emailRegex.test(state.email) && showError}
+                error={ !emailRegex.test(state.email) && showError }
                 label="ایمیل"
                 // required
                 type="email"
                 size="small"
                 variant="outlined"
-                value={state.email}
-                onChange={(e): void => dispatch({ type: 'email', value: e.target.value })}
+                value={ state.email }
+                onChange={ (e): void => dispatch({ type: 'email', value: e.target.value }) }
               />
               <TextField
-                error={state.userName.length < 1 && showError}
+                error={ state.userName.length < 1 && showError }
                 label="نام کاربری"
                 // required
                 size="small"
                 variant="outlined"
                 autoComplete="off"
-                value={state.userName}
-                onChange={(e): void => dispatch({ type: 'userName', value: e.target.value })}
+                value={ state.userName }
+                onChange={ (e): void => dispatch({ type: 'userName', value: e.target.value }) }
               />
-              {isVisibleField('password') && (
+              { isVisibleField('password') && (
                 <TextField
-                  error={state?.password?.length < 3 && showError}
+                  error={ state?.password?.length < 3 && showError }
                   label="کلمه عبور"
                   autoComplete="new-password"
                   type="password"
                   size="small"
                   variant="outlined"
-                  value={state.password}
-                  onChange={(e): void => dispatch({ type: 'password', value: e.target.value })}
+                  value={ state.password }
+                  onChange={ (e): void => dispatch({ type: 'password', value: e.target.value }) }
                 />
-              )}
+              ) }
             </Box>
           </Grid>
           <Grid
             item
-            xs={12}
-            sm={8}
+            xs={ 12 }
+            sm={ 8 }
           >
-            <Box display="flex" justifyContent="space-between" className={box}>
+            <Box display="flex" justifyContent="space-between" className={ box }>
               <TextField
-                error={state.nationalCode.length < 10 && showError}
+                error={ state.nationalCode.length < 10 && showError }
                 label="کد ملی"
                 // required
                 type="text"
                 size="small"
                 variant="outlined"
-                value={state.nationalCode}
-                onChange={(e): void => dispatch({ type: 'nationalCode', value: e.target.value })}
+                value={ state.nationalCode }
+                onChange={ (e): void => dispatch({ type: 'nationalCode', value: e.target.value }) }
               />
               <TextField
-                error={state.birthDate === '' && showError}
+                error={ state.birthDate === '' && showError }
                 label="تاریخ تولد"
                 // required
-                inputProps={{
+                inputProps={ {
                   readOnly: true
-                }}
+                } }
                 type="text"
                 size="small"
                 variant="outlined"
-                value={state.birthDate}
-                onClick={toggleIsOpenDatePicker}
+                value={ state.birthDate }
+                onClick={ toggleIsOpenDatePicker }
               />
             </Box>
           </Grid>
           <Grid
             item
-            xs={12}
+            xs={ 12 }
           >
             <Box display="flex" flexDirection="column">
-              <FormControl
-                component="fieldset"
-                error={state.active === '' && showError}
-              >
-                <FormLabel component="legend">وضعیت کاربر</FormLabel>
-                <RadioGroup
-                  aria-label="activity"
-                  name="active"
-                  value={state.active}
-                  onChange={(e): void => {
-                    dispatch({ type: 'active', value: e.target.value });
-                  }}
-                >
-                  <FormControlLabel value="true" control={<Radio />} label={t('general.active')} />
-                  <FormControlLabel value="false" control={<Radio />} label={t('general.deActive')} />
-                </RadioGroup>
-              </FormControl>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={ state.active }
+                    onChange={ (e): void =>
+                      dispatch({
+                        type: 'active',
+                        value: e.target.checked,
+                      })
+                    }
+                  />
+                }
+                label={ t('general.active') }
+              />
             </Box>
           </Grid>
           <Grid
             item
-            xs={12}
+            xs={ 12 }
           >
             <Button
               type="submit"
               variant="contained"
               color="primary"
-              className={addButton}
+              className={ addButton }
             >
               {
                 isLoadingNewUser
                   ? t('general.pleaseWait')
-                  : <span>{t('action.create')}</span>
+                  : t('action.save') 
               }
+            </Button>
+            <Button
+              type="submit"
+              color="secondary"
+              variant="contained"
+              className={ cancelButton }
+              onClick={ (): void => {
+                dispatch({ type: 'reset' });
+                if (onCancel) onCancel();
+              } }
+            >
+              { t('general.cancel') }
             </Button>
           </Grid>
         </Grid>
       </form>
 
       <Modal
-        open={isOpenDatePicker}
-        toggle={toggleIsOpenDatePicker}
+        open={ isOpenDatePicker }
+        toggle={ toggleIsOpenDatePicker }
       >
         <DateTimePicker
-          selectedDateHandler={(e): void => {
+          selectedDateHandler={ (e): void => {
             dispatch({ type: 'birthDate', value: e });
             toggleIsOpenDatePicker();
-          }}
+          } }
         />
       </Modal>
     </>

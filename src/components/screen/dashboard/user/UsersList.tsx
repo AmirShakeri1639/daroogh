@@ -7,7 +7,12 @@ import {
   Paper,
   Typography,
   Divider,
+  Card,
+  CardHeader,
+  IconButton,
+  CardContent,
 } from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from "@material-ui/core/styles";
 import { ActionInterface, TableColumnInterface } from "../../../../interfaces";
 import { TextMessage } from "../../../../enum";
@@ -23,6 +28,21 @@ import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 
 const useClasses = makeStyles((theme) => createStyles({
+  root: {
+    minWidth: 500,
+    width: '100%',
+    maxWidth: 1000,
+    '& > .MuiCardContent-root': {
+      padding: 0
+    },
+    '& > .MuiCardHeader-root': {
+      padding: '10px 10px 2px 10px'
+    },
+    '& > .MuiCardHeader-content': {
+      marginTop: '-10px !important',
+      color: 'red'
+    }
+  },
   gridEditForm: {
     margin: theme.spacing(2, 0, 2),
   },
@@ -68,7 +88,7 @@ const initialState: NewUserData = {
   password: '',
   nationalCode: '',
   birthDate: '',
-  active: '',
+  active: false,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -137,6 +157,8 @@ const UsersList: React.FC = () => {
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
+  const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
+  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
   const { getAllUsers, removeUser, disableUser, saveNewUser } = new User();
 
@@ -154,7 +176,7 @@ const UsersList: React.FC = () => {
 
   const [_disableUser, { reset: resetDisableUser }] = useMutation(disableUser, {
     onSuccess: async () => {
-      await queryCache.invalidateQueries(UserQueryEnum.USERS_LIST);
+      await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
     }
   });
 
@@ -163,15 +185,14 @@ const UsersList: React.FC = () => {
       const { message } = data;
       await successSweetAlert(message);
       dispatch({ type: 'reset' });
-      await queryCache.invalidateQueries(UserQueryEnum.USERS_LIST);
+      await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
     }
   });
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker(v => !v);
 
   const {
-    gridEditForm,
-    formTitle, titleContainer,
+    root,
   } = useClasses();
 
   const tableColumns = (): TableColumnInterface[] => {
@@ -238,11 +259,13 @@ const UsersList: React.FC = () => {
     }
   }
 
-  const editUserHandler = (e: any, item: NewUserData): void => {
+  const editUserHandler = (e: any, row: NewUserData): void => {
+    toggleIsOpenSaveModalForm();
+
     const {
       name, family, email, mobile, birthDate,
       id, nationalCode, userName, active,
-    } = item;
+    } = row;
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'family', value: family });
     dispatch({ type: 'email', value: email });
@@ -251,60 +274,64 @@ const UsersList: React.FC = () => {
     dispatch({ type: 'nationalCode', value: nationalCode });
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'birthDate', value: birthDate });
-    dispatch({ type: 'active', value: active === true ? 'true' : 'false' });
+    dispatch({ type: 'active', value: active });
   }
 
   const displayEditForm = (): JSX.Element => {
     return (
-      <Grid
-        className={gridEditForm}
-        container
-        spacing={0}
-      >
-        <Grid
-          xs={12}
-          item
-        >
-          <Paper>
-            <div className={titleContainer}>
-              <Typography variant="h6" component="h6" className={`${formTitle} txt-md`}>
-                {t('user.edit-user')}
-              </Typography>
-            </div>
-            <Divider />
-            <UserForm userData={state} noShowInput={['password']} />
-          </Paper>
-        </Grid>
-      </Grid>
+      <Modal open={ isOpenSaveModal } toggle={ toggleIsOpenSaveModalForm }>
+        <Card className={ root }>
+          <CardHeader
+            title={ state.id === 0 ? t('action.create') : t('action.edit') }
+            action={
+              <IconButton onClick={ toggleIsOpenSaveModalForm }>
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <Divider />
+          <CardContent>
+            <UserForm 
+              userData={ state } 
+              noShowInput={ ['password'] } 
+              onCancel={ toggleIsOpenSaveModalForm }
+              onSubmit={ (): void => {
+                queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+                toggleIsOpenSaveModalForm() ;
+              }}
+            />
+          </CardContent>
+        </Card>
+      </Modal>
     );
   }
 
   return (
     <FormContainer
-      title={t('user.users-list')}
+      title={ t('user.users-list') }
     >
       <DataTable
-        columns={tableColumns()}
-        editAction={editUserHandler}
-        removeAction={removeUserHandler}
-        queryKey={UserQueryEnum.GET_ALL_USERS}
-        queryCallback={getAllUsers}
-        initLoad={false}
-        isLoading={isLoadingRemoveUser || isLoadingEditUser}
-        pageSize={5}
+        columns={ tableColumns() }
+        editAction={ editUserHandler }
+        removeAction={ removeUserHandler }
+        queryKey={ UserQueryEnum.GET_ALL_USERS }
+        queryCallback={ getAllUsers }
+        initLoad={ false }
+        isLoading={ isLoadingRemoveUser || isLoadingEditUser }
+        pageSize={ 10 }
       />
 
-      {(state.id !== 0) && displayEditForm()}
+      { isOpenSaveModal && displayEditForm() }
 
       <Modal
-        open={isOpenDatePicker}
-        toggle={toggleIsOpenDatePicker}
+        open={ isOpenDatePicker }
+        toggle={ toggleIsOpenDatePicker }
       >
         <DateTimePicker
-          selectedDateHandler={(e): void => {
+          selectedDateHandler={ (e): void => {
             dispatch({ type: 'birthDate', value: e });
             toggleIsOpenDatePicker();
-          }}
+          } }
         />
       </Modal>
     </FormContainer>
