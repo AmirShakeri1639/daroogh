@@ -388,7 +388,7 @@ const SecondStep: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={12} md={3} className={desktopCardContent}>
             <Grid container className={stickyRecommendation}>
-              <DesktopCardContent item={viewExhcnage} />
+              <DesktopCardContent />
               {/* <TextField
                 style={{ width: '100%', marginTop: 15, fontSize: 10 }}
                 label="توضیحات"
