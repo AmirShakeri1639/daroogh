@@ -18,6 +18,7 @@ import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
 import { encryptionKey } from '../../../../enum/consts';
 import { useTranslation } from 'react-i18next';
+import { calcTotalPrices } from '../../../../utils/ExchangeTools';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -80,34 +81,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     eid = +decryptedId;
   }
 
-  const calcTotalPrices = (exchange: ViewExchangeInterface): ViewExchangeInterface => {
-    if (exchange?.currentPharmacyIsA) {
-      exchange.totalPriceA = (uBasketCount.length > 0)
-        ? uBasketCount
-          .map(b => b.currentCnt * b.amount)
-          .reduce((sum, price) => sum + price)
-        : 0;
-      exchange.totalPriceB = (basketCount.length > 0)
-        ? basketCount
-          .map(b => b.currentCnt * b.amount)
-          .reduce((sum, price) => sum + price)
-        : 0;
-    } else {
-      exchange.totalPriceA = (basketCount.length > 0)
-        ? basketCount
-          .map(b => b.currentCnt * b.amount)
-          .reduce((sum, price) => sum + price)
-        : 0;
-      exchange.totalPriceB = (uBasketCount.length > 0)
-        ? uBasketCount
-          .map(b => b.currentCnt * b.amount)
-          .reduce((sum, price) => sum + price)
-        : 0;
-    }
-
-    return exchange;
-  }
-
   useEffect(() => {
     (async (): Promise<void> => {
       let eid: any = undefined;
@@ -167,9 +140,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               });
             });
           }
-          if (res !== undefined) {
-            res = calcTotalPrices(res);
-          }
           if (!res.currentPharmacyIsA) {
             setBasketCount(basketA);
             setUbasketCount(basketB);
@@ -181,6 +151,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           }
         }
 
+        if (res !== undefined) {
+          res = calcTotalPrices({
+            exchange: res, uBasketCount, basketCount
+          });
+        }
         setViewExchange(res);
         if (res) {
           console.log('کد وضعیت تبادل : ', res.state);
@@ -207,10 +182,13 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   }, [viewExchangeId, exchangeState]);
 
   useEffect(() => {
+    // debugger;
     if (viewExhcnage !== undefined) {
-      setViewExchange(calcTotalPrices(viewExhcnage));
+      setViewExchange(calcTotalPrices({
+        exchange: viewExhcnage, uBasketCount, basketCount
+      }));
     }
-  }, [basketCount, uBasketCount]);
+  }, [basketCount.length, uBasketCount.length]);
 
 
   const { root } = style();
