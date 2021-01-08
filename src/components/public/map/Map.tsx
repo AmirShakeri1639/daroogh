@@ -9,16 +9,23 @@ const useStyle = makeStyles((theme) =>
       '& .mapboxgl-ctrl-bottom-right': {
         display: 'none',
       },
+      '& .mapboxgl-ctrl-bottom-left': {
+        display: 'none',
+      },
     },
   })
 );
 
 interface Props {
   onClick?: (e: any) => void;
+  defaultLatLng?: [number, number];
 }
 
 const Map: React.FC<Props> = (props) => {
-  const { onClick } = props;
+  const {
+    onClick,
+    defaultLatLng = [59.526950363917827, 36.321029857543529],
+  } = props;
   const { container } = useStyle();
 
   const [map, setMap] = useState(null);
@@ -31,27 +38,26 @@ const Map: React.FC<Props> = (props) => {
   //   null,
   //   true // Lazy load the plugin
   // );
-  const defaultCoordinates: [number, number] = [59.526950363917827, 36.321029857543529];
 
   useEffect(() => {
     const initializeMap = (setMap: any, mapContainer: any): any => {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
-        center: defaultCoordinates,
-        zoom: 14
+        center: defaultLatLng,
+        zoom: 14,
       });
 
       let marker = new mapboxgl.Marker({
-        draggable: true
+        draggable: true,
       })
-        .setLngLat(defaultCoordinates)
+        .setLngLat(defaultLatLng)
         .addTo(map);
 
       const markerDragHandler = (): void => {
         const lngLat = marker.getLngLat();
         if (onClick) onClick({ lngLat: { ...lngLat } });
-      }
+      };
       marker.on('dragend', markerDragHandler);
 
       map.on('load', () => {
@@ -77,15 +83,15 @@ const Map: React.FC<Props> = (props) => {
 
   return (
     <div
-      className={ container }
-      ref={ mapContainer }
-      style={ {
-        width: '90vw',
+      className={container}
+      ref={mapContainer}
+      style={{
+        width: '100%',
         height: 'calc(100vh - 150px)',
         maxHeight: '400px',
         // position: 'absolute',
         direction: 'rtl',
-      } }
+      }}
     />
   );
 };

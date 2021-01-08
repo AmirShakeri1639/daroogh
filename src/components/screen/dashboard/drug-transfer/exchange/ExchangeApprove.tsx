@@ -184,7 +184,7 @@ const ExchangeApprove: React.FC = () => {
           ></input>
           <input
             type="hidden"
-            value={'https://api.sumon.ir/payment/verify?paymentToken'}
+            value={'http://sumon.ir/dashboard#/dashboard/exchange/desktop'}
             name="redirectUrl"
           ></input>
           {/* <button type="submit" >

@@ -270,8 +270,8 @@ const SecondStep: React.FC = () => {
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
-          item.buttonName = 'حذف از تبادل';
-          item.cardColor = '#89fd89';
+          // item.buttonName = 'حذف از تبادل';
+          // item.cardColor = '#89fd89';
 
           let isPack = false;
           let totalAmount = 0;

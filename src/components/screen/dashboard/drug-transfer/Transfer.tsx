@@ -35,7 +35,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     // 'انتخاب داروخانه',
     'انتخاب از سبد طرف مقابل',
     'انتخاب از سبد شما',
-    'تایید نهایی',
+    // 'تایید نهایی',
   ]);
   const [activeStep, setActiveStep] = useState<number>(0);
   const [openDialog, setOpenDialog] = React.useState(false);
@@ -80,33 +80,39 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     eid = +decryptedId;
   }
 
-  const calcTotalPrices = (exchange: ViewExchangeInterface): ViewExchangeInterface => {
+  const calcTotalPrices = (
+    exchange: ViewExchangeInterface
+  ): ViewExchangeInterface => {
     if (exchange?.currentPharmacyIsA) {
-      exchange.totalPriceA = (uBasketCount.length > 0)
-        ? uBasketCount
-          .map(b => b.currentCnt * b.amount)
-          .reduce((sum, price) => sum + price)
-        : 0;
-      exchange.totalPriceB = (basketCount.length > 0)
-        ? basketCount
-          .map(b => b.currentCnt * b.amount)
-          .reduce((sum, price) => sum + price)
-        : 0;
+      exchange.totalPriceA =
+        uBasketCount.length > 0
+          ? uBasketCount
+              .map((b) => b.currentCnt * b.amount)
+              .reduce((sum, price) => sum + price)
+          : 0;
+      exchange.totalPriceB =
+        basketCount.length > 0
+          ? basketCount
+              .map((b) => b.currentCnt * b.amount)
+              .reduce((sum, price) => sum + price)
+          : 0;
     } else {
-      exchange.totalPriceA = (basketCount.length > 0)
-        ? basketCount
-          .map(b => b.currentCnt * b.amount)
-          .reduce((sum, price) => sum + price)
-        : 0;
-      exchange.totalPriceB = (uBasketCount.length > 0)
-        ? uBasketCount
-          .map(b => b.currentCnt * b.amount)
-          .reduce((sum, price) => sum + price)
-        : 0;
+      exchange.totalPriceA =
+        basketCount.length > 0
+          ? basketCount
+              .map((b) => b.currentCnt * b.amount)
+              .reduce((sum, price) => sum + price)
+          : 0;
+      exchange.totalPriceB =
+        uBasketCount.length > 0
+          ? uBasketCount
+              .map((b) => b.currentCnt * b.amount)
+              .reduce((sum, price) => sum + price)
+          : 0;
     }
 
     return exchange;
-  }
+  };
 
   useEffect(() => {
     (async (): Promise<void> => {
@@ -133,7 +139,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 expireDate: item.expireDate,
                 amount: item.amount,
                 buttonName: 'حذف از تبادل',
-                cardColor: '#89fd89',
+                cardColor:
+                  res && res.currentPharmacyIsA && item.addedByB
+                    ? '#009900'
+                    : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
@@ -156,14 +165,17 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 expireDate: item.expireDate,
                 amount: item.amount,
                 buttonName: 'حذف از تبادل',
-                cardColor: '#89fd89',
+                cardColor:
+                  res && res.currentPharmacyIsA && item.addedByB
+                    ? '#009900'
+                    : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
                 order: 0,
                 totalAmount: 0,
                 totalCount: 0,
-                confirmed: item.confirmed
+                confirmed: item.confirmed,
               });
             });
           }
@@ -212,7 +224,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     }
   }, [basketCount, uBasketCount]);
 
-
   const { root } = style();
 
   const initialContextValues = (): TransferDrugContextInterface => ({
@@ -249,22 +260,22 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   });
 
   return (
-    <Context.Provider value={ initialContextValues() }>
-      <div className={ root }>
+    <Context.Provider value={initialContextValues()}>
+      <div className={root}>
         <MaterialContainer>
-          <Grid container spacing={ 1 }>
-            { activeStep > 0 && (
+          <Grid container spacing={1}>
+            {activeStep > 0 && (
               <>
-                <Grid item xs={ 12 } sm={ 9 } md={ 9 } style={ { marginRight: 8 } }>
+                <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
                   <ProgressBar />
                 </Grid>
               </>
-            ) }
+            )}
 
-            { activeStep === 0 && <FirstStep /> }
-            { activeStep === 1 && <SecondStep /> }
-            { activeStep === 2 && <ThirdStep /> }
-            { activeStep === 3 && <FourthStep /> }
+            {activeStep === 0 && <FirstStep />}
+            {activeStep === 1 && <SecondStep />}
+            {activeStep === 2 && <ThirdStep />}
+            {activeStep === 3 && <FourthStep />}
           </Grid>
         </MaterialContainer>
       </div>
