@@ -183,21 +183,92 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
         setViewExchange(res);
         if (res) {
-          console.log('کد وضعیت تبادل : ', res.state);
+          console.log('کد خیلی مهم : ', res.state);
+          console.log('کد کمی مهم', res.currentPharmacyIsA);
+
           setExchangeStateCode(res.state);
-          switch (res.state) {
-            case 2:
-              setMessageOfExchangeState(
-                'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
-              );
-              break;
-            case 4:
-              setMessageOfExchangeState(
-                'داروخانه مقابل لیست های انتخاب شده شما را تایید/ویرایش نموده است. لطفا پس از بررسی تایید نهایی نمایید.'
-              );
-              break;
-            default:
-              break;
+          if(res.currentPharmacyIsA){
+            switch (res.state) {
+              case 2:
+                setMessageOfExchangeState(
+                  'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
+                );
+                break;
+              case 3:
+                setMessageOfExchangeState(
+                  'لطفا تغییرات سبدها را بررسی و تایید نموده و نسبت به پرداخت پورسانت اقدام نمایید'
+                )
+                break;
+              case 4 || 9:
+                setMessageOfExchangeState(
+                  'تبادل کامل شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
+                );
+                break;
+                case 5:
+                setMessageOfExchangeState(
+                  'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
+                );
+                break;
+                case 6:
+                setMessageOfExchangeState(
+                  'شما با این تبادل مخالفت نموده اید'
+                );
+                break;
+                case 7:
+                  setMessageOfExchangeState(
+                    'این تبادل لغو شده است'
+                  );
+                break;
+                case 8 || 10:
+                  setMessageOfExchangeState(
+                    'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+                  );
+                break;
+               
+              default:
+                break;
+            }
+          }
+          else{
+            switch (res.state) {
+              case 2:
+                setMessageOfExchangeState(
+                  'پس از بررسی سبدها نسبت به تایید یا رد این درخواست اقدام نمایید.'
+                );
+                break;
+              case 3:
+                setMessageOfExchangeState(
+                  'لطفا منتظر تایید نهایی داروخانه مقابل بمانید'
+                )
+                break;
+              case 4 || 8:
+                setMessageOfExchangeState(
+                  'تبادل کامل شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
+                );
+                break;
+              case 6:
+                setMessageOfExchangeState(
+                  'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
+                );
+                break;
+              case 5:
+                setMessageOfExchangeState(
+                  'شما با این تبادل مخالفت نموده اید'
+                );
+                break;
+              case 7:
+                  setMessageOfExchangeState(
+                    'این تبادل لغو شده است'
+                  );
+                break;
+              case 9 || 10 :
+                  setMessageOfExchangeState(
+                    'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+                  );
+                break;
+              default:
+                break;
+            }
           }
         }
         setExchangeId(eid);
