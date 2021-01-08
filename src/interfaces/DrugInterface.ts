@@ -1,3 +1,5 @@
+import { ReactText } from 'react';
+
 export interface DrugInterface {
   id: number;
   categoryID?: number;
@@ -11,6 +13,11 @@ export interface DrugInterface {
   type?: string;
   category?: any;
   categoryName?: string;
+}
+
+export interface DrugCategoryInterface {
+  id: ReactText;
+  name: string;
 }
 
 export interface TransferBasketInterface {

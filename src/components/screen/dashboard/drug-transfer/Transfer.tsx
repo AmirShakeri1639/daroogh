@@ -65,6 +65,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     ''
   );
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
+  const [is3PercentOk, setIs3PercentOk] = React.useState(true);
 
   const { viewExchangeId, exchangeState } = props;
 
@@ -79,6 +80,34 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     eid = +decryptedId;
   }
 
+  const calcTotalPrices = (exchange: ViewExchangeInterface): ViewExchangeInterface => {
+    if (exchange?.currentPharmacyIsA) {
+      exchange.totalPriceA = (uBasketCount.length > 0)
+        ? uBasketCount
+          .map(b => b.currentCnt * b.amount)
+          .reduce((sum, price) => sum + price)
+        : 0;
+      exchange.totalPriceB = (basketCount.length > 0)
+        ? basketCount
+          .map(b => b.currentCnt * b.amount)
+          .reduce((sum, price) => sum + price)
+        : 0;
+    } else {
+      exchange.totalPriceA = (basketCount.length > 0)
+        ? basketCount
+          .map(b => b.currentCnt * b.amount)
+          .reduce((sum, price) => sum + price)
+        : 0;
+      exchange.totalPriceB = (uBasketCount.length > 0)
+        ? uBasketCount
+          .map(b => b.currentCnt * b.amount)
+          .reduce((sum, price) => sum + price)
+        : 0;
+    }
+
+    return exchange;
+  }
+
   useEffect(() => {
     (async (): Promise<void> => {
       let eid: any = undefined;
@@ -86,7 +115,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
       eid = encryptedId;
       if (eid !== undefined) {
         const result = await getViewExchange(eid);
-        const res: ViewExchangeInterface | undefined = result.data;
+        let res: ViewExchangeInterface | undefined = result.data;
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
           const basketB: AllPharmacyDrugInterface[] = [];
@@ -134,8 +163,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 order: 0,
                 totalAmount: 0,
                 totalCount: 0,
+                confirmed: item.confirmed
               });
             });
+          }
+          if (res !== undefined) {
+            res = calcTotalPrices(res);
           }
           if (!res.currentPharmacyIsA) {
             setBasketCount(basketA);
@@ -147,6 +180,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
         }
+
         setViewExchange(res);
         if (res) {
           console.log('کد وضعیت تبادل : ', res.state);
@@ -171,6 +205,13 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
       }
     })();
   }, [viewExchangeId, exchangeState]);
+
+  useEffect(() => {
+    if (viewExhcnage !== undefined) {
+      setViewExchange(calcTotalPrices(viewExhcnage));
+    }
+  }, [basketCount, uBasketCount]);
+
 
   const { root } = style();
 
@@ -203,25 +244,27 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setMessageOfExchangeState,
     showApproveModalForm,
     setShowApproveModalForm,
+    is3PercentOk,
+    setIs3PercentOk,
   });
 
   return (
-    <Context.Provider value={initialContextValues()}>
-      <div className={root}>
+    <Context.Provider value={ initialContextValues() }>
+      <div className={ root }>
         <MaterialContainer>
-          <Grid container spacing={1}>
-            {activeStep > 0 && (
+          <Grid container spacing={ 1 }>
+            { activeStep > 0 && (
               <>
-                <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
+                <Grid item xs={ 12 } sm={ 9 } md={ 9 } style={ { marginRight: 8 } }>
                   <ProgressBar />
                 </Grid>
               </>
-            )}
+            ) }
 
-            {activeStep === 0 && <FirstStep />}
-            {activeStep === 1 && <SecondStep />}
-            {activeStep === 2 && <ThirdStep />}
-            {activeStep === 3 && <FourthStep />}
+            { activeStep === 0 && <FirstStep /> }
+            { activeStep === 1 && <SecondStep /> }
+            { activeStep === 2 && <ThirdStep /> }
+            { activeStep === 3 && <FourthStep /> }
           </Grid>
         </MaterialContainer>
       </div>
