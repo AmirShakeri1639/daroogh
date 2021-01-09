@@ -4,6 +4,8 @@ import { createStyles, makeStyles } from '@material-ui/core';
 const useClasses = makeStyles((theme) =>
   createStyles({
     ribbon: {
+      zIndex: 100,
+      opacity: 0.9,
       width: '150px',
       height: '150px',
       overflow: 'hidden',
@@ -22,7 +24,7 @@ const useClasses = makeStyles((theme) =>
         padding: '15px 0',
         backgroundColor: 'white',
         boxShadow: '0 5px 10px rgba(0,0,0,.1)',
-        color: 'silver',
+        color: '#4a4a4a',
         textShadow: '0 1px 1px rgba(0,0,0,.2)',
         textTransform: 'uppercase',
         textAlign: 'center',
@@ -46,25 +48,31 @@ const useClasses = makeStyles((theme) =>
       },
       '& span': {
         left: -15,
-        top: 25,
+        top: 10,
         transform: 'rotate(45deg)',
         height: 30,
         margin: 5,
         padding: 0,
-        paddingLeft: 8,
+        paddingLeft: 27,
       },
     },
   })
 );
 
-const Ribbon = (): JSX.Element => {
+interface RibbonPI {
+  text: string;
+}
+
+const Ribbon = (props: RibbonPI): JSX.Element => {
   const { ribbon, ribbonTopLeft } = useClasses();
+  const { text } = props;
 
   return (
     <div className={`${ribbon} ${ribbonTopLeft}`}>
       <span>
-        اضافه/ویرایش شده
-        <br /> توسط داروخانه مقابل
+        {`${text} شده`}
+        <br />
+        توسط داروخانه مقابل
       </span>
     </div>
   );

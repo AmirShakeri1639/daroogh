@@ -144,7 +144,11 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   const PackContent = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
-        {pharmacyDrug?.cardColor === '#009900' && <Ribbon />}
+        {pharmacyDrug?.cardColor === '#00cc00' && (
+          <Ribbon
+            text={pharmacyDrug?.cardColor === '#00cc00' ? 'اضافه' : 'حذف'}
+          />
+        )}
         <Grid item xs={12}>
           <Grid alignItems="flex-end" container spacing={1}>
             <Grid item xs={1} style={{ textAlign: 'left' }}>
@@ -204,7 +208,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                     </li>
                     <li className={colLeftIcon}>
                       <MoneyIcon />
-                      {Utils.numberWithCommas(item.amount)}
+                      <span>
+                        {Utils.numberWithCommas(item.amount)} ({item.cnt} عدد)
+                      </span>
                     </li>
                   </ul>
                 </Grid>
@@ -220,7 +226,6 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   const DrugInfo = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
-        {pharmacyDrug?.cardColor === '#009900' && <Ribbon />}
         <Grid item xs={12} sm={12}>
           <ul className={ulCardName}>
             <li style={{ fontWeight: 'bold', fontSize: 14 }}>
