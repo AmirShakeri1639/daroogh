@@ -23,7 +23,7 @@ import {
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
-import { ViewExchangeInterface } from '../../../../../interfaces';
+import { AllPharmacyDrugInterface, ViewExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { DaroogTabPanel, TextLine } from '../../../../public';
 import { Convertor, isNullOrEmpty } from '../../../../../utils';
@@ -106,25 +106,39 @@ const ExCalculator: React.FC<Props> = (props) => {
   // let totalPriceB = 0;
   const percent = percentAllowed();
 
-  const [differenceMessage, setDifferenceMessage] = useState('');
+  // const [differenceMessage, setDifferenceMessage] = useState('');
   // const [difference, setDifference] = useState(0);
   // const [diffPercent, setDiffPercent] = useState(0);
 
-  let difference: number = 0;
-  let diffPercent: number = 0;
+  // let difference: number = 0;
+  // let diffPercent: number = 0;
 
-  const setDifferenceCheckOutput = (): void => {
-    const diffCheck = differenceCheck({
-      exchange, percent
-    });
+  // const setDifferenceCheckOutput = (): void => {
+  //   // let cartA: AllPharmacyDrugInterface[] = [];
+  //   // let cartB: AllPharmacyDrugInterface[] = [];
 
-    // setDifference(diffCheck.difference);
-    // setDiffPercent(diffCheck.diffPercent);
-    setIs3PercentOk(diffCheck.isDiffOk);
-    setDifferenceMessage(diffCheck.message);
+  //   // if (uBasketCount.length > 0) {
+  //   //   cartA = exchange.currentPharmacyIsA ? [...uBasketCount] : [...basketCount];
+  //   // }
+  //   // if (basketCount.length > 0) {
+  //   //   cartB = exchange.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
+  //   // }
 
-    ({ difference, diffPercent } = diffCheck);
-  }
+  //   const diffCheck = differenceCheck({
+  //     exchange,
+  //     percent,
+  //     // totalPriceA: exchange.totalPriceA,
+  //     // totalPriceB: exchange.totalPriceB,
+  //     //, cartA, cartB
+  //   });
+
+  //   // setDifference(diffCheck.difference);
+  //   // setDiffPercent(diffCheck.diffPercent);
+  //   setIs3PercentOk(diffCheck.isDiffOk);
+  //   // setDifferenceMessage(diffCheck.message);
+
+  //   ({ difference, diffPercent } = diffCheck);
+  // }
 
   // useEffect(() => {
   //   differenceCheck();
@@ -209,7 +223,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                 </TableBody>
               </Table>
             </TableContainer>
-            { setDifferenceCheckOutput() }
+            { /* setDifferenceCheckOutput() */ }
           </>
         ) }
         <div className={ spacing3 }>&nbsp;</div>
@@ -350,7 +364,7 @@ const ExCalculator: React.FC<Props> = (props) => {
               />
             </Grid>
           ) }
-          <Grid item xs={ 12 } className={ spacingVertical3 }>
+          {/* <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
               backColor={ ColorEnum.White }
               rightText={
@@ -366,7 +380,7 @@ const ExCalculator: React.FC<Props> = (props) => {
               leftText={ `${Convertor.thousandsSeperatorFa(difference)} 
                 (${l(diffPercent)}%)` }
             />
-          </Grid>
+          </Grid> */}
           {/* differenceMessage !== '' && (
             <Grid item xs={ 12 } className={ spacingVertical3 }>
               <b>{ t('general.warning') }</b>:<br />

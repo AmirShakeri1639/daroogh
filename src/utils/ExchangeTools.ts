@@ -143,9 +143,11 @@ export const ViewExchangeInitialState: ViewExchangeInterface = {
 
 export interface DifferenceCheckInterface {
   exchange: ViewExchangeInterface;
-  // totalPriceA: number;
-  // totalPriceB: number;
+  // totalPriceA?: number;
+  // totalPriceB?: number;
   percent: number;
+  cartA?: AllPharmacyDrugInterface[];
+  cartB?: AllPharmacyDrugInterface[];
 }
 
 export interface DifferenceCheckOutputInterface {
@@ -164,15 +166,39 @@ export interface DifferenceCheckOutputInterface {
 export const differenceCheck = (
   params: DifferenceCheckInterface
 ): DifferenceCheckOutputInterface => {
-  const { exchange, percent } = params;
+  const { exchange, percent, cartA = [], cartB = [] } = params;
+  // let { totalPriceA = 0, totalPriceB = 0 } = params;
   let { totalPriceA = 0, totalPriceB = 0 } = exchange;
 
-  if (totalPriceA === 0 && exchange.cartA && exchange.cartA.length > 0) {
+  debugger;
+
+  // if (totalPriceA !== 0 ) {
+  if (cartA.length > 0) {
+    totalPriceA = cartA.map(i => {
+      return (
+        i.currentCnt
+          ? i.currentCnt * i.amount
+          : i.cnt * i.amount
+      )
+    }).reduce((sum, price) => sum + price);
+  } else if (exchange.cartA && exchange.cartA.length > 0) {
     totalPriceA = exchange.cartA.map(i => i.cnt * i.amount).reduce((sum, price) => sum + price);
   }
-  if (totalPriceB === 0 && exchange.cartB && exchange.cartB.length > 0) {
+  // }
+
+  // if (totalPriceB !== 0) {
+  if (cartB.length > 0) {
+    totalPriceB = cartB.map(i => {
+      return (
+        i.currentCnt
+          ? i.currentCnt * i.amount
+          : i.cnt * i.amount
+      )
+    }).reduce((sum, price) => sum + price);
+  } else if (exchange.cartB && exchange.cartB.length > 0) {
     totalPriceB = exchange.cartB.map(i => i.cnt * i.amount).reduce((sum, price) => sum + price);
   }
+  // }
 
   let difference: number = 0;
   let diffPercent: number = 0;
@@ -239,7 +265,7 @@ export const differenceCheck = (
             ? `لطفا حدود ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
             : `لطفا حدود ${diffBabs} ریال از سبد طرف مقابل کم کنید `;
           message += `یا حدود ${diffAabs} ریال از سبد خود کم کنید `;
-        } 
+        }
         // message = diffA > 0
         //   ? `لطفا حدود ${diffAabs} ریال به سبد خود اضافه کنید `
         //   : `لطفا حدود ${diffAabs} ریال از سبد خود کم کنید `
@@ -282,7 +308,7 @@ export const differenceCheck = (
     message = ''
   }
 
-  if (diffPercent === NaN) {
+  if (isNaN(diffPercent)) {
     diffPercent = 0
   }
 
