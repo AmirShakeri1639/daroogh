@@ -289,7 +289,6 @@ const ActionButtons = (): JSX.Element => {
         <DialogTitle>{'تایید نهایی'}</DialogTitle>
         <DialogContent>
           <ExCalculator exchange={viewExhcnage} full={false} />
-          {/* {console.log('is3%:', is3PercentOk)} */}
           {is3PercentOk && (
             <DialogContentText>
               آیا می خواهید سبد انتخابی شما قفل باشد یا خیر؟
