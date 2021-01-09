@@ -6,5 +6,5 @@ export class PharmacyDrugSupplyList {
   public offer1: number = 0;
   public offer2: number = 0;
   public batchNO: string = '';
-  public drugID: number = 0;
+  public drugID: any = 0;
 }
