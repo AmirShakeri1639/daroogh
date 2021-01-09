@@ -37,7 +37,7 @@ interface CardContainerProps {
 
 const CardContainer: React.FC<CardContainerProps> = (props) => {
   const { root, redTrash } = useStyle();
-  const { createdAt, drugsCounter, name, totalPrice } = props;
+  const { createdAt, drugsCounter, name, totalPrice, id } = props;
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
