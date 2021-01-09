@@ -25,7 +25,12 @@ import {
   List as ListIcon,
 } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPills, faBars } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPills,
+  faBars,
+  faBoxOpen,
+  faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import InboxIcon from '@material-ui/icons/Inbox';
@@ -100,6 +105,8 @@ const {
   messagesList,
   drugFavoriteList,
   drugCategoryfavoriteList,
+  packsList,
+  createPack,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -119,6 +126,9 @@ const ListItems: React.FC = () => {
   const [isOpenMembers, setIsOpenMembers] = useState<boolean>(false);
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(
     isOpenPageOfThisGroup('favorite')
+  );
+  const [isOpenPackList, setIsOpenPackList] = useState<boolean>(
+    isOpenPageOfThisGroup('pack')
   );
 
   const { activePageHandler: setActivePage } = useContext(Context);
@@ -422,6 +432,33 @@ const ListItems: React.FC = () => {
               <ListItemText
                 primary={`${t('drug.category')} ${t('drug.drug')}`}
               />
+            </Link>
+          </List>
+        </Collapse>
+
+        <ListItem button onClick={(): void => setIsOpenPackList((v) => !v)}>
+          <ListItemIcon>
+            <FontAwesomeIcon icon={faBoxOpen} size="lg" />
+          </ListItemIcon>
+          <ListItemText primary={t('pack.pack')} />
+          {isOpenPackList ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isOpenPackList} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={packsList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBars} />
+              </ListItemIcon>
+              <ListItemText primary={t('pack.list')} />
+            </Link>
+          </List>
+
+          <List component="div" className={linkWrapper}>
+            <Link to={createPack} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faPlus} />
+              </ListItemIcon>
+              <ListItemText primary={t('pack.create')} />
             </Link>
           </List>
         </Collapse>
