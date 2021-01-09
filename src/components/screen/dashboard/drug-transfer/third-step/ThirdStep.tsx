@@ -297,7 +297,7 @@ const ThirdStep: React.FC = () => {
               </Grid>
             </Grid>
             {!viewExhcnage ||
-              (!viewExhcnage.lockSuggestion && (
+              ((!viewExhcnage.lockSuggestion && (viewExhcnage.state === 1 || viewExhcnage.state === 2 || viewExhcnage.state === 12) ) && (
                 <Grid
                   item
                   xs={12}
