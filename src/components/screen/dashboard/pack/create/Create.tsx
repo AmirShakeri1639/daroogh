@@ -172,7 +172,7 @@ const Create: React.FC = () => {
     getPackDrugs();
   }, [updateDrugList]);
 
-  const [_savePack, { isloading: isLoadingSavePack }] = useMutation(savePack, {
+  const [_savePack, { isLoading: isLoadingSavePack }] = useMutation(savePack, {
     onSuccess: async () => {
       // setTemporaryDrugs([]);
       setPackTitle('');
