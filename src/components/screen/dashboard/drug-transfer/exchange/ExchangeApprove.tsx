@@ -87,6 +87,7 @@ const ExchangeApprove: React.FC = () => {
   const [debtAmountAllow, setDebtAmountAllow] = useState(0);
   const [paymentAmount, setPaymentAmount] = useState(0);
   const [trackingNumber, setTrackingNumber] = useState<string>('');
+  const [redirectUrl, setRedirectUrl] = useState<string>('');
   const [payment, setPayment] = useState<Payment>(new Payment());
 
   const { showApproveModalForm, setShowApproveModalForm } = useContext<
@@ -164,6 +165,7 @@ const ExchangeApprove: React.FC = () => {
     const res = await getPayment(payment);
     setPaymentAmount(res.data.form.amount);
     setTrackingNumber(res.data.form.trackingNumber);
+    setRedirectUrl(res.data.form.redirectUrl);
     refFrom.current.submit();
   };
 
@@ -182,11 +184,7 @@ const ExchangeApprove: React.FC = () => {
             value={trackingNumber}
             name="trackingNumber"
           ></input>
-          <input
-            type="hidden"
-            value={'http://sumon.ir/dashboard#/dashboard/exchange/desktop'}
-            name="redirectUrl"
-          ></input>
+          <input type="hidden" value={redirectUrl} name="redirectUrl"></input>
           {/* <button type="submit" >
             <span style={{ width: 100 }}>پرداخت</span>
           </button> */}
