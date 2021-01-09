@@ -412,33 +412,37 @@ const DesktopCardContent = ({
             </Grid>
           ) }
 
-          <Grid item xs={ 12 } className={ spacingVertical3 }>
-            <TextLine
-              backColor={ ColorEnum.White }
-              rightText={
-                <>
-                  <FontAwesomeIcon
-                    icon={ faPercent }
-                    size="lg"
-                    className={ faIcons }
-                  />
-                  { t('exchange.difference') }
-                </>
-              }
-              leftText={ `${Convertor.zeroSeparator(difference)} 
-                (${l(diffPercent)}%)` }
-            />
-          </Grid>
+          { full &&
+            <>
+              <Grid item xs={ 12 } className={ spacingVertical3 }>
+                <TextLine
+                  backColor={ ColorEnum.White }
+                  rightText={
+                    <>
+                      <FontAwesomeIcon
+                        icon={ faPercent }
+                        size="lg"
+                        className={ faIcons }
+                      />
+                      { t('exchange.difference') }
+                    </>
+                  }
+                  leftText={ `${Convertor.zeroSeparator(difference)} 
+                  (${l(diffPercent)}%)` }
+                />
+              </Grid>
 
-          { full && differenceMessage !== '' && (
-            <Grid item xs={ 12 } className={ spacingVertical3 }>
-              { differenceMessage.split('\n').map(i => {
-                return (
-                  <>{ i }<br /></>
-                )
-              }) }
-            </Grid>
-          ) }
+              { differenceMessage !== '' && (
+                <Grid item xs={ 12 } className={ spacingVertical3 }>
+                  { differenceMessage.split('\n').map(i => {
+                    return (
+                      <>{ i }<br /></>
+                    )
+                  }) }
+                </Grid>
+              ) }
+            </>
+          }
         </Grid>
       </Grid>
     );
