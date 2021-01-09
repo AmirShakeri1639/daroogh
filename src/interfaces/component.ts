@@ -60,6 +60,8 @@ export interface DataTableProps {
 export interface UserDataProps {
   userData?: NewUserData;
   noShowInput?: string[];
+  onSubmit?: any;
+  onCancel?: any;
 }
 
 export interface ExCardContentProps {

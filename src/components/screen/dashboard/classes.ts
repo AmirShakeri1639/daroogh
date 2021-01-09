@@ -192,9 +192,10 @@ export const useClasses = makeStyles((theme) => createStyles({
     boxShadow: '0 0 5px #cecece',
   },
   cardTitle: {
-    padding: '1em',
+    padding: '.65em',
     borderRadius: '.5em',
     margin: '.3em 0',
+    fontSize: '1.2em',
   },
   titleCode: {
     color: '#444',
@@ -205,7 +206,8 @@ export const useClasses = makeStyles((theme) => createStyles({
     paddingBottom: '.2em',
     background: 'rgba(225, 245, 254, .7)',
     borderRadius: '.5em',
-    borderBottomRightRadius: '0',
+    // borderBottomRightRadius: '0',
+    // borderTopLeftRadius: '0',
   },
   cardTop: {
     margin: '0 .5em',

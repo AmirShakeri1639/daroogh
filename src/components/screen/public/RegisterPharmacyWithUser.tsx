@@ -266,8 +266,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
         // user
         name.trim().length < 2 ||
         family.trim().length < 2 ||
-        // TODO: emailRegex works just sometimes!
-        // || !emailRegex.test(email)
         userName.trim().length < 3 ||
         nationalCode.length !== 10
       )

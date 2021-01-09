@@ -24,6 +24,7 @@ import {
 import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import Utils from '../../../../public/utility/Utils';
+import Ribbon from '../../../../public/ribbon/Ribbon';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -71,6 +72,57 @@ const useClasses = makeStyles((theme) =>
       textAlign: 'left',
       listStyleType: 'none',
     },
+    ribbon: {
+      width: '150px',
+      height: '150px',
+      overflow: 'hidden',
+      position: 'absolute',
+      '&::before &::after': {
+        position: 'absolute',
+        zIndex: -1,
+        content: '',
+        display: 'block',
+        border: '5px solid #2980b9',
+      },
+      '& span': {
+        position: 'absolute',
+        display: 'block',
+        width: '225px',
+        padding: '15px 0',
+        backgroundColor: 'white',
+        boxShadow: '0 5px 10px rgba(0,0,0,.1)',
+        color: 'silver',
+        textShadow: '0 1px 1px rgba(0,0,0,.2)',
+        textTransform: 'uppercase',
+        textAlign: 'center',
+        fontSize: 10,
+      },
+    },
+    ribbonTopLeft: {
+      top: '-10px',
+      right: '-10px',
+      '&::before &::after': {
+        borderTopColor: 'transparent',
+        borderLeftColor: 'transparent',
+      },
+      '&::before': {
+        top: 0,
+        left: 0,
+      },
+      '&::after': {
+        bottom: 0,
+        right: 0,
+      },
+      '& span': {
+        left: -15,
+        top: 25,
+        transform: 'rotate(45deg)',
+        height: 30,
+        margin: 5,
+        padding: 0,
+        paddingLeft: 8,
+      },
+    },
   })
 );
 
@@ -83,6 +135,8 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
     cardcontent,
     ulCardName,
     colLeftIcon,
+    ribbon,
+    ribbonTopLeft,
   } = useClasses();
 
   const { t } = useTranslation();
@@ -90,6 +144,11 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   const PackContent = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
+        {pharmacyDrug?.cardColor === '#00cc00' && (
+          <Ribbon
+            text={pharmacyDrug?.cardColor === '#00cc00' ? 'اضافه' : 'حذف'}
+          />
+        )}
         <Grid item xs={12}>
           <Grid alignItems="flex-end" container spacing={1}>
             <Grid item xs={1} style={{ textAlign: 'left' }}>
@@ -149,7 +208,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                     </li>
                     <li className={colLeftIcon}>
                       <MoneyIcon />
-                      {Utils.numberWithCommas(item.amount)}
+                      <span>
+                        {Utils.numberWithCommas(item.amount)} ({item.cnt} عدد)
+                      </span>
                     </li>
                   </ul>
                 </Grid>

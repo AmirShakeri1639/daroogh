@@ -57,7 +57,7 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
             </div>
             {/*<div className={detailContainer}>*/}
             {/*  <PaymentIcon fontSize="small" />*/}
-            {/*  <span className="txt-xs" dir="ltr">{`${zeroSeparator(amount)}`}</span>*/}
+            {/*  <span className="txt-xs" dir="ltr">{`${thousandsSeperatorFa(amount)}`}</span>*/}
             {/*</div>*/}
           </Grid>
         </Grid>

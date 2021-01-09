@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -20,6 +20,7 @@ import {
   faStar as solidStar,
   faStarHalfAlt,
   faMedal,
+  faPercent,
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
@@ -31,16 +32,18 @@ import {
   UserGrades,
 } from '../../../../../enum';
 import { TextLine } from '../../../../public';
-import { isNullOrEmpty } from '../../../../../utils';
+import { Convertor, isNullOrEmpty } from '../../../../../utils';
 import {
   getExpireDate,
   isExchangeCompleted,
   isStateCommon,
   getExpireDateTitle,
   ViewExchangeInitialState,
-  differenceCheck
+  differenceCheck,
+  percentAllowed
 } from '../../../../../utils/ExchangeTools';
-import { ViewExchangeInterface } from '../../../../../interfaces';
+import { ViewExchangeInterface, AllPharmacyDrugInterface } from '../../../../../interfaces';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
 interface Props {
   item?: ViewExchangeInterface;
@@ -49,20 +52,58 @@ interface Props {
   | void
   | any;
   full?: boolean;
-  totalPriceA?: number;
-  totalPriceB?: number;
+  cartA?: AllPharmacyDrugInterface[];
+  cartB?: AllPharmacyDrugInterface[];
 }
 
 // @ts-ignore
 const DesktopCardContent = ({
   item = ViewExchangeInitialState,
   onCardClick,
-  full = true
+  full = true,
+  cartA = [],
+  cartB = []
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  // const { onCardClick } = props;
-  // let item = props.item;
-  // if (item == undefined) item = initialState;
+  const { l } = Convertor;
+
+  // debugger;
+
+  const {
+    viewExhcnage, basketCount, uBasketCount, is3PercentOk, setIs3PercentOk
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+  if (item.id === 0) {
+    item = (viewExhcnage !== undefined && viewExhcnage.id
+      ? { ...viewExhcnage } : ViewExchangeInitialState);
+  }
+
+  if (cartA.length < 1 && uBasketCount.length > 0) {
+    cartA = item.currentPharmacyIsA ? [...uBasketCount] : [...basketCount];
+  }
+  if (cartB.length < 1 && basketCount.length > 0) {
+    cartB = item.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
+  }
+
+  const totalPriceA =
+    cartA.length > 0
+      ? cartA.map(i => {
+        return (
+          i.currentCnt
+            ? i.currentCnt * i.amount
+            : i.cnt * i.amount
+        )
+      }).reduce((sum, price) => sum + price)
+      : 0;
+  const totalPriceB =
+    cartB.length > 0
+      ? cartB.map(i => {
+        return (
+          i.currentCnt
+            ? i.currentCnt * i.amount
+            : i.cnt * i.amount
+        )
+      }).reduce((sum, price) => sum + price)
+      : 0;
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -71,14 +112,12 @@ const DesktopCardContent = ({
   let expireDate: string | undefined = '';
   let totalPourcentage: number = 0;
   let paymentStatus: string = '';
-  let totalPrice: any;
   // useEffect(() => {
   if (item?.currentPharmacyIsA) {
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
     totalPourcentage = item?.totalPourcentageA;
     paymentStatus =
       item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
-    totalPrice = item.totalPriceA;
 
     // Should show B's grade and star and warranty
     pharmacyGrade =
@@ -88,10 +127,9 @@ const DesktopCardContent = ({
       item?.pharmacyWarrantyB == undefined ? 0 : item?.pharmacyWarrantyB;
   } else {
     pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
-    totalPourcentage = item?.totalPourcentageB;
+    totalPourcentage = item.totalPourcentageB;
     paymentStatus =
       item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
-    totalPrice = item.totalPriceB;
 
     item.state =
       item.state <= 10 && !isStateCommon(item.state)
@@ -124,20 +162,20 @@ const DesktopCardContent = ({
   const expireDateText: string = t(getExpireDateTitle(item.state));
 
   const getExchangeTitle = (): string => {
-    if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
-      return t(
-        `ExchangeStateEnum.` +
-        `${ExchangeStateEnum[ ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL ]}`
-      );
-    } else {
-      return t(`ExchangeStateEnum.${ExchangeStateEnum[ item.state ]}`);
-    }
+    // if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
+    //   return t(
+    //     `ExchangeStateEnum.` +
+    //     `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
+    //   );
+    // } else {
+    return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
+    // }
   };
 
   const getExchangeTitleColor = (): string => {
     return isExchangeCompleted(item.state, item?.currentPharmacyIsA)
-      ? CardColors[ ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL ]
-      : CardColors[ item.state ];
+      ? CardColors[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]
+      : CardColors[item.state];
   };
 
   // random grade for test
@@ -194,26 +232,42 @@ const DesktopCardContent = ({
     spacingVertical3,
   } = useClasses();
 
-  const [ differenceMessage, setDifferenceMessage ] = useState('');
-  const [ difference, setDifference ] = useState(0);
-  const [ diffPercent, setDiffPercent ] = useState(0);
-  const [ is3PercentOK, setIs3PercentOk ] = useState(true);
+  // const [differenceMessage, setDifferenceMessage] = useState('');
+  // const [difference, setDifference] = useState(0);
+  // const [diffPercent, setDiffPercent] = useState(0);
+  // const [is3PercentOK, setIs3PercentOk] = useState(true);
+
+  let differenceMessage: string = '';
+  let difference: number = 0;
+  let diffPercent: number = 0;
+  // let is3PercentOK: boolean = true;
 
   const setDifferenceCheckOutput = (): void => {
     const diffCheck = differenceCheck({
       exchange: item,
-      percent: 0.03
+      percent: percentAllowed(),
+      cartA, cartB
     });
 
-    setDifference(diffCheck.difference);
-    setDiffPercent(diffCheck.diffPercent);
+    // setDifference(diffCheck.difference);
+    // setDiffPercent(diffCheck.diffPercent);
     setIs3PercentOk(diffCheck.isDiffOk);
-    setDifferenceMessage(diffCheck.message);
+    // setDifferenceMessage(diffCheck.message);
+
+    ({
+      difference, diffPercent,
+      message: differenceMessage
+    } = diffCheck);
+    console.log('diffper in check:', diffPercent);
+    diffPercent = isNaN(diffPercent) ? 0 : diffPercent;
+    console.log('diffper in check after nan check:', diffPercent);
   }
 
-  useEffect(() => {
+  // useEffect(() => {
+  if (full) {
     setDifferenceCheckOutput();
-  }, []);
+  }
+  // }, [item.totalPriceA, item.totalPriceB]);
 
   const ExchangeInfo = (): JSX.Element => {
     return (
@@ -225,10 +279,10 @@ const DesktopCardContent = ({
                 icon={ faSun }
                 size="lg"
                 className={ faIcons }
-                style={ { color: UserColors[ pharmacyGrade ] } }
+                style={ { color: UserColors[pharmacyGrade] } }
               />
               { pharmacyGrade ? (
-                <span>{ t(`exchange.${UserGrades[ pharmacyGrade ]}`) }</span>
+                <span>{ t(`exchange.${UserGrades[pharmacyGrade]}`) }</span>
               ) : (
                   <></>
                 ) }
@@ -250,7 +304,8 @@ const DesktopCardContent = ({
                 </>
               ) }
             </Grid>
-            <Grid xs={ 12 } className={ rowLeft } style={ { direction: 'ltr' } }>
+            <Grid xs={ 12 } className={ rowLeft }
+              style={ { direction: 'ltr', color: ColorEnum.GOLD } }>
               { stars() }
             </Grid>
           </Grid>
@@ -320,25 +375,6 @@ const DesktopCardContent = ({
             </Grid>
           ) }
 
-          { !isNullOrEmpty(totalPrice) && totalPrice > 0 && (
-            <Grid item xs={ 12 } className={ spacingVertical1 }>
-              <TextLine
-                backColor={ ColorEnum.White }
-                rightText={
-                  <>
-                    <FontAwesomeIcon
-                      icon={ faMoneyBillAlt }
-                      className={ faIcons }
-                      size="lg"
-                    />
-                    {t('exchange.totalPrice') }
-                  </>
-                }
-                leftText={ totalPrice }
-              />
-            </Grid>
-          ) }
-
           { !isNullOrEmpty(paymentStatus) && (
             <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
@@ -357,23 +393,102 @@ const DesktopCardContent = ({
               />
             </Grid>
           ) }
-          { full && differenceMessage !== '' && (
-            <Grid item xs={ 12 } className={ spacingVertical3 }>
-              <b>{ t('general.warning') }</b>:<br />
-              { differenceMessage.split('\n').map(i => {
-                return (
-                  <>{ i }<br /></>
-                )
-              }) }
+
+          { totalPriceA !== undefined && totalPriceA > 0 && (
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
+              <TextLine
+                backColor={ ColorEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon
+                      icon={ faCreditCard }
+                      size="lg"
+                      className={ faIcons }
+                    />
+                    { `${t('exchange.basketTotalPrice')} ` }
+                    { item.currentPharmacyIsA && t('exchange.you') }
+                    { !item.currentPharmacyIsA && t('exchange.otherSide') }
+                  </>
+                }
+                leftText={
+                  <>
+                    { //@ts-ignore 
+                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA) }
+                    { // @ts-ignore
+                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA) }
+                  </>
+                }
+              />
             </Grid>
           ) }
+          { totalPriceB !== undefined && totalPriceB > 0 && (
+            <Grid item xs={ 12 } className={ spacingVertical1 }>
+              <TextLine
+                backColor={ ColorEnum.White }
+                rightText={
+                  <>
+                    <FontAwesomeIcon
+                      icon={ faCreditCard }
+                      size="lg"
+                      className={ faIcons }
+                    />
+                    { `${t('exchange.basketTotalPrice')} ` }
+                    { !item.currentPharmacyIsA && t('exchange.you') }
+                    { item.currentPharmacyIsA && t('exchange.otherSide') }
+                  </>
+                }
+                leftText={
+                  <>
+                    { //@ts-ignore 
+                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB) }
+                    { // @ts-ignore
+                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB) }
+                  </>
+                }
+              />
+            </Grid>
+          ) }
+
+          { full &&
+            <>
+              <Grid item xs={ 12 } className={ spacingVertical3 }>
+                { console.log('diffper:', diffPercent) }
+                <TextLine
+                  backColor={ ColorEnum.White }
+                  rightText={
+                    <>
+                      <FontAwesomeIcon
+                        icon={ faPercent }
+                        size="lg"
+                        className={ faIcons }
+                      />
+                      { t('exchange.difference') }
+                    </>
+                  }
+                  leftText={ `${Convertor.thousandsSeperatorFa(difference)} 
+                  (${l(diffPercent)}%)` }
+                />
+              </Grid>
+
+              { (item.state === 2 || (item.state === 12 && !item.lockSuggestion)) && differenceMessage !== '' && (
+                <Grid item xs={ 12 } className={ spacingVertical3 }>
+                  { differenceMessage.split('\n').map(i => {
+                    return (
+                      <>{ i }<br /></>
+                    )
+                  }) }
+                </Grid>
+              ) }
+            </>
+          }
         </Grid>
       </Grid>
     );
   };
 
   const CardProgressbar = (): JSX.Element => {
-    const thisState = item.state > 10 ? item.state - 10 : item.state;
+    let thisState = item.state > 10 ? item.state - 10 : item.state;
+    thisState = thisState === 7 ? 0 : thisState;
 
     return (
       <>
@@ -400,7 +515,7 @@ const DesktopCardContent = ({
       <CardContent>
         <Typography
           variant="h5"
-          component="h2"
+          component="h5"
           className={ `${cardTitle} ${pointer}` }
           style={ { background: getExchangeTitleColor() } }
           onClick={ (): void => {

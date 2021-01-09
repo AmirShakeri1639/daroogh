@@ -18,7 +18,7 @@ class User extends Api {
 
   getAllUsers = async (
     skip: number = 0,
-    top: number = 1,
+    top: number = 10,
     order: string = 'id desc'
   ): Promise<any> => {
     try {

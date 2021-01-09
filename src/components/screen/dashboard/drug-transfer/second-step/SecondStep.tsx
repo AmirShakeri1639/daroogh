@@ -216,7 +216,7 @@ const SecondStep: React.FC = () => {
                 .filter((x) => x.packID === item.packID)
                 .forEach((p: AllPharmacyDrugInterface) => {
                   packList.push(p);
-                  totalAmount += p.amount;
+                  totalAmount += p.amount * p.cnt;
                 });
               item.totalAmount = totalAmount;
               isPack = true;
@@ -271,18 +271,18 @@ const SecondStep: React.FC = () => {
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
-          item.cardColor = '#89fd89';
+          if (item.cardColor === 'white') item.cardColor = '#33ff33';
 
           let isPack = false;
           let totalAmount = 0;
           let ignore = true;
           if (item.packID && !packList.find((x) => x.packID === item.packID)) {
             packList = new Array<AllPharmacyDrugInterface>();
-            orginalPharmacyDrug
+            basketCount
               .filter((x: any) => x.packID === item.packID)
               .forEach((p: AllPharmacyDrugInterface) => {
                 packList.push(p);
-                totalAmount += p.amount;
+                totalAmount += p.amount * p.cnt;
               });
 
             item.totalAmount = totalAmount;
@@ -388,6 +388,7 @@ const SecondStep: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={12} md={3} className={desktopCardContent}>
             <Grid container className={stickyRecommendation}>
+              { console.log('exc in second step:', viewExhcnage) }
               <DesktopCardContent item={viewExhcnage} />
               {/* <TextField
                 style={{ width: '100%', marginTop: 15, fontSize: 10 }}
@@ -399,11 +400,10 @@ const SecondStep: React.FC = () => {
                 value={recommendationMessage}
               /> */}
               <>
-                {(exchangeStateCode === 2 || exchangeStateCode === 4) && (
+                {exchangeStateCode !== 1 && (
                   <TextField
                     style={{ width: '100%', marginTop: 15 }}
                     multiline
-                    rows={4}
                     defaultValue={messageOfExchangeState}
                     variant="outlined"
                   />

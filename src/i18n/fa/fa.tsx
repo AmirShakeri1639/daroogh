@@ -106,6 +106,7 @@ export default {
         register: 'ثبت',
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
+        save: 'ذخیره',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
@@ -218,6 +219,7 @@ export default {
         completionDate: 'تاریخ تکمیل تبادل',
         state: 'وضعیت',
         totalPrice: 'مجموع قیمت',
+        basketTotalPrice: 'مجموع قیمت سبد',
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
@@ -300,7 +302,7 @@ export default {
         // 8 -  'تائید طرفین و در انتظار پرداخت طرف مقابل'
         CONFIRMA_AND_B_PAYMENTA: 'تبادل کامل شده',
         // 9
-        CONFIRMA_AND_B_PAYMENTB: 'تائید طرفین و در انتظار پرداخت شما',
+        CONFIRMA_AND_B_PAYMENTB: 'در انتظار پرداخت',
         // 10
         CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
         // 11
@@ -318,7 +320,7 @@ export default {
         // 17
         CANCELLED_FORB: 'لغو شده',
         // 18
-        CONFIRMA_AND_B_PAYMENTA_FORB: 'تائید طرفین و در انتظار پرداخت شما',
+        CONFIRMA_AND_B_PAYMENTA_FORB: 'در انتظار پرداخت',
         // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
         CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
         // 20
