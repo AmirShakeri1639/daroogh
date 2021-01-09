@@ -42,7 +42,7 @@ import {
   differenceCheck,
   percentAllowed
 } from '../../../../../utils/ExchangeTools';
-import { ViewExchangeInterface } from '../../../../../interfaces';
+import { ViewExchangeInterface, AllPharmacyDrugInterface } from '../../../../../interfaces';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
 interface Props {
@@ -54,22 +54,38 @@ interface Props {
   full?: boolean;
   totalPriceA?: number;
   totalPriceB?: number;
+  cartA?: AllPharmacyDrugInterface[];
+  cartB?: AllPharmacyDrugInterface[];
 }
 
 // @ts-ignore
 const DesktopCardContent = ({
   item = ViewExchangeInitialState,
   onCardClick,
-  full = true
+  full = true,
+  cartA = [],
+  cartB = []
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { l } = Convertor;
 
-  const { viewExhcnage } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+  // debugger;
+
+  const {
+    viewExhcnage, basketCount, uBasketCount, is3PercentOk, setIs3PercentOk
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   if (item.id === 0) {
     item = (viewExhcnage !== undefined && viewExhcnage.id
       ? { ...viewExhcnage } : ViewExchangeInitialState);
   }
+
+  if (cartA.length < 1 && uBasketCount.length > 0) {
+    cartA = item.currentPharmacyIsA ? [...uBasketCount] : [...basketCount];
+  }
+  if (cartB.length < 1 && basketCount.length > 0) {
+    cartB = item.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
+  }
+
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -134,7 +150,7 @@ const DesktopCardContent = ({
     //     `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
     //   );
     // } else {
-      return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
+    return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
     // }
   };
 
@@ -206,24 +222,27 @@ const DesktopCardContent = ({
   let differenceMessage: string = '';
   let difference: number = 0;
   let diffPercent: number = 0;
-  let is3PercentOK: boolean = true;
+  // let is3PercentOK: boolean = true;
 
   const setDifferenceCheckOutput = (): void => {
     const diffCheck = differenceCheck({
       exchange: item,
-      percent: percentAllowed()
+      percent: percentAllowed(),
+      cartA, cartB
     });
 
     // setDifference(diffCheck.difference);
     // setDiffPercent(diffCheck.diffPercent);
-    // setIs3PercentOk(diffCheck.isDiffOk);
+    setIs3PercentOk(diffCheck.isDiffOk);
     // setDifferenceMessage(diffCheck.message);
 
     ({
       difference, diffPercent,
-      isDiffOk: is3PercentOK,
       message: differenceMessage
     } = diffCheck);
+    console.log('diffper in check:', diffPercent);
+    diffPercent = isNaN(diffPercent) ? 0 : diffPercent; 
+    console.log('diffper in check after nan check:', diffPercent);
   }
 
   // useEffect(() => {
@@ -415,6 +434,7 @@ const DesktopCardContent = ({
           { full &&
             <>
               <Grid item xs={ 12 } className={ spacingVertical3 }>
+                { console.log('diffper:', diffPercent)}
                 <TextLine
                   backColor={ ColorEnum.White }
                   rightText={

@@ -556,6 +556,16 @@ const ActionButtons = (): JSX.Element => {
             >
               لغو درخواست
             </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
+            </Button>
+                        
           </>
         );
 
@@ -586,12 +596,21 @@ const ActionButtons = (): JSX.Element => {
             >
               عدم تایید
             </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
+            </Button>
 
           </>
           
         );
 
-      if (state === 4 || state === 9)
+      if (state === 4)
         element = (
           <>
             <>{element}</>
@@ -605,6 +624,15 @@ const ActionButtons = (): JSX.Element => {
               }}
             >
               پرداخت
+            </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
             </Button>
           </>
         );
@@ -622,7 +650,53 @@ const ActionButtons = (): JSX.Element => {
             >
               نمایش آدرس
             </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
+            </Button>
           </>
+        );
+
+        if (state === 9)
+        element = (
+          <>
+            <>{element}</>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="blue"
+              onClick={handlePharmacyInfo}
+            >
+              نمایش آدرس
+            </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="green"
+              onClick={(): any => {
+                setShowApproveModalForm(true);
+              }}
+            >
+              پرداخت
+            </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
+            </Button>
+          </>
+          
         );
 
       if (state === 1 && activeStep === 2)
@@ -638,24 +712,20 @@ const ActionButtons = (): JSX.Element => {
             >
               {t('general.sendExchange')}
             </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
+            </Button>
           </>
         );
       // The Second Side ==========================================
     } else {
       if (state > 10) state = state - 10;
-      if (state === 2) {
-        element = (
-          <Button
-            className={fullRow}
-            type="button"
-            variant="outlined"
-            color="red"
-            onClick={(): any => toggleIsOpenCancelExchangeModalForm('cancel')}
-          >
-            عدم تایید
-          </Button>
-        );
-      }
       if (state === 2)
         element = (
           <>
@@ -665,15 +735,40 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               color="green"
-              onClick={(): any =>
-                toggleIsOpenCancelExchangeModalForm('approve')
-              }
+              onClick={(): any => {
+                toggleIsOpenCancelExchangeModalForm('approve');
+              }}
             >
-              تایید
+              تایید و پرداخت
             </Button>
+
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => {
+                toggleIsOpenCancelExchangeModalForm('cancel');
+              }}
+            >
+              عدم تایید
+            </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
+            </Button>
+
           </>
+          
         );
-      if (state === 4 || state === 8)
+
+     
+      if (state === 4)
         element = (
           <>
             <>{element}</>
@@ -688,6 +783,15 @@ const ActionButtons = (): JSX.Element => {
             >
               پرداخت
             </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
+            </Button>
           </>
         );
 
@@ -700,8 +804,55 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               color="green"
+              onClick={handlePharmacyInfo}
+
             >
               نمایش آدرس
+            </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
+            </Button>
+          </>
+        );
+        if (state === 8)
+        element = (
+          <>
+            <>{element}</>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="blue"
+              onClick={handlePharmacyInfo}
+            >
+              نمایش آدرس
+            </Button>
+            
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="green"
+              onClick={(): any => {
+                setShowApproveModalForm(true);
+              }}
+            >
+              پرداخت
+            </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="red"
+              onClick={(): any => history.push(desktop)}
+            >
+              برگشت به کارتابل
             </Button>
           </>
         );
