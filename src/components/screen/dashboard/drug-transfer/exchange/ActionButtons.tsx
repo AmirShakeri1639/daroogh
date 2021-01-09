@@ -556,6 +556,7 @@ const ActionButtons = (): JSX.Element => {
             >
               لغو درخواست
             </Button>
+            
           </>
         );
 
@@ -591,7 +592,7 @@ const ActionButtons = (): JSX.Element => {
           
         );
 
-      if (state === 4 || state === 9)
+      if (state === 4)
         element = (
           <>
             <>{element}</>
@@ -621,6 +622,33 @@ const ActionButtons = (): JSX.Element => {
               onClick={handlePharmacyInfo}
             >
               نمایش آدرس
+            </Button>
+          </>
+        );
+
+        if (state === 9)
+        element = (
+          <>
+            <>{element}</>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="blue"
+              onClick={handlePharmacyInfo}
+            >
+              نمایش آدرس
+            </Button>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="green"
+              onClick={(): any => {
+                setShowApproveModalForm(true);
+              }}
+            >
+              پرداخت
             </Button>
           </>
         );
@@ -673,7 +701,7 @@ const ActionButtons = (): JSX.Element => {
             </Button>
           </>
         );
-      if (state === 4 || state === 8)
+      if (state === 4)
         element = (
           <>
             <>{element}</>
@@ -700,8 +728,37 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               color="green"
+              onClick={handlePharmacyInfo}
+
             >
               نمایش آدرس
+            </Button>
+          </>
+        );
+        if (state === 8)
+        element = (
+          <>
+            <>{element}</>
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="blue"
+              onClick={handlePharmacyInfo}
+            >
+              نمایش آدرس
+            </Button>
+            
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="green"
+              onClick={(): any => {
+                setShowApproveModalForm(true);
+              }}
+            >
+              پرداخت
             </Button>
           </>
         );
