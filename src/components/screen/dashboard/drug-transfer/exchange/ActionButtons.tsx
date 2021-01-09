@@ -543,7 +543,7 @@ const ActionButtons = (): JSX.Element => {
       //     </Button>
       //   );
 
-      if (state === 2 || state === 10)
+      if (state === 2)
         element = (
           <>
             <>{element}</>
@@ -574,10 +574,24 @@ const ActionButtons = (): JSX.Element => {
             >
               تایید و پرداخت
             </Button>
+
+            <Button
+              className={fullRow}
+              type="button"
+              variant="outlined"
+              color="green"
+              onClick={(): any => {
+                toggleIsOpenCancelExchangeModalForm('cancel');
+              }}
+            >
+              عدم تایید
+            </Button>
+
           </>
+          
         );
 
-      if (state === 4 || state === 8)
+      if (state === 4 || state === 9)
         element = (
           <>
             <>{element}</>
@@ -595,7 +609,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (state === 10 || state === 9)
+      if (state === 10 || state === 8)
         element = (
           <>
             <>{element}</>
@@ -629,7 +643,7 @@ const ActionButtons = (): JSX.Element => {
       // The Second Side ==========================================
     } else {
       if (state > 10) state = state - 10;
-      if (state === 2 || state === 3) {
+      if (state === 2) {
         element = (
           <Button
             className={fullRow}
@@ -638,7 +652,7 @@ const ActionButtons = (): JSX.Element => {
             color="red"
             onClick={(): any => toggleIsOpenCancelExchangeModalForm('cancel')}
           >
-            لغو درخواست
+            عدم تایید
           </Button>
         );
       }
@@ -655,11 +669,11 @@ const ActionButtons = (): JSX.Element => {
                 toggleIsOpenCancelExchangeModalForm('approve')
               }
             >
-              تایید نهایی
+              تایید
             </Button>
           </>
         );
-      if (state === 4 || state === 9)
+      if (state === 4 || state === 8)
         element = (
           <>
             <>{element}</>
@@ -677,7 +691,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (state === 8 || state === 10)
+      if (state === 9 || state === 10)
         element = (
           <>
             <>{element}</>

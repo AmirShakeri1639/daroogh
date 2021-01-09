@@ -34,8 +34,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const { getViewExchange } = new PharmacyDrug();
   const [allStepName, setAllStepName] = useState<string[]>([
     // 'انتخاب داروخانه',
-    'انتخاب از سبد طرف مقابل',
-    'انتخاب از سبد شما',
+    'سبد طرف مقابل',
+    'سبد شما',
     // 'تایید نهایی',
   ]);
   const [activeStep, setActiveStep] = useState<number>(0);
