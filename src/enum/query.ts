@@ -43,3 +43,7 @@ export enum MembershipRequestEnum {
   GET_CHECKED = 'checked',
   GET_NOT_CHECKED = 'notChecked',
 }
+
+export enum PackEnum {
+  GET_PHARMACY_PACKS = 'getPharmacyPacks',
+}

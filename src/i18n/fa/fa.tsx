@@ -77,6 +77,14 @@ export default {
         rial: 'ریال',
         warrantyTo: 'گارانتی تا ',
       },
+      pack: {
+        pack: 'پک',
+        title: 'عنوان پک',
+        list: 'لیست پک ها',
+        create: 'ایجاد پک',
+        category: 'دسته بندی پک',
+        addDrug: 'اضافه کردن دارو',
+      },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
         shamsi: 'شمسی',
@@ -213,7 +221,8 @@ export default {
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
-        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
+        threePercentWarning:
+          'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
       },
       favorite: {
@@ -309,8 +318,7 @@ export default {
         // 17
         CANCELLED_FORB: 'لغو شده',
         // 18
-        CONFIRMA_AND_B_PAYMENTA_FORB:
-          'تائید طرفین و در انتظار پرداخت شما',
+        CONFIRMA_AND_B_PAYMENTA_FORB: 'تائید طرفین و در انتظار پرداخت شما',
         // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
         CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
         // 20
