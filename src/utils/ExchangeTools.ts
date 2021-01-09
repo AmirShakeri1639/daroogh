@@ -170,8 +170,6 @@ export const differenceCheck = (
   // let { totalPriceA = 0, totalPriceB = 0 } = params;
   let { totalPriceA = 0, totalPriceB = 0 } = exchange;
 
-  debugger;
-
   // if (totalPriceA !== 0 ) {
   if (cartA.length > 0) {
     totalPriceA = cartA.map(i => {
