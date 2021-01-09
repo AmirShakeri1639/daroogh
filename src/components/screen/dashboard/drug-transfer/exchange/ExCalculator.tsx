@@ -245,7 +245,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                   {t('exchange.totalPrice') }
                 </>
               }
-              leftText={ Convertor.zeroSeparator(totalPrice) }
+              leftText={ Convertor.thousandsSeperatorFa(totalPrice) }
             />
           </Grid>
         ) }
@@ -363,7 +363,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                   { t('exchange.difference') }
                 </>
               }
-              leftText={ `${Convertor.zeroSeparator(difference)} 
+              leftText={ `${Convertor.thousandsSeperatorFa(difference)} 
                 (${l(diffPercent)}%)` }
             />
           </Grid>

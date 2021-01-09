@@ -128,14 +128,14 @@ const DesktopCardContent = ({
   const expireDateText: string = t(getExpireDateTitle(item.state));
 
   const getExchangeTitle = (): string => {
-    if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
-      return t(
-        `ExchangeStateEnum.` +
-        `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
-      );
-    } else {
+    // if (isExchangeCompleted(item.state, item?.currentPharmacyIsA)) {
+    //   return t(
+    //     `ExchangeStateEnum.` +
+    //     `${ExchangeStateEnum[ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL]}`
+    //   );
+    // } else {
       return t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`);
-    }
+    // }
   };
 
   const getExchangeTitleColor = (): string => {
@@ -376,9 +376,9 @@ const DesktopCardContent = ({
                 leftText={
                   <>
                     { //@ts-ignore 
-                      item.currentPharmacyIsA && Convertor.zeroSeparator(item.totalPriceA) }
+                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(item.totalPriceA) }
                     { // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.zeroSeparator(item.totalPriceA) }
+                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(item.totalPriceA) }
                   </>
                 }
               />
@@ -403,9 +403,9 @@ const DesktopCardContent = ({
                 leftText={
                   <>
                     { //@ts-ignore 
-                      item.currentPharmacyIsA && Convertor.zeroSeparator(item.totalPriceB) }
+                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(item.totalPriceB) }
                     { // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.zeroSeparator(item.totalPriceB) }
+                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(item.totalPriceB) }
                   </>
                 }
               />
@@ -427,12 +427,12 @@ const DesktopCardContent = ({
                       { t('exchange.difference') }
                     </>
                   }
-                  leftText={ `${Convertor.zeroSeparator(difference)} 
+                  leftText={ `${Convertor.thousandsSeperatorFa(difference)} 
                   (${l(diffPercent)}%)` }
                 />
               </Grid>
 
-              { differenceMessage !== '' && (
+              { (item.state === 2 || (item.state === 12 && !item.lockSuggestion)) && differenceMessage !== '' && (
                 <Grid item xs={ 12 } className={ spacingVertical3 }>
                   { differenceMessage.split('\n').map(i => {
                     return (
