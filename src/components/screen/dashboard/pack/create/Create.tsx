@@ -192,7 +192,7 @@ const Create: React.FC = () => {
     })();
   });
 
-  const removeHandler = (item: id): void => {};
+  const removeHandler = (item: number): void => {};
 
   const contentHandler = (): JSX.Element[] | null => {
     if (temporaryDrugs.length > 0) {
@@ -293,7 +293,7 @@ const Create: React.FC = () => {
         ...omit(item, 'id'),
         drugID: item.drugID.id,
       }));
-      console.log(data);
+
       await _savePack({
         categoryID: selectedCategory,
         name: packTitle,
