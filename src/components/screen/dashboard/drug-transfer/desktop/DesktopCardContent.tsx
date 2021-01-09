@@ -67,8 +67,6 @@ const DesktopCardContent = ({
   const { t } = useTranslation();
   const { l } = Convertor;
 
-  // debugger;
-
   const {
     viewExhcnage, basketCount, uBasketCount, is3PercentOk, setIs3PercentOk
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
@@ -258,9 +256,7 @@ const DesktopCardContent = ({
       difference, diffPercent,
       message: differenceMessage
     } = diffCheck);
-    console.log('diffper in check:', diffPercent);
     diffPercent = isNaN(diffPercent) ? 0 : diffPercent;
-    console.log('diffper in check after nan check:', diffPercent);
   }
 
   // useEffect(() => {
@@ -452,7 +448,6 @@ const DesktopCardContent = ({
           { full &&
             <>
               <Grid item xs={ 12 } className={ spacingVertical3 }>
-                { console.log('diffper:', diffPercent) }
                 <TextLine
                   backColor={ ColorEnum.White }
                   rightText={
