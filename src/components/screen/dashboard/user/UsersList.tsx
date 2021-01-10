@@ -197,6 +197,12 @@ const UsersList: React.FC = () => {
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
+      {
+        field: 'id',
+        title: 'شناسه',
+        type: 'numeric',
+        cellStyle: { textAlign: 'right' },
+      },
       { field: 'name', title: 'نام', type: 'string', cellStyle: { textAlign: "right" } },
       { field: 'family', title: 'نام خانوادگی', type: 'string', cellStyle: { textAlign: "right" } },
       { field: 'mobile', title: 'موبایل', type: 'string', cellStyle: { textAlign: "right" } },
