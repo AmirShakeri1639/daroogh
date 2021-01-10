@@ -18,6 +18,7 @@ import {
   Switch,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import Modal from '../../../public/modal/Modal';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import {
@@ -34,6 +35,7 @@ import {
   TableColumnInterface,
   ConfirmParams,
   LabelValue,
+  DataTableCustomActionInterface,
 } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
@@ -41,6 +43,9 @@ import { PharmacyEnum } from '../../../../enum/query';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import { WorkTimeEnum } from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
+import { User } from '../../../../services/api';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCog } from '@fortawesome/free-solid-svg-icons';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -512,6 +517,26 @@ const PharmaciesList: React.FC = () => {
     );
   };
 
+  const { impersonate } = new User();
+  
+  const impersonateHandler = (event: any, rowData: any): void => {
+    console.log('row in custom action:', rowData);
+    async function getNewToken(id: number | string): Promise<any> {
+      const result = await impersonate(id);
+      console.log('imper result:', result.data)
+      // do the impersonation
+    }
+    getNewToken(rowData.id);
+  }
+  const impersonateIcon = <FontAwesomeIcon icon={faUserCog} />;
+  const personOutlineIcon = <PersonOutlineIcon />;
+  const actions: DataTableCustomActionInterface[] = [{
+    icon: 'Search',
+    tooltip: t('action.impersonate'),
+    color: 'secondary',
+    action: impersonateHandler
+  }];
+
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
@@ -530,6 +555,7 @@ const PharmaciesList: React.FC = () => {
               stateAction={async (e: any, row: any): Promise<void> =>
                 await toggleConfirmHandler(row)
               }
+              customActions={actions}
               queryKey={PharmacyEnum.GET_ALL}
               queryCallback={all}
               initLoad={false}
