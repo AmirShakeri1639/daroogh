@@ -64,8 +64,9 @@ export const MessageTypeArray = (textArray: string[]): any => [
 ];
 
 export enum RolesEnum {
-  PHARMACY = '1',
+  USERS = '1',
   ADMIN = '2',
+  PHARMACY = '3',
 }
 
 export * from './query';
