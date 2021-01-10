@@ -169,8 +169,8 @@ const SupplyList: React.FC = () => {
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
   const [selectedDrug, setSelectedDrug] = useState<any>('');
-  const [daysDiff, setDaysDiff] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
+  const [daysDiff, setDaysDiff] = useState<string>('');
   const [isoDate, setIsoDate] = useState<string>('');
   const [daroogRecommendation, setDaroogRecommendation] = useState<string>('');
   const [comissionPercent, setComissionPercent] = useState<string>('');

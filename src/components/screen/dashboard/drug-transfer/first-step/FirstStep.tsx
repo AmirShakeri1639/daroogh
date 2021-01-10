@@ -14,7 +14,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '../../../../public/button/Button';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { PharmacyDrug } from '../../../../../services/api';
+import { Exchange, PharmacyDrug } from '../../../../../services/api';
 import { PharmacyDrugEnum } from '../../../../../enum/query';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import CardContainer from './CardContainer';
@@ -32,6 +32,7 @@ import { AdvancedSearchInterface } from '../../../../../interfaces/search';
 
 const { getRelatedPharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
+const { getDashboard } = new Exchange();
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -219,7 +220,6 @@ const FirstStep: React.FC = () => {
         }`,
       }));
       const options = sanitizeReactSelect(mappedItems, 'id', 'genericName');
-      console.log('options', options);
       setSearchOptions([...options]);
     } catch (e) {
       errorHandler(e);
@@ -293,7 +293,7 @@ const FirstStep: React.FC = () => {
         items = searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
           return (
             <>
-              <Grid item xs={12} lg={6} xl={4}>
+              <Grid item xs={12} sm={6} lg={4}>
                 <CardContainer data={d} />
               </Grid>
             </>
@@ -304,7 +304,7 @@ const FirstStep: React.FC = () => {
       items = data.map((d: PharmacyDrugInterface) => {
         return (
           <>
-            <Grid item xs={12} lg={6} xl={4}>
+            <Grid item xs={12} sm={6} lg={4}>
               <CardContainer data={d} />
             </Grid>
           </>
@@ -321,7 +321,7 @@ const FirstStep: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={12} lg={9}>
+      <Grid item xs={12}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <div className={searchContainer}>
