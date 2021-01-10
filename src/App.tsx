@@ -242,7 +242,11 @@ const App = (): JSX.Element => {
               <Dashboard component={<PackList />} />
             </PrivateRoute>
 
-            <PrivateRoute path={createPack}>
+            <PrivateRoute exact path={createPack}>
+              <Dashboard component={<CreatePack />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={`${createPack}/:packId`}>
               <Dashboard component={<CreatePack />} />
             </PrivateRoute>
 
