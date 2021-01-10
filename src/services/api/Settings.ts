@@ -4,7 +4,7 @@ import { SettingsInterface } from '../../interfaces';
 
 class Settings extends Api {
   readonly urls = {
-    get: '/Setting/View',
+    get: '/Setting/ViewPublic',
     save: '/Setting/Save'
   }
 
