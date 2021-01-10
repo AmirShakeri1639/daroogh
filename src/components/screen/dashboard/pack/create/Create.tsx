@@ -12,8 +12,7 @@ import React, { useState, useEffect } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery } from 'react-query';
-import { AllPharmacyDrug } from '../../../../../enum';
+import { useMutation } from 'react-query';
 import {
   PharmacyDrug,
   Category,
@@ -21,12 +20,13 @@ import {
   Pack,
 } from '../../../../../services/api';
 import {
+  BackDrop,
   Button,
   DatePicker,
   MaterialContainer,
   Modal,
 } from '../../../../public';
-import { debounce, omit } from 'lodash';
+import { omit, remove } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
 import { useEffectOnce } from '../../../../../hooks';
@@ -39,6 +39,7 @@ import {
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
+import { useParams } from 'react-router-dom';
 
 const { searchDrug } = new Drug();
 
@@ -48,7 +49,7 @@ const { getAllCategories } = new Category();
 
 const { savePack, getPackDetail } = new Pack();
 
-const { numberWithZero } = Convertor;
+const { numberWithZero, thousandsSeperatorFa } = Convertor;
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -122,11 +123,14 @@ const Create: React.FC = () => {
   const [temporaryDrugs, setTemporaryDrugs] = useState<
     PharmacyDrugSupplyList[]
   >([]);
-  const [updateDrugList, setUpdateDrugList] = useState<boolean>(false);
-
+  const [isBackdropLoading, setIsBackdropLoading] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
+  const [packTotalItems, setPackTotalItems] = useState<number>(0);
+  const [packTotalPrice, setPackTotalPrice] = useState<number>(0);
 
   const { t } = useTranslation();
+
+  const { packId } = useParams() as { packId: string };
 
   const {
     addButton,
@@ -158,25 +162,68 @@ const Create: React.FC = () => {
   };
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
-  const toggleUpdateDrugList = (): void => setUpdateDrugList((v) => !v);
+
+  const mapApiDrugsToStandardDrugs = (items: any): PharmacyDrugSupplyList[] => {
+    return items.map((item: any) => {
+      return {
+        ...omit(item, ['drug', 'packCategoryName', 'packID', 'packName']),
+        drugID: {
+          id: item.drug.id,
+          drugName: item.drug.name,
+        },
+      };
+    });
+  };
+
+  const getTotalPrice = (items: any[]): number => {
+    let totalPrice = 0;
+    items.forEach((item: any) => {
+      totalPrice += item.amount * item.cnt;
+    });
+    return totalPrice;
+  };
 
   useEffect(() => {
     async function getPackDrugs(): Promise<any> {
       try {
-        // const result = await getPackDetail();
+        setIsBackdropLoading(true);
+        const result = await getPackDetail(packId);
+        const {
+          name,
+          category: { id: categoryId },
+          pharmacyDrug,
+        } = result;
+
+        setPackTitle(name);
+        setPackTotalItems(pharmacyDrug.length);
+        setSelectedCategory(categoryId);
+
+        setTemporaryDrugs(mapApiDrugsToStandardDrugs(pharmacyDrug));
+
+        let totalPrice = 0;
+        pharmacyDrug.forEach((item: any) => {
+          totalPrice += item.amount;
+        });
+
+        setPackTotalPrice(getTotalPrice(pharmacyDrug));
+        setIsBackdropLoading(false);
       } catch (e) {
-        //
+        errorHandler(e);
       }
     }
 
-    getPackDrugs();
-  }, [updateDrugList]);
+    if (packId !== undefined) {
+      getPackDrugs();
+    }
+  }, [packId]);
 
   const [_savePack, { isLoading: isLoadingSavePack }] = useMutation(savePack, {
     onSuccess: async () => {
-      // setTemporaryDrugs([]);
-      setPackTitle('');
-      setSelectedCategory('');
+      if (packId === undefined) {
+        setPackTitle('');
+        setSelectedCategory('');
+      }
+      setIsBackdropLoading(false);
       await successSweetAlert(t('alert.successfulCreateTextMessage'));
     },
   });
@@ -192,12 +239,16 @@ const Create: React.FC = () => {
     })();
   });
 
-  const removeHandler = (item: number): void => {};
+  const removeHandler = (drugId: number): void => {
+    if (window.confirm(t('alert.remove'))) {
+      remove(temporaryDrugs, (item) => item.drugID.id === drugId);
+      setTemporaryDrugs([...temporaryDrugs]);
+    }
+  };
 
   const contentHandler = (): JSX.Element[] | null => {
     if (temporaryDrugs.length > 0) {
       return temporaryDrugs.map((item) => {
-        console.log(item);
         return (
           <Grid item xs={12} sm={6} md={4} xl={3}>
             <CardContainer item={item} removeHandler={removeHandler} />
@@ -205,16 +256,6 @@ const Create: React.FC = () => {
         );
       });
     }
-
-    // if (!isLoadingFetchData && isFetched) {
-    //   return data.items.map((item: any) => {
-    //     return (
-    //       <Grid item xs={12} sm={6} md={4} xl={3}>
-    //         <CardContainer editHandler={() => {}} drug={item} />
-    //       </Grid>
-    //     );
-    //   });
-    // }
 
     return null;
   };
@@ -289,18 +330,21 @@ const Create: React.FC = () => {
       ) {
         return;
       }
+      setIsBackdropLoading(true);
+
       const data = temporaryDrugs.map((item) => ({
         ...omit(item, 'id'),
         drugID: item.drugID.id,
       }));
 
       await _savePack({
+        id: packId !== undefined ? packId : 0,
         categoryID: selectedCategory,
         name: packTitle,
         pharmacyDrug: data as PharmacyDrugSupplyList[],
       });
     } catch (e) {
-      //
+      errorHandler(e);
     }
   };
 
@@ -314,6 +358,11 @@ const Create: React.FC = () => {
       isoDate !== ''
     );
   };
+
+  useEffect(() => {
+    setPackTotalItems(temporaryDrugs.length);
+    setPackTotalPrice(getTotalPrice(temporaryDrugs));
+  }, [temporaryDrugs]);
 
   const addTemporaryHandler = (): void => {
     if (!isValidInputs()) {
@@ -391,11 +440,11 @@ const Create: React.FC = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} lg={3}>
-          <span>تعداد کل اقلام: {0}</span>
+          <span>تعداد کل اقلام: {packTotalItems}</span>
         </Grid>
 
         <Grid item xs={12} sm={6} lg={3}>
-          <span>مجموع قیمت اقلام: {0}</span>
+          <span>مجموع قیمت اقلام: {thousandsSeperatorFa(packTotalPrice)}</span>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
@@ -568,6 +617,8 @@ const Create: React.FC = () => {
           }}
         />
       </Modal>
+
+      <BackDrop isOpen={isBackdropLoading} />
     </MaterialContainer>
   );
 };

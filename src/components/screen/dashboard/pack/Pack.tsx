@@ -1,22 +1,23 @@
 import React from 'react';
 import { createStyles, Grid, makeStyles } from '@material-ui/core';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PackEnum } from '../../../../enum';
 import { Pack as PackApi } from '../../../../services/api';
-import { Button, MaterialContainer } from '../../../public';
+import { BackDrop, Button, MaterialContainer } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import CardContainer from './CardContainer';
+import { errorSweetAlert, successSweetAlert } from '../../../../utils';
 
-const { getPharmacyPacks } = new PackApi();
+const { getPharmacyPacks, removePack } = new PackApi();
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
       display: 'flex',
-      height: 167,
+      height: 128,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
@@ -43,15 +44,36 @@ const Pack: React.FC = () => {
 
   const { push } = useHistory();
 
+  const queryCache = useQueryCache();
+
   const { isLoading, data } = useQuery(
     PackEnum.GET_PHARMACY_PACKS,
     getPharmacyPacks
+  );
+
+  const [_removePack, { isLoading: isLoadingRemovePack }] = useMutation(
+    removePack,
+    {
+      onSuccess: () => {
+        queryCache.invalidateQueries(PackEnum.GET_PHARMACY_PACKS);
+        successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      },
+      onError: () => {
+        errorSweetAlert(t('alert.failedRemove'));
+      },
+    }
   );
 
   const createPackLink = (): void => {
     push({
       pathname: '/pack/create',
     });
+  };
+
+  const removeHandler = async (id: number): Promise<any> => {
+    if (window.confirm(t('alert.remove'))) {
+      await _removePack(id);
+    }
   };
 
   const contentHandler = (): JSX.Element[] | null => {
@@ -70,6 +92,7 @@ const Pack: React.FC = () => {
               createdAt={'2020-01-01'}
               name={name}
               id={id}
+              removeHandler={removeHandler}
             />
           </Grid>
         );
@@ -95,6 +118,8 @@ const Pack: React.FC = () => {
 
         {contentHandler()}
       </Grid>
+
+      <BackDrop isOpen={isLoadingRemovePack} />
     </MaterialContainer>
   );
 };

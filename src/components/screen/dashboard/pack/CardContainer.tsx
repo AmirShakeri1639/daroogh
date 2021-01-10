@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../enum';
 import { AllPharmacyDrug } from '../../../../enum/query';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
+import { useHistory } from 'react-router-dom';
+import routes from '../../../../routes';
 
 const { removePharmacyDrug } = new PharmacyDrug();
 
@@ -33,14 +35,19 @@ interface CardContainerProps {
   createdAt: string;
   totalPrice: string | number;
   id: number;
+  removeHandler: (item: number) => void;
 }
+
+const { createPack } = routes;
 
 const CardContainer: React.FC<CardContainerProps> = (props) => {
   const { root, redTrash } = useStyle();
-  const { createdAt, drugsCounter, name, totalPrice, id } = props;
+  const { id, removeHandler } = props;
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
+
+  const { push } = useHistory();
 
   const [_removePharmacyDrug] = useMutation(removePharmacyDrug, {
     onSuccess: async (data) => {
@@ -52,8 +59,12 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
     },
   });
 
-  const itemRemoveHandler = (item: any): void => {
-    // removeHandler(item);
+  const itemRemoveHandler = (id: number): void => {
+    removeHandler(id);
+  };
+
+  const packEditHandler = (id: number): void => {
+    push(`${createPack}/${id}`);
   };
 
   return (
@@ -61,14 +72,14 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Grid justify="flex-end" container spacing={1}>
-            {/* <Grid item xs={1}>
+            <Grid item xs={1}>
               <FontAwesomeIcon
                 icon={faEdit}
                 size="lg"
                 className="cursor-pointer"
-                onClick={openEditModal}
+                onClick={(): void => packEditHandler(id)}
               />
-            </Grid> */}
+            </Grid>
             <Grid item xs={1}>
               <FontAwesomeIcon
                 onClick={(): void => itemRemoveHandler(id)}
