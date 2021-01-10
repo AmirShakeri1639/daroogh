@@ -5,6 +5,7 @@ import { ChangeUserPasswordInterface, NewUserData } from "../../interfaces/user"
 class User extends Api {
   readonly urls = {
     currentPharmacyUsers: '/User/AllPharmacyUsers?$filter=active eq true',
+    impersonate: '/User/GetNewToken?newPharmacyID=',
   };
 
   getUserData = async (): Promise<any> => {
@@ -35,6 +36,17 @@ class User extends Api {
     try {
       const result = await this.postData(
         `${this.urls.currentPharmacyUsers}&$top=${top}&$skip=${skip * top}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  impersonate = async (id: number | string): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.impersonate}${id}`
+      );
       return result.data;
     } catch (e) {
       errorHandler(e);
