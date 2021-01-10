@@ -154,9 +154,9 @@ const ExCalculator: React.FC<Props> = (props) => {
       ? exchange.totalPourcentageA
       : exchange.totalPourcentageB;
     if (you) {
-      card = uBasketCount; // exchange.cartA;
+      card = [...uBasketCount]; // exchange.cartA;
     } else {
-      card = basketCount; // exchange.cartB;
+      card = [...basketCount]; // exchange.cartB;
     }
     let totalCount = 0;
     let totalPrice = 0;
@@ -190,7 +190,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                     totalPrice += price;
                     return (
                       <>
-                        { (row.confirmed === undefined || row.confirmed) &&
+                        { (row.confirmed === undefined || row.confirmed === null || row.confirmed) &&
                           <TableRow key={ row.drug.name }>
                             <TableCell scope="row" className={ darkText }>
                               { row.drug.name }
