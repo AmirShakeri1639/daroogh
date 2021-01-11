@@ -226,6 +226,7 @@ export default {
         threePercentWarning:
           'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
+        continue: 'ادامه تبادل',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
