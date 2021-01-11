@@ -46,6 +46,9 @@ import { DefaultCountryDivisionID } from '../../../../enum/consts';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCog } from '@fortawesome/free-solid-svg-icons';
+import { Impersonation } from '../../../../utils';
+import { useHistory } from 'react-router-dom';
+import routes from '../../../../routes';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -148,6 +151,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 const PharmaciesList: React.FC = () => {
   const ref = useDataTableRef();
   const { t } = useTranslation();
+  const history = useHistory();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
@@ -518,21 +522,23 @@ const PharmaciesList: React.FC = () => {
   };
 
   const { impersonate } = new User();
-  
   const impersonateHandler = (event: any, rowData: any): void => {
     console.log('row in custom action:', rowData);
     async function getNewToken(id: number | string): Promise<any> {
       const result = await impersonate(id);
-      console.log('imper result:', result.data)
-      // do the impersonation
+      const impersonation = new Impersonation();
+      impersonation.changeToken(result.data.token);
+      history.push(routes.dashboard);
     }
     getNewToken(rowData.id);
   }
+
+  // TODO: impersonation icon in pharmacies list
   const impersonateIcon = <FontAwesomeIcon icon={faUserCog} />;
   const personOutlineIcon = <PersonOutlineIcon />;
   const actions: DataTableCustomActionInterface[] = [{
-    icon: 'Search',
-    tooltip: t('action.impersonate'),
+    icon: 'I',
+    tooltip: t('action.impersonateThisPharmacy'),
     color: 'secondary',
     action: impersonateHandler
   }];

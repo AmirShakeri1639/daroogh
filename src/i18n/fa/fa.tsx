@@ -107,6 +107,8 @@ export default {
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
         save: 'ذخیره',
+        impersonate: 'ورود به جای ',
+        impersonateThisPharmacy: 'ورود به جای این داروخانه',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
