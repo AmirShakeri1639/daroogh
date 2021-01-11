@@ -3,7 +3,10 @@ import { Box, createStyles, Divider, Grid } from '@material-ui/core';
 import { CardHeaderInterface } from '../../../../../interfaces';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar } from '@fortawesome/free-solid-svg-icons';
+import {
+  faStar as solidStar,
+  faStarHalfAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@material-ui/icons/Person';
@@ -72,7 +75,13 @@ const useStyle = makeStyles((theme) =>
 const CardHeader: React.FC<CardHeaderInterface> = (props) => {
   const { city, guaranty, province, star, itemsCount, userType } = props;
 
-  const { box, divPosition, userLevelContainer, textLeft, starIcon } = useStyle();
+  const {
+    box,
+    divPosition,
+    userLevelContainer,
+    textLeft,
+    starIcon,
+  } = useStyle();
 
   const { t } = useTranslation();
 
@@ -105,30 +114,41 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
     );
   };
 
-  const starHandler = (star: number): JSX.Element[] | JSX.Element => {
-    if (star === 0) {
-      return (
-        <>
-          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
-          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
-          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
-          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
-          <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
-        </>
-      )
+  const stars = (_star: number): any => {
+    let star = Math.floor(_star * 10) / 10;
+    let flooredStar = Math.floor(star);
+    let decimal = (star * 10) % 10;
+    /*
+    x < 4.3 => 4
+    4.3 <= x < 4.7 => 4.5
+    x > 4.7 => 5
+    */
+    decimal = decimal > 7 ? 1 : decimal >= 3 ? 0.5 : 0;
+    star = flooredStar + decimal;
+    if (decimal === 1) {
+      flooredStar++;
     }
+    console.log(flooredStar);
 
-    let item: JSX.Element[] = [];
-
-    while (star > 0) {
-      item = [
-        ...item,
-        <FontAwesomeIcon icon={faStar} size="sm" className={starIcon} />
-      ];
-      star--;
+    const starsArray: JSX.Element[] = [];
+    for (let i = 0; i < flooredStar; i++) {
+      starsArray.push(
+        <FontAwesomeIcon icon={solidStar} size="sm" className={starIcon} />
+      );
     }
-    return item;
-  }
+    if (decimal === 0.5) {
+      starsArray.push(
+        <FontAwesomeIcon icon={faStarHalfAlt} size="sm" className={starIcon} />
+      );
+      flooredStar++;
+    }
+    for (let i = flooredStar; i < 5; i++) {
+      starsArray.push(
+        <FontAwesomeIcon icon={faStarRegular} size="sm" className={starIcon} />
+      );
+    }
+    return starsArray;
+  };
 
   return (
     <Grid container spacing={1}>
@@ -149,7 +169,9 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
           </Grid>
 
           <Grid xs={6} item className={textLeft}>
-            <span className="txt-xs">{starHandler(Number(star))}</span>
+            <span className="txt-xs" dir="ltr">
+              {stars(Number(star))}
+            </span>
           </Grid>
         </Grid>
       </Grid>
