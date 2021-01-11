@@ -353,7 +353,10 @@ const SupplyList: React.FC = () => {
 
     setIsOpenBackDrop(true);
     await searchDrugs(name);
-    setSelectedDrug(Number(drugID));
+    setSelectedDrug({
+      id: drugID,
+      drugName: name,
+    });
     const shamsiDate = convertISOTime(expireDate);
     setSelectedDate(shamsiDate);
     calculatDateDiference(shamsiDate, '-');
@@ -413,7 +416,7 @@ const SupplyList: React.FC = () => {
     try {
       state.expireDate = isoDate;
       //@ts-ignore
-      state.drugID = selectedDrug;
+      state.drugID = selectedDrug.id;
       await _savePharmacyDrug(state);
     } catch (e) {
       errorHandler(e);
@@ -451,11 +454,12 @@ const SupplyList: React.FC = () => {
                 noOptionsText={t('general.noData')}
                 loadingText={t('general.loading')}
                 options={options}
+                value={selectedDrug}
                 onChange={(event, value, reason): void => {
-                  setSelectedDrug(value?.id);
+                  setSelectedDrug(value);
                 }}
+                onInputChange={(e, newValue) => searchDrugs(newValue)}
                 getOptionLabel={(option: any) => option.drugName}
-                // value={selectDrugForEdit}
                 openOnFocus
                 renderInput={(params) => (
                   <TextField
@@ -463,10 +467,6 @@ const SupplyList: React.FC = () => {
                     size="small"
                     label={t('drug.name')}
                     variant="outlined"
-                    onChange={debounce(
-                      (e): Promise<any> => searchDrugs(e.target.value),
-                      500
-                    )}
                   />
                 )}
               />
