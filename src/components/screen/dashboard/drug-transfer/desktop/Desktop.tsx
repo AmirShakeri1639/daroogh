@@ -80,11 +80,9 @@ const Desktop: React.FC = () => {
     id: number,
     state: number | undefined = 1
   ): void => {
-    (async (id: number): Promise<any> => {
-      // const encryptedId = await encDecService.encrypt(id)
-      const encryptedId = id;
-      history.push(`${transfer}?eid=${encryptedId}`);
-    })(id);
+    const encryptedId = encDecService.encrypt(id)
+    debugger;
+    history.push(`${transfer}?eid=${encodeURIComponent(encryptedId)}`);
   };
 
   const sortSelected = (field: string, sortType: SortTypeEnum): void => {

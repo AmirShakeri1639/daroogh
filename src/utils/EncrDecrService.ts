@@ -1,34 +1,34 @@
 import CryptoJS from 'crypto-js';
-import { encryptionKey } from '../enum/consts';
 
 export class EncrDecrService {
+  encryptionKey = 'ABCDEF1900@!123qweasd.';
 
-  encrypt = async (value: any, keys: any = ''): Promise<any> => {
-    if (keys === '') keys = encryptionKey;
-    const key = CryptoJS.enc.Utf8.parse(keys);
-    const iv = CryptoJS.enc.Utf8.parse(keys);
+  encrypt = (value: any, keys: any = ''): string => {
+    if (keys === '') keys = this.encryptionKey;
+    const key = CryptoJS.enc.Base64.parse(keys);
+    const iv = CryptoJS.enc.Base64.parse(keys);
     const encrypted = CryptoJS.AES.encrypt(
       CryptoJS.enc.Utf8.parse(value.toString()), key,
     {
-        keySize: 256 / 8,
+        keySize: 128 / 32,
         iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
+        // mode: CryptoJS.mode.CBC,
+        // padding: CryptoJS.pad.Pkcs7
     });
 
     return encrypted.toString();
   }
   
-  decrypt = async (value: any, keys: any = ''): Promise<any> => {
-    if (keys === '') keys = encryptionKey;
-    const key = CryptoJS.enc.Utf8.parse(keys);
-    const iv = CryptoJS.enc.Utf8.parse(keys);
+  decrypt = (value: any, keys: any = ''): string => {
+    if (keys === '') keys = this.encryptionKey;
+    const key = CryptoJS.enc.Base64.parse(keys);
+    const iv = CryptoJS.enc.Base64.parse(keys);
     const decrypted = CryptoJS.AES.decrypt(
       value, key, {
-        keySize: 256 / 8,
+        keySize: 128 / 32,
         iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
+        // mode: CryptoJS.mode.CBC,
+        // padding: CryptoJS.pad.Pkcs7
     });
 
     return decrypted.toString(CryptoJS.enc.Utf8);
