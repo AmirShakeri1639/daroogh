@@ -90,8 +90,10 @@ const ExCalculator: React.FC<Props> = (props) => {
   };
 
   const reCheckData = (): any => {
+
     expireDate = getExpireDate(exchange);
     expireDateText = t(getExpireDateTitle(exchange.state));
+
   };
 
   const l = (v: string | number): string => {
@@ -357,9 +359,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                 leftText={
                   expireDate == null
                     ? ''
-                    : moment(expireDate, 'YYYY/MM/DD')
-                      .locale('fa')
-                      .format('YYYY/MM/DD')
+                    : expireDate
                 }
               />
             </Grid>
