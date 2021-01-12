@@ -526,7 +526,7 @@ const DesktopCardContent = ({
             }
           } }
         >
-          { getExchangeTitle() } - { item.state }
+          { getExchangeTitle() }
         </Typography>
         <div className={ titleCode }>
           { item?.currentPharmacyIsA ? item?.numberA : item?.numberB }

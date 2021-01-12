@@ -71,21 +71,22 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const { viewExchangeId, exchangeState } = props;
 
   const location = useLocation();
+  debugger;
   const params = queryString.parse(location.search);
 
   let eid: number | undefined = undefined;
-  const encryptedId = params.eid == null ? undefined : params.eid;
+  const encryptedId = params.eid == null ? undefined : decodeURIComponent(params.eid.toString());
   if (encryptedId !== undefined) {
     const encDecService = new EncrDecrService();
-    const decryptedId = encDecService.decrypt(encryptionKey, encryptedId);
+    const decryptedId = encDecService.decrypt(encryptedId);
     eid = +decryptedId;
   }
 
   useEffect(() => {
     (async (): Promise<void> => {
-      let eid: any = undefined;
-      const encryptedId = params.eid == null ? undefined : params.eid;
-      eid = encryptedId;
+      // let eid: any = undefined;
+      // const encryptedId = params.eid == null ? undefined : params.eid;
+      // eid = encryptedId;
       if (eid !== undefined) {
         const result = await getViewExchange(eid);
         let res: ViewExchangeInterface | undefined = result.data;
@@ -95,8 +96,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
           if (res.cartA !== undefined) {
 
-            console.log('test for ribbon is a',res.currentPharmacyIsA)
-            
+            console.log('test for ribbon is a', res.currentPharmacyIsA)
+
 
             res.cartA.forEach((item) => {
               basketA.push({
@@ -113,16 +114,16 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 cardColor:
                   res && res.currentPharmacyIsA ? item.addedByB
                     ? '#00cc00'
-                    : item.confirmed !== undefined && item.confirmed === false 
-                    ? '#009900'
-                    : '#33ff33' : '#33ff33',
+                    : item.confirmed !== undefined && item.confirmed === false
+                      ? '#009900'
+                      : '#33ff33' : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
                 order: 0,
                 totalAmount: 0,
                 totalCount: 0,
-              });              
+              });
             });
           }
           if (res.cartB !== undefined) {
@@ -140,10 +141,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 buttonName: 'حذف از تبادل',
                 cardColor:
                   res && res.currentPharmacyIsA ? item.addedByB
-                  ? '#00cc00'
-                  : item.confirmed !== undefined && item.confirmed === false 
-                  ? '#009900'
-                  : '#33ff33' : '#33ff33',
+                    ? '#00cc00'
+                    : item.confirmed !== undefined && item.confirmed === false
+                      ? '#009900'
+                      : '#33ff33' : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
@@ -313,22 +314,22 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   });
 
   return (
-    <Context.Provider value={initialContextValues()}>
-      <div className={root}>
+    <Context.Provider value={ initialContextValues() }>
+      <div className={ root }>
         <MaterialContainer>
-          <Grid container spacing={1}>
-            {activeStep > 0 && (
+          <Grid container spacing={ 1 }>
+            { activeStep > 0 && (
               <>
-                <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
+                <Grid item xs={ 12 } sm={ 9 } md={ 9 } style={ { marginRight: 8 } }>
                   <ProgressBar />
                 </Grid>
               </>
-            )}
+            ) }
 
-            {activeStep === 0 && <FirstStep />}
-            {activeStep === 1 && <SecondStep />}
-            {activeStep === 2 && <ThirdStep />}
-            {activeStep === 3 && <FourthStep />}
+            { activeStep === 0 && <FirstStep /> }
+            { activeStep === 1 && <SecondStep /> }
+            { activeStep === 2 && <ThirdStep /> }
+            { activeStep === 3 && <FourthStep /> }
           </Grid>
         </MaterialContainer>
       </div>
