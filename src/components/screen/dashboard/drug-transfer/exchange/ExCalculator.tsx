@@ -189,7 +189,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                     // row.packID == undefined
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
-                    totalPrice += price;
+                    totalPrice += price * (row.currentCnt ? row.currentCnt : row.cnt);
                     return (
                       <>
                         { (row.confirmed === undefined || row.confirmed === null || row.confirmed) &&
