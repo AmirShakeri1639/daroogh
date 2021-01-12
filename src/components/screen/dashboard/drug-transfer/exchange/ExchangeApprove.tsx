@@ -38,6 +38,7 @@ import Utils from '../../../../public/utility/Utils';
 import { Payment } from '../../../../../model/exchange';
 import routes from '../../../../../routes';
 import { useHistory } from 'react-router-dom';
+import Ribbon from '../../../../public/ribbon/Ribbon';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -49,6 +50,16 @@ const useClasses = makeStyles((theme) =>
       [theme.breakpoints.up('md')]: {
         width: 600,
       },
+    },
+    cardDetail: {
+      width: '100%',
+      display: 'inline-block',
+      position: 'relative',
+      backgroundColor: '#E4E4E4',
+      textAlign: 'center',
+    },
+    content: {
+      display: 'contents',
     },
     paper: {
       textAlign: 'center',
@@ -70,8 +81,20 @@ const useClasses = makeStyles((theme) =>
   })
 );
 
-const ExchangeApprove: React.FC = () => {
-  const { root, paper, card, stickyCardAction } = useClasses();
+interface ExchangeApprovePI {
+  isModal?: boolean;
+}
+
+const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
+  const { isModal = true } = props;
+  const {
+    root,
+    paper,
+    card,
+    stickyCardAction,
+    content,
+    cardDetail,
+  } = useClasses();
   const [accountingForPayment, setAccountingForPayment] = useState<
     AccountingInterface[]
   >([]);
@@ -201,38 +224,131 @@ const ExchangeApprove: React.FC = () => {
     );
   };
 
-  return (
-    <Modal open={showApproveModalForm} toggle={toggleIsOpenModalForm}>
-      <Card className={root}>
+  const cardDetailContent = (item: AccountingInterface): JSX.Element => {
+    return (
+      <Card className={cardDetail}>
+        {item.amount <= 0 && <Ribbon text="بستانکار" isExchange={false} />}
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+          <li
+            style={{
+              textAlign: 'center',
+              fontSize: 12,
+              minHeight: 50,
+              margin: 60,
+              marginTop: 0,
+              marginBottom: 0,
+            }}
+          >
+            {item.description}
+          </li>
+          <li>
+            <Grid alignItems="flex-end" container spacing={1}>
+              <Grid item xs={1} style={{ textAlign: 'left' }}>
+                <FontAwesomeIcon icon={faMoneyBillWave} size="sm" />
+              </Grid>
+              <Grid item xs={11}>
+                <TextLine
+                  rightText={'مبلغ'}
+                  leftText={Utils.numberWithCommas(item.amount)}
+                />
+              </Grid>
+            </Grid>
+          </li>
+          {/* <li>{item.amount}</li> */}
+          <li>
+            <Grid alignItems="flex-end" container spacing={1}>
+              <Grid item xs={1} style={{ textAlign: 'left' }}>
+                <FontAwesomeIcon icon={faCalendarTimes} size="sm" />
+              </Grid>
+              <Grid item xs={11}>
+                <TextLine
+                  rightText={'تاریخ'}
+                  leftText={moment(item.date, 'YYYY/MM/DD')
+                    .locale('fa')
+                    .format('YYYY/MM/DD')}
+                />
+              </Grid>
+            </Grid>
+          </li>
+        </ul>
+        <div
+          style={{
+            marginTop: item.amount <= 0 ? 0 : -10,
+            padding: item.amount <= 0 ? 8 : 0,
+          }}
+        >
+          {item.amount <= 0 ? (
+            <span
+              style={{
+                fontWeight: 'bold',
+                color: 'red',
+                margin: 11,
+              }}
+            ></span>
+          ) : (
+            <Checkbox
+              disabled={item.amount <= 0}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
+                item.isChecked = e.target.checked;
+                let amount = 0;
+                if (e.target.checked) {
+                  amount = totalAmount + item.amount;
+                  setTotoalAmount(amount);
+                  handleAccountingIds('add', item.id);
+                } else {
+                  amount = totalAmount - item.amount;
+                  setTotoalAmount(amount);
+                  handleAccountingIds('remove', item.id);
+                }
+                if (amount > paymentAmount) setPaymentAmount(paymentAmount);
+                else setPaymentAmount(amount);
+              }}
+            />
+          )}
+        </div>
+      </Card>
+    );
+  };
+
+  const Content = (): JSX.Element => {
+    return (
+      <Card className={`${root} ${!isModal ? content : ''}`}>
         <CardHeader
           style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
           title="لیست موارد قابل پرداخت"
           titleTypographyProps={{ variant: 'h6' }}
           action={
-            <IconButton
-              style={{ marginTop: 10 }}
-              aria-label="settings"
-              onClick={toggleIsOpenModalForm}
-            >
-              <CloseIcon />
-            </IconButton>
+            isModal && (
+              <IconButton
+                style={{ marginTop: 10 }}
+                aria-label="settings"
+                onClick={toggleIsOpenModalForm}
+              >
+                <CloseIcon />
+              </IconButton>
+            )
           }
         />
         <Divider />
         <CardContent style={{ marginBottom: 90 }}>
-          <Grid container spacing={1}>
-            <div>
+          <div>
+            {accountingForPayment && accountingForPayment.length > 0 ? (
               <span>
                 با توجه به اینکه حداکثر بدهی در سیستم داروگ مبلغ
                 <span style={{ marginRight: 5, marginLeft: 5, color: 'red' }}>
                   <b>{debtAmountAllow}</b>
                 </span>
                 <span>
-                  تومان می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و
-                  سپس پرداخت نمایید
+                  ریال می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و سپس
+                  پرداخت نمایید
                 </span>
               </span>
-            </div>
+            ) : (
+              <span>هیچ داده ای وجود ندارد</span>
+            )}
+          </div>
+          <hr />
+          <Grid container spacing={1}>
             {accountingForPayment.map(
               (item: AccountingInterface, index: number) => (
                 <Grid
@@ -242,82 +358,7 @@ const ExchangeApprove: React.FC = () => {
                   xs={12}
                   sm={4}
                 >
-                  <Paper className={paper}>
-                    <ul style={{ listStyleType: 'none', padding: 0 }}>
-                      <li style={{ fontSize: 12, minHeight: 50 }}>
-                        {item.description}
-                      </li>
-                      <li>
-                        <Grid alignItems="flex-end" container spacing={1}>
-                          <Grid item xs={1} style={{ textAlign: 'left' }}>
-                            <FontAwesomeIcon icon={faMoneyBillWave} size="sm" />
-                          </Grid>
-                          <Grid item xs={11}>
-                            <TextLine
-                              rightText={'مبلغ'}
-                              leftText={Utils.numberWithCommas(item.amount)}
-                            />
-                          </Grid>
-                        </Grid>
-                      </li>
-                      {/* <li>{item.amount}</li> */}
-                      <li>
-                        <Grid alignItems="flex-end" container spacing={1}>
-                          <Grid item xs={1} style={{ textAlign: 'left' }}>
-                            <FontAwesomeIcon icon={faCalendarTimes} size="sm" />
-                          </Grid>
-                          <Grid item xs={11}>
-                            <TextLine
-                              rightText={'تاریخ'}
-                              leftText={moment(item.date, 'YYYY/MM/DD')
-                                .locale('fa')
-                                .format('YYYY/MM/DD')}
-                            />
-                          </Grid>
-                        </Grid>
-                      </li>
-                    </ul>
-                    <div
-                      style={{
-                        marginTop: item.amount <= 0 ? 0 : -10,
-                        padding: item.amount <= 0 ? 8 : 0,
-                      }}
-                    >
-                      {item.amount <= 0 ? (
-                        <span
-                          style={{
-                            fontWeight: 'bold',
-                            color: 'red',
-                            margin: 11,
-                          }}
-                        >
-                          بستانکار
-                        </span>
-                      ) : (
-                        <Checkbox
-                          disabled={item.amount <= 0}
-                          onChange={(
-                            e: React.ChangeEvent<HTMLInputElement>
-                          ): any => {
-                            item.isChecked = e.target.checked;
-                            let amount = 0;
-                            if (e.target.checked) {
-                              amount = totalAmount + item.amount;
-                              setTotoalAmount(amount);
-                              handleAccountingIds('add', item.id);
-                            } else {
-                              amount = totalAmount - item.amount;
-                              setTotoalAmount(amount);
-                              handleAccountingIds('remove', item.id);
-                            }
-                            if (amount > paymentAmount)
-                              setPaymentAmount(paymentAmount);
-                            else setPaymentAmount(amount);
-                          }}
-                        />
-                      )}
-                    </div>
-                  </Paper>
+                  {cardDetailContent(item)}
                 </Grid>
               )
             )}
@@ -365,7 +406,19 @@ const ExchangeApprove: React.FC = () => {
           </Grid>
         </CardActions>
       </Card>
-    </Modal>
+    );
+  };
+
+  return (
+    <>
+      {isModal ? (
+        <Modal open={showApproveModalForm} toggle={toggleIsOpenModalForm}>
+          <Content />
+        </Modal>
+      ) : (
+        <Content />
+      )}
+    </>
   );
 };
 

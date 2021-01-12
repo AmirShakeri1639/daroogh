@@ -61,19 +61,32 @@ const useClasses = makeStyles((theme) =>
 
 interface RibbonPI {
   text: string;
+  isExchange?: boolean;
 }
 
 const Ribbon = (props: RibbonPI): JSX.Element => {
   const { ribbon, ribbonTopLeft } = useClasses();
-  const { text } = props;
+  const { text, isExchange = true } = props;
 
   return (
     <div className={`${ribbon} ${ribbonTopLeft}`}>
-      <span>
-        {`${text} شده`}
-        <br />
-        توسط داروخانه مقابل
-      </span>
+      {isExchange ? (
+        <span>
+          {`${text} شده`}
+          <br />
+          توسط داروخانه مقابل
+        </span>
+      ) : (
+        <span
+          style={{
+            color: 'red',
+            fontWeight: 'bold',
+            height: 17,
+          }}
+        >
+          {text}
+        </span>
+      )}
     </div>
   );
 };

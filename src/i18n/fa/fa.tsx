@@ -215,7 +215,8 @@ export default {
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
-        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
+        threePercentWarning:
+          'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
       },
       favorite: {
@@ -311,8 +312,7 @@ export default {
         // 17
         CANCELLED_FORB: 'لغو شده',
         // 18
-        CONFIRMA_AND_B_PAYMENTA_FORB:
-          'در انتظار پرداخت',
+        CONFIRMA_AND_B_PAYMENTA_FORB: 'در انتظار پرداخت',
         // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
         CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
         // 20
@@ -329,6 +329,7 @@ export default {
         amount: 'مبلغ',
         list: 'لیست تراکنش‌های مالی',
         transactions: 'تراکنش‌ها',
+        accountingForPayment: 'صورتحساب',
       },
       countryDivision: {
         province: 'استان',

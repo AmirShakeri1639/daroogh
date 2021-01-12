@@ -20,6 +20,7 @@ export default {
   supplyList: `/${dashboard}/${exchange}/supply-list`,
 
   transactions: `/${dashboard}/${finance}/transactions`,
+  accountingInfo: `/${dashboard}/${finance}/accountingInfo`,
   membersList: `/${dashboard}/${member}/members-list`,
   drugFavoriteList: `/${dashboard}/${favorite}/drug`,
   drugCategoryfavoriteList: `/${dashboard}/${favorite}/drug-category`,
