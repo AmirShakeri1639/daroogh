@@ -75,6 +75,7 @@ export default {
         ok: 'خب',
         warning: 'هشدار',
         rial: 'ریال',
+        unit : 'واحد',
         warrantyTo: 'گارانتی تا ',
       },
       pack: {
@@ -107,6 +108,8 @@ export default {
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
         save: 'ذخیره',
+        impersonate: 'ورود به جای ',
+        impersonateThisPharmacy: 'ورود به جای این داروخانه',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',

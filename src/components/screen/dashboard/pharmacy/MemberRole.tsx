@@ -99,7 +99,6 @@ const MemberRole: React.FC = () => {
   useEffect(() => {
     async function getRoles(): Promise<any> {
       const result = await getAllRoles();
-      console.log('result:', result)
       if (result.items) {
 
         // type 2 means roles special for pharmacies

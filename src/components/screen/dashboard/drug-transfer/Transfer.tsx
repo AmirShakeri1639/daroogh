@@ -94,6 +94,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           const basketB: AllPharmacyDrugInterface[] = [];
 
           if (res.cartA !== undefined) {
+
+            console.log('test for ribbon is a',res.currentPharmacyIsA)
+            
+
             res.cartA.forEach((item) => {
               basketA.push({
                 id: item.pharmacyDrugID,
@@ -107,18 +111,18 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 amount: item.amount,
                 buttonName: 'حذف از تبادل',
                 cardColor:
-                  res && res.currentPharmacyIsA && item.addedByB
+                  res && res.currentPharmacyIsA ? item.addedByB
                     ? '#00cc00'
-                    : item.confirmed !== undefined && item.confirmed === false
+                    : item.confirmed !== undefined && item.confirmed === false 
                     ? '#009900'
-                    : '#33ff33',
+                    : '#33ff33' : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
                 order: 0,
                 totalAmount: 0,
                 totalCount: 0,
-              });
+              });              
             });
           }
           if (res.cartB !== undefined) {
@@ -135,11 +139,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 amount: item.amount,
                 buttonName: 'حذف از تبادل',
                 cardColor:
-                  res && res.currentPharmacyIsA && item.addedByB
-                    ? '#00cc00'
-                    : item.confirmed !== undefined && item.confirmed === false
-                    ? '#009900'
-                    : '#33ff33',
+                  res && res.currentPharmacyIsA ? item.addedByB
+                  ? '#00cc00'
+                  : item.confirmed !== undefined && item.confirmed === false 
+                  ? '#009900'
+                  : '#33ff33' : '#33ff33',
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
