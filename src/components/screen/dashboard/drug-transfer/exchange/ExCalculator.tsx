@@ -90,8 +90,10 @@ const ExCalculator: React.FC<Props> = (props) => {
   };
 
   const reCheckData = (): any => {
+
     expireDate = getExpireDate(exchange);
     expireDateText = t(getExpireDateTitle(exchange.state));
+
   };
 
   const l = (v: string | number): string => {
@@ -154,9 +156,9 @@ const ExCalculator: React.FC<Props> = (props) => {
       ? exchange.totalPourcentageA
       : exchange.totalPourcentageB;
     if (you) {
-      card = uBasketCount; // exchange.cartA;
+      card = [...uBasketCount]; // exchange.cartA;
     } else {
-      card = basketCount; // exchange.cartB;
+      card = [...basketCount]; // exchange.cartB;
     }
     let totalCount = 0;
     let totalPrice = 0;
@@ -176,21 +178,21 @@ const ExCalculator: React.FC<Props> = (props) => {
                       { t('general.number') }
                     </TableCell>
                     <TableCell align="center" className={ darkText }>
-                      { t('general.price') } ({ t('general.rial') })
+                      { t('general.price') } {t('general.unit')} ({ t('general.rial') })
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   { card.map((row) => {
                     totalCount += row.currentCnt;
-                    const price = row.amount * row.currentCnt;
+                    const price = row.amount;
                     // row.packID == undefined
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
                     totalPrice += price;
                     return (
                       <>
-                        { (row.confirmed === undefined || row.confirmed) &&
+                        { (row.confirmed === undefined || row.confirmed === null || row.confirmed) &&
                           <TableRow key={ row.drug.name }>
                             <TableCell scope="row" className={ darkText }>
                               { row.drug.name }
@@ -357,9 +359,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                 leftText={
                   expireDate == null
                     ? ''
-                    : moment(expireDate, 'YYYY/MM/DD')
-                      .locale('fa')
-                      .format('YYYY/MM/DD')
+                    : expireDate
                 }
               />
             </Grid>

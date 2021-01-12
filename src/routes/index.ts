@@ -9,6 +9,7 @@ const user = 'user';
 const drug = 'drug';
 const category = 'category';
 const message = 'message';
+const pack = 'pack';
 
 export default {
   login: '/login',
@@ -44,4 +45,7 @@ export default {
 
   createMessage: `/${dashboard}/${message}/create`,
   messagesList: `/${dashboard}/${message}/list`,
+
+  packsList: `/${pack}/list`,
+  createPack: `/${pack}/create`,
 };

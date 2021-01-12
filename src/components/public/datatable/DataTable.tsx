@@ -40,6 +40,7 @@ const DataTable: React.ForwardRefRenderFunction<
     addAction,
     stateAction,
     onRowClick,
+    customActions,
   } = props;
 
   const { t } = useTranslation();
@@ -134,6 +135,23 @@ const DataTable: React.ForwardRefRenderFunction<
         },
       },
     ];
+  }
+  if (customActions !== undefined && customActions.length > 0) {
+    customActions.map((a: any) => {
+      tableActions = [
+        ...tableActions,
+        {
+          icon: a.icon,
+          tooltip: a.tooltip ? a.tooltip : '',
+          iconProps: {
+            color: a.color ? a.color : 'primary'
+          },
+          onClick: (event: any, rowData: any): void => {
+            if (a.action) a.action(event, rowData)
+          },
+        },
+      ];
+    });
   }
 
   useImperativeHandle(forwardedRef, () => ({

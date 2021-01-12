@@ -75,7 +75,16 @@ export default {
         ok: 'خب',
         warning: 'هشدار',
         rial: 'ریال',
+        unit : 'واحد',
         warrantyTo: 'گارانتی تا ',
+      },
+      pack: {
+        pack: 'پک',
+        title: 'عنوان پک',
+        list: 'لیست پک ها',
+        create: 'ایجاد پک',
+        category: 'دسته بندی پک',
+        addDrug: 'اضافه کردن دارو',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -99,6 +108,8 @@ export default {
         activation: 'فعال کردن',
         deactivation: 'غیرفعال کردن',
         save: 'ذخیره',
+        impersonate: 'ورود به جای ',
+        impersonateThisPharmacy: 'ورود به جای این داروخانه',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
@@ -218,6 +229,7 @@ export default {
         threePercentWarning:
           'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
+        continue: 'ادامه تبادل',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',

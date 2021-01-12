@@ -36,6 +36,13 @@ export interface CategoriesInterface {
   typeString: string;
 }
 
+export interface DataTableCustomActionInterface {
+  icon: string;
+  tooltip?: string;
+  color?: string;
+  action?: (() => void) | void | any;
+}
+
 export interface DataTableProps {
   columns: any;
   whereClause?: [];
@@ -55,6 +62,7 @@ export interface DataTableProps {
   removeAction?: (() => void) | void | any;
   addAction?: (() => void) | void | any;
   stateAction?: (() => void) | void | any;
+  customActions?: Array<DataTableCustomActionInterface>;
 }
 
 export interface UserDataProps {

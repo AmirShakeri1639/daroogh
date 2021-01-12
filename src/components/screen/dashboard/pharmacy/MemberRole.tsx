@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import {
   Button, Card, CardActions, CardContent, CardHeader,
   Container, Divider, FormControlLabel,
@@ -77,7 +77,8 @@ const MemberRole: React.FC = () => {
   } = new User();
 
   const {
-    addUserToRole
+    addUserToRole,
+    getAllRoles,
   } = new Role();
 
   // @ts-ignore
@@ -94,11 +95,22 @@ const MemberRole: React.FC = () => {
     },
   });
 
-  const roles: LabelValue[] = [
-    { label: 'نقش ۱ داروخانه', value: 50 },
-    { label: 'نقش ۲ داروخانه', value: 51 },
-    { label: 'نقش ۳ داروخانه', value: 52 },
-  ];
+  const [roles, setRoles] = useState<LabelValue[]>([]);
+  useEffect(() => {
+    async function getRoles(): Promise<any> {
+      const result = await getAllRoles();
+      if (result.items) {
+
+        // type 2 means roles special for pharmacies
+        setRoles(
+          result.items
+            .filter((i: any) => i.type == 2)
+            .map((i: any) => ({ value: i.id, label: i.name }))
+        );
+      }
+    }
+    getRoles();
+  }, []);
 
   const addUserToRoleHandler = async (item: any): Promise<any> => {
     toggleIsOpenSaveModalForm();

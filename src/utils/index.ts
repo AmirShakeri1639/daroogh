@@ -17,3 +17,4 @@ export { default as sanitizeReactSelect } from './sanitizeReactSelect';
 export { default as JwtData } from './JwtData';
 export { isNullOrEmpty } from './isNullOrEmpty';
 export { EncrDecrService } from './EncrDecrService';
+export { default as Impersonation } from './Impersonation';

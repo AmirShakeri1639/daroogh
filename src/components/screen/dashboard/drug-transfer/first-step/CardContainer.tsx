@@ -39,13 +39,15 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { data } = props;
-
   const {
     pharmacyCity,
     pharmacyProvince,
     itemsCount,
     betterItems,
     userType,
+    star,
+    warranty,
+    notSendExchangeID,
   } = data;
 
   const { paper, span, buttonContainer } = useStyle();
@@ -63,8 +65,8 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
         <CardHeader
           city={pharmacyCity}
           province={pharmacyProvince}
-          guaranty={0}
-          star={0}
+          guaranty={warranty}
+          star={star}
           itemsCount={itemsCount}
           userType={userType}
         />
@@ -82,10 +84,12 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
           <Button
             type="button"
             variant="outlined"
-            color="blue"
+            color={notSendExchangeID !== null ? 'pink' : 'blue'}
             onClick={(): void => transferStart()}
           >
-            {t('general.start')} {t('general.tabadol')}
+            {notSendExchangeID !== null
+              ? t('transfer.continue')
+              : t('general.tabadol')}
           </Button>
         </div>
       </Grid>
