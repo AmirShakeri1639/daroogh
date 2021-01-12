@@ -178,14 +178,14 @@ const ExCalculator: React.FC<Props> = (props) => {
                       { t('general.number') }
                     </TableCell>
                     <TableCell align="center" className={ darkText }>
-                      { t('general.price') } ({ t('general.rial') })
+                      { t('general.price') } {t('general.unit')} ({ t('general.rial') })
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   { card.map((row) => {
                     totalCount += row.currentCnt;
-                    const price = row.amount * row.currentCnt;
+                    const price = row.amount;
                     // row.packID == undefined
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
