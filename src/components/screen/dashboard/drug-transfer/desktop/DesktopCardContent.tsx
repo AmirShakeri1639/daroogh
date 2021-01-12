@@ -52,8 +52,6 @@ interface Props {
   | void
   | any;
   full?: boolean;
-  totalPriceA?: number;
-  totalPriceB?: number;
   cartA?: AllPharmacyDrugInterface[];
   cartB?: AllPharmacyDrugInterface[];
 }
@@ -86,6 +84,26 @@ const DesktopCardContent = ({
     cartB = item.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
   }
 
+  const totalPriceA =
+    cartA.length > 0
+      ? cartA.map(i => {
+        return (
+          i.currentCnt
+            ? i.currentCnt * i.amount
+            : i.cnt * i.amount
+        )
+      }).reduce((sum, price) => sum + price)
+      : 0;
+  const totalPriceB =
+    cartB.length > 0
+      ? cartB.map(i => {
+        return (
+          i.currentCnt
+            ? i.currentCnt * i.amount
+            : i.cnt * i.amount
+        )
+      }).reduce((sum, price) => sum + price)
+      : 0;
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -241,7 +259,7 @@ const DesktopCardContent = ({
       message: differenceMessage
     } = diffCheck);
     console.log('diffper in check:', diffPercent);
-    diffPercent = isNaN(diffPercent) ? 0 : diffPercent; 
+    diffPercent = isNaN(diffPercent) ? 0 : diffPercent;
     console.log('diffper in check after nan check:', diffPercent);
   }
 
@@ -376,7 +394,7 @@ const DesktopCardContent = ({
             </Grid>
           ) }
 
-          { item.totalPriceA !== undefined && item.totalPriceA > 0 && (
+          { totalPriceA !== undefined && totalPriceA > 0 && (
             <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
                 backColor={ ColorEnum.White }
@@ -395,15 +413,15 @@ const DesktopCardContent = ({
                 leftText={
                   <>
                     { //@ts-ignore 
-                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(item.totalPriceA) }
+                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA) }
                     { // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(item.totalPriceA) }
+                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA) }
                   </>
                 }
               />
             </Grid>
           ) }
-          { item.totalPriceB !== undefined && item.totalPriceB > 0 && (
+          { totalPriceB !== undefined && totalPriceB > 0 && (
             <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
                 backColor={ ColorEnum.White }
@@ -422,9 +440,9 @@ const DesktopCardContent = ({
                 leftText={
                   <>
                     { //@ts-ignore 
-                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(item.totalPriceB) }
+                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB) }
                     { // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(item.totalPriceB) }
+                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB) }
                   </>
                 }
               />
@@ -434,7 +452,7 @@ const DesktopCardContent = ({
           { full &&
             <>
               <Grid item xs={ 12 } className={ spacingVertical3 }>
-                { console.log('diffper:', diffPercent)}
+                { console.log('diffper:', diffPercent) }
                 <TextLine
                   backColor={ ColorEnum.White }
                   rightText={
