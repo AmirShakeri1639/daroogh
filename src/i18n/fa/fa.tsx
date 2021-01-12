@@ -75,6 +75,7 @@ export default {
         ok: 'خب',
         warning: 'هشدار',
         rial: 'ریال',
+        unit : 'واحد',
         warrantyTo: 'گارانتی تا ',
       },
       pack: {

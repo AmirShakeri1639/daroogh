@@ -90,8 +90,10 @@ const ExCalculator: React.FC<Props> = (props) => {
   };
 
   const reCheckData = (): any => {
+
     expireDate = getExpireDate(exchange);
     expireDateText = t(getExpireDateTitle(exchange.state));
+
   };
 
   const l = (v: string | number): string => {
@@ -176,18 +178,18 @@ const ExCalculator: React.FC<Props> = (props) => {
                       { t('general.number') }
                     </TableCell>
                     <TableCell align="center" className={ darkText }>
-                      { t('general.price') } ({ t('general.rial') })
+                      { t('general.price') } {t('general.unit')} ({ t('general.rial') })
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   { card.map((row) => {
                     totalCount += row.currentCnt;
-                    const price = row.amount * row.currentCnt;
+                    const price = row.amount;
                     // row.packID == undefined
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
-                    totalPrice += price;
+                    totalPrice += price * (row.currentCnt ? row.currentCnt : row.cnt);
                     return (
                       <>
                         { (row.confirmed === undefined || row.confirmed === null || row.confirmed) &&
@@ -357,9 +359,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                 leftText={
                   expireDate == null
                     ? ''
-                    : moment(expireDate, 'YYYY/MM/DD')
-                      .locale('fa')
-                      .format('YYYY/MM/DD')
+                    : expireDate
                 }
               />
             </Grid>
