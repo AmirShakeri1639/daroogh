@@ -213,13 +213,13 @@ const SupplyList: React.FC = () => {
       try {
         const { offer1, offer2, amount, cnt } = state;
         // @ts-ignore
-        const { value: drugId } = selectedDrug;
+        const { value: drugId, id } = selectedDrug;
         if (
           (offer1 !== '' && offer2 !== '' && Number(cnt) > 0) ||
           (drugId && Number(amount) > 0)
         ) {
           const result = await getComissionAndRecommendation({
-            drugId: Number(selectedDrug),
+            drugId: id,
             price: state?.amount,
             offer1: state?.offer1,
             offer2: state?.offer2,
@@ -423,6 +423,8 @@ const SupplyList: React.FC = () => {
     }
   };
 
+  console.log('state?.cnt', state?.cnt);
+
   return (
     <>
       <MaterialContainer>
@@ -458,7 +460,10 @@ const SupplyList: React.FC = () => {
                 onChange={(event, value, reason): void => {
                   setSelectedDrug(value);
                 }}
-                onInputChange={(e, newValue) => searchDrugs(newValue)}
+                onInputChange={debounce(
+                  (e, newValue) => searchDrugs(newValue),
+                  500
+                )}
                 getOptionLabel={(option: any) => option.drugName}
                 openOnFocus
                 renderInput={(params) => (
@@ -484,9 +489,10 @@ const SupplyList: React.FC = () => {
                     value={state?.amount}
                     className="w-100"
                     label={t('general.price')}
-                    onChange={(e): void =>
-                      dispatch({ type: 'amount', value: Number(e) })
-                    }
+                    onChange={debounce(
+                      (e) => dispatch({ type: 'amount', value: Number(e) }),
+                      500
+                    )}
                   />
                 </Grid>
               </Grid>
@@ -503,9 +509,10 @@ const SupplyList: React.FC = () => {
                     numberFormat
                     className="w-100"
                     label={`${t('general.number')} ${t('drug.drug')}`}
-                    onChange={(e): void =>
-                      dispatch({ type: 'cnt', value: Number(e) })
-                    }
+                    onChange={debounce(
+                      (e) => dispatch({ type: 'cnt', value: Number(e) }),
+                      500
+                    )}
                     value={state?.cnt}
                   />
                 </Grid>
@@ -520,13 +527,16 @@ const SupplyList: React.FC = () => {
                 <Grid item xs={12} sm={3}>
                   <Input
                     value={state?.offer1}
+                    numberFormat
                     label={t('general.number')}
-                    onChange={(e): void =>
-                      dispatch({
-                        type: 'offer1',
-                        value: Number(e.target.value),
-                      })
-                    }
+                    onChange={debounce(
+                      (e) =>
+                        dispatch({
+                          type: 'offer1',
+                          value: Number(e),
+                        }),
+                      500
+                    )}
                   />
                 </Grid>
                 <span>به</span>
@@ -534,13 +544,15 @@ const SupplyList: React.FC = () => {
                   <Input
                     value={state?.offer2}
                     label={t('general.number')}
-                    // className={offerInput}
-                    onChange={(e): void =>
-                      dispatch({
-                        type: 'offer2',
-                        value: Number(e.target.value),
-                      })
-                    }
+                    numberFormat
+                    onChange={debounce(
+                      (e) =>
+                        dispatch({
+                          type: 'offer2',
+                          value: Number(e),
+                        }),
+                      500
+                    )}
                   />
                 </Grid>
                 <Grid item xs={12} sm>
