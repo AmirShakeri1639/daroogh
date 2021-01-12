@@ -122,7 +122,9 @@ const ListItems: React.FC = () => {
   const [isOpenMessageMenu, setIsOpenMessageMenu] = useState<boolean>(false);
   const [isOpenCategory, setIsOpenCategory] = useState<boolean>(false);
   const [isOpenPharmacyMenu, setIsOpenPharmacyMenu] = useState<boolean>(false);
-  const [isOpenExchange, setIsOpenExchange] = useState<boolean>(false);
+  const [isOpenExchange, setIsOpenExchange] = useState<boolean>(
+    isOpenPageOfThisGroup('exchange')
+  );
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
   const [isOpenAccountingInfo, setIsOpenAccountingInfo] = useState<boolean>(
     false

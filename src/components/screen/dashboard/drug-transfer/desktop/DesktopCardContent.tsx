@@ -465,15 +465,19 @@ const DesktopCardContent = ({
                 />
               </Grid>
 
-              { (item.state === 2 || (item.state === 12 && !item.lockSuggestion)) && differenceMessage !== '' && (
-                <Grid item xs={ 12 } className={ spacingVertical3 }>
-                  { differenceMessage.split('\n').map(i => {
-                    return (
-                      <>{ i }<br /></>
-                    )
-                  }) }
-                </Grid>
-              ) }
+              { (
+                item.state === 1 ||
+                item.state === 2 ||
+                (item.state === 12 && !item.lockSuggestion)
+              ) && (
+                  <Grid item xs={ 12 } className={ spacingVertical3 }>
+                    { differenceMessage.split('\n').map(i => {
+                      return (
+                        <>{ i }<br /></>
+                      )
+                    }) }
+                  </Grid>
+                ) }
             </>
           }
         </Grid>
@@ -522,7 +526,7 @@ const DesktopCardContent = ({
             }
           } }
         >
-          { getExchangeTitle() }
+          { getExchangeTitle() } - { item.state }
         </Typography>
         <div className={ titleCode }>
           { item?.currentPharmacyIsA ? item?.numberA : item?.numberB }
