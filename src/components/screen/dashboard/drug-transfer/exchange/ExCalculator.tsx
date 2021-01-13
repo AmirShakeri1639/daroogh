@@ -178,21 +178,23 @@ const ExCalculator: React.FC<Props> = (props) => {
                       { t('general.number') }
                     </TableCell>
                     <TableCell align="center" className={ darkText }>
-                      { t('general.price') } {t('general.unit')} ({ t('general.rial') })
+                      { t('general.price') } { t('general.unit') } ({ t('general.rial') })
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   { card.map((row) => {
                     totalCount += row.currentCnt;
-                    const price = row.amount;
+                    const price = isNullOrEmpty(row.confirmed) || row.confirmed ? row.amount : 0;
                     // row.packID == undefined
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
                     totalPrice += price * (row.currentCnt ? row.currentCnt : row.cnt);
                     return (
                       <>
-                        { (row.confirmed === undefined || row.confirmed === null || row.confirmed) &&
+                        { (
+                          row.confirmed === undefined || row.confirmed === null || row.confirmed
+                        ) &&
                           <TableRow key={ row.drug.name }>
                             <TableCell scope="row" className={ darkText }>
                               { row.drug.name }

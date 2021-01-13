@@ -71,7 +71,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const { viewExchangeId, exchangeState } = props;
 
   const location = useLocation();
-  debugger;
   const params = queryString.parse(location.search);
 
   let eid: number | undefined = undefined;
