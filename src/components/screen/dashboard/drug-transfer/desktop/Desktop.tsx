@@ -81,7 +81,6 @@ const Desktop: React.FC = () => {
     state: number | undefined = 1
   ): void => {
     const encryptedId = encDecService.encrypt(id)
-    debugger;
     history.push(`${transfer}?eid=${encodeURIComponent(encryptedId)}`);
   };
 
