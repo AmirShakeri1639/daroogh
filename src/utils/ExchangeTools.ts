@@ -59,6 +59,7 @@ export const isStateCommon = (state: number): boolean => {
       ExchangeStateEnum.UNKNOWN,
       ExchangeStateEnum.NOSEND,
       ExchangeStateEnum.CANCELLED,
+      ExchangeStateEnum.CONFIRMA_AND_B,
       ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
     ].indexOf(state) >= 0
   );

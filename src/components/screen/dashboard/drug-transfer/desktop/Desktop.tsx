@@ -44,13 +44,13 @@ const Desktop: React.FC = () => {
       // const result = d;
       if (result != undefined) {
         const statesList: LabelValue[] = [];
-        // let hasCompleted: boolean = false;
+        let hasCompleted: boolean = false;
         const items = result.items.map((item: any) => {
           if (!item.currentPharmacyIsA &&
             item.state <= 10 &&
             !isStateCommon(item.state)) item.state += 10;
-          // if (isExchangeCompleted(item.state)) hasCompleted = true;
-          if (!hasLabelValue(statesList, item.state)) { // && !hasCompleted) {
+          if (isExchangeCompleted(item.state)) hasCompleted = true;
+          if ((!hasLabelValue(statesList, item.state)) && !hasCompleted) {
             statesList.push({
               label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
               value: item.state
@@ -59,12 +59,12 @@ const Desktop: React.FC = () => {
           return { ...item, expireDate: getExpireDate(item) };
         });
 
-        // if (hasCompleted) {
-        //   statesList.push({
-        //     label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
-        //     value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
-        //   });
-        // }
+        if (hasCompleted) {
+          statesList.push({
+            label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
+            value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
+          });
+        }
         setExchanges(items);
         setIsLoading(false);
         setStateFilterList(statesList);
