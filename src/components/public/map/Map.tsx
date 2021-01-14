@@ -48,6 +48,8 @@ const Map: React.FC<Props> = (props) => {
         zoom: 14,
       });
 
+      map.addControl(new mapboxgl.NavigationControl());
+
       let marker = new mapboxgl.Marker({
         draggable: true,
       })
