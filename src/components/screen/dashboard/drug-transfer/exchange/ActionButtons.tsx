@@ -22,7 +22,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
 import Button from '../../../../public/button/Button';
@@ -169,11 +169,11 @@ const ActionButtons = (): JSX.Element => {
   const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
   const [openSurvayModal, setOpenSurvayModal] = React.useState(false);
   const [activeQuestionStep, setActiveQuestionStep] = React.useState(0);
-  const handleNextQuestion = () => {
+  const handleNextQuestion = (): any => {
     setActiveQuestionStep((prevActiveStep) => prevActiveStep + 1);
   };
 
-  const handleBackQuestion = () => {
+  const handleBackQuestion = (): any => {
     setActiveQuestionStep((prevActiveStep) => prevActiveStep - 1);
   };
   const [getQuestions, setQuestions] = useState<
@@ -276,7 +276,7 @@ const ActionButtons = (): JSX.Element => {
 
   const handleGetQuestionGroupOfExchange = async (): Promise<any> => {
     try {
-      const res = await getQuestionGroupOfExchange(10180);
+      const res = await getQuestionGroupOfExchange(exchangeId); // for Test = 10180
       const response: GetQuestionGroupOfExchangeInterface = res.data.data;
       setQuestions(response);
       setOpenSurvayModal(true);
@@ -507,7 +507,6 @@ const ActionButtons = (): JSX.Element => {
         element = (
           <div style={{ textAlign: 'center' }}>
             <Rating
-              name="hover-feedback"
               value={
                 surveyInput.surveyAnswer.find(
                   (x) => x.questionID === question.id
@@ -515,11 +514,17 @@ const ActionButtons = (): JSX.Element => {
               }
               precision={1}
               onChange={(event, newValue): any => {
+                const i = input.surveyAnswer.findIndex(
+                  (x) => x.questionID === question.id
+                );
+                if (i !== -1) {
+                  input.surveyAnswer.splice(i, 1);
+                }
                 input.surveyAnswer.push({
                   questionID: question.id,
                   barom: newValue,
                 });
-                setSurveyInput(input);
+                setSurveyInput({ ...input });
               }}
             />
           </div>
@@ -533,6 +538,7 @@ const ActionButtons = (): JSX.Element => {
                 return (
                   <FormControlLabel
                     key={index}
+                    style={{ width: '100%' }}
                     control={
                       <Checkbox
                         checked={
@@ -553,7 +559,7 @@ const ActionButtons = (): JSX.Element => {
                               optionID: item.id,
                             });
                           else input.surveyAnswer.splice(i, 1);
-                          setSurveyInput(input);
+                          setSurveyInput({ ...input });
                         }}
                         color="primary"
                       />
