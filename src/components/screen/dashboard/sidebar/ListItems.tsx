@@ -46,6 +46,7 @@ import MessageIcon from '@material-ui/icons/Message';
 import AddIcon from '@material-ui/icons/Add';
 import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
@@ -108,6 +109,7 @@ const {
   drugCategoryfavoriteList,
   packsList,
   createPack,
+  exchangeManagementList,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -338,6 +340,15 @@ const ListItems: React.FC = () => {
           {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={exchangeManagementList} className={nested}>
+              <ListItemIcon>
+                <ContactPhoneIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('exchange.exchangeManagement')} />
+            </Link>
+          </List>
+
           <List component="div" className={linkWrapper}>
             <Link to={desktop} className={nested}>
               <ListItemIcon>

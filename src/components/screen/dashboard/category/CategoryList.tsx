@@ -13,6 +13,10 @@ import {
   TextField,
   Button,
   CardActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DataTable from '../../../public/datatable/DataTable';
@@ -43,6 +47,10 @@ const useClasses = makeStyles((theme) =>
         marginTop: '-10px !important',
         color: 'red',
       },
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
     },
     header: {
       fontSize: 12,
@@ -283,6 +291,7 @@ const CategoryList: React.FC = () => {
     formContainer,
     addButton,
     cancelButton,
+    formControl,
   } = useClasses();
 
   const editModal = (): JSX.Element => {
@@ -324,16 +333,22 @@ const CategoryList: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <TextField
-                    label="نوع"
-                    required
-                    size="small"
+                  <FormControl
                     variant="outlined"
-                    value={state.type}
-                    onChange={(e): void =>
-                      dispatch({ type: 'type', value: e.target.value })
-                    }
-                  />
+                    size="small"
+                    className={formControl}
+                  >
+                    <InputLabel>نوع</InputLabel>
+                    <Select
+                      onChange={(e): void =>
+                        dispatch({ type: 'type', value: e.target.value })
+                      }
+                      value={state.type}
+                    >
+                      <MenuItem value={1}>پزشکی</MenuItem>
+                      <MenuItem value={2}>آرایشی بهداشتی</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Divider />
                 <Grid item xs={12}>

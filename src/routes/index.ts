@@ -10,6 +10,7 @@ const drug = 'drug';
 const category = 'category';
 const message = 'message';
 const pack = 'pack';
+const exchangemanagement = 'exchangemanagement';
 
 export default {
   login: '/login',
@@ -48,4 +49,6 @@ export default {
 
   packsList: `/${pack}/list`,
   createPack: `/${pack}/create`,
+
+  exchangeManagementList: `/${dashboard}/${exchangemanagement}/list`,
 };
