@@ -261,7 +261,7 @@ export default {
         new: 'داروخانه جدید',
         name: 'نام داروخانه',
         hix: 'HIX',
-        gli: 'GLI',
+        gli: 'GLN',
         workTime: 'ساعت کار',
         request: 'درخواست ایجاد',
         manager: 'مدیر داروخانه',
@@ -275,7 +275,7 @@ export default {
       },
       WorkTimeEnum: {
         PART_TIME: 'نیمه وقت',
-        FULL_TIME: 'تمام وقت',
+        FULL_TIME: 'روزانه',
         NIGHTLY: 'شبانه‌روزی',
       },
       CategoryTypeEnum: {
