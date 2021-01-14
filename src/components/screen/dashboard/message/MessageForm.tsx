@@ -1,11 +1,5 @@
 import React, { useCallback, useReducer, useState } from 'react';
-import {
-  Box,
-  createStyles,
-  Grid,
-  makeStyles,
-  MenuItem,
-} from '@material-ui/core';
+import { createStyles, Grid, makeStyles, MenuItem } from '@material-ui/core';
 import { ActionInterface } from '../../../../interfaces';
 import { MessageTypeArray, MessageTypeEnum } from '../../../../enum';
 import Input from '../../../public/input/Input';
@@ -88,7 +82,7 @@ const MessageForm: React.FC = () => {
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
 
-  const { formContainer, box } = useClasses();
+  const { formContainer } = useClasses();
   const { t } = useTranslation();
 
   const messageTypeArrayValues = [
