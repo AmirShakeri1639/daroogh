@@ -77,6 +77,9 @@ export default {
         rial: 'ریال',
         unit : 'واحد',
         warrantyTo: 'گارانتی تا ',
+        year: 'سال',
+        month: 'ماه',
+        day: 'روز',
       },
       pack: {
         pack: 'پک',
