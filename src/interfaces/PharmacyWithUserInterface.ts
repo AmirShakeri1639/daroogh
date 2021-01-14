@@ -29,5 +29,8 @@ export interface PharmacyWithUserInterface {
     password?: string;
     nationalCode: string;
     birthDate?: string | null;
+    birthDateYear?: string | null;
+    birthDateMonth?: string | null;
+    birthDateDay?: string | null;
   };
 }
