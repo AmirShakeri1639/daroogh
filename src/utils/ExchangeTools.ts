@@ -28,16 +28,16 @@ export const isExchangeCompleteddOrCancelled = (state: number): boolean => {
 };
 
 export const CompletedExchangeForAList: ExchangeStateEnum[] = [
-  ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
+  // ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
   ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
-  ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
+  ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
   ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
 ];
 
 export const CompletedExchangeForBList: ExchangeStateEnum[] = [
-  ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
+  // ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
   ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
-  ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
+  ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
   ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
 ];
 

@@ -49,7 +49,7 @@ const Desktop: React.FC = () => {
           if (!item.currentPharmacyIsA &&
             item.state <= 10 &&
             !isStateCommon(item.state)) item.state += 10;
-          if (isExchangeCompleted(item.state)) hasCompleted = true;
+          if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) hasCompleted = true;
           if ((!hasLabelValue(statesList, item.state)) && !hasCompleted) {
             statesList.push({
               label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
@@ -114,7 +114,7 @@ const Desktop: React.FC = () => {
         filter == ExchangeStateEnum.UNKNOWN
           ? [...exchanges]
           : exchanges.filter((ex) => (ex.state === filter ||
-            (isExchangeCompleted(ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state) &&
+            (isExchangeCompleted(ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state, ex.currentPharmacyIsA) &&
               filter == ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL)));
 
       // sort
