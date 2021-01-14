@@ -63,7 +63,8 @@ export const isStateCommon = (state: number): boolean => {
       ExchangeStateEnum.UNKNOWN,
       ExchangeStateEnum.NOSEND,
       ExchangeStateEnum.CANCELLED,
-      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+      ExchangeStateEnum.CONFIRMA_AND_B,
+      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
     ].indexOf(state) >= 0
   );
 };
@@ -179,28 +180,36 @@ export const differenceCheck = (
 
   // if (totalPriceA !== 0 ) {
   if (cartA.length > 0) {
-    totalPriceA = cartA
-      .map((i) => {
-        return i.currentCnt ? i.currentCnt * i.amount : i.cnt * i.amount;
-      })
-      .reduce((sum, price) => sum + price);
+    totalPriceA = cartA.map(i => {
+      return (
+        isNullOrEmpty(i.confirmed) || i.confirmed
+          ? i.currentCnt
+            ? i.currentCnt * i.amount
+            : i.cnt * i.amount
+          : 0
+      )
+    }).reduce((sum, price) => sum + price);
   } else if (exchange.cartA && exchange.cartA.length > 0) {
     totalPriceA = exchange.cartA
-      .map((i) => i.cnt * i.amount)
+      .map(i => isNullOrEmpty(i.confirmed) || i.confirmed ? i.cnt * i.amount : 0)
       .reduce((sum, price) => sum + price);
   }
   // }
 
   // if (totalPriceB !== 0) {
   if (cartB.length > 0) {
-    totalPriceB = cartB
-      .map((i) => {
-        return i.currentCnt ? i.currentCnt * i.amount : i.cnt * i.amount;
-      })
-      .reduce((sum, price) => sum + price);
+    totalPriceB = cartB.map(i => {
+      return (
+        isNullOrEmpty(i.confirmed) || i.confirmed
+          ? i.currentCnt
+            ? i.currentCnt * i.amount
+            : i.cnt * i.amount
+          : 0
+      )
+    }).reduce((sum, price) => sum + price);
   } else if (exchange.cartB && exchange.cartB.length > 0) {
     totalPriceB = exchange.cartB
-      .map((i) => i.cnt * i.amount)
+      .map(i => isNullOrEmpty(i.confirmed) || i.confirmed ? i.cnt * i.amount : 0)
       .reduce((sum, price) => sum + price);
   }
   // }
@@ -346,31 +355,27 @@ export const calcTotalPrices = (
 ): ViewExchangeInterface => {
   const { exchange, uBasketCount = [], basketCount = [] } = params;
   if (exchange.currentPharmacyIsA) {
-    exchange.totalPriceA =
-      uBasketCount.length > 0
-        ? uBasketCount
-            .map((b) => b.currentCnt * b.amount)
-            .reduce((sum, price) => sum + price)
-        : 0;
-    exchange.totalPriceB =
-      basketCount.length > 0
-        ? basketCount
-            .map((b) => b.currentCnt * b.amount)
-            .reduce((sum, price) => sum + price)
-        : 0;
+    exchange.totalPriceA = (uBasketCount.length > 0)
+      ? uBasketCount
+        .map(b => isNullOrEmpty(b.confirmed) || b.confirmed ? b.currentCnt * b.amount : 0)
+        .reduce((sum, price) => sum + price)
+      : 0;
+    exchange.totalPriceB = (basketCount.length > 0)
+      ? basketCount
+        .map(b => isNullOrEmpty(b.confirmed) || b.confirmed ? b.currentCnt * b.amount : 0)
+        .reduce((sum, price) => sum + price)
+      : 0;
   } else {
-    exchange.totalPriceA =
-      basketCount.length > 0
-        ? basketCount
-            .map((b) => b.currentCnt * b.amount)
-            .reduce((sum, price) => sum + price)
-        : 0;
-    exchange.totalPriceB =
-      uBasketCount.length > 0
-        ? uBasketCount
-            .map((b) => b.currentCnt * b.amount)
-            .reduce((sum, price) => sum + price)
-        : 0;
+    exchange.totalPriceA = (basketCount.length > 0)
+      ? basketCount
+        .map(b => isNullOrEmpty(b.confirmed) || b.confirmed ? b.currentCnt * b.amount : 0)
+        .reduce((sum, price) => sum + price)
+      : 0;
+    exchange.totalPriceB = (uBasketCount.length > 0)
+      ? uBasketCount
+        .map(b => isNullOrEmpty(b.confirmed) || b.confirmed ? b.currentCnt * b.amount : 0)
+        .reduce((sum, price) => sum + price)
+      : 0;
   }
 
   return exchange;

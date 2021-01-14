@@ -86,9 +86,11 @@ const DesktopCardContent = ({
     cartA.length > 0
       ? cartA.map(i => {
         return (
-          i.currentCnt
-            ? i.currentCnt * i.amount
-            : i.cnt * i.amount
+          isNullOrEmpty(i.confirmed) || i.confirmed
+            ? i.currentCnt
+              ? i.currentCnt * i.amount
+              : i.cnt * i.amount
+            : 0
         )
       }).reduce((sum, price) => sum + price)
       : 0;
@@ -96,9 +98,11 @@ const DesktopCardContent = ({
     cartB.length > 0
       ? cartB.map(i => {
         return (
-          i.currentCnt
-            ? i.currentCnt * i.amount
-            : i.cnt * i.amount
+          isNullOrEmpty(i.confirmed) || i.confirmed
+            ? i.currentCnt
+              ? i.currentCnt * i.amount
+              : i.cnt * i.amount
+            : 0
         )
       }).reduce((sum, price) => sum + price)
       : 0;
@@ -526,7 +530,7 @@ const DesktopCardContent = ({
             }
           } }
         >
-          { getExchangeTitle() } - { item.state }
+          { getExchangeTitle() }
         </Typography>
         <div className={ titleCode }>
           { item?.currentPharmacyIsA ? item?.numberA : item?.numberB }

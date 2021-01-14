@@ -523,7 +523,6 @@ const PharmaciesList: React.FC = () => {
 
   const { impersonate } = new User();
   const impersonateHandler = (event: any, rowData: any): void => {
-    console.log('row in custom action:', rowData);
     async function getNewToken(id: number | string): Promise<any> {
       const result = await impersonate(id);
       const impersonation = new Impersonation();

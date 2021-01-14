@@ -292,13 +292,13 @@ export default {
         // 1
         NOSEND: 'ارسال نشده',
         // 2
-        WAITFORB: 'منتظر تائید طرف مقابل',
+        WAITFORB: 'منتظر تائید داروخانه مقابل',
         // 3
-        CONFIRMB_AND_WAITFORA: 'منتظر تائید شما',
+        CONFIRMB_AND_WAITFORA: 'منتظر تائید نهایی شما',
         // 4
         CONFIRMA_AND_B: 'تائید شده و در انتظار پرداخت',
         // 5
-        NOCONFIRMB: 'مخالفت شده توسط طرف مقابل',
+        NOCONFIRMB: 'رد شده توسط داروخانه مقابل',
         // 6
         CONFIRMB_AND_NOCONFIRMA: 'مخالفت شده توسط شما',
         // 7
@@ -314,13 +314,13 @@ export default {
         // 12
         WAITFORB_FORB: 'منتظر تائید شما',
         // 13
-        CONFIRMB_AND_WAITFORA_FORB: 'منتظر تائید طرف مقابل',
+        CONFIRMB_AND_WAITFORA_FORB: 'منتظر تائید نهایی داروخانه مقابل',
         // 14
         CONFIRMA_AND_B_FORB: 'تائید شده و در انتظار پرداخت',
         // 15
-        NOCONFIRMB_FORB: 'مخالفت شده توسط شما',
+        NOCONFIRMB_FORB: 'رد شده توسط شما',
         // 16
-        CONFIRMB_AND_NOCONFIRMA_FORB: 'مخالفت شده توسط طرف مقابل',
+        CONFIRMB_AND_NOCONFIRMA_FORB: 'مخالفت شده توسط داروخانه مقابل',
         // 17
         CANCELLED_FORB: 'لغو شده',
         // 18
