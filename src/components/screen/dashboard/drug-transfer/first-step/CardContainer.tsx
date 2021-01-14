@@ -88,7 +88,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
             onClick={(): void => transferStart()}
           >
             {notSendExchangeID !== null
-              ? t('transfer.continue')
+              ? t('exchange.continue')
               : t('general.tabadol')}
           </Button>
         </div>
