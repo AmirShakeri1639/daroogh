@@ -38,35 +38,6 @@ const vazirBold = {
   src: `url(${VazirBold}) format(woff)`,
 };
 
-declare module '@material-ui/core/styles/createPalette' {
-  interface Palette {
-    gray: Palette['primary'];
-  }
-  interface PaletteOptions {
-    gray: PaletteOptions['primary'];
-  }
-  interface Palette {
-    blueLinearGradient: Palette['primary'];
-  }
-  interface PaletteOptions {
-    blueLinearGradient: PaletteOptions['primary'];
-  }
-  interface Palette {
-    pinkLinearGradient: Palette['primary'];
-  }
-  interface Palette {
-    redLinearGradient: Palette['primary'];
-  }
-  interface Palette {
-    greenLinearGradient: Palette['primary'];
-  }
-  interface PaletteOptions {
-    pinkLinearGradient: PaletteOptions['primary'];
-    redLinearGradient: PaletteOptions['primary'];
-    greenLinearGradient: PaletteOptions['primary'];
-  }
-}
-
 export const theme = createMuiTheme({
   direction: 'rtl',
   palette: {
@@ -104,3 +75,32 @@ export const theme = createMuiTheme({
 });
 
 export default RTL;
+
+declare module '@material-ui/core/styles/createPalette' {
+  interface Palette {
+    gray: Palette['primary'];
+  }
+  interface PaletteOptions {
+    gray: PaletteOptions['primary'];
+  }
+  interface Palette {
+    blueLinearGradient: Palette['primary'];
+  }
+  interface PaletteOptions {
+    blueLinearGradient: PaletteOptions['primary'];
+  }
+  interface Palette {
+    pinkLinearGradient: Palette['primary'];
+  }
+  interface Palette {
+    redLinearGradient: Palette['primary'];
+  }
+  interface Palette {
+    greenLinearGradient: Palette['primary'];
+  }
+  interface PaletteOptions {
+    pinkLinearGradient: PaletteOptions['primary'];
+    redLinearGradient: PaletteOptions['primary'];
+    greenLinearGradient: PaletteOptions['primary'];
+  }
+}

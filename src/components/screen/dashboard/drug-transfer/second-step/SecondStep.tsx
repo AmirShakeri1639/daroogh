@@ -165,9 +165,32 @@ const SecondStep: React.FC = () => {
     },
     {
       onSuccess: (data) => {
-        const { items } = data;
-        setAllPharmacyDrug(items);
-        setOrginalPharmacyDrug(items);
+        const items: AllPharmacyDrugInterface[] = data.items;
+        const newItems: AllPharmacyDrugInterface[] = [];
+        const packList = new Array<AllPharmacyDrugInterface>();
+        items.forEach((item) => {
+          let ignore = false;
+          if (item.packID) {
+            let totalAmount = 0;
+            if (!packList.find((x) => x.packID === item.packID)) {
+              if (!item.packDetails) item.packDetails = [];
+              items
+                .filter((x) => x.packID === item.packID)
+                .forEach((p: AllPharmacyDrugInterface) => {
+                  item.packDetails.push(p);
+                  packList.push(p);
+                  totalAmount += p.amount * p.cnt;
+                });
+              item.totalAmount = totalAmount;
+              newItems.push(item);
+            } else {
+              ignore = true;
+            }
+          } else {
+            if (!ignore) newItems.push(item);
+          }
+        });
+        setAllPharmacyDrug(newItems);
       },
       enabled: false,
     }
@@ -191,8 +214,6 @@ const SecondStep: React.FC = () => {
         }
       }
     });
-    // const onlyA = allPharmacyDrug.filter(comparer(basketCount));
-    // setAllPharmacyDrug(onlyA);
   }, [basketCount]);
 
   const cardListGenerator = (): JSX.Element[] | null => {
@@ -208,27 +229,27 @@ const SecondStep: React.FC = () => {
             cardColor: 'white',
           });
 
-          let isPack = false;
-          let totalAmount = 0;
-          if (item.packID) {
-            if (!packList.find((x) => x.packID === item.packID)) {
-              allPharmacyDrug
-                .filter((x) => x.packID === item.packID)
-                .forEach((p: AllPharmacyDrugInterface) => {
-                  packList.push(p);
-                  totalAmount += p.amount * p.cnt;
-                });
-              item.totalAmount = totalAmount;
-              isPack = true;
-            } else {
-              return <></>;
-            }
-          }
+          // let isPack = false;
+          // let totalAmount = 0;
+          // if (item.packID) {
+          //   if (!packList.find((x) => x.packID === item.packID)) {
+          //     allPharmacyDrug
+          //       .filter((x) => x.packID === item.packID)
+          //       .forEach((p: AllPharmacyDrugInterface) => {
+          //         packList.push(p);
+          //         totalAmount += p.amount * p.cnt;
+          //       });
+          //     item.totalAmount = totalAmount;
+          //     isPack = true;
+          //   } else {
+          //     return <></>;
+          //   }
+          // }
 
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
               <div className={paper}>
-                {isPack ? (
+                {item.packID ? (
                   <CardContainer
                     basicDetail={
                       <ExCardContent formType={1} pharmacyDrug={item} />
@@ -236,12 +257,7 @@ const SecondStep: React.FC = () => {
                     isPack={true}
                     pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
                     collapsableContent={
-                      <ExCardContent
-                        formType={3}
-                        packInfo={packList.filter(
-                          (x) => x.packID === item.packID
-                        )}
-                      />
+                      <ExCardContent formType={3} packInfo={item.packDetails} />
                     }
                   />
                 ) : (
@@ -266,40 +282,40 @@ const SecondStep: React.FC = () => {
 
   const basketCardListGenerator = (): any => {
     if (basketCount && basketCount.length > 0) {
-      let packList = new Array<AllPharmacyDrugInterface>();
+      // let packList = new Array<AllPharmacyDrugInterface>();
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
           if (item.cardColor === 'white') item.cardColor = '#33ff33';
 
-          let isPack = false;
-          let totalAmount = 0;
-          let ignore = true;
-          if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            packList = new Array<AllPharmacyDrugInterface>();
-            basketCount
-              .filter((x: any) => x.packID === item.packID)
-              .forEach((p: AllPharmacyDrugInterface) => {
-                packList.push(p);
-                totalAmount += p.amount * p.cnt;
-              });
+          // let isPack = false;
+          // let totalAmount = 0;
+          // let ignore = true;
+          // if (item.packID && !packList.find((x) => x.packID === item.packID)) {
+          //   packList = new Array<AllPharmacyDrugInterface>();
+          //   basketCount
+          //     .filter((x: any) => x.packID === item.packID)
+          //     .forEach((p: AllPharmacyDrugInterface) => {
+          //       packList.push(p);
+          //       totalAmount += p.amount * p.cnt;
+          //     });
 
-            item.totalAmount = totalAmount;
-            isPack = true;
-            ignore = false;
-          }
-          if (
-            ignore &&
-            item.packID &&
-            packList.find((x) => x.packID === item.packID)
-          ) {
-            return;
-          }
+          //   item.totalAmount = totalAmount;
+          //   isPack = true;
+          //   ignore = false;
+          // }
+          // if (
+          //   ignore &&
+          //   item.packID &&
+          //   packList.find((x) => x.packID === item.packID)
+          // ) {
+          //   return;
+          // }
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
               <div className={paper}>
-                {isPack ? (
+                {item.packID ? (
                   <CardContainer
                     basicDetail={
                       <ExCardContent formType={1} pharmacyDrug={item} />
@@ -307,7 +323,7 @@ const SecondStep: React.FC = () => {
                     isPack={true}
                     pharmacyDrug={item}
                     collapsableContent={
-                      <ExCardContent formType={3} packInfo={packList} />
+                      <ExCardContent formType={3} packInfo={item.packDetails} />
                     }
                   />
                 ) : (

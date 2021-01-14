@@ -1,4 +1,4 @@
-import { DrugI } from './AllPharmacyDrugInterface';
+import { AllPharmacyDrugInterface, DrugI } from './AllPharmacyDrugInterface';
 
 export interface ViewExchangeInterface {
   id: number;

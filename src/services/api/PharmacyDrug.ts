@@ -33,16 +33,17 @@ class PharmacyDrug extends Api {
     getAccountingForPayment: '/Accounting/GetAccountingForPayment',
     payment: '/Accounting/Payment',
     pharmacyInfo: '/Exchange/GetExchangePharmacyInfo',
+    getQuestionGroupOfExchange: '/QuestionGroups/GetQuestionGroupOfExchange/',
   };
 
   getAllPharmacyDrug = async (
     id: string,
     skip: number = 0,
-    top: number = 10
+    top: number = 100
   ): Promise<any> => {
     try {
-      let query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
-      query += `&$top=${top}&$skip=${skip * top}`;
+      const query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
+      // query += `&$top=${top}&$skip=${skip * top}`;
       const result = await this.postJsonData(query);
       return result.data;
     } catch (e) {
@@ -221,6 +222,13 @@ class PharmacyDrug extends Api {
     } catch (e) {
       errorHandler(e);
     }
+  };
+
+  getQuestionGroupOfExchange = async (exchangeID: number): Promise<any> => {
+    const result = await this.postJsonData(
+      `${this.urls.getQuestionGroupOfExchange}${exchangeID}`
+    );
+    return result;
   };
 }
 

@@ -9,6 +9,7 @@ export interface SelectPropsInterface {
   onChange: (e: any) => void;
   label?: string;
   required?: boolean;
+  className?: string;
   error: any;
   children: any;
 }
