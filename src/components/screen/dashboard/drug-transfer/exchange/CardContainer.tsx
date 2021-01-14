@@ -655,8 +655,10 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
                 } else {
                   if (viewExhcnage && !viewExhcnage.currentPharmacyIsA) {
                     await pack2Handle();
+                    setExpanded(false);
                   } else {
                     await packHandle();
+                    setExpanded(false);
                   }
                 }
               }}
