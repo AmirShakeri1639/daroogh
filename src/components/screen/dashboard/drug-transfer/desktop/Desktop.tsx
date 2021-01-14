@@ -78,7 +78,6 @@ const Desktop: React.FC = () => {
 
   const cardClickHandler = (
     id: number,
-    state: number | undefined = 1
   ): void => {
     const encryptedId = encDecService.encrypt(id)
     history.push(`${transfer}?eid=${encodeURIComponent(encryptedId)}`);

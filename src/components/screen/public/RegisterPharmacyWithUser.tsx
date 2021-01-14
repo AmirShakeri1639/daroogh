@@ -249,25 +249,31 @@ const RegisterPharmacyWithUser: React.FC = () => {
 
   const isFormValid = (): boolean => {
     const { pharmacy, user } = state;
-    const { name, family, userName, nationalCode } = user;
+    const { 
+      name, family, userName,
+      nationalCode, password
+    } = user;
     const {
       name: pharmacyName,
-      mobile,
+      mobile, address, telphon,
       countryDivisionID,
     } = pharmacy;
 
     return !(
-      // pharmacy
       (
+        // pharmacy
         pharmacyName.trim().length < 2 ||
         mobile.trim().length < 10 ||
         countryDivisionID === 0 ||
         countryDivisionID === '0' ||
+        address.trim().length < 3 ||
+        telphon.trim().length < 8 ||
         // user
         name.trim().length < 2 ||
         family.trim().length < 2 ||
         userName.trim().length < 3 ||
-        nationalCode.length !== 10
+        nationalCode.length !== 10 ||
+        password.length < 3
       )
     );
   };
@@ -389,6 +395,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <TextField
                 error={ state?.password?.length < 3 && showError }
                 label={ t('login.password') }
+                required
                 autoComplete="new-password"
                 type="password"
                 className={ formItem }
@@ -473,6 +480,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <TextField
                 error={ state.pharmacy.address.trim().length < 3 && showError }
                 variant="outlined"
+                required
                 label={ t('general.address') }
                 className={ formItem }
                 value={ state.pharmacy.address }
@@ -499,6 +507,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <TextField
                 error={ state.pharmacy.telphon.trim().length < 8 && showError }
                 variant="outlined"
+                required
                 label={ t('general.phone') }
                 value={ state.pharmacy.telphon }
                 className={ formItem }
