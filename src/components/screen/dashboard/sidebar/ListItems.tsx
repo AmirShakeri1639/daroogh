@@ -117,7 +117,9 @@ const isOpenPageOfThisGroup = (item: string): boolean => {
 
 const ListItems: React.FC = () => {
   const [isOpenRoleMenu, setIsOpenRoleMenu] = useState<boolean>(false);
-  const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
+  const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(
+    isOpenPageOfThisGroup('user')
+  );
   const [isOpenDrugMenu, setIsOpenDrugMenu] = useState<boolean>(false);
   const [isOpenMessageMenu, setIsOpenMessageMenu] = useState<boolean>(false);
   const [isOpenCategory, setIsOpenCategory] = useState<boolean>(false);

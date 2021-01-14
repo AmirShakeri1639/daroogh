@@ -79,17 +79,6 @@ const useClasses = makeStyles((theme) =>
       display: 'flex',
       justifyContent: 'space-between',
       padding: theme.spacing(2, 2),
-      '& .MuiTextField-root': {
-        margin: theme.spacing(1),
-      },
-    },
-    box: {
-      '& > .MuiFormControl-root': {
-        flexGrow: 1,
-      },
-    },
-    formControl: {
-      minWidth: 200,
     },
   })
 );
@@ -110,10 +99,10 @@ const MessageForm: React.FC = () => {
   ];
 
   const { getAllUsers } = new User();
-  const { isLoading: isLoadingGetAllUsers, data: dataGetAllUsers } = useQuery(
-    UserQueryEnum.GET_ALL_USERS,
-    getAllUsers
-  );
+  const {
+    isLoading: isLoadingGetAllUsers,
+    data: dataGetAllUsers,
+  } = useQuery(UserQueryEnum.GET_ALL_USERS, () => getAllUsers());
 
   const { createNewMessage } = new Message();
 
@@ -192,35 +181,27 @@ const MessageForm: React.FC = () => {
   };
 
   return (
-    <form className={formContainer} onSubmit={formSubmitHandler}>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            className={box}
-          >
+    <>
+      <form className={formContainer} onSubmit={formSubmitHandler}>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
             <Input
               error={state.subject.trim().length < 1 && showError}
               value={state.subject}
               onChange={(e): void =>
                 dispatch({ type: 'subject', value: e.target.value })
               }
+              className="w-100"
               label="موضوع"
               type="text"
               required
             />
-          </Box>
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            className={box}
-          >
+          </Grid>
+          <Grid item xs={12}>
             <Select
               error={state.userID === '' && showError}
               required
+              className="w-100"
               onChange={(e): void =>
                 dispatch({ type: 'userID', value: e.target.value })
               }
@@ -232,9 +213,10 @@ const MessageForm: React.FC = () => {
                 dataGetAllUsers !== undefined &&
                 usersListGenerator()}
             </Select>
-          </Box>
-          <Box display="flex" justifyContent="space-between" className={box}>
+          </Grid>
+          <Grid item xs={12}>
             <Input
+              className="w-100"
               value={state.url}
               onChange={(e): void =>
                 dispatch({ type: 'url', value: e.target.value })
@@ -244,8 +226,8 @@ const MessageForm: React.FC = () => {
               dir="ltr"
               placeholder="https://..."
             />
-          </Box>
-          <Box display="flex" justifyContent="space-between" className={box}>
+          </Grid>
+          <Grid item xs={12}>
             <Input
               value={state.expireDate}
               onChange={(e): void =>
@@ -254,10 +236,14 @@ const MessageForm: React.FC = () => {
               label={t('general.expireDate')}
               type="text"
               readOnly
+              className="w-100"
               onClick={toggleIsOpenDatePicker}
               dir="ltr"
             />
+          </Grid>
+          <Grid item xs={12}>
             <Select
+              className="w-100"
               error={state.type === '' && showError}
               onChange={(e): void =>
                 dispatch({ type: 'type', value: e.target.value })
@@ -277,14 +263,10 @@ const MessageForm: React.FC = () => {
                 }
               )}
             </Select>
-          </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            justifyContent="space-between"
-            className={box}
-          >
+          </Grid>
+          <Grid item xs={12}>
             <Input
+              className="w-100"
               error={state.message1.trim().length < 1 && showError}
               isMultiLine
               required
@@ -296,13 +278,14 @@ const MessageForm: React.FC = () => {
               }
             />
             <br />
+          </Grid>
+          <Grid item xs={12}>
             <Button type="submit" color="blue">
               {t('action.create')}
             </Button>
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
-
+      </form>
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DateTimePicker
           selectedDateHandler={async (e): Promise<any> => {
@@ -312,7 +295,7 @@ const MessageForm: React.FC = () => {
           }}
         />
       </Modal>
-    </form>
+    </>
   );
 };
 

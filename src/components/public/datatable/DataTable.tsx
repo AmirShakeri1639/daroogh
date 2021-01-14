@@ -144,10 +144,10 @@ const DataTable: React.ForwardRefRenderFunction<
           icon: a.icon,
           tooltip: a.tooltip ? a.tooltip : '',
           iconProps: {
-            color: a.color ? a.color : 'primary'
+            color: a.color ? a.color : 'primary',
           },
           onClick: (event: any, rowData: any): void => {
-            if (a.action) a.action(event, rowData)
+            if (a.action) a.action(event, rowData);
           },
         },
       ];
