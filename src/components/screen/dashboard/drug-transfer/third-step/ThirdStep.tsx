@@ -124,9 +124,32 @@ const ThirdStep: React.FC = () => {
     () => getAllPharmacyDrug('', listPageNo, pageSize),
     {
       onSuccess: (data) => {
-        const { items } = data;
-        setUAllPharmacyDrug(items);
-        setOrginalUPharmacyDrug(items);
+        const items: AllPharmacyDrugInterface[] = data.items;
+        const newItems: AllPharmacyDrugInterface[] = [];
+        const packList = new Array<AllPharmacyDrugInterface>();
+        items.forEach((item) => {
+          let ignore = false;
+          if (item.packID) {
+            let totalAmount = 0;
+            if (!packList.find((x) => x.packID === item.packID)) {
+              if (!item.packDetails) item.packDetails = [];
+              items
+                .filter((x) => x.packID === item.packID)
+                .forEach((p: AllPharmacyDrugInterface) => {
+                  item.packDetails.push(p);
+                  packList.push(p);
+                  totalAmount += p.amount * p.cnt;
+                });
+              item.totalAmount = totalAmount;
+              newItems.push(item);
+            } else {
+              ignore = true;
+            }
+          } else {
+            if (!ignore) newItems.push(item);
+          }
+        });
+        setUAllPharmacyDrug(newItems);
       },
       enabled: false,
     }
@@ -141,8 +164,6 @@ const ThirdStep: React.FC = () => {
         }
       }
     });
-    // const onlyA = uAllPharmacyDrug.filter(comparer(uBasketCount));
-    // setUAllPharmacyDrug(onlyA);
   }, [uBasketCount]);
 
   const { t } = useTranslation();
@@ -160,26 +181,27 @@ const ThirdStep: React.FC = () => {
             cardColor: 'white',
           });
 
-          let isPack = false;
-          let totalAmount = 0;
-          if (item.packID) {
-            if (!packList.find((x) => x.packID === item.packID)) {
-              uAllPharmacyDrug
-                .filter((x) => x.packID === item.packID)
-                .forEach((p: AllPharmacyDrugInterface) => {
-                  packList.push(p);
-                  totalAmount += p.amount;
-                });
-              item.totalAmount = totalAmount;
-              isPack = true;
-            } else {
-              return <></>;
-            }
-          }
+          // let isPack = false;
+          // let totalAmount = 0;
+          // if (item.packID) {
+          //   if (!packList.find((x) => x.packID === item.packID)) {
+          //     uAllPharmacyDrug
+          //       .filter((x) => x.packID === item.packID)
+          //       .forEach((p: AllPharmacyDrugInterface) => {
+          //         packList.push(p);
+          //         totalAmount += p.amount;
+          //       });
+          //     item.totalAmount = totalAmount;
+          //     isPack = true;
+          //   } else {
+          //     return <></>;
+          //   }
+          // }
+
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
               <div className={paper}>
-                {isPack ? (
+                {item.packID ? (
                   <CardContainer
                     basicDetail={
                       <ExCardContent formType={1} pharmacyDrug={item} />
@@ -187,12 +209,7 @@ const ThirdStep: React.FC = () => {
                     isPack={true}
                     pharmacyDrug={Object.assign(item, { currentCnt: item.cnt })}
                     collapsableContent={
-                      <ExCardContent
-                        formType={3}
-                        packInfo={packList.filter(
-                          (x) => x.packID === item.packID
-                        )}
-                      />
+                      <ExCardContent formType={3} packInfo={item.packDetails} />
                     }
                   />
                 ) : (
@@ -224,28 +241,29 @@ const ThirdStep: React.FC = () => {
           item.buttonName = 'حذف از تبادل';
           if (item.cardColor === 'white') item.cardColor = '#33ff33';
 
-          let isPack = false;
-          let totalAmount = 0;
-          let ignore = true;
-          if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-            uBasketCount
-              .filter((x: any) => x.packID === item.packID)
-              .forEach((p: AllPharmacyDrugInterface) => {
-                packList.push(p);
-                totalAmount += p.amount * p.cnt;
-              });
+          // let isPack = false;
+          // let totalAmount = 0;
+          // let ignore = true;
+          // if (item.packID && !packList.find((x) => x.packID === item.packID)) {
+          //   uBasketCount
+          //     .filter((x: any) => x.packID === item.packID)
+          //     .forEach((p: AllPharmacyDrugInterface) => {
+          //       packList.push(p);
+          //       totalAmount += p.amount * p.cnt;
+          //     });
 
-            item.totalAmount = totalAmount;
-            isPack = true;
-            ignore = false;
-          }
-          if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
-            return;
-          }
+          //   item.totalAmount = totalAmount;
+          //   isPack = true;
+          //   ignore = false;
+          // }
+          // if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
+          //   return;
+          // }
+
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
               <div className={paper}>
-                {isPack ? (
+                {item.packID ? (
                   <CardContainer
                     basicDetail={
                       <ExCardContent formType={1} pharmacyDrug={item} />
@@ -253,7 +271,7 @@ const ThirdStep: React.FC = () => {
                     isPack={true}
                     pharmacyDrug={item}
                     collapsableContent={
-                      <ExCardContent formType={3} packInfo={packList} />
+                      <ExCardContent formType={3} packInfo={item.packDetails} />
                     }
                   />
                 ) : (
@@ -297,26 +315,29 @@ const ThirdStep: React.FC = () => {
               </Grid>
             </Grid>
             {!viewExhcnage ||
-              ((!viewExhcnage.lockSuggestion && (viewExhcnage.state === 1 || viewExhcnage.state === 2 || viewExhcnage.state === 12) ) && (
-                <Grid
-                  item
-                  xs={12}
-                  md={12}
-                  style={{ marginBottom: -25, paddingBottom: 0 }}
-                >
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={isSelected}
-                        onChange={handleChange}
-                        name="checkedB"
-                        color="primary"
-                      />
-                    }
-                    label="انتخاب دارو از سبد عرضه خود"
-                  />
-                </Grid>
-              ))}
+              (!viewExhcnage.lockSuggestion &&
+                (viewExhcnage.state === 1 ||
+                  viewExhcnage.state === 2 ||
+                  viewExhcnage.state === 12) && (
+                  <Grid
+                    item
+                    xs={12}
+                    md={12}
+                    style={{ marginBottom: -25, paddingBottom: 0 }}
+                  >
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={isSelected}
+                          onChange={handleChange}
+                          name="checkedB"
+                          color="primary"
+                        />
+                      }
+                      label="انتخاب دارو از سبد عرضه خود"
+                    />
+                  </Grid>
+                ))}
             <Grid container spacing={1}>
               <>
                 {isLoading && <CircleLoading />}

@@ -1,24 +1,30 @@
-import { isNullOrEmpty } from ".";
-import { ExchangeStateEnum } from "../enum";
+import { isNullOrEmpty } from '.';
+import { ExchangeStateEnum } from '../enum';
 import moment from 'jalali-moment';
-import { AllPharmacyDrugInterface, LabelValue, ViewExchangeInterface } from "../interfaces";
+import {
+  AllPharmacyDrugInterface,
+  LabelValue,
+  ViewExchangeInterface,
+} from '../interfaces';
 import { Convertor } from './';
 
 export const isExchangeCompleteddOrCancelled = (state: number): boolean => {
-  return ([
-    ExchangeStateEnum.NOCONFIRMB,
-    ExchangeStateEnum.CONFIRMB_AND_NOCONFIRMA,
-    ExchangeStateEnum.CANCELLED,
-    ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
-    ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
-    ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
-    ExchangeStateEnum.NOCONFIRMB_FORB,
-    ExchangeStateEnum.CONFIRMB_AND_NOCONFIRMA_FORB,
-    ExchangeStateEnum.CANCELLED_FORB,
-    ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
-    ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
-    ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
-  ].indexOf(state) > -1);
+  return (
+    [
+      ExchangeStateEnum.NOCONFIRMB,
+      ExchangeStateEnum.CONFIRMB_AND_NOCONFIRMA,
+      ExchangeStateEnum.CANCELLED,
+      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA,
+      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB,
+      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+      ExchangeStateEnum.NOCONFIRMB_FORB,
+      ExchangeStateEnum.CONFIRMB_AND_NOCONFIRMA_FORB,
+      ExchangeStateEnum.CANCELLED_FORB,
+      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTA_FORB,
+      ExchangeStateEnum.CONFIRMA_AND_B_PAYMENTB_FORB,
+      ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL_FORB,
+    ].indexOf(state) > -1
+  );
 };
 
 export const CompletedExchangeForAList: ExchangeStateEnum[] = [
@@ -45,11 +51,9 @@ export const isExchangeCompleted = (
       CompletedExchangeForBList.indexOf(state) > -1
     );
   } else {
-    return (
-      isA
-        ? CompletedExchangeForAList.indexOf(state) > -1
-        : CompletedExchangeForBList.indexOf(state) > -1
-    );
+    return isA
+      ? CompletedExchangeForAList.indexOf(state) > -1
+      : CompletedExchangeForBList.indexOf(state) > -1;
   }
 };
 
@@ -73,20 +77,23 @@ export const getExpireDate = (item: any): string => {
     expireDate = item?.expireDateB == null ? '' : item?.expireDateB;
   }
   if (isExchangeCompleteddOrCancelled(item?.state)) {
-    expireDate = expireDate > (
-      item?.cancelDate == undefined ? '' : item?.cancelDate
-    ) ? expireDate : item?.cancelDate;
+    expireDate =
+      expireDate > (item?.cancelDate == undefined ? '' : item?.cancelDate)
+        ? expireDate
+        : item?.cancelDate;
   }
-  expireDate = isNullOrEmpty(expireDate) ? ''
-    : moment(expireDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+  expireDate = isNullOrEmpty(expireDate)
+    ? ''
+    : moment(expireDate, 'YYYY/MM/DD')
+        .locale('fa')
+        .format('YYYY/MM/DD');
   return expireDate;
 };
 
 export const getExpireDateTitle = (state: number): string => {
-  return (
-    isExchangeCompleteddOrCancelled(state)
-      ? 'exchange.completionDate' : 'exchange.expirationDate'
-  );
+  return isExchangeCompleteddOrCancelled(state)
+    ? 'exchange.completionDate'
+    : 'exchange.expirationDate';
 };
 
 /// Checks if a list of LavelValue has x value
@@ -162,7 +169,7 @@ export interface DifferenceCheckOutputInterface {
   message: string;
 }
 
-/// Checks the difference between total price of two baskets 
+/// Checks the difference between total price of two baskets
 /// and returns proper values and a suitable message
 export const differenceCheck = (
   params: DifferenceCheckInterface
@@ -225,7 +232,7 @@ export const differenceCheck = (
   difference = Math.abs(totalPriceA - totalPriceB);
   // setDifference(difference);
   diffPercent = Math.floor(
-    difference * 100 / Math.max(totalPriceA, totalPriceB)
+    (difference * 100) / Math.max(totalPriceA, totalPriceB)
   );
   // Maximum between to diff percents
   const diffPercentValue = Math.max(a3p, b3p);
@@ -236,22 +243,26 @@ export const differenceCheck = (
   //if (setIs3PercentOk) setIs3PercentOk(isDiffOk);
 
   // difference to amend for A
-  const diffA = totalPriceA > totalPriceB
-    ? (totalPriceB + b3p) - totalPriceA
-    : totalPriceB - (totalPriceA + b3p);
+  const diffA =
+    totalPriceA > totalPriceB
+      ? totalPriceB + b3p - totalPriceA
+      : totalPriceB - (totalPriceA + b3p);
 
   // difference to amend for B
-  const diffB = totalPriceA > totalPriceB
-    ? totalPriceA - (totalPriceB + a3p)
-    : (totalPriceA + a3p) - totalPriceB;
+  const diffB =
+    totalPriceA > totalPriceB
+      ? totalPriceA - (totalPriceB + a3p)
+      : totalPriceA + a3p - totalPriceB;
 
-
-  const lockMessage = 'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
+  const lockMessage =
+    'از آنجا که طرف مقابل سبدها را قفل کرده است شما می‌توانید \
     تبادل را رد یا تایید نمایید. سبدها قابل ویرایش نیستند.';
 
   if (exchange.currentPharmacyIsA && totalPriceA === 0 && totalPriceB !== 0) {
     message = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
-      حدود ${l(totalPriceB)} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
+      حدود ${l(
+        totalPriceB
+      )} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
       در غیر این صورت داروخانه مقابل از سبد شما انتخاب خواهد کرد.`;
   } else {
     // TODO: if diffA or diffB === 0 hide message
@@ -264,13 +275,15 @@ export const differenceCheck = (
       if (exchange.currentPharmacyIsA) {
         if (diffA > 0) {
           message += `لطفا حدود ${diffAabs} ریال به سبد خود اضافه کنید `;
-          message += diffB < 0
-            ? `یا حدود ${diffBabs} ریال از سبد طرف مقابل کم کنید `
-            : `یا حدود ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `;
+          message +=
+            diffB < 0
+              ? `یا حدود ${diffBabs} ریال از سبد طرف مقابل کم کنید `
+              : `یا حدود ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `;
         } else {
-          message += diffB > 0
-            ? `لطفا حدود ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
-            : `لطفا حدود ${diffBabs} ریال از سبد طرف مقابل کم کنید `;
+          message +=
+            diffB > 0
+              ? `لطفا حدود ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
+              : `لطفا حدود ${diffBabs} ریال از سبد طرف مقابل کم کنید `;
           message += `یا حدود ${diffAabs} ریال از سبد خود کم کنید `;
         }
         // message = diffA > 0
@@ -282,13 +295,15 @@ export const differenceCheck = (
       } else {
         if (diffB > 0) {
           message += `لطفا حدود ${diffBabs} ریال به سبد خود اضافه کنید `;
-          message += diffA < 0
-            ? `یا حدود ${diffAabs} ریال از سبد طرف مقابل کم کنید `
-            : `یا حدود ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `;
+          message +=
+            diffA < 0
+              ? `یا حدود ${diffAabs} ریال از سبد طرف مقابل کم کنید `
+              : `یا حدود ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `;
         } else {
-          message += diffA > 0
-            ? `لطفا حدود ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
-            : `لطفا حدود ${diffAabs} ریال از سبد طرف مقابل کم کنید `;
+          message +=
+            diffA > 0
+              ? `لطفا حدود ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
+              : `لطفا حدود ${diffAabs} ریال از سبد طرف مقابل کم کنید `;
           message += `یا حدود ${diffBabs} ریال از سبد خود کم کنید `;
         }
         // message = diffB > 0
@@ -298,7 +313,7 @@ export const differenceCheck = (
         //   ? `یا حدود ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
         //   : `یا حدود ${diffAabs} ریال از سبد طرف مقابل کم کنید `
       }
-      message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.'
+      message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.';
     }
 
     if (exchange.lockSuggestion && !exchange.currentPharmacyIsA) {
@@ -308,23 +323,22 @@ export const differenceCheck = (
         message += `\n${lockMessage}`;
       }
     }
-
   }
 
   if (isDiffOk && exchange.currentPharmacyIsA) {
-    message = ''
+    message = '';
   }
 
   if (isNaN(diffPercent)) {
-    diffPercent = 0
+    diffPercent = 0;
   }
 
   return {
     difference,
     diffPercent,
     isDiffOk,
-    message
-  }
+    message,
+  };
 
   //setDifferenceMessage(message);
 };
@@ -333,7 +347,7 @@ export interface CalcTotalPricesInterface {
   exchange: ViewExchangeInterface;
   uBasketCount?: AllPharmacyDrugInterface[];
   basketCount?: AllPharmacyDrugInterface[];
-};
+}
 
 /// Calculates total price of two (A & B) baskets for an exchange
 export const calcTotalPrices = (
@@ -376,4 +390,4 @@ export const percentAllowed = (): number => {
   } catch (e) {
     return 0.03;
   }
-}
+};

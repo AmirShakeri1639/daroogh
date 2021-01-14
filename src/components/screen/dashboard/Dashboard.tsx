@@ -31,6 +31,7 @@ import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
 import { ColorEnum } from '../../../enum';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../routes';
+import Ribbon from '../../public/ribbon/Ribbon';
 
 const drawerWidth = 240;
 
@@ -44,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbar: {
     paddingRight: 24,
+  },
+  trialToolbar: {
+    paddingRight: 70,
   },
   toolbarIcon: {
     display: 'flex',
@@ -156,6 +160,7 @@ type DashboardActivePage =
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const history = useHistory();
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
+  const [isTrial, setIsTrial] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [activePage, setActivePage] = useState<string>('dashboard');
 
@@ -202,7 +207,16 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     <Context.Provider value={contextInitialValues()}>
       <div className={classes.root}>
         <AppBar elevation={0} position="absolute" className={classes.appBar}>
-          <Toolbar className={classes.toolbar}>
+          <Toolbar className={isTrial ? classes.trialToolbar : classes.toolbar}>
+            {isTrial && (
+              <div style={{ zIndex: 0, overflow: 'hidden' }}>
+                <Ribbon
+                  text="نسخه آزمایشی"
+                  isExchange={false}
+                  isToolbar={true}
+                />
+              </div>
+            )}
             <IconButton
               edge="start"
               color="inherit"

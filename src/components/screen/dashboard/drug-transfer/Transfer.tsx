@@ -81,6 +81,19 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     eid = +decryptedId;
   }
 
+  const getColor = (res: any, item: any): string => {
+    const color =
+      res && res.currentPharmacyIsA
+        ? item.addedByB
+          ? '#00cc00'
+          : item.confirmed !== undefined && item.confirmed === false
+          ? '#009900'
+          : '#33ff33'
+        : '#33ff33';
+
+    return color;
+  };
+
   useEffect(() => {
     (async (): Promise<void> => {
       // let eid: any = undefined;
@@ -94,12 +107,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           const basketB: AllPharmacyDrugInterface[] = [];
 
           if (res.cartA !== undefined) {
-
-            console.log('test for ribbon is a', res.currentPharmacyIsA)
-
-
             res.cartA.forEach((item) => {
               basketA.push({
+                packDetails: [],
                 id: item.pharmacyDrugID,
                 packID: item.packID,
                 packName: item.packName,
@@ -110,12 +120,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 expireDate: item.expireDate,
                 amount: item.amount,
                 buttonName: 'حذف از تبادل',
-                cardColor:
-                  res && res.currentPharmacyIsA ? item.addedByB
-                    ? '#00cc00'
-                    : item.confirmed !== undefined && item.confirmed === false
-                      ? '#009900'
-                      : '#33ff33' : '#33ff33',
+                cardColor: getColor(res, item),
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
@@ -128,6 +133,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           if (res.cartB !== undefined) {
             res.cartB.forEach((item) => {
               basketB.push({
+                packDetails: [],
                 id: item.pharmacyDrugID,
                 packID: item.packID,
                 packName: item.packName,
@@ -138,12 +144,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 expireDate: item.expireDate,
                 amount: item.amount,
                 buttonName: 'حذف از تبادل',
-                cardColor:
-                  res && res.currentPharmacyIsA ? item.addedByB
-                    ? '#00cc00'
-                    : item.confirmed !== undefined && item.confirmed === false
-                      ? '#009900'
-                      : '#33ff33' : '#33ff33',
+                cardColor: getColor(res, item),
                 currentCnt: item.cnt,
                 offer1: item.offer1,
                 offer2: item.offer2,
@@ -154,13 +155,64 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               });
             });
           }
+
+          const newItemsA: AllPharmacyDrugInterface[] = [];
+          const packListA = new Array<AllPharmacyDrugInterface>();
+          basketA.forEach((item) => {
+            let ignore = false;
+            if (item.packID) {
+              let totalAmount = 0;
+              if (!packListA.find((x) => x.packID === item.packID)) {
+                if (!item.packDetails) item.packDetails = [];
+                basketA
+                  .filter((x) => x.packID === item.packID)
+                  .forEach((p: AllPharmacyDrugInterface) => {
+                    item.packDetails.push(p);
+                    packListA.push(p);
+                    totalAmount += p.amount * p.cnt;
+                  });
+                item.totalAmount = totalAmount;
+                newItemsA.push(item);
+              } else {
+                ignore = true;
+              }
+            } else {
+              if (!ignore) newItemsA.push(item);
+            }
+          });
+
+          const newItemsB: AllPharmacyDrugInterface[] = [];
+          const packListB = new Array<AllPharmacyDrugInterface>();
+          basketB.forEach((item) => {
+            let ignore = false;
+            if (item.packID) {
+              let totalAmount = 0;
+              if (!packListB.find((x) => x.packID === item.packID)) {
+                if (!item.packDetails) item.packDetails = [];
+                basketB
+                  .filter((x) => x.packID === item.packID)
+                  .forEach((p: AllPharmacyDrugInterface) => {
+                    item.packDetails.push(p);
+                    packListB.push(p);
+                    totalAmount += p.amount * p.cnt;
+                  });
+                item.totalAmount = totalAmount;
+                newItemsB.push(item);
+              } else {
+                ignore = true;
+              }
+            } else {
+              if (!ignore) newItemsB.push(item);
+            }
+          });
+
           if (!res.currentPharmacyIsA) {
-            setBasketCount(basketA);
-            setUbasketCount(basketB);
+            setBasketCount(newItemsA);
+            setUbasketCount(newItemsB);
             setSelectedPharmacyForTransfer(res.pharmacyKeyA);
           } else {
-            setUbasketCount(basketA);
-            setBasketCount(basketB);
+            setUbasketCount(newItemsA);
+            setBasketCount(newItemsB);
             setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
         }
@@ -175,9 +227,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
         setViewExchange(res);
         if (res) {
-          console.log('کد خیلی مهم : ', res.state);
-          console.log('کد کمی مهم', res.currentPharmacyIsA);
-
           setExchangeStateCode(res.state);
           if (res.currentPharmacyIsA) {
             switch (res.state) {

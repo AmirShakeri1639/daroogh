@@ -11,6 +11,7 @@ export interface AllPharmacyDrugInterface {
   offer2: number;
   drugID: number;
   drug: DrugI;
+  packDetails: AllPharmacyDrugInterface[];
   currentCnt: number;
   packName?: string;
   packCategoryName?: string;

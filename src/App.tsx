@@ -7,6 +7,7 @@ import { ReactQueryDevtools } from 'react-query-devtools';
 import { CssBaseline } from '@material-ui/core';
 import ViewPharmacyInfo from './components/screen/dashboard/drug-transfer/ViewPharmacyInfo';
 import routes from './routes';
+import ExchangeApprove from './components/screen/dashboard/drug-transfer/exchange/ExchangeApprove';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -32,6 +33,10 @@ const SupplyList = lazy(() =>
 
 const Transactions = lazy(() =>
   import('./components/screen/dashboard/accounting/accountingList')
+);
+
+const AccountingInfo = lazy(() =>
+  import('./components/screen/dashboard/accounting/AccountingInfo')
 );
 
 const MembershipRequests = lazy(() =>
@@ -125,6 +130,7 @@ const {
   createMessage,
   messagesList,
   drugCategoryfavoriteList,
+  accountingInfo,
   packsList,
   createPack,
 } = routes;
@@ -236,6 +242,10 @@ const App = (): JSX.Element => {
 
             <PrivateRoute path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />
+            </PrivateRoute>
+
+            <PrivateRoute path={accountingInfo}>
+              <Dashboard component={<AccountingInfo />} />
             </PrivateRoute>
 
             <PrivateRoute path={packsList}>

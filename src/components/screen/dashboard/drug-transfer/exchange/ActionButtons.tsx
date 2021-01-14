@@ -3,6 +3,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Checkbox,
   createStyles,
   Dialog,
   DialogActions,
@@ -14,11 +15,14 @@ import {
   Grid,
   IconButton,
   makeStyles,
+  MobileStepper,
+  Paper,
   Switch,
   TextField,
+  Typography,
   useMediaQuery,
 } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
 import Button from '../../../../public/button/Button';
@@ -44,6 +48,15 @@ import { Map, TextLine } from '../../../../public';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import ExCalculator from './ExCalculator';
 import { theme } from '../../../../../RTL';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import {
+  GetQuestionGroupOfExchangeInterface,
+  Question,
+  QuestionOptions,
+} from '../../../../../interfaces/GetQuestionGroupOfExchangeInterface';
+import { JsxEmit } from 'typescript';
+import { Rating } from '@material-ui/lab';
+import { SaveSurvey } from '../../../../../model/SaveSurvey';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -80,6 +93,13 @@ const style = makeStyles((theme) =>
         width: 600,
       },
     },
+    questionHeader: {
+      display: 'flex',
+      alignItems: 'center',
+      height: 50,
+      padding: theme.spacing(4),
+      backgroundColor: theme.palette.background.default,
+    },
   })
 );
 
@@ -95,6 +115,7 @@ const ActionButtons = (): JSX.Element => {
     actionContainer,
     fullRow,
     pharmacyInfoStyle,
+    questionHeader,
   } = style();
   const {
     activeStep,
@@ -115,6 +136,7 @@ const ActionButtons = (): JSX.Element => {
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [openApproveModal, setOpenApproveModal] = React.useState(false);
+
   const [isSelected, setIsSelected] = React.useState(false);
 
   const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(
@@ -141,7 +163,22 @@ const ActionButtons = (): JSX.Element => {
     removeExchange,
     pharmacyInfo,
     send,
+    getQuestionGroupOfExchange,
   } = new PharmacyDrug();
+
+  const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
+  const [openSurvayModal, setOpenSurvayModal] = React.useState(false);
+  const [activeQuestionStep, setActiveQuestionStep] = React.useState(0);
+  const handleNextQuestion = (): any => {
+    setActiveQuestionStep((prevActiveStep) => prevActiveStep + 1);
+  };
+
+  const handleBackQuestion = (): any => {
+    setActiveQuestionStep((prevActiveStep) => prevActiveStep - 1);
+  };
+  const [getQuestions, setQuestions] = useState<
+    GetQuestionGroupOfExchangeInterface
+  >();
 
   const [_cancelExchange, { isLoading: isLoadingCancel }] = useMutation(
     cancelExchange,
@@ -234,6 +271,17 @@ const ActionButtons = (): JSX.Element => {
       toggleIsShowPharmacyInfoModalForm();
     } catch (e) {
       errorHandler(e);
+    }
+  };
+
+  const handleGetQuestionGroupOfExchange = async (): Promise<any> => {
+    try {
+      const res = await getQuestionGroupOfExchange(exchangeId); // for Test = 10180
+      const response: GetQuestionGroupOfExchangeInterface = res.data.data;
+      setQuestions(response);
+      setOpenSurvayModal(true);
+    } catch (error) {
+      errorHandler(error);
     }
   };
 
@@ -451,6 +499,174 @@ const ActionButtons = (): JSX.Element => {
     );
   };
 
+  const syrveyQuestion = (question: Question): JSX.Element => {
+    const input = surveyInput;
+    let element: JSX.Element = <></>;
+    switch (question.type) {
+      case 2:
+        element = (
+          <div style={{ textAlign: 'center' }}>
+            <Rating
+              value={
+                surveyInput.surveyAnswer.find(
+                  (x) => x.questionID === question.id
+                )?.barom
+              }
+              precision={1}
+              onChange={(event, newValue): any => {
+                const i = input.surveyAnswer.findIndex(
+                  (x) => x.questionID === question.id
+                );
+                if (i !== -1) {
+                  input.surveyAnswer.splice(i, 1);
+                }
+                input.surveyAnswer.push({
+                  questionID: question.id,
+                  barom: newValue,
+                });
+                setSurveyInput({ ...input });
+              }}
+            />
+          </div>
+        );
+        break;
+      case 4:
+        element = (
+          <>
+            {question.questionOptions.map(
+              (item: QuestionOptions, index: number) => {
+                return (
+                  <FormControlLabel
+                    key={index}
+                    style={{ width: '100%' }}
+                    control={
+                      <Checkbox
+                        checked={
+                          surveyInput.surveyAnswer.findIndex(
+                            (x) => x.optionID === item.id
+                          ) !== -1
+                        }
+                        value={item.id}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ): any => {
+                          const i = input.surveyAnswer.findIndex(
+                            (x) => x.optionID === +event.target.value
+                          );
+                          if (i === -1)
+                            input.surveyAnswer.push({
+                              questionID: question.id,
+                              optionID: item.id,
+                            });
+                          else input.surveyAnswer.splice(i, 1);
+                          setSurveyInput({ ...input });
+                        }}
+                        color="primary"
+                      />
+                    }
+                    label={item.title}
+                  />
+                );
+              }
+            )}
+          </>
+        );
+      default:
+        break;
+    }
+    return element;
+  };
+
+  const SurvayModal = (): JSX.Element => {
+    return (
+      <Dialog
+        fullScreen={fullScreen}
+        open={openSurvayModal}
+        onClose={() => {
+          setOpenSurvayModal(false);
+        }}
+      >
+        <DialogTitle style={{ borderBottom: '1px silver solid' }}>
+          {'ثبت نظر (نظرسنجی)'}
+        </DialogTitle>
+        <DialogContent>
+          {getQuestions && (
+            <>
+              <Paper square elevation={0} className={questionHeader}>
+                <Typography>
+                  {getQuestions.question[activeQuestionStep].title}
+                </Typography>
+              </Paper>
+              {syrveyQuestion(getQuestions.question[activeQuestionStep])}
+              <MobileStepper
+                steps={getQuestions.question.length}
+                position="static"
+                variant="text"
+                activeStep={activeQuestionStep}
+                nextButton={
+                  <MatButton
+                    size="small"
+                    onClick={handleNextQuestion}
+                    disabled={
+                      activeQuestionStep === getQuestions.question.length - 1
+                    }
+                  >
+                    بعدی
+                    {theme.direction === 'rtl' ? (
+                      <KeyboardArrowLeft />
+                    ) : (
+                      <KeyboardArrowRight />
+                    )}
+                  </MatButton>
+                }
+                backButton={
+                  <MatButton
+                    size="small"
+                    onClick={handleBackQuestion}
+                    disabled={activeQuestionStep === 0}
+                  >
+                    {theme.direction === 'rtl' ? (
+                      <KeyboardArrowRight />
+                    ) : (
+                      <KeyboardArrowLeft />
+                    )}
+                    قبلی
+                  </MatButton>
+                }
+              />
+            </>
+          )}
+        </DialogContent>
+        <DialogActions style={{ borderTop: '1px silver solid' }}>
+          <Grid container spacing={1}>
+            <Grid item xs={6}>
+              <MatButton
+                variant="contained"
+                color="secondary"
+                onClick={() => {
+                  setOpenSurvayModal(false);
+                }}
+              >
+                انصراف
+              </MatButton>
+            </Grid>
+            <Grid item xs={6} style={{ textAlign: 'end' }}>
+              <MatButton
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  console.log('input --> ', surveyInput);
+                }}
+              >
+                ذخیره
+              </MatButton>
+            </Grid>
+          </Grid>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
   const exchangeModalApproveCancel = (type: string): JSX.Element => {
     return (
       <Modal
@@ -551,7 +767,10 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               color="red"
-              onClick={(): any => toggleIsOpenCancelExchangeModalForm('cancel')}
+              onClick={
+                // toggleIsOpenCancelExchangeModalForm('cancel')
+                handleGetQuestionGroupOfExchange
+              }
             >
               لغو درخواست
             </Button>
@@ -564,7 +783,6 @@ const ActionButtons = (): JSX.Element => {
             >
               برگشت به کارتابل
             </Button>
-                        
           </>
         );
 
@@ -604,9 +822,7 @@ const ActionButtons = (): JSX.Element => {
             >
               برگشت به کارتابل
             </Button>
-
           </>
-          
         );
 
       if (state === 4)
@@ -661,7 +877,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-        if (state === 9)
+      if (state === 9)
         element = (
           <>
             <>{element}</>
@@ -695,7 +911,6 @@ const ActionButtons = (): JSX.Element => {
               برگشت به کارتابل
             </Button>
           </>
-          
         );
 
       if (state === 1 && activeStep === 2)
@@ -761,12 +976,9 @@ const ActionButtons = (): JSX.Element => {
             >
               برگشت به کارتابل
             </Button>
-
           </>
-          
         );
 
-     
       if (state === 4)
         element = (
           <>
@@ -804,7 +1016,6 @@ const ActionButtons = (): JSX.Element => {
               variant="outlined"
               color="green"
               onClick={handlePharmacyInfo}
-
             >
               نمایش آدرس
             </Button>
@@ -819,7 +1030,7 @@ const ActionButtons = (): JSX.Element => {
             </Button>
           </>
         );
-        if (state === 8)
+      if (state === 8)
         element = (
           <>
             <>{element}</>
@@ -832,7 +1043,7 @@ const ActionButtons = (): JSX.Element => {
             >
               نمایش آدرس
             </Button>
-            
+
             <Button
               className={fullRow}
               type="button"
@@ -865,7 +1076,8 @@ const ActionButtons = (): JSX.Element => {
       {isRemoveExchangeModal && exchangeModalRemove()}
       {showApproveModalForm && <ExchangeApprove />}
       {isShowPharmacyInfoModal && <ShowPharmacyInfo />}
-      {<ShowApproveModal />}
+      <ShowApproveModal />
+      <SurvayModal />
     </>
   );
 

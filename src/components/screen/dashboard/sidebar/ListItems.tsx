@@ -90,6 +90,7 @@ const {
   desktop,
   supplyList,
   transactions,
+  accountingInfo,
   membershipRequests,
   memberRole,
   createRole,
@@ -125,6 +126,9 @@ const ListItems: React.FC = () => {
     isOpenPageOfThisGroup('exchange')
   );
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
+  const [isOpenAccountingInfo, setIsOpenAccountingInfo] = useState<boolean>(
+    false
+  );
   const [isOpenMembers, setIsOpenMembers] = useState<boolean>(false);
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(
     isOpenPageOfThisGroup('favorite')
@@ -379,6 +383,14 @@ const ListItems: React.FC = () => {
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary={t('accounting.transactions')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={accountingInfo} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('accounting.accountingForPayment')} />
             </Link>
           </List>
         </Collapse>
