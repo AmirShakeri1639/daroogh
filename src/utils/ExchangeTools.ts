@@ -85,8 +85,8 @@ export const getExpireDate = (item: any): string => {
   expireDate = isNullOrEmpty(expireDate)
     ? ''
     : moment(expireDate, 'YYYY/MM/DD')
-        .locale('fa')
-        .format('YYYY/MM/DD');
+      .locale('fa')
+      .format('YYYY/MM/DD');
   return expireDate;
 };
 
@@ -182,16 +182,24 @@ export const differenceCheck = (
   if (cartA.length > 0) {
     totalPriceA = cartA.map(i => {
       return (
-        isNullOrEmpty(i.confirmed) || i.confirmed
-          ? i.currentCnt
-            ? i.currentCnt * i.amount
-            : i.cnt * i.amount
-          : 0
+        i.packID !== null
+          ? i.totalAmount
+          : isNullOrEmpty(i.confirmed) || i.confirmed
+            ? i.currentCnt
+              ? i.currentCnt * i.amount
+              : i.cnt * i.amount
+            : 0
       )
     }).reduce((sum, price) => sum + price);
   } else if (exchange.cartA && exchange.cartA.length > 0) {
     totalPriceA = exchange.cartA
-      .map(i => isNullOrEmpty(i.confirmed) || i.confirmed ? i.cnt * i.amount : 0)
+      .map(i => {
+        return (
+          // i.packID !== null
+          //   ? i.totalAmount :
+          isNullOrEmpty(i.confirmed) || i.confirmed ? i.cnt * i.amount : 0
+        )
+      })
       .reduce((sum, price) => sum + price);
   }
   // }
@@ -200,16 +208,24 @@ export const differenceCheck = (
   if (cartB.length > 0) {
     totalPriceB = cartB.map(i => {
       return (
-        isNullOrEmpty(i.confirmed) || i.confirmed
-          ? i.currentCnt
-            ? i.currentCnt * i.amount
-            : i.cnt * i.amount
-          : 0
+        i.packID !== null
+          ? i.totalAmount
+          : isNullOrEmpty(i.confirmed) || i.confirmed
+            ? i.currentCnt
+              ? i.currentCnt * i.amount
+              : i.cnt * i.amount
+            : 0
       )
     }).reduce((sum, price) => sum + price);
   } else if (exchange.cartB && exchange.cartB.length > 0) {
     totalPriceB = exchange.cartB
-      .map(i => isNullOrEmpty(i.confirmed) || i.confirmed ? i.cnt * i.amount : 0)
+      .map(i => {
+        return (
+          // i.packID !== null
+          //   ? i.totalAmount :
+          isNullOrEmpty(i.confirmed) || i.confirmed ? i.cnt * i.amount : 0
+        )
+      })
       .reduce((sum, price) => sum + price);
   }
   // }
@@ -261,8 +277,8 @@ export const differenceCheck = (
   if (exchange.currentPharmacyIsA && totalPriceA === 0 && totalPriceB !== 0) {
     message = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
       حدود ${l(
-        totalPriceB
-      )} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
+      totalPriceB
+    )} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
       در غیر این صورت داروخانه مقابل از سبد شما انتخاب خواهد کرد.`;
   } else {
     // TODO: if diffA or diffB === 0 hide message
