@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AccountingTransactionInterface } from '../../../../interfaces';
-import { getCurrentDate, getCurrentDateJalali } from '../../../../utils/jalali';
+import { today, todayJalali } from '../../../../utils/jalali';
 
 interface Props {
   transaction: AccountingTransactionInterface;
@@ -12,8 +12,8 @@ const AddTransactionModal: React.FC<Props> = ({ transaction }) => {
 
   return (
     <>
-      { console.log(getCurrentDate()) }
-      { console.log(getCurrentDateJalali()) }
+      { console.log(today()) }
+      { console.log(todayJalali()) }
     </>
   )
 }
