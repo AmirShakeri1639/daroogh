@@ -128,7 +128,6 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
     if (decimal === 1) {
       flooredStar++;
     }
-    console.log(flooredStar);
 
     const starsArray: JSX.Element[] = [];
     for (let i = 0; i < flooredStar; i++) {

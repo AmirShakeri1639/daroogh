@@ -9,3 +9,11 @@ export interface AdvancedSearchInterface {
     drugID: number;
   }[];
 }
+
+export interface SearchPharmacyInterface {
+  id: number;
+  active: boolean;
+  adminFamily: string;
+  adminFirstName: string;
+  name: string;
+}
