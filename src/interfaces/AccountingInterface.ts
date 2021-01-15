@@ -16,3 +16,10 @@ export interface BankGetwayesInterface {
   name: string;
   title: string;
 }
+
+export interface AccountingTransactionInterface {
+  pharmacyId: number;
+  amount: number;
+  tarikh: string;
+  description: string;
+}
