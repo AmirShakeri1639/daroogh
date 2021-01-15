@@ -38,7 +38,7 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
-import { DashboardPages, PharmacyRoles, RolesEnum } from '../../../../enum';
+import { DashboardPages, GetValuesOfEnum, PharmacyRoleEnum, RolesEnum } from '../../../../enum';
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
 import LockIcon from '@material-ui/icons/Lock';
@@ -488,7 +488,7 @@ const ListItems: React.FC = () => {
         <>
           {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu() }
           {(rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0
-            || rolesArray?.some((item: any) => PharmacyRoles.includes(item)))
+            || rolesArray?.some((item: any) => GetValuesOfEnum(PharmacyRoleEnum).includes(item)))
             && pharmacyMenu() }
         </>
       ) }

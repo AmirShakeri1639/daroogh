@@ -73,13 +73,23 @@ export enum RolesEnum {
   PHARMACY_MEMBER_4 = '52',
 }
 
-export const PharmacyRoles = ['49', '50', '51', '52'];
+export enum PharmacyRoleEnum {
+  PHARMACY_MEMBER_1 = '49',
+  PHARMACY_MEMBER_2 = '50',
+  PHARMACY_MEMBER_3 = '51',
+  PHARMACY_MEMBER_4 = '52',
+}
 
 export * from './query';
 
 export enum SortTypeEnum {
   ASC,
   DESC,
+}
+
+export const GetValuesOfEnum = (e: any): any => {
+  const keys = Object.keys(e);
+  return keys.map((k: string) => e[k as keyof typeof e]);
 }
 
 export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
