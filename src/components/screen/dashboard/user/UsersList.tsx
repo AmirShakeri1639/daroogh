@@ -29,6 +29,7 @@ import { UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
 import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -375,6 +376,7 @@ const UsersList: React.FC = () => {
         removeAction={removeUserHandler}
         queryKey={UserQueryEnum.GET_ALL_USERS}
         queryCallback={getAllUsers}
+        urlAddress={UrlAddress.getAllUser}
         initLoad={false}
         isLoading={isLoadingRemoveUser || isLoadingEditUser}
         pageSize={10}

@@ -12,6 +12,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { AccountingEnum } from '../../../../enum/query';
 import { Container, Grid, Paper } from '@material-ui/core';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 const initialState: AccountingInterface = {
   id: 0,
@@ -52,6 +53,7 @@ const AccountingList: React.FC = () => {
               columns={tableColumns()}
               queryKey={AccountingEnum.GET_ALL}
               queryCallback={all}
+              urlAddress={UrlAddress.getAllAccounting}
               initLoad={false}
             />
           </Paper>

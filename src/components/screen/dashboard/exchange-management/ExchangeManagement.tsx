@@ -8,6 +8,7 @@ import {
 import React, { useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExchangeEnum } from '../../../../enum/query';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { Exchange } from '../../../../services/api';
@@ -37,19 +38,35 @@ const ExchangeManagement: React.FC = () => {
         headerStyle: { textAlign: 'right', direction: 'ltr' },
         cellStyle: { textAlign: 'right', color: 'red' },
       },
-      {
-        title: 'وضعیت',
-        field: 'state',
-        type: 'number',
-        headerStyle: { minWidth: 50 },
-        cellStyle: { textAlign: 'right' },
-      },
+      //   {
+      //     title: 'وضعیت',
+      //     field: 'state',
+      //     type: 'number',
+      //     headerStyle: { minWidth: 50 },
+      //     cellStyle: { textAlign: 'right' },
+      //   },
       {
         title: 'شرح وضعیت',
         field: 'stateString',
         type: 'string',
-        headerStyle: { textAlign: 'right', direction: 'ltr' },
+        headerStyle: { textAlign: 'right', direction: 'rtl' },
         cellStyle: { textAlign: 'right' },
+      },
+      {
+        title: 'داروخانه طرف اول',
+        field: 'pharmacyNameA',
+        type: 'string',
+        headerStyle: { textAlign: 'right', direction: 'rtl' },
+        cellStyle: { textAlign: 'right' },
+        searchable: true,
+      },
+      {
+        title: 'داروخانه طرف دوم',
+        field: 'pharmacyNameB',
+        type: 'string',
+        headerStyle: { textAlign: 'right', direction: 'rtl' },
+        cellStyle: { textAlign: 'right' },
+        searchable: true,
       },
     ];
   };
@@ -66,6 +83,7 @@ const ExchangeManagement: React.FC = () => {
               columns={getColumns()}
               queryKey={ExchangeEnum.GET_ALL_EXCHANGE}
               queryCallback={getAllExchange}
+              urlAddress={UrlAddress.getAllExchange}
               initLoad={false}
             />
           </Paper>

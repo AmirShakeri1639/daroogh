@@ -38,6 +38,7 @@ import DataTable from '../../../public/datatable/DataTable';
 import { DrugEnum } from '../../../../enum/query';
 import { Category } from '../../../../services/api';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 const initialState: DrugInterface = {
   id: 0,
@@ -489,6 +490,7 @@ const DrugsList: React.FC = () => {
               }
               queryKey={DrugEnum.GET_ALL}
               queryCallback={all}
+              urlAddress={UrlAddress.getAllDrug}
               initLoad={false}
             />
             {isLoadingRemove && <CircleLoading />}

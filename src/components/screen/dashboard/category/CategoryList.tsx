@@ -32,6 +32,7 @@ import CircleLoading from '../../../public/loading/CircleLoading';
 import { CategoriesInterface } from '../../../../interfaces/component';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { CategoryQueryEnum } from '../../../../enum/query';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -118,13 +119,13 @@ const getColumns = (): DataTableColumns[] => {
       headerStyle: { minWidth: 50 },
       cellStyle: { textAlign: 'right' },
     },
-    {
-      title: 'نوع',
-      field: 'type',
-      type: 'numeric',
-      headerStyle: { textAlign: 'right', direction: 'ltr' },
-      cellStyle: { textAlign: 'right' },
-    },
+    // {
+    //   title: 'نوع',
+    //   field: 'type',
+    //   type: 'numeric',
+    //   headerStyle: { textAlign: 'right', direction: 'ltr' },
+    //   cellStyle: { textAlign: 'right' },
+    // },
     {
       title: 'دسته',
       field: 'typeString',
@@ -402,6 +403,7 @@ const CategoryList: React.FC = () => {
               }
               queryKey={CategoryQueryEnum.GET_ALL_CATEGORIES}
               queryCallback={getAllCategories}
+              urlAddress={UrlAddress.getAllCategories}
               initLoad={false}
             />
             {isLoadingRemoveCategory && <CircleLoading />}
