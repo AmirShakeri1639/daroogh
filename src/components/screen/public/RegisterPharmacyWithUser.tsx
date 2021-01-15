@@ -63,7 +63,7 @@ const initialState: PharmacyWithUserInterface = {
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
-  debugger;
+
   switch (action.type) {
     // PHARMACY ----------------
     case 'pharmacy.id':
@@ -271,7 +271,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
       countryDivisionID,
     } = pharmacy;
 
-    debugger;
     return !(
       (
         // pharmacy

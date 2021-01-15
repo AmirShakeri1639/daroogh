@@ -30,7 +30,7 @@ const initialState: Props = {
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
-  debugger;
+
   switch (action.type) {
     case 'day':
       return {
@@ -108,7 +108,6 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
     bdDay = bdMonth > 6 && bdDay == 31 ? 30 : bdDay;
     bdDay = bdMonth == 12 && bdDay == 30 ? 29 : bdDay;
 
-    debugger;
     const result = (
       bdYear > 0 && bdYear < 100
       && bdMonth > 0 && bdMonth < 13
