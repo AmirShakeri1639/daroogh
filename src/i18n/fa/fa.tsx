@@ -113,6 +113,7 @@ export default {
         save: 'ذخیره',
         impersonate: 'ورود به جای ',
         impersonateThisPharmacy: 'ورود به جای این داروخانه',
+        cancleExchange: 'لغو تبادل',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',

@@ -288,6 +288,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
           ) : (
             <Checkbox
               disabled={item.amount <= 0}
+              checked={item.isChecked}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
                 item.isChecked = e.target.checked;
                 let amount = 0;
