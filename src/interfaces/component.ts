@@ -2,6 +2,7 @@ import { DrugInterface, TableColumnInterface } from '.';
 import { AllPharmacyDrugInterface } from './AllPharmacyDrugInterface';
 import { NewUserData } from './user';
 import { PharmacyDrugInterface } from './pharmacyDrug';
+import { DataTableColumns } from './DataTableColumns';
 
 export interface SelectPropsInterface {
   value: string;
@@ -55,7 +56,17 @@ export interface DataTableProps {
   queryKey: string;
   pageSize?: number;
   onRowClick?: (e: any, data: any) => any;
-  queryCallback: (pageNumber: number, pageSize: number) => Promise<any>;
+  queryCallback: (
+    pageNumber: number,
+    pageSize: number,
+    searchableColumns: DataTableColumns[],
+    searchText?: string,
+    orderBy?: {
+      orderByIndex: number;
+      orderByName: string;
+      orderDirection: string;
+    }
+  ) => Promise<any>;
   initLoad?: boolean;
   tableRef?: any;
   getData?: (() => any) | Array<any> | any;
@@ -64,6 +75,8 @@ export interface DataTableProps {
   addAction?: (() => void) | void | any;
   stateAction?: (() => void) | void | any;
   customActions?: Array<DataTableCustomActionInterface>;
+  urlAddress: string;
+  defaultFilter?: string;
 }
 
 export interface UserDataProps {

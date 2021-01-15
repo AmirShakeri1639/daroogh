@@ -23,6 +23,7 @@ import DataTable from '../../../public/datatable/DataTable';
 import { RoleQueryEnum } from '../../../../enum/query';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { NewRoleData } from '../../../../interfaces';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 interface ReducerInitialStateInterface {
   id: number;
@@ -265,6 +266,7 @@ const CreateRole: React.FC = () => {
               ref={ref}
               queryKey={RoleQueryEnum.GET_ALL_ROLES}
               queryCallback={getAllRoles}
+              urlAddress={UrlAddress.getAllRole}
               columns={tableColumns()}
               isLoading={isLoadingRemoveRole}
               removeAction={removeRoleHandler}

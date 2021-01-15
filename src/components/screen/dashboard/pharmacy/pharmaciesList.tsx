@@ -49,6 +49,7 @@ import { faUserCog } from '@fortawesome/free-solid-svg-icons';
 import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../../routes';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -309,6 +310,7 @@ const PharmaciesList: React.FC = () => {
         });
         dispatch({ type: 'reset' });
         ref.current?.loadItems();
+        toggleIsOpenSaveModalForm();
       } catch (e) {
         errorHandler(e);
       }
@@ -530,17 +532,19 @@ const PharmaciesList: React.FC = () => {
       history.push(routes.dashboard);
     }
     getNewToken(rowData.id);
-  }
+  };
 
   // TODO: impersonation icon in pharmacies list
   const impersonateIcon = <FontAwesomeIcon icon={faUserCog} />;
   const personOutlineIcon = <PersonOutlineIcon />;
-  const actions: DataTableCustomActionInterface[] = [{
-    icon: 'I',
-    tooltip: t('action.impersonateThisPharmacy'),
-    color: 'secondary',
-    action: impersonateHandler
-  }];
+  const actions: DataTableCustomActionInterface[] = [
+    {
+      icon: 'I',
+      tooltip: t('action.impersonateThisPharmacy'),
+      color: 'secondary',
+      action: impersonateHandler,
+    },
+  ];
 
   // @ts-ignore
   return (
@@ -563,6 +567,7 @@ const PharmaciesList: React.FC = () => {
               customActions={actions}
               queryKey={PharmacyEnum.GET_ALL}
               queryCallback={all}
+              urlAddress={UrlAddress.getAllPharmacy}
               initLoad={false}
             />
             {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && (

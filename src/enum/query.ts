@@ -47,3 +47,7 @@ export enum MembershipRequestEnum {
 export enum PackEnum {
   GET_PHARMACY_PACKS = 'getPharmacyPacks',
 }
+
+export enum ExchangeEnum {
+  GET_ALL_EXCHANGE = 'allExchange',
+}

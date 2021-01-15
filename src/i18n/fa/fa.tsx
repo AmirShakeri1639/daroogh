@@ -75,7 +75,7 @@ export default {
         ok: 'خب',
         warning: 'هشدار',
         rial: 'ریال',
-        unit : 'واحد',
+        unit: 'واحد',
         warrantyTo: 'گارانتی تا ',
         year: 'سال',
         month: 'ماه',
@@ -233,6 +233,7 @@ export default {
           'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
         continue: 'ادامه تبادل',
+        exchangeManagement: 'مدیریت تبادل',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
