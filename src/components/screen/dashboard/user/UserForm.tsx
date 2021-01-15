@@ -8,7 +8,6 @@ import {
   Switch,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { NewUserData } from '../../../../interfaces/user';
 import { ActionInterface } from '../../../../interfaces';
 import {
   errorHandler,
@@ -21,6 +20,11 @@ import Modal from '../../../public/modal/Modal';
 import User from '../../../../services/api/User';
 import { useTranslation } from 'react-i18next';
 import { UserDataProps } from '../../../../interfaces';
+import { Autocomplete } from '@material-ui/lab';
+import { debounce } from 'lodash';
+import { Search } from '../../../../services/api';
+import { _PharmacyTypeEnum } from '../../../../enum';
+import { SearchPharmacyInterface } from '../../../../interfaces/search';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -50,9 +54,14 @@ const useClasses = makeStyles((theme) =>
   })
 );
 
-const initialState: NewUserData = {
+const { searchPharmacy } = new Search();
+
+const initialState = {
   id: 0,
-  pharmacyID: null,
+  pharmacyID: {
+    id: null,
+    name: '',
+  },
   name: '',
   family: '',
   mobile: '',
@@ -76,6 +85,11 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         family: value,
+      };
+    case 'pharmacyID':
+      return {
+        ...state,
+        pharmacyID: value,
       };
     case 'mobile':
       return {
@@ -125,6 +139,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showError, setShowError] = useState<boolean>(false);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [options, setOptions] = useState<any[]>([]);
 
   const { userData, noShowInput, onSubmit, onCancel } = props;
 
@@ -146,6 +162,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           setShowError(false);
         }
         dispatch({ type: 'reset' });
+        setOptions([]);
         await successSweetAlert(
           message || t('alert.successfulCreateTextMessage')
         );
@@ -160,25 +177,15 @@ const UserForm: React.FC<UserDataProps> = (props) => {
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const inputValuesValidation = (): boolean => {
-    const {
-      name,
-      family,
-      mobile,
-      email,
-      userName,
-      nationalCode,
-      birthDate,
-      active,
-    } = state;
+    const { name, family, mobile, email, userName, nationalCode } = state;
 
     return (
       name.trim().length < 2 ||
       family.trim().length < 2 ||
       mobile.trim().length < 11 ||
-      !emailRegex.test(email.toLowerCase()) ||
+      (email !== '' && !emailRegex.test(email.toLowerCase())) ||
       userName.trim().length < 1 ||
-      nationalCode.length !== 10 ||
-      birthDate === ''
+      (nationalCode !== '' && nationalCode.length !== 10)
     );
   };
 
@@ -192,7 +199,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
     }
     const data: any = {
       id: state.id,
-      pharmacyID: state.pharmacyID,
+      pharmacyID: state.pharmacyID.id,
       name: state.name,
       family: state.family,
       mobile: state.mobile,
@@ -215,6 +222,24 @@ const UserForm: React.FC<UserDataProps> = (props) => {
     return !noShowInput?.includes(field);
   };
 
+  const searchPharmacyByName = async (name: string): Promise<any> => {
+    if (name.length < 2) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const result = await searchPharmacy(name, _PharmacyTypeEnum.FUZZY);
+      const mappedItems = result.map((item: SearchPharmacyInterface) => ({
+        id: item.id,
+        name: item.name,
+      }));
+      setIsLoading(false);
+      setOptions(mappedItems);
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
   const {
     formContainer,
     addButton,
@@ -227,9 +252,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
         <Grid container spacing={1}>
           <Grid item xs={12} sm={6} xl={3}>
             <TextField
-              error={state.name.length < 2 && showError}
+              error={state.name.trim().length < 2 && showError}
               label="نام کاربر"
-              // required
               size="small"
               className="w-100"
               variant="outlined"
@@ -242,9 +266,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           <Grid item xs={12} sm={6} xl={3}>
             <TextField
               className="w-100"
-              error={state.family.length < 2 && showError}
+              error={state.family.trim().length < 2 && showError}
               label="نام خانوادگی کاربر"
-              // required
               size="small"
               variant="outlined"
               value={state.family}
@@ -259,7 +282,6 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               error={state.mobile.trim().length < 11 && showError}
               label="موبایل"
               type="number"
-              // required
               size="small"
               variant="outlined"
               value={state.mobile}
@@ -271,10 +293,13 @@ const UserForm: React.FC<UserDataProps> = (props) => {
 
           <Grid item xs={12} sm={6} xl={3}>
             <TextField
-              error={!emailRegex.test(state.email) && showError}
+              error={
+                state.email.length > 0 &&
+                !emailRegex.test(state.email) &&
+                showError
+              }
               label="ایمیل"
               className="w-100"
-              // required
               type="email"
               size="small"
               variant="outlined"
@@ -288,7 +313,6 @@ const UserForm: React.FC<UserDataProps> = (props) => {
             <TextField
               error={state.userName.length < 1 && showError}
               label="نام کاربری"
-              // required
               size="small"
               className="w-100"
               variant="outlined"
@@ -319,10 +343,13 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           )}
           <Grid item xs={12} sm={6} xl={3}>
             <TextField
-              error={state.nationalCode.length < 10 && showError}
+              error={
+                state.nationalCode !== '' &&
+                state.nationalCode.length < 10 &&
+                showError
+              }
               label="کد ملی"
               className="w-100"
-              // required
               type="text"
               size="small"
               variant="outlined"
@@ -334,9 +361,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           </Grid>
           <Grid item xs={12} sm={6} xl={3}>
             <TextField
-              error={state.birthDate === '' && showError}
               label="تاریخ تولد"
-              // required
               inputProps={{
                 readOnly: true,
               }}
@@ -346,6 +371,33 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               variant="outlined"
               value={state.birthDate}
               onClick={toggleIsOpenDatePicker}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} xl={3}>
+            <Autocomplete
+              loading={isLoading}
+              id="pharmacyList"
+              noOptionsText={t('general.noData')}
+              loadingText={t('general.loading')}
+              options={options}
+              value={state.pharmacyID}
+              onChange={(event, value, reason): void => {
+                dispatch({ type: 'pharmacyID', value });
+              }}
+              onInputChange={debounce(
+                (e, newValue) => searchPharmacyByName(newValue),
+                500
+              )}
+              getOptionLabel={(option: any) => option.name}
+              openOnFocus
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label={t('pharmacy.name')}
+                  variant="outlined"
+                />
+              )}
             />
           </Grid>
           <Grid item xs={12}>
