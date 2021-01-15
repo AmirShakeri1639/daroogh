@@ -2,6 +2,7 @@ import {
   Container,
   createStyles,
   Grid,
+  Link,
   makeStyles,
   Paper,
 } from '@material-ui/core';
@@ -29,14 +30,39 @@ const ExchangeManagement: React.FC = () => {
 
   const { getAllExchange } = new Exchange();
 
+  const detailPanel = (row: any): JSX.Element => {
+    return (
+      <div style={{ height: 100, backgroundColor: '#e6ffee', padding: 5 }}>
+        <ul>
+          <li>
+            <span>داروخانه طرف اول : </span>
+            <span style={{ fontWeight: 'bold' }}>{row.pharmacyNameA}</span>
+          </li>
+          <li>
+            <span>داروخانه طرف دوم : </span>
+            <span style={{ fontWeight: 'bold' }}>{row.pharmacyNameB}</span>
+          </li>
+        </ul>
+      </div>
+    );
+  };
+
   const getColumns = (): DataTableColumns[] => {
     return [
       {
-        title: 'شناسه',
+        title: 'شناسه تبادل',
         field: 'id',
         type: 'numeric',
-        headerStyle: { textAlign: 'right', direction: 'ltr' },
-        cellStyle: { textAlign: 'right', color: 'red' },
+        width: '150px',
+        headerStyle: {
+          textAlign: 'right',
+          direction: 'ltr',
+        },
+        cellStyle: {
+          textAlign: 'right',
+          color: 'black',
+          whiteSpace: 'nowrap',
+        },
       },
       //   {
       //     title: 'وضعیت',
@@ -49,23 +75,62 @@ const ExchangeManagement: React.FC = () => {
         title: 'شرح وضعیت',
         field: 'stateString',
         type: 'string',
+        width: '150px',
         headerStyle: { textAlign: 'right', direction: 'rtl' },
-        cellStyle: { textAlign: 'right' },
+        cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
       },
       {
         title: 'داروخانه طرف اول',
         field: 'pharmacyNameA',
         type: 'string',
+        width: '170px',
         headerStyle: { textAlign: 'right', direction: 'rtl' },
-        cellStyle: { textAlign: 'right' },
+        cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
         searchable: true,
+        render: (row: any): any => {
+          return (
+            <Link href="#" onClick={(e: any): any => e.preventDefault()}>
+              {row.pharmacyNameA}
+            </Link>
+          );
+        },
       },
       {
         title: 'داروخانه طرف دوم',
         field: 'pharmacyNameB',
         type: 'string',
+        width: '170px',
         headerStyle: { textAlign: 'right', direction: 'rtl' },
-        cellStyle: { textAlign: 'right' },
+        cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
+        searchable: true,
+        render: (row: any): any => {
+          return (
+            <Link
+              href="#"
+              style={{ color: '#c50000' }}
+              onClick={(e: any): any => e.preventDefault()}
+            >
+              {row.pharmacyNameB}
+            </Link>
+          );
+        },
+      },
+      {
+        title: 'کد پیگیری طرف اول',
+        field: 'numberA',
+        type: 'string',
+        width: '170px',
+        headerStyle: { textAlign: 'right', direction: 'rtl' },
+        cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
+        searchable: true,
+      },
+      {
+        title: 'کد پیگیری طرف دوم',
+        field: 'numberB',
+        type: 'string',
+        width: '170px',
+        headerStyle: { textAlign: 'right', direction: 'rtl' },
+        cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
         searchable: true,
       },
     ];
@@ -84,6 +149,7 @@ const ExchangeManagement: React.FC = () => {
               queryKey={ExchangeEnum.GET_ALL_EXCHANGE}
               queryCallback={getAllExchange}
               urlAddress={UrlAddress.getAllExchange}
+              detailPanel={(row: any) => detailPanel(row)}
               initLoad={false}
             />
           </Paper>

@@ -27,6 +27,10 @@ const useStyles = makeStyles((theme) => ({
     '& tbody>.MuiTableRow-root:nth-child(even)': {
       background: '#ffe6e6',
     },
+    '& tbody>.MuiTableRow-root>.MuiTableCell-paddingNone': {
+      width: 15,
+      maxWidth: 15,
+    },
   },
 }));
 
@@ -58,6 +62,7 @@ const DataTable: React.ForwardRefRenderFunction<
     customActions,
     urlAddress,
     defaultFilter,
+    detailPanel,
   } = props;
 
   const { t } = useTranslation();
@@ -256,6 +261,18 @@ const DataTable: React.ForwardRefRenderFunction<
                   });
                 });
             })
+          }
+          detailPanel={
+            detailPanel
+              ? [
+                  {
+                    tooltip: 'نمایش جزئیات',
+                    render: (rowData): any => {
+                      return detailPanel(rowData);
+                    },
+                  },
+                ]
+              : []
           }
           actions={tableActions}
           title=""
