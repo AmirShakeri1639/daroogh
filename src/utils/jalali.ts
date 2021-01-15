@@ -2,7 +2,7 @@
 import jalaali from 'jalaali-js';
 import moment from 'jalali-moment';
 
-export const getCurrentDate = (): string => {
+export const today = (): string => {
   const today = new Date();
   const day = String(today.getDate()).padStart(2, '0');
   const month = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -11,9 +11,9 @@ export const getCurrentDate = (): string => {
   return `${year}/${month}/${day}`;
 }
 
-export const getCurrentDateJalali = (): string => {
+export const todayJalali = (): string => {
   return (
-    moment(getCurrentDate(), 'YYYY/MM/DD')
+    moment(today(), 'YYYY/MM/DD')
       .locale('fa')
       .format('YYYY/MM/DD')
   );
