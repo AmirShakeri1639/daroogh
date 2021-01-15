@@ -21,7 +21,7 @@ import { WorkTimeEnum } from '../../../enum';
 import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
-import { Map } from '../../public';
+import { Map, ThreePartDatePicker } from '../../public';
 import { DefaultCountryDivisionID } from '../../../enum/consts';
 import { useHistory } from "react-router-dom";
 import routes from '../../../routes';
@@ -56,12 +56,14 @@ const initialState: PharmacyWithUserInterface = {
     birthDate: '',
     birthDateYear: '',
     birthDateMonth: '',
-    birthDateDay: ''
+    birthDateDay: '',
+    isValidBirthDate: true,
   },
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
+  debugger;
   switch (action.type) {
     // PHARMACY ----------------
     case 'pharmacy.id':
@@ -180,25 +182,15 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         user: { ...state.user, nationalCode: value },
       };
-    case 'user.birthDateYear':
-      return {
-        ...state,
-        user: { ...state.user, birthDateYear: value },
-      }
-    case 'user.birthDateMonth':
-      return {
-        ...state,
-        user: { ...state.user, birthDateMonth: value },
-      }
-    case 'user.birthDateDay':
-      return {
-        ...state,
-        user: { ...state.user, birthDateDay: value },
-      }
     case 'user.birthDate':
       return {
         ...state,
         user: { ...state.user, birthDate: value },
+      };
+    case 'user.isValidBirthDate':
+      return {
+        ...state,
+        user: { ...state.user, isValidBirthDate: value },
       };
     case 'reset':
       return initialState;
@@ -271,7 +263,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
     const {
       name, family, userName,
       nationalCode, password,
-      birthDateDay, birthDateMonth, birthDateYear
+      isValidBirthDate
     } = user;
     const {
       name: pharmacyName,
@@ -279,6 +271,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
       countryDivisionID,
     } = pharmacy;
 
+    debugger;
     return !(
       (
         // pharmacy
@@ -288,21 +281,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
         countryDivisionID === '0' ||
         address.trim().length < 3 ||
         telphon.trim().length < 8 ||
-        (!isNullOrEmpty(birthDateYear) &&
-          !isNullOrEmpty(birthDateMonth) &&
-          !isNullOrEmpty(birthDateDay)
-          && (
-            (birthDateDay.trim().length < 1
-              && (birthDateMonth.trim().length > 0 || birthDateYear.trim().length > 0))
-            || (birthDateMonth.trim().length < 1
-              && (birthDateDay.trim().length > 0 || birthDateYear.trim().length > 0))
-            || (birthDateYear.trim().length < 1
-              && (birthDateDay.trim().length > 0 || birthDateMonth.trim().length > 0))
-            || birthDateDay < 1 || birthDateDay > 31
-            || birthDateMonth < 1 || birthDateMonth > 12
-            || birthDateYear < 1 || birthDateYear > 99
-          )
-        ) ||
+        !isValidBirthDate ||
         // user
         name.trim().length < 2 ||
         family.trim().length < 2 ||
@@ -318,12 +297,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
 
     if (isFormValid()) {
       try {
-        let bdDay = isNullOrEmpty(state.user.birthDateDay) ? 0 : state.user.birthDateDay;
-        const bdMonth = isNullOrEmpty(state.user.birthDateMonth) ? 0 : state.user.birthDateMonth;
-        const bdYear = isNullOrEmpty(state.user.birthDateYear) ? 0 : state.user.birthDateYear;
-        bdDay = bdMonth > 6 && bdDay == 31 ? 30 : bdDay;
-        bdDay = bdMonth == 12 && bdDay == 30 ? 29 : bdDay;
-
         const regResult = await _register({
           pharmacy: {
             // pharmacy
@@ -352,14 +325,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             userName: state.user.userName,
             nationalCode: state.user.nationalCode,
             password: state.user.password,
-            birthDate: (
-              bdYear > 0 && bdYear < 100
-              && bdMonth > 0 && bdMonth < 13
-              && bdDay > 0 && bdDay < 32
-            )
-              ? `${bdYear}/${bdMonth}/${bdDay}`
-              : ''
-            // state.user.birthDate,
+            birthDate: state.user.birthDate,
           },
         });
         if (regResult !== undefined) {
@@ -475,70 +441,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
               />
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } style={ { display: 'flex', alignItems: 'center' } }>
-              <span>{ t('user.birthDate') }</span>
-
-              <TextField
-                error={
-                  state.user.birthDateDay === ''
-                  && state.user.birthDateMonth !== ''
-                  && state.user.birthDateYear !== ''
-                  && (state.user.birthDateDay < 1
-                    || state.user.birthDateDay > 31)
-                  && showError }
-                label={ t('general.day') }
-                type="number"
-                className={ formItemSmall }
-                variant="outlined"
-                onChange={ (e): void => {
-                  e.target.value = e.target.value.substr(0, 2)
-                  if (e.target.value !== '') {
-                    if (+e.target.value < 1) e.target.value = '1'
-                    if (+e.target.value > 31) e.target.value = '31'
-                  }
-                  dispatch({ type: 'user.birthDateDay', value: e.target.value })
+              <ThreePartDatePicker
+                label={ t('user.birthDate') }
+                onChange={ (value: string, isValid: boolean): void => {
+                  dispatch({ type: 'user.isValidBirthDate', value: isValid });
+                  dispatch({ type: 'user.birthDate', value: value });
                 } }
               />
-              <TextField
-                error={ state.user.birthDateDay !== ''
-                  && state.user.birthDateMonth === ''
-                  && state.user.birthDateYear !== ''
-                  && (state.user.birthDateMonth < 1
-                    || state.user.birthDateMonth > 12)
-                  && showError }
-                label={ t('general.month') }
-                type="number"
-                className={ formItemSmall }
-                variant="outlined"
-                onChange={ (e): void => {
-                  e.target.value = e.target.value.substr(0, 2)
-                  if (e.target.value !== '') {
-                    if (+e.target.value < 1) e.target.value = '1'
-                    if (+e.target.value > 12) e.target.value = '12'
-                  }
-                  dispatch({ type: 'user.birthDateMonth', value: e.target.value })
-                } }
-              />
-              <TextField
-                error={ (state.user.birthDateDay !== ''
-                  || state.user.birthDateMonth !== '')
-                  && state.user.birthDateYear === ''
-                  && (state.user.birthDateYear < 1
-                    || state.user.birthDateYear > 99)
-                  && showError }
-                label={ t('general.year') }
-                type="number"
-                className={ formItemSmall }
-                variant="outlined"
-                onChange={ (e): void => {
-                  e.target.value = e.target.value.substr(0, 2)
-                  if (e.target.value !== '') {
-                    if (+e.target.value < 1) e.target.value = '1'
-                    if (+e.target.value > 99) e.target.value = '99'
-                  }
-                  dispatch({ type: 'user.birthDateYear', value: e.target.value })
-                } }
-              />
-              <span>13</span>
 
               {/* <TextField
                 error={ state.user.birthDate === '' && showError }
