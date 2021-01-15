@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { AccountingTransactionInterface } from '../../../../interfaces';
-import moment from 'jalali-moment';
 import { getCurrentDate, getCurrentDateJalali } from '../../../../utils/jalali';
-
 
 interface Props {
   transaction: AccountingTransactionInterface;
