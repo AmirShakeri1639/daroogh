@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     '& tbody>.MuiTableRow-root:nth-child(even)': {
       background: '#ffe6e6',
     },
-    '& tbody>.MuiTableRow-root>.MuiTableCell-paddingNone': {
+    '& tbody>.MuiTableRow-root>.MuiTableCell-paddingNone:first-child': {
       width: 15,
       maxWidth: 15,
     },
@@ -221,8 +221,9 @@ const DataTable: React.ForwardRefRenderFunction<
             new Promise((resolve, reject) => {
               let url = UrlAddress.baseUrl + urlAddress;
 
-              url += `?&$top=${query.pageSize}&$skip=${query.page *
-                query.pageSize}`;
+              url += `?&$top=${query.pageSize}&$skip=${
+                query.page * query.pageSize
+              }`;
 
               if (defaultFilter) {
                 url += `&$filter= ${defaultFilter}`;
