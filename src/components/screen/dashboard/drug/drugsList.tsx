@@ -246,7 +246,7 @@ const DrugsList: React.FC = () => {
       enName,
       type,
     } = item;
-    const categoryID = item.category.id;
+    const categoryID = item.category ? item.category.id : 1;
 
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'name', value: name });
@@ -297,6 +297,7 @@ const DrugsList: React.FC = () => {
           type,
         });
         dispatch({ type: 'reset' });
+        toggleIsOpenSaveModalForm();
         ref.current?.loadItems();
       } catch (e) {
         errorHandler(e);

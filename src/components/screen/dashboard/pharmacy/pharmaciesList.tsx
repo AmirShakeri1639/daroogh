@@ -310,6 +310,7 @@ const PharmaciesList: React.FC = () => {
         });
         dispatch({ type: 'reset' });
         ref.current?.loadItems();
+        toggleIsOpenSaveModalForm();
       } catch (e) {
         errorHandler(e);
       }

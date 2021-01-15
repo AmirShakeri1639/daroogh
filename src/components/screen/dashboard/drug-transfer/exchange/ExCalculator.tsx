@@ -160,6 +160,7 @@ const ExCalculator: React.FC<Props> = (props) => {
     } else {
       card = [...basketCount]; // exchange.cartB;
     }
+
     let totalCount = 0;
     let totalPrice = 0;
 
@@ -185,11 +186,15 @@ const ExCalculator: React.FC<Props> = (props) => {
                 <TableBody>
                   { card.map((row) => {
                     totalCount += row.currentCnt;
-                    const price = isNullOrEmpty(row.confirmed) || row.confirmed ? row.amount : 0;
+                    const price = row.packID !== null
+                      ? row.totalAmount
+                      : isNullOrEmpty(row.confirmed) || row.confirmed ? row.amount : 0;
                     // row.packID == undefined
                     //   ? row.amount * row.currentCnt
                     //   : row.totalAmount;
-                    totalPrice += price * (row.currentCnt ? row.currentCnt : row.cnt);
+                    totalPrice += row.packID !== null
+                      ? row.totalAmount
+                      : price * (row.currentCnt ? row.currentCnt : row.cnt);
                     return (
                       <>
                         { (
@@ -197,10 +202,11 @@ const ExCalculator: React.FC<Props> = (props) => {
                         ) &&
                           <TableRow key={ row.drug.name }>
                             <TableCell scope="row" className={ darkText }>
-                              { row.drug.name }
+                              { row.packID === null && row.drug.name }
+                              { row.packID !== null && row.packName }
                             </TableCell>
                             <TableCell align="center" className={ darkText }>
-                              { row.currentCnt }
+                              { row.packID === null && row.currentCnt }
                             </TableCell>
                             <TableCell align="center" className={ darkText }>
                               { Convertor.thousandsSeperatorFa(price) }
