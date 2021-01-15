@@ -122,7 +122,7 @@ const ExchangeManagement: React.FC = () => {
         width: '170px',
         headerStyle: { textAlign: 'right', direction: 'rtl' },
         cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
-        searchable: true,
+        searchable: false,
       },
       {
         title: 'کد پیگیری طرف دوم',

@@ -7,6 +7,9 @@ import ItemContainer from './ItemContainer';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import Button from '../../../../public/button/Button';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import { EncrDecrService } from '../../../../../utils';
+import routes from '../../../../../routes';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -29,6 +32,8 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
+const { transfer } = routes;
+
 const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
   props
 ) => {
@@ -37,6 +42,10 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     setActiveStep,
     activeStep,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const { push } = useHistory();
+
+  const encDecService = new EncrDecrService();
 
   const { data } = props;
   const {
@@ -54,9 +63,18 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
 
   const { t } = useTranslation();
 
-  const transferStart = (): void => {
-    setSelectedPharmacyForTransfer(data.pharmacyKey);
-    setActiveStep(activeStep + 1);
+  const cardClickHandler = (id: number): void => {
+    const encryptedId = encDecService.encrypt(id);
+    push(`${transfer}?eid=${encodeURIComponent(encryptedId)}`);
+  };
+
+  const transferStart = (notSendExchangeID: number | null): void => {
+    if (notSendExchangeID === null) {
+      setSelectedPharmacyForTransfer(data.pharmacyKey);
+      setActiveStep(activeStep + 1);
+    } else {
+      cardClickHandler(notSendExchangeID);
+    }
   };
 
   return (
@@ -85,7 +103,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
             type="button"
             variant="outlined"
             color={notSendExchangeID !== null ? 'pink' : 'blue'}
-            onClick={(): void => transferStart()}
+            onClick={(): void => transferStart(notSendExchangeID)}
           >
             {notSendExchangeID !== null
               ? t('exchange.continue')

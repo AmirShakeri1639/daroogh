@@ -39,7 +39,7 @@ export interface CategoriesInterface {
 }
 
 export interface DataTableCustomActionInterface {
-  icon: string;
+  icon: any;
   tooltip?: string;
   color?: string;
   action?: (() => void) | void | any;
@@ -54,6 +54,7 @@ export interface DataTableProps {
   multiple?: boolean | false;
   selection?: boolean | false;
   queryKey: string;
+  editUser?: any;
   pageSize?: number;
   onRowClick?: (e: any, data: any) => any;
   queryCallback: (
@@ -74,6 +75,7 @@ export interface DataTableProps {
   removeAction?: (() => void) | void | any;
   addAction?: (() => void) | void | any;
   stateAction?: (() => void) | void | any;
+  extraMethods?: any;
   customActions?: Array<DataTableCustomActionInterface>;
   urlAddress: string;
   defaultFilter?: string;
