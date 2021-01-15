@@ -29,12 +29,8 @@ import { errorHandler, errorSweetAlert } from '../../../utils';
 import { Settings } from '../../../services/api';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUser,
-} from '@fortawesome/free-regular-svg-icons';
-import {
-  faKey,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -73,9 +69,6 @@ const loginInitialState = {
   isVisiblePassword: false,
 };
 
-
-
-
 function reducer(
   state = loginInitialState,
   action: ActionInterface
@@ -104,7 +97,6 @@ function reducer(
 }
 
 const Login: React.FC = (): JSX.Element => {
-
   const [state, dispatch] = useReducer(reducer, loginInitialState);
   const [showError, setShowError] = useState<boolean>(false);
 
@@ -135,7 +127,7 @@ const Login: React.FC = (): JSX.Element => {
       }
     },
     onError: async () => {
-      await errorSweetAlert(t('error.loading-data'));
+      await errorSweetAlert(t('alert.errorUserNamePassword'));
     },
   });
 
@@ -177,16 +169,16 @@ const Login: React.FC = (): JSX.Element => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={ classes.paper }>
-        <Avatar className={ classes.avatar }>
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           ورود
         </Typography>
-        <form className={ classes.form } noValidate onSubmit={ formSubmitHandler }>
+        <form className={classes.form} noValidate onSubmit={formSubmitHandler}>
           <TextField
-            error={ state.username.trim().length === 0 && showError }
+            error={state.username.trim().length === 0 && showError}
             variant="outlined"
             margin="normal"
             required
@@ -197,55 +189,50 @@ const Login: React.FC = (): JSX.Element => {
             autoComplete="email"
             onChange={usernameHandler}
             InputProps={{
-                startAdornment: (
+              startAdornment: (
                 <InputAdornment position="start">
-                  <FontAwesomeIcon
-                  icon={ faUser }
-                  size="lg"
-                  fill="#ccc"/>             
-              </InputAdornment>
+                  <FontAwesomeIcon icon={faUser} size="lg" fill="#ccc" />
+                </InputAdornment>
               ),
-            } }
+            }}
           />
           <TextField
-            error={ state.password.trim().length === 0 && showError }
+            error={state.password.trim().length === 0 && showError}
             variant="outlined"
             margin="normal"
             required
             fullWidth
             name="password"
             label="کلمه عبور"
-            type={ state.isVisiblePassword ? 'text' : 'password' }
+            type={state.isVisiblePassword ? 'text' : 'password'}
             id="password"
-            onChange={ passwordHandler }
+            onChange={passwordHandler}
             autoComplete="current-password"
-            InputProps={ {
+            InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <FontAwesomeIcon
-                  icon={ faKey }
-                  size="lg"/>   
+                  <FontAwesomeIcon icon={faKey} size="lg" />
                 </InputAdornment>
               ),
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={ handleClickShowPassword }
-                    onMouseDown={ handleMouseDownPassword }
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
-                    { state.isVisiblePassword ? (
+                    {state.isVisiblePassword ? (
                       <Visibility />
                     ) : (
-                        <VisibilityOff />
-                      ) }
+                      <VisibilityOff />
+                    )}
                   </IconButton>
                 </InputAdornment>
               ),
-            } }
+            }}
           />
-          <Link className={ classes.link } to="/forget-password">
+          <Link className={classes.link} to="/forget-password">
             رمز عبور را فراموش کردم
           </Link>
           <Button
@@ -253,22 +240,22 @@ const Login: React.FC = (): JSX.Element => {
             fullWidth
             variant="contained"
             color="primary"
-            className={ classes.submit }
-            disabled={ isLoading }
+            className={classes.submit}
+            disabled={isLoading}
           >
-            <Typography variant="button">{ t('login.login') }</Typography>
-            { isLoading ? (
-              <CircleLoading size={ 16 } color="inherit" />
+            <Typography variant="button">{t('login.login')}</Typography>
+            {isLoading ? (
+              <CircleLoading size={16} color="inherit" />
             ) : (
-                <LockOpenIcon fontSize="inherit" className={ classes.margin } />
-              ) }
+              <LockOpenIcon fontSize="inherit" className={classes.margin} />
+            )}
           </Button>
           <Link
-            className={ `${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root` }
+            className={`${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root`}
             to="/register-pharmacy-with-user"
           >
             <Typography variant="button">
-              { t('login.registerPharmacyWithUser') }
+              {t('login.registerPharmacyWithUser')}
             </Typography>
           </Link>
         </form>

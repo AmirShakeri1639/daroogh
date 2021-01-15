@@ -257,6 +257,7 @@ export default {
         failedEdit: 'ویرایش با خطا روبرو شد',
         fillFormCarefully: 'در پر کردن مقادیر فرم بیشتر دقت کنید.',
         failedRemove: 'حذف با خطا روبرو شد',
+        errorUserNamePassword: 'نام کاربری یا کلمه عبور اشتباه است',
       },
       pharmacy: {
         pharmacy: 'داروخانه',
