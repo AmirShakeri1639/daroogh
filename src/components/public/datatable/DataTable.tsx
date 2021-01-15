@@ -10,7 +10,7 @@ import { usePaginatedQuery, useQueryCache } from 'react-query';
 import { errorSweetAlert } from '../../../utils';
 import { useTranslation } from 'react-i18next';
 import localization from './localization';
-import { TablePagination } from '@material-ui/core';
+import { createStyles, makeStyles, TablePagination } from '@material-ui/core';
 import itemsSanitizer from './ItemsSanitizer';
 import { DataTableColumns } from '../../../interfaces/DataTableColumns';
 import { UrlAddress } from '../../../enum/UrlAddress';
@@ -19,10 +19,22 @@ type CountdownHandle = {
   loadItems: () => void;
 };
 
+const useStyles = makeStyles((theme) => ({
+  table: {
+    '& tbody>.MuiTableRow-root:hover': {
+      background: '#ffb3b3',
+    },
+    '& tbody>.MuiTableRow-root:nth-child(even)': {
+      background: '#ffe6e6',
+    },
+  },
+}));
+
 const DataTable: React.ForwardRefRenderFunction<
   CountdownHandle,
   DataTableProps
 > = (props, forwardedRef) => {
+  const { table } = useStyles();
   const [page, setPage] = useState<number>(0);
   const [searchText, setSearchText] = useState<string>('');
   const [itemsCount, setItemsCount] = useState<number>(0);
@@ -179,98 +191,101 @@ const DataTable: React.ForwardRefRenderFunction<
 
   function InitData(): JSX.Element {
     return (
-      <MaterialTable
-        tableRef={tableRef}
-        localization={localization}
-        components={{
-          Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
-          // Pagination: (props: any): any => (
-          //   <TablePagination
-          //     {...props}
-          //     rowsPerPageOptions={[5, 10, 25, 50]}
-          //     rowsPerPage={pageSize}
-          //     count={itemsCount}
-          //     page={page}
-          //   />
-          // ),
-        }}
-        columns={columns}
-        data={(query): any =>
-          new Promise((resolve, reject) => {
-            let url = UrlAddress.baseUrl + urlAddress;
+      <div className={table}>
+        <MaterialTable
+          tableRef={tableRef}
+          localization={localization}
+          components={{
+            Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
+            // Pagination: (props: any): any => (
+            //   <TablePagination
+            //     {...props}
+            //     rowsPerPageOptions={[5, 10, 25, 50]}
+            //     rowsPerPage={pageSize}
+            //     count={itemsCount}
+            //     page={page}
+            //   />
+            // ),
+          }}
+          columns={columns}
+          data={(query): any =>
+            new Promise((resolve, reject) => {
+              let url = UrlAddress.baseUrl + urlAddress;
 
-            if (!query.search || query.search === '')
               url += `?&$top=${query.pageSize}&$skip=${
                 query.page * query.pageSize
               }`;
-            if (defaultFilter) {
-              url += `&$filter= ${defaultFilter}`;
-            }
-            if (query.search && query.search !== '') {
-              const columnsFilter = columns.filter((x: any) => x.searchable);
-              if (columnsFilter.length > 0) {
-                url += defaultFilter ? ' and ' : '?&$filter=';
-                columnsFilter.forEach((x: DataTableColumns, i: number) => {
-                  const openP = i === 0 ? '(' : '';
-                  const closeP = i === columnsFilter.length - 1 ? ')' : '';
-                  const orO = i < columnsFilter.length - 1 ? 'or ' : '';
-                  url += `${openP}contains(cast(${x.field}, 'Edm.String'),'${query.search}')${orO}${closeP}`;
-                });
+
+              if (defaultFilter) {
+                url += `&$filter= ${defaultFilter}`;
               }
-            }
-            if (query.orderBy) {
-              url += `&$orderby=${query.orderBy.field?.toString()} ${
-                query.orderDirection
-              }`;
-            }
-            const user = localStorage.getItem('user') || '{}';
-            const { token } = JSON.parse(user);
-            fetch(url, {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-            })
-              .then((response) => response.json())
-              .then((result) => {
-                resolve({
-                  data: result.items,
-                  page: query.page,
-                  totalCount: result.count,
+              if (query.search && query.search !== '') {
+                const columnsFilter = columns.filter((x: any) => x.searchable);
+                if (columnsFilter.length > 0) {
+                  url += defaultFilter ? ' and ' : '&$filter=';
+                  columnsFilter.forEach((x: DataTableColumns, i: number) => {
+                    const openP = i === 0 ? '(' : '';
+                    const closeP = i === columnsFilter.length - 1 ? ')' : '';
+                    const orO = i < columnsFilter.length - 1 ? 'or ' : '';
+                    url += `${openP}contains(cast(${x.field}, 'Edm.String'),'${query.search}')${orO}${closeP}`;
+                  });
+                }
+              }
+              if (query.orderBy) {
+                url += `&$orderby=${query.orderBy.field?.toString()} ${
+                  query.orderDirection
+                }`;
+              }
+              debugger;
+              const user = localStorage.getItem('user') || '{}';
+              const { token } = JSON.parse(user);
+              fetch(url, {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
+              })
+                .then((response) => response.json())
+                .then((result) => {
+                  resolve({
+                    data: result.items,
+                    page: query.page,
+                    totalCount: result.count,
+                  });
                 });
-              });
-          })
-        }
-        actions={tableActions}
-        title=""
-        // isLoading={isLoader || isLoading || isLoadingFetchData}
-        options={{
-          actionsColumnIndex: -1,
-          showSelectAllCheckbox: multiple,
-          selection: selection,
-          searchFieldAlignment: 'left',
-          doubleHorizontalScroll: false,
-          paginationType: 'stepped',
-          filtering: false,
-          pageSize,
-          exportButton: true,
-          padding: 'dense',
-          showTitle: false,
-          headerStyle: {
-            fontWeight: 800,
-            backgroundColor: 'rgb(215, 204, 255)',
-          },
-          columnsButton: true,
-          maxBodyHeight: 400,
-          minBodyHeight: 400,
-          rowStyle: (rowData: any): {} => ({
-            backgroundColor: rowData.tableData.checked ? '#37b15933' : '',
-          }),
-        }}
-        {...materialTableProps}
-      />
+            })
+          }
+          actions={tableActions}
+          title=""
+          // isLoading={isLoader || isLoading || isLoadingFetchData}
+          options={{
+            actionsColumnIndex: -1,
+            showSelectAllCheckbox: multiple,
+            selection: selection,
+            searchFieldAlignment: 'left',
+            doubleHorizontalScroll: false,
+            paginationType: 'stepped',
+            filtering: false,
+            pageSize,
+            exportButton: true,
+            padding: 'dense',
+            showTitle: false,
+            headerStyle: {
+              fontWeight: 800,
+              backgroundColor: 'rgb(215, 204, 255)',
+            },
+            columnsButton: true,
+            maxBodyHeight: 400,
+            minBodyHeight: 400,
+            rowStyle: (rowData: any): {} => ({
+              backgroundColor: rowData.tableData.checked ? '#37b15933' : '',
+            }),
+          }}
+          {...materialTableProps}
+        />
+      </div>
     );
   }
 
