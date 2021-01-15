@@ -3,9 +3,6 @@ import { useMutation, useQueryCache } from 'react-query';
 import User from '../../../../services/api/User';
 import {
   createStyles,
-  Grid,
-  Paper,
-  Typography,
   Divider,
   Card,
   CardHeader,
@@ -14,7 +11,11 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
-import { ActionInterface, TableColumnInterface } from '../../../../interfaces';
+import {
+  ActionInterface,
+  DataTableCustomActionInterface,
+  TableColumnInterface,
+} from '../../../../interfaces';
 import { TextMessage } from '../../../../enum';
 import { errorHandler, successSweetAlert, sweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +23,8 @@ import {
   InitialNewUserInterface,
   NewUserData,
 } from '../../../../interfaces/user';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
 import UserForm from './UserForm';
@@ -29,6 +32,7 @@ import { UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
 import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
+import RoleForm from './RoleForm';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -79,6 +83,9 @@ const useClasses = makeStyles((theme) =>
         flexGrow: 1,
       },
     },
+    userRoleIcon: {
+      color: '#7036e7',
+    },
   })
 );
 
@@ -119,6 +126,11 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         mobile: value,
+      };
+    case 'pharmacyID':
+      return {
+        ...state,
+        pharmacyID: value,
       };
     case 'email':
       return {
@@ -163,6 +175,10 @@ const UsersList: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
+  const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
+  const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
+
+  const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
   const { getAllUsers, removeUser, disableUser, saveNewUser } = new User();
@@ -189,18 +205,17 @@ const UsersList: React.FC = () => {
   const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(
     saveNewUser,
     {
-      onSuccess: async (data) => {
-        const { message } = data;
-        await successSweetAlert(message);
+      onSuccess: async () => {
+        queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         dispatch({ type: 'reset' });
-        await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+        await successSweetAlert(t('alert.successfulEditTextMessage'));
       },
     }
   );
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
-  const { root } = useClasses();
+  const { root, userRoleIcon } = useClasses();
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
@@ -246,6 +261,12 @@ const UsersList: React.FC = () => {
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
+      {
+        field: 'pharmacyName',
+        title: 'نام داروخانه',
+        type: 'string',
+        cellStyle: { textAlign: 'right' },
+      },
     ];
   };
 
@@ -262,11 +283,11 @@ const UsersList: React.FC = () => {
     }
   };
 
-  const disableUserHandler = async (userId: number): Promise<any> => {
+  const disableUserHandler = async (item: any): Promise<any> => {
     try {
       const confirmationText = t('alert.disableTextAlert');
       if (window.confirm(confirmationText)) {
-        await _disableUser(userId);
+        await _disableUser(item.id);
         await sweetAlert({
           type: 'success',
           text: t('alert.successfulDisableTextMessage'),
@@ -292,8 +313,10 @@ const UsersList: React.FC = () => {
       birthDate,
       id,
       nationalCode,
+      pharmacyID,
       userName,
     } = user;
+    console.log('--->', user);
 
     try {
       await _editUser({
@@ -306,16 +329,15 @@ const UsersList: React.FC = () => {
         nationalCode,
         email,
         mobile,
-        pharmacyID: null,
+        pharmacyID,
       });
     } catch (e) {
       errorHandler(e);
     }
   };
 
-  const editUserHandler = (e: any, row: NewUserData): void => {
+  const editUserHandler = (e: any, row: any): void => {
     toggleIsOpenSaveModalForm();
-
     const {
       name,
       family,
@@ -326,6 +348,8 @@ const UsersList: React.FC = () => {
       nationalCode,
       userName,
       active,
+      pharmacyName,
+      pharmacyID,
     } = row;
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'family', value: family });
@@ -336,14 +360,70 @@ const UsersList: React.FC = () => {
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'birthDate', value: birthDate });
     dispatch({ type: 'active', value: active });
+    dispatch({
+      type: 'pharmacyID',
+      value: { id: pharmacyID, name: pharmacyName },
+    });
   };
 
-  const displayEditForm = (): JSX.Element => {
-    return (
+  const editRoleHandler = (item: any): void => {
+    const { id } = item;
+    setIdOfSelectedUser(id);
+    toggleIsOpenRoleModal();
+  };
+
+  const customDataTAbleACtions: DataTableCustomActionInterface[] = [
+    {
+      icon: (): any => (
+        <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />
+      ),
+      tooltip: 'نقش کاربر',
+      action: (event: any, rowData: any): void => editRoleHandler(rowData),
+    },
+  ];
+
+  return (
+    <FormContainer title={t('user.users-list')}>
+      <DataTable
+        extraMethods={{ editUser: enableUserHandler }}
+        columns={tableColumns()}
+        editAction={editUserHandler}
+        removeAction={removeUserHandler}
+        queryKey={UserQueryEnum.GET_ALL_USERS}
+        queryCallback={getAllUsers}
+        initLoad={false}
+        isLoading={isLoadingRemoveUser || isLoadingEditUser}
+        pageSize={10}
+        stateAction={disableUserHandler}
+        customActions={customDataTAbleACtions}
+      />
+
+      <Modal open={isOpenRoleModal} toggle={toggleIsOpenRoleModal}>
+        <Card className={root}>
+          <CardHeader
+            title={t('user.edit-role')}
+            action={
+              <IconButton onClick={toggleIsOpenRoleModal}>
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+
+          <Divider />
+
+          <CardContent>
+            <RoleForm
+              userId={idOfSelectedUser}
+              toggleForm={toggleIsOpenRoleModal}
+            />
+          </CardContent>
+        </Card>
+      </Modal>
+
       <Modal open={isOpenSaveModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
           <CardHeader
-            title={state.id === 0 ? t('action.create') : t('action.edit')}
+            title={state?.id === 0 ? t('action.create') : t('action.edit')}
             action={
               <IconButton onClick={toggleIsOpenSaveModalForm}>
                 <CloseIcon />
@@ -364,23 +444,6 @@ const UsersList: React.FC = () => {
           </CardContent>
         </Card>
       </Modal>
-    );
-  };
-
-  return (
-    <FormContainer title={t('user.users-list')}>
-      <DataTable
-        columns={tableColumns()}
-        editAction={editUserHandler}
-        removeAction={removeUserHandler}
-        queryKey={UserQueryEnum.GET_ALL_USERS}
-        queryCallback={getAllUsers}
-        initLoad={false}
-        isLoading={isLoadingRemoveUser || isLoadingEditUser}
-        pageSize={10}
-      />
-
-      {isOpenSaveModal && displayEditForm()}
 
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DateTimePicker

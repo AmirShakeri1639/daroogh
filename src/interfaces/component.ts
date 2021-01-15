@@ -38,7 +38,7 @@ export interface CategoriesInterface {
 }
 
 export interface DataTableCustomActionInterface {
-  icon: string;
+  icon: any;
   tooltip?: string;
   color?: string;
   action?: (() => void) | void | any;
@@ -63,6 +63,7 @@ export interface DataTableProps {
   removeAction?: (() => void) | void | any;
   addAction?: (() => void) | void | any;
   stateAction?: (() => void) | void | any;
+  extraMethods?: any;
   customActions?: Array<DataTableCustomActionInterface>;
 }
 

@@ -9,7 +9,10 @@ import { DataTableProps } from '../../../interfaces';
 import { usePaginatedQuery, useQueryCache } from 'react-query';
 import { errorSweetAlert } from '../../../utils';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import localization from './localization';
+import { has } from 'lodash';
 import { TablePagination } from '@material-ui/core';
 import itemsSanitizer from './ItemsSanitizer';
 
@@ -41,11 +44,14 @@ const DataTable: React.ForwardRefRenderFunction<
     stateAction,
     onRowClick,
     customActions,
+    extraMethods,
   } = props;
 
   const { t } = useTranslation();
 
   const queryCache = useQueryCache();
+
+  const editUser = has(extraMethods, 'editUser') ? extraMethods.editUser : null;
 
   const { isLoading: isLoadingFetchData } = usePaginatedQuery(
     [queryKey, page],
@@ -102,7 +108,7 @@ const DataTable: React.ForwardRefRenderFunction<
           color: 'error',
         },
         onClick: (event: any, rowData: any): void =>
-          stateAction(event, rowData),
+          rowData.active ? stateAction(rowData) : editUser?.(rowData),
       },
     ];
   }
@@ -156,7 +162,6 @@ const DataTable: React.ForwardRefRenderFunction<
 
   useImperativeHandle(forwardedRef, () => ({
     loadItems(): void {
-      // tableRef.current && tableRef.current.onQueryChange();
       reFetchData();
     },
   }));

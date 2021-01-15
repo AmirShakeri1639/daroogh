@@ -81,3 +81,5 @@ export { ColorEnum } from './colors';
 export { CardColors } from './colors';
 export { UserColors } from './colors';
 export { UserGrades } from './UserGrades';
+
+export * from './pharmacy';

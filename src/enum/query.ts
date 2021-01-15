@@ -1,6 +1,7 @@
 export enum UserQueryEnum {
   GET_ALL_USERS = 'getAllUsers',
   USERS_LIST = 'usersList',
+  GET_USER_BY_ID = 'getUserById',
 }
 
 export enum CategoryQueryEnum {
@@ -27,6 +28,7 @@ export enum AccountingEnum {
 export enum RoleQueryEnum {
   GET_ALL_ROLES = 'getAllRoles',
   GET_ALL_ROLE_PERMISSION_ITEMS = 'getAllRolePermissionItems',
+  GET_ROLES_OF_USER = 'getRolesOfUser',
 }
 
 export enum PharmacyDrugEnum {
