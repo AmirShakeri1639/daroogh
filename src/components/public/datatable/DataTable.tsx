@@ -236,7 +236,6 @@ const DataTable: React.ForwardRefRenderFunction<
                   query.orderDirection
                 }`;
               }
-              debugger;
               const user = localStorage.getItem('user') || '{}';
               const { token } = JSON.parse(user);
               fetch(url, {
