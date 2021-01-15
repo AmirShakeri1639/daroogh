@@ -20,14 +20,10 @@ class User extends Api {
     }
   };
 
-  getAllUsers = async (
-    skip: number = 0,
-    top: number = 10,
-    order: string = 'id desc'
-  ): Promise<any> => {
+  getAllUsers = async (skip: number = 0, top: number = 10): Promise<any> => {
     try {
       const result = await this.postData(
-        `/User/AllUsers?$top=${top}&$skip=${skip * top}&$orderby=${order}`
+        `/User/AllUsers?$top=${top}&$skip=${skip * top}&$orderby=id desc`
       );
       return result.data;
     } catch (e) {

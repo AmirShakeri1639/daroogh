@@ -38,7 +38,7 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
-import { DashboardPages, RolesEnum } from '../../../../enum';
+import { DashboardPages, GetValuesOfEnum, PharmacyRoleEnum, RolesEnum } from '../../../../enum';
 import PersonAddTwoToneIcon from '@material-ui/icons/PersonAddTwoTone';
 import GroupTwoToneIcon from '@material-ui/icons/GroupTwoTone';
 import LockIcon from '@material-ui/icons/Lock';
@@ -46,6 +46,7 @@ import MessageIcon from '@material-ui/icons/Message';
 import AddIcon from '@material-ui/icons/Add';
 import CategoryIcon from '@material-ui/icons/Category';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
@@ -108,6 +109,7 @@ const {
   drugCategoryfavoriteList,
   packsList,
   createPack,
+  exchangeManagementList,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -155,172 +157,172 @@ const ListItems: React.FC = () => {
   const adminMenu = (): JSX.Element => {
     return (
       <>
-        <h3 className={spacing3}>{t('user.admin')}</h3>
+        <h3 className={ spacing3 }>{ t('user.admin') }</h3>
 
-        {/* //// Role */}
-        <List component="div" className={linkWrapper}>
-          <Link to={dashboard} className={notNested}>
+        {/* //// Role */ }
+        <List component="div" className={ linkWrapper }>
+          <Link to={ dashboard } className={ notNested }>
             <ListItemIcon>
               <DashboardIcon />
             </ListItemIcon>
-            <ListItemText primary={t('general.dashboard')} />
+            <ListItemText primary={ t('general.dashboard') } />
           </Link>
         </List>
-        <ListItem button onClick={(): void => setIsOpenRoleMenu((val) => !val)}>
+        <ListItem button onClick={ (): void => setIsOpenRoleMenu((val) => !val) }>
           <ListItemIcon>
             <ContactMailTwoToneIcon />
           </ListItemIcon>
-          <ListItemText primary={t('user.role')} />
-          {isOpenRoleMenu ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('user.role') } />
+          { isOpenRoleMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenRoleMenu} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={createRole} className={nested}>
+        <Collapse in={ isOpenRoleMenu } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createRole } className={ nested }>
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
-              <ListItemText primary={t('user.create-new-role')} />
+              <ListItemText primary={ t('user.create-new-role') } />
             </Link>
           </List>
         </Collapse>
 
-        {/* //// User */}
-        <ListItem button onClick={(): void => setIsOpenUserMenu((val) => !val)}>
+        {/* //// User */ }
+        <ListItem button onClick={ (): void => setIsOpenUserMenu((val) => !val) }>
           <ListItemIcon>
             <PermIdentityTwoToneIcon />
           </ListItemIcon>
-          <ListItemText primary={t('user.user')} />
-          {isOpenUserMenu ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('user.user') } />
+          { isOpenUserMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenUserMenu} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={createUser} className={nested}>
+        <Collapse in={ isOpenUserMenu } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createUser } className={ nested }>
               <ListItemIcon>
                 <PersonAddTwoToneIcon />
               </ListItemIcon>
-              <ListItemText primary={t('user.create-user')} />
+              <ListItemText primary={ t('user.create-user') } />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={usersList} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ usersList } className={ nested }>
               <ListItemIcon>
                 <GroupTwoToneIcon />
               </ListItemIcon>
-              <ListItemText primary={t('user.users-list')} />
+              <ListItemText primary={ t('user.users-list') } />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={changeUserPassword} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ changeUserPassword } className={ nested }>
               <ListItemIcon>
                 <LockIcon />
               </ListItemIcon>
-              <ListItemText primary={t('user.changeUserPassword')} />
+              <ListItemText primary={ t('user.changeUserPassword') } />
             </Link>
           </List>
         </Collapse>
 
-        {/* //// Drug */}
-        <ListItem button onClick={(): void => setIsOpenDrugMenu((val) => !val)}>
+        {/* //// Drug */ }
+        <ListItem button onClick={ (): void => setIsOpenDrugMenu((val) => !val) }>
           <ListItemIcon>
             <Extension />
           </ListItemIcon>
-          <ListItemText primary={t('drug.drug')} />
-          {isOpenDrugMenu ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('drug.drug') } />
+          { isOpenDrugMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenDrugMenu} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={createDrug} className={nested}>
+        <Collapse in={ isOpenDrugMenu } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createDrug } className={ nested }>
               <ListItemIcon>
                 <AddCircle />
               </ListItemIcon>
-              <ListItemText primary={t('drug.suggest')} />
+              <ListItemText primary={ t('drug.suggest') } />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={drugsList} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ drugsList } className={ nested }>
               <ListItemIcon>
                 <EnhancedEncryption />
               </ListItemIcon>
-              <ListItemText primary={t('drug.list')} />
+              <ListItemText primary={ t('drug.list') } />
             </Link>
           </List>
         </Collapse>
 
-        {/* //// Category */}
-        <ListItem button onClick={(): void => setIsOpenCategory((val) => !val)}>
+        {/* //// Category */ }
+        <ListItem button onClick={ (): void => setIsOpenCategory((val) => !val) }>
           <ListItemIcon>
             <CategoryIcon />
           </ListItemIcon>
-          <ListItemText primary={t('category.category')} />
-          {isOpenCategory ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('category.category') } />
+          { isOpenCategory ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenCategory} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={categoryList} className={nested}>
+        <Collapse in={ isOpenCategory } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ categoryList } className={ nested }>
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
-              <ListItemText primary={t('category.list')} />
+              <ListItemText primary={ t('category.list') } />
             </Link>
           </List>
         </Collapse>
 
-        {/* //// Pharmacy */}
+        {/* //// Pharmacy */ }
         <ListItem
           button
-          onClick={(): void => setIsOpenPharmacyMenu((val) => !val)}
+          onClick={ (): void => setIsOpenPharmacyMenu((val) => !val) }
         >
           <ListItemIcon>
             <LocalPharmacy />
           </ListItemIcon>
-          <ListItemText primary={t('pharmacy.pharmacy')} />
-          {isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('pharmacy.pharmacy') } />
+          { isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenPharmacyMenu} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={createPharmacy} className={nested}>
+        <Collapse in={ isOpenPharmacyMenu } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createPharmacy } className={ nested }>
               <ListItemIcon>
                 <AddBox />
               </ListItemIcon>
-              <ListItemText primary={t('pharmacy.create')} />
+              <ListItemText primary={ t('pharmacy.create') } />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={pharmaciesList} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ pharmaciesList } className={ nested }>
               <ListItemIcon>
                 <Business />
               </ListItemIcon>
-              <ListItemText primary={t('pharmacy.list')} />
+              <ListItemText primary={ t('pharmacy.list') } />
             </Link>
           </List>
         </Collapse>
 
-        {/* //// Message */}
+        {/* //// Message */ }
         <ListItem
           button
-          onClick={(): void => setIsOpenMessageMenu((val) => !val)}
+          onClick={ (): void => setIsOpenMessageMenu((val) => !val) }
         >
           <ListItemIcon>
             <MessageIcon />
           </ListItemIcon>
-          <ListItemText primary={t('message.message')} />
-          {isOpenMessageMenu ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('message.message') } />
+          { isOpenMessageMenu ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenMessageMenu} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={createMessage} className={nested}>
+        <Collapse in={ isOpenMessageMenu } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createMessage } className={ nested }>
               <ListItemIcon>
                 <AddIcon />
               </ListItemIcon>
-              <ListItemText primary={t('message.createMessage')} />
+              <ListItemText primary={ t('message.createMessage') } />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={messagesList} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ messagesList } className={ nested }>
               <ListItemIcon>
                 <ListIcon />
               </ListItemIcon>
-              <ListItemText primary={t('message.messagesList')} />
+              <ListItemText primary={ t('message.messagesList') } />
             </Link>
           </List>
         </Collapse>
@@ -331,150 +333,159 @@ const ListItems: React.FC = () => {
   const pharmacyMenu = (): JSX.Element => {
     return (
       <>
-        <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3>
-        <ListItem button onClick={(): void => setIsOpenExchange((val) => !val)}>
+        <h3 className={ spacing3 }>{ t('pharmacy.pharmacy') }</h3>
+        <ListItem button onClick={ (): void => setIsOpenExchange((val) => !val) }>
           <ListItemIcon>
             <CategoryIcon />
           </ListItemIcon>
-          <ListItemText primary={t('exchange.exchange')} />
-          {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('exchange.exchange') } />
+          { isOpenExchange ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
         <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={exchangeManagementList} className={nested}>
+              <ListItemIcon>
+                <ContactPhoneIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('exchange.exchangeManagement')} />
+            </Link>
+          </List>
+
           <List component="div" className={linkWrapper}>
             <Link to={desktop} className={nested}>
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.desktop')} />
+              <ListItemText primary={ t('exchange.desktop') } />
             </Link>
           </List>
 
-          <List component="div" className={linkWrapper}>
-            <Link to={transfer} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ transfer } className={ nested }>
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.exchange')} />
+              <ListItemText primary={ t('exchange.exchange') } />
             </Link>
           </List>
 
-          <List component="div" className={linkWrapper}>
-            <Link to={supplyList} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ supplyList } className={ nested }>
               <ListItemIcon>
                 <AppsIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.supplyList')} />
+              <ListItemText primary={ t('exchange.supplyList') } />
             </Link>
           </List>
         </Collapse>
 
         <ListItem
           button
-          onClick={(): void => setIsOpenAccounting((val) => !val)}
+          onClick={ (): void => setIsOpenAccounting((val) => !val) }
         >
           <ListItemIcon>
             <AccountBalanceIcon />
           </ListItemIcon>
-          <ListItemText primary={t('accounting.accounting')} />
-          {isOpenAccounting ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('accounting.accounting') } />
+          { isOpenAccounting ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenAccounting} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={transactions} className={nested}>
+        <Collapse in={ isOpenAccounting } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ transactions } className={ nested }>
               <ListItemIcon>
                 <ReceiptIcon />
               </ListItemIcon>
-              <ListItemText primary={t('accounting.transactions')} />
+              <ListItemText primary={ t('accounting.transactions') } />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={accountingInfo} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ accountingInfo } className={ nested }>
               <ListItemIcon>
                 <ReceiptIcon />
               </ListItemIcon>
-              <ListItemText primary={t('accounting.accountingForPayment')} />
+              <ListItemText primary={ t('accounting.accountingForPayment') } />
             </Link>
           </List>
         </Collapse>
 
-        <ListItem button onClick={(): void => setIsOpenMembers((v) => !v)}>
+        <ListItem button onClick={ (): void => setIsOpenMembers((v) => !v) }>
           <ListItemIcon>
             <PermIdentityTwoToneIcon />
           </ListItemIcon>
-          <ListItemText primary={t('user.members')} />
-          {isOpenMembers ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('user.members') } />
+          { isOpenMembers ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenMembers} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={membershipRequests} className={nested}>
+        <Collapse in={ isOpenMembers } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ membershipRequests } className={ nested }>
               <ListItemIcon>
                 <BookmarkBorderIcon />
               </ListItemIcon>
-              <ListItemText primary={t('user.membershipRequestsList')} />
+              <ListItemText primary={ t('user.membershipRequestsList') } />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={memberRole} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ memberRole } className={ nested }>
               <ListItemIcon>
-                <FontAwesomeIcon icon={faUserTag} size="lg" />
+                <FontAwesomeIcon icon={ faUserTag } size="lg" />
               </ListItemIcon>
-              <ListItemText primary={t('pharmacy.memberRole')} />
+              <ListItemText primary={ t('pharmacy.memberRole') } />
             </Link>
           </List>
         </Collapse>
 
-        <ListItem button onClick={(): void => setIsopenFavoriteList((v) => !v)}>
+        <ListItem button onClick={ (): void => setIsopenFavoriteList((v) => !v) }>
           <ListItemIcon>
             <Bookmark />
           </ListItemIcon>
-          <ListItemText primary={t('general.favorite')} />
-          {isopenFavoriteList ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('general.favorite') } />
+          { isopenFavoriteList ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isopenFavoriteList} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={drugFavoriteList} className={nested}>
+        <Collapse in={ isopenFavoriteList } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ drugFavoriteList } className={ nested }>
               <ListItemIcon>
-                <FontAwesomeIcon icon={faPills} />
+                <FontAwesomeIcon icon={ faPills } />
               </ListItemIcon>
-              <ListItemText primary={t('drug.drug')} />
+              <ListItemText primary={ t('drug.drug') } />
             </Link>
           </List>
 
-          <List component="div" className={linkWrapper}>
-            <Link to={drugCategoryfavoriteList} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ drugCategoryfavoriteList } className={ nested }>
               <ListItemIcon>
-                <FontAwesomeIcon icon={faBars} />
+                <FontAwesomeIcon icon={ faBars } />
               </ListItemIcon>
               <ListItemText
-                primary={`${t('drug.category')} ${t('drug.drug')}`}
+                primary={ `${t('drug.category')} ${t('drug.drug')}` }
               />
             </Link>
           </List>
         </Collapse>
 
-        <ListItem button onClick={(): void => setIsOpenPackList((v) => !v)}>
+        <ListItem button onClick={ (): void => setIsOpenPackList((v) => !v) }>
           <ListItemIcon>
-            <FontAwesomeIcon icon={faBoxOpen} size="lg" />
+            <FontAwesomeIcon icon={ faBoxOpen } size="lg" />
           </ListItemIcon>
-          <ListItemText primary={t('pack.pack')} />
-          {isOpenPackList ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={ t('pack.pack') } />
+          { isOpenPackList ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={isOpenPackList} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={packsList} className={nested}>
+        <Collapse in={ isOpenPackList } timeout="auto" unmountOnExit>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ packsList } className={ nested }>
               <ListItemIcon>
-                <FontAwesomeIcon icon={faBars} />
+                <FontAwesomeIcon icon={ faBars } />
               </ListItemIcon>
-              <ListItemText primary={t('pack.list')} />
+              <ListItemText primary={ t('pack.list') } />
             </Link>
           </List>
 
-          <List component="div" className={linkWrapper}>
-            <Link to={createPack} className={nested}>
+          <List component="div" className={ linkWrapper }>
+            <Link to={ createPack } className={ nested }>
               <ListItemIcon>
-                <FontAwesomeIcon icon={faPlus} />
+                <FontAwesomeIcon icon={ faPlus } />
               </ListItemIcon>
-              <ListItemText primary={t('pack.create')} />
+              <ListItemText primary={ t('pack.create') } />
             </Link>
           </List>
         </Collapse>
@@ -486,10 +497,12 @@ const ListItems: React.FC = () => {
     <div>
       {rolesArray && rolesArray?.length > 0 && (
         <>
-          {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
-          {rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 && pharmacyMenu()}
+          {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu() }
+          {(rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0
+            || rolesArray?.some((item: any) => GetValuesOfEnum(PharmacyRoleEnum).includes(item)))
+            && pharmacyMenu() }
         </>
-      )}
+      ) }
     </div>
   );
 };

@@ -67,6 +67,17 @@ export enum RolesEnum {
   USERS = '1',
   ADMIN = '2',
   PHARMACY = '3',
+  PHARMACY_MEMBER_1 = '49',
+  PHARMACY_MEMBER_2 = '50',
+  PHARMACY_MEMBER_3 = '51',
+  PHARMACY_MEMBER_4 = '52',
+}
+
+export enum PharmacyRoleEnum {
+  PHARMACY_MEMBER_1 = '49',
+  PHARMACY_MEMBER_2 = '50',
+  PHARMACY_MEMBER_3 = '51',
+  PHARMACY_MEMBER_4 = '52',
 }
 
 export * from './query';
@@ -76,10 +87,15 @@ export enum SortTypeEnum {
   DESC,
 }
 
+export const GetValuesOfEnum = (e: any): any => {
+  const keys = Object.keys(e);
+  return keys.map((k: string) => e[k as keyof typeof e]);
+};
+
+export * from './pharmacy';
+
 export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
 export { ColorEnum } from './colors';
 export { CardColors } from './colors';
 export { UserColors } from './colors';
 export { UserGrades } from './UserGrades';
-
-export * from './pharmacy';

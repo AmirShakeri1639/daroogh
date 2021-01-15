@@ -33,6 +33,7 @@ import DataTable from '../../../public/datatable/DataTable';
 import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import RoleForm from './RoleForm';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -267,6 +268,12 @@ const UsersList: React.FC = () => {
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
+      {
+        field: 'active',
+        title: 'وضعیت کاربر',
+        type: 'string',
+        cellStyle: { textAlign: 'center', width: 80 },
+      },
     ];
   };
 
@@ -316,7 +323,6 @@ const UsersList: React.FC = () => {
       pharmacyID,
       userName,
     } = user;
-    console.log('--->', user);
 
     try {
       await _editUser({
@@ -388,12 +394,14 @@ const UsersList: React.FC = () => {
         extraMethods={{ editUser: enableUserHandler }}
         columns={tableColumns()}
         editAction={editUserHandler}
+        editUser={enableUserHandler}
         removeAction={removeUserHandler}
         queryKey={UserQueryEnum.GET_ALL_USERS}
         queryCallback={getAllUsers}
         initLoad={false}
         isLoading={isLoadingRemoveUser || isLoadingEditUser}
         pageSize={10}
+        urlAddress={UrlAddress.getAllUser}
         stateAction={disableUserHandler}
         customActions={customDataTAbleACtions}
       />

@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import { useQueryCache } from 'react-query';
-import Accounting from '../../../../services/api/Accounting';
+import { Accounting } from '../../../../services/api';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../classes';
 import {
@@ -12,6 +12,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { AccountingEnum } from '../../../../enum/query';
 import { Container, Grid, Paper } from '@material-ui/core';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 const initialState: AccountingInterface = {
   id: 0,
@@ -52,6 +53,7 @@ const AccountingList: React.FC = () => {
               columns={tableColumns()}
               queryKey={AccountingEnum.GET_ALL}
               queryCallback={all}
+              urlAddress={UrlAddress.getAllAccounting}
               initLoad={false}
             />
           </Paper>

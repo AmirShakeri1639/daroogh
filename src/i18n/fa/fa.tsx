@@ -77,6 +77,9 @@ export default {
         rial: 'ریال',
         unit: 'واحد',
         warrantyTo: 'گارانتی تا ',
+        year: 'سال',
+        month: 'ماه',
+        day: 'روز',
       },
       pack: {
         pack: 'پک',
@@ -230,6 +233,7 @@ export default {
           'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
         continue: 'ادامه تبادل',
+        exchangeManagement: 'مدیریت تبادل',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
@@ -261,7 +265,7 @@ export default {
         new: 'داروخانه جدید',
         name: 'نام داروخانه',
         hix: 'HIX',
-        gli: 'GLI',
+        gli: 'GLN',
         workTime: 'ساعت کار',
         request: 'درخواست ایجاد',
         manager: 'مدیر داروخانه',
@@ -275,7 +279,7 @@ export default {
       },
       WorkTimeEnum: {
         PART_TIME: 'نیمه وقت',
-        FULL_TIME: 'تمام وقت',
+        FULL_TIME: 'روزانه',
         NIGHTLY: 'شبانه‌روزی',
       },
       CategoryTypeEnum: {
@@ -342,6 +346,7 @@ export default {
         list: 'لیست تراکنش‌های مالی',
         transactions: 'تراکنش‌ها',
         accountingForPayment: 'صورتحساب',
+        addTransaction: 'افزودن تراکنش مالی',
       },
       countryDivision: {
         province: 'استان',

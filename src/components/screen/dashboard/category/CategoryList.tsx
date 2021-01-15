@@ -13,6 +13,10 @@ import {
   TextField,
   Button,
   CardActions,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import DataTable from '../../../public/datatable/DataTable';
@@ -28,6 +32,7 @@ import CircleLoading from '../../../public/loading/CircleLoading';
 import { CategoriesInterface } from '../../../../interfaces/component';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { CategoryQueryEnum } from '../../../../enum/query';
+import { UrlAddress } from '../../../../enum/UrlAddress';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -43,6 +48,10 @@ const useClasses = makeStyles((theme) =>
         marginTop: '-10px !important',
         color: 'red',
       },
+    },
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
     },
     header: {
       fontSize: 12,
@@ -110,13 +119,13 @@ const getColumns = (): DataTableColumns[] => {
       headerStyle: { minWidth: 50 },
       cellStyle: { textAlign: 'right' },
     },
-    {
-      title: 'نوع',
-      field: 'type',
-      type: 'numeric',
-      headerStyle: { textAlign: 'right', direction: 'ltr' },
-      cellStyle: { textAlign: 'right' },
-    },
+    // {
+    //   title: 'نوع',
+    //   field: 'type',
+    //   type: 'numeric',
+    //   headerStyle: { textAlign: 'right', direction: 'ltr' },
+    //   cellStyle: { textAlign: 'right' },
+    // },
     {
       title: 'دسته',
       field: 'typeString',
@@ -283,6 +292,7 @@ const CategoryList: React.FC = () => {
     formContainer,
     addButton,
     cancelButton,
+    formControl,
   } = useClasses();
 
   const editModal = (): JSX.Element => {
@@ -324,16 +334,22 @@ const CategoryList: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                  <TextField
-                    label="نوع"
-                    required
-                    size="small"
+                  <FormControl
                     variant="outlined"
-                    value={state.type}
-                    onChange={(e): void =>
-                      dispatch({ type: 'type', value: e.target.value })
-                    }
-                  />
+                    size="small"
+                    className={formControl}
+                  >
+                    <InputLabel>نوع</InputLabel>
+                    <Select
+                      onChange={(e): void =>
+                        dispatch({ type: 'type', value: e.target.value })
+                      }
+                      value={state.type}
+                    >
+                      <MenuItem value={1}>پزشکی</MenuItem>
+                      <MenuItem value={2}>آرایشی بهداشتی</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
                 <Divider />
                 <Grid item xs={12}>
@@ -387,6 +403,7 @@ const CategoryList: React.FC = () => {
               }
               queryKey={CategoryQueryEnum.GET_ALL_CATEGORIES}
               queryCallback={getAllCategories}
+              urlAddress={UrlAddress.getAllCategories}
               initLoad={false}
             />
             {isLoadingRemoveCategory && <CircleLoading />}

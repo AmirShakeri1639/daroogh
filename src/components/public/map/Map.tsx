@@ -48,6 +48,16 @@ const Map: React.FC<Props> = (props) => {
         zoom: 14,
       });
 
+      map.addControl(new mapboxgl.NavigationControl());
+      map.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true
+        })
+      );
+
       let marker = new mapboxgl.Marker({
         draggable: true,
       })
@@ -83,15 +93,15 @@ const Map: React.FC<Props> = (props) => {
 
   return (
     <div
-      className={container}
-      ref={mapContainer}
-      style={{
+      className={ container }
+      ref={ mapContainer }
+      style={ {
         width: '100%',
         height: 'calc(100vh - 150px)',
         maxHeight: '400px',
         // position: 'absolute',
         direction: 'rtl',
-      }}
+      } }
     />
   );
 };

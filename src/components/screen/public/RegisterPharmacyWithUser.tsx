@@ -14,14 +14,14 @@ import { queryCache, useMutation } from 'react-query';
 import { useClasses } from '../dashboard/classes';
 import { ActionInterface } from '../../../interfaces';
 import { useTranslation } from 'react-i18next';
-import { errorHandler, sweetAlert, warningSweetAlert } from '../../../utils';
+import { errorHandler, isNullOrEmpty, sweetAlert, warningSweetAlert } from '../../../utils';
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown';
 import { WorkTimeEnum } from '../../../enum';
 // import { emailRegex } from "../../../enum/consts";
 import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
-import { Map } from '../../public';
+import { Map, ThreePartDatePicker } from '../../public';
 import { DefaultCountryDivisionID } from '../../../enum/consts';
 import { useHistory } from "react-router-dom";
 import routes from '../../../routes';
@@ -54,11 +54,16 @@ const initialState: PharmacyWithUserInterface = {
     password: '',
     nationalCode: '',
     birthDate: '',
+    birthDateYear: '',
+    birthDateMonth: '',
+    birthDateDay: '',
+    isValidBirthDate: true,
   },
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
+
   switch (action.type) {
     // PHARMACY ----------------
     case 'pharmacy.id':
@@ -182,6 +187,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         user: { ...state.user, birthDate: value },
       };
+    case 'user.isValidBirthDate':
+      return {
+        ...state,
+        user: { ...state.user, isValidBirthDate: value },
+      };
     case 'reset':
       return initialState;
     default:
@@ -207,6 +217,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
     spacing1,
     spacing3,
     formItem,
+    formItemSmall,
     titleContainer,
     formTitle,
     rootFull,
@@ -239,35 +250,43 @@ const RegisterPharmacyWithUser: React.FC = () => {
       });
       dispatch({ type: 'reset' });
     },
-    onError: async () => {
-      await sweetAlert({
-        type: 'error',
-        text: t('error.save'),
-      });
-    },
+    // onError: async () => {
+    //   await sweetAlert({
+    //     type: 'error',
+    //     text: t('error.save'),
+    //   });
+    // },
   });
 
   const isFormValid = (): boolean => {
     const { pharmacy, user } = state;
-    const { name, family, userName, nationalCode } = user;
+    const {
+      name, family, userName,
+      nationalCode, password,
+      isValidBirthDate
+    } = user;
     const {
       name: pharmacyName,
-      mobile,
+      mobile, address, telphon,
       countryDivisionID,
     } = pharmacy;
 
     return !(
-      // pharmacy
       (
+        // pharmacy
         pharmacyName.trim().length < 2 ||
         mobile.trim().length < 10 ||
         countryDivisionID === 0 ||
         countryDivisionID === '0' ||
+        address.trim().length < 3 ||
+        telphon.trim().length < 8 ||
+        !isValidBirthDate ||
         // user
         name.trim().length < 2 ||
         family.trim().length < 2 ||
         userName.trim().length < 3 ||
-        nationalCode.length !== 10
+        nationalCode.length !== 10 ||
+        password.length < 3
       )
     );
   };
@@ -277,7 +296,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
 
     if (isFormValid()) {
       try {
-        await _register({
+        const regResult = await _register({
           pharmacy: {
             // pharmacy
             id: 0,
@@ -304,12 +323,18 @@ const RegisterPharmacyWithUser: React.FC = () => {
             email: state.pharmacy.email,
             userName: state.user.userName,
             nationalCode: state.user.nationalCode,
-            birthDate: state.user.birthDate,
             password: state.user.password,
+            birthDate: state.user.birthDate,
           },
         });
-        history.push(routes.login);
+        if (regResult !== undefined) {
+          history.push(routes.login);
+        }
       } catch (e) {
+        await sweetAlert({
+          type: 'error',
+          text: t('error.save'),
+        });
         errorHandler(e);
       }
     } else {
@@ -389,6 +414,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <TextField
                 error={ state?.password?.length < 3 && showError }
                 label={ t('login.password') }
+                required
                 autoComplete="new-password"
                 type="password"
                 className={ formItem }
@@ -413,8 +439,16 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
+            <Grid item xs={ 12 } sm={ 6 } style={ { display: 'flex', alignItems: 'center' } }>
+              <ThreePartDatePicker
+                label={ t('user.birthDate') }
+                onChange={ (value: string, isValid: boolean): void => {
+                  dispatch({ type: 'user.isValidBirthDate', value: isValid });
+                  dispatch({ type: 'user.birthDate', value: value });
+                } }
+              />
+
+              {/* <TextField
                 error={ state.user.birthDate === '' && showError }
                 label={ t('user.birthDate') }
                 inputProps={ {
@@ -425,7 +459,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 className={ formItem }
                 value={ state.user.birthDate }
                 onClick={ toggleIsOpenDatePicker }
-              />
+              /> */}
             </Grid>
           </Grid>
           <div className={ spacing3 }></div>
@@ -454,9 +488,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={
-                  state.pharmacy.description.trim().length < 3 && showError
-                }
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.description') }
@@ -473,6 +504,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <TextField
                 error={ state.pharmacy.address.trim().length < 3 && showError }
                 variant="outlined"
+                required
                 label={ t('general.address') }
                 className={ formItem }
                 value={ state.pharmacy.address }
@@ -499,6 +531,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <TextField
                 error={ state.pharmacy.telphon.trim().length < 8 && showError }
                 variant="outlined"
+                required
                 label={ t('general.phone') }
                 value={ state.pharmacy.telphon }
                 className={ formItem }
@@ -509,7 +542,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={ state.pharmacy.website.trim().length < 3 && showError }
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.website') }
@@ -521,7 +553,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={ !emailRegex.test(state.pharmacy.email) && showError }
+                error={ state.pharmacy.email && !emailRegex.test(state.pharmacy.email) && showError }
                 label={ t('general.email') }
                 type="email"
                 className={ formItem }
@@ -534,7 +566,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={ state.pharmacy.postalCode.trim().length < 3 && showError }
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.postalCode') }
@@ -549,7 +580,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={ state.pharmacy.hix.length < 3 && showError }
                 variant="outlined"
                 label={ t('pharmacy.hix') }
                 className={ formItem }
@@ -561,7 +591,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={ state.pharmacy.gli.length < 3 && showError }
                 variant="outlined"
                 className={ formItem }
                 label={ t('pharmacy.gli') }
