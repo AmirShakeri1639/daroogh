@@ -11,5 +11,6 @@ export { default as Select } from './select/Select';
 export { default as DatePicker } from './datepicker/DatePicker';
 export { default as Button } from './button/Button';
 export { default as Map } from './map/Map';
+export { ThreePartDatePicker } from './three-part-datepicker/ThreePartDatePicker';
 export { DaroogTabPanel } from './daroog-tab-panel/DaroogTabPanel';
 export type { DaroogTabPanelProps } from './daroog-tab-panel/DaroogTabPanel';
