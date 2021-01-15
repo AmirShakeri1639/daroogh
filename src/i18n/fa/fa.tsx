@@ -346,6 +346,7 @@ export default {
         list: 'لیست تراکنش‌های مالی',
         transactions: 'تراکنش‌ها',
         accountingForPayment: 'صورتحساب',
+        addTransaction: 'افزودن تراکنش مالی',
       },
       countryDivision: {
         province: 'استان',

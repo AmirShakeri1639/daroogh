@@ -77,6 +77,7 @@ export interface DataTableProps {
   customActions?: Array<DataTableCustomActionInterface>;
   urlAddress: string;
   defaultFilter?: string;
+  detailPanel?: ((rowdata: any) => void) | JSX.Element | any;
 }
 
 export interface UserDataProps {

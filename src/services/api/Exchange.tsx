@@ -39,7 +39,6 @@ class Exchange extends Api {
     }
   ): Promise<any> => {
     try {
-      debugger;
       let query = `${this.urls.allExchange}`;
       query += `?&$top=${top}&$skip=${skip * top}`;
       if (searcheText !== '') {
