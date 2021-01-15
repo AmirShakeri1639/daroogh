@@ -9,7 +9,10 @@ import { DataTableProps } from '../../../interfaces';
 import { usePaginatedQuery, useQueryCache } from 'react-query';
 import { errorSweetAlert } from '../../../utils';
 import { useTranslation } from 'react-i18next';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import localization from './localization';
+import { has } from 'lodash';
 import { createStyles, makeStyles, TablePagination } from '@material-ui/core';
 import itemsSanitizer from './ItemsSanitizer';
 import { DataTableColumns } from '../../../interfaces/DataTableColumns';
@@ -27,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     '& tbody>.MuiTableRow-root:nth-child(even)': {
       background: '#ffe6e6',
     },
-    '& tbody>.MuiTableRow-root>.MuiTableCell-paddingNone': {
+    '& tbody>.MuiTableRow-root>.MuiTableCell-paddingNone:first-child': {
       width: 15,
       maxWidth: 15,
     },
@@ -46,6 +49,7 @@ const DataTable: React.ForwardRefRenderFunction<
   const [isLoader, setLoader] = useState(true);
 
   const {
+    editUser,
     columns,
     multiple = false,
     selection = false,
@@ -60,6 +64,7 @@ const DataTable: React.ForwardRefRenderFunction<
     stateAction,
     onRowClick,
     customActions,
+    extraMethods,
     urlAddress,
     defaultFilter,
     detailPanel,
@@ -135,7 +140,7 @@ const DataTable: React.ForwardRefRenderFunction<
           color: 'error',
         },
         onClick: (event: any, rowData: any): void =>
-          stateAction(event, rowData),
+          rowData.active ? stateAction(rowData) : editUser?.(rowData),
       },
     ];
   }
@@ -189,7 +194,6 @@ const DataTable: React.ForwardRefRenderFunction<
 
   useImperativeHandle(forwardedRef, () => ({
     loadItems(): void {
-      // tableRef.current && tableRef.current.onQueryChange();
       reFetchData();
     },
   }));

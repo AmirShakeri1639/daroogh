@@ -16,7 +16,6 @@ import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterf
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
-import { encryptionKey } from '../../../../enum/consts';
 import { useTranslation } from 'react-i18next';
 import { calcTotalPrices } from '../../../../utils/ExchangeTools';
 
@@ -67,19 +66,24 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   );
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
   const [is3PercentOk, setIs3PercentOk] = React.useState(true);
+  const [eid, setEid] = useState<number>(0);
 
   const { viewExchangeId, exchangeState } = props;
 
   const location = useLocation();
   const params = queryString.parse(location.search);
 
-  let eid: number | undefined = undefined;
-  const encryptedId = params.eid == null ? undefined : decodeURIComponent(params.eid.toString());
-  if (encryptedId !== undefined) {
-    const encDecService = new EncrDecrService();
-    const decryptedId = encDecService.decrypt(encryptedId);
-    eid = +decryptedId;
-  }
+  useEffect(() => {
+    const encryptedId =
+      params.eid == null
+        ? undefined
+        : decodeURIComponent(params.eid.toString());
+    if (encryptedId !== undefined) {
+      const encDecService = new EncrDecrService();
+      const decryptedId = encDecService.decrypt(encryptedId);
+      setEid(+decryptedId);
+    }
+  }, [params]);
 
   const getColor = (res: any, item: any): string => {
     const color =
@@ -99,7 +103,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
       // let eid: any = undefined;
       // const encryptedId = params.eid == null ? undefined : params.eid;
       // eid = encryptedId;
-      if (eid !== undefined) {
+      if (eid !== 0) {
         const result = await getViewExchange(eid);
         let res: ViewExchangeInterface | undefined = result.data;
         if (res) {
@@ -307,7 +311,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         setActiveStep(1);
       }
     })();
-  }, [viewExchangeId, exchangeState]);
+  }, [viewExchangeId, exchangeState, eid]);
 
   useEffect(() => {
     if (viewExhcnage !== undefined) {
@@ -362,22 +366,22 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   });
 
   return (
-    <Context.Provider value={ initialContextValues() }>
-      <div className={ root }>
+    <Context.Provider value={initialContextValues()}>
+      <div className={root}>
         <MaterialContainer>
-          <Grid container spacing={ 1 }>
-            { activeStep > 0 && (
+          <Grid container spacing={1}>
+            {activeStep > 0 && (
               <>
-                <Grid item xs={ 12 } sm={ 9 } md={ 9 } style={ { marginRight: 8 } }>
+                <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
                   <ProgressBar />
                 </Grid>
               </>
-            ) }
+            )}
 
-            { activeStep === 0 && <FirstStep /> }
-            { activeStep === 1 && <SecondStep /> }
-            { activeStep === 2 && <ThirdStep /> }
-            { activeStep === 3 && <FourthStep /> }
+            {activeStep === 0 && <FirstStep />}
+            {activeStep === 1 && <SecondStep />}
+            {activeStep === 2 && <ThirdStep />}
+            {activeStep === 3 && <FourthStep />}
           </Grid>
         </MaterialContainer>
       </div>

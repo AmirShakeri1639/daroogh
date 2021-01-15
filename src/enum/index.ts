@@ -90,7 +90,9 @@ export enum SortTypeEnum {
 export const GetValuesOfEnum = (e: any): any => {
   const keys = Object.keys(e);
   return keys.map((k: string) => e[k as keyof typeof e]);
-}
+};
+
+export * from './pharmacy';
 
 export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
 export { ColorEnum } from './colors';

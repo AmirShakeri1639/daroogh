@@ -85,6 +85,11 @@ class User extends Api {
       `/User/ChangePassword?oldPassword=${data.oldPassword}&newPassword=${data.newPassword}`
     );
   };
+
+  getUserById = async (userId: string | number): Promise<any> => {
+    const result = await this.postData(`/User/GetUser?userId=${userId}`);
+    return result.data;
+  };
 }
 
 export default User;
