@@ -28,7 +28,6 @@ import {
 } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../classes';
-
 import {
   ActionInterface,
   PharmacyInterface,
@@ -36,6 +35,7 @@ import {
   ConfirmParams,
   LabelValue,
   DataTableCustomActionInterface,
+  AccountingTransactionInterface,
 } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
@@ -50,6 +50,7 @@ import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../../routes';
 import { UrlAddress } from '../../../../enum/UrlAddress';
+import AddTransactionModal from '../accounting/AddTransactionModal';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -330,12 +331,12 @@ const PharmaciesList: React.FC = () => {
 
   const editModal = (): JSX.Element => {
     return (
-      <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
-        <Card className={root}>
+      <Modal open={ isOpenEditModal } toggle={ toggleIsOpenSaveModalForm }>
+        <Card className={ root }>
           <CardHeader
-            title={state?.id === 0 ? t('action.create') : t('action.edit')}
+            title={ state?.id === 0 ? t('action.create') : t('action.edit') }
             action={
-              <IconButton onClick={toggleIsOpenSaveModalForm}>
+              <IconButton onClick={ toggleIsOpenSaveModalForm }>
                 <CloseIcon />
               </IconButton>
             }
@@ -344,139 +345,139 @@ const PharmaciesList: React.FC = () => {
           <CardContent>
             <form
               autoComplete="off"
-              className={formContainer}
-              onSubmit={submitSave}
+              className={ formContainer }
+              onSubmit={ submitSave }
             >
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
+              <Grid container spacing={ 1 }>
+                <Grid item xs={ 12 }>
                   <Box
                     display="flex"
                     justifyContent="space-between"
-                    className={box}
+                    className={ box }
                   >
                     <TextField
                       required
                       variant="outlined"
-                      label={t('pharmacy.name')}
-                      value={state?.name}
-                      onChange={(e): void =>
+                      label={ t('pharmacy.name') }
+                      value={ state?.name }
+                      onChange={ (e): void =>
                         dispatch({ type: 'name', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('pharmacy.hix')}
-                      value={state?.hix}
-                      onChange={(e): void =>
+                      label={ t('pharmacy.hix') }
+                      value={ state?.hix }
+                      onChange={ (e): void =>
                         dispatch({ type: 'hix', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('pharmacy.gli')}
-                      value={state?.gli}
-                      onChange={(e): void =>
+                      label={ t('pharmacy.gli') }
+                      value={ state?.gli }
+                      onChange={ (e): void =>
                         dispatch({ type: 'gli', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <Box
                     display="flex"
                     justifyContent="space-between"
-                    className={box}
+                    className={ box }
                   >
                     <DaroogDropdown
-                      defaultValue={state?.workTime}
-                      data={workTimeList}
-                      className={dropdown}
-                      label={t('pharmacy.workTime')}
-                      onChangeHandler={(v): void => {
+                      defaultValue={ state?.workTime }
+                      data={ workTimeList }
+                      className={ dropdown }
+                      label={ t('pharmacy.workTime') }
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'workTime', value: v });
-                      }}
+                      } }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('general.address')}
-                      value={state?.address}
-                      onChange={(e): void =>
+                      label={ t('general.address') }
+                      value={ state?.address }
+                      onChange={ (e): void =>
                         dispatch({ type: 'address', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('general.mobile')}
-                      value={state?.mobile}
-                      onChange={(e): void =>
+                      label={ t('general.mobile') }
+                      value={ state?.mobile }
+                      onChange={ (e): void =>
                         dispatch({ type: 'mobile', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <Box
                     display="flex"
                     justifyContent="space-between"
-                    className={box}
+                    className={ box }
                   >
                     <TextField
                       variant="outlined"
-                      label={t('general.phone')}
-                      value={state?.telphon}
-                      onChange={(e): void =>
+                      label={ t('general.phone') }
+                      value={ state?.telphon }
+                      onChange={ (e): void =>
                         dispatch({ type: 'telphon', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('general.website')}
-                      value={state?.website}
-                      onChange={(e): void =>
+                      label={ t('general.website') }
+                      value={ state?.website }
+                      onChange={ (e): void =>
                         dispatch({ type: 'website', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('general.email')}
-                      value={state?.email}
-                      onChange={(e): void =>
+                      label={ t('general.email') }
+                      value={ state?.email }
+                      onChange={ (e): void =>
                         dispatch({ type: 'email', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <Box
                     display="flex"
                     justifyContent="space-between"
-                    className={box}
+                    className={ box }
                   >
                     <TextField
                       variant="outlined"
-                      label={t('general.postalCode')}
-                      value={state?.postalCode}
-                      onChange={(e): void =>
+                      label={ t('general.postalCode') }
+                      value={ state?.postalCode }
+                      onChange={ (e): void =>
                         dispatch({ type: 'postalCode', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('general.description')}
-                      value={state?.description}
-                      onChange={(e): void =>
+                      label={ t('general.description') }
+                      value={ state?.description }
+                      onChange={ (e): void =>
                         dispatch({ type: 'description', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <div className="row">
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={state?.active}
-                          onChange={(e): void =>
+                          checked={ state?.active }
+                          onChange={ (e): void =>
                             dispatch({
                               type: 'active',
                               value: e.target.checked,
@@ -484,34 +485,34 @@ const PharmaciesList: React.FC = () => {
                           }
                         />
                       }
-                      label={t('general.active')}
+                      label={ t('general.active') }
                     />
                   </div>
                 </Grid>
                 <Divider />
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <CardActions>
                     <Button
                       type="submit"
                       color="primary"
                       variant="contained"
-                      className={addButton}
+                      className={ addButton }
                     >
-                      {isLoadingSave
+                      { isLoadingSave
                         ? t('general.pleaseWait')
-                        : t('general.save')}
+                        : t('general.save') }
                     </Button>
                     <Button
                       type="submit"
                       color="secondary"
                       variant="contained"
-                      className={cancelButton}
-                      onClick={(): void => {
+                      className={ cancelButton }
+                      onClick={ (): void => {
                         dispatch({ type: 'reset' });
                         toggleIsOpenSaveModalForm();
-                      }}
+                      } }
                     >
-                      {t('general.cancel')}
+                      { t('general.cancel') }
                     </Button>
                   </CardActions>
                 </Grid>
@@ -534,8 +535,27 @@ const PharmaciesList: React.FC = () => {
     getNewToken(rowData.id);
   };
 
+  const transaction: AccountingTransactionInterface = {
+    pharmacyId: 1,
+    amount: 1000,
+    tarikh: '',
+    description: '',
+  }
+  const addTransactionHandler = (event: any, rowData: any): void => {
+    // TODO: open transaction modal.
+    alert('add transaction :)')
+    console.log('rowData: ', rowData)
+    const transaction: AccountingTransactionInterface = {
+      pharmacyId: rowData.id,
+      amount: 1000,
+      tarikh: '',
+      description: '',
+    }
+    const addTransactionModal = <AddTransactionModal transaction={transaction} />;
+  }
+
   // TODO: impersonation icon in pharmacies list
-  const impersonateIcon = <FontAwesomeIcon icon={faUserCog} />;
+  const impersonateIcon = <FontAwesomeIcon icon={ faUserCog } />;
   const personOutlineIcon = <PersonOutlineIcon />;
   const actions: DataTableCustomActionInterface[] = [
     {
@@ -544,38 +564,45 @@ const PharmaciesList: React.FC = () => {
       color: 'secondary',
       action: impersonateHandler,
     },
+    {
+      icon: '$',
+      tooltip: t('accounting.addTransaction'),
+      color: 'secondary',
+      action: addTransactionHandler,
+    },
   ];
 
   // @ts-ignore
   return (
-    <Container maxWidth="lg" className={container}>
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <div>{t('pharmacy.list')}</div>
+    <Container maxWidth="lg" className={ container }>
+      <Grid container spacing={ 0 }>
+        <Grid item xs={ 12 }>
+          <div>{ t('pharmacy.list') }</div>
           <Paper>
+          <AddTransactionModal transaction={transaction} />
             <DataTable
-              ref={ref}
-              columns={tableColumns()}
-              addAction={(): void => saveHandler(initialState)}
-              editAction={(e: any, row: any): void => saveHandler(row)}
-              removeAction={async (e: any, row: any): Promise<void> =>
+              ref={ ref }
+              columns={ tableColumns() }
+              addAction={ (): void => saveHandler(initialState) }
+              editAction={ (e: any, row: any): void => saveHandler(row) }
+              removeAction={ async (e: any, row: any): Promise<void> =>
                 await removeHandler(row)
               }
-              stateAction={async (e: any, row: any): Promise<void> =>
+              stateAction={ async (e: any, row: any): Promise<void> =>
                 await toggleConfirmHandler(row)
               }
-              customActions={actions}
-              queryKey={PharmacyEnum.GET_ALL}
-              queryCallback={all}
-              urlAddress={UrlAddress.getAllPharmacy}
-              initLoad={false}
+              customActions={ actions }
+              queryKey={ PharmacyEnum.GET_ALL }
+              queryCallback={ all }
+              urlAddress={ UrlAddress.getAllPharmacy }
+              initLoad={ false }
             />
-            {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && (
+            { (isLoadingRemove || isLoadingConfirm || isLoadingSave) && (
               <CircleLoading />
-            )}
+            ) }
           </Paper>
         </Grid>
-        {isOpenEditModal && editModal()}
+        { isOpenEditModal && editModal() }
       </Grid>
     </Container>
   );

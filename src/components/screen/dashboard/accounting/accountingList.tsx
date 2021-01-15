@@ -1,6 +1,6 @@
 import React, { useReducer } from 'react';
 import { useQueryCache } from 'react-query';
-import Accounting from '../../../../services/api/Accounting';
+import { Accounting } from '../../../../services/api';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../classes';
 import {
