@@ -67,7 +67,13 @@ export enum RolesEnum {
   USERS = '1',
   ADMIN = '2',
   PHARMACY = '3',
+  PHARMACY_MEMBER_1 = '49',
+  PHARMACY_MEMBER_2 = '50',
+  PHARMACY_MEMBER_3 = '51',
+  PHARMACY_MEMBER_4 = '52',
 }
+
+export const PharmacyRoles = ['49', '50', '51', '52'];
 
 export * from './query';
 
