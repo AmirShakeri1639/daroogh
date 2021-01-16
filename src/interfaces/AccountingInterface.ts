@@ -1,3 +1,5 @@
+import { TransactionTypeEnum } from "../enum";
+
 export interface GetAccountingForPaymentInterace {
   accountingForPayment: AccountingInterface[];
   bankGetwayes: BankGetwayesInterface[];
@@ -22,4 +24,5 @@ export interface AccountingTransactionInterface {
   amount: number;
   tarikh: string;
   description: string;
+  transactionType?: TransactionTypeEnum;
 }

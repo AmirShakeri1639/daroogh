@@ -350,6 +350,9 @@ export default {
         transactions: 'تراکنش‌ها',
         accountingForPayment: 'صورتحساب',
         addTransaction: 'افزودن تراکنش مالی',
+        areYouSure: 'آیا از ثبت این تراکنش مطمئن هستید؟',
+        creditor: 'بستانکار',
+        debtor: 'بدهکار',
       },
       countryDivision: {
         province: 'استان',

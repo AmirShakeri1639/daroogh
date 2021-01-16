@@ -87,6 +87,13 @@ export enum SortTypeEnum {
   DESC,
 }
 
+export enum TransactionTypeEnum {
+  // بستانکار
+  Creditor,
+  // بدهکار
+  Debtor
+}
+
 export const GetValuesOfEnum = (e: any): any => {
   const keys = Object.keys(e);
   return keys.map((k: string) => e[k as keyof typeof e]);
