@@ -15,7 +15,7 @@ import {
   TextField,
   Tooltip,
 } from '@material-ui/core';
-import React, { useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ExchangeEnum } from '../../../../enum/query';
 import { UrlAddress } from '../../../../enum/UrlAddress';
@@ -192,60 +192,6 @@ const ExchangeManagement: React.FC = () => {
     );
   };
 
-  const exchangeModalCancel = (): JSX.Element => {
-    return (
-      <Modal
-        open={isOpenCancelExchangeModal}
-        toggle={(): any => toggleIsOpenCancelExchangeModalForm()}
-      >
-        <Card>
-          <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title="لغو تبادل"
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={(): any => toggleIsOpenCancelExchangeModalForm()}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={1}>
-              <div>
-                <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
-                <TextField
-                  onChange={(e: any): any => {
-                    setComment(e.value);
-                  }}
-                  style={{ width: '100%', marginTop: 10, fontSize: 10 }}
-                  label="توضیحات"
-                  multiline
-                  rows={5}
-                  variant="outlined"
-                />
-              </div>
-            </Grid>
-          </CardContent>
-          <CardActions>
-            <Button
-              onClick={async (): Promise<any> => await handleCancelExchange()}
-              variant="contained"
-              color="primary"
-              autoFocus
-            >
-              لغو تبادل
-            </Button>
-          </CardActions>
-        </Card>
-      </Modal>
-    );
-  };
-
   const cancelExchangeHandler = (event: any, rowData: any): any => {
     setExchangeId(rowData.id);
     toggleIsOpenCancelExchangeModalForm();
@@ -392,7 +338,7 @@ const ExchangeManagement: React.FC = () => {
           <hr />
           <Paper style={{ height: 500 }}>
             <DataTable
-              ref={ref}
+              // ref={ref}
               columns={getColumns()}
               queryKey={ExchangeEnum.GET_ALL_EXCHANGE}
               queryCallback={getAllExchange}
@@ -404,8 +350,57 @@ const ExchangeManagement: React.FC = () => {
           </Paper>
         </Grid>
       </Grid>
-      {isOpenCancelExchangeModal && exchangeModalCancel()}
       {isShowPharmacyInfoModal && <ShowPharmacyInfo />}
+
+      <Modal
+        open={isOpenCancelExchangeModal}
+        toggle={toggleIsOpenCancelExchangeModalForm}
+      >
+        <Card>
+          <CardHeader
+            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
+            title="لغو تبادل"
+            titleTypographyProps={{ variant: 'h6' }}
+            action={
+              <IconButton
+                style={{ marginTop: 10 }}
+                aria-label="settings"
+                onClick={toggleIsOpenCancelExchangeModalForm}
+              >
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <Divider />
+          <CardContent>
+            <Grid container spacing={1}>
+              <div>
+                <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
+                <TextField
+                  onChange={(e: any): any => {
+                    setComment(e.value);
+                  }}
+                  style={{ width: '100%', marginTop: 10, fontSize: 10 }}
+                  label="توضیحات"
+                  multiline
+                  rows={5}
+                  variant="outlined"
+                />
+              </div>
+            </Grid>
+          </CardContent>
+          <CardActions>
+            <Button
+              onClick={async (): Promise<any> => await handleCancelExchange()}
+              variant="contained"
+              color="primary"
+              autoFocus
+            >
+              لغو تبادل
+            </Button>
+          </CardActions>
+        </Card>
+      </Modal>
     </Container>
   );
 };
