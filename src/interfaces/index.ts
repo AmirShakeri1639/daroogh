@@ -31,6 +31,7 @@ export interface TableColumnInterface {
   field: string | number;
   title: string;
   type: string;
+  render?: (item: any) => any;
   headerStyle?: {} | undefined;
   cellStyle?: {} | undefined;
 }
