@@ -113,6 +113,7 @@ export default {
         save: 'ذخیره',
         impersonate: 'ورود به جای ',
         impersonateThisPharmacy: 'ورود به جای این داروخانه',
+        cancleExchange: 'لغو تبادل',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
@@ -258,6 +259,7 @@ export default {
         fillFormCarefully: 'در پر کردن مقادیر فرم بیشتر دقت کنید.',
         failedRemove: 'حذف با خطا روبرو شد',
         errorUserNamePassword: 'نام کاربری یا کلمه عبور اشتباه است',
+        failed: 'عملیات با خطا مواجه شد!',
       },
       pharmacy: {
         pharmacy: 'داروخانه',
@@ -311,7 +313,7 @@ export default {
         // 8 -  'تائید طرفین و در انتظار پرداخت طرف مقابل'
         CONFIRMA_AND_B_PAYMENTA: 'تبادل کامل شده',
         // 9
-        CONFIRMA_AND_B_PAYMENTB: 'در انتظار پرداخت',
+        CONFIRMA_AND_B_PAYMENTB: 'در انتظار پرداخت (طرف اول هستید)',
         // 10
         CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
         // 11
@@ -329,7 +331,7 @@ export default {
         // 17
         CANCELLED_FORB: 'لغو شده',
         // 18
-        CONFIRMA_AND_B_PAYMENTA_FORB: 'در انتظار پرداخت',
+        CONFIRMA_AND_B_PAYMENTA_FORB: 'در انتظار پرداخت (طرف دوم هستید)',
         // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
         CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
         // 20
