@@ -202,7 +202,7 @@ const PharmaciesList: React.FC = () => {
         field: 'id',
         title: t('general.id'),
         type: 'number',
-        cellStyle: { textAlign: 'right' },
+        cellStyle: { textAlign: 'right', width: '150px' },
       },
       { field: 'name', title: t('pharmacy.pharmacy'), type: 'string' },
       { field: 'description', title: t('general.description'), type: 'string' },
@@ -400,6 +400,7 @@ const PharmaciesList: React.FC = () => {
                     />
                     <TextField
                       variant="outlined"
+                      required
                       label={ t('general.address') }
                       value={ state?.address }
                       onChange={ (e): void =>
@@ -408,6 +409,7 @@ const PharmaciesList: React.FC = () => {
                     />
                     <TextField
                       variant="outlined"
+                      required
                       label={ t('general.mobile') }
                       value={ state?.mobile }
                       onChange={ (e): void =>
@@ -424,6 +426,7 @@ const PharmaciesList: React.FC = () => {
                   >
                     <TextField
                       variant="outlined"
+                      required
                       label={ t('general.phone') }
                       value={ state?.telphon }
                       onChange={ (e): void =>
