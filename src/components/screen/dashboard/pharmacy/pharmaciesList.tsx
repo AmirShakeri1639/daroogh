@@ -544,10 +544,9 @@ const PharmaciesList: React.FC = () => {
                   </div>
                 </Grid>
                 <Grid item xs={ 12 }>
-                  <div style={ {
-                    overflow: 'hidden'
-                  } }>
+                  <div style={ { overflow: 'hidden' } }>
                     <Map
+                      maxHeight='200px'
                       defaultLatLng={ [state.x, state.y] }
                       onClick={ (e: any): void => {
                         dispatch({ type: 'x', value: e.lngLat.lng });
