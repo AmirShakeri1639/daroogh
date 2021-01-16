@@ -40,7 +40,9 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
     })();
   }
 
-  return Promise.reject(error);
+  return Promise.reject(
+    error?.response?.data?.message == undefined
+    ? error : error?.response?.data?.message);
 });
 
 class Api {

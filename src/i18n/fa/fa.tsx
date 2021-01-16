@@ -80,6 +80,7 @@ export default {
         year: 'سال',
         month: 'ماه',
         day: 'روز',
+        status: 'وضعیت',
       },
       pack: {
         pack: 'پک',
@@ -114,6 +115,7 @@ export default {
         impersonate: 'ورود به جای ',
         impersonateThisPharmacy: 'ورود به جای این داروخانه',
         cancleExchange: 'لغو تبادل',
+        changeStatus: 'تغییر وضعیت',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
@@ -350,6 +352,9 @@ export default {
         transactions: 'تراکنش‌ها',
         accountingForPayment: 'صورتحساب',
         addTransaction: 'افزودن تراکنش مالی',
+        areYouSure: 'آیا از ثبت این تراکنش مطمئن هستید؟',
+        creditor: 'بستانکار',
+        debtor: 'بدهکار',
       },
       countryDivision: {
         province: 'استان',

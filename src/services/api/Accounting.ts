@@ -20,12 +20,12 @@ class Accounting extends Api {
   }
 
   add = async (data: AccountingTransactionInterface): Promise<any> => {
-    try {
-      const result = await this.postJsonData(this.urls.add, data);
-      return result.data;
-    } catch (e) {
-      errorHandler(e);
-    }
+    const result = await this.postJsonData(
+      `${this.urls.add}?pharmacyId=${data.pharmacyId}` +
+      `&amount=${data.amount}&tarikh=${data.tarikh}` +
+      `&description=${data.description}`,
+      data);
+    return result.data;
   }
 }
 
