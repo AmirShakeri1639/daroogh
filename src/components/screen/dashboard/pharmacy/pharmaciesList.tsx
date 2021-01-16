@@ -41,7 +41,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { PharmacyEnum } from '../../../../enum/query';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
-import { WorkTimeEnum } from '../../../../enum';
+import { ColorEnum, WorkTimeEnum } from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -52,6 +52,7 @@ import routes from '../../../../routes';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import AddTransactionModal from '../accounting/AddTransactionModal';
 import { todayJalali } from '../../../../utils/jalali';
+import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -196,15 +197,46 @@ const PharmaciesList: React.FC = () => {
     },
   });
 
-  const tableColumns = (): TableColumnInterface[] => {
+  const tableColumns = (): DataTableColumns[] => {
     return [
       {
         field: 'id',
         title: t('general.id'),
         type: 'number',
-        cellStyle: { textAlign: 'right', width: '150px' },
+        width: '150px',
+        cellStyle: { textAlign: 'right' },
       },
-      { field: 'name', title: t('pharmacy.pharmacy'), type: 'string' },
+      {
+        field: 'name',
+        title: t('pharmacy.pharmacy'),
+        type: 'string',
+        width: '250px',
+      },
+      {
+        field: 'pharmacyCity',
+        title: t('countryDivision.city'),
+        type: 'string',
+        width: '250px',
+      },
+      {
+        field: 'pharmacyProvince',
+        title: t('countryDivision.province'),
+        type: 'string',
+        width: '250px',
+      },
+      {
+        field: 'activeString',
+        title: t('general.status'),
+        type: 'string',
+        width: '150px',
+        render: (row: any): any => {
+          return (
+            <span style={ { color: row.active ? ColorEnum.Green : ColorEnum.Red } }>
+              { row.activeString }
+            </span>
+          );
+        },
+      },
       { field: 'description', title: t('general.description'), type: 'string' },
     ];
   };

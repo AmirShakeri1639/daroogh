@@ -80,6 +80,7 @@ export default {
         year: 'سال',
         month: 'ماه',
         day: 'روز',
+        status: 'وضعیت',
       },
       pack: {
         pack: 'پک',
