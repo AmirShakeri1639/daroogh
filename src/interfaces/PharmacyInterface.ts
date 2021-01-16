@@ -14,5 +14,7 @@ export interface PharmacyInterface {
   postalCode: string;
   description: string;
   active: boolean;
-  countryDivisionID: number;
+  countryDivisionID: number | string;
+  x?: string;
+  y?: string;
 }
