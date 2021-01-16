@@ -595,7 +595,7 @@ const PharmaciesList: React.FC = () => {
     async function getNewToken(id: number | string): Promise<any> {
       const result = await impersonate(id);
       const impersonation = new Impersonation();
-      impersonation.changeToken(result.data.token);
+      impersonation.changeToken(result.data.token, result.data.pharmacyName);
       history.push(routes.dashboard);
     }
     getNewToken(rowData.id);
