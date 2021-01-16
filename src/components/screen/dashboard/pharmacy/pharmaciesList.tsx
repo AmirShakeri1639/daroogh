@@ -263,7 +263,8 @@ const PharmaciesList: React.FC = () => {
     }
   };
 
-  const toggleConfirmHandler = async (row: PharmacyInterface): Promise<any> => {
+  const toggleConfirmHandler = async (e: any, row: PharmacyInterface): Promise<any> => {
+    debugger;
     try {
       const confirmParams: ConfirmParams = {
         id: row.id,
@@ -616,6 +617,15 @@ const PharmaciesList: React.FC = () => {
   const personOutlineIcon = <PersonOutlineIcon />;
   const actions: DataTableCustomActionInterface[] = [
     {
+      icon: 'check',
+      tooltip: t('action.changeStatus'),
+      iconProps: {
+        color: 'error',
+      },
+  position: 'row',
+      action: toggleConfirmHandler,
+    },
+    {
       icon: 'I',
       tooltip: t('action.impersonateThisPharmacy'),
       color: 'secondary',
@@ -643,9 +653,6 @@ const PharmaciesList: React.FC = () => {
               editAction={ (e: any, row: any): void => saveHandler(row) }
               removeAction={ async (e: any, row: any): Promise<void> =>
                 await removeHandler(row)
-              }
-              stateAction={ async (e: any, row: any): Promise<void> =>
-                await toggleConfirmHandler(row)
               }
               customActions={ actions }
               queryKey={ PharmacyEnum.GET_ALL }
