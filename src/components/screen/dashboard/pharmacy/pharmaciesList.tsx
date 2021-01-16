@@ -52,6 +52,7 @@ import { UrlAddress } from '../../../../enum/UrlAddress';
 import AddTransactionModal from '../accounting/AddTransactionModal';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { Map } from '../../../public';
+import { CountryDivisionSelect } from '../../../public/country-division/CountryDivisionSelect';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -526,7 +527,7 @@ const PharmaciesList: React.FC = () => {
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={ 12 }>
+                <Grid item xs={ 4 }>
                   <div className="row">
                     <FormControlLabel
                       control={
@@ -543,6 +544,15 @@ const PharmaciesList: React.FC = () => {
                       label={ t('general.active') }
                     />
                   </div>
+                </Grid>
+                <Grid item xs={ 8 }>
+                  <CountryDivisionSelect
+                    countryDivisionID={ state.countryDivisionID }
+                    label={ t('general.location') }
+                    onSelectedHandler={ (id): void => {
+                      dispatch({ type: 'countryDivisionID', value: id });
+                    } }
+                  />
                 </Grid>
                 <Grid item xs={ 12 }>
                   <div style={ { overflow: 'hidden' } }>
