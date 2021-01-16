@@ -3,6 +3,7 @@ import React, {
   useImperativeHandle,
   useState,
   forwardRef,
+  useEffect,
 } from 'react';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import { DataTableProps } from '../../../interfaces';
@@ -303,6 +304,7 @@ const DataTable: React.ForwardRefRenderFunction<
               backgroundColor: rowData.tableData.checked ? '#37b15933' : '',
             }),
           }}
+          onSearchChange={(text: string): any => setSearchText(text)}
           {...materialTableProps}
         />
       </div>
