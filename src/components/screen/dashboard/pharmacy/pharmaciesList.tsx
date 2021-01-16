@@ -43,6 +43,7 @@ import { ColorEnum, WorkTimeEnum } from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faUserCog } from '@fortawesome/free-solid-svg-icons';
 import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
@@ -236,14 +237,14 @@ const PharmaciesList: React.FC = () => {
         width: '150px',
       },
       {
-        field: 'activeString',
+        field: 'active',
         title: t('general.status'),
-        type: 'string',
+        type: 'boolean',
         width: '150px',
         render: (row: any): any => {
           return (
             <span style={ { color: row.active ? ColorEnum.Green : ColorEnum.Red } }>
-              { row.activeString }
+              <FontAwesomeIcon icon={ row.active ? faCheck : faTimes } />
             </span>
           );
         },
