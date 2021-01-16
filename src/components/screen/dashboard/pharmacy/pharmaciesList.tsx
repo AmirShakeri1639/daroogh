@@ -51,6 +51,7 @@ import { useHistory } from 'react-router-dom';
 import routes from '../../../../routes';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import AddTransactionModal from '../accounting/AddTransactionModal';
+import { todayJalali } from '../../../../utils/jalali';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -535,23 +536,13 @@ const PharmaciesList: React.FC = () => {
     getNewToken(rowData.id);
   };
 
-  const transaction: AccountingTransactionInterface = {
-    pharmacyId: 1,
-    amount: 1000,
-    tarikh: '',
-    description: '',
-  }
+  const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const toggleShowAddTransaction = (): void =>
+    setShowAddTransaction(!showAddTransaction);
+  const [pharmacyIdForTransaction, setPharmacyIdForTransaction] = useState(0);
   const addTransactionHandler = (event: any, rowData: any): void => {
-    // TODO: open transaction modal.
-    alert('add transaction :)')
-    console.log('rowData: ', rowData)
-    const transaction: AccountingTransactionInterface = {
-      pharmacyId: rowData.id,
-      amount: 1000,
-      tarikh: '',
-      description: '',
-    }
-    const addTransactionModal = <AddTransactionModal transaction={transaction} />;
+    setPharmacyIdForTransaction(rowData.id);
+    toggleShowAddTransaction();
   }
 
   // TODO: impersonation icon in pharmacies list
@@ -579,7 +570,6 @@ const PharmaciesList: React.FC = () => {
         <Grid item xs={ 12 }>
           <div>{ t('pharmacy.list') }</div>
           <Paper>
-          <AddTransactionModal transaction={transaction} />
             <DataTable
               ref={ ref }
               columns={ tableColumns() }
@@ -603,6 +593,13 @@ const PharmaciesList: React.FC = () => {
           </Paper>
         </Grid>
         { isOpenEditModal && editModal() }
+      </Grid>
+      <Grid container spacing={ 1 }>
+        <Grid item xs={ 1 }>
+          { showAddTransaction && (
+            <AddTransactionModal pharmacyId={ pharmacyIdForTransaction } />
+          ) }
+        </Grid>
       </Grid>
     </Container>
   );

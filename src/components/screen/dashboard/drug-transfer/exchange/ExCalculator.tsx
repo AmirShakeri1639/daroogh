@@ -287,7 +287,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                   {t('exchange.commission') }
                 </>
               }
-              leftText={ totalPourcentage }
+              leftText={ Convertor.thousandsSeperatorFa(totalPourcentage) }
             />
           </Grid>
         ) }

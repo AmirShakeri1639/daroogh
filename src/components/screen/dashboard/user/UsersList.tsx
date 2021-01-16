@@ -272,6 +272,7 @@ const UsersList: React.FC = () => {
         field: 'active',
         title: 'وضعیت کاربر',
         type: 'string',
+        render: (rowData: any) => (rowData.active ? 'فعال' : 'غیرفعال'),
         cellStyle: { textAlign: 'center', width: 80 },
       },
     ];
