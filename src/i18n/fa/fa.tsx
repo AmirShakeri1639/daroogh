@@ -115,6 +115,7 @@ export default {
         impersonate: 'ورود به جای ',
         impersonateThisPharmacy: 'ورود به جای این داروخانه',
         cancleExchange: 'لغو تبادل',
+        changeStatus: 'تغییر وضعیت',
       },
       error: {
         'you-are-lost': 'احتمالا اشتباهی اومدین اینجا!',
