@@ -19,11 +19,13 @@ const useStyle = makeStyles((theme) =>
 interface Props {
   onClick?: (e: any) => void;
   defaultLatLng?: [number, number];
+  maxHeight?: string;
 }
 
 const Map: React.FC<Props> = (props) => {
   const {
     onClick,
+    maxHeight = '400px',
     defaultLatLng = [59.526950363917827, 36.321029857543529],
   } = props;
   const { container } = useStyle();
@@ -98,7 +100,7 @@ const Map: React.FC<Props> = (props) => {
       style={ {
         width: '100%',
         height: 'calc(100vh - 150px)',
-        maxHeight: '400px',
+        maxHeight: maxHeight,
         // position: 'absolute',
         direction: 'rtl',
       } }

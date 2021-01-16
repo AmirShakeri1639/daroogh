@@ -27,6 +27,7 @@ export interface ButtonPropsInterface {
 export interface ModalPropsInterface {
   open: boolean;
   toggle: () => void;
+  className?: any;
 }
 
 export type ModalContentPropsInterface = ModalPropsInterface;

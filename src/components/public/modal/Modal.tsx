@@ -21,7 +21,7 @@ const modalStyle = {
 };
 
 const Modal: React.FC<ModalPropsInterface> = (props) => {
-  const { open, toggle, children } = props;
+  const { open, toggle, children, className = '' } = props;
 
   // Notice: Maybe using of useCAllback method be a good solution rather this implmentation
   return (
@@ -33,6 +33,7 @@ const Modal: React.FC<ModalPropsInterface> = (props) => {
       onRequestClose={toggle}
       ariaHideApp={false}
       style={modalStyle}
+      className={className}
     >
       {children}
     </ReactModal>
