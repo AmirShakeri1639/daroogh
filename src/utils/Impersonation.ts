@@ -22,8 +22,10 @@ class Impersonation {
   changeToken(newToken: string, newPharmacyName: string = ''): void {
     this.currentToken = newToken;
     this.userData.token = newToken;
-    this.currentPharmacyName = newPharmacyName;
-    this.userData.pharmacyName = newPharmacyName;
+    const phName = newPharmacyName === '' 
+      ? this.mainPharmacyName : newPharmacyName;
+    this.currentPharmacyName = phName;
+    this.userData.pharmacyName = phName;
     localStorage.setItem('mainToken', this.mainToken);
     localStorage.setItem('mainPharmacyName', this.mainPharmacyName);
     localStorage.setItem('user', JSON.stringify(this.userData));
