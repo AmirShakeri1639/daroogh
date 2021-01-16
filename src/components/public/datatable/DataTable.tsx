@@ -48,6 +48,7 @@ const DataTable: React.ForwardRefRenderFunction<
   const [itemsCount, setItemsCount] = useState<number>(0);
   const [entries, setEntries] = useState([]);
   const [isLoader, setLoader] = useState(true);
+  const [showFilter, setShowFilter] = useState(false);
 
   const {
     editUser,
@@ -70,6 +71,13 @@ const DataTable: React.ForwardRefRenderFunction<
     defaultFilter,
     detailPanel,
   } = props;
+
+  // React.useImperativeHandle(forwardedRef, () => ({
+  //   loadItems(): any {
+  //     debugger;
+  //     tableRef.current && tableRef.current.onQueryChange();
+  //   },
+  // }));
 
   const { t } = useTranslation();
 
@@ -112,10 +120,16 @@ const DataTable: React.ForwardRefRenderFunction<
 
   let tableActions: any[] = [
     {
+      icon: 'find_replace',
+      tooltip: 'فیلتر',
+      isFreeAction: true,
+      onClick: (): any => setShowFilter(!showFilter),
+    },
+    {
       icon: 'refresh',
       tooltip: 'بارگزاری مجدد',
       isFreeAction: true,
-      onClick: (): Promise<any> => reFetchData(),
+      onClick: (): any => tableRef.current.onQueryChange(),
     },
   ];
 
@@ -223,21 +237,34 @@ const DataTable: React.ForwardRefRenderFunction<
           new Promise((resolve, reject) => {
             let url = UrlAddress.baseUrl + urlAddress;
 
-            url += `?&$top=${query.pageSize}&$skip=${query.page *
-              query.pageSize}`;
+            url += `?&$top=${query.pageSize}&$skip=${
+              query.page * query.pageSize
+            }`;
 
             if (defaultFilter) {
               url += `&$filter= ${defaultFilter}`;
             }
+            if (query.filters.length > 0) {
+              url += defaultFilter ? ' and ' : '&$filter=';
+              query.filters.forEach((x: any, i: number) => {
+                const openP = i === 0 ? '(' : '';
+                const closeP = i === query.filters.length - 1 ? ')' : '';
+                const orO = i < query.filters.length - 1 ? 'or ' : '';
+                url += `${openP}contains(cast(${x.column.field},'Edm.String'),'${x.value}')${orO}${closeP}`;
+              });
+            }
             if (query.search && query.search !== '') {
               const columnsFilter = columns.filter((x: any) => x.searchable);
               if (columnsFilter.length > 0) {
-                url += defaultFilter ? ' and ' : '&$filter=';
+                url +=
+                  defaultFilter || query.filters.length > 0
+                    ? ' and '
+                    : '&$filter=';
                 columnsFilter.forEach((x: DataTableColumns, i: number) => {
                   const openP = i === 0 ? '(' : '';
                   const closeP = i === columnsFilter.length - 1 ? ')' : '';
                   const orO = i < columnsFilter.length - 1 ? 'or ' : '';
-                  url += `${openP}contains(cast(${x.field}, 'Edm.String'),'${query.search}')${orO}${closeP}`;
+                  url += `${openP}contains(cast(${x.field},'Edm.String'),'${query.search}')${orO}${closeP}`;
                 });
               }
             }
@@ -245,7 +272,12 @@ const DataTable: React.ForwardRefRenderFunction<
               url += `&$orderby=${query.orderBy.field?.toString()} ${
                 query.orderDirection
               }`;
+            } else {
+              if (columns.findIndex((c: any) => c.field === 'id') !== -1) {
+                url += `&$orderby=id desc`;
+              }
             }
+            console.log('QueryParam ==> ', url);
             const user = localStorage.getItem('user') || '{}';
             const { token } = JSON.parse(user);
             fetch(url, {
@@ -283,12 +315,17 @@ const DataTable: React.ForwardRefRenderFunction<
         // isLoading={isLoader || isLoading || isLoadingFetchData}
         options={{
           actionsColumnIndex: -1,
+          actionsCellStyle: {
+            borderRight: '1px solid silver',
+            textAlignLast: 'center',
+          },
           showSelectAllCheckbox: multiple,
           selection: selection,
           searchFieldAlignment: 'left',
           doubleHorizontalScroll: false,
           paginationType: 'stepped',
-          filtering: false,
+          filtering: showFilter,
+          filterCellStyle: { paddingTop: 0, paddingBottom: 5 },
           pageSize,
           exportButton: true,
           padding: 'dense',

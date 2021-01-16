@@ -109,8 +109,9 @@ const getColumns = (): DataTableColumns[] => {
       title: 'شناسه',
       field: 'id',
       type: 'numeric',
+      width: '50px',
       headerStyle: { textAlign: 'right', direction: 'ltr' },
-      cellStyle: { textAlign: 'right', color: 'red' },
+      cellStyle: { textAlign: 'right' },
     },
     {
       title: 'نام',
@@ -217,7 +218,7 @@ const CategoryList: React.FC = () => {
           type: 'success',
           text: message,
         });
-        queryCache.invalidateQueries('categoryList');
+        ref.current?.onQueryChange();
       },
     }
   );
@@ -394,7 +395,7 @@ const CategoryList: React.FC = () => {
           <div style={{ backgroundColor: 'white' }}>لیست دسته بندی ها</div>
           <Paper style={{ height: 500 }}>
             <DataTable
-              ref={ref}
+              tableRef={ref}
               columns={getColumns()}
               addAction={(): void => onHandleAddAction()}
               editAction={(e: any, row: any): void => onHandleEditRow(row)}
