@@ -22,6 +22,9 @@ export const useClasses = makeStyles((theme) => createStyles({
     minWidth: 'auto',
     // maxHeight: '70vh',
   },
+  limiModalHeight: {
+    maxHeight: '80vh',
+  },
   container: {
     marginTop: theme.spacing(1),
   },

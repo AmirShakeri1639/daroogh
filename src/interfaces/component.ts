@@ -3,6 +3,7 @@ import { AllPharmacyDrugInterface } from './AllPharmacyDrugInterface';
 import { NewUserData } from './user';
 import { PharmacyDrugInterface } from './pharmacyDrug';
 import { DataTableColumns } from './DataTableColumns';
+import { IconProps } from '@material-ui/core';
 
 export interface SelectPropsInterface {
   value: string;
@@ -27,6 +28,7 @@ export interface ButtonPropsInterface {
 export interface ModalPropsInterface {
   open: boolean;
   toggle: () => void;
+  className?: any;
 }
 
 export type ModalContentPropsInterface = ModalPropsInterface;
@@ -42,7 +44,10 @@ export interface DataTableCustomActionInterface {
   icon: any;
   tooltip?: string;
   color?: string;
+  iconProps?: IconProps;
+  position?: 'auto' | 'toolbar' | 'toolbarOnSelect' | 'row';
   action?: (() => void) | void | any;
+  hidden?: boolean;
 }
 
 export interface DataTableProps {

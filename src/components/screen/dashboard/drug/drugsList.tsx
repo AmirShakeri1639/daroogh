@@ -18,6 +18,8 @@ import {
   CardActions,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Modal from '../../../public/modal/Modal';
 import {
   errorHandler,
@@ -39,6 +41,7 @@ import { DrugEnum } from '../../../../enum/query';
 import { Category } from '../../../../services/api';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import { UrlAddress } from '../../../../enum/UrlAddress';
+import { ColorEnum } from '../../../../enum';
 
 const initialState: DrugInterface = {
   id: 0,
@@ -184,7 +187,18 @@ const DrugsList: React.FC = () => {
       { field: 'name', title: t('drug.name'), type: 'string' },
       { field: 'genericName', title: t('drug.genericName'), type: 'string' },
       // { id: 'companyName', label: t('drug.companyName') },
-      { field: 'active', title: t('general.active'), type: 'boolean' },
+      { 
+        field: 'active', 
+        title: t('general.active'), 
+        type: 'boolean',
+        render: (row: any): any => {
+          return (
+            <span style={ { color: row.active ? ColorEnum.Green : ColorEnum.Red } }>
+              <FontAwesomeIcon icon={ row.active ? faCheck : faTimes } />
+            </span>
+          );
+        },
+      },
       { field: 'enName', title: t('drug.enName'), type: 'string' },
       { field: 'type', title: t('general.type'), type: 'string' },
     ];

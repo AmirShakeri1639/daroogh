@@ -31,26 +31,27 @@ import { useClasses } from '../classes';
 import {
   ActionInterface,
   PharmacyInterface,
-  TableColumnInterface,
   ConfirmParams,
   LabelValue,
   DataTableCustomActionInterface,
-  AccountingTransactionInterface,
 } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { PharmacyEnum } from '../../../../enum/query';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
-import { WorkTimeEnum } from '../../../../enum';
+import { ColorEnum, WorkTimeEnum } from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faUserCog } from '@fortawesome/free-solid-svg-icons';
 import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../../routes';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import AddTransactionModal from '../accounting/AddTransactionModal';
+import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
+import { Map } from '../../../public';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -67,6 +68,8 @@ const initialState: PharmacyInterface = {
   email: '',
   postalCode: '',
   countryDivisionID: DefaultCountryDivisionID,
+  x: '',
+  y: '',
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -143,6 +146,16 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         countryDivisionID: value,
       };
+    case 'x':
+      return {
+        ...state,
+        x: value,
+      };
+    case 'y':
+      return {
+        ...state,
+        y: value,
+      };
     case 'reset':
       return initialState;
     default:
@@ -165,6 +178,7 @@ const PharmaciesList: React.FC = () => {
     addButton,
     cancelButton,
     dropdown,
+    limiModalHeight,
   } = useClasses();
   const queryCache = useQueryCache();
 
@@ -195,15 +209,46 @@ const PharmaciesList: React.FC = () => {
     },
   });
 
-  const tableColumns = (): TableColumnInterface[] => {
+  const tableColumns = (): DataTableColumns[] => {
     return [
       {
         field: 'id',
         title: t('general.id'),
         type: 'number',
+        width: '150px',
         cellStyle: { textAlign: 'right' },
       },
-      { field: 'name', title: t('pharmacy.pharmacy'), type: 'string' },
+      {
+        field: 'name',
+        title: t('pharmacy.pharmacy'),
+        type: 'string',
+        width: '250px',
+      },
+      {
+        field: 'pharmacyCity',
+        title: t('countryDivision.city'),
+        type: 'string',
+        width: '150px',
+      },
+      {
+        field: 'pharmacyProvince',
+        title: t('countryDivision.province'),
+        type: 'string',
+        width: '150px',
+      },
+      {
+        field: 'active',
+        title: t('general.status'),
+        type: 'boolean',
+        width: '150px',
+        render: (row: any): any => {
+          return (
+            <span style={ { color: row.active ? ColorEnum.Green : ColorEnum.Red } }>
+              <FontAwesomeIcon icon={ row.active ? faCheck : faTimes } />
+            </span>
+          );
+        },
+      },
       { field: 'description', title: t('general.description'), type: 'string' },
     ];
   };
@@ -218,7 +263,8 @@ const PharmaciesList: React.FC = () => {
     }
   };
 
-  const toggleConfirmHandler = async (row: PharmacyInterface): Promise<any> => {
+  const toggleConfirmHandler = async (e: any, row: PharmacyInterface): Promise<any> => {
+    debugger;
     try {
       const confirmParams: ConfirmParams = {
         id: row.id,
@@ -247,6 +293,7 @@ const PharmaciesList: React.FC = () => {
       description,
       active,
       countryDivisionID,
+      x, y,
     } = item;
 
     dispatch({ type: 'id', value: id });
@@ -263,6 +310,8 @@ const PharmaciesList: React.FC = () => {
     dispatch({ type: 'description', value: description });
     dispatch({ type: 'active', value: active });
     dispatch({ type: 'countryDivisionID', value: countryDivisionID });
+    dispatch({ type: 'x', value: x });
+    dispatch({ type: 'y', value: y });
   };
 
   const isFormValid = (): boolean => {
@@ -289,6 +338,7 @@ const PharmaciesList: React.FC = () => {
       description,
       active,
       countryDivisionID,
+      x, y,
     } = state;
 
     if (isFormValid()) {
@@ -308,6 +358,7 @@ const PharmaciesList: React.FC = () => {
           description,
           active,
           countryDivisionID,
+          x, y,
         });
         dispatch({ type: 'reset' });
         ref.current?.loadItems();
@@ -331,7 +382,9 @@ const PharmaciesList: React.FC = () => {
 
   const editModal = (): JSX.Element => {
     return (
-      <Modal open={ isOpenEditModal } toggle={ toggleIsOpenSaveModalForm }>
+      <Modal
+        open={ isOpenEditModal }
+        toggle={ toggleIsOpenSaveModalForm }>
         <Card className={ root }>
           <CardHeader
             title={ state?.id === 0 ? t('action.create') : t('action.edit') }
@@ -399,6 +452,7 @@ const PharmaciesList: React.FC = () => {
                     />
                     <TextField
                       variant="outlined"
+                      required
                       label={ t('general.address') }
                       value={ state?.address }
                       onChange={ (e): void =>
@@ -407,6 +461,7 @@ const PharmaciesList: React.FC = () => {
                     />
                     <TextField
                       variant="outlined"
+                      required
                       label={ t('general.mobile') }
                       value={ state?.mobile }
                       onChange={ (e): void =>
@@ -423,6 +478,7 @@ const PharmaciesList: React.FC = () => {
                   >
                     <TextField
                       variant="outlined"
+                      required
                       label={ t('general.phone') }
                       value={ state?.telphon }
                       onChange={ (e): void =>
@@ -489,6 +545,18 @@ const PharmaciesList: React.FC = () => {
                     />
                   </div>
                 </Grid>
+                <Grid item xs={ 12 }>
+                  <div style={ { overflow: 'hidden' } }>
+                    <Map
+                      maxHeight='200px'
+                      defaultLatLng={ [state.x, state.y] }
+                      onClick={ (e: any): void => {
+                        dispatch({ type: 'x', value: e.lngLat.lng });
+                        dispatch({ type: 'y', value: e.lngLat.lat });
+                      } }
+                    />
+                  </div>
+                </Grid>
                 <Divider />
                 <Grid item xs={ 12 }>
                   <CardActions>
@@ -529,35 +597,34 @@ const PharmaciesList: React.FC = () => {
     async function getNewToken(id: number | string): Promise<any> {
       const result = await impersonate(id);
       const impersonation = new Impersonation();
-      impersonation.changeToken(result.data.token);
+      impersonation.changeToken(result.data.token, result.data.pharmacyName);
       history.push(routes.dashboard);
     }
     getNewToken(rowData.id);
   };
 
-  const transaction: AccountingTransactionInterface = {
-    pharmacyId: 1,
-    amount: 1000,
-    tarikh: '',
-    description: '',
-  }
+  const [showAddTransaction, setShowAddTransaction] = useState(false);
+  const toggleShowAddTransaction = (): void =>
+    setShowAddTransaction(!showAddTransaction);
+  const [pharmacyIdForTransaction, setPharmacyIdForTransaction] = useState(0);
   const addTransactionHandler = (event: any, rowData: any): void => {
-    // TODO: open transaction modal.
-    alert('add transaction :)')
-    console.log('rowData: ', rowData)
-    const transaction: AccountingTransactionInterface = {
-      pharmacyId: rowData.id,
-      amount: 1000,
-      tarikh: '',
-      description: '',
-    }
-    const addTransactionModal = <AddTransactionModal transaction={transaction} />;
+    setPharmacyIdForTransaction(rowData.id);
+    toggleShowAddTransaction();
   }
 
   // TODO: impersonation icon in pharmacies list
   const impersonateIcon = <FontAwesomeIcon icon={ faUserCog } />;
   const personOutlineIcon = <PersonOutlineIcon />;
   const actions: DataTableCustomActionInterface[] = [
+    {
+      icon: 'check',
+      tooltip: t('action.changeStatus'),
+      iconProps: {
+        color: 'error',
+      },
+  position: 'row',
+      action: toggleConfirmHandler,
+    },
     {
       icon: 'I',
       tooltip: t('action.impersonateThisPharmacy'),
@@ -579,7 +646,6 @@ const PharmaciesList: React.FC = () => {
         <Grid item xs={ 12 }>
           <div>{ t('pharmacy.list') }</div>
           <Paper>
-          <AddTransactionModal transaction={transaction} />
             <DataTable
               ref={ ref }
               columns={ tableColumns() }
@@ -587,9 +653,6 @@ const PharmaciesList: React.FC = () => {
               editAction={ (e: any, row: any): void => saveHandler(row) }
               removeAction={ async (e: any, row: any): Promise<void> =>
                 await removeHandler(row)
-              }
-              stateAction={ async (e: any, row: any): Promise<void> =>
-                await toggleConfirmHandler(row)
               }
               customActions={ actions }
               queryKey={ PharmacyEnum.GET_ALL }
@@ -603,6 +666,13 @@ const PharmaciesList: React.FC = () => {
           </Paper>
         </Grid>
         { isOpenEditModal && editModal() }
+      </Grid>
+      <Grid container spacing={ 1 }>
+        <Grid item xs={ 1 }>
+          { showAddTransaction && (
+            <AddTransactionModal pharmacyId={ pharmacyIdForTransaction } />
+          ) }
+        </Grid>
       </Grid>
     </Container>
   );
