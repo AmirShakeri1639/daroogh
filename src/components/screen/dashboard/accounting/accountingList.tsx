@@ -13,6 +13,8 @@ import DataTable from '../../../public/datatable/DataTable';
 import { AccountingEnum } from '../../../../enum/query';
 import { Container, Grid, Paper } from '@material-ui/core';
 import { UrlAddress } from '../../../../enum/UrlAddress';
+import { getJalaliDate } from '../../../../utils/jalali';
+import { Convertor } from '../../../../utils';
 
 const initialState: AccountingInterface = {
   id: 0,
@@ -36,25 +38,62 @@ const AccountingList: React.FC = () => {
         type: 'number',
         cellStyle: { textAlign: 'right' },
       },
-      { field: 'date', title: t('general.date'), type: 'string' },
+      {
+        field: 'date',
+        title: t('general.date'),
+        type: 'string',
+        render: (row: any): any => {
+          return (
+            <>{ getJalaliDate(row.date) }</>
+          );
+        },
+      },
+
       { field: 'description', title: t('general.description'), type: 'string' },
-      { field: 'amount', title: t('accounting.amount'), type: 'number' },
+      {
+        field: 'amount',
+        title: t('accounting.creditor'),
+        type: 'number',
+        render: (row: any): any => {
+          return (
+            <>
+              { row.amount < 0 &&
+                Convertor.thousandsSeperatorFa(Math.abs(row.amount)) }
+              { row.amount >= 0 && '' }
+            </>
+          );
+        },
+      },
+      {
+        field: 'amount',
+        title: t('accounting.debtor'),
+        type: 'number',
+        render: (row: any): any => {
+          return (
+            <>
+              { row.amount >= 0 &&
+                Convertor.thousandsSeperatorFa(row.amount) }
+              { row.amount < 0 && '' }
+            </>
+          );
+        },
+      },
     ];
   };
 
   return (
-    <Container maxWidth="lg" className={container}>
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <div>{t('accounting.list')}</div>
+    <Container maxWidth="lg" className={ container }>
+      <Grid container spacing={ 0 }>
+        <Grid item xs={ 12 }>
+          <div>{ t('accounting.list') }</div>
           <Paper>
             <DataTable
-              ref={ref}
-              columns={tableColumns()}
-              queryKey={AccountingEnum.GET_ALL}
-              queryCallback={all}
-              urlAddress={UrlAddress.getAllAccounting}
-              initLoad={false}
+              ref={ ref }
+              columns={ tableColumns() }
+              queryKey={ AccountingEnum.GET_ALL }
+              queryCallback={ all }
+              urlAddress={ UrlAddress.getAllAccounting }
+              initLoad={ false }
             />
           </Paper>
         </Grid>
