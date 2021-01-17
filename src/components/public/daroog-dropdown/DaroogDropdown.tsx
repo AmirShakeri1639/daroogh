@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { LabelValue } from '../../../interfaces';
 
@@ -26,6 +26,9 @@ export const DaroogDropdown: React.FC<Props> = (props) => {
   } = props;
 
   const [finalValue, setValue] = useState(defaultValue);
+  useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
 
   return (
     <FormControl>
@@ -46,7 +49,7 @@ export const DaroogDropdown: React.FC<Props> = (props) => {
         {data &&
           data.map((item: LabelValue) => {
             return (
-              <MenuItem key={item.value} value={item.value}>
+              <MenuItem key={item.value} value={item.value} selected={item.value === finalValue}>
                 {item.label}
               </MenuItem>
             );

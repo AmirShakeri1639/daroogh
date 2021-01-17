@@ -36,7 +36,7 @@ const initialState: PharmacyWithUserInterface = {
     address: '',
     mobile: '',
     telphon: '',
-    website: '',
+    webSite: '',
     email: '',
     postalCode: '',
     countryDivisionID: -1,
@@ -110,10 +110,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         pharmacy: { ...state.pharmacy, telphon: value },
       };
-    case 'pharmacy.website':
+    case 'pharmacy.webSite':
       return {
         ...state,
-        pharmacy: { ...state.pharmacy, website: value },
+        pharmacy: { ...state.pharmacy, webSite: value },
       };
     case 'pharmacy.email':
       return {
@@ -307,7 +307,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             address: state.pharmacy.address,
             mobile: state.pharmacy.mobile,
             telphon: state.pharmacy.telphon,
-            website: state.pharmacy.website,
+            webSite: state.pharmacy.webSite,
             email: state.pharmacy.email,
             postalCode: state.pharmacy.postalCode,
             countryDivisionID: state.pharmacy.countryDivisionID,
@@ -544,9 +544,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.website') }
-                value={ state.pharmacy.website }
+                value={ state.pharmacy.webSite }
                 onChange={ (e): void =>
-                  dispatch({ type: 'pharmacy.website', value: e.target.value })
+                  dispatch({ type: 'pharmacy.webSite', value: e.target.value })
                 }
               />
             </Grid>

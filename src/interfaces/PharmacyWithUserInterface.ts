@@ -10,7 +10,7 @@ export interface PharmacyWithUserInterface {
     address: string;
     mobile: string;
     telphon: string;
-    website: string;
+    webSite: string;
     email: string;
     postalCode: string;
     description: string;

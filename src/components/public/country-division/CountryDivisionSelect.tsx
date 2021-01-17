@@ -103,7 +103,6 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
       result.items.map((item: any) => {
         provinces.push({ value: item.id, label: item.name })
       });
-      console.log('provinces: ', provinces);
       setAllProvinces(provinces);
       setProvince({
         id: -1, name: '', selectable: false
@@ -111,13 +110,15 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
     }
 
     async function getTheProvince(cdID: number | string): Promise<any> {
+      const resultProvinces = await getAllProvinces();
+      setAllProvinces(
+        resultProvinces.items.map((item: any) => ({ value: item.id, label: item.name })
+        ));
       const result = await getProvince(cdID);
       setProvince(result);
-      debugger;
-      // loadCities(result.id);
       const cities = await getCities(result.id);
-      const theCity = cities.filter((i: any) => i.value === cdID)[0];
       setAllCities(cities);
+      const theCity = cities.filter((i: any) => i.value === cdID)[0];
       setCity({
         id: theCity.value,
         name: theCity.label,
@@ -151,7 +152,6 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
           <label>{ label }</label>
         </Grid>
         <Grid item xs={ 12 } sm={ 6 }>
-          { console.log('provice in state:', province) }
           <DaroogDropdown
             error={ error }
             defaultValue={ province.id }
