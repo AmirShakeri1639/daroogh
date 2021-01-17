@@ -5,8 +5,10 @@ import {
   makeStyles,
   Step,
   StepButton,
+  StepIconProps,
   StepLabel,
   Stepper,
+  Tooltip,
   useTheme,
 } from '@material-ui/core';
 import React, { useContext, useEffect } from 'react';
@@ -14,11 +16,15 @@ import { MobileStepper, Grid } from '@material-ui/core';
 import DrugTransferContext, { TransferDrugContextInterface } from './Context';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import PersonIcon from '@material-ui/icons/Person';
+import clsx from 'clsx';
 
 const style = makeStyles(() =>
   createStyles({
     stepper: {
-      backgroundColor: '#ebebeb',
+      backgroundColor: '#9c90fd',
+      padding: 10,
     },
     mobileStepper: {
       width: '100%',
@@ -51,20 +57,70 @@ const ProgressBar: React.FC = () => {
     setActiveStep(newStep);
   };
 
+  const useColorlibStepIconStyles = makeStyles({
+    root: {
+      backgroundColor: '#ccc',
+      zIndex: 1,
+      color: '#fff',
+      width: 50,
+      height: 50,
+      display: 'flex',
+      borderRadius: '50%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    active: {
+      backgroundColor: 'silver',
+    },
+    completed: {
+      backgroundImage:
+        'linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)',
+    },
+  });
+
+  const ColorlibStepIcon = (props: StepIconProps): JSX.Element => {
+    const classes = useColorlibStepIconStyles();
+    const { active, completed } = props;
+
+    const icons: { [index: string]: React.ReactElement } = {
+      1: <AssignmentIndIcon />,
+      2: <PersonIcon />,
+    };
+
+    return (
+      <div
+        className={clsx(classes.root, {
+          [classes.active]: active,
+          [classes.completed]: activeStep === props.icon,
+        })}
+      >
+        {icons[String(props.icon)]}
+      </div>
+    );
+  };
+
   const stepHandler = (): JSX.Element[] => {
     return allStepName.map((label, index) => {
       const stepProps: { completed?: boolean } = {};
       const labelProps: { optional?: React.ReactNode } = {};
 
       return (
-        <Step key={label} {...stepProps}>
-          <StepButton
-            onClick={() => setActiveStep(index + 1)}
-            {...labelProps}
-            className="txt-xs"
+        <Step key={label} {...stepProps} style={{ cursor: 'pointer' }}>
+          <Tooltip
+            title={
+              index === 1
+                ? 'انتخاب دارو از داروخانه طرف مقابل'
+                : 'انتخاب دارو از داروخانه شما'
+            }
           >
-            {label}
-          </StepButton>
+            <StepLabel
+              onClick={(): any => setActiveStep(index + 1)}
+              {...labelProps}
+              StepIconComponent={ColorlibStepIcon}
+            >
+              {label}
+            </StepLabel>
+          </Tooltip>
         </Step>
       );
     });
@@ -104,7 +160,11 @@ const ProgressBar: React.FC = () => {
     <Grid container spacing={0}>
       <Hidden smDown>
         <Grid item xs>
-          <Stepper activeStep={activeStep || 0} className={stepper}>
+          <Stepper
+            activeStep={activeStep || 0}
+            className={stepper}
+            style={{ borderRadius: 10 }}
+          >
             {stepHandler()}
           </Stepper>
         </Grid>

@@ -11,7 +11,6 @@ export class EncrDecrService {
       this.encryptionKey + 
       jwtData.userData.token.substr(jwtData.userData.token.length - 15, 15)
     this.encryptionKey = this.encryptionKey.substr(0, 22)
-    console.log('enc key + salt:', this.encryptionKey)
   }
 
   encrypt = (value: any, keys: any = ''): string => {

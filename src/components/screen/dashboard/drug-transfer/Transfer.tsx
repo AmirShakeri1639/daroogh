@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Button, createStyles, makeStyles, Divider } from '@material-ui/core';
+import {
+  Button,
+  createStyles,
+  makeStyles,
+  Divider,
+  CircularProgress,
+} from '@material-ui/core';
 import './transfer.scss';
 import Context, { TransferDrugContextInterface } from './Context';
 import { Grid } from '@material-ui/core';
@@ -18,6 +24,8 @@ import { useLocation } from 'react-router-dom';
 import { EncrDecrService } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { calcTotalPrices } from '../../../../utils/ExchangeTools';
+import fa from '../../../../i18n/fa/fa';
+import CircularProgressWithLabel from '../../../public/loading/CircularProgressWithLabel';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -37,7 +45,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     'سبد شما',
     // 'تایید نهایی',
   ]);
+
+  const [byCartable, setByCartable] = useState<boolean>(false);
   const [activeStep, setActiveStep] = useState<number>(0);
+
   const [openDialog, setOpenDialog] = React.useState(false);
   const [allPharmacyDrug, setAllPharmacyDrug] = useState<
     AllPharmacyDrugInterface[]
@@ -104,6 +115,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
       // const encryptedId = params.eid == null ? undefined : params.eid;
       // eid = encryptedId;
       if (eid !== 0) {
+        setByCartable(true);
         const result = await getViewExchange(eid);
         let res: ViewExchangeInterface | undefined = result.data;
         if (res) {
@@ -308,6 +320,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           }
         }
         setExchangeId(eid);
+        setByCartable(false);
         setActiveStep(1);
       }
     })();
@@ -370,18 +383,27 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
       <div className={root}>
         <MaterialContainer>
           <Grid container spacing={1}>
-            {activeStep > 0 && (
+            {byCartable ? (
+              <div>
+                <span>در حال انتقال به صفحه تبادل. لطفا منتظر بمانید...</span>
+                <CircularProgress size={20} />
+              </div>
+            ) : (
               <>
-                <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
-                  <ProgressBar />
-                </Grid>
+                {activeStep > 0 && (
+                  <>
+                    <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
+                      <ProgressBar />
+                    </Grid>
+                  </>
+                )}
+
+                {activeStep === 0 && <FirstStep />}
+                {activeStep === 1 && <SecondStep />}
+                {activeStep === 2 && <ThirdStep />}
+                {activeStep === 3 && <FourthStep />}
               </>
             )}
-
-            {activeStep === 0 && <FirstStep />}
-            {activeStep === 1 && <SecondStep />}
-            {activeStep === 2 && <ThirdStep />}
-            {activeStep === 3 && <FourthStep />}
           </Grid>
         </MaterialContainer>
       </div>

@@ -9,11 +9,14 @@ import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
 import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
 import {
-  getExpireDate, isExchangeCompleted, hasLabelValue, isStateCommon
+  getExpireDate,
+  isExchangeCompleted,
+  hasLabelValue,
+  isStateCommon,
 } from '../../../../../utils/ExchangeTools';
 import { isNullOrEmpty, EncrDecrService } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import { useHistory } from "react-router-dom";
+import { useHistory } from 'react-router-dom';
 import routes from '../../../../../routes';
 // load test data
 // import d from './testdata.json';
@@ -46,14 +49,18 @@ const Desktop: React.FC = () => {
         const statesList: LabelValue[] = [];
         let hasCompleted: boolean = false;
         const items = result.items.map((item: any) => {
+          hasCompleted = false;
           if (!item.currentPharmacyIsA &&
             item.state <= 10 &&
-            !isStateCommon(item.state)) item.state += 10;
-          if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) hasCompleted = true;
-          if ((!hasLabelValue(statesList, item.state)) && !hasCompleted) {
+            !isStateCommon(item.state)
+          )
+            item.state += 10;
+          if (isExchangeCompleted(item.state, item.currentPharmacyIsA))
+            hasCompleted = true;
+          if (!hasLabelValue(statesList, item.state) && !hasCompleted) {
             statesList.push({
               label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
-              value: item.state
+              value: item.state,
             });
           }
           return { ...item, expireDate: getExpireDate(item) };
@@ -62,7 +69,7 @@ const Desktop: React.FC = () => {
         if (hasCompleted) {
           statesList.push({
             label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
-            value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL
+            value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
           });
         }
         setExchanges(items);
@@ -76,10 +83,8 @@ const Desktop: React.FC = () => {
 
   const encDecService = new EncrDecrService();
 
-  const cardClickHandler = (
-    id: number,
-  ): void => {
-    const encryptedId = encDecService.encrypt(id)
+  const cardClickHandler = (id: number): void => {
+    const encryptedId = encDecService.encrypt(id);
     history.push(`${transfer}?eid=${encodeURIComponent(encryptedId)}`);
   };
 
@@ -113,9 +118,15 @@ const Desktop: React.FC = () => {
       const listToShow =
         filter == ExchangeStateEnum.UNKNOWN
           ? [...exchanges]
-          : exchanges.filter((ex) => (ex.state === filter ||
-            (isExchangeCompleted(ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state, ex.currentPharmacyIsA) &&
-              filter == ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL)));
+          : exchanges.filter(
+              (ex) =>
+                ex.state === filter ||
+                (isExchangeCompleted(
+                  ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
+                  ex.currentPharmacyIsA
+                ) &&
+                  filter == ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL)
+            );
 
       // sort
       if (sortField !== '') {
@@ -131,12 +142,13 @@ const Desktop: React.FC = () => {
 
       return listToShow.map((item, index) => {
         return (
-          <Grid item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
-            <div className={ paper }>
+          <Grid item xs={12} sm={6} md={4} xl={4} key={index}>
+            <div className={paper}>
               <DesktopCardContent
-                item={ item } 
+                item={item}
                 full={false}
-                onCardClick={ cardClickHandler } />
+                onCardClick={cardClickHandler}
+              />
             </div>
           </Grid>
         );
@@ -148,21 +160,21 @@ const Desktop: React.FC = () => {
 
   return (
     <>
-      {isLoading && <CircleLoading /> }
-      <Grid item xs={ 11 }>
-        <Grid container spacing={ 1 }>
-          <Grid item xs={ 12 }>
+      <Grid item xs={11}>
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
             <DesktopToolbox
-              filterList={ stateFilterList }
-              onFilterChanged={ filterChanged }
-              onSortSelected={ sortSelected }
+              filterList={stateFilterList}
+              onFilterChanged={filterChanged}
+              onSortSelected={sortSelected}
             />
           </Grid>
         </Grid>
 
-        <Grid container spacing={ 1 }>
-          { cardListGenerator() }
+        <Grid container spacing={1}>
+          {cardListGenerator()}
         </Grid>
+        {isLoading && <CircleLoading />}
       </Grid>
     </>
   );

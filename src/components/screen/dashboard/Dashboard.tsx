@@ -4,7 +4,7 @@ import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Avatar, Button, Grid, List } from '@material-ui/core';
+import { Avatar, Button, Grid, Hidden, List, Tooltip } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -32,6 +32,7 @@ import { ColorEnum } from '../../../enum';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../routes';
 import Ribbon from '../../public/ribbon/Ribbon';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 const drawerWidth = 240;
 
@@ -236,14 +237,22 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               noWrap
               className={classes.title}
             >
-              {t('general.dashboard')}
+              <Hidden smDown>
+                {/* {t('general.dashboard')} */}
+                <span>داروگ</span>
+                <span style={{ fontSize: 14, marginRight: 5 }}>
+                  (سامانه تبادل دارو)
+                </span>
+              </Hidden>
             </Typography>
             <Button
-              variant="contained"
-              style={{ backgroundColor: ColorEnum.White }}
+              style={{ color: ColorEnum.White }}
               onClick={(): void => history.push(transfer)}
             >
-              {t('exchange.create')}
+              <Hidden smDown>{t('exchange.create')}</Hidden>
+              <Tooltip title="ایجاد تبادل">
+                <AddCircleOutlineIcon />
+              </Tooltip>
             </Button>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">

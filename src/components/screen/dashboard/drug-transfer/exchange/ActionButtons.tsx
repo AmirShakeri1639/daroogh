@@ -57,6 +57,8 @@ import {
 import { JsxEmit } from 'typescript';
 import { Rating } from '@material-ui/lab';
 import { SaveSurvey } from '../../../../../model/SaveSurvey';
+import CircleLoading from '../../../../public/loading/CircleLoading';
+import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -313,12 +315,12 @@ const ActionButtons = (): JSX.Element => {
     const inputmodel = new Send();
     inputmodel.exchangeID = exchangeId;
     inputmodel.lockSuggestion = isSelected;
+    setOpenApproveModal(false);
     try {
       await _send(inputmodel);
     } catch (e) {
       errorHandler(e);
     }
-    setOpenApproveModal(false);
   };
 
   const handleChange = (event: any): any => {
@@ -774,15 +776,6 @@ const ActionButtons = (): JSX.Element => {
             >
               لغو درخواست
             </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
-            </Button>
           </>
         );
 
@@ -813,15 +806,6 @@ const ActionButtons = (): JSX.Element => {
             >
               عدم تایید
             </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
-            </Button>
           </>
         );
 
@@ -840,15 +824,6 @@ const ActionButtons = (): JSX.Element => {
             >
               پرداخت
             </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
-            </Button>
           </>
         );
 
@@ -864,15 +839,6 @@ const ActionButtons = (): JSX.Element => {
               onClick={handlePharmacyInfo}
             >
               نمایش آدرس
-            </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
             </Button>
           </>
         );
@@ -901,15 +867,6 @@ const ActionButtons = (): JSX.Element => {
             >
               پرداخت
             </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
-            </Button>
           </>
         );
 
@@ -925,15 +882,6 @@ const ActionButtons = (): JSX.Element => {
               onClick={(): void => setOpenApproveModal(true)}
             >
               {t('general.sendExchange')}
-            </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
             </Button>
           </>
         );
@@ -967,15 +915,6 @@ const ActionButtons = (): JSX.Element => {
             >
               عدم تایید
             </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
-            </Button>
           </>
         );
 
@@ -994,15 +933,6 @@ const ActionButtons = (): JSX.Element => {
             >
               پرداخت
             </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
-            </Button>
           </>
         );
 
@@ -1018,15 +948,6 @@ const ActionButtons = (): JSX.Element => {
               onClick={handlePharmacyInfo}
             >
               نمایش آدرس
-            </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
             </Button>
           </>
         );
@@ -1055,15 +976,6 @@ const ActionButtons = (): JSX.Element => {
             >
               پرداخت
             </Button>
-            <Button
-              className={fullRow}
-              type="button"
-              variant="outlined"
-              color="red"
-              onClick={(): any => history.push(desktop)}
-            >
-              برگشت به کارتابل
-            </Button>
           </>
         );
     }
@@ -1072,16 +984,29 @@ const ActionButtons = (): JSX.Element => {
   element = (
     <>
       <>{element}</>
+      <Button
+        className={fullRow}
+        type="button"
+        variant="outlined"
+        color="bluegreen"
+        onClick={(): any => history.push(desktop)}
+      >
+        برگشت به کارتابل
+      </Button>
       {isOpenCancelExchangeModal && exchangeModalApproveCancel(modalType)}
       {isRemoveExchangeModal && exchangeModalRemove()}
       {showApproveModalForm && <ExchangeApprove />}
       {isShowPharmacyInfoModal && <ShowPharmacyInfo />}
-      <ShowApproveModal />
+      {openApproveModal && <ShowApproveModal />}
       <SurvayModal />
     </>
   );
 
-  return <div className={actionContainer}> {element} </div>;
+  return (
+    <div className={actionContainer}>
+      {element} <CircleBackdropLoading isOpen={isLoadingSend} />
+    </div>
+  );
 };
 
 export default ActionButtons;

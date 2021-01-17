@@ -394,9 +394,9 @@ const SecondStep: React.FC = () => {
                 <ToolBox />
               </Grid>
             </Grid>
+            {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
               <>
-                {isLoading && <CircleLoading />}
                 {basketCardListGenerator()}
                 {cardListGenerator()}
               </>
@@ -421,6 +421,9 @@ const SecondStep: React.FC = () => {
                     multiline
                     defaultValue={messageOfExchangeState}
                     variant="outlined"
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 )}
                 <ActionButtons />
