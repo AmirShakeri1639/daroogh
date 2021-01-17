@@ -46,6 +46,7 @@ const Desktop: React.FC = () => {
         const statesList: LabelValue[] = [];
         let hasCompleted: boolean = false;
         const items = result.items.map((item: any) => {
+          hasCompleted = false;
           if (!item.currentPharmacyIsA &&
             item.state <= 10 &&
             !isStateCommon(item.state)) item.state += 10;
