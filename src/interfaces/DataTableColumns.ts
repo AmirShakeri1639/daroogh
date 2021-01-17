@@ -7,4 +7,5 @@ export interface DataTableColumns {
   cellStyle?: {};
   searchable?: boolean;
   render?: any;
+  lookup?: any;
 }

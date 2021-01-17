@@ -167,8 +167,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           message || t('alert.successfulCreateTextMessage')
         );
       },
-      onError: async () => {
-        await errorSweetAlert(t('error.save'));
+      onError: async (data: any) => {
+        await errorSweetAlert(data || t('error.save'));
       },
     }
   );
@@ -210,12 +210,9 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       password: state.password,
       active: state.active,
     };
-    try {
-      await _saveNewUser(data);
-      if (onSubmit) onSubmit();
-    } catch (e) {
-      errorHandler(e);
-    }
+
+    await _saveNewUser(data);
+    if (onSubmit) onSubmit();
   };
 
   const isVisibleField = (field: string): boolean => {
@@ -427,7 +424,12 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                 className={cancelButton}
                 onClick={(): void => {
                   dispatch({ type: 'reset' });
-                  if (onCancel) onCancel();
+                  setShowError(false);
+                  if (onCancel) {
+                    onCancel();
+                  } else {
+                    window.history.go(-1);
+                  }
                 }}
               >
                 {t('general.cancel')}

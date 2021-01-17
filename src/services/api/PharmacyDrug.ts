@@ -83,7 +83,9 @@ class PharmacyDrug extends Api {
     }
   };
 
-  getRelatedPharmacyDrug = async (count = 10): Promise<any> => {
+  getRelatedPharmacyDrug = async (
+    count: string | number = ''
+  ): Promise<any> => {
     const result = await this.postData(
       `/PharmacyDrug/GetRelatedPharmacyDrug?from=0&count=${count}`
     );
