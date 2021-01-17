@@ -43,8 +43,9 @@ import { ColorEnum, WorkTimeEnum } from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faUserCog } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faCheck, faTimes, faUserCog, faFileInvoiceDollar
+} from '@fortawesome/free-solid-svg-icons';
 import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../../routes';
@@ -627,9 +628,6 @@ const PharmaciesList: React.FC = () => {
     toggleShowAddTransaction();
   }
 
-  // TODO: impersonation icon in pharmacies list
-  const impersonateIcon = <FontAwesomeIcon icon={ faUserCog } />;
-  const personOutlineIcon = <PersonOutlineIcon />;
   const actions: DataTableCustomActionInterface[] = [
     {
       icon: 'check',
@@ -641,15 +639,18 @@ const PharmaciesList: React.FC = () => {
       action: toggleConfirmHandler,
     },
     {
-      icon: 'I',
+      icon: (): any => (
+        <FontAwesomeIcon icon={faUserCog} color={ColorEnum.DarkCyan} />
+      ),
       tooltip: t('action.impersonateThisPharmacy'),
       color: 'secondary',
       action: impersonateHandler,
     },
     {
-      icon: '$',
+      icon: (): any => (
+        <FontAwesomeIcon icon={faFileInvoiceDollar} color={ColorEnum.Green} />
+      ),
       tooltip: t('accounting.addTransaction'),
-      color: 'secondary',
       action: addTransactionHandler,
     },
   ];
