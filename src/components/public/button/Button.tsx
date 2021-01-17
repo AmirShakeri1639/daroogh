@@ -21,6 +21,10 @@ const useClasses = makeStyles((theme) =>
     greenButton: {
       background: theme.palette.greenLinearGradient.main,
     },
+    bluegreenButton: {
+      backgroundImage:
+        'linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)',
+    },
     button: {
       color: '#fff',
       border: 'none',
@@ -45,6 +49,7 @@ const Button: React.FC<ButtonPropsInterface> = (props) => {
     button,
     redButton,
     greenButton,
+    bluegreenButton,
   } = useClasses();
 
   return (
@@ -59,6 +64,8 @@ const Button: React.FC<ButtonPropsInterface> = (props) => {
           ? pinkButton
           : color === 'red'
           ? redButton
+          : color === 'bluegreen'
+          ? bluegreenButton
           : greenButton
       } ${button}`}
       variant={variant}

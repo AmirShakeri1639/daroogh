@@ -20,7 +20,7 @@ export interface ButtonPropsInterface {
   type?: 'submit' | 'reset' | 'button';
   variant?: 'outlined' | 'text' | 'contained';
   className?: any;
-  color?: 'pink' | 'blue' | 'red' | 'green';
+  color?: 'pink' | 'blue' | 'red' | 'green' | 'bluegreen';
   onClick?: () => void;
   disabled?: boolean;
 }

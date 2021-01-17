@@ -365,6 +365,9 @@ const ThirdStep: React.FC = () => {
                     multiline
                     defaultValue={messageOfExchangeState}
                     variant="outlined"
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 )}
                 <ActionButtons />
