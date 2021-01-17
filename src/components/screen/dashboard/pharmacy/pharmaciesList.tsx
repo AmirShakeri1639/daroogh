@@ -52,6 +52,7 @@ import { UrlAddress } from '../../../../enum/UrlAddress';
 import AddTransactionModal from '../accounting/AddTransactionModal';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { Map } from '../../../public';
+import { CountryDivisionSelect } from '../../../public/country-division/CountryDivisionSelect';
 
 const initialState: PharmacyInterface = {
   id: 0,
@@ -64,7 +65,7 @@ const initialState: PharmacyInterface = {
   address: '',
   mobile: '',
   telphon: '',
-  website: '',
+  webSite: '',
   email: '',
   postalCode: '',
   countryDivisionID: DefaultCountryDivisionID,
@@ -126,10 +127,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         telphon: value,
       };
-    case 'website':
+    case 'webSite':
       return {
         ...state,
-        website: value,
+        webSite: value,
       };
     case 'email':
       return {
@@ -178,7 +179,6 @@ const PharmaciesList: React.FC = () => {
     addButton,
     cancelButton,
     dropdown,
-    limiModalHeight,
   } = useClasses();
   const queryCache = useQueryCache();
 
@@ -188,7 +188,7 @@ const PharmaciesList: React.FC = () => {
   const [_remove, { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
       ref.current?.loadItems();
-      await queryCache.invalidateQueries('pharmaciesList');
+      await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
       await successSweetAlert(t('alert.successfulDelete'));
     },
   });
@@ -196,15 +196,16 @@ const PharmaciesList: React.FC = () => {
   const [_confirm, { isLoading: isLoadingConfirm }] = useMutation(confirm, {
     onSuccess: async ({ message }) => {
       ref.current?.loadItems();
-      await queryCache.invalidateQueries('pharmaciesList');
+      await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
       await successSweetAlert(message);
     },
   });
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
     onSuccess: async () => {
-      await queryCache.invalidateQueries('pharmaciesList');
+      await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
       await successSweetAlert(t('alert.successfulSave'));
+      ref.current?.onQueryChange();
       dispatch({ type: 'reset' });
     },
   });
@@ -225,14 +226,14 @@ const PharmaciesList: React.FC = () => {
         width: '250px',
       },
       {
-        field: 'pharmacyCity',
-        title: t('countryDivision.city'),
+        field: 'pharmacyProvince',
+        title: t('countryDivision.province'),
         type: 'string',
         width: '150px',
       },
       {
-        field: 'pharmacyProvince',
-        title: t('countryDivision.province'),
+        field: 'pharmacyCity',
+        title: t('countryDivision.city'),
         type: 'string',
         width: '150px',
       },
@@ -257,6 +258,7 @@ const PharmaciesList: React.FC = () => {
     try {
       if (window.confirm(t('alert.remove'))) {
         await _remove(row.id);
+        ref.current?.loadItems();
       }
     } catch (e) {
       errorHandler(e);
@@ -264,13 +266,13 @@ const PharmaciesList: React.FC = () => {
   };
 
   const toggleConfirmHandler = async (e: any, row: PharmacyInterface): Promise<any> => {
-    debugger;
     try {
       const confirmParams: ConfirmParams = {
         id: row.id,
         status: !row.active,
       };
       await _confirm(confirmParams);
+      ref.current?.loadItems();
     } catch (e) {
       errorHandler(e);
     }
@@ -287,7 +289,7 @@ const PharmaciesList: React.FC = () => {
       address,
       mobile,
       telphon,
-      website,
+      webSite,
       email,
       postalCode,
       description,
@@ -304,7 +306,7 @@ const PharmaciesList: React.FC = () => {
     dispatch({ type: 'address', value: address });
     dispatch({ type: 'mobile', value: mobile });
     dispatch({ type: 'telphon', value: telphon });
-    dispatch({ type: 'website', value: website });
+    dispatch({ type: 'webSite', value: webSite });
     dispatch({ type: 'email', value: email });
     dispatch({ type: 'postalCode', value: postalCode });
     dispatch({ type: 'description', value: description });
@@ -332,7 +334,7 @@ const PharmaciesList: React.FC = () => {
       address,
       mobile,
       telphon,
-      website,
+      webSite,
       email,
       postalCode,
       description,
@@ -352,7 +354,7 @@ const PharmaciesList: React.FC = () => {
           address,
           mobile,
           telphon,
-          website,
+          webSite,
           email,
           postalCode,
           description,
@@ -360,9 +362,9 @@ const PharmaciesList: React.FC = () => {
           countryDivisionID,
           x, y,
         });
+        toggleIsOpenSaveModalForm();
         dispatch({ type: 'reset' });
         ref.current?.loadItems();
-        toggleIsOpenSaveModalForm();
       } catch (e) {
         errorHandler(e);
       }
@@ -375,7 +377,11 @@ const PharmaciesList: React.FC = () => {
   React.useEffect(() => {
     const wtList: LabelValue[] = [];
     for (const wt in WorkTimeEnum) {
-      wtList.push({ label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`), value: wt });
+      if (parseInt(wt) >= 0)
+        wtList.push({
+          label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),
+          value: wt,
+        });
     }
     setworkTimeList(wtList);
   }, []);
@@ -488,9 +494,9 @@ const PharmaciesList: React.FC = () => {
                     <TextField
                       variant="outlined"
                       label={ t('general.website') }
-                      value={ state?.website }
+                      value={ state?.webSite }
                       onChange={ (e): void =>
-                        dispatch({ type: 'website', value: e.target.value })
+                        dispatch({ type: 'webSite', value: e.target.value })
                       }
                     />
                     <TextField
@@ -527,7 +533,7 @@ const PharmaciesList: React.FC = () => {
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={ 12 }>
+                <Grid item xs={ 4 }>
                   <div className="row">
                     <FormControlLabel
                       control={
@@ -544,6 +550,15 @@ const PharmaciesList: React.FC = () => {
                       label={ t('general.active') }
                     />
                   </div>
+                </Grid>
+                <Grid item xs={ 8 }>
+                  <CountryDivisionSelect
+                    countryDivisionID={ state.countryDivisionID }
+                    label={ t('general.location') }
+                    onSelectedHandler={ (id): void => {
+                      dispatch({ type: 'countryDivisionID', value: id });
+                    } }
+                  />
                 </Grid>
                 <Grid item xs={ 12 }>
                   <div style={ { overflow: 'hidden' } }>
@@ -622,7 +637,7 @@ const PharmaciesList: React.FC = () => {
       iconProps: {
         color: 'error',
       },
-  position: 'row',
+      position: 'row',
       action: toggleConfirmHandler,
     },
     {
@@ -647,7 +662,7 @@ const PharmaciesList: React.FC = () => {
           <div>{ t('pharmacy.list') }</div>
           <Paper>
             <DataTable
-              ref={ ref }
+              tableRef={ ref }
               columns={ tableColumns() }
               addAction={ (): void => saveHandler(initialState) }
               editAction={ (e: any, row: any): void => saveHandler(row) }
