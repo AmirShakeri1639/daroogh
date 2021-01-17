@@ -288,14 +288,14 @@ const ListItems: React.FC = () => {
           {isOpenPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenPharmacyMenu} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
+          {/* <List component="div" className={linkWrapper}>
             <Link to={createPharmacy} className={nested}>
               <ListItemIcon>
                 <AddBox />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.create')} />
             </Link>
-          </List>
+          </List> */}
           <List component="div" className={linkWrapper}>
             <Link to={pharmaciesList} className={nested}>
               <ListItemIcon>

@@ -8,11 +8,23 @@ class CountryDivision extends Api {
     allProvinces2: '/CountryDivision/AllProvince2',
     allCities: '/CountryDivision/AllCities',
     allCities2: '/CountryDivision/AllCities2',
+    getProvince: '/CountryDivision/GetProvince',
   };
 
   getAllProvinces = async (): Promise<any> => {
     try {
       const result = await this.postJsonData(this.urls.allProvinces);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  getProvince = async (countryDivisionID: number | string): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.getProvince}?countryDivisionID=${countryDivisionID}`
+        );
       return result.data;
     } catch (e) {
       errorHandler(e);

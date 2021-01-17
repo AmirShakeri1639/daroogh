@@ -112,6 +112,8 @@ const Login: React.FC = (): JSX.Element => {
     onSuccess: (data) => {
       if (data !== undefined) {
         localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('mainToken', data.token);
+        localStorage.setItem('mainPharmacyName', data.pharmacyName);
 
         // Get settings from SERVER
         (async (): Promise<any> => {

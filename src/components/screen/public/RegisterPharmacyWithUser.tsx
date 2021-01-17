@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next';
 import { errorHandler, isNullOrEmpty, sweetAlert, warningSweetAlert } from '../../../utils';
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown';
 import { WorkTimeEnum } from '../../../enum';
-// import { emailRegex } from "../../../enum/consts";
 import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
@@ -37,10 +36,10 @@ const initialState: PharmacyWithUserInterface = {
     address: '',
     mobile: '',
     telphon: '',
-    website: '',
+    webSite: '',
     email: '',
     postalCode: '',
-    countryDivisionID: DefaultCountryDivisionID,
+    countryDivisionID: -1,
     x: '',
     y: '',
   },
@@ -111,10 +110,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         pharmacy: { ...state.pharmacy, telphon: value },
       };
-    case 'pharmacy.website':
+    case 'pharmacy.webSite':
       return {
         ...state,
-        pharmacy: { ...state.pharmacy, website: value },
+        pharmacy: { ...state.pharmacy, webSite: value },
       };
     case 'pharmacy.email':
       return {
@@ -276,8 +275,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
         // pharmacy
         pharmacyName.trim().length < 2 ||
         mobile.trim().length < 10 ||
-        countryDivisionID === 0 ||
-        countryDivisionID === '0' ||
+        countryDivisionID == 0 ||
+        countryDivisionID == -1 ||
         address.trim().length < 3 ||
         telphon.trim().length < 8 ||
         !isValidBirthDate ||
@@ -308,7 +307,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             address: state.pharmacy.address,
             mobile: state.pharmacy.mobile,
             telphon: state.pharmacy.telphon,
-            website: state.pharmacy.website,
+            webSite: state.pharmacy.webSite,
             email: state.pharmacy.email,
             postalCode: state.pharmacy.postalCode,
             countryDivisionID: state.pharmacy.countryDivisionID,
@@ -545,9 +544,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.website') }
-                value={ state.pharmacy.website }
+                value={ state.pharmacy.webSite }
                 onChange={ (e): void =>
-                  dispatch({ type: 'pharmacy.website', value: e.target.value })
+                  dispatch({ type: 'pharmacy.webSite', value: e.target.value })
                 }
               />
             </Grid>
@@ -613,7 +612,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <CountryDivisionSelect
-                countryDivisionID={ DefaultCountryDivisionID }
+                error={ state.pharmacy.countryDivisionID == -1 && showError }
                 label={ t('general.location') }
                 onSelectedHandler={ (id): void => {
                   dispatch({ type: 'pharmacy.countryDivisionID', value: id });

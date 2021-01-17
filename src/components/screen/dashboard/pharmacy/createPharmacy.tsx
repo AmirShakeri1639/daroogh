@@ -32,7 +32,7 @@ const initialState: PharmacyInterface = {
   address: '',
   mobile: '',
   telphon: '',
-  website: '',
+  webSite: '',
   email: '',
   postalCode: '',
   countryDivisionID: DefaultCountryDivisionID,
@@ -91,10 +91,10 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         telphon: value,
       };
-    case 'website':
+    case 'webSite':
       return {
         ...state,
-        website: value,
+        webSite: value,
       };
     case 'email':
       return {
@@ -180,7 +180,7 @@ const CreatePharmacy: React.FC = () => {
         address: state.address,
         mobile: state.mobile,
         telphon: state.telphon,
-        website: state.website,
+        webSite: state.webSite,
         email: state.email,
         postalCode: state.postalCode,
         description: state.description,
@@ -297,9 +297,9 @@ const CreatePharmacy: React.FC = () => {
                     required
                     variant="outlined"
                     label={ t('general.website') }
-                    value={ state.website }
+                    value={ state.webSite }
                     onChange={ (e): void =>
-                      dispatch({ type: 'website', value: e.target.value })
+                      dispatch({ type: 'webSite', value: e.target.value })
                     }
                   />
                   <TextField

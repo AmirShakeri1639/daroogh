@@ -24,7 +24,10 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
   const { status } = response;
   if (status === 401) {
     (async (): Promise<any> => {
-      await errorSweetAlert('خطای عدم دسترسی');
+      const message = error?.response?.data?.message;
+      await errorSweetAlert(
+        message === undefined ? 'خطایی در عدم دسترسی رخ داده است!' : message
+      );
     })();
   } else if (status === 404) {
     (async (): Promise<any> => {
@@ -32,17 +35,18 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
     })();
   } else if (status === 500) {
     (async (): Promise<any> => {
+      const message = error?.response?.data?.message;
       await errorSweetAlert(
-        error?.response?.data?.message == undefined
-          ? 'خطایی رخ داده است.'
-          : error?.response?.data?.message
+        message === undefined ? 'خطایی رخ داده است.' : message
       );
     })();
   }
 
   return Promise.reject(
     error?.response?.data?.message == undefined
-    ? error : error?.response?.data?.message);
+      ? error
+      : error?.response?.data?.message
+  );
 });
 
 class Api {
