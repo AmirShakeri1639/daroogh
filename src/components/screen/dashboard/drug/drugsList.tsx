@@ -32,6 +32,7 @@ import { useClasses } from '../classes';
 
 import {
   ActionInterface,
+  DataTableCustomActionInterface,
   DrugInterface,
   TableColumnInterface,
 } from '../../../../interfaces';
@@ -172,6 +173,7 @@ const DrugsList: React.FC = () => {
     onSuccess: async () => {
       await queryCache.invalidateQueries('drugsList');
       await successSweetAlert(t('alert.successfulSave'));
+      ref.current?.onQueryChange();
       dispatch({ type: 'reset' });
     },
   });
@@ -187,9 +189,9 @@ const DrugsList: React.FC = () => {
       { field: 'name', title: t('drug.name'), type: 'string' },
       { field: 'genericName', title: t('drug.genericName'), type: 'string' },
       // { id: 'companyName', label: t('drug.companyName') },
-      { 
-        field: 'active', 
-        title: t('general.active'), 
+      {
+        field: 'active',
+        title: t('general.active'),
         type: 'boolean',
         render: (row: any): any => {
           return (
@@ -202,16 +204,6 @@ const DrugsList: React.FC = () => {
       { field: 'enName', title: t('drug.enName'), type: 'string' },
       { field: 'type', title: t('general.type'), type: 'string' },
     ];
-  };
-
-  const removeHandler = async (userRow: DrugInterface): Promise<any> => {
-    try {
-      if (window.confirm(t('alert.remove'))) {
-        await _remove(userRow.id);
-      }
-    } catch (e) {
-      errorHandler(e);
-    }
   };
 
   const toggleDrugActivationHandler = async (row: any): Promise<any> => {
@@ -242,6 +234,41 @@ const DrugsList: React.FC = () => {
         type,
         active,
       });
+      dispatch({ type: 'reset' })
+      ref.current?.loadItems();
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  const toggleConfirmHandler = async (e: any, row: any): Promise<any> => {
+    try {
+      await toggleDrugActivationHandler(row);
+      ref.current?.loadItems();
+      // ref.current?.onQueryChange();
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  const actions: DataTableCustomActionInterface[] = [
+    {
+      icon: 'check',
+      tooltip: t('action.changeStatus'),
+      iconProps: {
+        color: 'error',
+      },
+      position: 'row',
+      action: toggleConfirmHandler,
+    },
+  ];
+
+
+  const removeHandler = async (userRow: DrugInterface): Promise<any> => {
+    try {
+      if (window.confirm(t('alert.remove'))) {
+        await _remove(userRow.id);
+      }
     } catch (e) {
       errorHandler(e);
     }
@@ -312,7 +339,6 @@ const DrugsList: React.FC = () => {
         });
         dispatch({ type: 'reset' });
         toggleIsOpenSaveModalForm();
-        ref.current?.loadItems();
       } catch (e) {
         errorHandler(e);
       }
@@ -323,12 +349,12 @@ const DrugsList: React.FC = () => {
 
   const editModal = (): JSX.Element => {
     return (
-      <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
-        <Card className={root}>
+      <Modal open={ isOpenEditModal } toggle={ toggleIsOpenSaveModalForm }>
+        <Card className={ root }>
           <CardHeader
-            title={state.id === 0 ? t('action.create') : t('action.edit')}
+            title={ state.id === 0 ? t('action.create') : t('action.edit') }
             action={
-              <IconButton onClick={toggleIsOpenSaveModalForm}>
+              <IconButton onClick={ toggleIsOpenSaveModalForm }>
                 <CloseIcon />
               </IconButton>
             }
@@ -337,90 +363,90 @@ const DrugsList: React.FC = () => {
           <CardContent>
             <form
               autoComplete="off"
-              className={formContainer}
-              onSubmit={submitSave}
+              className={ formContainer }
+              onSubmit={ submitSave }
             >
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
+              <Grid container spacing={ 1 }>
+                <Grid item xs={ 12 }>
                   <Box
                     display="flex"
                     justifyContent="space-between"
-                    className={box}
+                    className={ box }
                   >
                     <TextField
                       required
                       variant="outlined"
-                      label={t('drug.name')}
-                      value={state.name}
-                      onChange={(e): void =>
+                      label={ t('drug.name') }
+                      value={ state.name }
+                      onChange={ (e): void =>
                         dispatch({ type: 'name', value: e.target.value })
                       }
                     />
                     <div className="row">
                       <DaroogDropdown
-                        defaultValue={state.categoryID}
-                        data={categories}
-                        className={dropdown}
-                        label={t('drug.category')}
-                        onChangeHandler={(v): void => {
+                        defaultValue={ state.categoryID }
+                        data={ categories }
+                        className={ dropdown }
+                        label={ t('drug.category') }
+                        onChangeHandler={ (v): void => {
                           return dispatch({ type: 'categoryID', value: v });
-                        }}
+                        } }
                       />
                     </div>
                     <TextField
                       variant="outlined"
-                      label={t('drug.genericName')}
-                      value={state.genericName}
-                      onChange={(e): void =>
+                      label={ t('drug.genericName') }
+                      value={ state.genericName }
+                      onChange={ (e): void =>
                         dispatch({ type: 'genericName', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <Box
                     display="flex"
                     justifyContent="space-between"
-                    className={box}
+                    className={ box }
                   >
                     <TextField
                       variant="outlined"
-                      label={t('drug.companyName')}
-                      value={state.companyName}
-                      onChange={(e): void =>
+                      label={ t('drug.companyName') }
+                      value={ state.companyName }
+                      onChange={ (e): void =>
                         dispatch({ type: 'companyName', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('drug.barcode')}
-                      value={state.barcode}
-                      onChange={(e): void =>
+                      label={ t('drug.barcode') }
+                      value={ state.barcode }
+                      onChange={ (e): void =>
                         dispatch({ type: 'barcode', value: e.target.value })
                       }
                     />
                     <TextField
                       variant="outlined"
-                      label={t('general.description')}
-                      value={state.description}
-                      onChange={(e): void =>
+                      label={ t('general.description') }
+                      value={ state.description }
+                      onChange={ (e): void =>
                         dispatch({ type: 'description', value: e.target.value })
                       }
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <Box
                     display="flex"
                     justifyContent="space-between"
-                    className={box}
+                    className={ box }
                   >
                     <div className="row">
                       <FormControlLabel
                         control={
                           <Switch
-                            checked={state.active}
-                            onChange={(e): void =>
+                            checked={ state.active }
+                            onChange={ (e): void =>
                               dispatch({
                                 type: 'active',
                                 value: e.target.checked,
@@ -428,52 +454,52 @@ const DrugsList: React.FC = () => {
                             }
                           />
                         }
-                        label={t('general.active')}
+                        label={ t('general.active') }
                       />
                     </div>
                     <TextField
                       variant="outlined"
-                      label={t('drug.enName')}
-                      value={state.enName}
-                      onChange={(e): void =>
+                      label={ t('drug.enName') }
+                      value={ state.enName }
+                      onChange={ (e): void =>
                         dispatch({ type: 'enName', value: e.target.value })
                       }
                     />
                     <DaroogDropdown
-                      defaultValue={state.type}
-                      data={drugTypes}
-                      className={dropdown}
-                      label={t('general.type')}
-                      onChangeHandler={(v): void => {
+                      defaultValue={ state.type }
+                      data={ drugTypes }
+                      className={ dropdown }
+                      label={ t('general.type') }
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'type', value: v });
-                      }}
+                      } }
                     />
                   </Box>
                 </Grid>
                 <Divider />
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <CardActions>
                     <Button
                       type="submit"
                       color="primary"
                       variant="contained"
-                      className={addButton}
+                      className={ addButton }
                     >
-                      {isLoadingSave
+                      { isLoadingSave
                         ? t('general.pleaseWait')
-                        : t('general.save')}
+                        : t('general.save') }
                     </Button>
                     <Button
                       type="submit"
                       color="secondary"
                       variant="contained"
-                      className={cancelButton}
-                      onClick={(): void => {
+                      className={ cancelButton }
+                      onClick={ (): void => {
                         dispatch({ type: 'reset' });
                         toggleIsOpenSaveModalForm();
-                      }}
+                      } }
                     >
-                      {t('general.cancel')}
+                      { t('general.cancel') }
                     </Button>
                   </CardActions>
                 </Grid>
@@ -487,31 +513,29 @@ const DrugsList: React.FC = () => {
 
   // @ts-ignore
   return (
-    <Container maxWidth="lg" className={container}>
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <div>{t('drug.list')}</div>
+    <Container maxWidth="lg" className={ container }>
+      <Grid container spacing={ 0 }>
+        <Grid item xs={ 12 }>
+          <div>{ t('drug.list') }</div>
           <Paper>
             <DataTable
-              ref={ref}
-              columns={tableColumns()}
-              addAction={(): void => saveHandler(initialState)}
-              editAction={(e: any, row: any): void => saveHandler(row)}
-              stateAction={async (e: any, row: any): Promise<void> =>
-                await toggleDrugActivationHandler(row)
-              }
-              removeAction={async (e: any, row: any): Promise<void> =>
+              tableRef={ ref }
+              columns={ tableColumns() }
+              addAction={ (): void => saveHandler(initialState) }
+              editAction={ (e: any, row: any): void => saveHandler(row) }
+              removeAction={ async (e: any, row: any): Promise<void> =>
                 await removeHandler(row)
               }
-              queryKey={DrugEnum.GET_ALL}
-              queryCallback={all}
-              urlAddress={UrlAddress.getAllDrug}
-              initLoad={false}
+              customActions={ actions }
+              queryKey={ DrugEnum.GET_ALL }
+              queryCallback={ all }
+              urlAddress={ UrlAddress.getAllDrug }
+              initLoad={ false }
             />
-            {isLoadingRemove && <CircleLoading />}
+            { isLoadingRemove && <CircleLoading /> }
           </Paper>
         </Grid>
-        {isOpenEditModal && editModal()}
+        { isOpenEditModal && editModal() }
       </Grid>
     </Container>
   );
