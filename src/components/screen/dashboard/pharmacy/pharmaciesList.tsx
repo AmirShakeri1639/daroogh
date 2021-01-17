@@ -632,7 +632,7 @@ const PharmaciesList: React.FC = () => {
       iconProps: {
         color: 'error',
       },
-  position: 'row',
+      position: 'row',
       action: toggleConfirmHandler,
     },
     {

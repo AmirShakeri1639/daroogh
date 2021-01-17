@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next';
 import { errorHandler, isNullOrEmpty, sweetAlert, warningSweetAlert } from '../../../utils';
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown';
 import { WorkTimeEnum } from '../../../enum';
-// import { emailRegex } from "../../../enum/consts";
 import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
@@ -40,7 +39,7 @@ const initialState: PharmacyWithUserInterface = {
     website: '',
     email: '',
     postalCode: '',
-    countryDivisionID: DefaultCountryDivisionID,
+    countryDivisionID: -1,
     x: '',
     y: '',
   },
@@ -276,8 +275,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
         // pharmacy
         pharmacyName.trim().length < 2 ||
         mobile.trim().length < 10 ||
-        countryDivisionID === 0 ||
-        countryDivisionID === '0' ||
+        countryDivisionID == 0 ||
+        countryDivisionID == -1 ||
         address.trim().length < 3 ||
         telphon.trim().length < 8 ||
         !isValidBirthDate ||
@@ -613,7 +612,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <CountryDivisionSelect
-                countryDivisionID={ DefaultCountryDivisionID }
+                error={ state.pharmacy.countryDivisionID == -1 && showError }
                 label={ t('general.location') }
                 onSelectedHandler={ (id): void => {
                   dispatch({ type: 'pharmacy.countryDivisionID', value: id });

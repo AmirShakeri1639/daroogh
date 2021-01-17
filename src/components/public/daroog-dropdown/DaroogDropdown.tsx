@@ -10,6 +10,7 @@ interface Props {
   className?: any;
   variant?: any;
   style?: any;
+  error?: boolean;
 }
 
 export const DaroogDropdown: React.FC<Props> = (props) => {
@@ -21,6 +22,7 @@ export const DaroogDropdown: React.FC<Props> = (props) => {
     className = '',
     variant = 'outlined',
     style,
+    error = false
   } = props;
 
   const [finalValue, setValue] = useState(defaultValue);
@@ -29,6 +31,7 @@ export const DaroogDropdown: React.FC<Props> = (props) => {
     <FormControl>
       <InputLabel className="daroog-dropdown-label">{label}</InputLabel>
       <Select
+        error={ error }
         value={finalValue}
         label={label}
         variant={variant}
