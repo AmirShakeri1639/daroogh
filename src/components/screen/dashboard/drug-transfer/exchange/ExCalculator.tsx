@@ -164,6 +164,30 @@ const ExCalculator: React.FC<Props> = (props) => {
     let totalCount = 0;
     let totalPrice = 0;
 
+    const makeRow = (i: any): JSX.Element => {
+      if (isNullOrEmpty(i.confirmed) || i.confirmed) {
+        totalCount += i.currentCnt;
+        totalPrice += i.amount * (i.currentCnt ? i.currentCnt : i.cnt);
+
+        return (
+          <>
+            <TableRow key={ i.drug.name }>
+              <TableCell scope="row" className={ darkText }>
+                { i.drug.name }
+              </TableCell>
+              <TableCell align="center" className={ darkText }>
+                { i.currentCnt }
+              </TableCell>
+              <TableCell align="center" className={ darkText }>
+                { Convertor.thousandsSeperatorFa(i.amount) }
+              </TableCell>
+            </TableRow>
+          </>
+        );
+      }
+      return <></>;
+    }
+
     return (
       <>
         {card && card.length > 0 && (
@@ -185,36 +209,14 @@ const ExCalculator: React.FC<Props> = (props) => {
                 </TableHead>
                 <TableBody>
                   { card.map((row) => {
-                    totalCount += row.currentCnt;
-                    const price = row.packID !== null
-                      ? row.totalAmount
-                      : isNullOrEmpty(row.confirmed) || row.confirmed ? row.amount : 0;
-                    // row.packID == undefined
-                    //   ? row.amount * row.currentCnt
-                    //   : row.totalAmount;
-                    totalPrice += row.packID !== null
-                      ? row.totalAmount
-                      : price * (row.currentCnt ? row.currentCnt : row.cnt);
-                    return (
-                      <>
-                        { (
-                          row.confirmed === undefined || row.confirmed === null || row.confirmed
-                        ) &&
-                          <TableRow key={ row.drug.name }>
-                            <TableCell scope="row" className={ darkText }>
-                              { row.packID === null && row.drug.name }
-                              { row.packID !== null && row.packName }
-                            </TableCell>
-                            <TableCell align="center" className={ darkText }>
-                              { row.packID === null && row.currentCnt }
-                            </TableCell>
-                            <TableCell align="center" className={ darkText }>
-                              { Convertor.thousandsSeperatorFa(price) }
-                            </TableCell>
-                          </TableRow>
-                        }
-                      </>
-                    );
+                    console.log('row:', row)
+                    if (row.packID !== null && row.packDetails && row.packDetails.length > 0) {
+                      row.packDetails.map((i: any) => {
+                        return makeRow(i[0])
+                      })
+                    } else {
+                      return makeRow(row)
+                    }
                   }) }
                   { ((exchange.currentPharmacyIsA && you)
                     || (!exchange.currentPharmacyIsA && !you)
