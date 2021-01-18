@@ -133,7 +133,6 @@ const FirstStep: React.FC = () => {
   const [searchedDrugs, setSearchedDrugs] = useState<SelectOption[]>([]);
   const [searchedDrugsReesult, setSearchedDrugsReesult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [searchedCategory, setSearchedCategory] = useState<
     SelectOption | undefined
   >(undefined);
@@ -175,6 +174,10 @@ const FirstStep: React.FC = () => {
       item.countryDivisionCode = String(selectedProvince);
     }
 
+    // if (selectedCounty !== 0) {
+    //   item.
+    // }
+
     return item;
   };
 
@@ -184,6 +187,8 @@ const FirstStep: React.FC = () => {
 
     const data: AdvancedSearchInterface = {};
     const searchData = setDataOfSearch(data);
+
+    console.log('searchData', searchData);
 
     try {
       const result = await advancedSearch(
@@ -351,19 +356,6 @@ const FirstStep: React.FC = () => {
           {contentHandler()}
         </Grid>
       </Grid>
-
-      {/* <Hidden smDown>
-        <Grid lg={3} item>
-          <Grid container justify="center" spacing={1}>
-            <Grid item xs={12}>
-              <Button onClick={(): void => setActiveStep(activeStep + 1)}>
-                {t('general.nextLevel')}
-                <KeyboardBackspaceIcon />
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Hidden> */}
 
       <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
         <div className={drawerContainer}>
