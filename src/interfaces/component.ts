@@ -141,6 +141,7 @@ export interface SwitchComponentPropsInterface {
 
 export interface CountyPropsInterface {
   countyHandler?: (val?: number) => void;
+  value?: string | number;
 }
 
 export interface ProvincePropsInterface {
