@@ -125,15 +125,14 @@ const useStyle = makeStyles((theme) =>
 const FirstStep: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const [isCheckedJustOffer, setIsCheckedJustOffer] = useState<boolean>(false);
-  const [selectedCounty, setSelectedCounty] = useState<number>(0);
-  const [selectedProvince, setSelectedProvince] = useState<number>(0);
+  const [selectedCounty, setSelectedCounty] = useState<number>(-2);
+  const [selectedProvince, setSelectedProvince] = useState<number>(-2);
   const [searchOptions, setSearchOptions] = useState<object[] | undefined>(
     undefined
   );
   const [searchedDrugs, setSearchedDrugs] = useState<SelectOption[]>([]);
   const [searchedDrugsReesult, setSearchedDrugsReesult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [searchedCategory, setSearchedCategory] = useState<
     SelectOption | undefined
   >(undefined);
@@ -171,8 +170,10 @@ const FirstStep: React.FC = () => {
       item.minRemainExpDays = remainingExpireDays;
     }
 
-    if (selectedProvince !== 0) {
+    if (selectedProvince !== -2) {
       item.countryDivisionCode = String(selectedProvince);
+    } else if (selectedCounty !== -2) {
+      item.countryDivisionCode = String(selectedCounty);
     }
 
     return item;
@@ -184,6 +185,8 @@ const FirstStep: React.FC = () => {
 
     const data: AdvancedSearchInterface = {};
     const searchData = setDataOfSearch(data);
+
+    console.log('searchData', searchData);
 
     try {
       const result = await advancedSearch(
@@ -352,19 +355,6 @@ const FirstStep: React.FC = () => {
         </Grid>
       </Grid>
 
-      {/* <Hidden smDown>
-        <Grid lg={3} item>
-          <Grid container justify="center" spacing={1}>
-            <Grid item xs={12}>
-              <Button onClick={(): void => setActiveStep(activeStep + 1)}>
-                {t('general.nextLevel')}
-                <KeyboardBackspaceIcon />
-              </Button>
-            </Grid>
-          </Grid>
-        </Grid>
-      </Hidden> */}
-
       <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
         <div className={drawerContainer}>
           <div id="titleContainer">
@@ -448,7 +438,10 @@ const FirstStep: React.FC = () => {
 
             <div className={dateContainer}>
               <span>{t('province.selectCounty')}</span>
-              <County countyHandler={(e): void => setSelectedCounty(e || 0)} />
+              <County
+                countyHandler={(e): void => setSelectedCounty(Number(e))}
+                value={selectedCounty}
+              />
             </div>
 
             <Divider className={divider} />
