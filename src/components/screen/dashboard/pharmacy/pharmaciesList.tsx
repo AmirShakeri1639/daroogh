@@ -196,7 +196,7 @@ const PharmaciesList: React.FC = () => {
 
   const [_confirm, { isLoading: isLoadingConfirm }] = useMutation(confirm, {
     onSuccess: async ({ message }) => {
-      ref.current?.loadItems();
+      ref.current?.onQueryChange();
       await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
       await successSweetAlert(message);
     },
