@@ -1,7 +1,8 @@
 import React, { useReducer, useState } from 'react';
 import {
   Button, Container, Dialog, DialogActions, DialogContent,
-  DialogTitle, Divider, FormControlLabel, Grid, Paper, Radio, RadioGroup, TextField, useMediaQuery, useTheme
+  DialogTitle, Divider, FormControlLabel, Grid, Paper, 
+  Radio, RadioGroup, TextField, useMediaQuery, useTheme
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
@@ -13,9 +14,10 @@ import { Accounting } from '../../../../services/api';
 import {
   errorHandler, errorSweetAlert, successSweetAlert
 } from '../../../../utils';
-import { today, todayJalali } from '../../../../utils/jalali';
+import { todayJalali } from '../../../../utils/jalali';
 import { useClasses } from '../classes';
 import { TransactionTypeEnum } from '../../../../enum';
+import NumberFormatCustom from '../../../public/numberformat/NumberFormatCustom';
 
 interface Props {
   pharmacyId: number;
@@ -70,6 +72,14 @@ function reducer(state = initialState, action: ActionInterface): any {
 const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState, pharmacyId });
   const [dialogOpen, setDialogOpen] = useState(true);
+
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    debugger;
+    console.log('e.target in changeHandler:', e.target)
+    console.log('e.target.value in changeHandler:', e.target.value)
+    dispatch({ type: e.target.name, value: e.target.value });
+  }
+
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -89,6 +99,7 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
       setDialogOpen(false);
       await errorSweetAlert(e ? e : t('alert.failed'));
       setDialogOpen(true);
+      errorHandler(e);
     }
   });
 
@@ -133,13 +144,13 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
                   label={ t('accounting.amount') }
                   required
                   error={ state.amount == 0 && showError }
+                  helperText={ t('accounting.enterAmountInRial') }
                   variant="outlined"
                   type="number"
                   value={ state.amount }
                   className={ formItem }
-                  onChange={ (e): void =>
-                    dispatch({ type: 'amount', value: e.target.value })
-                  }
+                  name="amount"
+                  onChange={ changeHandler }
                 />
               </Grid>
               <Grid item xs={ 12 }>
@@ -150,9 +161,8 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
                   variant="outlined"
                   value={ state.description }
                   className={ formItem }
-                  onChange={ (e): void =>
-                    dispatch({ type: 'description', value: e.target.value })
-                  }
+                  name="description"
+                  onChange={ changeHandler }
                 />
               </Grid>
               <Grid item xs={ 12 }>
