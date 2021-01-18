@@ -135,6 +135,7 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
                   label={ t('accounting.amount') }
                   required
                   error={ state.amount == 0 && showError }
+                  helperText={ t('accounting.enterAmountInRial') }
                   variant="outlined"
                   type="number"
                   value={ state.amount }
