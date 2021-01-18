@@ -22,6 +22,7 @@ import InputAdornment from '@material-ui/core/InputAdornment/InputAdornment';
 
 interface Props {
   pharmacyId: number;
+  pharmacyName: string;
   onClose?: () => void;
 }
 
@@ -70,7 +71,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 
-const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
+const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose, pharmacyName }) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState, pharmacyId });
   const [dialogOpen, setDialogOpen] = useState(true);
 
@@ -200,7 +201,8 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
     <>
       <Dialog open={ dialogOpen } fullScreen={ fullScreen }>
         <DialogTitle>
-          { t('accounting.addTransaction') }
+          { `${t('accounting.addTransaction')} \
+             - ${t('pharmacy.pharmacy')} ${pharmacyName}` }
         </DialogTitle>
         <Divider />
         <DialogContent>
