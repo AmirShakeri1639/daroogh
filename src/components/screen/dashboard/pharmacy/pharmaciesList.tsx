@@ -632,8 +632,10 @@ const PharmaciesList: React.FC = () => {
   const toggleShowAddTransaction = (): void =>
     setShowAddTransaction(!showAddTransaction);
   const [pharmacyIdForTransaction, setPharmacyIdForTransaction] = useState(0);
+  const [pharmacyNameForTransaction, setPharmacyNameForTransaction] = useState('');
   const addTransactionHandler = (event: any, rowData: any): void => {
     setPharmacyIdForTransaction(rowData.id);
+    setPharmacyNameForTransaction(rowData.name);
     toggleShowAddTransaction();
   }
 
@@ -695,7 +697,10 @@ const PharmaciesList: React.FC = () => {
       <Grid container spacing={ 1 }>
         <Grid item xs={ 1 }>
           { showAddTransaction && (
-            <AddTransactionModal pharmacyId={ pharmacyIdForTransaction } />
+            <AddTransactionModal
+              pharmacyId={ pharmacyIdForTransaction } 
+              pharmacyName={ pharmacyNameForTransaction }
+            />
           ) }
         </Grid>
       </Grid>
