@@ -10,7 +10,7 @@ interface NumberFormatCustomProps {
 
 const NumberFormatCustom: React.FC<NumberFormatCustomProps> = (props) => {
   const { inputRef, onChange, prefix = "ریال", ...other } = props;
-
+  
   return (
     <NumberFormat
       {...other}
