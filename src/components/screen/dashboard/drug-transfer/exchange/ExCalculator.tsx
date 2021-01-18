@@ -165,24 +165,23 @@ const ExCalculator: React.FC<Props> = (props) => {
     let totalPrice = 0;
 
     const makeRow = (i: any): JSX.Element => {
+      console.log('i in makeRow:', i)
       if (isNullOrEmpty(i.confirmed) || i.confirmed) {
         totalCount += i.currentCnt;
         totalPrice += i.amount * (i.currentCnt ? i.currentCnt : i.cnt);
 
         return (
-          <>
-            <TableRow key={ i.drug.name }>
-              <TableCell scope="row" className={ darkText }>
-                { i.drug.name }
-              </TableCell>
-              <TableCell align="center" className={ darkText }>
-                { i.currentCnt }
-              </TableCell>
-              <TableCell align="center" className={ darkText }>
-                { Convertor.thousandsSeperatorFa(i.amount) }
-              </TableCell>
-            </TableRow>
-          </>
+          <TableRow key={ i.drug.name }>
+            <TableCell scope="row" className={ darkText }>
+              { i.drug.name }
+            </TableCell>
+            <TableCell align="center" className={ darkText }>
+              { i.currentCnt }
+            </TableCell>
+            <TableCell align="center" className={ darkText }>
+              { Convertor.thousandsSeperatorFa(i.amount) }
+            </TableCell>
+          </TableRow>
         );
       }
       return <></>;
@@ -211,10 +210,13 @@ const ExCalculator: React.FC<Props> = (props) => {
                   { card.map((row) => {
                     console.log('row:', row)
                     if (row.packID !== null && row.packDetails && row.packDetails.length > 0) {
-                      row.packDetails.map((i: any) => {
-                        return makeRow(i[0])
+                      console.log('row packDetais: ', row.packDetails)
+                      return row.packDetails.map((i: any) => {
+                        console.log('i in packDetails:', i)
+                        return makeRow(i)
                       })
                     } else {
+                      console.log('in else (not pack):', row)
                       return makeRow(row)
                     }
                   }) }
