@@ -165,7 +165,6 @@ const ExCalculator: React.FC<Props> = (props) => {
     let totalPrice = 0;
 
     const makeRow = (i: any): JSX.Element => {
-      console.log('i in makeRow:', i)
       if (isNullOrEmpty(i.confirmed) || i.confirmed) {
         totalCount += i.currentCnt;
         totalPrice += i.amount * (i.currentCnt ? i.currentCnt : i.cnt);
@@ -208,15 +207,11 @@ const ExCalculator: React.FC<Props> = (props) => {
                 </TableHead>
                 <TableBody>
                   { card.map((row) => {
-                    console.log('row:', row)
                     if (row.packID !== null && row.packDetails && row.packDetails.length > 0) {
-                      console.log('row packDetais: ', row.packDetails)
                       return row.packDetails.map((i: any) => {
-                        console.log('i in packDetails:', i)
                         return makeRow(i)
                       })
                     } else {
-                      console.log('in else (not pack):', row)
                       return makeRow(row)
                     }
                   }) }
