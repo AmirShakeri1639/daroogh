@@ -17,6 +17,7 @@ import {
 import { todayJalali } from '../../../../utils/jalali';
 import { useClasses } from '../classes';
 import { TransactionTypeEnum } from '../../../../enum';
+import NumberFormatCustom from '../../../public/numberformat/NumberFormatCustom';
 
 interface Props {
   pharmacyId: number;
@@ -71,6 +72,11 @@ function reducer(state = initialState, action: ActionInterface): any {
 const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState, pharmacyId });
   const [dialogOpen, setDialogOpen] = useState(true);
+
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    dispatch({ type: e.target.name, value: e.target.value });
+  }
+
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -140,9 +146,8 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
                   type="number"
                   value={ state.amount }
                   className={ formItem }
-                  onChange={ (e): void =>
-                    dispatch({ type: 'amount', value: e.target.value })
-                  }
+                  name="amount"
+                  onChange={ changeHandler }
                 />
               </Grid>
               <Grid item xs={ 12 }>
@@ -153,9 +158,8 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
                   variant="outlined"
                   value={ state.description }
                   className={ formItem }
-                  onChange={ (e): void =>
-                    dispatch({ type: 'description', value: e.target.value })
-                  }
+                  name="description"
+                  onChange={ changeHandler }
                 />
               </Grid>
               <Grid item xs={ 12 }>
