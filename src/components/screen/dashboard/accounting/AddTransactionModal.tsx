@@ -1,7 +1,7 @@
 import React, { useReducer, useState } from 'react';
 import {
   Button, Container, Dialog, DialogActions, DialogContent,
-  DialogTitle, Divider, FormControlLabel, Grid, Paper, 
+  DialogTitle, Divider, FormControlLabel, Grid, Paper,
   Radio, RadioGroup, TextField, useMediaQuery, useTheme
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +18,7 @@ import { todayJalali } from '../../../../utils/jalali';
 import { useClasses } from '../classes';
 import { TransactionTypeEnum } from '../../../../enum';
 import NumberFormatCustom from '../../../public/numberformat/NumberFormatCustom';
+import InputAdornment from '@material-ui/core/InputAdornment/InputAdornment';
 
 interface Props {
   pharmacyId: number;
@@ -146,7 +147,13 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
                   error={ state.amount == 0 && showError }
                   helperText={ t('accounting.enterAmountInRial') }
                   variant="outlined"
-                  type="number"
+                  InputProps={ {
+                    inputComponent: NumberFormatCustom as any,
+                    endAdornment:
+                      <InputAdornment position="start">
+                        { t('general.rial') }
+                      </InputAdornment>,
+                  } }
                   value={ state.amount }
                   className={ formItem }
                   name="amount"
