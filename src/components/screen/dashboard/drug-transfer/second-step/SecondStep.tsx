@@ -93,7 +93,9 @@ const SecondStep: React.FC = () => {
     activeStep,
     setActiveStep,
     allPharmacyDrug,
+    orgAllPharmacyDrug,
     setAllPharmacyDrug,
+    setOrgAllPharmacyDrug,
     openDialog,
     setOpenDialog,
     basketCount,
@@ -105,9 +107,6 @@ const SecondStep: React.FC = () => {
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [orginalPharmacyDrug, setOrginalPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
   const { cancelExchange } = new PharmacyDrug();
 
   const [] = useMutation(cancelExchange, {
@@ -191,6 +190,7 @@ const SecondStep: React.FC = () => {
           }
         });
         setAllPharmacyDrug(newItems);
+        setOrgAllPharmacyDrug(newItems);
       },
       enabled: false,
     }
@@ -218,7 +218,6 @@ const SecondStep: React.FC = () => {
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (allPharmacyDrug.length > 0) {
-      const packList = new Array<AllPharmacyDrugInterface>();
       return allPharmacyDrug
         .filter(comparer(basketCount))
         .sort((a, b) => (a.order > b.order ? 1 : -1))
@@ -228,23 +227,6 @@ const SecondStep: React.FC = () => {
             buttonName: 'افزودن به تبادل',
             cardColor: 'white',
           });
-
-          // let isPack = false;
-          // let totalAmount = 0;
-          // if (item.packID) {
-          //   if (!packList.find((x) => x.packID === item.packID)) {
-          //     allPharmacyDrug
-          //       .filter((x) => x.packID === item.packID)
-          //       .forEach((p: AllPharmacyDrugInterface) => {
-          //         packList.push(p);
-          //         totalAmount += p.amount * p.cnt;
-          //       });
-          //     item.totalAmount = totalAmount;
-          //     isPack = true;
-          //   } else {
-          //     return <></>;
-          //   }
-          // }
 
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
@@ -282,36 +264,12 @@ const SecondStep: React.FC = () => {
 
   const basketCardListGenerator = (): any => {
     if (basketCount && basketCount.length > 0) {
-      // let packList = new Array<AllPharmacyDrugInterface>();
       return basketCount.map(
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
           if (item.cardColor === 'white') item.cardColor = '#33ff33';
 
-          // let isPack = false;
-          // let totalAmount = 0;
-          // let ignore = true;
-          // if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-          //   packList = new Array<AllPharmacyDrugInterface>();
-          //   basketCount
-          //     .filter((x: any) => x.packID === item.packID)
-          //     .forEach((p: AllPharmacyDrugInterface) => {
-          //       packList.push(p);
-          //       totalAmount += p.amount * p.cnt;
-          //     });
-
-          //   item.totalAmount = totalAmount;
-          //   isPack = true;
-          //   ignore = false;
-          // }
-          // if (
-          //   ignore &&
-          //   item.packID &&
-          //   packList.find((x) => x.packID === item.packID)
-          // ) {
-          //   return;
-          // }
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
               <div className={paper}>
