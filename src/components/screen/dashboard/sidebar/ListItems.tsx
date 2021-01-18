@@ -240,14 +240,6 @@ const ListItems: React.FC = () => {
         </ListItem>
         <Collapse in={isOpenDrugMenu} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
-            <Link to={createDrug} className={nested}>
-              <ListItemIcon>
-                <AddCircle />
-              </ListItemIcon>
-              <ListItemText primary={t('drug.suggest')} />
-            </Link>
-          </List>
-          <List component="div" className={linkWrapper}>
             <Link to={drugsList} className={nested}>
               <ListItemIcon>
                 <EnhancedEncryption />
@@ -462,6 +454,14 @@ const ListItems: React.FC = () => {
           {isopenFavoriteList ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isopenFavoriteList} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={createDrug} className={nested}>
+              <ListItemIcon>
+                <AddCircle />
+              </ListItemIcon>
+              <ListItemText primary={t('drug.suggest')} />
+            </Link>
+          </List>
           <List component="div" className={linkWrapper}>
             <Link to={drugFavoriteList} className={nested}>
               <ListItemIcon>
