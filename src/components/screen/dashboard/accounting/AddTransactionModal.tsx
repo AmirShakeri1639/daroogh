@@ -1,7 +1,8 @@
 import React, { useReducer, useState } from 'react';
 import {
   Button, Container, Dialog, DialogActions, DialogContent,
-  DialogTitle, Divider, FormControlLabel, Grid, Paper, Radio, RadioGroup, TextField, useMediaQuery, useTheme
+  DialogTitle, Divider, FormControlLabel, Grid, Paper, 
+  Radio, RadioGroup, TextField, useMediaQuery, useTheme
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
@@ -13,7 +14,7 @@ import { Accounting } from '../../../../services/api';
 import {
   errorHandler, errorSweetAlert, successSweetAlert
 } from '../../../../utils';
-import { today, todayJalali } from '../../../../utils/jalali';
+import { todayJalali } from '../../../../utils/jalali';
 import { useClasses } from '../classes';
 import { TransactionTypeEnum } from '../../../../enum';
 
@@ -89,6 +90,7 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose }) => {
       setDialogOpen(false);
       await errorSweetAlert(e ? e : t('alert.failed'));
       setDialogOpen(true);
+      errorHandler(e);
     }
   });
 
