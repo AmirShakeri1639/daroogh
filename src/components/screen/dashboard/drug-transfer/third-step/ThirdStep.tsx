@@ -80,7 +80,9 @@ const ThirdStep: React.FC = () => {
     activeStep,
     setActiveStep,
     uAllPharmacyDrug,
+    orgUAllPharmacyDrug,
     setUAllPharmacyDrug,
+    setOrgUAllPharmacyDrug,
     uBasketCount,
     exchangeStateCode,
     messageOfExchangeState,
@@ -150,6 +152,7 @@ const ThirdStep: React.FC = () => {
           }
         });
         setUAllPharmacyDrug(newItems);
+        setOrgUAllPharmacyDrug(newItems);
       },
       enabled: false,
     }
@@ -180,23 +183,6 @@ const ThirdStep: React.FC = () => {
             buttonName: 'افزودن به تبادل',
             cardColor: 'white',
           });
-
-          // let isPack = false;
-          // let totalAmount = 0;
-          // if (item.packID) {
-          //   if (!packList.find((x) => x.packID === item.packID)) {
-          //     uAllPharmacyDrug
-          //       .filter((x) => x.packID === item.packID)
-          //       .forEach((p: AllPharmacyDrugInterface) => {
-          //         packList.push(p);
-          //         totalAmount += p.amount;
-          //       });
-          //     item.totalAmount = totalAmount;
-          //     isPack = true;
-          //   } else {
-          //     return <></>;
-          //   }
-          // }
 
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>
@@ -240,25 +226,6 @@ const ThirdStep: React.FC = () => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
           if (item.cardColor === 'white') item.cardColor = '#33ff33';
-
-          // let isPack = false;
-          // let totalAmount = 0;
-          // let ignore = true;
-          // if (item.packID && !packList.find((x) => x.packID === item.packID)) {
-          //   uBasketCount
-          //     .filter((x: any) => x.packID === item.packID)
-          //     .forEach((p: AllPharmacyDrugInterface) => {
-          //       packList.push(p);
-          //       totalAmount += p.amount * p.cnt;
-          //     });
-
-          //   item.totalAmount = totalAmount;
-          //   isPack = true;
-          //   ignore = false;
-          // }
-          // if (ignore && item.packID && packList.find((x) => x.id === item.id)) {
-          //   return;
-          // }
 
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>

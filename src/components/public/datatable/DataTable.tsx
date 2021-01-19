@@ -18,6 +18,7 @@ import { createStyles, makeStyles, TablePagination } from '@material-ui/core';
 import itemsSanitizer from './ItemsSanitizer';
 import { DataTableColumns } from '../../../interfaces/DataTableColumns';
 import { UrlAddress } from '../../../enum/UrlAddress';
+import FilterInput from './FilterInput';
 
 type CountdownHandle = {
   loadItems: () => void;
@@ -229,6 +230,21 @@ const DataTable: React.ForwardRefRenderFunction<
         localization={localization}
         components={{
           Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
+          FilterRow: (props): any => (
+            <tr>
+              <td style={{ width: '48px' }} />
+              {columns.map((column: any) => (
+                <td>
+                  <FilterInput
+                    name={column.title}
+                    // onChange={(value: string, operator: string): any =>
+                    //   tableRef.current.onQueryChange()
+                    // }
+                  />
+                </td>
+              ))}
+            </tr>
+          ),
           // Pagination: (props: any): any => (
           //   <TablePagination
           //     {...props}
@@ -256,7 +272,7 @@ const DataTable: React.ForwardRefRenderFunction<
               query.filters.forEach((x: any, i: number) => {
                 const openP = i === 0 ? '(' : '';
                 const closeP = i === query.filters.length - 1 ? ')' : '';
-                const orO = i < query.filters.length - 1 ? 'or ' : '';
+                const orO = i < query.filters.length - 1 ? 'and ' : '';
                 url += `${openP}contains(cast(${x.column.field},'Edm.String'),'${x.value}')${orO}${closeP}`;
               });
             }

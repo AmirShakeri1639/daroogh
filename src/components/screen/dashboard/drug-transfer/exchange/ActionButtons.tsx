@@ -278,7 +278,7 @@ const ActionButtons = (): JSX.Element => {
 
   const handleGetQuestionGroupOfExchange = async (): Promise<any> => {
     try {
-      const res = await getQuestionGroupOfExchange(exchangeId); // for Test = 10180
+      const res = await getQuestionGroupOfExchange(10180); // for Test = 10180
       const response: GetQuestionGroupOfExchangeInterface = res.data.data;
       setQuestions(response);
       setOpenSurvayModal(true);
