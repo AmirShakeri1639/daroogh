@@ -218,8 +218,6 @@ const Category: React.FC = () => {
           </Grid>
         </div>
       </Modal>
-
-      <BackDrop isOpen={isOpenBackdrop} />
     </MaterialContainer>
   );
 };

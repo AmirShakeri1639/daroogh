@@ -208,68 +208,16 @@ const Drug: React.FC = () => {
               />
             </Grid>
 
-            {/* <Grid item xs={12}>
-              <Autocomplete
-                multiple
-                filterSelectedOptions
-                id="category-drug-list"
-                noOptionsText={t('general.noData')}
-                loadingText={t('general.loading')}
-                openText="openText"
-                options={drugSearchOptions}
-                // onChange={(event, value, reason): void => {
-                //   setSearchedDrugs(value);
-
-                // }}
-                getOptionLabel={(option: any) => option.genericName}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label={t('drug.category')}
-                    variant="outlined"
-                    onChange={debounce(
-                      (e: any) => categoryDrugSearch(e.target.value),
-                      500
-                    )}
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('drug.genericName')}
-                onChange={(e): void => setDrugGenericName(e.target.value)}
-                value={drugName}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('drug.companyName')}
-                onChange={(e): void => setDrugCompany(e.target.value)}
-                value={drugName}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('drug.enName')}
-                onChange={(e): void => setDrugEnName(e.target.value)}
-                value={drugName}
-              />
-            </Grid> */}
-
             <Grid item xs={12} className={buttonContainer}>
               <Button color="pink" onClick={toggleIsOpenModal}>
                 {t('general.cancel')}
               </Button>
-              <Button color="blue" onClick={formHandler}>
-                {t('general.add')}
+              <Button
+                color="blue"
+                onClick={formHandler}
+                disabled={isLoadingSaveData}
+              >
+                {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
               </Button>
             </Grid>
           </Grid>

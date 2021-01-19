@@ -30,6 +30,7 @@ export interface DefaultAxiosConfigInterface {
 export interface TableColumnInterface {
   field: string | number;
   title: string;
+  searchable?: boolean;
   type: string;
   render?: (item: any) => any;
   headerStyle?: {} | undefined;

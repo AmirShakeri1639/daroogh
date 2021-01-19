@@ -170,12 +170,15 @@ const FirstStep: React.FC = () => {
       item.minRemainExpDays = remainingExpireDays;
     }
 
-    if (selectedProvince !== -2) {
-      item.countryDivisionCode = String(selectedProvince);
-    } else if (selectedCounty !== -2) {
-      item.countryDivisionCode = String(selectedCounty);
+    if (selectedCounty !== -1) {
+      if (selectedProvince !== -2) {
+        item.countryDivisionCode = String(selectedProvince);
+      } else if (selectedCounty !== -2) {
+        item.countryDivisionCode = String(selectedCounty);
+      }
+    } else {
+      delete item.countryDivisionCode;
     }
-
     return item;
   };
 
