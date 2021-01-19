@@ -7,13 +7,20 @@ import { useClasses } from '../classes';
 
 const SearchInAList: React.FC = () => {
   const { container } = useClasses();
-  const { allPharmacyDrug, setAllPharmacyDrug } = useContext<
-    TransferDrugContextInterface
-  >(DrugTransferContext);
+  const {
+    orgAllPharmacyDrug,
+    setAllPharmacyDrug,
+    activeStep,
+    orgUAllPharmacyDrug,
+    setUAllPharmacyDrug,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const searchHandler = (v: string): void => {
-    if (allPharmacyDrug && allPharmacyDrug.length > 0) {
-      const filtered: AllPharmacyDrugInterface[] = allPharmacyDrug.filter(
+    const pharmacyDrugList =
+      activeStep === 1 ? orgAllPharmacyDrug : orgUAllPharmacyDrug;
+
+    if (pharmacyDrugList && pharmacyDrugList.length > 0) {
+      const filtered: AllPharmacyDrugInterface[] = pharmacyDrugList.filter(
         (p) => {
           return (
             (p.drug.name && p.drug.name.includes(v)) ||
@@ -22,13 +29,21 @@ const SearchInAList: React.FC = () => {
           );
         }
       );
-      setAllPharmacyDrug(filtered);
+      switch (activeStep) {
+        case 1:
+          setAllPharmacyDrug(filtered);
+          break;
+        case 2:
+          setUAllPharmacyDrug(filtered);
+        default:
+          break;
+      }
     }
   };
 
   return (
     <Container maxWidth="lg" className={container}>
-      <DaroogSearchBar onRequestSearch={ (v: string): void => searchHandler(v)} />
+      <DaroogSearchBar onValueChange={(v: string): void => searchHandler(v)} />
     </Container>
   );
 };

@@ -56,6 +56,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [uAllPharmacyDrug, setUAllPharmacyDrug] = useState<
     AllPharmacyDrugInterface[]
   >([]);
+  const [orgAllPharmacyDrug, setOrgAllPharmacyDrug] = useState<
+    AllPharmacyDrugInterface[]
+  >([]);
+  const [orgUAllPharmacyDrug, setOrgUAllPharmacyDrug] = useState<
+    AllPharmacyDrugInterface[]
+  >([]);
   const [basketCount, setBasketCount] = useState<AllPharmacyDrugInterface[]>(
     []
   );
@@ -351,9 +357,13 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     allStepName,
     setAllStepName,
     allPharmacyDrug,
+    orgAllPharmacyDrug,
     setAllPharmacyDrug,
+    setOrgAllPharmacyDrug,
     uAllPharmacyDrug,
+    orgUAllPharmacyDrug,
     setUAllPharmacyDrug,
+    setOrgUAllPharmacyDrug,
     basketCount,
     setBasketCount,
     uBasketCount,
