@@ -539,7 +539,7 @@ const SupplyList: React.FC = () => {
                     )}
                   />
                 </Grid>
-                <span>به</span>
+                <span style={{ marginRight: 7 }}>به</span>
                 <Grid item xs={12} sm={3}>
                   <Input
                     value={state?.offer2}
