@@ -166,7 +166,7 @@ const ExCalculator: React.FC<Props> = (props) => {
 
     const makeRow = (i: any): JSX.Element => {
       if (isNullOrEmpty(i.confirmed) || i.confirmed) {
-        totalCount += i.currentCnt;
+        totalCount += i.currentCnt ? i.currentCnt : i.cnt;
         totalPrice += i.amount * (i.currentCnt ? i.currentCnt : i.cnt);
 
         return (
@@ -175,7 +175,7 @@ const ExCalculator: React.FC<Props> = (props) => {
               { i.drug.name }
             </TableCell>
             <TableCell align="center" className={ darkText }>
-              { i.currentCnt }
+              { i.currentCnt ? i.currentCnt : i.cnt}
             </TableCell>
             <TableCell align="center" className={ darkText }>
               { Convertor.thousandsSeperatorFa(i.amount) }
