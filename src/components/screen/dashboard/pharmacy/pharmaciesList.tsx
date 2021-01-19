@@ -196,7 +196,7 @@ const PharmaciesList: React.FC = () => {
 
   const [_confirm, { isLoading: isLoadingConfirm }] = useMutation(confirm, {
     onSuccess: async ({ message }) => {
-      ref.current?.loadItems();
+      ref.current?.onQueryChange();
       await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
       await successSweetAlert(message);
     },
@@ -217,26 +217,35 @@ const PharmaciesList: React.FC = () => {
         field: 'id',
         title: t('general.id'),
         type: 'number',
-        width: '150px',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'name',
         title: t('pharmacy.pharmacy'),
         type: 'string',
-        width: '250px',
+        searchable: true,
       },
       {
         field: 'pharmacyProvince',
         title: t('countryDivision.province'),
         type: 'string',
-        width: '150px',
       },
       {
         field: 'pharmacyCity',
         title: t('countryDivision.city'),
         type: 'string',
-        width: '150px',
+      },
+      {
+        field: 'mobile',
+        title: t('general.mobile'),
+        type: 'string',
+        searchable: true,
+      },
+      {
+        field: 'telphon',
+        title: t('general.phone'),
+        type: 'string',
+        searchable: true,
       },
       {
         field: 'active',
@@ -623,8 +632,10 @@ const PharmaciesList: React.FC = () => {
   const toggleShowAddTransaction = (): void =>
     setShowAddTransaction(!showAddTransaction);
   const [pharmacyIdForTransaction, setPharmacyIdForTransaction] = useState(0);
+  const [pharmacyNameForTransaction, setPharmacyNameForTransaction] = useState('');
   const addTransactionHandler = (event: any, rowData: any): void => {
     setPharmacyIdForTransaction(rowData.id);
+    setPharmacyNameForTransaction(rowData.name);
     toggleShowAddTransaction();
   }
 
@@ -686,7 +697,10 @@ const PharmaciesList: React.FC = () => {
       <Grid container spacing={ 1 }>
         <Grid item xs={ 1 }>
           { showAddTransaction && (
-            <AddTransactionModal pharmacyId={ pharmacyIdForTransaction } />
+            <AddTransactionModal
+              pharmacyId={ pharmacyIdForTransaction } 
+              pharmacyName={ pharmacyNameForTransaction }
+            />
           ) }
         </Grid>
       </Grid>
