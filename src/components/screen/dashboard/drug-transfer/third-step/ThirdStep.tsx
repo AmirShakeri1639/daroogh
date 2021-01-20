@@ -290,7 +290,7 @@ const ThirdStep: React.FC = () => {
                     item
                     xs={12}
                     md={12}
-                    style={{ marginBottom: -25, paddingBottom: 0 }}
+                    style={{ marginTop: 10, paddingBottom: 0 }}
                   >
                     <FormControlLabel
                       control={

@@ -8,14 +8,16 @@ import {
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInterface';
 
 interface FilterInputProp {
   name: string;
-  onChange?: (value: string, operator: string) => void;
+  fieldName: string;
+  onChange?: (input: DataTableFilterInterface) => void;
 }
 
 const FilterInput: React.FC<FilterInputProp> = (props): JSX.Element => {
-  const { name, onChange } = props;
+  const { name, fieldName, onChange } = props;
   const [value, setValue] = useState<string>('');
   const [placeholder, setPlaceholder] = useState<string>('');
   const [filterOpen, setFilterOpen] = useState<boolean>(false);
@@ -36,18 +38,24 @@ const FilterInput: React.FC<FilterInputProp> = (props): JSX.Element => {
 
   const handleChange = (event: any): void => {
     setValue(event.target.value);
-    if (onChange) onChange(event.target.value, String(placeholder));
+    if (onChange)
+      onChange({
+        fieldValue: event.target.value,
+        operator: String(placeholder),
+        fieldName: fieldName,
+      });
   };
 
   const filterOptions = [
-    { text: '=', value: '' },
-    { text: '=!', value: '' },
-    { text: '<', value: '' },
-    { text: '>', value: '' },
-    { text: '=>', value: '' },
-    { text: '=<', value: '' },
-    { text: 'شبیه', value: '' },
-    { text: 'شبیه نباشد', value: '' },
+    { text: 'برابر', value: '', operator: 'eq' },
+    { text: 'مخالف', value: '', operator: 'ne' },
+    { text: 'کوچکتر', value: '', operator: 'lt' },
+    { text: 'کوچکتر مساوی', value: '', operator: 'le' },
+    { text: 'بزرگتر', value: '', operator: 'gt' },
+    { text: 'بزرگتر مساوی', value: '', operator: 'ge' },
+    { text: 'شبیه', value: '', operator: 'substringof' },
+    { text: 'شروع شده با', value: '', operator: 'startswith' },
+    { text: 'پایان یافته با', value: '', operator: 'endswith' },
   ];
 
   return (

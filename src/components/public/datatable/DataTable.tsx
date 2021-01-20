@@ -19,6 +19,7 @@ import itemsSanitizer from './ItemsSanitizer';
 import { DataTableColumns } from '../../../interfaces/DataTableColumns';
 import { UrlAddress } from '../../../enum/UrlAddress';
 import FilterInput from './FilterInput';
+import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInterface';
 
 type CountdownHandle = {
   loadItems: () => void;
@@ -50,6 +51,7 @@ const DataTable: React.ForwardRefRenderFunction<
   const [entries, setEntries] = useState([]);
   const [isLoader, setLoader] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
+  const [filters, setFilters] = useState<DataTableFilterInterface[]>([]);
 
   const {
     editUser,
@@ -216,6 +218,11 @@ const DataTable: React.ForwardRefRenderFunction<
 
   // function InitData(): JSX.Element {}
 
+  useEffect(() => {
+    debugger;
+    tableRef.current.onQueryChange();
+  }, [filters]);
+
   return (
     <div className={table}>
       <MaterialTable
@@ -227,12 +234,33 @@ const DataTable: React.ForwardRefRenderFunction<
             <tr>
               <td style={{ width: '48px' }} />
               {columns.map((column: any) => (
-                <td>
+                <td key={column.field}>
                   <FilterInput
                     name={column.title}
-                    // onChange={(value: string, operator: string): any =>
-                    //   tableRef.current.onQueryChange()
-                    // }
+                    fieldName={column.field}
+                    onChange={
+                      (input: DataTableFilterInterface): any => {
+                        //------
+                        const array = filters;
+                        if (array.length > 0) {
+                          const found = array.some(
+                            (el) => el.fieldName === column.field
+                          );
+                          if (!found) {
+                            array.push(input);
+                          } else {
+                            const index = array.findIndex(
+                              (el) => el.fieldName === column.field
+                            );
+                            array[index] = input;
+                          }
+                          setFilters(array);
+                        } else {
+                          setFilters([input]);
+                        }
+                      }
+                      //------
+                    }
                   />
                 </td>
               ))}
@@ -251,6 +279,8 @@ const DataTable: React.ForwardRefRenderFunction<
         columns={columns}
         data={(query): any =>
           new Promise((resolve, reject) => {
+            console.log('query ==> ', query);
+            console.log('filters ==> ', filters);
             let url = UrlAddress.baseUrl + urlAddress;
 
             url += `?&$top=${query.pageSize}&$skip=${
