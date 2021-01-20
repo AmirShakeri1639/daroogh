@@ -169,6 +169,34 @@ export interface DifferenceCheckOutputInterface {
   message: string;
 }
 
+const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
+  return (
+    cart.length > 0
+      ? cart.map(i => {
+        if (i.packID !== null && i.packDetails && i.packDetails.length > 0) {
+          return i.packDetails.map((p: any) => {
+            return (
+              isNullOrEmpty(p.confirmed) || p.confirmed
+                ? p.currentCnt
+                  ? p.currentCnt * p.amount
+                  : p.cnt * p.amount
+                : 0
+            )
+          }).reduce((sum, price) => sum + price)
+        } else {
+          return (
+            isNullOrEmpty(i.confirmed) || i.confirmed
+              ? i.currentCnt
+                ? i.currentCnt * i.amount
+                : i.cnt * i.amount
+              : 0
+          )
+        }
+      }).reduce((sum, price) => sum + price)
+      : 0
+  );
+}
+
 /// Checks the difference between total price of two baskets
 /// and returns proper values and a suitable message
 export const differenceCheck = (
@@ -180,17 +208,7 @@ export const differenceCheck = (
 
   // if (totalPriceA !== 0 ) {
   if (cartA.length > 0) {
-    totalPriceA = cartA.map(i => {
-      return (
-        i.packID !== null
-          ? i.totalAmount
-          : isNullOrEmpty(i.confirmed) || i.confirmed
-            ? i.currentCnt
-              ? i.currentCnt * i.amount
-              : i.cnt * i.amount
-            : 0
-      )
-    }).reduce((sum, price) => sum + price);
+    totalPriceA = calcPrice(cartA);
   } else if (exchange.cartA && exchange.cartA.length > 0) {
     totalPriceA = exchange.cartA
       .map(i => {
@@ -206,17 +224,7 @@ export const differenceCheck = (
 
   // if (totalPriceB !== 0) {
   if (cartB.length > 0) {
-    totalPriceB = cartB.map(i => {
-      return (
-        i.packID !== null
-          ? i.totalAmount
-          : isNullOrEmpty(i.confirmed) || i.confirmed
-            ? i.currentCnt
-              ? i.currentCnt * i.amount
-              : i.cnt * i.amount
-            : 0
-      )
-    }).reduce((sum, price) => sum + price);
+    totalPriceB = calcPrice(cartB);
   } else if (exchange.cartB && exchange.cartB.length > 0) {
     totalPriceB = exchange.cartB
       .map(i => {
