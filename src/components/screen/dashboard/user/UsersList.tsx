@@ -190,7 +190,7 @@ const UsersList: React.FC = () => {
     removeUser,
     {
       onSuccess: async () => {
-        ref.current?.loadItems();
+        ref.current?.onQueryChange();
         await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulRemoveTextMessage'));
       },
@@ -199,6 +199,7 @@ const UsersList: React.FC = () => {
 
   const [_disableUser, { reset: resetDisableUser }] = useMutation(disableUser, {
     onSuccess: async () => {
+      ref.current?.onQueryChange();
       await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
     },
   });
@@ -207,8 +208,9 @@ const UsersList: React.FC = () => {
     saveNewUser,
     {
       onSuccess: async () => {
-        queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+        ref.current?.onQueryChange();
         dispatch({ type: 'reset' });
+        queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulEditTextMessage'));
       },
     }
@@ -223,48 +225,56 @@ const UsersList: React.FC = () => {
       {
         field: 'id',
         title: 'شناسه',
+        searchable: true,
         type: 'numeric',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'name',
         title: 'نام',
+        searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'family',
         title: 'نام خانوادگی',
+        searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'mobile',
         title: 'موبایل',
+        searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'email',
         title: 'ایمیل',
+        searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'nationalCode',
         title: 'کد ملی',
+        searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'userName',
         title: 'نام کاربری',
+        searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'pharmacyName',
         title: 'نام داروخانه',
+        searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
@@ -325,22 +335,18 @@ const UsersList: React.FC = () => {
       userName,
     } = user;
 
-    try {
-      await _editUser({
-        id,
-        active: true,
-        name,
-        family,
-        userName,
-        birthDate,
-        nationalCode,
-        email,
-        mobile,
-        pharmacyID,
-      });
-    } catch (e) {
-      errorHandler(e);
-    }
+    await _editUser({
+      id,
+      active: true,
+      name,
+      family,
+      userName,
+      birthDate,
+      nationalCode,
+      email,
+      mobile,
+      pharmacyID,
+    });
   };
 
   const editUserHandler = (e: any, row: any): void => {
@@ -392,6 +398,7 @@ const UsersList: React.FC = () => {
   return (
     <FormContainer title={t('user.users-list')}>
       <DataTable
+        tableRef={ref}
         extraMethods={{ editUser: enableUserHandler }}
         columns={tableColumns()}
         editAction={editUserHandler}

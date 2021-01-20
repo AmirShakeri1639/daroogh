@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CountryDivision } from '../../../services/api';
-import omit from 'lodash/omit';
 import { ProvincePropsInterface } from '../../../interfaces';
 import {
   createStyles,
@@ -27,10 +26,14 @@ const useStyles = makeStyles((theme) =>
 const { getAllCities2 } = new CountryDivision();
 
 const Province: React.FC<ProvincePropsInterface> = (props) => {
-  const [selectedProvince, setSelectedProvince] = useState<number>();
+  const [selectedProvince, setSelectedProvince] = useState<string>('');
   const [provinceList, setProvinceList] = useState<any[]>([]);
 
-  const { provinceHandler, countyId } = props;
+  const { provinceHandler, countyId, value } = props;
+
+  useEffect(() => {
+    setSelectedProvince(String(value));
+  }, [value]);
 
   const classes = useStyles();
   const { t } = useTranslation();
@@ -72,7 +75,7 @@ const Province: React.FC<ProvincePropsInterface> = (props) => {
         label={t('province.province')}
         value={selectedProvince}
         onChange={(e): void => {
-          const val = e.target.value as number;
+          const val = e.target.value as string;
           setSelectedProvince(val);
           if (provinceHandler !== undefined) {
             provinceHandler(val);

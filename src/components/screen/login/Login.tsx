@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useReducer, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
@@ -27,7 +28,7 @@ import Account from '../../../services/api/Account';
 import { useMutation } from 'react-query';
 import { errorHandler, errorSweetAlert } from '../../../utils';
 import { Settings } from '../../../services/api';
-
+import { User } from '../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -96,6 +97,8 @@ function reducer(
   }
 }
 
+const { setNotification } = new User();
+
 const Login: React.FC = (): JSX.Element => {
   const [state, dispatch] = useReducer(reducer, loginInitialState);
   const [showError, setShowError] = useState<boolean>(false);
@@ -114,6 +117,21 @@ const Login: React.FC = (): JSX.Element => {
         localStorage.setItem('user', JSON.stringify(data));
         localStorage.setItem('mainToken', data.token);
         localStorage.setItem('mainPharmacyName', data.pharmacyName);
+
+        (function(): void {
+          window.najvaUserSubscribed = function(najvaToken): void {
+            const user = JSON.parse(window.localStorage.getItem('user'));
+            const req = new XMLHttpRequest();
+            req.open(
+              'POST',
+              `https://api.sumon.ir/api/User/SetNotificationKey=${najvaToken}`
+            );
+
+            req.setRequestHeader('Content-Type', 'application/json');
+            req.setRequestHeader('Authorization', user.token);
+            req.send();
+          };
+        })();
 
         // Get settings from SERVER
         (async (): Promise<any> => {
@@ -144,14 +162,10 @@ const Login: React.FC = (): JSX.Element => {
       setShowError(true);
       return;
     }
-    try {
-      await _loginUser({
-        username: state.username,
-        password: state.password,
-      });
-    } catch (e) {
-      errorHandler(e);
-    }
+    await _loginUser({
+      username: state.username,
+      password: state.password,
+    });
   };
 
   const handleMouseDownPassword = (

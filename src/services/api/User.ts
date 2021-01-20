@@ -90,6 +90,13 @@ class User extends Api {
     const result = await this.postData(`/User/GetUser?userId=${userId}`);
     return result.data;
   };
+
+  setNotification = async (notifKey: string): Promise<any> => {
+    const result = await this.postData(
+      `/User/SetNotificationKey?notifKey=${notifKey}`
+    );
+    return result.data;
+  };
 }
 
 export default User;

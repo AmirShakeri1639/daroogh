@@ -82,30 +82,36 @@ const DesktopCardContent = ({
     cartB = item.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
   }
 
-  const totalPriceA =
-    cartA.length > 0
-      ? cartA.map(i => {
-        return (
-          isNullOrEmpty(i.confirmed) || i.confirmed
-            ? i.currentCnt
-              ? i.currentCnt * i.amount
-              : i.cnt * i.amount
-            : 0
-        )
-      }).reduce((sum, price) => sum + price)
-      : 0;
-  const totalPriceB =
-    cartB.length > 0
-      ? cartB.map(i => {
-        return (
-          isNullOrEmpty(i.confirmed) || i.confirmed
-            ? i.currentCnt
-              ? i.currentCnt * i.amount
-              : i.cnt * i.amount
-            : 0
-        )
-      }).reduce((sum, price) => sum + price)
-      : 0;
+  const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
+    return (
+      cart.length > 0
+        ? cart.map(i => {
+          if (i.packID !== null && i.packDetails && i.packDetails.length > 0) {
+            return i.packDetails.map((p: any) => {
+              return (
+                isNullOrEmpty(p.confirmed) || p.confirmed
+                  ? p.currentCnt
+                    ? p.currentCnt * p.amount
+                    : p.cnt * p.amount
+                  : 0
+              )
+            }).reduce((sum, price) => sum + price)
+          } else {
+            return (
+              isNullOrEmpty(i.confirmed) || i.confirmed
+                ? i.currentCnt
+                  ? i.currentCnt * i.amount
+                  : i.cnt * i.amount
+                : 0
+            )
+          }
+        }).reduce((sum, price) => sum + price)
+        : 0
+    );
+  }
+
+  const totalPriceA = calcPrice(cartA);
+  const totalPriceB = calcPrice(cartB);
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;

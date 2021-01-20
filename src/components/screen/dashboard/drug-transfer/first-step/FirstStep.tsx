@@ -125,8 +125,8 @@ const useStyle = makeStyles((theme) =>
 const FirstStep: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const [isCheckedJustOffer, setIsCheckedJustOffer] = useState<boolean>(false);
-  const [selectedCounty, setSelectedCounty] = useState<number>(-2);
-  const [selectedProvince, setSelectedProvince] = useState<number>(-2);
+  const [selectedCounty, setSelectedCounty] = useState<string>('-2');
+  const [selectedProvince, setSelectedProvince] = useState<string>('-2');
   const [searchOptions, setSearchOptions] = useState<object[] | undefined>(
     undefined
   );
@@ -170,12 +170,16 @@ const FirstStep: React.FC = () => {
       item.minRemainExpDays = remainingExpireDays;
     }
 
-    if (selectedProvince !== -2) {
-      item.countryDivisionCode = String(selectedProvince);
-    } else if (selectedCounty !== -2) {
-      item.countryDivisionCode = String(selectedCounty);
+    if (selectedCounty !== '-1' && selectedCounty !== '*') {
+      if (selectedProvince !== '-2' && selectedProvince !== '*') {
+        item.countryDivisionCode = String(selectedProvince);
+      } else if (selectedCounty !== '-2') {
+        item.countryDivisionCode = String(selectedCounty);
+      }
+    } else {
+      // Display all card of all cities
+      delete item.countryDivisionCode;
     }
-
     return item;
   };
 
@@ -439,7 +443,10 @@ const FirstStep: React.FC = () => {
             <div className={dateContainer}>
               <span>{t('province.selectCounty')}</span>
               <County
-                countyHandler={(e): void => setSelectedCounty(Number(e))}
+                countyHandler={(e): void => {
+                  setSelectedCounty(e ?? '');
+                  setSelectedProvince('-2');
+                }}
                 value={selectedCounty}
               />
             </div>
@@ -450,7 +457,8 @@ const FirstStep: React.FC = () => {
               <span>{t('province.selectProvince')}</span>
               <Province
                 countyId={selectedCounty}
-                provinceHandler={(e): void => setSelectedProvince(e || 0)}
+                value={selectedProvince}
+                provinceHandler={(e): void => setSelectedProvince(e ?? '')}
               />
             </div>
           </div>

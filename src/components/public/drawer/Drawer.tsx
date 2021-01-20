@@ -20,7 +20,7 @@ const useStyle = makeStyles((theme) =>
 );
 
 const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
-  const { children, onClose, isOpen } = props;
+  const { children, onClose, isOpen, variant } = props;
 
   const { container, noScrollBarDrawer } = useStyle();
 
@@ -38,14 +38,15 @@ const MaterialDrawer: React.FC<MaterialDrawerPropsInterface> = (props) => {
 
   return (
     <SwipeableDrawer
+      variant={variant ?? 'temporary'}
       disableBackdropTransition
       anchor="left"
-      open={ isOpen }
-      onOpen={ onClose }
-      onClose={ onClose }
-      className={ noScrollBarDrawer }
+      open={isOpen}
+      onOpen={onClose}
+      onClose={onClose}
+      className={noScrollBarDrawer}
     >
-      <div className={ container }>{ children }</div>
+      <div className={container}>{children}</div>
     </SwipeableDrawer>
   );
 };
