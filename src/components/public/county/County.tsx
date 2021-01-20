@@ -26,12 +26,12 @@ const useStyles = makeStyles((theme) =>
 const { getAllProvinces2 } = new CountryDivision();
 
 const County: React.FC<CountyPropsInterface> = (props) => {
-  const [selectedCounty, setSelectedCounty] = useState<number>();
+  const [selectedCounty, setSelectedCounty] = useState<string>('');
 
   const { countyHandler, value } = props;
 
   useEffect(() => {
-    setSelectedCounty(Number(value));
+    setSelectedCounty(String(value));
   }, [value]);
 
   const classes = useStyles();
@@ -43,7 +43,7 @@ const County: React.FC<CountyPropsInterface> = (props) => {
     if (countyList !== undefined) {
       return countyList.items.map((c: any) => {
         return (
-          <MenuItem key={c.id} value={c.id}>
+          <MenuItem key={c.id} value={c.code}>
             {c.name}
           </MenuItem>
         );
@@ -62,7 +62,7 @@ const County: React.FC<CountyPropsInterface> = (props) => {
         label={t('province.county')}
         value={selectedCounty}
         onChange={(e): void => {
-          const val = e.target.value as number;
+          const val = e.target.value as string;
           setSelectedCounty(val);
           if (countyHandler !== undefined) {
             countyHandler(val);
