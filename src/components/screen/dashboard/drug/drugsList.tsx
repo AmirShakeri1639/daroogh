@@ -28,6 +28,7 @@ import {
 } from '../../../../utils';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import { useTranslation } from 'react-i18next';
+import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
 
 import {
@@ -178,16 +179,27 @@ const DrugsList: React.FC = () => {
     },
   });
 
-  const tableColumns = (): TableColumnInterface[] => {
+  const tableColumns = (): DataTableColumns[] => {
     return [
       {
         field: 'id',
         title: t('general.id'),
+        searchable: true,
         type: 'number',
         cellStyle: { textAlign: 'right' },
       },
-      { field: 'name', title: t('drug.name'), type: 'string' },
-      { field: 'genericName', title: t('drug.genericName'), type: 'string' },
+      {
+        field: 'name',
+        title: t('drug.name'),
+        searchable: true,
+        type: 'string'
+      },
+      {
+        field: 'genericName',
+        title: t('drug.genericName'),
+        type: 'string',
+        searchable: true,
+      },
       // { id: 'companyName', label: t('drug.companyName') },
       {
         field: 'active',
@@ -201,8 +213,18 @@ const DrugsList: React.FC = () => {
           );
         },
       },
-      { field: 'enName', title: t('drug.enName'), type: 'string' },
-      { field: 'type', title: t('general.type'), type: 'string' },
+      {
+        field: 'enName',
+        title: t('drug.enName'),
+        type: 'string',
+        searchable: true,
+      },
+      {
+        field: 'type',
+        title: t('general.type'),
+        type: 'string',
+        searchable: true,
+      },
     ];
   };
 

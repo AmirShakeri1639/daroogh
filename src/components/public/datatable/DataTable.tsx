@@ -30,6 +30,13 @@ const useStyles = makeStyles((theme) => ({
     '& tbody>.MuiTableRow-root:hover': {
       background: '#ffb3b3',
     },
+    '& tbody .MuiIconButton-root': {
+      width: 30,
+      height: 30,
+    },
+    '& .MuiIconButton-root:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.14)',
+    },
     '& tbody>.MuiTableRow-root:nth-child(even)': {
       background: '#ffe6e6',
     },

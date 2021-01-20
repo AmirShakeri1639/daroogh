@@ -18,6 +18,7 @@ const useStyle = makeStyles((theme) =>
       borderRadius: 10,
       padding: theme.spacing(2),
       position: 'relative',
+      height: 350,
     },
     span: {
       color: '#707070',
@@ -25,9 +26,13 @@ const useStyle = makeStyles((theme) =>
     },
     buttonContainer: {
       width: '100%',
+      marginTop: theme.spacing(1),
       '& button': {
         width: '100%',
       },
+    },
+    itemContainer: {
+      height: 187,
     },
   })
 );
@@ -59,7 +64,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     notSendExchangeID,
   } = data;
 
-  const { paper, span, buttonContainer } = useStyle();
+  const { paper, span, buttonContainer, itemContainer } = useStyle();
 
   const { t } = useTranslation();
 
@@ -78,7 +83,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
   };
 
   return (
-    <Paper className={`${paper}`}>
+    <Paper className={paper}>
       <Grid container spacing={1}>
         <CardHeader
           city={pharmacyCity}
@@ -88,16 +93,20 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
           itemsCount={itemsCount}
           userType={userType}
         />
-        <span className={`${span} txt-xs`}>نمونه اقلام</span>
-        {betterItems.map((item: any) => (
-          <ItemContainer
-            drugGenericName={item.drugName}
-            cnt={item.cnt}
-            offer2={item.offer2}
-            offer1={item.offer1}
-            expireDate={item.expireDate}
-          />
-        ))}
+        <div className={`${span} w-100 txt-xs`}>نمونه اقلام</div>
+        <div className={`${itemContainer} w-100`}>
+          {betterItems.map((item: any) => (
+            <ItemContainer
+              drugGenericName={item.drugName}
+              cnt={item.cnt}
+              offer2={item.offer2}
+              offer1={item.offer1}
+              expireDate={item.expireDate}
+            />
+          ))}
+        </div>
+      </Grid>
+      <Grid item xs={12}>
         <div className={buttonContainer}>
           <Button
             type="button"

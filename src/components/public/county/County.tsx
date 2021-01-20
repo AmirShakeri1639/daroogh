@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { CountryDivision } from '../../../services/api';
 import { CountyPropsInterface } from '../../../interfaces';
 import {
@@ -26,9 +26,13 @@ const useStyles = makeStyles((theme) =>
 const { getAllProvinces2 } = new CountryDivision();
 
 const County: React.FC<CountyPropsInterface> = (props) => {
-  const [selectedCounty, setSelectedCounty] = useState<number>();
+  const [selectedCounty, setSelectedCounty] = useState<number>(-1);
 
-  const { countyHandler } = props;
+  const { countyHandler, value } = props;
+
+  useEffect(() => {
+    setSelectedCounty(Number(value));
+  }, [value]);
 
   const classes = useStyles();
   const { t } = useTranslation();
