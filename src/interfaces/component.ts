@@ -131,6 +131,7 @@ export interface ItemContainerPropsInterface {
 export interface MaterialDrawerPropsInterface {
   isOpen: boolean;
   onClose: () => void;
+  variant?: any;
 }
 
 export interface SwitchComponentPropsInterface {
@@ -140,13 +141,14 @@ export interface SwitchComponentPropsInterface {
 }
 
 export interface CountyPropsInterface {
-  countyHandler?: (val?: number) => void;
+  countyHandler?: (val?: string) => void;
   value?: string | number;
 }
 
 export interface ProvincePropsInterface {
-  provinceHandler?: (val?: number) => void;
-  countyId?: number;
+  provinceHandler?: (val?: string) => void;
+  countyId?: string;
+  value?: string | number;
 }
 
 export interface TransferPropsInterface {
