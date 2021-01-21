@@ -48,6 +48,7 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
   const [_removePharmacyDrug] = useMutation(removePharmacyDrug, {
     onSuccess: async (data) => {
       queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
+      setIsOpenBackDrop(false);
       await successSweetAlert(t('alert.successfulRemoveTextMessage'));
     },
     onError: async () => {
@@ -60,7 +61,6 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
     if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
       setIsOpenBackDrop(true);
       await _removePharmacyDrug(id);
-      setIsOpenBackDrop(false);
     }
   };
 

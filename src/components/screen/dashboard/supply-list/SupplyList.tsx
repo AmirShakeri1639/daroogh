@@ -263,11 +263,10 @@ const SupplyList: React.FC = () => {
     setIsOpenModalOfNewList((v) => !v);
   };
 
-  const {
-    isLoading: isLoadingFetchData,
-    data,
-    isFetched,
-  } = useQuery(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () => allPharmacyDrug());
+  const { data, isFetched } = useQuery(
+    AllPharmacyDrug.GET_ALL_PHARMACY_DRUG,
+    () => allPharmacyDrug()
+  );
 
   const [_savePharmacyDrug, { isLoading: isLoadingSave }] = useMutation(
     savePharmacyDrug,
@@ -422,8 +421,6 @@ const SupplyList: React.FC = () => {
       errorHandler(e);
     }
   };
-
-  console.log('state?.cnt', state?.cnt);
 
   return (
     <>
