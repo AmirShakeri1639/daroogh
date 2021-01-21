@@ -18,7 +18,7 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1),
+      padding: theme.spacing(1, 1, 2),
       borderRadius: 10,
     },
     redTrash: {
