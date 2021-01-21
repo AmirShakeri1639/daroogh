@@ -37,6 +37,7 @@ import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 import { Autocomplete } from '@material-ui/lab';
+import MaterialDatePicker from '../../../public/material-datepicker/MaterialDatePicker';
 
 const { convertISOTime } = Convertor;
 
@@ -389,7 +390,7 @@ const SupplyList: React.FC = () => {
       if (isFetched) {
         items = data.items.map((item: AllPharmacyDrugInterface) => {
           return (
-            <Grid item xs={12} sm={6} md={4} xl={3}>
+            <Grid item xs={12} sm={6} md={4} xl={3} key={item.id}>
               <CardContainer
                 editHandler={(): Promise<any> => editHandler(item)}
                 drug={item}
@@ -422,8 +423,6 @@ const SupplyList: React.FC = () => {
       errorHandler(e);
     }
   };
-
-  console.log('state?.cnt', state?.cnt);
 
   return (
     <>
@@ -567,13 +566,14 @@ const SupplyList: React.FC = () => {
             </Grid>
 
             <Grid item xs={6}>
-              <Input
+              {/* <Input
                 readOnly
                 onClick={toggleIsOpenDatePicker}
                 value={selectedDate}
                 className="w-100 cursor-pointer"
                 label={t('general.expireDate')}
-              />
+              /> */}
+              <MaterialDatePicker dateTypeIsSelectable />
             </Grid>
             <Grid item xs={2} className={expireDate}>
               {daysDiff !== '' && <span>{daysDiff} روز</span>}
@@ -627,7 +627,7 @@ const SupplyList: React.FC = () => {
       </Modal>
 
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
-        <DatePicker
+        {/* <DatePicker
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
           selectedDateHandler={(e): void => {
@@ -636,7 +636,7 @@ const SupplyList: React.FC = () => {
 
             toggleIsOpenDatePicker();
           }}
-        />
+        /> */}
       </Modal>
 
       <BackDrop isOpen={isOpenBackDrop} />
