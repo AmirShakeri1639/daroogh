@@ -17,7 +17,7 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
       display: 'flex',
-      height: 128,
+      height: 135,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
@@ -89,7 +89,6 @@ const Pack: React.FC = () => {
             <CardContainer
               totalPrice={totalPrice}
               drugsCounter={pharmacyDrug.length}
-              createdAt={'2020-01-01'}
               name={name}
               id={id}
               removeHandler={removeHandler}

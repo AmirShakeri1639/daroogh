@@ -20,7 +20,7 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1),
+      padding: theme.spacing(1, 1, 2),
       borderRadius: 10,
     },
     redTrash: {
@@ -32,7 +32,6 @@ const useStyle = makeStyles((theme) =>
 interface CardContainerProps {
   name: string;
   drugsCounter: number | string;
-  createdAt: string;
   totalPrice: string | number;
   id: number;
   removeHandler: (item: number) => void;
