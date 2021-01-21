@@ -55,7 +55,7 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
       display: 'flex',
-      height: 139,
+      height: 152,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
