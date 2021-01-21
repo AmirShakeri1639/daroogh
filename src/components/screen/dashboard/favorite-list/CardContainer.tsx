@@ -34,6 +34,8 @@ const CardContainer: React.FC<FavoriteDrugInterface> = (props) => {
     category: { name: categoryName },
   } = data;
 
+  console.log('categoryName', categoryName);
+
   const removeHandler = async (_id: number): Promise<any> => {
     if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
       await formHandler(_id);
