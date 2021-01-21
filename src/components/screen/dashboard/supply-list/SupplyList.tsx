@@ -319,7 +319,7 @@ const SupplyList: React.FC = () => {
 
       const items = result.map((item: any) => ({
         id: item.id,
-        drugName: item.name,
+        drugName: `${item.name} (${item.genericName})`,
       }));
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);

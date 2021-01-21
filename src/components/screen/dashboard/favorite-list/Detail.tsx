@@ -37,7 +37,7 @@ const useStyle = makeStyles((theme) =>
 );
 
 const Detail: React.FC<DrugInterface> = (props) => {
-  const { enName, genericName, name, companyName } = props;
+  const { enName, genericName, name, companyName, categoryName } = props;
   const { paper, container, textCenter, icon } = useStyle();
 
   const { t } = useTranslation();
@@ -76,7 +76,7 @@ const Detail: React.FC<DrugInterface> = (props) => {
                     <Grid item xs={11}>
                       <TextLine
                         rightText={t('drug.category')}
-                        leftText={enName || t('general.undefined')}
+                        leftText={categoryName || t('general.undefined')}
                       />
                     </Grid>
                   </Grid>
