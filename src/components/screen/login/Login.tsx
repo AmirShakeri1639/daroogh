@@ -118,19 +118,19 @@ const Login: React.FC = (): JSX.Element => {
         localStorage.setItem('mainToken', data.token);
         localStorage.setItem('mainPharmacyName', data.pharmacyName);
 
-        (function(): void {
-          window.najvaUserSubscribed = function(najvaToken): void {
-            const user = JSON.parse(window.localStorage.getItem('user'));
-            const req = new XMLHttpRequest();
-            req.open(
-              'POST',
-              `https://api.sumon.ir/api/User/SetNotificationKey=${najvaToken}`
-            );
+        (async (): Promise<any> => {
+          const cookiesArray = document.cookie.split(';');
+          const regexNajva = /najva_token=[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}/g;
+          const najvaToken = cookiesArray
+            .filter((item) => regexNajva.test(item.trim()))[0]
+            .trim()
+            .split('=')[1];
 
-            req.setRequestHeader('Content-Type', 'application/json');
-            req.setRequestHeader('Authorization', user.token);
-            req.send();
-          };
+          try {
+            await setNotification(najvaToken);
+          } catch (e) {
+            errorHandler(e);
+          }
         })();
 
         // Get settings from SERVER
