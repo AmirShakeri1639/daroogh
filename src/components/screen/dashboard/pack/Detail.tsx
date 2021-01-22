@@ -74,7 +74,7 @@ const Detail: React.FC<DetailProps> = (props) => {
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
-                        rightText={t('general.inventory')}
+                        rightText={t('general.number')}
                         leftText={thousandsSeperator(drugsCounter)}
                       />
                     </Grid>
