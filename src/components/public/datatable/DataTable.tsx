@@ -20,6 +20,9 @@ import { DataTableColumns } from '../../../interfaces/DataTableColumns';
 import { UrlAddress } from '../../../enum/UrlAddress';
 import FilterInput from './FilterInput';
 import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInterface';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
 
 type CountdownHandle = {
   loadItems: () => void;
@@ -126,7 +129,7 @@ const DataTable: React.ForwardRefRenderFunction<
     onSelectionChange: (): any => void 0,
   };
 
-  const reFetchData = (): any => queryCache.invalidateQueries(queryKey);
+  // const reFetchData = (): any => queryCache.invalidateQueries(queryKey);
 
   let tableActions: any[] = [
     {
@@ -217,62 +220,65 @@ const DataTable: React.ForwardRefRenderFunction<
     });
   }
 
-  useImperativeHandle(forwardedRef, () => ({
-    loadItems(): void {
-      reFetchData();
-    },
-  }));
+  // useImperativeHandle(forwardedRef, () => ({
+  //   loadItems(): void {
+  //     reFetchData();
+  //   },
+  // }));
 
   // function InitData(): JSX.Element {}
 
   useEffect(() => {
-    debugger;
     tableRef.current.onQueryChange();
   }, [filters]);
+
+  useEffect(() => {
+    columns.forEach((element: DataTableColumns) => {
+      element.filterComponent = (props: any): any => <FilterInput {...props} />;
+    });
+  }, [columns]);
+
+  const newGuid = (): string => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (
+      c
+    ) {
+      const r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  };
 
   return (
     <div className={table}>
       <MaterialTable
         tableRef={tableRef}
         localization={localization}
+        icons={{
+          PreviousPage: forwardRef((props, ref) => (
+            <ChevronRight {...props} ref={ref} />
+          )),
+          NextPage: forwardRef((props, ref) => (
+            <ChevronLeft {...props} ref={ref} />
+          )),
+        }}
         components={{
           Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
-          FilterRow: (props): any => (
-            <tr>
-              <td style={{ width: '48px' }} />
-              {columns.map((column: any) => (
-                <td key={column.field}>
-                  <FilterInput
-                    name={column.title}
-                    fieldName={column.field}
-                    onChange={
-                      (input: DataTableFilterInterface): any => {
-                        //------
-                        const array = filters;
-                        if (array.length > 0) {
-                          const found = array.some(
-                            (el) => el.fieldName === column.field
-                          );
-                          if (!found) {
-                            array.push(input);
-                          } else {
-                            const index = array.findIndex(
-                              (el) => el.fieldName === column.field
-                            );
-                            array[index] = input;
-                          }
-                          setFilters(array);
-                        } else {
-                          setFilters([input]);
-                        }
-                      }
-                      //------
-                    }
-                  />
-                </td>
-              ))}
-            </tr>
-          ),
+          // FilterRow: (props: any): any => (
+          //   <tr>
+          //     <td style={{ width: '20px' }} />
+          //     {props.columns.map((column: any) => {
+          //       const tempProps = { ...props };
+          //       tempProps.column = column;
+          //       Object.preventExtensions(tempProps);
+
+          //       return (
+          //         <td key={`td-${column.field}-${newGuid()}`}>
+          //           <FilterInput {...tempProps} />
+          //         </td>
+          //       );
+          //     })}
+          //   </tr>
+          // ),
           // Pagination: (props: any): any => (
           //   <TablePagination
           //     {...props}
@@ -286,8 +292,6 @@ const DataTable: React.ForwardRefRenderFunction<
         columns={columns}
         data={(query): any =>
           new Promise((resolve, reject) => {
-            console.log('query ==> ', query);
-            console.log('filters ==> ', filters);
             let url = UrlAddress.baseUrl + urlAddress;
 
             url += `?&$top=${query.pageSize}&$skip=${
@@ -297,13 +301,19 @@ const DataTable: React.ForwardRefRenderFunction<
             if (defaultFilter) {
               url += `&$filter= ${defaultFilter}`;
             }
-            if (query.filters.length > 0) {
+            if (
+              query.filters.length > 0 &&
+              query.filters.findIndex((x) => x.value.fieldValue !== '') !== -1
+            ) {
               url += defaultFilter ? ' and ' : '&$filter=';
               query.filters.forEach((x: any, i: number) => {
                 const openP = i === 0 ? '(' : '';
                 const closeP = i === query.filters.length - 1 ? ')' : '';
-                const orO = i < query.filters.length - 1 ? 'and ' : '';
-                url += `${openP}contains(cast(${x.column.field},'Edm.String'),'${x.value}')${orO}${closeP}`;
+                const andO = i < query.filters.length - 1 ? 'and ' : '';
+                url += `${openP} ${String(x.value.operator).replace(
+                  '$',
+                  x.value.fieldValue
+                )} ${andO}${closeP}`;
               });
             }
             if (query.search && query.search !== '') {

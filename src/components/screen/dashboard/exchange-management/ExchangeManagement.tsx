@@ -11,7 +11,9 @@ import {
   IconButton,
   Link,
   makeStyles,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   Tooltip,
 } from '@material-ui/core';
@@ -31,6 +33,7 @@ import { useMutation } from 'react-query';
 import { errorHandler, sweetAlert } from '../../../../utils';
 import { PharmacyInfo } from '../../../../interfaces/PharmacyInfo';
 import { Map } from '../../../public';
+import FilterInput from '../../../public/datatable/FilterInput';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -278,6 +281,7 @@ const ExchangeManagement: React.FC = () => {
             </Tooltip>
           );
         },
+        // filterComponent: (props: any): any => <FilterInput {...props} />,
       },
       {
         title: 'داروخانه طرف دوم',
