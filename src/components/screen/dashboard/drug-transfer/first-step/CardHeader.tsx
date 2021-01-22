@@ -158,7 +158,9 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
           </Grid>
 
           <Grid xs={6} item className={textLeft}>
-            <span className="txt-xs">{`${guaranty} تومان`}</span>
+            {guaranty > 0 && (
+              <span className="txt-xs">{`${guaranty} تومان`}</span>
+            )}
           </Grid>
         </Grid>
 

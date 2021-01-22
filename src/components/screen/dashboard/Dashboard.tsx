@@ -255,9 +255,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               </Tooltip>
             </Button>
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+              {/* <Badge badgeContent={4} color="secondary"> */}
+              <NotificationsIcon />
+              {/* </Badge> */}
             </IconButton>
             <IconButton
               edge="end"

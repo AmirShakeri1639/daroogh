@@ -99,7 +99,10 @@ const Drug: React.FC = () => {
       }
 
       const result = await searchDrug(title);
-      const items = result.map((i: any) => ({ id: i.id, name: i.name }));
+      const items = result.map((i: any) => ({
+        id: i.id,
+        name: `${i.name} (${i.genericName})`,
+      }));
       setDrugSearchOptions(items);
     } catch (e) {
       errorHandler(e);
@@ -148,6 +151,7 @@ const Drug: React.FC = () => {
     if (!isLoading && data !== undefined && isFetched) {
       return data.items.map((item: any) => {
         const { drug } = item;
+        console.log(item);
         if (drug !== null) {
           return (
             <Grid key={drug.id} item xs={12} sm={6} md={4} xl={3}>

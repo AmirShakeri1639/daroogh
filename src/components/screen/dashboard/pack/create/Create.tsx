@@ -55,7 +55,7 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
       display: 'flex',
-      height: 139,
+      height: 152,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
@@ -217,7 +217,7 @@ const Create: React.FC = () => {
     }
   }, [packId]);
 
-  const [_savePack, { isLoading: isLoadingSavePack }] = useMutation(savePack, {
+  const [_savePack] = useMutation(savePack, {
     onSuccess: async () => {
       if (packId === undefined) {
         setPackTitle('');
@@ -270,7 +270,7 @@ const Create: React.FC = () => {
 
       const items = result.map((item: any) => ({
         id: item.id,
-        drugName: item.name,
+        drugName: `${item.name} (${item.genericName})`,
       }));
       // setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);

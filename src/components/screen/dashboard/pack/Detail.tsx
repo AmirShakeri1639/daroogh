@@ -13,8 +13,6 @@ import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
 
-const { convertISOTime } = Convertor;
-
 const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
@@ -43,13 +41,12 @@ const useStyle = makeStyles((theme) =>
 interface DetailProps {
   name: string;
   drugsCounter: number | string;
-  createdAt: string;
   totalPrice: string | number;
 }
 
 const Detail: React.FC<DetailProps> = (props) => {
   const { paper, container, textLeft, icon } = useStyle();
-  const { createdAt, drugsCounter, name, totalPrice } = props;
+  const { drugsCounter, name, totalPrice } = props;
 
   const { t } = useTranslation();
   const { thousandsSeperator } = Convertor;
@@ -66,37 +63,19 @@ const Detail: React.FC<DetailProps> = (props) => {
                   <span className="drug-name">{name}</span>
                 </Grid>
 
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <Grid alignItems="flex-end" container spacing={1}>
-                    <Grid item xs={2} className={textLeft}>
+                    <Grid item xs={1} className={textLeft}>
                       <FontAwesomeIcon
                         icon={faBoxes}
                         size="sm"
                         className={icon}
                       />
                     </Grid>
-                    <Grid item xs={10}>
+                    <Grid item xs={11}>
                       <TextLine
-                        rightText={t('general.inventory')}
+                        rightText={t('general.number')}
                         leftText={thousandsSeperator(drugsCounter)}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Grid alignItems="flex-end" container spacing={1}>
-                    <Grid item xs={2} className={textLeft}>
-                      <FontAwesomeIcon
-                        icon={faMoneyBillWave}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={10}>
-                      <TextLine
-                        rightText={t('general.price')}
-                        leftText={thousandsSeperator(totalPrice)}
                       />
                     </Grid>
                   </Grid>
@@ -106,15 +85,15 @@ const Detail: React.FC<DetailProps> = (props) => {
                   <Grid alignItems="flex-end" container spacing={1}>
                     <Grid item xs={1} className={textLeft}>
                       <FontAwesomeIcon
-                        icon={faCalendarTimes}
+                        icon={faMoneyBillWave}
                         size="sm"
                         className={icon}
                       />
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
-                        rightText={t('general.expireDate')}
-                        leftText={convertISOTime(createdAt)}
+                        rightText={t('general.price')}
+                        leftText={thousandsSeperator(totalPrice)}
                       />
                     </Grid>
                   </Grid>

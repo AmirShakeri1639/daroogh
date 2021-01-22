@@ -423,7 +423,14 @@ const FirstStep: React.FC = () => {
               <Typography id="discrete-slider" gutterBottom>
                 حداکثر فاصله تا شما (برحسب کیلومتر)
               </Typography>
-              <div id="slider-container">
+              <Input
+                numberFormat
+                value={maxDistance || ''}
+                type="number"
+                className={`${monthInput} w-100`}
+                onChange={(e): any => setMaxDistance(Number(e))}
+              />
+              {/* <div id="slider-container">
                 <Slider
                   defaultValue={60}
                   getAriaValueText={valuetext}
@@ -435,7 +442,7 @@ const FirstStep: React.FC = () => {
                   max={3000}
                   onChange={(e, val): any => setMaxDistance(Number(val))}
                 />
-              </div>
+              </div> */}
             </div>
 
             <Divider className={divider} />
