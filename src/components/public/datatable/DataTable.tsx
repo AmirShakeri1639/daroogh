@@ -8,7 +8,7 @@ import React, {
 import MaterialTable, { MTableToolbar } from 'material-table';
 import { DataTableProps } from '../../../interfaces';
 import { usePaginatedQuery, useQueryCache } from 'react-query';
-import { errorSweetAlert } from '../../../utils';
+import { errorSweetAlert, sweetAlert } from '../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
@@ -301,21 +301,21 @@ const DataTable: React.ForwardRefRenderFunction<
             if (defaultFilter) {
               url += `&$filter= ${defaultFilter}`;
             }
-            if (
-              query.filters.length > 0 &&
-              query.filters.findIndex((x) => x.value.fieldValue !== '') !== -1
-            ) {
-              url += defaultFilter ? ' and ' : '&$filter=';
-              query.filters.forEach((x: any, i: number) => {
-                const openP = i === 0 ? '(' : '';
-                const closeP = i === query.filters.length - 1 ? ')' : '';
-                const andO = i < query.filters.length - 1 ? 'and ' : '';
-                url += `${openP} ${String(x.value.operator).replace(
-                  '$',
-                  x.value.fieldValue
-                )} ${andO}${closeP}`;
-              });
-            }
+
+            const qFilter = query.filters.filter(
+              (x) => x.value.fieldValue !== ''
+            );
+            qFilter.forEach((x: any, i: number) => {
+              if (i === 0) url += defaultFilter ? ' and ' : '&$filter=';
+              const openP = i === 0 ? '(' : '';
+              const closeP = i === qFilter.length - 1 ? ')' : '';
+              const andO = i < qFilter.length - 1 ? 'and ' : '';
+              url += `${openP} ${String(x.value.operator).replace(
+                '$',
+                x.value.fieldValue
+              )} ${andO}${closeP}`;
+            });
+            debugger;
             if (query.search && query.search !== '') {
               const columnsFilter = columns.filter((x: any) => x.searchable);
               if (columnsFilter.length > 0) {
@@ -358,7 +358,21 @@ const DataTable: React.ForwardRefRenderFunction<
                   page: query.page,
                   totalCount: result.count,
                 });
-              });
+              })
+              .catch(
+                async (error: any): Promise<any> => {
+                  await sweetAlert({
+                    type: 'error',
+                    text:
+                      'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
+                  });
+                  resolve({
+                    data: [],
+                    page: 0,
+                    totalCount: 0,
+                  });
+                }
+              );
           })
         }
         detailPanel={
