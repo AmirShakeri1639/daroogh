@@ -291,7 +291,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           <Grid item xs={12} sm={6} xl={3}>
             <TextField
               error={
-                state.email.length > 0 &&
+                state?.email?.length > 0 &&
                 !emailRegex.test(state.email) &&
                 showError
               }
@@ -308,7 +308,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           </Grid>
           <Grid item xs={12} sm={6} xl={3}>
             <TextField
-              error={state.userName.length < 1 && showError}
+              error={state?.userName?.length < 1 && showError}
               label="نام کاربری"
               size="small"
               className="w-100"
@@ -341,8 +341,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           <Grid item xs={12} sm={6} xl={3}>
             <TextField
               error={
-                state.nationalCode !== '' &&
-                state.nationalCode.length < 10 &&
+                state?.nationalCode !== '' &&
+                state?.nationalCode?.length < 10 &&
                 showError
               }
               label="کد ملی"
@@ -366,7 +366,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               type="text"
               size="small"
               variant="outlined"
-              value={state.birthDate}
+              value={state?.birthDate}
               onClick={toggleIsOpenDatePicker}
             />
           </Grid>
@@ -377,7 +377,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               noOptionsText={t('general.noData')}
               loadingText={t('general.loading')}
               options={options}
-              value={state.pharmacyID}
+              value={state?.pharmacyID}
               onChange={(event, value, reason): void => {
                 dispatch({ type: 'pharmacyID', value });
               }}
