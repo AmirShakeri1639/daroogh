@@ -273,7 +273,14 @@ const ThirdStep: React.FC = () => {
       <Grid item xs={12}>
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={9}>
-            <Grid container item spacing={1} xs={12} className={stickyToolbox}>
+            <Grid
+              container
+              item
+              spacing={1}
+              xs={12}
+              className={stickyToolbox}
+              style={{ marginRight: 10 }}
+            >
               <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
                 <SearchInAList />
               </Grid>
@@ -290,7 +297,7 @@ const ThirdStep: React.FC = () => {
                     item
                     xs={12}
                     md={12}
-                    style={{ marginBottom: -25, paddingBottom: 0 }}
+                    style={{ marginTop: 10, paddingBottom: 0 }}
                   >
                     <FormControlLabel
                       control={

@@ -11,7 +11,9 @@ import {
   IconButton,
   Link,
   makeStyles,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   Tooltip,
 } from '@material-ui/core';
@@ -31,6 +33,7 @@ import { useMutation } from 'react-query';
 import { errorHandler, sweetAlert } from '../../../../utils';
 import { PharmacyInfo } from '../../../../interfaces/PharmacyInfo';
 import { Map } from '../../../public';
+import FilterInput from '../../../public/datatable/FilterInput';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -177,8 +180,19 @@ const ExchangeManagement: React.FC = () => {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <Card>
-                  <CardContent>
-                    <Map />
+                  <CardContent style={{ textAlign: 'center' }}>
+                    {pharmacyInfoState?.data.x && pharmacyInfoState?.data.y ? (
+                      <Map
+                        defaultLatLng={[
+                          pharmacyInfoState?.data.x,
+                          pharmacyInfoState?.data.y,
+                        ]}
+                      />
+                    ) : (
+                      <span style={{ color: 'red' }}>
+                        مختصات جغرافیایی این داروخانه ثبت نشده است
+                      </span>
+                    )}
                   </CardContent>
                 </Card>
               </Grid>
@@ -278,6 +292,7 @@ const ExchangeManagement: React.FC = () => {
             </Tooltip>
           );
         },
+        // filterComponent: (props: any): any => <FilterInput {...props} />,
       },
       {
         title: 'داروخانه طرف دوم',
