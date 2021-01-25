@@ -38,6 +38,9 @@ import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 import { Autocomplete } from '@material-ui/lab';
 import MaterialDatePicker from '../../../public/material-datepicker/MaterialDatePicker';
+import ModalContent from '../../../public/modal-content/ModalContent';
+// @ts-ignore
+import jalaali from 'jalaali-js';
 
 const { convertISOTime } = Convertor;
 
@@ -182,6 +185,9 @@ const SupplyList: React.FC = () => {
     id: -1,
     genericName: '',
   });
+  const [selectedDay, setSelectedDay] = useState<string>('');
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [selectedYear, setSelectedYear] = useState<string>('');
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
 
   const { t } = useTranslation();
@@ -249,11 +255,19 @@ const SupplyList: React.FC = () => {
     isoDate,
   ]);
 
+  const resetDateState = (): void => {
+    setSelectedDay('');
+    setSelectedMonth('');
+    setSelectedYear('');
+  };
+
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
+
   const toggleIsOpenModalOfNewList = (): void => {
     if (isOpenModalOfNewList) {
       dispatch({ type: 'reset' });
       setSelectedDate('');
+      resetDateState();
       setSelectedDrug('');
       setDaroogRecommendation('');
       setComissionPercent('');
@@ -264,52 +278,81 @@ const SupplyList: React.FC = () => {
     setIsOpenModalOfNewList((v) => !v);
   };
 
-  const {
-    isLoading: isLoadingFetchData,
-    data,
-    isFetched,
-  } = useQuery(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () => allPharmacyDrug());
+  const { data, isFetched } = useQuery(
+    AllPharmacyDrug.GET_ALL_PHARMACY_DRUG,
+    () => allPharmacyDrug()
+  );
 
   const [_savePharmacyDrug, { isLoading: isLoadingSave }] = useMutation(
     savePharmacyDrug,
     {
       onSuccess: async () => {
         toggleIsOpenModalOfNewList();
+        resetDateState();
         await successSweetAlert(t('alert.successfulSave'));
         queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
       },
     }
   );
 
-  const calculatDateDiference = (e: string, dateSeparator: string): void => {
+  const isJalaliDate = (num: number): boolean => num < 2000;
+
+  const calculatDateDiference = (): void => {
     const date = new Date();
     const todayMomentObject = moment([
       date.getFullYear(),
       date.getMonth(),
       date.getDate(),
     ]);
-    const convertedArray = e.split(dateSeparator).map((i) => Number(i));
-    const selectedDate = jalali.toGregorian(
-      convertedArray[0],
-      convertedArray[1],
-      convertedArray[2]
+
+    const convertedArray = [
+      Number(selectedYear),
+      Number(selectedMonth),
+      Number(selectedDay),
+    ];
+
+    let selectedDate: any;
+    if (isJalaliDate(convertedArray[0])) {
+      selectedDate = jalali.toGregorian(
+        convertedArray[0],
+        convertedArray[1],
+        convertedArray[2]
+      );
+    }
+
+    const selectedDateMomentObject = moment(
+      isJalaliDate(convertedArray[0])
+        ? [selectedDate.gy, selectedDate.gm - 1, selectedDate.gd]
+        : [Number(selectedYear), Number(selectedMonth) - 1, Number(selectedDay)]
     );
-    const selectedDateMomentObject = moment([
-      selectedDate.gy,
-      selectedDate.gm - 1,
-      selectedDate.gd,
-    ]);
 
     setDaysDiff(
       String(selectedDateMomentObject.diff(todayMomentObject, 'days'))
     );
 
     setIsoDate(
-      `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
-        selectedDate.gd
-      )}T00:00:00Z`
+      isJalaliDate(convertedArray[0])
+        ? `${selectedDate.gy}-${numberWithZero(
+            selectedDate.gm
+          )}-${numberWithZero(selectedDate.gd)}T00:00:00Z`
+        : `${[
+            Number(selectedYear),
+            Number(selectedMonth) - 1,
+            Number(selectedDay),
+          ].join('-')}T00:00:00Z`
     );
   };
+
+  useEffect(() => {
+    if (
+      selectedYear !== '' &&
+      selectedYear.length === 4 &&
+      selectedMonth !== '' &&
+      selectedDay !== ''
+    ) {
+      calculatDateDiference();
+    }
+  }, [selectedDay, selectedMonth, selectedYear]);
 
   const searchDrugs = async (title: string): Promise<any> => {
     try {
@@ -415,7 +458,30 @@ const SupplyList: React.FC = () => {
 
   const formHandler = async (): Promise<any> => {
     try {
-      state.expireDate = isoDate;
+      if (selectedYear === '' || selectedMonth === '') {
+        return;
+      }
+      const intSelectedYear = Number(selectedYear);
+      const intSelectedMonth = Number(selectedMonth);
+      const intSelectedDay = Number(selectedDay);
+
+      let date = '';
+      if (!isJalaliDate(intSelectedYear)) {
+        date = `${intSelectedYear}-${numberWithZero(
+          intSelectedMonth
+        )}-${numberWithZero(intSelectedDay)}T00:00:00Z`;
+      } else {
+        const jalail2Gregorian = jalaali.toGregorian(
+          intSelectedYear,
+          intSelectedMonth,
+          intSelectedDay
+        );
+
+        date = `${jalail2Gregorian.gy}-${numberWithZero(
+          jalail2Gregorian.gm
+        )}-${numberWithZero(jalail2Gregorian.gd)}T00:00:00Z`;
+      }
+      state.expireDate = date;
       //@ts-ignore
       state.drugID = selectedDrug.id;
       await _savePharmacyDrug(state);
@@ -565,7 +631,43 @@ const SupplyList: React.FC = () => {
               </Grid>
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={7}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <span style={{ marginBottom: 8 }}>
+                    {t('general.expireDate')}
+                  </span>
+                </Grid>
+              </Grid>
+              <Grid container spacing={1}>
+                <Grid item xs={3}>
+                  <Input
+                    label={t('general.day')}
+                    value={selectedDay}
+                    onChange={(e): void => setSelectedDay(e.target.value)}
+                  />
+                </Grid>
+                <span style={{ alignSelf: 'center' }}>/</span>
+                <Grid item xs={3}>
+                  <Input
+                    value={selectedMonth}
+                    label={t('general.month')}
+                    onChange={(e): void => setSelectedMonth(e.target.value)}
+                  />
+                </Grid>
+                <span style={{ alignSelf: 'center' }}>/</span>
+                <Grid item xs={3}>
+                  <Input
+                    value={selectedYear}
+                    label={t('general.year')}
+                    onChange={(e): void => setSelectedYear(e.target.value)}
+                  />
+                </Grid>
+
+                <Grid item xs={2} className={expireDate}>
+                  {daysDiff !== '' && <span>{daysDiff} روز</span>}
+                </Grid>
+              </Grid>
               {/* <Input
                 readOnly
                 onClick={toggleIsOpenDatePicker}
@@ -573,10 +675,6 @@ const SupplyList: React.FC = () => {
                 className="w-100 cursor-pointer"
                 label={t('general.expireDate')}
               /> */}
-              <MaterialDatePicker dateTypeIsSelectable />
-            </Grid>
-            <Grid item xs={2} className={expireDate}>
-              {daysDiff !== '' && <span>{daysDiff} روز</span>}
             </Grid>
 
             <Grid item xs={12}>
@@ -624,19 +722,6 @@ const SupplyList: React.FC = () => {
             </Button>
           </Grid>
         </div>
-      </Modal>
-
-      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
-        {/* <DatePicker
-          minimumDate={utils('fa').getToday()}
-          dateTypeIsSelectable
-          selectedDateHandler={(e): void => {
-            calculatDateDiference(e, '/');
-            setSelectedDate(e);
-
-            toggleIsOpenDatePicker();
-          }}
-        /> */}
       </Modal>
 
       <BackDrop isOpen={isOpenBackDrop} />
