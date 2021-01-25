@@ -403,7 +403,7 @@ const SupplyList: React.FC = () => {
     });
     const shamsiDate = convertISOTime(expireDate);
     setSelectedDate(shamsiDate);
-    calculatDateDiference(shamsiDate, '-');
+    // calculatDateDiference(shamsiDate, '-');
     setIsOpenBackDrop(false);
     toggleIsOpenModalOfNewList();
   };
