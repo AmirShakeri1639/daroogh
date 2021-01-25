@@ -70,6 +70,7 @@ export default {
         all: 'همه',
         add: 'اضافه کردن',
         favorite: 'علاقه مندی',
+        yourFavorite: 'علاقه مندی شما',
         undefined: 'تعریف نشده',
         toman: 'تومان',
         ok: 'خب',
