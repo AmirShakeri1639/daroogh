@@ -50,7 +50,7 @@ const MaterialDatePicker: React.FC<MaterialDatePicker> = ({
         labelFunc={(date): string => (date ? date.format('jYYYY/jMM/jDD') : '')}
         value={selectedDate}
         onChange={setSelectedDate}
-        variant={variant}
+        variant="dialog"
         // TextFieldComponent={<TextField />}
       />
     );
