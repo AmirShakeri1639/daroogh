@@ -31,8 +31,6 @@ export interface ModalPropsInterface {
   className?: any;
 }
 
-export type ModalContentPropsInterface = ModalPropsInterface;
-
 export interface CategoriesInterface {
   id: number;
   name: string;

@@ -389,6 +389,44 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('exchange.supplyList')} />
             </Link>
           </List>
+
+          <List component="div" className={linkWrapper}>
+            <Link to={packsList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBars} />
+              </ListItemIcon>
+              <ListItemText primary={t('pack.list')} />
+            </Link>
+          </List>
+        </Collapse>
+
+        <ListItem button onClick={(): void => setIsopenFavoriteList((v) => !v)}>
+          <ListItemIcon>
+            <Bookmark />
+          </ListItemIcon>
+          <ListItemText primary={t('general.yourFavorite')} />
+          {isopenFavoriteList ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isopenFavoriteList} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={drugFavoriteList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faPills} />
+              </ListItemIcon>
+              <ListItemText primary={t('drug.drug')} />
+            </Link>
+          </List>
+
+          <List component="div" className={linkWrapper}>
+            <Link to={drugCategoryfavoriteList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBars} />
+              </ListItemIcon>
+              <ListItemText
+                primary={`${t('drug.category')} ${t('drug.drug')}`}
+              />
+            </Link>
+          </List>
         </Collapse>
 
         <ListItem
@@ -442,70 +480,6 @@ const ListItems: React.FC = () => {
                 <FontAwesomeIcon icon={faUserTag} size="lg" />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.memberRole')} />
-            </Link>
-          </List>
-        </Collapse>
-
-        <ListItem button onClick={(): void => setIsopenFavoriteList((v) => !v)}>
-          <ListItemIcon>
-            <Bookmark />
-          </ListItemIcon>
-          <ListItemText primary={t('general.favorite')} />
-          {isopenFavoriteList ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={isopenFavoriteList} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={createDrug} className={nested}>
-              <ListItemIcon>
-                <AddCircle />
-              </ListItemIcon>
-              <ListItemText primary={t('drug.suggest')} />
-            </Link>
-          </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={drugFavoriteList} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faPills} />
-              </ListItemIcon>
-              <ListItemText primary={t('drug.drug')} />
-            </Link>
-          </List>
-
-          <List component="div" className={linkWrapper}>
-            <Link to={drugCategoryfavoriteList} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faBars} />
-              </ListItemIcon>
-              <ListItemText
-                primary={`${t('drug.category')} ${t('drug.drug')}`}
-              />
-            </Link>
-          </List>
-        </Collapse>
-
-        <ListItem button onClick={(): void => setIsOpenPackList((v) => !v)}>
-          <ListItemIcon>
-            <FontAwesomeIcon icon={faBoxOpen} size="lg" />
-          </ListItemIcon>
-          <ListItemText primary={t('pack.pack')} />
-          {isOpenPackList ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={isOpenPackList} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
-            <Link to={packsList} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faBars} />
-              </ListItemIcon>
-              <ListItemText primary={t('pack.list')} />
-            </Link>
-          </List>
-
-          <List component="div" className={linkWrapper}>
-            <Link to={createPack} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faPlus} />
-              </ListItemIcon>
-              <ListItemText primary={t('pack.create')} />
             </Link>
           </List>
         </Collapse>
