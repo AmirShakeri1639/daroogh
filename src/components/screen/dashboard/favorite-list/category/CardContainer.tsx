@@ -25,8 +25,6 @@ const CardContainer: React.FC<FavoriteDrugInterface> = (props) => {
   const { root, redTrash } = useStyle();
   const { data, formHandler } = props;
 
-  console.log('--->', data);
-
   const { name, id } = data;
 
   const removeHandler = async (_id: number): Promise<any> => {

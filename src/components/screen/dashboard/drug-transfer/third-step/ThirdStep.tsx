@@ -288,30 +288,31 @@ const ThirdStep: React.FC = () => {
                 <ToolBox />
               </Grid>
             </Grid>
-            {!viewExhcnage ||
-              (!viewExhcnage.lockSuggestion &&
+            {(!viewExhcnage ||
+              (viewExhcnage &&
+                !viewExhcnage.lockSuggestion &&
                 (viewExhcnage.state === 1 ||
                   viewExhcnage.state === 2 ||
-                  viewExhcnage.state === 12) && (
-                  <Grid
-                    item
-                    xs={12}
-                    md={12}
-                    style={{ marginTop: 10, paddingBottom: 0 }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={isSelected}
-                          onChange={handleChange}
-                          name="checkedB"
-                          color="primary"
-                        />
-                      }
-                      label="انتخاب دارو از سبد عرضه خود"
+                  viewExhcnage.state === 12))) && (
+              <Grid
+                item
+                xs={12}
+                md={12}
+                style={{ marginTop: 10, paddingBottom: 0 }}
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={isSelected}
+                      onChange={handleChange}
+                      name="checkedB"
+                      color="primary"
                     />
-                  </Grid>
-                ))}
+                  }
+                  label="انتخاب دارو از سبد عرضه خود"
+                />
+              </Grid>
+            )}
             <Grid container spacing={1}>
               <>
                 {isLoading && <CircleLoading />}

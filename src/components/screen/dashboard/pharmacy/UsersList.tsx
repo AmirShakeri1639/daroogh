@@ -8,6 +8,9 @@ import {
   CardHeader,
   IconButton,
   CardContent,
+  Grid,
+  Button,
+  TextField,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,17 +30,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
-import UserForm from './UserForm';
+// import UserForm from './UserForm';
 import { UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
 import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
-import RoleForm from './RoleForm';
+// import RoleForm from './RoleForm';
 import { UrlAddress } from '../../../../enum/UrlAddress';
+import { MaterialContainer } from '../../../public';
 import ModalContent from '../../../public/modal-content/ModalContent';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
+    // formContainer: {
+    //   display: 'flex',
+    //   justifyContent: 'space-between',
+    //   padding: theme.spacing(2, 2),
+    // },
     root: {
       minWidth: 500,
       width: '100%',
@@ -87,6 +96,14 @@ const useClasses = makeStyles((theme) =>
     },
     userRoleIcon: {
       color: '#7036e7',
+    },
+    createUserBtn: {
+      background: `${theme.palette.pinkLinearGradient.main} !important`,
+      color: '#fff',
+      float: 'right',
+    },
+    buttonContainer: {
+      marginBottom: theme.spacing(2),
     },
   })
 );
@@ -179,7 +196,13 @@ const UsersList: React.FC = () => {
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
+  const [isOpenModalOfCreateUser, setIsOpenModalOfCreateUser] = useState<
+    boolean
+  >(false);
+  const [showError, setShowError] = useState(false);
 
+  const toggleIsOpenModalOfUser = (): void =>
+    setIsOpenModalOfCreateUser((v) => !v);
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
@@ -219,7 +242,13 @@ const UsersList: React.FC = () => {
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
-  const { root, userRoleIcon } = useClasses();
+  const {
+    root,
+    userRoleIcon,
+    createUserBtn,
+    buttonContainer,
+    formContainer,
+  } = useClasses();
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
@@ -396,25 +425,75 @@ const UsersList: React.FC = () => {
     },
   ];
 
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  const inputValuesValidation = (): boolean => {
+    const { name, family, mobile, email, userName, nationalCode } = state;
+
+    return (
+      name.trim().length < 2 ||
+      family.trim().length < 2 ||
+      mobile.trim().length < 11 ||
+      (email !== '' && !emailRegex.test(email.toLowerCase())) ||
+      userName.trim().length < 1 ||
+      (nationalCode !== '' && nationalCode.length !== 10)
+    );
+  };
+
+  const formHandler = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<any> => {
+    e.preventDefault();
+    if (inputValuesValidation()) {
+      setShowError(true);
+      return;
+    }
+    const data: any = {
+      id: state.id,
+      pharmacyID: state.pharmacyID.id,
+      name: state.name,
+      family: state.family,
+      mobile: state.mobile,
+      email: state.email,
+      userName: state.userName,
+      nationalCode: state.nationalCode,
+      birthDate: state.birthDate,
+      password: state.password,
+      active: state.active,
+    };
+
+    // await _saveNewUser(data);
+    // if (onSubmit) onSubmit();
+  };
+
   return (
-    <FormContainer title={t('user.users-list')}>
+    <MaterialContainer>
+      <Grid container spacing={1} className={buttonContainer}>
+        <Button
+          variant="outlined"
+          className={createUserBtn}
+          onClick={toggleIsOpenModalOfUser}
+        >
+          {t('user.create-user')}
+        </Button>
+      </Grid>
+
       <DataTable
         tableRef={ref}
         extraMethods={{ editUser: enableUserHandler }}
         columns={tableColumns()}
-        editAction={editUserHandler}
-        editUser={enableUserHandler}
-        removeAction={removeUserHandler}
+        // editAction={editUserHandler}
+        // editUser={enableUserHandler}
+        // removeAction={removeUserHandler}
         queryKey={UserQueryEnum.GET_ALL_USERS}
         queryCallback={getAllUsers}
         initLoad={false}
         isLoading={isLoadingRemoveUser || isLoadingEditUser}
         pageSize={10}
         urlAddress={UrlAddress.getAllUser}
-        stateAction={disableUserHandler}
+        // stateAction={disableUserHandler}
         customActions={customDataTAbleACtions}
       />
-
       <Modal open={isOpenRoleModal} toggle={toggleIsOpenRoleModal}>
         <Card className={root}>
           <CardHeader
@@ -429,14 +508,13 @@ const UsersList: React.FC = () => {
           <Divider />
 
           <CardContent>
-            <RoleForm
+            {/* <RoleForm
               userId={idOfSelectedUser}
               toggleForm={toggleIsOpenRoleModal}
-            />
+            /> */}
           </CardContent>
         </Card>
       </Modal>
-
       <Modal open={isOpenSaveModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
           <CardHeader
@@ -449,7 +527,7 @@ const UsersList: React.FC = () => {
           />
           <Divider />
           <CardContent>
-            <UserForm
+            {/* <UserForm
               userData={state}
               noShowInput={['password']}
               onCancel={toggleIsOpenSaveModalForm}
@@ -457,11 +535,10 @@ const UsersList: React.FC = () => {
                 queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
                 toggleIsOpenSaveModalForm();
               }}
-            />
+            /> */}
           </CardContent>
         </Card>
       </Modal>
-
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DateTimePicker
           selectedDateHandler={(e): void => {
@@ -470,7 +547,220 @@ const UsersList: React.FC = () => {
           }}
         />
       </Modal>
-    </FormContainer>
+
+      <ModalContent
+        open={isOpenModalOfCreateUser}
+        toggle={toggleIsOpenModalOfUser}
+      >
+        {/* <form
+          autoComplete="off"
+          className={formContainer}
+          onSubmit={formHandler}
+        >
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                error={state.name.trim().length < 2 && showError}
+                label="نام کاربر"
+                size="small"
+                className="w-100"
+                variant="outlined"
+                value={state.name}
+                onChange={(e): void =>
+                  dispatch({ type: 'name', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                className="w-100"
+                error={state.family.trim().length < 2 && showError}
+                label="نام خانوادگی کاربر"
+                size="small"
+                variant="outlined"
+                value={state.family}
+                onChange={(e): void =>
+                  dispatch({ type: 'family', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                className="w-100"
+                error={state.mobile.trim().length < 11 && showError}
+                label="موبایل"
+                type="number"
+                size="small"
+                variant="outlined"
+                value={state.mobile}
+                onChange={(e): void =>
+                  dispatch({ type: 'mobile', value: e.target.value })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                error={
+                  state?.email?.length > 0 &&
+                  !emailRegex.test(state.email) &&
+                  showError
+                }
+                label="ایمیل"
+                className="w-100"
+                type="email"
+                size="small"
+                variant="outlined"
+                value={state.email}
+                onChange={(e): void =>
+                  dispatch({ type: 'email', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                error={state?.userName?.length < 1 && showError}
+                label="نام کاربری"
+                size="small"
+                className="w-100"
+                variant="outlined"
+                autoComplete="off"
+                value={state.userName}
+                onChange={(e): void =>
+                  dispatch({ type: 'userName', value: e.target.value })
+                }
+              />
+            </Grid>
+
+            {isVisibleField('password') && (
+              <Grid item xs={12} sm={6} xl={3}>
+                <TextField
+                  error={state?.password?.length < 3 && showError}
+                  label="کلمه عبور"
+                  className="w-100"
+                  autoComplete="new-password"
+                  type="password"
+                  size="small"
+                  variant="outlined"
+                  value={state.password}
+                  onChange={(e): void =>
+                    dispatch({ type: 'password', value: e.target.value })
+                  }
+                />
+              </Grid>
+            )}
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                error={
+                  state?.nationalCode !== '' &&
+                  state?.nationalCode?.length < 10 &&
+                  showError
+                }
+                label="کد ملی"
+                className="w-100"
+                type="text"
+                size="small"
+                variant="outlined"
+                value={state.nationalCode}
+                onChange={(e): void =>
+                  dispatch({ type: 'nationalCode', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                label="تاریخ تولد"
+                inputProps={{
+                  readOnly: true,
+                }}
+                className="w-100"
+                type="text"
+                size="small"
+                variant="outlined"
+                value={state?.birthDate}
+                onClick={toggleIsOpenDatePicker}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <Autocomplete
+                loading={isLoading}
+                id="pharmacyList"
+                noOptionsText={t('general.noData')}
+                loadingText={t('general.loading')}
+                options={options}
+                value={state?.pharmacyID}
+                onChange={(event, value, reason): void => {
+                  dispatch({ type: 'pharmacyID', value });
+                }}
+                onInputChange={debounce(
+                  (e, newValue) => searchPharmacyByName(newValue),
+                  500
+                )}
+                getOptionLabel={(option: any) => option.name}
+                openOnFocus
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label={t('pharmacy.name')}
+                    variant="outlined"
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={state.active}
+                    onChange={(e): void =>
+                      dispatch({
+                        type: 'active',
+                        value: e.target.checked,
+                      })
+                    }
+                  />
+                }
+                label={`${t('user.user')} ${
+                  state.active ? t('general.active') : t('general.deActive')
+                }`}
+              />
+            </Grid>
+            <Grid container spacing={1} className={buttonContainer}>
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  className={cancelButton}
+                  onClick={(): void => {
+                    dispatch({ type: 'reset' });
+                    setShowError(false);
+                    if (onCancel) {
+                      onCancel();
+                    } else {
+                      window.history.go(-1);
+                    }
+                  }}
+                >
+                  {t('general.cancel')}
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={addButton}
+                >
+                  {isLoadingNewUser
+                    ? t('general.pleaseWait')
+                    : t('action.save')}
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </form> */}
+      </ModalContent>
+    </MaterialContainer>
   );
 };
 
