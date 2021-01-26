@@ -24,16 +24,23 @@ import { UrlAddress } from '../../../../enum/UrlAddress';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { DataTableCustomActionInterface } from '../../../../interfaces/component';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
-import { Exchange, PharmacyDrug } from '../../../../services/api';
+import { Exchange, PharmacyDrug, User } from '../../../../services/api';
 import DataTable from '../../../public/datatable/DataTable';
 import Modal from '../../../public/modal/Modal';
 import CloseIcon from '@material-ui/icons/Close';
 import { Cancel } from '../../../../model/exchange';
 import { useMutation } from 'react-query';
-import { errorHandler, sweetAlert } from '../../../../utils';
+import {
+  EncrDecrService,
+  errorHandler,
+  Impersonation,
+  sweetAlert,
+} from '../../../../utils';
 import { PharmacyInfo } from '../../../../interfaces/PharmacyInfo';
 import { Map } from '../../../public';
 import FilterInput from '../../../public/datatable/FilterInput';
+import routes from '../../../../routes';
+import { useHistory } from 'react-router-dom';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -220,6 +227,20 @@ const ExchangeManagement: React.FC = () => {
     },
   ];
 
+  const history = useHistory();
+  const { impersonate } = new User();
+  const getNewToken = async (
+    pharmacyId: number | string,
+    exchangeId: number
+  ): Promise<any> => {
+    const result = await impersonate(pharmacyId);
+    const impersonation = new Impersonation();
+    impersonation.changeToken(result.data.token, result.data.pharmacyName);
+    const encDecService = new EncrDecrService();
+    const encryptedId = encDecService.encrypt(exchangeId);
+    history.push(`${routes.transfer}?eid=${encodeURIComponent(encryptedId)}`);
+  };
+
   const getColumns = (): DataTableColumns[] => {
     return [
       {
@@ -330,7 +351,13 @@ const ExchangeManagement: React.FC = () => {
         render: (row: any): any => {
           return (
             <Tooltip title="جهت ورود به تبادل کلیک نمایید">
-              <Link href="#" onClick={(e: any): any => e.preventDefault()}>
+              <Link
+                href="#"
+                onClick={async (e: any): Promise<any> => {
+                  e.preventDefault();
+                  await getNewToken(row.pharmacyIdA, row.id);
+                }}
+              >
                 {row.numberA}
               </Link>
             </Tooltip>
@@ -351,7 +378,10 @@ const ExchangeManagement: React.FC = () => {
               <Link
                 href="#"
                 style={{ color: '#c50000' }}
-                onClick={(e: any): any => e.preventDefault()}
+                onClick={async (e: any): Promise<any> => {
+                  e.preventDefault();
+                  await getNewToken(row.pharmacyIdB, row.id);
+                }}
               >
                 {row.numberB}
               </Link>
@@ -375,7 +405,7 @@ const ExchangeManagement: React.FC = () => {
               queryKey={ExchangeEnum.GET_ALL_EXCHANGE}
               queryCallback={getAllExchange}
               urlAddress={UrlAddress.getAllExchange}
-              detailPanel={(row: any) => detailPanel(row)}
+              detailPanel={(row: any): any => detailPanel(row)}
               customActions={actions}
               initLoad={false}
             />

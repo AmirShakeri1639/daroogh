@@ -111,6 +111,10 @@ const ExchangeManagement = lazy(() =>
   import('./components/screen/dashboard/exchange-management/ExchangeManagement')
 );
 
+const PharmacyUsersList = lazy(() =>
+  import('./components/screen/dashboard/pharmacy/UsersList')
+);
+
 const {
   login,
   drugFavoriteList,
@@ -138,6 +142,7 @@ const {
   packsList,
   createPack,
   exchangeManagementList,
+  pharmacyUsersList,
 } = routes;
 
 const App = (): JSX.Element => {
@@ -267,6 +272,10 @@ const App = (): JSX.Element => {
 
             <PrivateRoute exact path={exchangeManagementList}>
               <Dashboard component={<ExchangeManagement />} />
+            </PrivateRoute>
+
+            <PrivateRoute exact path={pharmacyUsersList}>
+              <Dashboard component={<PharmacyUsersList />} />
             </PrivateRoute>
 
             {/*<Route component={<>404 Not Found</>} />*/}
