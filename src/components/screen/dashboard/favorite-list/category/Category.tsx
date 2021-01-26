@@ -1,4 +1,14 @@
-import { createStyles, Grid, makeStyles, TextField } from '@material-ui/core';
+import {
+  Checkbox,
+  createStyles,
+  Grid,
+  Input,
+  InputLabel,
+  ListItemText,
+  makeStyles,
+  MenuItem,
+  Select,
+} from '@material-ui/core';
 import React, { useState } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,14 +17,20 @@ import CardContainer from './CardContainer';
 import { useTranslation } from 'react-i18next';
 import { remove } from 'lodash';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
-import { PharmacyDrugEnum } from '../../../../../enum';
-import { Favorite, Search } from '../../../../../services/api';
+import { CategoryQueryEnum, PharmacyDrugEnum } from '../../../../../enum';
+import {
+  Favorite,
+  Search,
+  Category as CategoryApi,
+} from '../../../../../services/api';
 import { Autocomplete } from '@material-ui/lab';
 import { errorHandler, successSweetAlert } from '../../../../../utils';
 
 const { getFavoriteList, saveFavoriteList } = new Favorite();
 
 const { searchCategory } = new Search();
+
+const { getAllCategories } = new CategoryApi();
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -52,10 +68,21 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 const Category: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<any>(null);
+  const [selectedCategory, setSelectedCategory] = useState<number[]>([]);
   const [inSearchingMode, setInSearchingMode] = useState<boolean>(false);
   const [inSubmit, setInSubmit] = useState<boolean>(false);
   const [isOpenBackdrop, setIsOpenBackdrop] = useState<boolean>(false);
@@ -70,8 +97,22 @@ const Category: React.FC = () => {
 
   const { isLoading, data, isFetched } = useQuery(
     PharmacyDrugEnum.GET_FAVORITE_LIST,
-    getFavoriteList
+    getFavoriteList,
+    {
+      onSuccess: (data) => {
+        setSelectedCategory(
+          data.items
+            .filter((item: any) => item.category !== null)
+            .map((item: any) => item.category.id)
+        );
+      },
+    }
   );
+
+  const {
+    isLoading: isloadingAllCategory,
+    data: allCategories,
+  } = useQuery(CategoryQueryEnum.GET_ALL_CATEGORIES, () => getAllCategories(0));
 
   const [_saveFavoriteList] = useMutation(saveFavoriteList, {
     onSuccess: async (data) => {
@@ -83,7 +124,7 @@ const Category: React.FC = () => {
 
       setIsOpenBackdrop(false);
 
-      setSelectedCategory(null);
+      setSelectedCategory([]);
       await successSweetAlert(message);
     },
   });
@@ -95,20 +136,16 @@ const Category: React.FC = () => {
         .map((item: any) => item.drug?.id)
         .filter((item: any) => item !== null && item !== undefined);
 
-      const categoriesId = data.items
+      let categoriesId = data.items
         .map((item: any) => item.category?.id)
         .filter((item: any) => item !== null && item !== undefined);
 
-      if (categoryId !== -1) {
+      if (categoryId > -1) {
         setIsOpenBackdrop(true);
         remove(categoriesId, (num) => num === categoryId);
+      } else {
+        categoriesId = selectedCategory;
       }
-
-      if (selectedCategory !== null) {
-        categoriesId.push(Number(selectedCategory));
-      }
-
-      console.log(categoriesId);
 
       await _saveFavoriteList({
         pharmacyID: 0,
@@ -161,6 +198,21 @@ const Category: React.FC = () => {
     }
   };
 
+  const listGenerator = (): JSX.Element[] | null => {
+    if (!isloadingAllCategory && allCategories !== undefined) {
+      return allCategories.items.map((cat) => {
+        return (
+          <MenuItem key={cat.id} value={cat.id}>
+            <Checkbox checked={selectedCategory.indexOf(cat.id) !== -1} />
+            <ListItemText primary={cat.name} />
+          </MenuItem>
+        );
+      });
+    }
+
+    return null;
+  };
+
   return (
     <MaterialContainer>
       <Grid container spacing={1}>
@@ -182,29 +234,30 @@ const Category: React.FC = () => {
         <div className={modalContainer}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <Autocomplete
-                loading={inSearchingMode}
-                id="drug-list"
-                noOptionsText={t('general.noData')}
-                loadingText={t('general.loading')}
-                openText="openText"
-                options={options}
-                onChange={(event, value, reason): void => {
-                  setSelectedCategory(value.id);
+              <InputLabel id="category-list">{t('drug.category')}</InputLabel>
+              <Select
+                multiple
+                labelId="cateogry-list"
+                label={t('drug.category')}
+                variant="filled"
+                className="w-100"
+                MenuProps={MenuProps}
+                value={selectedCategory}
+                onChange={(e): void => {
+                  const val = e.target.value;
+                  setSelectedCategory(val as number[]);
                 }}
-                getOptionLabel={(option: any) => option.name}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label={t('drug.category')}
-                    variant="outlined"
-                    onChange={(e): Promise<any> =>
-                      drugCategorySearch(e.target.value)
-                    }
-                  />
-                )}
-              />
+                input={<Input />}
+                renderValue={(selected: any): string => {
+                  const items = allCategories?.items
+                    .filter((item: any) => selected.indexOf(item.id) !== -1)
+                    .map((item: any) => item.name);
+
+                  return ((items as string[]) ?? []).join(', ');
+                }}
+              >
+                {listGenerator()}
+              </Select>
             </Grid>
 
             <Grid item xs={12} className={buttonContainer}>

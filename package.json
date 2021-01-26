@@ -43,6 +43,7 @@
     "date-fns": "^2.0.0-beta.5",
     "express": "^4.17.1",
     "filefy": "^0.1.10",
+    "formik": "^2.2.6",
     "history": "^5.0.0",
     "i18next": "^19.8.2",
     "install": "^0.13.0",
