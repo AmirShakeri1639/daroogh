@@ -30,6 +30,7 @@ import {
   faBars,
   faBoxOpen,
   faPlus,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -114,6 +115,7 @@ const {
   drugCategoryfavoriteList,
   packsList,
   createPack,
+  pharmacyUsersList,
   exchangeManagementList,
 } = routes;
 
@@ -296,6 +298,14 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('pharmacy.list')} />
             </Link>
           </List>
+          {/* <List component="div" className={linkWrapper}>
+            <Link to={pharmacyUsersList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('user.users-list')} />
+            </Link>
+          </List> */}
         </Collapse>
 
         {/* //// Message */}
