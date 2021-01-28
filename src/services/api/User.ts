@@ -4,6 +4,7 @@ import {
   ChangeUserPasswordInterface,
   NewUserData,
 } from '../../interfaces/user';
+import { NewPharmacyUserData } from '../../model';
 
 class User extends Api {
   readonly urls = {
@@ -95,6 +96,15 @@ class User extends Api {
     const result = await this.postData(
       `/User/SetNotificationKey?notifKey=${notifKey}`
     );
+    return result.data;
+  };
+
+  addPharmacyUser = async (data: NewPharmacyUserData): Promise<any> => {
+    const result = await this.postJsonData(
+      '/User/AddUserByPharmacyManager',
+      data
+    );
+
     return result.data;
   };
 }

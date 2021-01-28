@@ -1,6 +1,5 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQueryCache } from 'react-query';
-import User from '../../../../services/api/User';
 import {
   createStyles,
   Divider,
@@ -19,8 +18,14 @@ import {
   DataTableCustomActionInterface,
   TableColumnInterface,
 } from '../../../../interfaces';
-import { TextMessage } from '../../../../enum';
-import { errorHandler, successSweetAlert, sweetAlert } from '../../../../utils';
+import { useFormik } from 'formik';
+import { RoleType, TextMessage } from '../../../../enum';
+import {
+  errorHandler,
+  errorSweetAlert,
+  successSweetAlert,
+  sweetAlert,
+} from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import {
   InitialNewUserInterface,
@@ -39,6 +44,9 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { MaterialContainer } from '../../../public';
 import ModalContent from '../../../public/modal-content/ModalContent';
+import { NewPharmacyUserData } from '../../../../model';
+import { User } from '../../../../services/api';
+import RoleForm from '../user/RoleForm';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -75,10 +83,7 @@ const useClasses = makeStyles((theme) =>
     formContainer: {
       display: 'flex',
       justifyContent: 'space-between',
-      padding: theme.spacing(2, 2),
-      '& .MuiTextField-root': {
-        margin: theme.spacing(1),
-      },
+      padding: theme.spacing(1),
     },
     titleContainer: {
       padding: theme.spacing(2),
@@ -108,18 +113,15 @@ const useClasses = makeStyles((theme) =>
   })
 );
 
-const initialState: NewUserData = {
+const initialState: NewPharmacyUserData = {
   id: 0,
-  pharmacyID: null,
   name: '',
   family: '',
   mobile: '',
   email: '',
   userName: '',
-  password: '',
   nationalCode: '',
   birthDate: '',
-  active: false,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -146,11 +148,7 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         mobile: value,
       };
-    case 'pharmacyID':
-      return {
-        ...state,
-        pharmacyID: value,
-      };
+
     case 'email':
       return {
         ...state,
@@ -160,11 +158,6 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         userName: value,
-      };
-    case 'password':
-      return {
-        ...state,
-        password: value,
       };
     case 'nationalCode':
       return {
@@ -176,17 +169,14 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         birthDate: value,
       };
-    case 'active':
-      return {
-        ...state,
-        active: value,
-      };
     case 'reset':
       return initialState;
     default:
       console.error('Action type not defined');
   }
 }
+
+const { addPharmacyUser } = new User();
 
 const UsersList: React.FC = () => {
   const ref = useDataTableRef();
@@ -240,6 +230,27 @@ const UsersList: React.FC = () => {
     }
   );
 
+  const [_addPharmacyUser, { isLoading: isLoadingNewUser }] = useMutation(
+    addPharmacyUser,
+    {
+      onSuccess: async (data) => {
+        const { message } = data;
+        if (showError) {
+          setShowError(false);
+        }
+        dispatch({ type: 'reset' });
+        toggleIsOpenModalOfUser();
+        ref.current?.onQueryChange();
+        await successSweetAlert(
+          message || t('alert.successfulCreateTextMessage')
+        );
+      },
+      onError: async (data: any) => {
+        await errorSweetAlert(data || t('error.save'));
+      },
+    }
+  );
+
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
   const {
@@ -248,7 +259,44 @@ const UsersList: React.FC = () => {
     createUserBtn,
     buttonContainer,
     formContainer,
+    addButton,
+    cancelButton,
   } = useClasses();
+
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  const inputValuesValidation = (): boolean => {
+    const { name, family, mobile, email, username, nationalCode } = state;
+
+    return (
+      name.trim().length < 2 ||
+      username.trim().length < 1 ||
+      family.trim().length < 2 ||
+      mobile.trim().length < 11 ||
+      (email !== '' && !emailRegex.test(email.toLowerCase())) ||
+      (nationalCode !== '' && nationalCode.length !== 10)
+    );
+  };
+
+  const formHandler = async (): Promise<any> => {
+    if (inputValuesValidation()) {
+      setShowError(true);
+      return;
+    }
+    const data: any = {
+      id: state.id,
+      name: state.name,
+      family: state.family,
+      mobile: state.mobile,
+      email: state.email,
+      userName: state.userName,
+      nationalCode: state.nationalCode,
+      birthDate: state.birthDate,
+    };
+
+    await _addPharmacyUser(data);
+    // if (onSubmit) onSubmit();
+  };
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
@@ -425,47 +473,6 @@ const UsersList: React.FC = () => {
     },
   ];
 
-  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-  const inputValuesValidation = (): boolean => {
-    const { name, family, mobile, email, userName, nationalCode } = state;
-
-    return (
-      name.trim().length < 2 ||
-      family.trim().length < 2 ||
-      mobile.trim().length < 11 ||
-      (email !== '' && !emailRegex.test(email.toLowerCase())) ||
-      userName.trim().length < 1 ||
-      (nationalCode !== '' && nationalCode.length !== 10)
-    );
-  };
-
-  const formHandler = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<any> => {
-    e.preventDefault();
-    if (inputValuesValidation()) {
-      setShowError(true);
-      return;
-    }
-    const data: any = {
-      id: state.id,
-      pharmacyID: state.pharmacyID.id,
-      name: state.name,
-      family: state.family,
-      mobile: state.mobile,
-      email: state.email,
-      userName: state.userName,
-      nationalCode: state.nationalCode,
-      birthDate: state.birthDate,
-      password: state.password,
-      active: state.active,
-    };
-
-    // await _saveNewUser(data);
-    // if (onSubmit) onSubmit();
-  };
-
   return (
     <MaterialContainer>
       <Grid container spacing={1} className={buttonContainer}>
@@ -508,10 +515,11 @@ const UsersList: React.FC = () => {
           <Divider />
 
           <CardContent>
-            {/* <RoleForm
+            <RoleForm
               userId={idOfSelectedUser}
               toggleForm={toggleIsOpenRoleModal}
-            /> */}
+              roleType={RoleType.PHARMACY}
+            />
           </CardContent>
         </Card>
       </Modal>
@@ -539,23 +547,17 @@ const UsersList: React.FC = () => {
           </CardContent>
         </Card>
       </Modal>
-      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
-        <DateTimePicker
-          selectedDateHandler={(e): void => {
-            dispatch({ type: 'birthDate', value: e });
-            toggleIsOpenDatePicker();
-          }}
-        />
-      </Modal>
 
       <ModalContent
         open={isOpenModalOfCreateUser}
         toggle={toggleIsOpenModalOfUser}
+        confirmHandler={formHandler}
+        disabled={isLoadingNewUser}
       >
-        {/* <form
+        <form
           autoComplete="off"
-          className={formContainer}
           onSubmit={formHandler}
+          className={formContainer}
         >
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6} xl={3}>
@@ -632,23 +634,6 @@ const UsersList: React.FC = () => {
               />
             </Grid>
 
-            {isVisibleField('password') && (
-              <Grid item xs={12} sm={6} xl={3}>
-                <TextField
-                  error={state?.password?.length < 3 && showError}
-                  label="کلمه عبور"
-                  className="w-100"
-                  autoComplete="new-password"
-                  type="password"
-                  size="small"
-                  variant="outlined"
-                  value={state.password}
-                  onChange={(e): void =>
-                    dispatch({ type: 'password', value: e.target.value })
-                  }
-                />
-              </Grid>
-            )}
             <Grid item xs={12} sm={6} xl={3}>
               <TextField
                 error={
@@ -681,85 +666,22 @@ const UsersList: React.FC = () => {
                 onClick={toggleIsOpenDatePicker}
               />
             </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <Autocomplete
-                loading={isLoading}
-                id="pharmacyList"
-                noOptionsText={t('general.noData')}
-                loadingText={t('general.loading')}
-                options={options}
-                value={state?.pharmacyID}
-                onChange={(event, value, reason): void => {
-                  dispatch({ type: 'pharmacyID', value });
-                }}
-                onInputChange={debounce(
-                  (e, newValue) => searchPharmacyByName(newValue),
-                  500
-                )}
-                getOptionLabel={(option: any) => option.name}
-                openOnFocus
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label={t('pharmacy.name')}
-                    variant="outlined"
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={state.active}
-                    onChange={(e): void =>
-                      dispatch({
-                        type: 'active',
-                        value: e.target.checked,
-                      })
-                    }
-                  />
-                }
-                label={`${t('user.user')} ${
-                  state.active ? t('general.active') : t('general.deActive')
-                }`}
-              />
-            </Grid>
-            <Grid container spacing={1} className={buttonContainer}>
-              <Grid item xs={12}>
-                <Button
-                  type="submit"
-                  color="secondary"
-                  variant="contained"
-                  className={cancelButton}
-                  onClick={(): void => {
-                    dispatch({ type: 'reset' });
-                    setShowError(false);
-                    if (onCancel) {
-                      onCancel();
-                    } else {
-                      window.history.go(-1);
-                    }
-                  }}
-                >
-                  {t('general.cancel')}
-                </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  className={addButton}
-                >
-                  {isLoadingNewUser
-                    ? t('general.pleaseWait')
-                    : t('action.save')}
-                </Button>
-              </Grid>
-            </Grid>
           </Grid>
-        </form> */}
+        </form>
       </ModalContent>
+
+      <Modal
+        open={isOpenDatePicker}
+        toggle={toggleIsOpenDatePicker}
+        zIndex={1060}
+      >
+        <DateTimePicker
+          selectedDateHandler={(e): void => {
+            dispatch({ type: 'birthDate', value: e });
+            toggleIsOpenDatePicker();
+          }}
+        />
+      </Modal>
     </MaterialContainer>
   );
 };

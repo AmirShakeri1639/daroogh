@@ -16,6 +16,7 @@ export default {
         female: 'زن',
         action: 'کار',
         dashboard: 'داشبورد',
+        records: 'سوابق',
         theme: 'تم',
         colors: 'رنگ‌ها',
         base: 'پایه',
@@ -90,6 +91,7 @@ export default {
         create: 'ایجاد پک',
         category: 'دسته بندی پک',
         addDrug: 'اضافه کردن دارو',
+        submitMyPacks: 'ثبت پک های من',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -230,6 +232,7 @@ export default {
         state: 'وضعیت',
         totalPrice: 'مجموع قیمت',
         basketTotalPrice: 'مجموع قیمت سبد',
+        myProducts: 'محصولات من',
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',

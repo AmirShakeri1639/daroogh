@@ -25,12 +25,6 @@ export interface ButtonPropsInterface {
   disabled?: boolean;
 }
 
-export interface ModalPropsInterface {
-  open: boolean;
-  toggle: () => void;
-  className?: any;
-}
-
 export interface CategoriesInterface {
   id: number;
   name: string;

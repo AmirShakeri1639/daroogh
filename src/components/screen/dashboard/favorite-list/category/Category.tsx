@@ -200,7 +200,7 @@ const Category: React.FC = () => {
 
   const listGenerator = (): JSX.Element[] | null => {
     if (!isloadingAllCategory && allCategories !== undefined) {
-      return allCategories.items.map((cat) => {
+      return allCategories.items.map((cat: any) => {
         return (
           <MenuItem key={cat.id} value={cat.id}>
             <Checkbox checked={selectedCategory.indexOf(cat.id) !== -1} />

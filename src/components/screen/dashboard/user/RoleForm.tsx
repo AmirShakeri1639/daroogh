@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
-import { RoleQueryEnum, UserQueryEnum } from '../../../../enum';
+import { RoleQueryEnum, RoleType, UserQueryEnum } from '../../../../enum';
 import { Button, MaterialContainer } from '../../../public';
 import { Role, User } from '../../../../services/api';
 import { difference } from 'lodash';
@@ -24,6 +24,7 @@ import { errorHandler } from '../../../../utils';
 interface RoleFormProps {
   userId: number;
   toggleForm: () => void;
+  roleType?: RoleType;
 }
 
 const {
@@ -64,7 +65,11 @@ const MenuProps = {
   },
 };
 
-const RoleForm: React.FC<RoleFormProps> = ({ userId, toggleForm }) => {
+const RoleForm: React.FC<RoleFormProps> = ({
+  userId,
+  toggleForm,
+  roleType,
+}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [arrayOfRoles, setArrayOfRoles] = useState<any[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<string[] | number[]>([]);
@@ -93,7 +98,9 @@ const RoleForm: React.FC<RoleFormProps> = ({ userId, toggleForm }) => {
   const {
     isLoading: roleListLoading,
     data: roleListData,
-  } = useQuery(RoleQueryEnum.GET_ALL_ROLES, () => getAllRoles());
+  } = useQuery(RoleQueryEnum.GET_ALL_ROLES, () =>
+    getAllRoles(roleType ? RoleType.PHARMACY : undefined)
+  );
 
   const rolesListGenerator = (): any => {
     if (roleListData !== undefined && !roleListLoading) {
