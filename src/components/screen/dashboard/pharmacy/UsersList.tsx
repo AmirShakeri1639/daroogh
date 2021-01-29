@@ -18,7 +18,6 @@ import {
   DataTableCustomActionInterface,
   TableColumnInterface,
 } from '../../../../interfaces';
-import { useFormik } from 'formik';
 import { RoleType, TextMessage } from '../../../../enum';
 import {
   errorHandler,
@@ -35,12 +34,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
-// import UserForm from './UserForm';
 import { UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
-import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
-// import RoleForm from './RoleForm';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { MaterialContainer } from '../../../public';
 import ModalContent from '../../../public/modal-content/ModalContent';
@@ -50,11 +46,6 @@ import RoleForm from '../user/RoleForm';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
-    // formContainer: {
-    //   display: 'flex',
-    //   justifyContent: 'space-between',
-    //   padding: theme.spacing(2, 2),
-    // },
     root: {
       minWidth: 500,
       width: '100%',

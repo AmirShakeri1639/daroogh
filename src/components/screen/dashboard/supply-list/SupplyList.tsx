@@ -677,7 +677,7 @@ const SupplyList: React.FC = () => {
               /> */}
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Input
                 className="w-100"
                 label={t('general.barcode')}
@@ -686,7 +686,7 @@ const SupplyList: React.FC = () => {
                   dispatch({ type: 'batchNO', value: e.target.value })
                 }
               />
-            </Grid>
+            </Grid> */}
 
             {comissionPercent !== '' && (
               <Grid item xs={12}>

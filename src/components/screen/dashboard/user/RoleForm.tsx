@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { RoleQueryEnum, RoleType, UserQueryEnum } from '../../../../enum';
-import { Button, MaterialContainer } from '../../../public';
+import { BackDrop, Button } from '../../../public';
 import { Role, User } from '../../../../services/api';
 import { difference } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -70,24 +70,20 @@ const RoleForm: React.FC<RoleFormProps> = ({
   toggleForm,
   roleType,
 }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [arrayOfRoles, setArrayOfRoles] = useState<any[]>([]);
   const [selectedRoles, setSelectedRoles] = useState<string[] | number[]>([]);
-  const [isLoadingSave, setIsLoadingSave] = useState<boolean>(false);
+  const [isOpenBackDrop, setIsOpenBackDrop] = useState(false);
 
-  const {
-    isLoading: userLoading,
-    data: userData,
-  } = useQuery(UserQueryEnum.GET_USER_BY_ID, () => getUserById(userId));
+  const { data: userData } = useQuery(UserQueryEnum.GET_USER_BY_ID, () =>
+    getUserById(userId)
+  );
 
   const { root, cancelButton, buttonContainer, roleInput } = useClasses();
 
   const { t } = useTranslation();
 
-  const {
-    isLoading: roleLoading,
-    data: roleData,
-  } = useQuery(RoleQueryEnum.GET_ROLES_OF_USER, () => getRolesOfUser(userId));
+  const { data: roleData } = useQuery(RoleQueryEnum.GET_ROLES_OF_USER, () =>
+    getRolesOfUser(userId)
+  );
 
   useEffect(() => {
     if (roleData !== undefined) {
@@ -99,7 +95,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
     isLoading: roleListLoading,
     data: roleListData,
   } = useQuery(RoleQueryEnum.GET_ALL_ROLES, () =>
-    getAllRoles(roleType ? RoleType.PHARMACY : undefined)
+    getAllRoles(roleType ? roleType : undefined)
   );
 
   const rolesListGenerator = (): any => {
@@ -148,66 +144,71 @@ const RoleForm: React.FC<RoleFormProps> = ({
     event: React.ChangeEvent<{ value: unknown }>
   ): Promise<any> => {
     const currentLength = event?.target?.value?.length;
+    setIsOpenBackDrop(true);
     if (selectedRoles.length > currentLength) {
       const diff = difference(selectedRoles as number[], event.target.value);
       await removeRole(diff[0]);
     } else {
       await formHandler(event?.target?.value[event.target.value.length - 1]);
     }
+    setIsOpenBackDrop(false);
     setSelectedRoles(event.target.value as string[]);
   };
 
   return (
-    <div className={root}>
-      <form>
-        <Grid container spacing={1}>
-          <Grid item xs={2}>
-            <span>نام کاربر: </span>
-          </Grid>
-          <Grid item xs={6}>
-            <span>{`${userData?.name} ${userData?.family}`}</span>
-          </Grid>
+    <>
+      <div className={root}>
+        <form>
+          <Grid container spacing={1}>
+            <Grid item xs={2}>
+              <span>نام کاربر: </span>
+            </Grid>
+            <Grid item xs={6}>
+              <span>{`${userData?.name} ${userData?.family}`}</span>
+            </Grid>
 
-          <Divider />
+            <Divider />
 
-          <Grid item xs={12}>
-            <FormControl className={roleInput}>
-              <InputLabel id="user-roles-list">نقش های کاربر:</InputLabel>
-              <Select
-                variant="outlined"
-                labelId="user-roles-list"
-                id="roles-list"
-                multiple
-                input={<Input />}
-                MenuProps={MenuProps}
-                value={selectedRoles}
-                onChange={handleChange}
-                renderValue={(selected: any): string => {
-                  const items = roleListData?.items
-                    .filter((item: any) => selected.indexOf(item.id) !== -1)
-                    .map((item: any) => item.name);
+            <Grid item xs={12}>
+              <FormControl className={roleInput}>
+                <InputLabel id="user-roles-list">نقش های کاربر:</InputLabel>
+                <Select
+                  variant="outlined"
+                  labelId="user-roles-list"
+                  id="roles-list"
+                  multiple
+                  input={<Input />}
+                  MenuProps={MenuProps}
+                  value={selectedRoles}
+                  onChange={handleChange}
+                  renderValue={(selected: any): string => {
+                    const items = roleListData?.items
+                      .filter((item: any) => selected.indexOf(item.id) !== -1)
+                      .map((item: any) => item.name);
 
-                  return ((items as string[]) ?? []).join(', ');
-                }}
+                    return ((items as string[]) ?? []).join(', ');
+                  }}
+                >
+                  {rolesListGenerator()}
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} className={buttonContainer}>
+              <Button
+                color="pink"
+                type="button"
+                onClick={toggleForm}
+                className={cancelButton}
               >
-                {rolesListGenerator()}
-              </Select>
-            </FormControl>
+                {t('general.close')}
+              </Button>
+            </Grid>
           </Grid>
-
-          <Grid item xs={12} className={buttonContainer}>
-            <Button
-              color="pink"
-              type="button"
-              onClick={toggleForm}
-              className={cancelButton}
-            >
-              {t('general.close')}
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-    </div>
+        </form>
+      </div>
+      <BackDrop isOpen={isOpenBackDrop} />
+    </>
   );
 };
 

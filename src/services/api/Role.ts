@@ -16,7 +16,13 @@ class Role extends Api {
 
   getAllRoles = async (type?: RoleType): Promise<any> => {
     try {
-      const result = await this.postJsonData(`${this.urls.all}`);
+      let equalType = '';
+      if (type === RoleType.PHARMACY) {
+        equalType = "'ForPharmacy'";
+      }
+      const result = await this.postJsonData(
+        `${this.urls.all}${type ? `?$filter=type eq ${equalType}` : ''}`
+      );
       return result.data;
     } catch (e) {
       errorHandler(e);
