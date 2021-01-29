@@ -83,6 +83,8 @@ export default {
         month: 'ماه',
         day: 'روز',
         status: 'وضعیت',
+        box: 'جعبه',
+        num: 'عدد',
       },
       pack: {
         pack: 'پک',

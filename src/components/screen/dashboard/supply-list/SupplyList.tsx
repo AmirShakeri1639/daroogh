@@ -41,6 +41,7 @@ import MaterialDatePicker from '../../../public/material-datepicker/MaterialDate
 import ModalContent from '../../../public/modal-content/ModalContent';
 // @ts-ignore
 import jalaali from 'jalaali-js';
+import { DrugType } from '../../../../enum/pharmacyDrug';
 
 const { convertISOTime } = Convertor;
 
@@ -359,6 +360,26 @@ const SupplyList: React.FC = () => {
     }
   }, [selectedDay, selectedMonth, selectedYear]);
 
+  const typeHandler = (item: string): string => {
+    let name = '';
+    switch (item) {
+      case DrugType.CAPSULE:
+      case DrugType.PILL:
+      case DrugType.SUPPOSITORY:
+        name = t('general.box');
+        break;
+      case DrugType.AMPOULE:
+      case DrugType.MILK_POWDER:
+      case DrugType.SYRUP:
+        name = t('general.num');
+        break;
+      default:
+        name = '';
+    }
+
+    return name;
+  };
+
   const searchDrugs = async (title: string): Promise<any> => {
     try {
       if (title.length < 2) {
@@ -369,7 +390,9 @@ const SupplyList: React.FC = () => {
 
       const items = result.map((item: any) => ({
         id: item.id,
-        drugName: `${item.name} (${item.genericName})`,
+        drugName: `${item.name} (${item.genericName}) ${typeHandler(
+          item.type
+        )}`,
       }));
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
