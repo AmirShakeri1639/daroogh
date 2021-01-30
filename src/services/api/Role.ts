@@ -1,6 +1,7 @@
 import Api from './Api';
 import { errorHandler } from '../../utils';
 import { NewRoleData, UserRoleInterface } from '../../interfaces';
+import { RoleType } from '../../enum';
 
 class Role extends Api {
   readonly urls = {
@@ -13,9 +14,15 @@ class Role extends Api {
     getRoleOfUser: '/Roles/GetRolesOfUser',
   };
 
-  getAllRoles = async (): Promise<any> => {
+  getAllRoles = async (type?: RoleType): Promise<any> => {
     try {
-      const result = await this.postJsonData(this.urls.all);
+      let equalType = '';
+      if (type === RoleType.PHARMACY) {
+        equalType = "'ForPharmacy'";
+      }
+      const result = await this.postJsonData(
+        `${this.urls.all}${type ? `?$filter=type eq ${equalType}` : ''}`
+      );
       return result.data;
     } catch (e) {
       errorHandler(e);

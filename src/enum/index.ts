@@ -91,7 +91,7 @@ export enum TransactionTypeEnum {
   // بستانکار
   Creditor,
   // بدهکار
-  Debtor
+  Debtor,
 }
 
 export const GetValuesOfEnum = (e: any): any => {
@@ -100,6 +100,7 @@ export const GetValuesOfEnum = (e: any): any => {
 };
 
 export * from './pharmacy';
+export * from './role';
 
 export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
 export { ColorEnum } from './colors';

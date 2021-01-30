@@ -8,12 +8,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import {
-  MaterialContainer,
-  Modal,
-  DatePicker,
-  BackDrop,
-} from '../../../public';
+import { MaterialContainer, Modal, BackDrop } from '../../../public';
 import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -41,8 +36,7 @@ import MaterialDatePicker from '../../../public/material-datepicker/MaterialDate
 import ModalContent from '../../../public/modal-content/ModalContent';
 // @ts-ignore
 import jalaali from 'jalaali-js';
-
-const { convertISOTime } = Convertor;
+import { DrugType } from '../../../../enum/pharmacyDrug';
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -160,7 +154,8 @@ const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 
 const { getComissionAndRecommendation } = new Comission();
 
-const { numberWithZero } = Convertor;
+const { numberWithZero, convertISOTime } = Convertor;
+const monthMinimumLength = 28;
 
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
@@ -308,7 +303,7 @@ const SupplyList: React.FC = () => {
     const convertedArray = [
       Number(selectedYear),
       Number(selectedMonth),
-      Number(selectedDay),
+      Number(selectedDay === '' ? monthMinimumLength : selectedDay),
     ];
 
     let selectedDate: any;
@@ -323,7 +318,11 @@ const SupplyList: React.FC = () => {
     const selectedDateMomentObject = moment(
       isJalaliDate(convertedArray[0])
         ? [selectedDate.gy, selectedDate.gm - 1, selectedDate.gd]
-        : [Number(selectedYear), Number(selectedMonth) - 1, Number(selectedDay)]
+        : [
+            Number(selectedYear),
+            Number(selectedMonth) - 1,
+            Number(selectedDay === '' ? monthMinimumLength : selectedDay),
+          ]
     );
 
     setDaysDiff(
@@ -354,6 +353,26 @@ const SupplyList: React.FC = () => {
     }
   }, [selectedDay, selectedMonth, selectedYear]);
 
+  const typeHandler = (item: string): string => {
+    let name = '';
+    switch (item) {
+      case DrugType.CAPSULE:
+      case DrugType.PILL:
+      case DrugType.SUPPOSITORY:
+        name = t('general.box');
+        break;
+      case DrugType.AMPOULE:
+      case DrugType.MILK_POWDER:
+      case DrugType.SYRUP:
+        name = t('general.num');
+        break;
+      default:
+        name = '';
+    }
+
+    return name;
+  };
+
   const searchDrugs = async (title: string): Promise<any> => {
     try {
       if (title.length < 2) {
@@ -364,7 +383,9 @@ const SupplyList: React.FC = () => {
 
       const items = result.map((item: any) => ({
         id: item.id,
-        drugName: `${item.name} (${item.genericName})`,
+        drugName: `${item.name} (${item.genericName}) ${typeHandler(
+          item.type
+        )}`,
       }));
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
@@ -395,6 +416,10 @@ const SupplyList: React.FC = () => {
     dispatch({ type: 'cnt', value: cnt });
     dispatch({ type: 'id', value: id });
 
+    const [year, month, day] = convertISOTime(expireDate).split('-');
+    setSelectedYear(year);
+    setSelectedMonth(month);
+    setSelectedDay(day);
     setIsOpenBackDrop(true);
     await searchDrugs(name);
     setSelectedDrug({
@@ -461,9 +486,12 @@ const SupplyList: React.FC = () => {
       if (selectedYear === '' || selectedMonth === '') {
         return;
       }
+
       const intSelectedYear = Number(selectedYear);
       const intSelectedMonth = Number(selectedMonth);
-      const intSelectedDay = Number(selectedDay);
+      const intSelectedDay = Number(
+        selectedDay === '' ? monthMinimumLength : selectedDay
+      );
 
       let date = '';
       if (!isJalaliDate(intSelectedYear)) {
@@ -545,7 +573,9 @@ const SupplyList: React.FC = () => {
             <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
-                  <label htmlFor="">{t('general.price')}</label>
+                  <label htmlFor="">{`${t('general.price')} (${t(
+                    'general.rial'
+                  )})`}</label>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -636,6 +666,9 @@ const SupplyList: React.FC = () => {
                 <Grid item xs={12}>
                   <span style={{ marginBottom: 8 }}>
                     {t('general.expireDate')}
+                  </span>{' '}
+                  <span className="text-danger txt-xs">
+                    (وارد کردن روز اجباری نیست)
                   </span>
                 </Grid>
               </Grid>
@@ -652,6 +685,7 @@ const SupplyList: React.FC = () => {
                   <Input
                     value={selectedMonth}
                     label={t('general.month')}
+                    required
                     onChange={(e): void => setSelectedMonth(e.target.value)}
                   />
                 </Grid>
@@ -659,6 +693,7 @@ const SupplyList: React.FC = () => {
                 <Grid item xs={3}>
                   <Input
                     value={selectedYear}
+                    required
                     label={t('general.year')}
                     onChange={(e): void => setSelectedYear(e.target.value)}
                   />
@@ -668,6 +703,7 @@ const SupplyList: React.FC = () => {
                   {daysDiff !== '' && <span>{daysDiff} روز</span>}
                 </Grid>
               </Grid>
+              <Grid item xs={12}></Grid>
               {/* <Input
                 readOnly
                 onClick={toggleIsOpenDatePicker}
@@ -677,7 +713,7 @@ const SupplyList: React.FC = () => {
               /> */}
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Input
                 className="w-100"
                 label={t('general.barcode')}
@@ -686,7 +722,7 @@ const SupplyList: React.FC = () => {
                   dispatch({ type: 'batchNO', value: e.target.value })
                 }
               />
-            </Grid>
+            </Grid> */}
 
             {comissionPercent !== '' && (
               <Grid item xs={12}>
@@ -717,7 +753,12 @@ const SupplyList: React.FC = () => {
             >
               {t('general.cancel')}
             </Button>
-            <Button color="blue" type="button" onClick={formHandler}>
+            <Button
+              color="blue"
+              type="button"
+              disabled={isLoadingSave}
+              onClick={formHandler}
+            >
               {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
             </Button>
           </Grid>
