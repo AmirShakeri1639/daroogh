@@ -154,8 +154,8 @@ const Create: React.FC = () => {
     setAmount('');
     setNumber('');
     setSelectedDrug('');
-    setOffer1('');
-    setOffer2('');
+    setOffer1(0);
+    setOffer2(0);
     setIsoDate('');
     setDaysDiff('');
     setSelectedDate('');
