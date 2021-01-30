@@ -298,14 +298,14 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('pharmacy.list')} />
             </Link>
           </List>
-          {/* <List component="div" className={linkWrapper}>
+          <List component="div" className={linkWrapper}>
             <Link to={pharmacyUsersList} className={nested}>
               <ListItemIcon>
                 <FontAwesomeIcon icon={faUser} size="lg" />
               </ListItemIcon>
               <ListItemText primary={t('user.users-list')} />
             </Link>
-          </List> */}
+          </List>
         </Collapse>
 
         {/* //// Message */}
@@ -374,11 +374,22 @@ const ListItems: React.FC = () => {
         </ListItem>
         <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
-            <Link to={desktop} className={nested}>
+            <Link to={supplyList} className={nested}>
               <ListItemIcon>
-                <InboxIcon />
+                <AppsIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.desktop')} />
+              <ListItemText
+                primary={`${t('general.submit')} ${t('exchange.myProducts')}`}
+              />
+            </Link>
+          </List>
+
+          <List component="div" className={linkWrapper}>
+            <Link to={packsList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBars} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('pack.submitMyPacks')} />
             </Link>
           </List>
 
@@ -387,25 +398,18 @@ const ListItems: React.FC = () => {
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.exchange')} />
+              <ListItemText
+                primary={`${t('general.start')} ${t('exchange.exchange')}`}
+              />
             </Link>
           </List>
 
           <List component="div" className={linkWrapper}>
-            <Link to={supplyList} className={nested}>
+            <Link to={desktop} className={nested}>
               <ListItemIcon>
-                <AppsIcon />
+                <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.supplyList')} />
-            </Link>
-          </List>
-
-          <List component="div" className={linkWrapper}>
-            <Link to={packsList} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faBars} />
-              </ListItemIcon>
-              <ListItemText primary={t('pack.list')} />
+              <ListItemText primary={t('general.records')} />
             </Link>
           </List>
         </Collapse>
