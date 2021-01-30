@@ -8,12 +8,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import {
-  MaterialContainer,
-  Modal,
-  DatePicker,
-  BackDrop,
-} from '../../../public';
+import { MaterialContainer, Modal, BackDrop } from '../../../public';
 import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -42,8 +37,6 @@ import ModalContent from '../../../public/modal-content/ModalContent';
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import { DrugType } from '../../../../enum/pharmacyDrug';
-
-const { convertISOTime } = Convertor;
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -161,7 +154,7 @@ const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 
 const { getComissionAndRecommendation } = new Comission();
 
-const { numberWithZero } = Convertor;
+const { numberWithZero, convertISOTime } = Convertor;
 const monthMinimumLength = 28;
 
 const SupplyList: React.FC = () => {
@@ -423,6 +416,10 @@ const SupplyList: React.FC = () => {
     dispatch({ type: 'cnt', value: cnt });
     dispatch({ type: 'id', value: id });
 
+    const [year, month, day] = convertISOTime(expireDate).split('-');
+    setSelectedYear(year);
+    setSelectedMonth(month);
+    setSelectedDay(day);
     setIsOpenBackDrop(true);
     await searchDrugs(name);
     setSelectedDrug({
