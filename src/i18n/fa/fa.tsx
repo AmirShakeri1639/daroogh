@@ -100,6 +100,7 @@ export default {
         shamsi: 'شمسی',
         gregorian: 'میلادی',
         date: 'تاریخ',
+        wrongDate: 'تاریخ اشتباه است',
       },
       province: {
         selectCounty: 'انتخاب استان',
