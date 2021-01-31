@@ -28,11 +28,9 @@ import Button from '../../../public/button/Button';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useEffectOnce } from '../../../../hooks';
 import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
-import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 import { Autocomplete } from '@material-ui/lab';
-import MaterialDatePicker from '../../../public/material-datepicker/MaterialDatePicker';
 import ModalContent from '../../../public/modal-content/ModalContent';
 // @ts-ignore
 import jalaali from 'jalaali-js';
@@ -90,6 +88,11 @@ function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
 
 const useStyle = makeStyles((theme) =>
   createStyles({
+    label: {
+      display: 'flex',
+      alignItems: 'center',
+      margin: theme.spacing(0, 1),
+    },
     contentContainer: {
       marginTop: 15,
     },
@@ -155,6 +158,10 @@ const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 const { getComissionAndRecommendation } = new Comission();
 
 const { numberWithZero, convertISOTime } = Convertor;
+
+const monthIsValid = (month: number): boolean => month < 13;
+const dayIsValid = (day: number): boolean => day < 32;
+
 const monthMinimumLength = 28;
 
 const SupplyList: React.FC = () => {
@@ -184,6 +191,8 @@ const SupplyList: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
+  const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
+  const [isWrongDate, setIsWrongDate] = useState(false);
 
   const { t } = useTranslation();
   const queryCache = useQueryCache();
@@ -197,6 +206,7 @@ const SupplyList: React.FC = () => {
     buttonContainer,
     cancelButton,
     formContent,
+    label,
   } = useStyle();
 
   useEffectOnce(() => {
@@ -258,17 +268,22 @@ const SupplyList: React.FC = () => {
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
+  const resetStates = (): void => {
+    dispatch({ type: 'reset' });
+    setSelectedDate('');
+    resetDateState();
+    setSelectedDrug('');
+    setDaroogRecommendation('');
+    setComissionPercent('');
+    setDaysDiff('');
+    setIsoDate('');
+    setOptions([]);
+    setIsWrongDate(false);
+  };
+
   const toggleIsOpenModalOfNewList = (): void => {
     if (isOpenModalOfNewList) {
-      dispatch({ type: 'reset' });
-      setSelectedDate('');
-      resetDateState();
-      setSelectedDrug('');
-      setDaroogRecommendation('');
-      setComissionPercent('');
-      setDaysDiff('');
-      setIsoDate('');
-      setOptions([]);
+      resetStates();
     }
     setIsOpenModalOfNewList((v) => !v);
   };
@@ -282,14 +297,19 @@ const SupplyList: React.FC = () => {
     savePharmacyDrug,
     {
       onSuccess: async () => {
-        toggleIsOpenModalOfNewList();
-        resetDateState();
+        if (isCheckedNewItem) {
+          resetStates();
+        } else {
+          toggleIsOpenModalOfNewList();
+          resetStates();
+        }
         await successSweetAlert(t('alert.successfulSave'));
         queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
       },
     }
   );
 
+  // :smile:
   const isJalaliDate = (num: number): boolean => num < 2000;
 
   const calculatDateDiference = (): void => {
@@ -325,9 +345,23 @@ const SupplyList: React.FC = () => {
           ]
     );
 
-    setDaysDiff(
-      String(selectedDateMomentObject.diff(todayMomentObject, 'days'))
+    const daysDiff = String(
+      selectedDateMomentObject.diff(todayMomentObject, 'days')
     );
+
+    if (Number(daysDiff) < 0) {
+      setIsWrongDate(true);
+      setDaysDiff('');
+    } else {
+      setIsWrongDate(false);
+      setDaysDiff(daysDiff);
+
+      setIsoDate(
+        `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
+          selectedDate.gd
+        )}T00:00:00Z`
+      );
+    }
 
     setIsoDate(
       isJalaliDate(convertedArray[0])
@@ -346,8 +380,7 @@ const SupplyList: React.FC = () => {
     if (
       selectedYear !== '' &&
       selectedYear.length === 4 &&
-      selectedMonth !== '' &&
-      selectedDay !== ''
+      selectedMonth !== ''
     ) {
       calculatDateDiference();
     }
@@ -483,7 +516,12 @@ const SupplyList: React.FC = () => {
 
   const formHandler = async (): Promise<any> => {
     try {
-      if (selectedYear === '' || selectedMonth === '') {
+      if (
+        selectedYear === '' ||
+        selectedMonth === '' ||
+        !monthIsValid(Number(selectedMonth)) ||
+        !dayIsValid(Number(selectedDay))
+      ) {
         return;
       }
 
@@ -678,6 +716,7 @@ const SupplyList: React.FC = () => {
                     label={t('general.day')}
                     value={selectedDay}
                     onChange={(e): void => setSelectedDay(e.target.value)}
+                    error={Number(selectedDay) > 31}
                   />
                 </Grid>
                 <span style={{ alignSelf: 'center' }}>/</span>
@@ -686,6 +725,7 @@ const SupplyList: React.FC = () => {
                     value={selectedMonth}
                     label={t('general.month')}
                     required
+                    error={Number(selectedMonth) > 12}
                     onChange={(e): void => setSelectedMonth(e.target.value)}
                   />
                 </Grid>
@@ -703,7 +743,11 @@ const SupplyList: React.FC = () => {
                   {daysDiff !== '' && <span>{daysDiff} روز</span>}
                 </Grid>
               </Grid>
-              <Grid item xs={12}></Grid>
+              <Grid item xs={12}>
+                {isWrongDate && (
+                  <p className="text-danger txt-xs">{t('date.wrongDate')}</p>
+                )}
+              </Grid>
               {/* <Input
                 readOnly
                 onClick={toggleIsOpenDatePicker}
@@ -753,6 +797,15 @@ const SupplyList: React.FC = () => {
             >
               {t('general.cancel')}
             </Button>
+            <label htmlFor="add" className={`${label} cursor-pointer`}>
+              <input
+                id="add"
+                type="checkbox"
+                checked={isCheckedNewItem}
+                onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
+              />
+              <span>ثبت داروی جدید</span>
+            </label>
             <Button
               color="blue"
               type="button"

@@ -46,8 +46,6 @@ import jalaali from 'jalaali-js';
 
 const { searchDrug } = new Drug();
 
-const { allPharmacyDrug } = new PharmacyDrug();
-
 const { getAllCategories } = new Category();
 
 const { savePack, getPackDetail } = new Pack();
@@ -108,6 +106,9 @@ const useStyle = makeStyles((theme) =>
 
 const monthMinimumLength = 28;
 
+const monthIsValid = (month: number): boolean => month < 13;
+const dayIsValid = (day: number): boolean => day < 32;
+
 const Create: React.FC = () => {
   const [packTitle, setPackTitle] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -135,6 +136,7 @@ const Create: React.FC = () => {
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
+  const [isWrongDate, setIsWrongDate] = useState(false);
 
   const { t } = useTranslation();
 
@@ -153,6 +155,9 @@ const Create: React.FC = () => {
   const resetValues = (): void => {
     setAmount('');
     setNumber('');
+    setSelectedYear('');
+    setSelectedMonth('');
+    setSelectedDay('');
     setSelectedDrug('');
     setOffer1(0);
     setOffer2(0);
@@ -160,7 +165,59 @@ const Create: React.FC = () => {
     setDaysDiff('');
     setSelectedDate('');
     setOptions([]);
+    setIsWrongDate(false);
   };
+
+  const calculatDateDiference = (): void => {
+    const date = new Date();
+    const todayMomentObject = moment([
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    ]);
+    // const [year, month, day] = e.split(dateSeparator).map((i) => Number(i));
+    const intSelectedYear = Number(selectedYear);
+    const intSelectedMonth = Number(selectedMonth);
+    const intSelectedDay = Number(
+      selectedDay === '' ? monthMinimumLength : selectedDay
+    );
+
+    const selectedDate = jalali.toGregorian(
+      intSelectedYear,
+      intSelectedMonth,
+      intSelectedDay
+    );
+    const selectedDateMomentObject = moment([
+      selectedDate.gy,
+      selectedDate.gm - 1,
+      selectedDate.gd,
+    ]);
+    const daysDiff = String(
+      selectedDateMomentObject.diff(todayMomentObject, 'days')
+    );
+    if (Number(daysDiff) < 0) {
+      setIsWrongDate(true);
+    } else {
+      setIsWrongDate(false);
+      setDaysDiff(daysDiff);
+
+      setIsoDate(
+        `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
+          selectedDate.gd
+        )}T00:00:00Z`
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (
+      selectedYear !== '' &&
+      selectedYear.length === 4 &&
+      selectedMonth !== ''
+    ) {
+      calculatDateDiference();
+    }
+  }, [selectedDay, selectedMonth, selectedYear]);
 
   const toggleIsOpenModal = (): void => {
     if (isOpenModal) {
@@ -321,36 +378,6 @@ const Create: React.FC = () => {
     });
   };
 
-  const calculatDateDiference = (e: string, dateSeparator: string): void => {
-    const date = new Date();
-    const todayMomentObject = moment([
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-    ]);
-    const convertedArray = e.split(dateSeparator).map((i) => Number(i));
-    const selectedDate = jalali.toGregorian(
-      convertedArray[0],
-      convertedArray[1],
-      convertedArray[2]
-    );
-    const selectedDateMomentObject = moment([
-      selectedDate.gy,
-      selectedDate.gm - 1,
-      selectedDate.gd,
-    ]);
-
-    setDaysDiff(
-      String(selectedDateMomentObject.diff(todayMomentObject, 'days'))
-    );
-
-    setIsoDate(
-      `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
-        selectedDate.gd
-      )}T00:00:00Z`
-    );
-  };
-
   const isJalaliDate = (num: number): boolean => num < 2000;
 
   const formHandler = async (): Promise<any> => {
@@ -360,7 +387,9 @@ const Create: React.FC = () => {
         packTitle === '' ||
         selectedCategory === '' ||
         selectedYear === '' ||
-        selectedMonth === ''
+        selectedMonth === '' ||
+        !monthIsValid(Number(selectedMonth)) ||
+        !dayIsValid(Number(selectedDay))
       ) {
         return;
       }
@@ -655,6 +684,8 @@ const Create: React.FC = () => {
                   <Input
                     label={t('general.day')}
                     value={selectedDay}
+                    error={dayIsValid(Number(selectedDay))}
+                    type="number"
                     onChange={(e): void => setSelectedDay(e.target.value)}
                   />
                 </Grid>
@@ -664,6 +695,8 @@ const Create: React.FC = () => {
                     value={selectedMonth}
                     label={t('general.month')}
                     required
+                    type="number"
+                    error={monthIsValid(Number(selectedMonth))}
                     onChange={(e): void => setSelectedMonth(e.target.value)}
                   />
                 </Grid>
@@ -672,6 +705,7 @@ const Create: React.FC = () => {
                   <Input
                     value={selectedYear}
                     required
+                    type="number"
                     label={t('general.year')}
                     onChange={(e): void => setSelectedYear(e.target.value)}
                   />
@@ -681,7 +715,11 @@ const Create: React.FC = () => {
                   {daysDiff !== '' && <span>{daysDiff} روز</span>}
                 </Grid>
               </Grid>
-              <Grid item xs={12}></Grid>
+              <Grid item xs={12}>
+                {isWrongDate && (
+                  <p className="text-danger txt-xs">{t('date.wrongDate')}</p>
+                )}
+              </Grid>
               {/* <Input
                 readOnly
                 onClick={toggleIsOpenDatePicker}
@@ -729,7 +767,7 @@ const Create: React.FC = () => {
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
           selectedDateHandler={(e): void => {
-            calculatDateDiference(e, '/');
+            // calculatDateDiference(e, '/');
             setSelectedDate(e);
 
             toggleIsOpenDatePicker();
