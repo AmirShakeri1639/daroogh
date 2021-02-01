@@ -388,6 +388,7 @@ const Create: React.FC = () => {
         selectedCategory === '' ||
         selectedYear === '' ||
         selectedMonth === '' ||
+        selectedYear.length < 4 ||
         !monthIsValid(Number(selectedMonth)) ||
         !dayIsValid(Number(selectedDay))
       ) {

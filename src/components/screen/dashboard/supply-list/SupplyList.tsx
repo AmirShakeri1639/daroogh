@@ -520,7 +520,8 @@ const SupplyList: React.FC = () => {
         selectedYear === '' ||
         selectedMonth === '' ||
         !monthIsValid(Number(selectedMonth)) ||
-        !dayIsValid(Number(selectedDay))
+        !dayIsValid(Number(selectedDay)) ||
+        selectedYear.length < 4
       ) {
         return;
       }
