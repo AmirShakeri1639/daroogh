@@ -355,12 +355,6 @@ const SupplyList: React.FC = () => {
     } else {
       setIsWrongDate(false);
       setDaysDiff(daysDiff);
-
-      setIsoDate(
-        `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
-          selectedDate.gd
-        )}T00:00:00Z`
-      );
     }
 
     setIsoDate(

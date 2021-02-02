@@ -13,12 +13,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
-import {
-  PharmacyDrug,
-  Category,
-  Drug,
-  Pack,
-} from '../../../../../services/api';
+import { Category, Drug, Pack } from '../../../../../services/api';
 import {
   BackDrop,
   Button,
@@ -168,6 +163,8 @@ const Create: React.FC = () => {
     setIsWrongDate(false);
   };
 
+  const isJalaliDate = (num: number): boolean => num < 2000;
+
   const calculatDateDiference = (): void => {
     const date = new Date();
     const todayMomentObject = moment([
@@ -175,38 +172,55 @@ const Create: React.FC = () => {
       date.getMonth(),
       date.getDate(),
     ]);
-    // const [year, month, day] = e.split(dateSeparator).map((i) => Number(i));
-    const intSelectedYear = Number(selectedYear);
-    const intSelectedMonth = Number(selectedMonth);
-    const intSelectedDay = Number(
-      selectedDay === '' ? monthMinimumLength : selectedDay
+
+    const convertedArray = [
+      Number(selectedYear),
+      Number(selectedMonth),
+      Number(selectedDay === '' ? monthMinimumLength : selectedDay),
+    ];
+
+    let selectedDate: any;
+    if (isJalaliDate(convertedArray[0])) {
+      selectedDate = jalali.toGregorian(
+        convertedArray[0],
+        convertedArray[1],
+        convertedArray[2]
+      );
+    }
+
+    const selectedDateMomentObject = moment(
+      isJalaliDate(convertedArray[0])
+        ? [selectedDate.gy, selectedDate.gm - 1, selectedDate.gd]
+        : [
+            Number(selectedYear),
+            Number(selectedMonth) - 1,
+            Number(selectedDay === '' ? monthMinimumLength : selectedDay),
+          ]
     );
 
-    const selectedDate = jalali.toGregorian(
-      intSelectedYear,
-      intSelectedMonth,
-      intSelectedDay
-    );
-    const selectedDateMomentObject = moment([
-      selectedDate.gy,
-      selectedDate.gm - 1,
-      selectedDate.gd,
-    ]);
     const daysDiff = String(
       selectedDateMomentObject.diff(todayMomentObject, 'days')
     );
+
     if (Number(daysDiff) < 0) {
       setIsWrongDate(true);
+      setDaysDiff('');
     } else {
       setIsWrongDate(false);
       setDaysDiff(daysDiff);
-
-      setIsoDate(
-        `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
-          selectedDate.gd
-        )}T00:00:00Z`
-      );
     }
+
+    setIsoDate(
+      isJalaliDate(convertedArray[0])
+        ? `${selectedDate.gy}-${numberWithZero(
+            selectedDate.gm
+          )}-${numberWithZero(selectedDate.gd)}T00:00:00Z`
+        : `${[
+            Number(selectedYear),
+            Number(selectedMonth) - 1,
+            Number(selectedDay),
+          ].join('-')}T00:00:00Z`
+    );
   };
 
   useEffect(() => {
@@ -377,8 +391,6 @@ const Create: React.FC = () => {
       );
     });
   };
-
-  const isJalaliDate = (num: number): boolean => num < 2000;
 
   const formHandler = async (): Promise<any> => {
     try {
@@ -685,7 +697,7 @@ const Create: React.FC = () => {
                   <Input
                     label={t('general.day')}
                     value={selectedDay}
-                    error={dayIsValid(Number(selectedDay))}
+                    error={!dayIsValid(Number(selectedDay))}
                     type="number"
                     onChange={(e): void => setSelectedDay(e.target.value)}
                   />
@@ -697,7 +709,7 @@ const Create: React.FC = () => {
                     label={t('general.month')}
                     required
                     type="number"
-                    error={monthIsValid(Number(selectedMonth))}
+                    error={!monthIsValid(Number(selectedMonth))}
                     onChange={(e): void => setSelectedMonth(e.target.value)}
                   />
                 </Grid>
