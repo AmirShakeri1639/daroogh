@@ -281,15 +281,14 @@ const ExchangeManagement: React.FC = () => {
           10: 'تائید و پرداخت هر دو طرف',
         },
       },
-      // {
-      //   title: 'شرح وضعیت',
-      //   field: 'stateString',
-      //   type: 'string',
-      //   width: '150px',
-      //   headerStyle: { textAlign: 'right', direction: 'rtl' },
-      //   cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
-      //   lookup: { 1: 'ta', 2: 'do' },
-      // },
+      {
+        title: 'تاریخ ارسال',
+        field: 'sendDate',
+        type: 'string',
+        width: '150px',
+        headerStyle: { textAlign: 'right', direction: 'rtl' },
+        cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
+      },
       {
         title: 'داروخانه طرف اول',
         field: 'pharmacyNameA',
