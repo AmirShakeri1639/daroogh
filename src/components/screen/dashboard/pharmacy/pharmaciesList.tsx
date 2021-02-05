@@ -270,6 +270,16 @@ const PharmaciesList: React.FC = () => {
         searchable: true,
       },
       {
+        field: 'x',
+        title: t('pharmacy.xLong'),
+        type: 'string'
+      },
+      {
+        field: 'y',
+        title: t('pharmacy.yLat'),
+        type: 'string'
+      },
+      {
         field: 'active',
         title: t('general.status'),
         type: 'boolean',
