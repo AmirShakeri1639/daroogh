@@ -273,7 +273,14 @@ const ThirdStep: React.FC = () => {
       <Grid item xs={12}>
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={9}>
-            <Grid container item spacing={1} xs={12} className={stickyToolbox}>
+            <Grid
+              container
+              item
+              spacing={1}
+              xs={12}
+              className={stickyToolbox}
+              style={{ marginRight: 10 }}
+            >
               <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
                 <SearchInAList />
               </Grid>
@@ -281,30 +288,31 @@ const ThirdStep: React.FC = () => {
                 <ToolBox />
               </Grid>
             </Grid>
-            {!viewExhcnage ||
-              (!viewExhcnage.lockSuggestion &&
+            {(!viewExhcnage ||
+              (viewExhcnage &&
+                !viewExhcnage.lockSuggestion &&
                 (viewExhcnage.state === 1 ||
                   viewExhcnage.state === 2 ||
-                  viewExhcnage.state === 12) && (
-                  <Grid
-                    item
-                    xs={12}
-                    md={12}
-                    style={{ marginBottom: -25, paddingBottom: 0 }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={isSelected}
-                          onChange={handleChange}
-                          name="checkedB"
-                          color="primary"
-                        />
-                      }
-                      label="انتخاب دارو از سبد عرضه خود"
+                  viewExhcnage.state === 12))) && (
+              <Grid
+                item
+                xs={12}
+                md={12}
+                style={{ marginTop: 10, paddingBottom: 0 }}
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={isSelected}
+                      onChange={handleChange}
+                      name="checkedB"
+                      color="primary"
                     />
-                  </Grid>
-                ))}
+                  }
+                  label="انتخاب دارو از سبد عرضه خود"
+                />
+              </Grid>
+            )}
             <Grid container spacing={1}>
               <>
                 {isLoading && <CircleLoading />}

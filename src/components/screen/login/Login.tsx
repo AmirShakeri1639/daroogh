@@ -118,22 +118,24 @@ const Login: React.FC = (): JSX.Element => {
         localStorage.setItem('mainToken', data.token);
         localStorage.setItem('mainPharmacyName', data.pharmacyName);
 
-        (async (): Promise<any> => {
-          const cookiesArray = document.cookie.split(';');
-          const regexNajva = /najva_token=[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}/g;
-          if (cookiesArray.length > 0) {
-            const najvaToken = cookiesArray
-              .filter((item) => regexNajva.test(item.trim()))[0]
-              .trim()
-              .split('=')[1];
+        if (process.env.NODE_ENV === 'production') {
+          (async (): Promise<any> => {
+            const cookiesArray = document.cookie.split(';');
+            const regexNajva = /najva_token=[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}/g;
+            if (cookiesArray.length > 0) {
+              const najvaToken = cookiesArray
+                .filter((item) => regexNajva.test(item.trim()))[0]
+                .trim()
+                .split('=')[1];
 
-            try {
-              await setNotification(najvaToken);
-            } catch (e) {
-              errorHandler(e);
+              try {
+                await setNotification(najvaToken);
+              } catch (e) {
+                errorHandler(e);
+              }
             }
-          }
-        })();
+          })();
+        }
 
         // Get settings from SERVER
         (async (): Promise<any> => {

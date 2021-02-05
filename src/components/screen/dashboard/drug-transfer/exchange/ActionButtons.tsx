@@ -227,12 +227,24 @@ const ActionButtons = (): JSX.Element => {
     },
   });
 
+  const handleGetQuestionGroupOfExchange = async (): Promise<any> => {
+    try {
+      const res = await getQuestionGroupOfExchange(exchangeId); // for Test = 10180
+      const response: GetQuestionGroupOfExchangeInterface = res.data.data;
+      setQuestions(response);
+      setOpenSurvayModal(true);
+    } catch (error) {
+      errorHandler(error);
+    }
+  };
+
   const handleCancelExchange = async (): Promise<any> => {
     const inputmodel = new Cancel();
     inputmodel.exchangeID = exchangeId;
     inputmodel.comment = comment;
     try {
       await _cancelExchange(inputmodel);
+      await handleGetQuestionGroupOfExchange();
     } catch (e) {
       errorHandler(e);
     }
@@ -242,23 +254,6 @@ const ActionButtons = (): JSX.Element => {
   const handleRemoveExchange = async (): Promise<any> => {
     try {
       await _removeExchange(exchangeId);
-    } catch (e) {
-      errorHandler(e);
-    }
-    toggleIsOpenCancelExchangeModalForm(modalType);
-  };
-
-  const handleConfirmOrNotExchange = async (
-    isConfirm: boolean
-  ): Promise<any> => {
-    const inputmodel = new ConfirmOrNotExchange();
-    inputmodel.exchangeID = exchangeId;
-    inputmodel.isConfirm = isConfirm;
-    try {
-      await _confirmOrNotExchange(inputmodel);
-      if (viewExhcnage && viewExhcnage.state === 3) {
-        setShowApproveModalForm(true);
-      }
     } catch (e) {
       errorHandler(e);
     }
@@ -276,15 +271,21 @@ const ActionButtons = (): JSX.Element => {
     }
   };
 
-  const handleGetQuestionGroupOfExchange = async (): Promise<any> => {
+  const handleConfirmOrNotExchange = async (
+    isConfirm: boolean
+  ): Promise<any> => {
+    const inputmodel = new ConfirmOrNotExchange();
+    inputmodel.exchangeID = exchangeId;
+    inputmodel.isConfirm = isConfirm;
     try {
-      const res = await getQuestionGroupOfExchange(10180); // for Test = 10180
-      const response: GetQuestionGroupOfExchangeInterface = res.data.data;
-      setQuestions(response);
-      setOpenSurvayModal(true);
-    } catch (error) {
-      errorHandler(error);
+      await _confirmOrNotExchange(inputmodel);
+      if (viewExhcnage && viewExhcnage.state === 3) {
+        setShowApproveModalForm(true);
+      }
+    } catch (e) {
+      errorHandler(e);
     }
+    toggleIsOpenCancelExchangeModalForm(modalType);
   };
 
   const Map1 = (): JSX.Element => {
@@ -769,10 +770,7 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               color="red"
-              onClick={
-                // toggleIsOpenCancelExchangeModalForm('cancel')
-                handleGetQuestionGroupOfExchange
-              }
+              onClick={(): any => toggleIsOpenCancelExchangeModalForm('cancel')}
             >
               لغو درخواست
             </Button>

@@ -64,3 +64,17 @@ th {
     border-radius: 6px;
   }
 }
+
+.text-danger {
+  color: #ff0000;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}

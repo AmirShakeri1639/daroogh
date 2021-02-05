@@ -5,10 +5,7 @@ import {
   faPills,
   faBoxes,
   faMoneyBillWave,
-  faCalendarTimes,
-  faExchangeAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { DetailSupplyInterface } from '../../../../interfaces';
 import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
@@ -47,7 +44,6 @@ interface DetailProps {
 const Detail: React.FC<DetailProps> = (props) => {
   const { paper, container, textLeft, icon } = useStyle();
   const { drugsCounter, name, totalPrice } = props;
-
   const { t } = useTranslation();
   const { thousandsSeperator } = Convertor;
 
