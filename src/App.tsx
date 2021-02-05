@@ -8,7 +8,6 @@ import { CssBaseline } from '@material-ui/core';
 import ViewPharmacyInfo from './components/screen/dashboard/drug-transfer/ViewPharmacyInfo';
 import routes from './routes';
 import ExchangeApprove from './components/screen/dashboard/drug-transfer/exchange/ExchangeApprove';
-import DashboardContent from './components/screen/dashboard/DashboardContent';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -168,10 +167,10 @@ const App = (): JSX.Element => {
             </PublicRoute>
 
             <PrivateRoute exact path={dashboard}>
-              <Dashboard component={<DashboardContent/>} />
+              <Dashboard component={<></>} />
             </PrivateRoute>
 
-            <PrivateRoute exact path="/dashboardActivePage">s
+            <PrivateRoute exact path="/dashboardActivePage">
               <Dashboard component={<DashboardActivePage />} />
             </PrivateRoute>
 
