@@ -8,12 +8,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import {
-  MaterialContainer,
-  Modal,
-  DatePicker,
-  BackDrop,
-} from '../../../public';
+import { MaterialContainer, Modal, BackDrop } from '../../../public';
 import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -33,16 +28,13 @@ import Button from '../../../public/button/Button';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useEffectOnce } from '../../../../hooks';
 import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
-import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 import { Autocomplete } from '@material-ui/lab';
-import MaterialDatePicker from '../../../public/material-datepicker/MaterialDatePicker';
 import ModalContent from '../../../public/modal-content/ModalContent';
 // @ts-ignore
 import jalaali from 'jalaali-js';
-
-const { convertISOTime } = Convertor;
+import { DrugType } from '../../../../enum/pharmacyDrug';
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -96,6 +88,11 @@ function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
 
 const useStyle = makeStyles((theme) =>
   createStyles({
+    label: {
+      display: 'flex',
+      alignItems: 'center',
+      margin: theme.spacing(0, 1),
+    },
     contentContainer: {
       marginTop: 15,
     },
@@ -160,7 +157,12 @@ const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 
 const { getComissionAndRecommendation } = new Comission();
 
-const { numberWithZero } = Convertor;
+const { numberWithZero, convertISOTime } = Convertor;
+
+const monthIsValid = (month: number): boolean => month < 13;
+const dayIsValid = (day: number): boolean => day < 32;
+
+const monthMinimumLength = 28;
 
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
@@ -189,6 +191,8 @@ const SupplyList: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
+  const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
+  const [isWrongDate, setIsWrongDate] = useState(false);
 
   const { t } = useTranslation();
   const queryCache = useQueryCache();
@@ -202,6 +206,7 @@ const SupplyList: React.FC = () => {
     buttonContainer,
     cancelButton,
     formContent,
+    label,
   } = useStyle();
 
   useEffectOnce(() => {
@@ -263,17 +268,22 @@ const SupplyList: React.FC = () => {
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
+  const resetStates = (): void => {
+    dispatch({ type: 'reset' });
+    setSelectedDate('');
+    resetDateState();
+    setSelectedDrug('');
+    setDaroogRecommendation('');
+    setComissionPercent('');
+    setDaysDiff('');
+    setIsoDate('');
+    setOptions([]);
+    setIsWrongDate(false);
+  };
+
   const toggleIsOpenModalOfNewList = (): void => {
     if (isOpenModalOfNewList) {
-      dispatch({ type: 'reset' });
-      setSelectedDate('');
-      resetDateState();
-      setSelectedDrug('');
-      setDaroogRecommendation('');
-      setComissionPercent('');
-      setDaysDiff('');
-      setIsoDate('');
-      setOptions([]);
+      resetStates();
     }
     setIsOpenModalOfNewList((v) => !v);
   };
@@ -287,14 +297,19 @@ const SupplyList: React.FC = () => {
     savePharmacyDrug,
     {
       onSuccess: async () => {
-        toggleIsOpenModalOfNewList();
-        resetDateState();
+        if (isCheckedNewItem) {
+          resetStates();
+        } else {
+          toggleIsOpenModalOfNewList();
+          resetStates();
+        }
         await successSweetAlert(t('alert.successfulSave'));
         queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
       },
     }
   );
 
+  // :smile:
   const isJalaliDate = (num: number): boolean => num < 2000;
 
   const calculatDateDiference = (): void => {
@@ -308,7 +323,7 @@ const SupplyList: React.FC = () => {
     const convertedArray = [
       Number(selectedYear),
       Number(selectedMonth),
-      Number(selectedDay),
+      Number(selectedDay === '' ? monthMinimumLength : selectedDay),
     ];
 
     let selectedDate: any;
@@ -323,12 +338,24 @@ const SupplyList: React.FC = () => {
     const selectedDateMomentObject = moment(
       isJalaliDate(convertedArray[0])
         ? [selectedDate.gy, selectedDate.gm - 1, selectedDate.gd]
-        : [Number(selectedYear), Number(selectedMonth) - 1, Number(selectedDay)]
+        : [
+            Number(selectedYear),
+            Number(selectedMonth) - 1,
+            Number(selectedDay === '' ? monthMinimumLength : selectedDay),
+          ]
     );
 
-    setDaysDiff(
-      String(selectedDateMomentObject.diff(todayMomentObject, 'days'))
+    const daysDiff = String(
+      selectedDateMomentObject.diff(todayMomentObject, 'days')
     );
+
+    if (Number(daysDiff) < 0) {
+      setIsWrongDate(true);
+      setDaysDiff('');
+    } else {
+      setIsWrongDate(false);
+      setDaysDiff(daysDiff);
+    }
 
     setIsoDate(
       isJalaliDate(convertedArray[0])
@@ -347,12 +374,31 @@ const SupplyList: React.FC = () => {
     if (
       selectedYear !== '' &&
       selectedYear.length === 4 &&
-      selectedMonth !== '' &&
-      selectedDay !== ''
+      selectedMonth !== ''
     ) {
       calculatDateDiference();
     }
   }, [selectedDay, selectedMonth, selectedYear]);
+
+  const typeHandler = (item: string): string => {
+    let name = '';
+    switch (item) {
+      case DrugType.CAPSULE:
+      case DrugType.PILL:
+      case DrugType.SUPPOSITORY:
+        name = t('general.box');
+        break;
+      case DrugType.AMPOULE:
+      case DrugType.MILK_POWDER:
+      case DrugType.SYRUP:
+        name = t('general.num');
+        break;
+      default:
+        name = '';
+    }
+
+    return name;
+  };
 
   const searchDrugs = async (title: string): Promise<any> => {
     try {
@@ -364,7 +410,9 @@ const SupplyList: React.FC = () => {
 
       const items = result.map((item: any) => ({
         id: item.id,
-        drugName: `${item.name} (${item.genericName})`,
+        drugName: `${item.name} (${item.genericName}) ${typeHandler(
+          item.type
+        )}`,
       }));
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
@@ -395,6 +443,10 @@ const SupplyList: React.FC = () => {
     dispatch({ type: 'cnt', value: cnt });
     dispatch({ type: 'id', value: id });
 
+    const [year, month, day] = convertISOTime(expireDate).split('-');
+    setSelectedYear(year);
+    setSelectedMonth(month);
+    setSelectedDay(day);
     setIsOpenBackDrop(true);
     await searchDrugs(name);
     setSelectedDrug({
@@ -458,12 +510,21 @@ const SupplyList: React.FC = () => {
 
   const formHandler = async (): Promise<any> => {
     try {
-      if (selectedYear === '' || selectedMonth === '') {
+      if (
+        selectedYear === '' ||
+        selectedMonth === '' ||
+        !monthIsValid(Number(selectedMonth)) ||
+        !dayIsValid(Number(selectedDay)) ||
+        selectedYear.length < 4
+      ) {
         return;
       }
+
       const intSelectedYear = Number(selectedYear);
       const intSelectedMonth = Number(selectedMonth);
-      const intSelectedDay = Number(selectedDay);
+      const intSelectedDay = Number(
+        selectedDay === '' ? monthMinimumLength : selectedDay
+      );
 
       let date = '';
       if (!isJalaliDate(intSelectedYear)) {
@@ -545,7 +606,9 @@ const SupplyList: React.FC = () => {
             <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
-                  <label htmlFor="">{t('general.price')}</label>
+                  <label htmlFor="">{`${t('general.price')} (${t(
+                    'general.rial'
+                  )})`}</label>
                 </Grid>
 
                 <Grid item xs={12}>
@@ -631,11 +694,14 @@ const SupplyList: React.FC = () => {
               </Grid>
             </Grid>
 
-            <Grid item xs={7}>
+            <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
                   <span style={{ marginBottom: 8 }}>
                     {t('general.expireDate')}
+                  </span>{' '}
+                  <span className="text-danger txt-xs">
+                    (وارد کردن روز اجباری نیست)
                   </span>
                 </Grid>
               </Grid>
@@ -645,28 +711,37 @@ const SupplyList: React.FC = () => {
                     label={t('general.day')}
                     value={selectedDay}
                     onChange={(e): void => setSelectedDay(e.target.value)}
+                    error={Number(selectedDay) > 31}
                   />
                 </Grid>
-                <span style={{ alignSelf: 'center' }}>/</span>
+                {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                 <Grid item xs={3}>
                   <Input
                     value={selectedMonth}
                     label={t('general.month')}
+                    required
+                    error={Number(selectedMonth) > 12}
                     onChange={(e): void => setSelectedMonth(e.target.value)}
                   />
                 </Grid>
-                <span style={{ alignSelf: 'center' }}>/</span>
+                {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                 <Grid item xs={3}>
                   <Input
                     value={selectedYear}
+                    required
                     label={t('general.year')}
                     onChange={(e): void => setSelectedYear(e.target.value)}
                   />
                 </Grid>
 
-                <Grid item xs={2} className={expireDate}>
+                <Grid item xs={3} className={expireDate}>
                   {daysDiff !== '' && <span>{daysDiff} روز</span>}
                 </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                {isWrongDate && (
+                  <p className="text-danger txt-xs">{t('date.afterToday')}</p>
+                )}
               </Grid>
               {/* <Input
                 readOnly
@@ -677,7 +752,7 @@ const SupplyList: React.FC = () => {
               /> */}
             </Grid>
 
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <Input
                 className="w-100"
                 label={t('general.barcode')}
@@ -686,7 +761,7 @@ const SupplyList: React.FC = () => {
                   dispatch({ type: 'batchNO', value: e.target.value })
                 }
               />
-            </Grid>
+            </Grid> */}
 
             {comissionPercent !== '' && (
               <Grid item xs={12}>
@@ -717,7 +792,21 @@ const SupplyList: React.FC = () => {
             >
               {t('general.cancel')}
             </Button>
-            <Button color="blue" type="button" onClick={formHandler}>
+            <label htmlFor="add" className={`${label} cursor-pointer`}>
+              <input
+                id="add"
+                type="checkbox"
+                checked={isCheckedNewItem}
+                onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
+              />
+              <span>ثبت داروی جدید</span>
+            </label>
+            <Button
+              color="blue"
+              type="button"
+              disabled={isLoadingSave}
+              onClick={formHandler}
+            >
               {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
             </Button>
           </Grid>

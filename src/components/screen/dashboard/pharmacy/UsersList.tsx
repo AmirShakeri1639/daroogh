@@ -1,6 +1,5 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQueryCache } from 'react-query';
-import User from '../../../../services/api/User';
 import {
   createStyles,
   Divider,
@@ -8,6 +7,9 @@ import {
   CardHeader,
   IconButton,
   CardContent,
+  Grid,
+  Button,
+  TextField,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,8 +18,13 @@ import {
   DataTableCustomActionInterface,
   TableColumnInterface,
 } from '../../../../interfaces';
-import { TextMessage } from '../../../../enum';
-import { errorHandler, successSweetAlert, sweetAlert } from '../../../../utils';
+import { RoleType, TextMessage } from '../../../../enum';
+import {
+  errorHandler,
+  errorSweetAlert,
+  successSweetAlert,
+  sweetAlert,
+} from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import {
   InitialNewUserInterface,
@@ -27,14 +34,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
-import UserForm from './UserForm';
 import { UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
-import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
-import RoleForm from './RoleForm';
 import { UrlAddress } from '../../../../enum/UrlAddress';
+import { MaterialContainer } from '../../../public';
 import ModalContent from '../../../public/modal-content/ModalContent';
+import { NewPharmacyUserData } from '../../../../model';
+import { User } from '../../../../services/api';
+import RoleForm from '../user/RoleForm';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -66,10 +74,7 @@ const useClasses = makeStyles((theme) =>
     formContainer: {
       display: 'flex',
       justifyContent: 'space-between',
-      padding: theme.spacing(2, 2),
-      '& .MuiTextField-root': {
-        margin: theme.spacing(1),
-      },
+      padding: theme.spacing(1),
     },
     titleContainer: {
       padding: theme.spacing(2),
@@ -88,21 +93,26 @@ const useClasses = makeStyles((theme) =>
     userRoleIcon: {
       color: '#7036e7',
     },
+    createUserBtn: {
+      background: `${theme.palette.pinkLinearGradient.main} !important`,
+      color: '#fff',
+      float: 'right',
+    },
+    buttonContainer: {
+      marginBottom: theme.spacing(2),
+    },
   })
 );
 
-const initialState: NewUserData = {
+const initialState: NewPharmacyUserData = {
   id: 0,
-  pharmacyID: null,
   name: '',
   family: '',
   mobile: '',
   email: '',
   userName: '',
-  password: '',
   nationalCode: '',
   birthDate: '',
-  active: false,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -129,11 +139,7 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         mobile: value,
       };
-    case 'pharmacyID':
-      return {
-        ...state,
-        pharmacyID: value,
-      };
+
     case 'email':
       return {
         ...state,
@@ -143,11 +149,6 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         userName: value,
-      };
-    case 'password':
-      return {
-        ...state,
-        password: value,
       };
     case 'nationalCode':
       return {
@@ -159,17 +160,14 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         birthDate: value,
       };
-    case 'active':
-      return {
-        ...state,
-        active: value,
-      };
     case 'reset':
       return initialState;
     default:
       console.error('Action type not defined');
   }
 }
+
+const { addPharmacyUser } = new User();
 
 const UsersList: React.FC = () => {
   const ref = useDataTableRef();
@@ -179,7 +177,13 @@ const UsersList: React.FC = () => {
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
+  const [isOpenModalOfCreateUser, setIsOpenModalOfCreateUser] = useState<
+    boolean
+  >(false);
+  const [showError, setShowError] = useState(false);
 
+  const toggleIsOpenModalOfUser = (): void =>
+    setIsOpenModalOfCreateUser((v) => !v);
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
@@ -217,9 +221,73 @@ const UsersList: React.FC = () => {
     }
   );
 
+  const [_addPharmacyUser, { isLoading: isLoadingNewUser }] = useMutation(
+    addPharmacyUser,
+    {
+      onSuccess: async (data) => {
+        const { message } = data;
+        if (showError) {
+          setShowError(false);
+        }
+        dispatch({ type: 'reset' });
+        toggleIsOpenModalOfUser();
+        ref.current?.onQueryChange();
+        await successSweetAlert(
+          message || t('alert.successfulCreateTextMessage')
+        );
+      },
+      onError: async (data: any) => {
+        await errorSweetAlert(data || t('error.save'));
+      },
+    }
+  );
+
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
-  const { root, userRoleIcon } = useClasses();
+  const {
+    root,
+    userRoleIcon,
+    createUserBtn,
+    buttonContainer,
+    formContainer,
+    addButton,
+    cancelButton,
+  } = useClasses();
+
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  const inputValuesValidation = (): boolean => {
+    const { name, family, mobile, email, username, nationalCode } = state;
+
+    return (
+      name.trim().length < 2 ||
+      username.trim().length < 1 ||
+      family.trim().length < 2 ||
+      mobile.trim().length < 11 ||
+      (email !== '' && !emailRegex.test(email.toLowerCase())) ||
+      (nationalCode !== '' && nationalCode.length !== 10)
+    );
+  };
+
+  const formHandler = async (): Promise<any> => {
+    if (inputValuesValidation()) {
+      setShowError(true);
+      return;
+    }
+    const data: any = {
+      id: state.id,
+      name: state.name,
+      family: state.family,
+      mobile: state.mobile,
+      email: state.email,
+      userName: state.userName,
+      nationalCode: state.nationalCode,
+      birthDate: state.birthDate,
+    };
+
+    await _addPharmacyUser(data);
+    // if (onSubmit) onSubmit();
+  };
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
@@ -397,24 +465,33 @@ const UsersList: React.FC = () => {
   ];
 
   return (
-    <FormContainer title={t('user.users-list')}>
+    <MaterialContainer>
+      <Grid container spacing={1} className={buttonContainer}>
+        <Button
+          variant="outlined"
+          className={createUserBtn}
+          onClick={toggleIsOpenModalOfUser}
+        >
+          {t('user.create-user')}
+        </Button>
+      </Grid>
+
       <DataTable
         tableRef={ref}
         extraMethods={{ editUser: enableUserHandler }}
         columns={tableColumns()}
-        editAction={editUserHandler}
-        editUser={enableUserHandler}
-        removeAction={removeUserHandler}
+        // editAction={editUserHandler}
+        // editUser={enableUserHandler}
+        // removeAction={removeUserHandler}
         queryKey={UserQueryEnum.GET_ALL_USERS}
         queryCallback={getAllUsers}
         initLoad={false}
         isLoading={isLoadingRemoveUser || isLoadingEditUser}
         pageSize={10}
         urlAddress={UrlAddress.getAllUser}
-        stateAction={disableUserHandler}
+        // stateAction={disableUserHandler}
         customActions={customDataTAbleACtions}
       />
-
       <Modal open={isOpenRoleModal} toggle={toggleIsOpenRoleModal}>
         <Card className={root}>
           <CardHeader
@@ -432,11 +509,11 @@ const UsersList: React.FC = () => {
             <RoleForm
               userId={idOfSelectedUser}
               toggleForm={toggleIsOpenRoleModal}
+              roleType={RoleType.PHARMACY}
             />
           </CardContent>
         </Card>
       </Modal>
-
       <Modal open={isOpenSaveModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
           <CardHeader
@@ -449,7 +526,7 @@ const UsersList: React.FC = () => {
           />
           <Divider />
           <CardContent>
-            <UserForm
+            {/* <UserForm
               userData={state}
               noShowInput={['password']}
               onCancel={toggleIsOpenSaveModalForm}
@@ -457,12 +534,138 @@ const UsersList: React.FC = () => {
                 queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
                 toggleIsOpenSaveModalForm();
               }}
-            />
+            /> */}
           </CardContent>
         </Card>
       </Modal>
 
-      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
+      <ModalContent
+        open={isOpenModalOfCreateUser}
+        toggle={toggleIsOpenModalOfUser}
+        confirmHandler={formHandler}
+        disabled={isLoadingNewUser}
+      >
+        <form
+          autoComplete="off"
+          onSubmit={formHandler}
+          className={formContainer}
+        >
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                error={state.name.trim().length < 2 && showError}
+                label="نام کاربر"
+                size="small"
+                className="w-100"
+                variant="outlined"
+                value={state.name}
+                onChange={(e): void =>
+                  dispatch({ type: 'name', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                className="w-100"
+                error={state.family.trim().length < 2 && showError}
+                label="نام خانوادگی کاربر"
+                size="small"
+                variant="outlined"
+                value={state.family}
+                onChange={(e): void =>
+                  dispatch({ type: 'family', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                className="w-100"
+                error={state.mobile.trim().length < 11 && showError}
+                label="موبایل"
+                type="number"
+                size="small"
+                variant="outlined"
+                value={state.mobile}
+                onChange={(e): void =>
+                  dispatch({ type: 'mobile', value: e.target.value })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                error={
+                  state?.email?.length > 0 &&
+                  !emailRegex.test(state.email) &&
+                  showError
+                }
+                label="ایمیل"
+                className="w-100"
+                type="email"
+                size="small"
+                variant="outlined"
+                value={state.email}
+                onChange={(e): void =>
+                  dispatch({ type: 'email', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                error={state?.userName?.length < 1 && showError}
+                label="نام کاربری"
+                size="small"
+                className="w-100"
+                variant="outlined"
+                autoComplete="off"
+                value={state.userName}
+                onChange={(e): void =>
+                  dispatch({ type: 'userName', value: e.target.value })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                error={
+                  state?.nationalCode !== '' &&
+                  state?.nationalCode?.length < 10 &&
+                  showError
+                }
+                label="کد ملی"
+                className="w-100"
+                type="text"
+                size="small"
+                variant="outlined"
+                value={state.nationalCode}
+                onChange={(e): void =>
+                  dispatch({ type: 'nationalCode', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} xl={3}>
+              <TextField
+                label="تاریخ تولد"
+                inputProps={{
+                  readOnly: true,
+                }}
+                className="w-100"
+                type="text"
+                size="small"
+                variant="outlined"
+                value={state?.birthDate}
+                onClick={toggleIsOpenDatePicker}
+              />
+            </Grid>
+          </Grid>
+        </form>
+      </ModalContent>
+
+      <Modal
+        open={isOpenDatePicker}
+        toggle={toggleIsOpenDatePicker}
+        zIndex={1060}
+      >
         <DateTimePicker
           selectedDateHandler={(e): void => {
             dispatch({ type: 'birthDate', value: e });
@@ -470,7 +673,7 @@ const UsersList: React.FC = () => {
           }}
         />
       </Modal>
-    </FormContainer>
+    </MaterialContainer>
   );
 };
 

@@ -11,6 +11,7 @@ const category = 'category';
 const message = 'message';
 const pack = 'pack';
 const exchangemanagement = 'exchangemanagement';
+const jobSearch = 'job-search';
 
 export default {
   login: '/login',
@@ -29,6 +30,7 @@ export default {
 
   createPharmacy: `/${dashboard}/${pharmacy}/create`,
   pharmaciesList: `/${dashboard}/${pharmacy}/list`,
+  pharmacyUsersList: `/${dashboard}/${pharmacy}/users`,
 
   membershipRequests: `/${dashboard}/${pharmacy}/membership-requests`,
   memberRole: `/${dashboard}/${pharmacy}/member-role`,
@@ -51,4 +53,6 @@ export default {
   createPack: `/${pack}/create`,
 
   exchangeManagementList: `/${dashboard}/${exchangemanagement}/list`,
+
+  jobSearchList: `/${dashboard}/${jobSearch}/list`,
 };

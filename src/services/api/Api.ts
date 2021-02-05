@@ -26,7 +26,7 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
     (async (): Promise<any> => {
       const message = error?.response?.data?.message;
       await errorSweetAlert(
-        message === undefined ? 'خطایی در عدم دسترسی رخ داده است!' : message
+        message === undefined ? 'شما مجوز دسترسی به این صفحه را ندارید!' : message
       );
     })();
   } else if (status === 404) {

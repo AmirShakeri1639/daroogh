@@ -243,6 +243,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
     cancelButton,
     buttonContainer,
   } = useClasses();
+
   return (
     <>
       <form autoComplete="off" className={formContainer} onSubmit={formHandler}>

@@ -30,6 +30,7 @@ import {
   faBars,
   faBoxOpen,
   faPlus,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -55,7 +56,10 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
-import { faUserTag } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faUserTag,
+  faUserMd,
+} from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -114,7 +118,9 @@ const {
   drugCategoryfavoriteList,
   packsList,
   createPack,
+  pharmacyUsersList,
   exchangeManagementList,
+  jobSearchList,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -228,6 +234,14 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('user.changeUserPassword')} />
             </Link>
           </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={jobSearchList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUserMd} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('jobSearch.jobSearch')} />
+            </Link>
+          </List>
         </Collapse>
 
         {/* //// Drug */}
@@ -294,6 +308,14 @@ const ListItems: React.FC = () => {
                 <Business />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.list')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={pharmacyUsersList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('user.users-list')} />
             </Link>
           </List>
         </Collapse>
@@ -364,11 +386,22 @@ const ListItems: React.FC = () => {
         </ListItem>
         <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
-            <Link to={desktop} className={nested}>
+            <Link to={supplyList} className={nested}>
               <ListItemIcon>
-                <InboxIcon />
+                <AppsIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.desktop')} />
+              <ListItemText
+                primary={`${t('general.submit')} ${t('exchange.myProducts')}`}
+              />
+            </Link>
+          </List>
+
+          <List component="div" className={linkWrapper}>
+            <Link to={packsList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faBars} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('pack.submitMyPacks')} />
             </Link>
           </List>
 
@@ -377,25 +410,18 @@ const ListItems: React.FC = () => {
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.exchange')} />
+              <ListItemText
+                primary={`${t('general.start')} ${t('exchange.exchange')}`}
+              />
             </Link>
           </List>
 
           <List component="div" className={linkWrapper}>
-            <Link to={supplyList} className={nested}>
+            <Link to={desktop} className={nested}>
               <ListItemIcon>
-                <AppsIcon />
+                <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={t('exchange.supplyList')} />
-            </Link>
-          </List>
-
-          <List component="div" className={linkWrapper}>
-            <Link to={packsList} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faBars} />
-              </ListItemIcon>
-              <ListItemText primary={t('pack.list')} />
+              <ListItemText primary={t('general.records')} />
             </Link>
           </List>
         </Collapse>
@@ -480,6 +506,14 @@ const ListItems: React.FC = () => {
                 <FontAwesomeIcon icon={faUserTag} size="lg" />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.memberRole')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={jobSearchList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUserMd} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('jobSearch.jobSearch')} />
             </Link>
           </List>
         </Collapse>

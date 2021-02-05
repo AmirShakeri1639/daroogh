@@ -16,6 +16,7 @@ export default {
         female: 'زن',
         action: 'کار',
         dashboard: 'داشبورد',
+        records: 'سوابق',
         theme: 'تم',
         colors: 'رنگ‌ها',
         base: 'پایه',
@@ -82,6 +83,8 @@ export default {
         month: 'ماه',
         day: 'روز',
         status: 'وضعیت',
+        box: 'جعبه',
+        num: 'عدد',
       },
       pack: {
         pack: 'پک',
@@ -90,12 +93,15 @@ export default {
         create: 'ایجاد پک',
         category: 'دسته بندی پک',
         addDrug: 'اضافه کردن دارو',
+        submitMyPacks: 'ثبت پک های من',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
         shamsi: 'شمسی',
         gregorian: 'میلادی',
         date: 'تاریخ',
+        wrongDate: 'تاریخ اشتباه است',
+        afterToday: 'تاریخ باید از امروز به بعد انتخاب شود',
       },
       province: {
         selectCounty: 'انتخاب استان',
@@ -230,6 +236,7 @@ export default {
         state: 'وضعیت',
         totalPrice: 'مجموع قیمت',
         basketTotalPrice: 'مجموع قیمت سبد',
+        myProducts: 'محصولات من',
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
@@ -278,7 +285,14 @@ export default {
         addToTransferList: 'اضافه کردن به لیست عرضه',
         favoriteList: 'لیست علاقه مندی ها',
         memberRole: 'انتساب نقش‌ها',
-      },
+        x: 'طول جغرافیایی',
+        y: 'عرض جغرافیایی',
+        xLong: 'طول جغرافیایی',
+        yLat: 'عرض جغرافیایی',
+        long: 'طول جغرافیایی',
+        lat: 'عرض جغرافیایی',
+        location: 'مکان',
+     },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
         GOVERNMENTAL: 'دولتی',
@@ -362,6 +376,9 @@ export default {
         province: 'استان',
         city: 'شهر',
       },
+      jobSearch: {
+        jobSearch: 'کاریابی',
+      }
     },
   },
 };
