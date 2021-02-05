@@ -95,10 +95,11 @@ class Api {
     }
   }
 
-  protected async getData(url: string): Promise<any> {
+  protected async getData(url: string, options: any = {}): Promise<any> {
     try {
       return await this.authorizedUserRequest().get(url, {
         cancelToken: this.axiosSource.token,
+        ...options,
       });
     } catch (e) {
       errorHandler(e);

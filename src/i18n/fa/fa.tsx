@@ -87,6 +87,7 @@ export default {
         num: 'عدد',
         accept: 'قبول',
         state: 'وضعیت',
+        picture: 'تصویر',
       },
       pack: {
         pack: 'پک',
@@ -387,6 +388,7 @@ export default {
         peoplePrescriptions: 'نسخه‌های مردمی',
         sendDate: 'تاریخ ارسال نسخه',
         cancelDate: 'تاریخ لغو',
+        responseDate: 'تاریخ پاسخ',
         response: 'پاسخ به نسخه',
       },
       PrescriptionResponseStateEnum: {
