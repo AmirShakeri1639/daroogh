@@ -197,7 +197,6 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const { isIndebtPharmacy } = new Accounting();
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {
-      debugger;
       const res = await isIndebtPharmacy();
       setIsIndebtPharmacyState(res.data);
     } catch (error) {

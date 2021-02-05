@@ -3,32 +3,34 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryCache } from 'react-query';
 import { Prescription } from '../../../../services/api';
 import CircleLoading from '../../../public/loading/CircleLoading';
-import CloseIcon from '@material-ui/icons/Close';
 import {
   errorHandler,
   isNullOrEmpty,
   JwtData,
   successSweetAlert,
-  warningSweetAlert,
 } from '../../../../utils';
-import { ActionInterface, PrescriptionInterface, PrescriptionResponseInterface } from '../../../../interfaces';
+import {
+  ActionInterface,
+  PrescriptionInterface,
+  PrescriptionResponseInterface
+} from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCheck,
-  faTimes,
-  faUserCog,
-  faFileInvoiceDollar,
-  faGlobe,
-} from '@fortawesome/free-solid-svg-icons';
+  faImage,
+} from '@fortawesome/free-regular-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
 import { PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
 import { getJalaliDate } from '../../../../utils/jalali';
 import FormContainer from '../../../public/form-container/FormContainer';
-import routes from '../../../../routes';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, Grid, Switch, TextField, useMediaQuery, useTheme } from '@material-ui/core';
+import {
+  Button, Dialog, DialogActions, DialogContent,
+  DialogTitle, Divider, FormControlLabel, Grid,
+  Switch, TextField, useMediaQuery, useTheme
+} from '@material-ui/core';
+import { PictureDialog } from '../../../public';
 
 const initialStatePrescriptionResponse: PrescriptionResponseInterface = {
   prescriptionID: 0,
@@ -75,6 +77,8 @@ const PrescriptionList: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialStatePrescriptionResponse);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
+  const [isOpenPicture, setIsOpenPicture] = useState(false);
+  const [fileKeyToShow, setFileKeyToShow] = useState('');
   const {
     container,
     root,
@@ -98,6 +102,16 @@ const PrescriptionList: React.FC = () => {
     const jwtData = new JwtData();
     setPharmacyName(jwtData.userData.pharmacyName);
   }, []);
+
+  const pictureDialog = (fileKey: string): JSX.Element => {
+    return (
+      <PictureDialog
+        fileKey={ fileKey }
+        title={ t('prescription.peoplePrescription') }
+        onClose={ (): void => setIsOpenPicture(false) }
+      />
+    )
+  }
 
   const tableColumns = (): DataTableColumns[] => {
     return [
@@ -143,6 +157,41 @@ const PrescriptionList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>{ !isNullOrEmpty(row.cancelDate) && getJalaliDate(row.cancelDate) }</>
+          );
+        },
+      },
+      {
+        field: 'fileKey',
+        title: t('general.picture'),
+        type: 'string',
+        render: (row: any): any => {
+          return (
+            <>
+              { !isNullOrEmpty(row.fileKey) &&
+                <Button onClick={ (): any => {
+                  setFileKeyToShow(row.fileKey);
+                  setIsOpenPicture(true);
+                } }>
+                  <FontAwesomeIcon icon={ faImage } />
+                </Button>
+              }
+            </>
+          )
+        }
+      },
+      {
+        field: 'responseDate',
+        title: t('prescription.responseDate'),
+        type: 'string',
+        searchable: true,
+        render: (row: any): any => {
+          return (
+            <>
+              { !isNullOrEmpty(row.prescriptionResponse) &&
+                !isNullOrEmpty(row.prescriptionResponse[0].responseDate) &&
+                getJalaliDate(row.prescriptionResponse[0].responseDate)
+              }
+            </>
           );
         },
       },
@@ -297,6 +346,7 @@ const PrescriptionList: React.FC = () => {
       />
       { isLoading && <CircleLoading /> }
       { isOpenEditModal && editModal() }
+      { isOpenPicture && pictureDialog(fileKeyToShow) }
     </FormContainer>
   )
 }
