@@ -41,6 +41,8 @@ import { Map } from '../../../public';
 import FilterInput from '../../../public/datatable/FilterInput';
 import routes from '../../../../routes';
 import { useHistory } from 'react-router-dom';
+import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
+import ExCalculator from '../drug-transfer/exchange/ExCalculator';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -101,22 +103,15 @@ const ExchangeManagement: React.FC = () => {
   };
 
   const { getAllExchange } = new Exchange();
+  const { getViewExchange } = new PharmacyDrug();
 
-  const detailPanel = (row: any): JSX.Element => {
-    return (
-      <div style={{ height: 100, backgroundColor: '#e6ffee', padding: 5 }}>
-        <ul>
-          <li>
-            <span>داروخانه طرف اول : </span>
-            <span style={{ fontWeight: 'bold' }}>{row.pharmacyNameA}</span>
-          </li>
-          <li>
-            <span>داروخانه طرف دوم : </span>
-            <span style={{ fontWeight: 'bold' }}>{row.pharmacyNameB}</span>
-          </li>
-        </ul>
-      </div>
-    );
+  const detailPanel = async (row: any): Promise<JSX.Element> => {
+    debugger;
+    const result = await getViewExchange(row.id);
+    let res = result?.data as ViewExchangeInterface | undefined;
+    return (res ? <ExCalculator
+      exchange={res}
+    /> : <></>)
   };
 
   const [isShowPharmacyInfoModal, setIsShowPharmacyInfoModal] = useState(false);
@@ -196,10 +191,10 @@ const ExchangeManagement: React.FC = () => {
                         ]}
                       />
                     ) : (
-                      <span style={{ color: 'red' }}>
-                        مختصات جغرافیایی این داروخانه ثبت نشده است
-                      </span>
-                    )}
+                        <span style={{ color: 'red' }}>
+                          مختصات جغرافیایی این داروخانه ثبت نشده است
+                        </span>
+                      )}
                   </CardContent>
                 </Card>
               </Grid>
@@ -281,15 +276,14 @@ const ExchangeManagement: React.FC = () => {
           10: 'تائید و پرداخت هر دو طرف',
         },
       },
-      // {
-      //   title: 'شرح وضعیت',
-      //   field: 'stateString',
-      //   type: 'string',
-      //   width: '150px',
-      //   headerStyle: { textAlign: 'right', direction: 'rtl' },
-      //   cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
-      //   lookup: { 1: 'ta', 2: 'do' },
-      // },
+      {
+        title: 'تاریخ ارسال',
+        field: 'sendDate',
+        type: 'string',
+        width: '150px',
+        headerStyle: { textAlign: 'right', direction: 'rtl' },
+        cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
+      },
       {
         title: 'داروخانه طرف اول',
         field: 'pharmacyNameA',

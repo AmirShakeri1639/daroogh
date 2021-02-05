@@ -427,8 +427,19 @@ const ActionButtons = (): JSX.Element => {
               </Grid>
               <Grid item xs={12} sm={12}>
                 <Card>
-                  <CardContent>
-                    <Map />
+                  <CardContent style={{ textAlign: 'center' }}>
+                    {pharmacyInfoState?.data.x && pharmacyInfoState?.data.y ? (
+                      <Map
+                        defaultLatLng={[
+                          pharmacyInfoState?.data.x,
+                          pharmacyInfoState?.data.y,
+                        ]}
+                      />
+                    ) : (
+                      <span style={{ color: 'red' }}>
+                        مختصات جغرافیایی این داروخانه ثبت نشده است
+                      </span>
+                    )}
                   </CardContent>
                 </Card>
               </Grid>
