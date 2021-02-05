@@ -21,7 +21,7 @@ import UserMenu from './appbar/UserMenu';
 import NotificationMenu from './appbar/NotificationMenu';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
-import { JwtData } from '../../../utils';
+import { errorHandler, JwtData } from '../../../utils';
 import { LoggedInUserInterface } from '../../../interfaces';
 import { logoutUser } from '../../../utils';
 import { ColorEnum, MessageQueryEnum } from '../../../enum';
@@ -31,6 +31,8 @@ import Ribbon from '../../public/ribbon/Ribbon';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { useQuery } from 'react-query';
 import { Message } from '../../../services/api';
+import { Alert } from '@material-ui/lab';
+import Accounting from '../../../services/api/Accounting';
 
 const drawerWidth = 240;
 
@@ -43,6 +45,11 @@ const { getUserMessages } = new Message();
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+  },
+  alert: {
+    width: '100%',
+    marginTop: 5,
+    textAlign: 'center',
   },
   toolbar: {
     paddingRight: 24,
@@ -178,6 +185,18 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     setNotifEl,
   });
 
+  const [isIndebtPharmacyState, setIsIndebtPharmacyState] = useState<boolean>();
+  const { isIndebtPharmacy } = new Accounting();
+  const handleIsIndebtPharmacy = async (): Promise<any> => {
+    try {
+      debugger;
+      const res = await isIndebtPharmacy();
+      setIsIndebtPharmacyState(res.data);
+    } catch (error) {
+      errorHandler(error);
+    }
+  };
+
   const { t } = useTranslation();
 
   const handleUserIconButton = (
@@ -197,10 +216,40 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   useEffect(() => {
     const { userData } = new JwtData();
     setLoggedInUser(userData);
+
+    async function getIsIndebtPharmacy(): Promise<void> {
+      await handleIsIndebtPharmacy();
+    }
+
+    getIsIndebtPharmacy();
   }, []);
 
   const listItemsGenerator = (): any => {
     return <ListItems />;
+  };
+
+  const alertContent = (): JSX.Element => {
+    let element: JSX.Element = <></>;
+    const user = localStorage.getItem('user') || '{}';
+    const { name, family } = JSON.parse(user);
+    const title = (
+      <span>
+        {name} {family} عزیز ،
+      </span>
+    );
+    const body = (
+      <span style={{ marginRight: 5 }}>
+        بعلت اینکه سقف بدهی شما بیشتر از حد مجاز می باشد، امکان هیچگونه عملیاتی
+        برای شما میسر نمی باشد. لطفا نسبت به پرداخت بدهی خود اقدام نمایید.
+      </span>
+    );
+    element = (
+      <>
+        {title}
+        {body}
+      </>
+    );
+    return element;
   };
 
   return (
@@ -340,6 +389,13 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
         </MaterialDrawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
+          <div className={classes.alert}>
+            {isIndebtPharmacyState && (
+              <Alert variant="filled" severity="error" style={{ margin: 10 }}>
+                {alertContent()}
+              </Alert>
+            )}
+          </div>
           {component}
         </main>
       </div>

@@ -681,7 +681,7 @@ const Create: React.FC = () => {
               </Grid>
             </Grid>
 
-            <Grid item xs={7}>
+            <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
                   <span style={{ marginBottom: 8 }}>
@@ -702,7 +702,7 @@ const Create: React.FC = () => {
                     onChange={(e): void => setSelectedDay(e.target.value)}
                   />
                 </Grid>
-                <span style={{ alignSelf: 'center' }}>/</span>
+                {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                 <Grid item xs={3}>
                   <Input
                     value={selectedMonth}
@@ -713,7 +713,7 @@ const Create: React.FC = () => {
                     onChange={(e): void => setSelectedMonth(e.target.value)}
                   />
                 </Grid>
-                <span style={{ alignSelf: 'center' }}>/</span>
+                {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                 <Grid item xs={3}>
                   <Input
                     value={selectedYear}
@@ -724,13 +724,13 @@ const Create: React.FC = () => {
                   />
                 </Grid>
 
-                <Grid item xs={2} className={expireDate}>
+                <Grid item xs={3} className={expireDate}>
                   {daysDiff !== '' && <span>{daysDiff} روز</span>}
                 </Grid>
               </Grid>
               <Grid item xs={12}>
                 {isWrongDate && (
-                  <p className="text-danger txt-xs">{t('date.wrongDate')}</p>
+                  <p className="text-danger txt-xs">{t('date.afterToday')}</p>
                 )}
               </Grid>
               {/* <Input
