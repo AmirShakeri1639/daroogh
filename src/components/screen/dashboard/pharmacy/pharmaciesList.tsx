@@ -25,6 +25,7 @@ import Modal from '../../../public/modal/Modal';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import {
   errorHandler,
+  isNullOrEmpty,
   successSweetAlert,
   warningSweetAlert,
 } from '../../../../utils';
@@ -50,6 +51,7 @@ import {
   faTimes,
   faUserCog,
   faFileInvoiceDollar,
+  faGlobe,
 } from '@fortawesome/free-solid-svg-icons';
 import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
@@ -268,6 +270,23 @@ const PharmaciesList: React.FC = () => {
         title: t('general.phone'),
         type: 'string',
         searchable: true,
+      },
+      {
+        field: 'x',
+        title: t('pharmacy.location'),
+        type: 'string',
+        render: (row: any): any => {
+          return (
+            <>
+              { (isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) && ''}
+              { !(isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) &&
+                <a href={`https://google.com/maps?q=${row.y},${row.x}`} target="_blank">
+                  <FontAwesomeIcon icon={faGlobe} />
+                </a>
+              }
+            </>
+          );
+        },
       },
       {
         field: 'active',
@@ -699,10 +718,10 @@ const PharmaciesList: React.FC = () => {
 
   // @ts-ignore
   return (
-    <Container maxWidth="lg" className={ container }>
-      <Grid container spacing={ 0 }>
-        <Grid item xs={ 12 }>
-          <div>{ t('pharmacy.list') }</div>
+    <Container maxWidth="lg" className={container}>
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
+          <div>{t('pharmacy.list')}</div>
           <Paper>
             <DataTable
               tableRef={ref}

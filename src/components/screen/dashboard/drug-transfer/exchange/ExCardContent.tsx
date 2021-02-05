@@ -179,6 +179,20 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
     );
   };
 
+  const getExpireDate = (date: any): string => {
+    debugger;
+    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
+    const fromDate = new Date(eDate);
+    const today = new Date();
+
+    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
+
+    const res = `${faDate} (${differenceInDays} روز)`;
+
+    return res;
+  };
+
   const PackDetailContent = (): JSX.Element[] | any => {
     if (packInfo && packInfo.length > 0) {
       return packInfo.map((item: AllPharmacyDrugInterface) => {
@@ -198,9 +212,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                   <ul className={ulCardName}>
                     <li className={colLeftIcon}>
                       <EventBusyIcon />
-                      {moment(item.expireDate, 'YYYY/MM/DD')
-                        .locale('fa')
-                        .format('YYYY/MM/DD')}
+                      {getExpireDate(item.expireDate)}
                     </li>
                     <li className={colLeftIcon}>
                       <CardGiftcardIcon />
@@ -275,9 +287,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <Grid item xs={11}>
               <TextLine
                 rightText={t('general.expireDate')}
-                leftText={moment(pharmacyDrug?.expireDate, 'YYYY/MM/DD')
-                  .locale('fa')
-                  .format('YYYY/MM/DD')}
+                leftText={getExpireDate(pharmacyDrug?.expireDate)}
               />
             </Grid>
           </Grid>

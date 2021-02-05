@@ -14,7 +14,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
 import localization from './localization';
 import { has } from 'lodash';
-import { createStyles, makeStyles, TablePagination } from '@material-ui/core';
+import {
+  AppBar,
+  createStyles,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  makeStyles,
+  Slide,
+  TablePagination,
+  Toolbar,
+  Typography,
+} from '@material-ui/core';
 import itemsSanitizer from './ItemsSanitizer';
 import { DataTableColumns } from '../../../interfaces/DataTableColumns';
 import { UrlAddress } from '../../../enum/UrlAddress';
@@ -23,6 +35,11 @@ import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInt
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import Report from '../report/Report';
+import ReportViewerContainer from '../report/ReportViewerContainer';
+import { TransitionProps } from '@material-ui/core/transitions/transition';
+import CloseIcon from '@material-ui/icons/Close';
+import moment from 'jalali-moment';
 
 type CountdownHandle = {
   loadItems: () => void;
@@ -48,19 +65,31 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 15,
     },
   },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[700],
+  },
 }));
+
+const Transition = React.forwardRef<
+  TransitionProps,
+  { children?: React.ReactElement<any, any> }
+>((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 const DataTable: React.ForwardRefRenderFunction<
   CountdownHandle,
   DataTableProps
 > = (props, forwardedRef) => {
-  const { table } = useStyles();
+  const { table, closeButton } = useStyles();
   const [page, setPage] = useState<number>(0);
   const [searchText, setSearchText] = useState<string>('');
   const [itemsCount, setItemsCount] = useState<number>(0);
   const [entries, setEntries] = useState([]);
   const [isLoader, setLoader] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const [filters, setFilters] = useState<DataTableFilterInterface[]>([]);
 
   const {
@@ -143,6 +172,12 @@ const DataTable: React.ForwardRefRenderFunction<
       tooltip: 'بارگزاری مجدد',
       isFreeAction: true,
       onClick: (): any => tableRef.current.onQueryChange(),
+    },
+    {
+      icon: 'report',
+      tooltip: 'گزارش',
+      isFreeAction: true,
+      onClick: (): any => setShowReport(true),
     },
   ];
 
@@ -246,8 +281,50 @@ const DataTable: React.ForwardRefRenderFunction<
     });
   };
 
+  const ReportContainer = (): JSX.Element => (
+    <Dialog
+      onClose={(): any => setShowReport(false)}
+      open={showReport}
+      TransitionComponent={Transition}
+      fullScreen={true}
+    >
+      <AppBar>
+        <Toolbar
+          variant="dense"
+          style={{ backgroundColor: 'rgb(164, 191, 226)' }}
+        >
+          <DialogTitle
+            disableTypography
+            style={{
+              margin: '1rem auto',
+              padding: '0',
+            }}
+          >
+            <Typography variant="h6" style={{ color: 'black' }}>
+              جزئیات گزارش
+            </Typography>
+            <IconButton
+              className={closeButton}
+              edge="start"
+              color="inherit"
+              onClick={(): any => setShowReport(false)}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+        </Toolbar>
+      </AppBar>
+      <DialogContent>
+        <div style={{ marginTop: 70 }}>
+          <ReportViewerContainer />
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   return (
     <div className={table}>
+      <ReportContainer />
       <MaterialTable
         tableRef={tableRef}
         localization={localization}
@@ -292,8 +369,8 @@ const DataTable: React.ForwardRefRenderFunction<
           new Promise((resolve, reject) => {
             let url = UrlAddress.baseUrl + urlAddress;
 
-            url += `?&$top=${query.pageSize}&$skip=${query.page *
-              query.pageSize}`;
+            url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize
+              }`;
 
             if (defaultFilter) {
               url += `&$filter= ${defaultFilter}`;
@@ -328,9 +405,8 @@ const DataTable: React.ForwardRefRenderFunction<
               }
             }
             if (query.orderBy) {
-              url += `&$orderby=${query.orderBy.field?.toString()} ${
-                query.orderDirection
-              }`;
+              url += `&$orderby=${query.orderBy.field?.toString()} ${query.orderDirection
+                }`;
             } else {
               if (columns.findIndex((c: any) => c.field === 'id') !== -1) {
                 url += `&$orderby=id desc`;
@@ -349,6 +425,12 @@ const DataTable: React.ForwardRefRenderFunction<
             })
               .then((response) => response.json())
               .then((result) => {
+                // debugger;
+                // result.items.forEach((a: any) => {
+                //   if (a.sendDate)
+                //     a.sendDate = moment(a.sendDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+                // })
+                // debugger;
                 resolve({
                   data: result.items,
                   page: query.page,
@@ -374,13 +456,13 @@ const DataTable: React.ForwardRefRenderFunction<
         detailPanel={
           detailPanel
             ? [
-                {
-                  tooltip: 'نمایش جزئیات',
-                  render: (rowData): any => {
-                    return detailPanel(rowData);
-                  },
+              {
+                tooltip: 'نمایش جزئیات',
+                render: (rowData): any => {
+                  return detailPanel(rowData);
                 },
-              ]
+              },
+            ]
             : []
         }
         actions={tableActions}

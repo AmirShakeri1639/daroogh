@@ -108,8 +108,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         ? item.addedByB
           ? '#00cc00'
           : item.confirmed !== undefined && item.confirmed === false
-          ? '#009900'
-          : '#33ff33'
+            ? '#009900'
+            : '#33ff33'
         : '#33ff33';
 
     return color;
@@ -399,21 +399,21 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 <CircularProgress size={20} />
               </div>
             ) : (
-              <>
-                {activeStep > 0 && (
-                  <>
-                    <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
-                      <ProgressBar />
-                    </Grid>
-                  </>
-                )}
+                <>
+                  {activeStep > 0 && (
+                    <>
+                      <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
+                        <ProgressBar />
+                      </Grid>
+                    </>
+                  )}
 
-                {activeStep === 0 && <FirstStep />}
-                {activeStep === 1 && <SecondStep />}
-                {activeStep === 2 && <ThirdStep />}
-                {activeStep === 3 && <FourthStep />}
-              </>
-            )}
+                  {activeStep === 0 && <FirstStep />}
+                  {activeStep === 1 && <SecondStep />}
+                  {activeStep === 2 && <ThirdStep />}
+                  {activeStep === 3 && <FourthStep />}
+                </>
+              )}
           </Grid>
         </MaterialContainer>
       </div>
