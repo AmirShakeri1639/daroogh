@@ -234,6 +234,14 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('user.changeUserPassword')} />
             </Link>
           </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={jobSearchList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUserMd} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('jobSearch.jobSearch')} />
+            </Link>
+          </List>
         </Collapse>
 
         {/* //// Drug */}
