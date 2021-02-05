@@ -7,6 +7,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import {
   errorHandler,
   isNullOrEmpty,
+  JwtData,
   successSweetAlert,
   warningSweetAlert,
 } from '../../../../utils';
@@ -27,6 +28,7 @@ import { PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enu
 import { getJalaliDate } from '../../../../utils/jalali';
 import FormContainer from '../../../public/form-container/FormContainer';
 import routes from '../../../../routes';
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControlLabel, Grid, Switch, TextField, useMediaQuery, useTheme } from '@material-ui/core';
 
 const initialStatePrescriptionResponse: PrescriptionResponseInterface = {
   prescriptionID: 0,
@@ -77,6 +79,8 @@ const PrescriptionList: React.FC = () => {
     container,
     root,
   } = useClasses();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const queryCache = useQueryCache();
   const { getList, save, urls } = new Prescription();
 
@@ -89,6 +93,12 @@ const PrescriptionList: React.FC = () => {
     },
   });
 
+  const [pharmacyName, setPharmacyName] = useState('');
+  React.useEffect(() => {
+    const jwtData = new JwtData();
+    setPharmacyName(jwtData.userData.pharmacyName);
+  }, []);
+
   const tableColumns = (): DataTableColumns[] => {
     return [
       {
@@ -98,7 +108,7 @@ const PrescriptionList: React.FC = () => {
         searchable: true,
         render: (row: any): any => {
           return (
-            <>{getJalaliDate(row.sendDate)}</>
+            <>{ getJalaliDate(row.sendDate) }</>
           );
         },
       },
@@ -121,7 +131,7 @@ const PrescriptionList: React.FC = () => {
         searchable: true,
         render: (row: any): any => {
           return (
-            <>{ !isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate)}</>
+            <>{ !isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate) }</>
           );
         },
       },
@@ -132,10 +142,33 @@ const PrescriptionList: React.FC = () => {
         searchable: true,
         render: (row: any): any => {
           return (
-            <>{ !isNullOrEmpty(row.cancelDate) && getJalaliDate(row.cancelDate)}</>
+            <>{ !isNullOrEmpty(row.cancelDate) && getJalaliDate(row.cancelDate) }</>
           );
         },
       },
+      {
+        field: 'prescriptionResponse.state',
+        title: t('general.state'),
+        type: 'string',
+        render: (row: any): any => {
+          return (
+            <>
+              { !isNullOrEmpty(row.prescriptionResponse) &&
+                t(`PrescriptionResponseStateEnum.` +
+                  `${PrescriptionResponseStateEnum[
+                  row.prescriptionResponse.filter((i: any) => {
+                    return i.pharmacy.name === pharmacyName
+                  }).length > 0
+                    ? row.prescriptionResponse.filter((i: any) => {
+                      return i.pharmacy.name === pharmacyName
+                    })[0].state
+                    : 1
+                  ]}`)
+              }
+            </>
+          )
+        }
+      }
     ]
   };
 
@@ -144,19 +177,27 @@ const PrescriptionList: React.FC = () => {
     const {
       id, prescriptionResponse
     } = item;
-    const {
-      pharmacyComment,
-    } = prescriptionResponse;
-    const isAccept = prescriptionResponse.state == PrescriptionResponseStateEnum.Accept;
-
+    let pharmacyComment: string = '';
+    let accept: boolean = false;
+    let thisState: number = 1;
+    if (prescriptionResponse.length > 0) {
+      const responses = prescriptionResponse.filter((i: any) => {
+        return i.pharmacy.name === pharmacyName
+      });
+      if (responses.length > 0) {
+        pharmacyComment = responses[0].pharmacyComment;
+        accept = responses[0].state == PrescriptionResponseStateEnum.Accept;
+        thisState = responses[0].state
+      }
+    }
     dispatch({ type: 'prescriptionID', value: id });
-    dispatch({ type: 'isAccept', value: isAccept });
+    dispatch({ type: 'isAccept', value: accept });
     dispatch({ type: 'pharmacyComment', value: pharmacyComment });
-    dispatch({ type: 'state', value: prescriptionResponse.state });
+    dispatch({ type: 'state', value: thisState });
   };
 
-  const submitSave = async (el: React.FormEvent<HTMLFormElement>): Promise<any> => {
-    el.preventDefault();
+  const submitSave = async (el?: React.FormEvent<HTMLFormElement>): Promise<any> => {
+    el?.preventDefault();
 
     const {
       prescriptionID,
@@ -165,13 +206,13 @@ const PrescriptionList: React.FC = () => {
     } = state;
 
     try {
+      toggleIsOpenSaveModalForm();
       await _save({
         prescriptionID,
         isAccept,
         pharmacyComment,
         state
       });
-      toggleIsOpenSaveModalForm();
       dispatch({ type: 'reset' });
       ref.current?.onQueryChange();
     } catch (e) {
@@ -179,25 +220,84 @@ const PrescriptionList: React.FC = () => {
     }
   }
 
-  // TODO: edit Modal form
-  const editModal= (): void => {
-
+  const editModal = (): JSX.Element => {
+    return (
+      <Dialog open={ isOpenEditModal } fullScreen={ fullScreen }>
+        <DialogTitle>{ t('prescription.response') }</DialogTitle>
+        <Divider />
+        <DialogContent className={ root }>
+          <Grid container>
+            <Grid item xs={ 12 }>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={ state.isAccept }
+                    onChange={ (e): void => {
+                      dispatch({ type: 'isAccept', value: e.target.checked });
+                      dispatch({
+                        type: 'state',
+                        value: e.target.checked
+                          ? PrescriptionResponseStateEnum.Accept
+                          : PrescriptionResponseStateEnum.NotAccept
+                      });
+                    } }
+                  />
+                }
+                label={ t('general.accept') }
+              />
+            </Grid>
+            <Grid item xs={ 12 }>
+              <TextField
+                variant="outlined"
+                value={ state.pharmacyComment }
+                label={ t('general.comment') }
+                required
+                onChange={ (e): void =>
+                  dispatch({ type: 'pharmacyComment', value: e.target.value })
+                }
+              />
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={ (): void => {
+              submitSave();
+              ref.current?.onQueryChange();
+            } }
+          >
+            { t('general.save') }
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={ (): void => {
+              setIsOpenSaveModal(false);
+            } }
+          >
+            { t('general.cancel') }
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
   }
 
   return (
-    <FormContainer title={t('prescription.peoplePrescriptions')}>
+    <FormContainer title={ t('prescription.peoplePrescriptions') }>
       <DataTable
-        tableRef={ref}
-        columns={tableColumns()}
-        editAction={(e: any, row: any): void => saveHandler(row)}
-        queryKey={PrescriptionEnum.GET_LIST}
-        queryCallback={getList}
-        urlAddress={urls.getList}
-        initLoad={false}
+        tableRef={ ref }
+        columns={ tableColumns() }
+        editAction={ (e: any, row: any): void => saveHandler(row) }
+        queryKey={ PrescriptionEnum.GET_LIST }
+        queryCallback={ getList }
+        urlAddress={ urls.getList }
+        initLoad={ false }
       />
       { isLoading && <CircleLoading /> }
-      {isOpenEditModal && editModal()}
-   </FormContainer>
+      { isOpenEditModal && editModal() }
+    </FormContainer>
   )
 }
 

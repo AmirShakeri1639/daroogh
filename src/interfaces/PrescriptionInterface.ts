@@ -19,5 +19,5 @@ export interface PrescriptionInterface {
     fileKey: string;
     duration: number;
     readOnly: boolean;
-    prescriptionResponse: PrescriptionResponseInterface;
+    prescriptionResponse: PrescriptionResponseInterface[];
 }

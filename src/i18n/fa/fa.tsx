@@ -85,6 +85,8 @@ export default {
         status: 'وضعیت',
         box: 'جعبه',
         num: 'عدد',
+        accept: 'قبول',
+        state: 'وضعیت',
       },
       pack: {
         pack: 'پک',
@@ -385,6 +387,7 @@ export default {
         peoplePrescriptions: 'نسخه‌های مردمی',
         sendDate: 'تاریخ ارسال نسخه',
         cancelDate: 'تاریخ لغو',
+        response: 'پاسخ به نسخه',
       },
       PrescriptionResponseStateEnum: {
         NotAccept: 'پذیرفته نشد',
