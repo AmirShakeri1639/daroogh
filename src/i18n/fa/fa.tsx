@@ -368,6 +368,9 @@ export default {
         province: 'استان',
         city: 'شهر',
       },
+      jobSearch: {
+        jobSearch: 'کاریابی',
+      }
     },
   },
 };

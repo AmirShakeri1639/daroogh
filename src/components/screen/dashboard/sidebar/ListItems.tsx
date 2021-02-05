@@ -56,7 +56,10 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
-import { faUserTag } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faUserTag,
+  faUserMd,
+} from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -117,6 +120,7 @@ const {
   createPack,
   pharmacyUsersList,
   exchangeManagementList,
+  jobSearchList,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -228,6 +232,14 @@ const ListItems: React.FC = () => {
                 <LockIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.changeUserPassword')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={jobSearchList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUserMd} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('jobSearch.jobSearch')} />
             </Link>
           </List>
         </Collapse>
