@@ -234,14 +234,6 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('user.changeUserPassword')} />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={jobSearchList} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faUserMd} size="lg" />
-              </ListItemIcon>
-              <ListItemText primary={t('jobSearch.jobSearch')} />
-            </Link>
-          </List>
         </Collapse>
 
         {/* //// Drug */}
@@ -506,6 +498,14 @@ const ListItems: React.FC = () => {
                 <FontAwesomeIcon icon={faUserTag} size="lg" />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.memberRole')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={jobSearchList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUserMd} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('jobSearch.jobSearch')} />
             </Link>
           </List>
         </Collapse>
