@@ -101,6 +101,7 @@ export default {
         gregorian: 'میلادی',
         date: 'تاریخ',
         wrongDate: 'تاریخ اشتباه است',
+        afterToday: 'تاریخ باید از امروز به بعد انتخاب شود',
       },
       province: {
         selectCounty: 'انتخاب استان',
