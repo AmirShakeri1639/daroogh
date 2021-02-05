@@ -54,3 +54,7 @@ export enum PackEnum {
 export enum ExchangeEnum {
   GET_ALL_EXCHANGE = 'allExchange',
 }
+
+export enum PrescriptionEnum {
+  GET_LIST = 'getList'
+}
