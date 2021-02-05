@@ -291,6 +291,7 @@ export default {
         yLat: 'عرض جغرافیایی',
         long: 'طول جغرافیایی',
         lat: 'عرض جغرافیایی',
+        location: 'مکان',
      },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
