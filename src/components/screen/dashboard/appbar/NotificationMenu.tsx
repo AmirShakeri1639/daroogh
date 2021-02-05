@@ -26,8 +26,7 @@ const useStyle = makeStyles((theme) =>
       fontWeight: 900,
     },
     menu: {
-      width: 'fit-content',
-      marginRight: 0,
+      width: 300,
     },
     menuItem: {
       display: 'flex',
@@ -89,7 +88,9 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
         );
       });
     } else {
-      return <span>پیامی وجود ندارد</span>;
+      return (
+        <span style={{ width: 300, padding: '0 10px' }}>پیامی وجود ندارد</span>
+      );
     }
   };
 
