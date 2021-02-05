@@ -85,6 +85,8 @@ export default {
         status: 'وضعیت',
         box: 'جعبه',
         num: 'عدد',
+        accept: 'قبول',
+        state: 'وضعیت',
       },
       pack: {
         pack: 'پک',
@@ -378,6 +380,20 @@ export default {
       },
       jobSearch: {
         jobSearch: 'کاریابی',
+      },
+      prescription: {
+        prescription: 'نسخه',
+        peoplePrescription: 'نسخه مردمی',
+        peoplePrescriptions: 'نسخه‌های مردمی',
+        sendDate: 'تاریخ ارسال نسخه',
+        cancelDate: 'تاریخ لغو',
+        response: 'پاسخ به نسخه',
+      },
+      PrescriptionResponseStateEnum: {
+        NotAccept: 'پذیرفته نشد',
+        Accept: 'پذیرفته شد',
+        Tahvil: 'تحویل بیمار شد',
+        NoTahvil: 'تحویل بیمار نشد',
       }
     },
   },

@@ -31,6 +31,7 @@ import {
   faBoxOpen,
   faPlus,
   faUser,
+  faFileMedical,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -56,7 +57,7 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
-import { 
+import {
   faUserTag,
   faUserMd,
 } from '@fortawesome/free-solid-svg-icons';
@@ -121,6 +122,7 @@ const {
   pharmacyUsersList,
   exchangeManagementList,
   jobSearchList,
+  prescriptionList,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -517,6 +519,14 @@ const ListItems: React.FC = () => {
             </Link>
           </List>
         </Collapse>
+        <List component="div" className={linkWrapper}>
+          <Link to={prescriptionList} className={notNested}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faFileMedical} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('prescription.peoplePrescription')} />
+          </Link>
+        </List>
       </>
     );
   };
