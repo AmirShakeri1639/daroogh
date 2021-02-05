@@ -150,13 +150,10 @@ const ListItems: React.FC = () => {
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(
     isOpenPageOfThisGroup('favorite')
   );
-  const [isOpenPackList, setIsOpenPackList] = useState<boolean>(
-    isOpenPageOfThisGroup('pack')
-  );
-
   const [isOpenExchangeManagement, setIsOpenExchangeManagement] = useState<
     boolean
   >(false);
+  const [isOpenUserPharmacyMenu, setIsOpenUserPharmacyMenu] = useState(false);
 
   const { activePageHandler: setActivePage } = useContext(Context);
 
@@ -310,14 +307,6 @@ const ListItems: React.FC = () => {
                 <Business />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.list')} />
-            </Link>
-          </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={pharmacyUsersList} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faUser} size="lg" />
-              </ListItemIcon>
-              <ListItemText primary={t('user.users-list')} />
             </Link>
           </List>
         </Collapse>
@@ -494,7 +483,7 @@ const ListItems: React.FC = () => {
           {isOpenMembers ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenMembers} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
+          {/* <List component="div" className={linkWrapper}>
             <Link to={membershipRequests} className={nested}>
               <ListItemIcon>
                 <BookmarkBorderIcon />
@@ -508,6 +497,14 @@ const ListItems: React.FC = () => {
                 <FontAwesomeIcon icon={faUserTag} size="lg" />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.memberRole')} />
+            </Link>
+          </List> */}
+          <List component="div" className={linkWrapper}>
+            <Link to={pharmacyUsersList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('user.users-list')} />
             </Link>
           </List>
           <List component="div" className={linkWrapper}>
@@ -527,6 +524,26 @@ const ListItems: React.FC = () => {
             <ListItemText primary={t('prescription.peoplePrescription')} />
           </Link>
         </List>
+        {/* <ListItem
+          button
+          onClick={(): void => setIsOpenUserPharmacyMenu((val) => !val)}
+        >
+          <ListItemIcon>
+            <LocalPharmacy />
+          </ListItemIcon>
+          <ListItemText primary={t('pharmacy.pharmacy')} />
+          {isOpenUserPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isOpenUserPharmacyMenu} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={pharmacyUsersList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('user.users-list')} />
+            </Link>
+          </List>
+        </Collapse> */}
       </>
     );
   };
