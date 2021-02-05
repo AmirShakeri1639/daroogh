@@ -4,7 +4,7 @@ import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Avatar, Button, Grid, Hidden, List, Tooltip } from '@material-ui/core';
+import { Avatar, Button, Container, Grid, Hidden, List, Paper, Tooltip } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -33,8 +33,12 @@ import { useHistory } from 'react-router-dom';
 import routes from '../../../routes';
 import Ribbon from '../../public/ribbon/Ribbon';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+<<<<<<< HEAD
 import { Alert } from '@material-ui/lab';
 import Accounting from '../../../services/api/Accounting';
+=======
+import BestPharmaciesList from './pharmacy/bestPharmaciesList';
+>>>>>>> parent of d4b1e8a... Revert "update"
 
 const drawerWidth = 240;
 
@@ -56,6 +60,16 @@ const useStyles = makeStyles((theme) => ({
   },
   trialToolbar: {
     paddingRight: 70,
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
   },
   toolbarIcon: {
     display: 'flex',
@@ -379,6 +393,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             )}
           </div>
           {component}
+
         </main>
       </div>
     </Context.Provider>

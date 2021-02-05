@@ -10,4 +10,5 @@ export enum UrlAddress {
   getAllPharmacy = 'Pharmacy/AllPharmacy',
   getAllRole = 'Roles/AllRoles',
   getAllUser = 'User/AllUsers',
+  getBestPharmaciesList = 'Reports/GetBestPharmacyListScores',
 }
