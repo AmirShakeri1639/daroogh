@@ -1,4 +1,3 @@
-
 export enum UrlAddress {
   baseUrl = 'https://api.daroog.org/api',
   getAllExchange = '/Exchange/AllExchange',
@@ -11,4 +10,5 @@ export enum UrlAddress {
   getAllPharmacy = '/Pharmacy/AllPharmacy',
   getAllRole = '/Roles/AllRoles',
   getAllUser = '/User/AllUsers',
+  // getPharmacyUsers = '/User/AllPharmacyUsers?$filter=active eq true',
 }
