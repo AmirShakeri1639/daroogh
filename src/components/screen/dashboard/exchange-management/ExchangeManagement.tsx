@@ -43,6 +43,7 @@ import routes from '../../../../routes';
 import { useHistory } from 'react-router-dom';
 import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 import ExCalculator from '../drug-transfer/exchange/ExCalculator';
+import DetailExchange from './DetailExchange';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -105,14 +106,18 @@ const ExchangeManagement: React.FC = () => {
   const { getAllExchange } = new Exchange();
   const { getViewExchange } = new PharmacyDrug();
 
-  const detailPanel = async (row: any): Promise<JSX.Element> => {
-    debugger;
-    const result = await getViewExchange(row.id);
-    let res = result?.data as ViewExchangeInterface | undefined;
-    return (res ? <ExCalculator
-      exchange={res}
-    /> : <></>)
-  };
+  const [showExCalculator, setShowExCalculator] = useState(false);
+  const toggleShowExCalculator = (): void =>
+    setShowExCalculator(!showExCalculator);
+
+
+  const detailPanel = (row: any): JSX.Element => {
+    return (<Paper style={{ backgroundColor: 'white', padding: 20, margin: 20, boxShadow: 'inset 0px 0px 8px 0px' }}>
+      <DetailExchange exchangeId={row.id} pharmacyNameA={row.pharmacyNameA} pharmacyNameB={row.pharmacyNameB} />
+    </Paper>)
+  }
+
+
 
   const [isShowPharmacyInfoModal, setIsShowPharmacyInfoModal] = useState(false);
   const toggleIsShowPharmacyInfoModalForm = (): void => {
