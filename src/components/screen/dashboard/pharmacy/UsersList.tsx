@@ -34,7 +34,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
-import { UserQueryEnum } from '../../../../enum/query';
+import { PharmacyUsersEnum, UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { UrlAddress } from '../../../../enum/UrlAddress';
@@ -187,7 +187,12 @@ const UsersList: React.FC = () => {
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
-  const { getAllUsers, removeUser, disableUser, saveNewUser } = new User();
+  const {
+    getCurrentPharmacyUsers,
+    removeUser,
+    disableUser,
+    saveNewUser,
+  } = new User();
 
   const queryCache = useQueryCache();
 
@@ -257,11 +262,11 @@ const UsersList: React.FC = () => {
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const inputValuesValidation = (): boolean => {
-    const { name, family, mobile, email, username, nationalCode } = state;
+    const { name, family, mobile, email, userName, nationalCode } = state;
 
     return (
       name.trim().length < 2 ||
-      username.trim().length < 1 ||
+      userName.trim().length < 1 ||
       family.trim().length < 2 ||
       mobile.trim().length < 11 ||
       (email !== '' && !emailRegex.test(email.toLowerCase())) ||
@@ -483,12 +488,12 @@ const UsersList: React.FC = () => {
         // editAction={editUserHandler}
         // editUser={enableUserHandler}
         // removeAction={removeUserHandler}
-        queryKey={UserQueryEnum.GET_ALL_USERS}
-        queryCallback={getAllUsers}
+        queryKey={PharmacyUsersEnum.GET_PHARMACY_USERS}
+        queryCallback={getCurrentPharmacyUsers}
         initLoad={false}
         isLoading={isLoadingRemoveUser || isLoadingEditUser}
         pageSize={10}
-        urlAddress={UrlAddress.getAllUser}
+        urlAddress={UrlAddress.getPharmacyUsers}
         // stateAction={disableUserHandler}
         customActions={customDataTAbleACtions}
       />
