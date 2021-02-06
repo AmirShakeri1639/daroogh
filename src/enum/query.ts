@@ -37,6 +37,10 @@ export enum PharmacyDrugEnum {
   GET_FAVORITE_LIST = 'getFavoriteList',
 }
 
+export enum PharmacyUsersEnum {
+  GET_PHARMACY_USERS = 'getPharmacyUsers',
+}
+
 export enum AllPharmacyDrug {
   GET_ALL_PHARMACY_DRUG = 'allPharmacyDrug',
 }
@@ -56,5 +60,5 @@ export enum ExchangeEnum {
 }
 
 export enum PrescriptionEnum {
-  GET_LIST = 'getList'
+  GET_LIST = 'getList',
 }
