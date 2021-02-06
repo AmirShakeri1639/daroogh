@@ -16,13 +16,7 @@ function createData(name:any, calories:any, fat:any, carbs:any, protein:any) {
   return { name, calories, fat, carbs, protein };
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
+
 
 const BestPharmaciesList: React.FC = () => {
   const ref = useDataTableRef();
@@ -71,7 +65,7 @@ const BestPharmaciesList: React.FC = () => {
     <Container maxWidth="lg" className={ container }>
       <Grid container spacing={ 0 }>
         <Grid item xs={ 12 }>
-          <div>{ t('accounting.list') }</div>
+          <div>{ t('pharmacy.topList') }</div>
           <Paper>
             <DataTable
               ref={ ref }

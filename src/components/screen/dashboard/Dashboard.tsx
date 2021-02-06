@@ -33,12 +33,9 @@ import { useHistory } from 'react-router-dom';
 import routes from '../../../routes';
 import Ribbon from '../../public/ribbon/Ribbon';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-<<<<<<< HEAD
 import { Alert } from '@material-ui/lab';
 import Accounting from '../../../services/api/Accounting';
-=======
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
->>>>>>> parent of d4b1e8a... Revert "update"
 
 const drawerWidth = 240;
 

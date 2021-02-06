@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl,{ setRTLTextPlugin } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
+
+setRTLTextPlugin(
+  'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
+  ()=>{},
+  true // Lazy load the plugin
+);
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -40,6 +46,7 @@ const Map: React.FC<Props> = (props) => {
   //   null,
   //   true // Lazy load the plugin
   // );
+  
 
   useEffect(() => {
     const initializeMap = (setMap: any, mapContainer: any): any => {
