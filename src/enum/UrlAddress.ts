@@ -1,5 +1,6 @@
+
 export enum UrlAddress {
-  baseUrl = 'https://api.sumon.ir/api',
+  baseUrl = 'https://api.daroog.org/api',
   getAllExchange = '/Exchange/AllExchange',
   getAllAccounting = '/Accounting/AllAccounting',
   getAllCategories = '/Categories/AllCategories',
