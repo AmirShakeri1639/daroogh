@@ -3,17 +3,20 @@ import { JalaliInterface } from '../interfaces/general';
 import jalali from 'jalaali-js';
 
 class Convertor {
-  convertISOTime(time: string): string {
+  convertISOTime(time: string, withTime = false): string {
     // @ts-ignore
-    const gregorianDate = time.split('T')[0].split('-');
+    const [gregorianDate, _time] = time.split('T');
+    const splitedGregorianDate = gregorianDate.split('-');
     const convertedDate: JalaliInterface = jalali.toJalaali(
-      Number(gregorianDate[0]),
-      Number(gregorianDate[1]),
-      Number(gregorianDate[2])
+      Number(splitedGregorianDate[0]),
+      Number(splitedGregorianDate[1]),
+      Number(splitedGregorianDate[2])
     );
     return `${convertedDate.jy}-${
       convertedDate.jm < 10 ? `0${convertedDate.jm}` : convertedDate.jm
-    }-${convertedDate.jd < 10 ? `0${convertedDate.jd}` : convertedDate.jd}`;
+    }-${convertedDate.jd < 10 ? `0${convertedDate.jd}` : convertedDate.jd} ${
+      withTime ? _time.split('.')[0] : ''
+    }`;
   }
 
   thousandsSeperator(number: string | number): string {
@@ -39,7 +42,6 @@ class Convertor {
   l(v: string | number): string {
     return v.toLocaleString('fa-IR');
   }
-
 }
 
 export default new Convertor();

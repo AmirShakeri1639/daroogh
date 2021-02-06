@@ -31,6 +31,7 @@ import {
   faBoxOpen,
   faPlus,
   faUser,
+  faFileMedical,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -56,7 +57,7 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
-import { 
+import {
   faUserTag,
   faUserMd,
 } from '@fortawesome/free-solid-svg-icons';
@@ -121,6 +122,7 @@ const {
   pharmacyUsersList,
   exchangeManagementList,
   jobSearchList,
+  prescriptionList,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -148,13 +150,10 @@ const ListItems: React.FC = () => {
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(
     isOpenPageOfThisGroup('favorite')
   );
-  const [isOpenPackList, setIsOpenPackList] = useState<boolean>(
-    isOpenPageOfThisGroup('pack')
-  );
-
   const [isOpenExchangeManagement, setIsOpenExchangeManagement] = useState<
     boolean
   >(false);
+  const [isOpenUserPharmacyMenu, setIsOpenUserPharmacyMenu] = useState(false);
 
   const { activePageHandler: setActivePage } = useContext(Context);
 
@@ -308,14 +307,6 @@ const ListItems: React.FC = () => {
                 <Business />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.list')} />
-            </Link>
-          </List>
-          <List component="div" className={linkWrapper}>
-            <Link to={pharmacyUsersList} className={nested}>
-              <ListItemIcon>
-                <FontAwesomeIcon icon={faUser} size="lg" />
-              </ListItemIcon>
-              <ListItemText primary={t('user.users-list')} />
             </Link>
           </List>
         </Collapse>
@@ -492,7 +483,7 @@ const ListItems: React.FC = () => {
           {isOpenMembers ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenMembers} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
+          {/* <List component="div" className={linkWrapper}>
             <Link to={membershipRequests} className={nested}>
               <ListItemIcon>
                 <BookmarkBorderIcon />
@@ -507,6 +498,14 @@ const ListItems: React.FC = () => {
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.memberRole')} />
             </Link>
+          </List> */}
+          <List component="div" className={linkWrapper}>
+            <Link to={pharmacyUsersList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('user.users-list')} />
+            </Link>
           </List>
           <List component="div" className={linkWrapper}>
             <Link to={jobSearchList} className={nested}>
@@ -517,6 +516,34 @@ const ListItems: React.FC = () => {
             </Link>
           </List>
         </Collapse>
+        <List component="div" className={linkWrapper}>
+          <Link to={prescriptionList} className={notNested}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faFileMedical} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('prescription.peoplePrescription')} />
+          </Link>
+        </List>
+        {/* <ListItem
+          button
+          onClick={(): void => setIsOpenUserPharmacyMenu((val) => !val)}
+        >
+          <ListItemIcon>
+            <LocalPharmacy />
+          </ListItemIcon>
+          <ListItemText primary={t('pharmacy.pharmacy')} />
+          {isOpenUserPharmacyMenu ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isOpenUserPharmacyMenu} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={pharmacyUsersList} className={nested}>
+              <ListItemIcon>
+                <FontAwesomeIcon icon={faUser} size="lg" />
+              </ListItemIcon>
+              <ListItemText primary={t('user.users-list')} />
+            </Link>
+          </List>
+        </Collapse> */}
       </>
     );
   };
