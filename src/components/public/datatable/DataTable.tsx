@@ -173,12 +173,12 @@ const DataTable: React.ForwardRefRenderFunction<
       isFreeAction: true,
       onClick: (): any => tableRef.current.onQueryChange(),
     },
-    {
-      icon: 'report',
-      tooltip: 'گزارش',
-      isFreeAction: true,
-      onClick: (): any => setShowReport(true),
-    },
+    // {
+    //   icon: 'report',
+    //   tooltip: 'گزارش',
+    //   isFreeAction: true,
+    //   onClick: (): any => setShowReport(true),
+    // },
   ];
 
   if (addAction !== undefined) {

@@ -44,6 +44,7 @@ import { useHistory } from 'react-router-dom';
 import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 import ExCalculator from '../drug-transfer/exchange/ExCalculator';
 import DetailExchange from './DetailExchange';
+import Utils from '../../../public/utility/Utils';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -288,6 +289,7 @@ const ExchangeManagement: React.FC = () => {
         width: '150px',
         headerStyle: { textAlign: 'right', direction: 'rtl' },
         cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
+        render: (row: any): any => { return (<> {Utils.convertGeoToShamsi(row.sendDate)}</>) }
       },
       {
         title: 'داروخانه طرف اول',
