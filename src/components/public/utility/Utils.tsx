@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {default as mom} from 'jalali-moment';
 
 export default class Utils {
   static numberWithCommas = (x: any): string => {
@@ -22,5 +23,25 @@ export default class Utils {
       const format = withTime ? 'jYYYY/jMM/jDD - HH:mm:ss' : 'jYYYY/jMM/jDD';
       return moment(dt).locale('fa').format(format);
     }
+  };
+
+  static convertGeoToShamsi(date: any): string | null {
+    if (date)
+      return moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    else return null;
+  }
+
+  static getExpireDate = (date: any): string => {
+    debugger;
+    const faDate = mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    const eDate = mom.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
+    const fromDate = new Date(eDate);
+    const today = new Date();
+
+    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
+
+    const res = `${faDate} (${differenceInDays} روز)`;
+
+    return res;
   };
 }
