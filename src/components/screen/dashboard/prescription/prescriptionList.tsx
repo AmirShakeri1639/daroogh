@@ -22,7 +22,7 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
-import { PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
+import { ColorEnum, PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
 import { getJalaliDate } from '../../../../utils/jalali';
 import FormContainer from '../../../public/form-container/FormContainer';
 import {
@@ -200,21 +200,24 @@ const PrescriptionList: React.FC = () => {
         title: t('general.state'),
         type: 'string',
         render: (row: any): any => {
+          const responses = row.prescriptionResponse.filter((i: any) => {
+            return i.pharmacy.name === pharmacyName
+          });
+          const thisState = PrescriptionResponseStateEnum[
+            responses.length > 0
+              ? responses[0].state
+              : 1
+          ];
           return (
-            <>
+            <span style={ {
+              color:
+                thisState == PrescriptionResponseStateEnum[PrescriptionResponseStateEnum.Accept]
+                  ? ColorEnum.Green : ColorEnum.Gray
+            } }>
               { !isNullOrEmpty(row.prescriptionResponse) &&
-                t(`PrescriptionResponseStateEnum.` +
-                  `${PrescriptionResponseStateEnum[
-                  row.prescriptionResponse.filter((i: any) => {
-                    return i.pharmacy.name === pharmacyName
-                  }).length > 0
-                    ? row.prescriptionResponse.filter((i: any) => {
-                      return i.pharmacy.name === pharmacyName
-                    })[0].state
-                    : 1
-                  ]}`)
+                t(`PrescriptionResponseStateEnum.${thisState}`)
               }
-            </>
+            </span>
           )
         }
       }
