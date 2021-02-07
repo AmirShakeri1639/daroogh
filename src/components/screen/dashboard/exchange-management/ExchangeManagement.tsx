@@ -109,9 +109,7 @@ const ExchangeManagement: React.FC = () => {
     debugger;
     const result = await getViewExchange(row.id);
     let res = result?.data as ViewExchangeInterface | undefined;
-    return (res ? <ExCalculator
-      exchange={res}
-    /> : <></>)
+    return res ? <ExCalculator exchange={res} /> : <></>;
   };
 
   const [isShowPharmacyInfoModal, setIsShowPharmacyInfoModal] = useState(false);
@@ -185,16 +183,17 @@ const ExchangeManagement: React.FC = () => {
                   <CardContent style={{ textAlign: 'center' }}>
                     {pharmacyInfoState?.data.x && pharmacyInfoState?.data.y ? (
                       <Map
+                        draggable={true}
                         defaultLatLng={[
                           pharmacyInfoState?.data.x,
                           pharmacyInfoState?.data.y,
                         ]}
                       />
                     ) : (
-                        <span style={{ color: 'red' }}>
-                          مختصات جغرافیایی این داروخانه ثبت نشده است
-                        </span>
-                      )}
+                      <span style={{ color: 'red' }}>
+                        مختصات جغرافیایی این داروخانه ثبت نشده است
+                      </span>
+                    )}
                   </CardContent>
                 </Card>
               </Grid>

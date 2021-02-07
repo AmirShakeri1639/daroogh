@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl,{ setRTLTextPlugin } from 'mapbox-gl';
+import mapboxgl, { setRTLTextPlugin } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 setRTLTextPlugin(
   'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-  ()=>{},
+  () => {},
   true // Lazy load the plugin
 );
 
@@ -26,14 +26,11 @@ interface Props {
   onClick?: (e: any) => void;
   defaultLatLng?: [number, number];
   maxHeight?: string;
+  draggable: boolean;
 }
 
 const Map: React.FC<Props> = (props) => {
-  const {
-    onClick,
-    maxHeight = '400px',
-    defaultLatLng = [59.526950363917827, 36.321029857543529],
-  } = props;
+  const { onClick, maxHeight = '400px', defaultLatLng, draggable } = props;
   const { container } = useStyle();
 
   const [map, setMap] = useState(null);
@@ -46,14 +43,15 @@ const Map: React.FC<Props> = (props) => {
   //   null,
   //   true // Lazy load the plugin
   // );
-  
 
   useEffect(() => {
     const initializeMap = (setMap: any, mapContainer: any): any => {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
-        center: defaultLatLng,
+        center: defaultLatLng?.length
+          ? defaultLatLng
+          : [59.526950363917827, 36.321029857543529],
         zoom: 14,
       });
 
@@ -61,23 +59,22 @@ const Map: React.FC<Props> = (props) => {
       map.addControl(
         new mapboxgl.GeolocateControl({
           positionOptions: {
-            enableHighAccuracy: true
+            enableHighAccuracy: true,
           },
-          trackUserLocation: true
+          trackUserLocation: true,
         })
       );
+      let marker: any ;
+      if (defaultLatLng && defaultLatLng.length) {
+         marker = new mapboxgl.Marker({
+          draggable: draggable,
+        })
+          .setLngLat(defaultLatLng)
+          .addTo(map);
+      
 
-      let marker = new mapboxgl.Marker({
-        draggable: true,
-      })
-        .setLngLat(defaultLatLng)
-        .addTo(map);
-
-      const markerDragHandler = (): void => {
-        const lngLat = marker.getLngLat();
-        if (onClick) onClick({ lngLat: { ...lngLat } });
-      };
-      marker.on('dragend', markerDragHandler);
+    }
+    
 
       map.on('load', () => {
         setMap(map);
@@ -95,6 +92,11 @@ const Map: React.FC<Props> = (props) => {
 
         marker.on('dragend', markerDragHandler);
       });
+      const markerDragHandler = (): void => {
+        const lngLat = marker.getLngLat();
+        if (onClick) onClick({ lngLat: { ...lngLat } });
+      };
+      marker.on('dragend', markerDragHandler);
     };
 
     if (!map) initializeMap(setMap, mapContainer);
@@ -102,15 +104,15 @@ const Map: React.FC<Props> = (props) => {
 
   return (
     <div
-      className={ container }
-      ref={ mapContainer }
-      style={ {
+      className={container}
+      ref={mapContainer}
+      style={{
         width: '100%',
         height: 'calc(100vh - 150px)',
         maxHeight: maxHeight,
         // position: 'absolute',
         direction: 'rtl',
-      } }
+      }}
     />
   );
 };

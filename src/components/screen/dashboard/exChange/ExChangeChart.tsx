@@ -1,6 +1,15 @@
 import React, { PureComponent } from 'react';
 import { useQuery } from 'react-query';
-import { PieChart, Pie, Sector, Cell, ResponsiveContainer } from 'recharts';
+import {
+  PieChart,
+  Pie,
+  Sector,
+  Cell,
+  ResponsiveContainer,
+  Line,
+  Legend,
+  Tooltip,
+} from 'recharts';
 import Reports from '../../../../services/api/Reports';
 
 // const data = [
@@ -16,6 +25,7 @@ const RADIAN = Math.PI / 180;
 const ExChangeChart: React.FC = () => {
   const { data } = useQuery('chart', getExchangeStatus);
   debugger;
+
   const renderCustomizedLabel: any = ({
     cx,
     cy,
@@ -36,33 +46,34 @@ const ExChangeChart: React.FC = () => {
     index: any;
   }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(midAngle * RADIAN);
-    const y = cy + radius * Math.sin(midAngle * RADIAN);
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
     debugger;
     return (
       <text
         x={x}
         y={y}
         fill="white"
-        textAnchor="middle"
+        textAnchor={x > cx ? 'start' : 'end'}
         dominantBaseline="central"
       >
-        {data[index].item1} ({value})
+        ({value})
       </text>
     );
   };
   return (
-    <ResponsiveContainer width="100%" height={650}>
+    <ResponsiveContainer width="100%" height={450}>
       <PieChart height={650}>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
-          outerRadius={300}
+          outerRadius={200}
           labelLine={false}
           label={renderCustomizedLabel}
           fill="#8884d8"
           dataKey="item2"
+          nameKey="item1"
         >
           {data &&
             data.length &&
@@ -70,6 +81,19 @@ const ExChangeChart: React.FC = () => {
               <Cell key={`cell-${index}`} fill={'#' + entry.item4} />
             ))}
         </Pie>
+        <Tooltip />
+        <Legend verticalAlign="top" height={36} />
+        {data &&
+          data.length &&
+          data.map((entry: any, index: number) => (
+            <Line
+              key={`Line-${index}`}
+              dataKey="item1"
+              name={'ami'}
+              type="monotone"
+              stroke={'#' + entry.item4}
+            />
+          ))}
       </PieChart>
     </ResponsiveContainer>
   );
