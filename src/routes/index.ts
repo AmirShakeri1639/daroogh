@@ -12,6 +12,7 @@ const message = 'message';
 const pack = 'pack';
 const exchangemanagement = 'exchangemanagement';
 const jobSearch = 'job-search';
+const prescription = 'prescription';
 
 export default {
   login: '/login',
@@ -55,4 +56,6 @@ export default {
   exchangeManagementList: `/${dashboard}/${exchangemanagement}/list`,
 
   jobSearchList: `/${dashboard}/${jobSearch}/list`,
+
+  prescriptionList: `/${dashboard}/${prescription}/list`,
 };

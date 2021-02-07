@@ -14,3 +14,5 @@ export { default as Map } from './map/Map';
 export { ThreePartDatePicker } from './three-part-datepicker/ThreePartDatePicker';
 export { DaroogTabPanel } from './daroog-tab-panel/DaroogTabPanel';
 export type { DaroogTabPanelProps } from './daroog-tab-panel/DaroogTabPanel';
+export { default as Picture } from './picture/picture';
+export { default as PictureDialog } from './picture/picture-dialog';

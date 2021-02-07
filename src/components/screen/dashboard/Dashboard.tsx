@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import DaroogLogo from '../../../assets/images/daroog-logo.png';
+import React, { useState, useEffect } from 'react';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -20,19 +19,19 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { useTranslation } from 'react-i18next';
 import Context from './Context';
 import UserMenu from './appbar/UserMenu';
+import NotificationMenu from './appbar/NotificationMenu';
 import ListItems from './sidebar/ListItems';
-import DashboardActivePage from './DashboardActivePage';
 import { MaterialDrawer } from '../../public';
 import { errorHandler, JwtData } from '../../../utils';
 import { LoggedInUserInterface } from '../../../interfaces';
 import { logoutUser } from '../../../utils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
-import { ColorEnum } from '../../../enum';
+import { ColorEnum, MessageQueryEnum } from '../../../enum';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../routes';
 import Ribbon from '../../public/ribbon/Ribbon';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { useQuery } from 'react-query';
+import { Message } from '../../../services/api';
 import { Alert } from '@material-ui/lab';
 import Accounting from '../../../services/api/Accounting';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
@@ -42,6 +41,8 @@ const drawerWidth = 240;
 interface DashboardPropsInterface {
   component: React.ReactNode;
 }
+
+const { getUserMessages } = new Message();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -161,35 +162,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type DashboardActivePage =
-  | 'dashboard'
-  | 'createRole'
-  | 'createUser'
-  | 'usersList'
-  | 'createDrug'
-  | 'drugsList'
-  | 'categoryList'
-  | 'pharmaciesList'
-  | 'exchange'
-  | 'createPharmacy'
-  | 'supplyList'
-  | 'accountingList'
-  | 'membershipRequestsList';
-
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const history = useHistory();
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
   const [isTrial, setIsTrial] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
   const [activePage, setActivePage] = useState<string>('dashboard');
 
   const { transfer } = routes;
 
   const classes = useStyles();
 
+  const {
+    data: userMessages,
+    isLoading: isLoadingUserMessages,
+  } = useQuery(MessageQueryEnum.GET_USER_MESSAGES, () => getUserMessages(true));
+
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
-
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
   const activePageHandler = (page: string): void => {
@@ -202,13 +193,14 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     setAnchorEl,
     activePage,
     activePageHandler,
+    notifEl,
+    setNotifEl,
   });
 
   const [isIndebtPharmacyState, setIsIndebtPharmacyState] = useState<boolean>();
   const { isIndebtPharmacy } = new Accounting();
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {
-      debugger;
       const res = await isIndebtPharmacy();
       setIsIndebtPharmacyState(res.data);
     } catch (error) {
@@ -224,8 +216,15 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     setAnchorEl(e.currentTarget);
   };
 
+  const handleNotificationIconButton = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): void => {
+    setNotifEl(e.currentTarget);
+  };
+
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
-  React.useEffect(() => {
+
+  useEffect(() => {
     const { userData } = new JwtData();
     setLoggedInUser(userData);
 
@@ -290,6 +289,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             >
               <MenuIcon />
             </IconButton>
+
             <Typography
               component="h1"
               variant="h6"
@@ -305,6 +305,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 </span>
               </Hidden>
             </Typography>
+
             <Button
               style={{ color: ColorEnum.White }}
               onClick={(): void => history.push(transfer)}
@@ -314,11 +315,22 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 <AddCircleOutlineIcon />
               </Tooltip>
             </Button>
-            <IconButton color="inherit">
-              {/* <Badge badgeContent={4} color="secondary"> */}
-              <NotificationsIcon />
-              {/* </Badge> */}
+
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleNotificationIconButton}
+            >
+              <Badge
+                badgeContent={
+                  userMessages !== undefined ? userMessages.items.length : 0
+                }
+                color="secondary"
+              >
+                <NotificationsIcon />
+              </Badge>
             </IconButton>
+
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -329,9 +341,15 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             >
               <AccountCircle />
             </IconButton>
+
             <UserMenu />
+
+            <NotificationMenu
+              messages={isLoadingUserMessages ? [] : userMessages?.items}
+            />
           </Toolbar>
         </AppBar>
+
         <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
           <div className={classes.toolbarIcon}>
             <span

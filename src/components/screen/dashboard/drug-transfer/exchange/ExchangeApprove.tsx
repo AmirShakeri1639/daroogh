@@ -198,7 +198,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
         <form
           ref={refFrom}
           method="post"
-          action="https://api.sumon.ir/MyVirtualGateway"
+          action="https://api.daroog.org/MyVirtualGateway"
         >
           <input type="hidden" value={paymentAmount} name="amount"></input>
           <input type="hidden" value={'request'} name="commandType"></input>
