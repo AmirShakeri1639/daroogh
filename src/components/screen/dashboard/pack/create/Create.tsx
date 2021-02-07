@@ -397,12 +397,7 @@ const Create: React.FC = () => {
       if (
         temporaryDrugs.length === 0 ||
         packTitle === '' ||
-        selectedCategory === '' ||
-        selectedYear === '' ||
-        selectedMonth === '' ||
-        selectedYear.length < 4 ||
-        !monthIsValid(Number(selectedMonth)) ||
-        !dayIsValid(Number(selectedDay))
+        selectedCategory === ''
       ) {
         return;
       }
@@ -452,7 +447,8 @@ const Create: React.FC = () => {
       number !== '' &&
       selectedDrug.hasOwnProperty('id') &&
       selectedYear !== '' &&
-      selectedMonth !== ''
+      selectedMonth !== '' &&
+      selectedYear.length === 4
     );
   };
 
