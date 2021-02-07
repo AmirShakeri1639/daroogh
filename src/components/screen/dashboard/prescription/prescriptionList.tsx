@@ -28,9 +28,10 @@ import FormContainer from '../../../public/form-container/FormContainer';
 import {
   Button, Dialog, DialogActions, DialogContent,
   DialogTitle, Divider, FormControlLabel, Grid,
+  Paper,
   Switch, TextField, useMediaQuery, useTheme
 } from '@material-ui/core';
-import { PictureDialog } from '../../../public';
+import { Picture, PictureDialog } from '../../../public';
 
 const initialStatePrescriptionResponse: PrescriptionResponseInterface = {
   prescriptionID: 0,
@@ -63,6 +64,16 @@ function reducer(state = initialStatePrescriptionResponse, action: ActionInterfa
         ...state,
         state: value,
       };
+    case 'comment':
+      return {
+        ...state,
+        comment: value,
+      };
+    case 'fileKey':
+      return {
+        ...state,
+        fileKey: value,
+      };
     case 'reset':
       return initialStatePrescriptionResponse;
     default:
@@ -82,6 +93,9 @@ const PrescriptionList: React.FC = () => {
   const {
     container,
     root,
+    spacing3,
+    smallImage,
+    formItem,
   } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -146,17 +160,6 @@ const PrescriptionList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>{ !isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate) }</>
-          );
-        },
-      },
-      {
-        field: 'cancelDate',
-        title: t('prescription.cancelDate'),
-        type: 'string',
-        searchable: true,
-        render: (row: any): any => {
-          return (
-            <>{ !isNullOrEmpty(row.cancelDate) && getJalaliDate(row.cancelDate) }</>
           );
         },
       },
@@ -246,6 +249,8 @@ const PrescriptionList: React.FC = () => {
     dispatch({ type: 'isAccept', value: accept });
     dispatch({ type: 'pharmacyComment', value: pharmacyComment });
     dispatch({ type: 'state', value: thisState });
+    dispatch({ type: 'comment', value: item.comment });
+    dispatch({ type: 'fileKey', value: item.fileKey });
   };
 
   const submitSave = async (el?: React.FormEvent<HTMLFormElement>): Promise<any> => {
@@ -262,7 +267,7 @@ const PrescriptionList: React.FC = () => {
       await _save({
         prescriptionID,
         isAccept,
-        pharmacyComment,
+        pharmacyComment: isAccept ? pharmacyComment : '',
         state
       });
       dispatch({ type: 'reset' });
@@ -279,6 +284,30 @@ const PrescriptionList: React.FC = () => {
         <Divider />
         <DialogContent className={ root }>
           <Grid container>
+            <Grid item xs={ 12 }>
+              <Paper style={ { padding: '1em' } }>
+                <Grid container>
+                  <Grid item xs={ 12 }>
+                    <b>{ t('prescription.comment') }</b>
+                    <br />
+                    { state.comment }
+                  </Grid>
+                  { !isNullOrEmpty(state.fileKey) &&
+                    <>
+                      <hr />
+                      <Grid item xs={ 12 }>
+                        <b>{ t('prescription.comment') }</b>
+                        <br />
+                        <Picture fileKey={ state.fileKey } className={ smallImage } />
+                      </Grid>
+                    </>
+                  }
+                </Grid>
+              </Paper>
+            </Grid>
+            <Grid item xs={ 12 }>
+              <h3>{ t('prescription.response') }</h3>
+            </Grid>
             <Grid item xs={ 12 }>
               <FormControlLabel
                 control={
@@ -299,15 +328,18 @@ const PrescriptionList: React.FC = () => {
               />
             </Grid>
             <Grid item xs={ 12 }>
-              <TextField
-                variant="outlined"
-                value={ state.pharmacyComment }
-                label={ t('general.comment') }
-                required
-                onChange={ (e): void =>
-                  dispatch({ type: 'pharmacyComment', value: e.target.value })
-                }
-              />
+              { state.isAccept &&
+                <TextField
+                  variant="outlined"
+                  value={ state.pharmacyComment }
+                  label={ t('general.comment') }
+                  required
+                  className={ formItem }
+                  onChange={ (e): void =>
+                    dispatch({ type: 'pharmacyComment', value: e.target.value })
+                  }
+                />
+              }
             </Grid>
           </Grid>
         </DialogContent>

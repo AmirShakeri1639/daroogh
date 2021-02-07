@@ -268,4 +268,8 @@ export const useClasses = makeStyles((theme) => createStyles({
     display: 'flex',
     margin: 'auto'
   },
+  smallImage: {
+    maxWidth: '300px',
+    maxHeight: '300px',
+  },
 }));

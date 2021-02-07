@@ -395,6 +395,7 @@ export default {
         cancelDate: 'تاریخ لغو',
         responseDate: 'تاریخ پاسخ',
         response: 'پاسخ به نسخه',
+        comment: 'شرح نسخه',
       },
       PrescriptionResponseStateEnum: {
         NotAccept: 'پذیرفته نشد',
