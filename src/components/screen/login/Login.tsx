@@ -122,7 +122,7 @@ const Login: React.FC = (): JSX.Element => {
           (async (): Promise<any> => {
             try {
               console.log('window-->', window);
-              window.najvaUserSubscribed = function(
+              window.najvaUserSubscribed = async function(
                 najva_user_token: string
               ): Promise<void> {
                 await setNotification(najva_user_token);
