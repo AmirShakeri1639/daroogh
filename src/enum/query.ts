@@ -17,6 +17,11 @@ export enum DrugEnum {
   GET_ALL = 'all',
 }
 
+export enum ReportsEnum {
+  GET_BEST_PHARMACIES_LIST = 'getBestPharmaciesList',
+}
+
+
 export enum PharmacyEnum {
   GET_ALL = 'all',
   GET_MEMBERS = 'members',

@@ -278,12 +278,15 @@ const PharmaciesList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>
-              { (isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) && ''}
-              { !(isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) &&
-                <a href={`https://google.com/maps?q=${row.y},${row.x}`} target="_blank">
+              {(isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) && ''}
+              {!(isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) && (
+                <a
+                  href={`https://google.com/maps?q=${row.y},${row.x}`}
+                  target="_blank"
+                >
                   <FontAwesomeIcon icon={faGlobe} />
                 </a>
-              }
+              )}
             </>
           );
         },
@@ -621,6 +624,7 @@ const PharmaciesList: React.FC = () => {
                 <Grid item xs={12}>
                   <div style={{ overflow: 'hidden' }}>
                     <Map
+                      draggable={true}
                       maxHeight="200px"
                       defaultLatLng={[state.x, state.y]}
                       onClick={(e: any): void => {
