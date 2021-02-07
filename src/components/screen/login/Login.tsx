@@ -120,6 +120,16 @@ const Login: React.FC = (): JSX.Element => {
 
         if (process.env.NODE_ENV === 'production') {
           (async (): Promise<any> => {
+            try {
+              console.log('window-->', window);
+              window.najvaUserSubscribed = function(
+                najva_user_token: string
+              ): Promise<void> {
+                await setNotification(najva_user_token);
+              };
+            } catch (e) {
+              errorHandler(e);
+            }
             // const cookiesArray = document.cookie.split(';');
             // const regexNajva = /najva_token=[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}/g;
             // if (cookiesArray.length > 0) {
@@ -128,15 +138,7 @@ const Login: React.FC = (): JSX.Element => {
             //     .trim()
             //     .split('=')[1];
 
-              try {
-                console.log('window-->', window);
-                window.najvaUserSubscribed = function(najva_user_token: string) {
-                  await setNotification(najva_user_token);
-                }
-              } catch (e) {
-                errorHandler(e);
-              }
-            }
+            // }
           })();
         }
 
