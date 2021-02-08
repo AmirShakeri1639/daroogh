@@ -89,7 +89,13 @@ const DesktopCardContent = ({
           if (i.packID !== null && i.packDetails && i.packDetails.length > 0) {
             return i.packDetails.map((p: any) => {
               return (
-                isNullOrEmpty(p.confirmed) || p.confirmed
+                (
+                  (isNullOrEmpty(p.confirmed) || p.confirmed) &&
+                  (
+                    p.cardColor === ColorEnum.AddedByB
+                    || p.cardColor === ColorEnum.Confirmed
+                  )
+                )
                   ? p.currentCnt
                     ? p.currentCnt * p.amount
                     : p.cnt * p.amount
@@ -98,7 +104,13 @@ const DesktopCardContent = ({
             }).reduce((sum, price) => sum + price)
           } else {
             return (
-              isNullOrEmpty(i.confirmed) || i.confirmed
+              (
+                (isNullOrEmpty(i.confirmed) || i.confirmed) &&
+                (
+                  i.cardColor === ColorEnum.AddedByB
+                  || i.cardColor === ColorEnum.Confirmed
+                )
+            )
                 ? i.currentCnt
                   ? i.currentCnt * i.amount
                   : i.cnt * i.amount
