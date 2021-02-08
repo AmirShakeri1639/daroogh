@@ -50,6 +50,7 @@ export default {
         noMoreData: 'داده دیگری موجود نیست',
         name: 'نام',
         family: 'نام خانوادگی',
+        nameFamily: 'نام و نام خانوادگی',
         location: 'مکان',
         filter: 'فیلتر',
         justOffer: 'فقط دارای آفر',
@@ -91,6 +92,7 @@ export default {
         picture: 'تصویر',
         gender: 'جنسیت',
         download: 'دانلود',
+        details: 'جزئیات',
       },
       pack: {
         pack: 'پک',

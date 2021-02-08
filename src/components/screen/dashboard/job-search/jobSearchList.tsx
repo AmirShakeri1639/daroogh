@@ -18,7 +18,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBan,
+  faBan, faInfoCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
@@ -36,9 +36,49 @@ import FileLink from '../../../public/picture/fileLink';
 const EmploymentApplicationList: React.FC = () => {
   const { t } = useTranslation();
   const ref = useDataTableRef();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const queryCache = useQueryCache();
+  const [isOpenDetails, setIsOpenDetails] = useState(false);
+  const [detailsItem, setDetailsItem] = useState<any>();
+  const {
+    root,
+    smallImage,
+    formItem,
+  } = useClasses();
 
   const { all, cancel, urls } = new EmploymentApplication();
+
+  const detialsDialog = (): JSX.Element => {
+    const {
+      name, family, genderStr, mobile, workExperienceYear,
+    } = detailsItem;
+    return (
+      <Dialog open={ isOpenDetails } fullScreen={ fullScreen }>
+        <DialogTitle>{ t('employment.application') }</DialogTitle>
+        <Divider />
+        <DialogContent className={ root }>
+          <Grid container>
+            <Grid item xs={ 12 }>
+              { t('general.nameFamily') }<br />
+              { name } &nbsp; { family }
+            </Grid>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={ (): void => {
+              setIsOpenDetails(false);
+            } }
+          >
+            { t('general.ok') }
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
 
   const tableColumns = (): DataTableColumns[] => {
     return [
@@ -73,6 +113,23 @@ const EmploymentApplicationList: React.FC = () => {
         searchable: true,
       },
       {
+        field: 'id',
+        title: t('general.details'),
+        type: 'string',
+        render: (row: any): any => {
+          return (
+            <>
+              <Button onClick={ (): any => {
+                setDetailsItem(row);
+                setIsOpenDetails(true);
+              } }>
+                <FontAwesomeIcon icon={ faInfoCircle } />
+              </Button>
+            </>
+          )
+        }
+      },
+      {
         field: 'resumeFileKey',
         title: t('employment.resume'),
         type: 'string',
@@ -81,7 +138,7 @@ const EmploymentApplicationList: React.FC = () => {
           return (
             <>
               { !isNullOrEmpty(row.resumeFileKey) &&
-                <FileLink fileKey={ row.resumeFileKey } fileName="resume.jpg" />
+                <FileLink fileKey={ row.resumeFileKey } fileName="resume.pdf" />
               }
             </>
           )
@@ -130,6 +187,7 @@ const EmploymentApplicationList: React.FC = () => {
         urlAddress={ urls.all }
         initLoad={ false }
       />
+      { isOpenDetails && detialsDialog() }
     </FormContainer>
   )
 }
