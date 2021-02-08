@@ -90,6 +90,7 @@ export default {
         state: 'وضعیت',
         picture: 'تصویر',
         gender: 'جنسیت',
+        download: 'دانلود',
       },
       pack: {
         pack: 'پک',
@@ -275,6 +276,8 @@ export default {
         failedRemove: 'حذف با خطا روبرو شد',
         errorUserNamePassword: 'نام کاربری یا کلمه عبور اشتباه است',
         failed: 'عملیات با خطا مواجه شد!',
+        done: 'با موفقیت انجام شد.',
+        cancelConfirm: 'آیا از لغو این مورد مطمئن هستید؟',
       },
       pharmacy: {
         pharmacy: 'داروخانه',
@@ -408,6 +411,7 @@ export default {
       employment: {
         application: 'درخواست کاریابی',
         workExperience: 'سابقه کار',
+        resume: 'رزومه',
       },
     },
   },

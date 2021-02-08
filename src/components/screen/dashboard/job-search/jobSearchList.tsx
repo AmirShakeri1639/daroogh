@@ -10,6 +10,7 @@ import {
 } from '../../../../utils';
 import {
   ActionInterface,
+  DataTableCustomActionInterface,
   PrescriptionInterface,
   PrescriptionResponseInterface
 } from '../../../../interfaces';
@@ -17,7 +18,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faImage,
+  faStopCircle,
 } from '@fortawesome/free-regular-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
@@ -29,14 +30,15 @@ import {
   Paper,
   Switch, TextField, useMediaQuery, useTheme
 } from '@material-ui/core';
-import { EmploymentApplicationEnum } from '../../../../enum';
+import { ColorEnum, EmploymentApplicationEnum } from '../../../../enum';
+import FileLink from '../../../public/picture/fileLink';
 
 const EmploymentApplicationList: React.FC = () => {
   const { t } = useTranslation();
   const ref = useDataTableRef();
   const queryCache = useQueryCache();
 
-  const { all, urls } = new EmploymentApplication();
+  const { all, cancel, urls } = new EmploymentApplication();
 
   const tableColumns = (): DataTableColumns[] => {
     return [
@@ -70,14 +72,59 @@ const EmploymentApplicationList: React.FC = () => {
         type: 'number',
         searchable: true,
       },
+      {
+        field: 'resumeFileKey',
+        title: t('employment.resume'),
+        type: 'string',
+        searchable: true,
+        render: (row: any): any => {
+          return (
+            <>
+              { !isNullOrEmpty(row.resumeFileKey) &&
+                <FileLink fileKey={ row.resumeFileKey } />
+              }
+            </>
+          )
+        }
+      },
     ]
   }
+
+  const [_cancel, { isLoading: isLoadingCancel }] = useMutation(cancel, {
+    onSuccess: async () => {
+      ref.current?.onQueryChange();
+      await queryCache.invalidateQueries(EmploymentApplicationEnum.GET_ALL);
+      await successSweetAlert(t('alert.done'));
+    }
+  });
+
+  const cancelHandler = async (row: any): Promise<any> => {
+    try {
+      if (window.confirm(t('alert.cancelConfirm'))) {
+        await _cancel(row.id);
+      }
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
+
+  const actions: DataTableCustomActionInterface[] = [
+    {
+      icon: (): any => (
+        <FontAwesomeIcon icon={ faStopCircle } color={ ColorEnum.Red } />
+      ),
+      tooltip: t('general.cancel'),
+      position: 'row',
+      action: async (e: any, row: any): Promise<void> => await cancelHandler(row),
+    }
+  ]
 
   return (
     <FormContainer title={ t('employment.application') }>
       <DataTable
         tableRef={ ref }
         columns={ tableColumns() }
+        customActions={ actions }
         queryKey={ EmploymentApplicationEnum.GET_ALL }
         queryCallback={ all }
         urlAddress={ urls.all }
