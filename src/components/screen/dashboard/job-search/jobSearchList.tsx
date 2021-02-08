@@ -87,6 +87,9 @@ const EmploymentApplicationList: React.FC = () => {
                 { maritalStatusStr }
               </Box>
             </Grid>
+            <Grid item xs={ 12 }>
+              <Divider />
+            </Grid>
             <Grid item xs={ 4 }>
               <Box className={ spacing1 }>
                 <b>{ t('employment.readingPrescriptionCertificate') }</b><br />
@@ -141,6 +144,9 @@ const EmploymentApplicationList: React.FC = () => {
                 { educationStr }
               </Box>
             </Grid>
+            <Grid item xs={ 12 }>
+              <Divider />
+            </Grid>
             <Grid item xs={ 4 }>
               <Box className={ spacing1 }>
                 <b>{ t('employment.guarantee') }</b><br />
@@ -171,6 +177,9 @@ const EmploymentApplicationList: React.FC = () => {
                 <b>{ t('employment.previousWorkplacePhone') }</b><br />
                 { previousWorkplacePhone }
               </Box>
+            </Grid>
+            <Grid item xs={ 12 }>
+              <Divider />
             </Grid>
             <Grid item xs={ 12 }>
               <Box className={ spacing1 }>
