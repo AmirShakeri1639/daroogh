@@ -27,12 +27,11 @@ export default class Utils {
 
   static convertGeoToShamsi(date: any): string | null {
     if (date)
-      return moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+      return mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     else return null;
   }
 
   static getExpireDate = (date: any): string => {
-    debugger;
     const faDate = mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     const eDate = mom.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
     const fromDate = new Date(eDate);

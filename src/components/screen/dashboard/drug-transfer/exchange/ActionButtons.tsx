@@ -430,6 +430,7 @@ const ActionButtons = (): JSX.Element => {
                   <CardContent style={{ textAlign: 'center' }}>
                     {pharmacyInfoState?.data.x && pharmacyInfoState?.data.y ? (
                       <Map
+                        draggable={false}
                         defaultLatLng={[
                           pharmacyInfoState?.data.x,
                           pharmacyInfoState?.data.y,

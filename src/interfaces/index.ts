@@ -70,6 +70,7 @@ export type { ViewExchangeInterface, AddDrugInterface, CardInfo } from './ViewEx
 export type { UserRoleInterface } from './user';
 export type { SettingsInterface } from './SettingsInterface';
 export type { PrescriptionInterface, PrescriptionResponseInterface } from './PrescriptionInterface';
+export type { EmploymentApplicationInterface } from './EmploymentApplicationInterface';
 
 export * from './component';
 export * from './general';

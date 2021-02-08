@@ -17,6 +17,11 @@ export enum DrugEnum {
   GET_ALL = 'all',
 }
 
+export enum ReportsEnum {
+  GET_BEST_PHARMACIES_LIST = 'getBestPharmaciesList',
+}
+
+
 export enum PharmacyEnum {
   GET_ALL = 'all',
   GET_MEMBERS = 'members',
@@ -61,4 +66,8 @@ export enum ExchangeEnum {
 
 export enum PrescriptionEnum {
   GET_LIST = 'getList',
+}
+
+export enum EmploymentApplicationEnum {
+  GET_ALL = 'getAllEmploymentApplications'
 }
