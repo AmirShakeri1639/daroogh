@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { calcTotalPrices } from '../../../../utils/ExchangeTools';
 import fa from '../../../../i18n/fa/fa';
 import CircularProgressWithLabel from '../../../public/loading/CircularProgressWithLabel';
+import { ColorEnum } from '../../../../enum';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -106,11 +107,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     const color =
       res && res.currentPharmacyIsA
         ? item.addedByB
-          ? '#00cc00'
+          ? ColorEnum.AddedByB
           : item.confirmed !== undefined && item.confirmed === false
-            ? '#009900'
-            : '#33ff33'
-        : '#33ff33';
+            ? ColorEnum.NotConfirmed
+            : ColorEnum.Confirmed
+        : ColorEnum.Confirmed;
 
     return color;
   };

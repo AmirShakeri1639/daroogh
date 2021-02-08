@@ -56,7 +56,7 @@ interface Props {
 const ExCalculator: React.FC<Props> = (props) => {
   const exchange: ViewExchangeInterface =
     props.exchange == undefined ? ViewExchangeInitialState : props.exchange;
-  const { onClose, full = true, pharmacyNameA , pharmacyNameB } = props;
+  const { onClose, full = true, pharmacyNameA, pharmacyNameB } = props;
   // if (showActions === undefined) showActions = true;
 
   const { t } = useTranslation();
@@ -166,22 +166,26 @@ const ExCalculator: React.FC<Props> = (props) => {
 
     let totalCount = 0;
     let totalPrice = 0;
-
     const makeRow = (i: any): JSX.Element => {
-      if (isNullOrEmpty(i.confirmed) || i.confirmed) {
+      if (
+        (isNullOrEmpty(i.confirmed) || i.confirmed)
+        && (i.cardColor === ColorEnum.AddedByB
+          || i.cardColor === ColorEnum.Confirmed
+        )
+      ) {
         totalCount += i.currentCnt ? i.currentCnt : i.cnt;
         totalPrice += i.amount * (i.currentCnt ? i.currentCnt : i.cnt);
 
         return (
-          <TableRow key={i.drug.name}>
-            <TableCell scope="row" className={darkText}>
-              {i.drug.name}
+          <TableRow key={ i.drug.name }>
+            <TableCell scope="row" className={ darkText }>
+              { i.drug.name }
             </TableCell>
-            <TableCell align="center" className={darkText}>
-              {i.currentCnt ? i.currentCnt : i.cnt}
+            <TableCell align="center" className={ darkText }>
+              { i.currentCnt ? i.currentCnt : i.cnt }
             </TableCell>
-            <TableCell align="center" className={darkText}>
-              {Convertor.thousandsSeperatorFa(i.amount)}
+            <TableCell align="center" className={ darkText }>
+              { Convertor.thousandsSeperatorFa(i.amount) }
             </TableCell>
           </TableRow>
         );
@@ -193,23 +197,23 @@ const ExCalculator: React.FC<Props> = (props) => {
       <>
         {card && card.length > 0 && (
           <>
-            <TableContainer component={Paper} className={darkText}>
+            <TableContainer component={ Paper } className={ darkText }>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" className={darkText}>
-                      {t('drug.drug')}
+                    <TableCell align="center" className={ darkText }>
+                      { t('drug.drug') }
                     </TableCell>
-                    <TableCell align="center" className={darkText}>
-                      {t('general.number')}
+                    <TableCell align="center" className={ darkText }>
+                      { t('general.number') }
                     </TableCell>
-                    <TableCell align="center" className={darkText}>
-                      {t('general.price')} {t('general.unit')} ({t('general.rial')})
+                    <TableCell align="center" className={ darkText }>
+                      { t('general.price') } { t('general.unit') } ({ t('general.rial') })
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {card.map((row) => {
+                  { card.map((row) => {
                     if (row.packID !== null && row.packDetails && row.packDetails.length > 0) {
                       return row.packDetails.map((i: any) => {
                         return makeRow(i)
@@ -217,82 +221,82 @@ const ExCalculator: React.FC<Props> = (props) => {
                     } else {
                       return makeRow(row)
                     }
-                  })}
-                  {((exchange.currentPharmacyIsA && you)
+                  }) }
+                  { ((exchange.currentPharmacyIsA && you)
                     || (!exchange.currentPharmacyIsA && !you)
                   ) &&
                     ((): any => {
                       // totalPriceA = totalPrice;
                       exchange.totalPriceA = totalPrice;
-                    })()}
-                  {((!exchange.currentPharmacyIsA && you)
+                    })() }
+                  { ((!exchange.currentPharmacyIsA && you)
                     || (exchange.currentPharmacyIsA && !you)
                   ) &&
                     ((): any => {
                       // totalPriceB = totalPrice;
                       exchange.totalPriceB = totalPrice;
-                    })()}
+                    })() }
                 </TableBody>
               </Table>
             </TableContainer>
-            { /* setDifferenceCheckOutput() */}
+            { /* setDifferenceCheckOutput() */ }
           </>
-        )}
-        <div className={spacing3}>&nbsp;</div>
+        ) }
+        <div className={ spacing3 }>&nbsp;</div>
         {!isNullOrEmpty(totalCount) && (
-          <Grid item xs={12} className={spacingVertical3}>
+          <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
-              backColor={ColorEnum.White}
+              backColor={ ColorEnum.White }
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={faListOl}
+                    icon={ faListOl }
                     size="lg"
-                    className={faIcons}
+                    className={ faIcons }
                   />
-                  {t('general.number')}
+                  {t('general.number') }
                 </>
               }
-              leftText={l(totalCount)}
+              leftText={ l(totalCount) }
             />
           </Grid>
-        )}
+        ) }
         {!isNullOrEmpty(totalPrice) && (
-          <Grid item xs={12} className={spacingVertical3}>
+          <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
-              backColor={ColorEnum.White}
+              backColor={ ColorEnum.White }
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={faListOl}
+                    icon={ faListOl }
                     size="lg"
-                    className={faIcons}
+                    className={ faIcons }
                   />
-                  {t('exchange.totalPrice')}
+                  {t('exchange.totalPrice') }
                 </>
               }
-              leftText={Convertor.thousandsSeperatorFa(totalPrice)}
+              leftText={ Convertor.thousandsSeperatorFa(totalPrice) }
             />
           </Grid>
-        )}
+        ) }
         {!isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
-          <Grid item xs={12} className={spacingVertical3}>
+          <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
-              backColor={ColorEnum.White}
+              backColor={ ColorEnum.White }
               rightText={
                 <>
                   <FontAwesomeIcon
-                    icon={faMoneyBillAlt}
-                    className={faIcons}
+                    icon={ faMoneyBillAlt }
+                    className={ faIcons }
                     size="lg"
                   />
-                  {t('exchange.commission')}
+                  {t('exchange.commission') }
                 </>
               }
-              leftText={Convertor.thousandsSeperatorFa(totalPourcentage)}
+              leftText={ Convertor.thousandsSeperatorFa(totalPourcentage) }
             />
           </Grid>
-        )}
+        ) }
       </>
     );
   };
@@ -300,46 +304,46 @@ const ExCalculator: React.FC<Props> = (props) => {
   const CalcContent = (): JSX.Element => {
     return (
       <Grid container>
-        {/* separate data */}
-        <Grid item xs={12}>
+        {/* separate data */ }
+        <Grid item xs={ 12 }>
           <Tabs
-            value={currentTabIndex}
+            value={ currentTabIndex }
             indicatorColor="primary"
             textColor="primary"
-            onChange={handleChange}
+            onChange={ handleChange }
             centered
           >
-            <Tab label={pharmacyNameA ?? t('exchange.you')} />
-            <Tab label={pharmacyNameB ?? t('exchange.otherSide')} />
+            <Tab label={ pharmacyNameA ?? t('exchange.you') } />
+            <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
           </Tabs>
           {/* <SwipeableViews
               enableMouseEvents
               index={ currentTabIndex }
               onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
             > */}
-          <DaroogTabPanel value={currentTabIndex} index={0}>
-            {getOneSideData(true)}
+          <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+            { getOneSideData(true) }
           </DaroogTabPanel>
-          <DaroogTabPanel value={currentTabIndex} index={1}>
-            {getOneSideData(false)}
+          <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+            { getOneSideData(false) }
           </DaroogTabPanel>
-          {/* </SwipeableViews> */}
+          {/* </SwipeableViews> */ }
         </Grid>
         <Divider />
-        {/* common data */}
-        <Grid item xs={12}>
-          {!isNullOrEmpty(exchange?.sendDate) && (
-            <Grid item xs={12} className={spacingVertical3}>
+        {/* common data */ }
+        <Grid item xs={ 12 }>
+          { !isNullOrEmpty(exchange?.sendDate) && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
               <TextLine
-                backColor={ColorEnum.White}
+                backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon
-                      icon={faCalendarPlus}
+                      icon={ faCalendarPlus }
                       size="lg"
-                      className={faIcons}
+                      className={ faIcons }
                     />
-                    {t('exchange.sendDate')}
+                    {t('exchange.sendDate') }
                   </>
                 }
                 leftText={
@@ -351,19 +355,19 @@ const ExCalculator: React.FC<Props> = (props) => {
                 }
               />
             </Grid>
-          )}
-          {!isNullOrEmpty(expireDate) && (
-            <Grid item xs={12} className={spacingVertical3}>
+          ) }
+          { !isNullOrEmpty(expireDate) && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
               <TextLine
-                backColor={ColorEnum.White}
+                backColor={ ColorEnum.White }
                 rightText={
                   <>
                     <FontAwesomeIcon
-                      icon={faCalendarTimes}
+                      icon={ faCalendarTimes }
                       size="lg"
-                      className={faIcons}
+                      className={ faIcons }
                     />
-                    {expireDateText}
+                    {expireDateText }
                   </>
                 }
                 leftText={
@@ -373,7 +377,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                 }
               />
             </Grid>
-          )}
+          ) }
           {/* <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
               backColor={ ColorEnum.White }
@@ -410,28 +414,28 @@ const ExCalculator: React.FC<Props> = (props) => {
   return (
     <>
       {full ? (
-        <Dialog open={dialogOpen} fullScreen={fullScreen}>
-          <DialogTitle>{t('exchange.exCalculator')}</DialogTitle>
+        <Dialog open={ dialogOpen } fullScreen={ fullScreen }>
+          <DialogTitle>{ t('exchange.exCalculator') }</DialogTitle>
           <Divider />
-          <DialogContent className={darkText}>
+          <DialogContent className={ darkText }>
             <CalcContent />
           </DialogContent>
           <DialogActions>
             <Button
               variant="outlined"
               color="primary"
-              onClick={(): void => {
+              onClick={ (): void => {
                 setDialogOpen(false);
                 if (onClose) onClose();
-              }}
+              } }
             >
-              {t('general.ok')}
+              { t('general.ok') }
             </Button>
           </DialogActions>
         </Dialog>
       ) : (
           <CalcContent />
-        )}
+        ) }
     </>
   );
 };
