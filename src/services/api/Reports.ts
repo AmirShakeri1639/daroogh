@@ -19,7 +19,6 @@ class Reports extends Api {
     }
   }
   getExchangeStatus = async (): Promise<any> => {
-    debugger
     try {
       const result = await this.getData(
         `${this.urls.getExchangeStatus}`);

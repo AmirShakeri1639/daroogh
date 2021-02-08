@@ -79,6 +79,12 @@ export const useClasses = makeStyles((theme) => createStyles({
     marginTop: theme.spacing(3),
     padding: theme.spacing(2, 0, 2),
   },
+  dialogBig: {
+    maxWidth: '90vw',
+  },
+  spacingHalf: {
+    margin: theme.spacing(.5)
+  },
   spacing1: {
     margin: theme.spacing(1)
   },
@@ -267,5 +273,9 @@ export const useClasses = makeStyles((theme) => createStyles({
   centerItem: {
     display: 'flex',
     margin: 'auto'
+  },
+  smallImage: {
+    maxWidth: '300px',
+    maxHeight: '300px',
   },
 }));

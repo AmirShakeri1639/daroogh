@@ -76,7 +76,6 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose, pharmacyNam
   const [dialogOpen, setDialogOpen] = useState(true);
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    debugger;
     console.log('e.target in changeHandler:', e.target)
     console.log('e.target.value in changeHandler:', e.target.value)
     dispatch({ type: e.target.name, value: e.target.value });
