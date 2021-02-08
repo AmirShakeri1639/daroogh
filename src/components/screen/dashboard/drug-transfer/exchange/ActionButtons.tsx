@@ -45,7 +45,7 @@ import routes from '../../../../../routes';
 import { useHistory } from 'react-router-dom';
 import { PharmacyInfo } from '../../../../../interfaces/PharmacyInfo';
 import { Map, TextLine } from '../../../../public';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+// import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import ExCalculator from './ExCalculator';
 import { theme } from '../../../../../RTL';
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
@@ -288,21 +288,21 @@ const ActionButtons = (): JSX.Element => {
     toggleIsOpenCancelExchangeModalForm(modalType);
   };
 
-  const Map1 = (): JSX.Element => {
-    return (
-      <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
-        <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={[51.505, -0.09]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-      </MapContainer>
-    );
-  };
+  // const Map1 = (): JSX.Element => {
+  //   return (
+  //     <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+  //       <TileLayer
+  //         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  //         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+  //       />
+  //       <Marker position={[51.505, -0.09]}>
+  //         <Popup>
+  //           A pretty CSS3 popup. <br /> Easily customizable.
+  //         </Popup>
+  //       </Marker>
+  //     </MapContainer>
+  //   );
+  // };
 
   const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
     onSuccess: async (res) => {
@@ -728,7 +728,7 @@ const ActionButtons = (): JSX.Element => {
             {type === 'approve' ? (
               <MatButton
                 onClick={async (): Promise<any> =>
-                  handleConfirmOrNotExchange(true)
+                  await handleConfirmOrNotExchange(true)
                 }
                 variant="contained"
                 color="primary"
@@ -738,7 +738,7 @@ const ActionButtons = (): JSX.Element => {
               </MatButton>
             ) : (
               <MatButton
-                onClick={async (): Promise<any> => await handleCancelExchange()}
+                onClick={async (): Promise<any> => await handleConfirmOrNotExchange(false)}
                 variant="contained"
                 color="primary"
                 autoFocus

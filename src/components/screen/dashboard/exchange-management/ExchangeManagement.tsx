@@ -198,10 +198,10 @@ const ExchangeManagement: React.FC = () => {
                         ]}
                       />
                     ) : (
-                      <span style={{ color: 'red' }}>
-                        مختصات جغرافیایی این داروخانه ثبت نشده است
-                      </span>
-                    )}
+                        <span style={{ color: 'red' }}>
+                          مختصات جغرافیایی این داروخانه ثبت نشده است
+                        </span>
+                      )}
                   </CardContent>
                 </Card>
               </Grid>
@@ -259,6 +259,7 @@ const ExchangeManagement: React.FC = () => {
           color: 'black',
           whiteSpace: 'nowrap',
         },
+        searchable: true
       },
       {
         title: 'وضعیت',
@@ -290,7 +291,7 @@ const ExchangeManagement: React.FC = () => {
         width: '150px',
         headerStyle: { textAlign: 'right', direction: 'rtl' },
         cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
-        render: (row: any): any => { return (<> {Utils.convertGeoToShamsi(row.sendDate)}</>) }
+        render: (row: any): any => { return (<> {row.sendDate ? Utils.convertGeoToShamsi(row.sendDate) : 'نامشخص'}</>) }
       },
       {
         title: 'داروخانه طرف اول',
