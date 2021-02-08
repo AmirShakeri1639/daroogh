@@ -18,8 +18,8 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faStopCircle,
-} from '@fortawesome/free-regular-svg-icons';
+  faBan,
+} from '@fortawesome/free-solid-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
 import { getJalaliDate } from '../../../../utils/jalali';
@@ -81,7 +81,7 @@ const EmploymentApplicationList: React.FC = () => {
           return (
             <>
               { !isNullOrEmpty(row.resumeFileKey) &&
-                <FileLink fileKey={ row.resumeFileKey } />
+                <FileLink fileKey={ row.resumeFileKey } fileName="resume.jpg" />
               }
             </>
           )
@@ -111,7 +111,7 @@ const EmploymentApplicationList: React.FC = () => {
   const actions: DataTableCustomActionInterface[] = [
     {
       icon: (): any => (
-        <FontAwesomeIcon icon={ faStopCircle } color={ ColorEnum.Red } />
+        <FontAwesomeIcon icon={ faBan } color={ ColorEnum.Red } />
       ),
       tooltip: t('general.cancel'),
       position: 'row',

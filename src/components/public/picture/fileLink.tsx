@@ -7,14 +7,20 @@ import {
   faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
+import { Button } from '@material-ui/core';
 
 interface Props {
   fileKey: string;
   className?: string;
+  fileName?: string;
 }
 
 const FileLink: React.FC<Props> = (props) => {
-  const { fileKey, className = '' } = props;
+  const {
+    fileKey,
+    className = 'btn btn-default',
+    fileName = fileKey
+  } = props;
   const { t } = useTranslation();
   const [file, setFile] = useState<any>();
   const [isLoading, setIsLoading] = useState(true);
@@ -36,17 +42,19 @@ const FileLink: React.FC<Props> = (props) => {
     <>
       { isLoading && <CircleLoading /> }
       { !isNullOrEmpty(file) &&
-        <>
+        <Button variant="outlined">
           <a
+            style={ { textDecoration: 'none', color: '#1e88e5' } }
             className={ className }
             href={ file }
+            download={ fileName }
             target="_blank"
           >
             <FontAwesomeIcon icon={ faDownload } />
             &nbsp;
             { t('general.download') }
           </a>
-        </>
+        </Button>
       }
     </>
   );
