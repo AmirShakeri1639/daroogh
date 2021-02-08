@@ -67,3 +67,7 @@ export enum ExchangeEnum {
 export enum PrescriptionEnum {
   GET_LIST = 'getList',
 }
+
+export enum EmploymentApplicationEnum {
+  GET_ALL = 'getAllEmploymentApplications'
+}

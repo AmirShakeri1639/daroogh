@@ -49,6 +49,7 @@ export default {
         more: 'بیشتر',
         noMoreData: 'داده دیگری موجود نیست',
         name: 'نام',
+        family: 'نام خانوادگی',
         location: 'مکان',
         filter: 'فیلتر',
         justOffer: 'فقط دارای آفر',
@@ -88,6 +89,7 @@ export default {
         accept: 'قبول',
         state: 'وضعیت',
         picture: 'تصویر',
+        gender: 'جنسیت',
       },
       pack: {
         pack: 'پک',
@@ -402,7 +404,11 @@ export default {
         Accept: 'پذیرفته شد',
         Tahvil: 'تحویل بیمار شد',
         NoTahvil: 'تحویل بیمار نشد',
-      }
+      },
+      employment: {
+        application: 'درخواست کاریابی',
+        workExperience: 'سابقه کار',
+      },
     },
   },
 };
