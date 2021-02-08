@@ -172,7 +172,6 @@ const SupplyList: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, new PharmacyDrugSupplyList());
   const [drugList, setDrugList] = useState<DrugInterface[]>([]);
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
   const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -266,8 +265,6 @@ const SupplyList: React.FC = () => {
     setSelectedYear('');
   };
 
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
-
   const resetStates = (): void => {
     dispatch({ type: 'reset' });
     setSelectedDate('');
@@ -309,7 +306,6 @@ const SupplyList: React.FC = () => {
     }
   );
 
-  // :smile:
   const isJalaliDate = (num: number): boolean => num < 2000;
 
   const calculatDateDiference = (): void => {

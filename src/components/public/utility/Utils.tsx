@@ -32,7 +32,6 @@ export default class Utils {
   }
 
   static getExpireDate = (date: any): string => {
-    debugger;
     const faDate = mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     const eDate = mom.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
     const fromDate = new Date(eDate);

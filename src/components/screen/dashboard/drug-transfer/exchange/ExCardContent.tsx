@@ -25,6 +25,7 @@ import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import Utils from '../../../../public/utility/Utils';
 import Ribbon from '../../../../public/ribbon/Ribbon';
+import { ColorEnum } from '../../../../../enum';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -144,9 +145,11 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   const PackContent = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
-        {pharmacyDrug?.cardColor === '#00cc00' && (
+        {pharmacyDrug?.cardColor === ColorEnum.AddedByB && (
           <Ribbon
-            text={pharmacyDrug?.cardColor === '#00cc00' ? 'اضافه' : 'حذف'}
+            text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
+              ? 'اضافه'
+              : 'حذف'}
           />
         )}
         <Grid item xs={12}>
@@ -180,7 +183,6 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const getExpireDate = (date: any): string => {
-    debugger;
     const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
     const fromDate = new Date(eDate);

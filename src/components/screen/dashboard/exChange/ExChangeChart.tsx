@@ -24,7 +24,6 @@ const RADIAN = Math.PI / 180;
 
 const ExChangeChart: React.FC = () => {
   const { data } = useQuery('chart', getExchangeStatus);
-  debugger;
 
   const renderCustomizedLabel: any = ({
     cx,
@@ -48,7 +47,6 @@ const ExChangeChart: React.FC = () => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    debugger;
     return (
       <text
         x={x}

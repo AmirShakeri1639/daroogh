@@ -37,6 +37,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 import Ribbon from '../../../../public/ribbon/Ribbon';
+import { ColorEnum } from '../../../../../enum';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -680,10 +681,12 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
         className={`${root} ${isPack ? pack : ''}`}
         style={{ backgroundColor: pharmacyDrug.cardColor }}
       >
-        {(pharmacyDrug?.cardColor === '#00cc00' ||
-          pharmacyDrug?.cardColor === '#009900') && (
+        {(pharmacyDrug?.cardColor === ColorEnum.AddedByB ||
+          pharmacyDrug?.cardColor === ColorEnum.NotConfirmed) && (
           <Ribbon
-            text={pharmacyDrug?.cardColor === '#00cc00' ? 'اضافه' : 'حذف'}
+            text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
+              ? 'اضافه'
+              : 'حذف'}
           />
         )}
         <CardContent>{basicDetail}</CardContent>
