@@ -25,6 +25,7 @@ import { useClasses } from '../classes';
 import { getJalaliDate } from '../../../../utils/jalali';
 import FormContainer from '../../../public/form-container/FormContainer';
 import {
+  Box,
   Button, Dialog, DialogActions, DialogContent,
   DialogTitle, Divider, FormControlLabel, Grid,
   Paper,
@@ -43,8 +44,8 @@ const EmploymentApplicationList: React.FC = () => {
   const [detailsItem, setDetailsItem] = useState<any>();
   const {
     root,
-    smallImage,
-    formItem,
+    spacing1,
+    dialogBig,
   } = useClasses();
 
   const { all, cancel, urls } = new EmploymentApplication();
@@ -52,16 +53,130 @@ const EmploymentApplicationList: React.FC = () => {
   const detialsDialog = (): JSX.Element => {
     const {
       name, family, genderStr, mobile, workExperienceYear,
+      maritalStatusStr, suggestedWorkShiftStr,
+      readingPrescriptionCertificateStr,
+      gradeOfReadingPrescriptionCertificate,
+      pharmaceuticalSoftwareSkillStr,
+      computerSkillStr, foreignLanguagesSkillStr,
+      suggestedJobPositionStr, educationStr,
+      hasGuarantee, address, landlinePhone,
+      previousWorkplace, previousWorkplacePhone,
+      descriptions,
     } = detailsItem;
     return (
-      <Dialog open={ isOpenDetails } fullScreen={ fullScreen }>
+      <Dialog open={ isOpenDetails } fullScreen={ fullScreen } maxWidth="md">
         <DialogTitle>{ t('employment.application') }</DialogTitle>
         <Divider />
-        <DialogContent className={ root }>
+        <DialogContent>
           <Grid container>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('general.nameFamily') }</b><br />
+                { name } &nbsp; { family }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('general.gender') }</b><br />
+                { genderStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('general.maritalStatus') }</b><br />
+                { maritalStatusStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.readingPrescriptionCertificate') }</b><br />
+                { readingPrescriptionCertificateStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.gradeOfReadingPrescriptionCertificate') }</b><br />
+                { gradeOfReadingPrescriptionCertificate }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.workExperience') }</b><br />
+                { workExperienceYear }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.suggestedWorkShift') }</b><br />
+                { suggestedWorkShiftStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.pharmaceuticalSoftwareSkill') }</b><br />
+                { pharmaceuticalSoftwareSkillStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.computerSkill') }</b><br />
+                { computerSkillStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.foreignLanguagesSkill') }</b><br />
+                { foreignLanguagesSkillStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.suggestedJobPosition') }</b><br />
+                { suggestedJobPositionStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.education') }</b><br />
+                { educationStr }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.guarantee') }</b><br />
+                { hasGuarantee ? 'دارد'
+                  : 'ندارد' }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('general.landlinePhone') }</b><br />
+                { landlinePhone }
+              </Box>
+            </Grid>
             <Grid item xs={ 12 }>
-              { t('general.nameFamily') }<br />
-              { name } &nbsp; { family }
+              <Box className={ spacing1 }>
+                <b>{ t('general.address') }</b><br />
+                { address }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.previousWorkplace') }</b><br />
+                { previousWorkplace }
+              </Box>
+            </Grid>
+            <Grid item xs={ 4 }>
+              <Box className={ spacing1 }>
+                <b>{ t('employment.previousWorkplacePhone') }</b><br />
+                { previousWorkplacePhone }
+              </Box>
+            </Grid>
+            <Grid item xs={ 12 }>
+              <Box className={ spacing1 }>
+                <b>{ t('general.descriptions') }</b><br />
+                { descriptions }
+              </Box>
             </Grid>
           </Grid>
         </DialogContent>
