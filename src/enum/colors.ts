@@ -25,6 +25,9 @@ export enum ColorEnum {
   SILVER = '#9e9e9e',
   BRONZE = '#cd7f32',
   PLATINUM = '#a0b2c6',
+  AddedByB = '#00cc00',
+  Confirmed = '#33ff33',
+  NotConfirmed = '#009900',
 }
 
 export const CardColors = [
