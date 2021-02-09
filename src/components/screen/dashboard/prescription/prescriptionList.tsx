@@ -21,17 +21,44 @@ import {
   faImage,
 } from '@fortawesome/free-regular-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
-import { useClasses } from '../classes';
 import { ColorEnum, PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
 import { getJalaliDate } from '../../../../utils/jalali';
 import FormContainer from '../../../public/form-container/FormContainer';
 import {
-  Button, Dialog, DialogActions, DialogContent,
+  Button, createStyles, Dialog, DialogActions, DialogContent,
   DialogTitle, Divider, FormControlLabel, Grid,
+  makeStyles,
   Paper,
   Switch, TextField, useMediaQuery, useTheme
 } from '@material-ui/core';
 import { Picture, PictureDialog } from '../../../public';
+
+export const useClasses = makeStyles((theme) => createStyles({
+  root: {
+    minWidth: 500,
+    width: '100%',
+    maxWidth: 1000,
+    '& > .MuiCardContent-root': {
+      padding: 0
+    },
+    '& > .MuiCardHeader-root': {
+      padding: '10px 10px 2px 10px'
+    },
+    '& > .MuiCardHeader-content': {
+      marginTop: '-10px !important',
+      color: 'red'
+    }
+  },
+  formItem: {
+    display: 'flex',
+    justifySelf: 'stretch',
+    margin: theme.spacing(1)
+  },
+  smallImage: {
+    maxWidth: '300px',
+    maxHeight: '300px',
+  },
+}));
 
 const initialStatePrescriptionResponse: PrescriptionResponseInterface = {
   prescriptionID: 0,
@@ -91,9 +118,7 @@ const PrescriptionList: React.FC = () => {
   const [isOpenPicture, setIsOpenPicture] = useState(false);
   const [fileKeyToShow, setFileKeyToShow] = useState('');
   const {
-    container,
     root,
-    spacing3,
     smallImage,
     formItem,
   } = useClasses();
@@ -334,6 +359,9 @@ const PrescriptionList: React.FC = () => {
                   value={ state.pharmacyComment }
                   label={ t('general.comment') }
                   required
+                  multiline
+                  style={{ whiteSpace: "pre-line" }}
+                  rows="3"
                   className={ formItem }
                   onChange={ (e): void =>
                     dispatch({ type: 'pharmacyComment', value: e.target.value })
