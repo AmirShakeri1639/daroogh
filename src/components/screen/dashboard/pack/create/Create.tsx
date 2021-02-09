@@ -6,6 +6,7 @@ import {
   InputLabel,
   makeStyles,
   createStyles,
+  FormControl,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
@@ -13,7 +14,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
-import { Category, Drug, Pack } from '../../../../../services/api';
+import { Category, Comission, Drug, Pack } from '../../../../../services/api';
 import {
   BackDrop,
   Button,
@@ -21,7 +22,7 @@ import {
   MaterialContainer,
   Modal,
 } from '../../../../public';
-import { omit, remove } from 'lodash';
+import { omit, remove, has } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
 import { useEffectOnce } from '../../../../../hooks';
@@ -38,6 +39,7 @@ import { useParams } from 'react-router-dom';
 import { DrugType } from '../../../../../enum/pharmacyDrug';
 // @ts-ignore
 import jalaali from 'jalaali-js';
+import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
 
 const { searchDrug } = new Drug();
 
@@ -49,6 +51,15 @@ const { numberWithZero, thousandsSeperatorFa } = Convertor;
 
 const useStyle = makeStyles((theme) =>
   createStyles({
+    fieldset: {
+      borderColor: '#f5f5f5',
+      borderRadius: 10,
+      color: '#6d6d6d',
+      marginTop: 20,
+      '& legend': {
+        color: '#7e7e7e',
+      },
+    },
     addButton: {
       display: 'flex',
       height: 152,
@@ -99,6 +110,8 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
+const { getComissionAndRecommendation } = new Comission();
+
 const monthMinimumLength = 28;
 
 const monthIsValid = (month: number): boolean => month < 13;
@@ -132,6 +145,8 @@ const Create: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [isWrongDate, setIsWrongDate] = useState(false);
+  const [daroogRecommendation, setDaroogRecommendation] = useState<string>('');
+  const [comissionPercent, setComissionPercent] = useState<string>('');
 
   const { t } = useTranslation();
 
@@ -145,6 +160,7 @@ const Create: React.FC = () => {
     label,
     submitBtn,
     cancelButton,
+    fieldset,
   } = useStyle();
 
   const resetValues = (): void => {
@@ -232,6 +248,37 @@ const Create: React.FC = () => {
       calculatDateDiference();
     }
   }, [selectedDay, selectedMonth, selectedYear]);
+
+  useEffect(() => {
+    (async (): Promise<any> => {
+      try {
+        // @ts-ignore
+        const { value: drugId, id } = selectedDrug;
+        if (
+          (offer1 > 0 && offer2 > 0 && Number(number) > 0) ||
+          (drugId && Number(amount) > 0)
+        ) {
+          const result = await getComissionAndRecommendation({
+            drugId: id,
+            price: amount,
+            offer1: offer1,
+            offer2: offer2,
+            expireDate: isoDate,
+            pharmacyId: '0',
+          });
+          const { data } = result;
+          if (has(data, 'commissionPercent')) {
+            setComissionPercent(data.commissionPercent);
+          }
+          if (has(data, 'suggestionStr')) {
+            setDaroogRecommendation(data.suggestionStr);
+          }
+        }
+      } catch (e) {
+        errorHandler(e);
+      }
+    })();
+  }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
     if (isOpenModal) {
@@ -394,10 +441,12 @@ const Create: React.FC = () => {
 
   const formHandler = async (): Promise<any> => {
     try {
+      console.log('wrong', isWrongDate);
       if (
         temporaryDrugs.length === 0 ||
         packTitle === '' ||
-        selectedCategory === ''
+        selectedCategory === '' ||
+        isWrongDate
       ) {
         return;
       }
@@ -539,24 +588,27 @@ const Create: React.FC = () => {
         </Grid>
 
         <Grid item xs={12} sm={6} lg={3}>
-          <InputLabel id="category">{t('pack.category')}</InputLabel>
-          <Select
-            labelId="category-id"
-            id="category"
-            placeholder={t('pack.category')}
-            className="w-100"
-            value={selectedCategory}
-            onChange={(e): void =>
-              setSelectedCategory(e.target.value as string)
-            }
-          >
-            <MenuItem value="" />
-            {itemsGenerator()}
-          </Select>
+          <span>تعداد کل اقلام: {packTotalItems}</span>
         </Grid>
 
         <Grid item xs={12} sm={6} lg={3}>
-          <span>تعداد کل اقلام: {packTotalItems}</span>
+          <FormControl variant="outlined" className="w-100">
+            <InputLabel id="category-pack">{t('pack.category')}</InputLabel>
+            <Select
+              labelId="category-pack"
+              id="category"
+              label={t('pack.category')}
+              placeholder={t('pack.category')}
+              className="w-100"
+              value={selectedCategory}
+              onChange={(e): void =>
+                setSelectedCategory(e.target.value as string)
+              }
+            >
+              <MenuItem value="" />
+              {itemsGenerator()}
+            </Select>
+          </FormControl>
         </Grid>
 
         <Grid item xs={12} sm={6} lg={3}>
@@ -738,6 +790,20 @@ const Create: React.FC = () => {
               /> */}
             </Grid>
           </Grid>
+
+          {comissionPercent !== '' && (
+            <Grid item xs={12}>
+              {`پورسانت: ${comissionPercent}%`}
+            </Grid>
+          )}
+
+          {daroogRecommendation !== '' && (
+            <Grid item xs={12}>
+              <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
+                <span>{daroogRecommendation}</span>
+              </FieldSetLegend>
+            </Grid>
+          )}
 
           <Grid
             container
