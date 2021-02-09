@@ -6,7 +6,8 @@ import {
   Paper,
   TextField,
   Typography,
-  Snackbar
+  Snackbar,
+  Divider
 } from "@material-ui/core";
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,6 +16,7 @@ import Account from "../../../services/api/Account";
 import Validation from "../../../utils/validation";
 import CircleLoading from "../../public/loading/CircleLoading";
 import { Alert } from "../../public/alert/Alert";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => createStyles({
   root: {
@@ -41,8 +43,10 @@ const useStyles = makeStyles((theme) => createStyles({
     justifySelf: 'center',
     flexDirection: 'column',
     justifyContent: 'center',
-    minWidth: theme.spacing(80),
-    minHeight: theme.spacing(40),
+    minWidth: '60vw',
+    minHeight: '50vh',
+    maxWidth: '80em',
+    maxHeight: '80em',
     padding: theme.spacing(2),
   },
   submitBtn: {
@@ -56,6 +60,7 @@ const useStyles = makeStyles((theme) => createStyles({
 }));
 
 const ForgetPassword: React.FC = () => {
+  const { t } = useTranslation();
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
@@ -107,46 +112,61 @@ const ForgetPassword: React.FC = () => {
 
   return (
     <div className={ root }>
-      <Paper elevation={ 3 } className={ paper }>
-        <Grid container className={ `${grid} ${spacing3}` }>
-          <Grid item>
-            <Typography component="p">
-              دریافت کلمه عبور جدید
-            </Typography>
-            <form
-              noValidate
-              onSubmit={ resetPasswordHandler }
-            >
-              <TextField
-                error={ showError }
-                variant="standard"
-                margin="dense"
-                required
-                fullWidth
-                name="password"
-                label="موبایل"
-                type="text"
-                id="mobile"
-                onChange={ mobileNumberHandler }
-                autoComplete="current-password"
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                className={ submitBtn }
-                disableElevation
-              >
-                {
-                  isLoading
-                    ? <CircleLoading size={ 13 } color="inherit" />
-                    : <span>ارسال</span>
-                }
-              </Button>
-            </form>
-          </Grid>
+      <Grid container className={ grid }>
+        <Grid item xs={ 12 } >
+          <h2>
+            { t('general.systemFullTitle') }
+          </h2>
         </Grid>
-      </Paper>
-
+        <Divider />
+        <hr style={ {
+          borderTop: '1px solid silver',
+          width: '80%',
+          marginBottom: '2rem',
+          borderBottom: '1px solid white'
+        } } />
+        <Grid item>
+          <Paper elevation={ 3 } className={ paper }>
+            <Grid container className={ grid }>
+              <Grid item>
+                <Typography component="p">
+                  { t('login.getNewPassword') }
+                </Typography>
+                <form
+                  noValidate
+                  onSubmit={ resetPasswordHandler }
+                >
+                  <TextField
+                    error={ showError }
+                    variant="standard"
+                    margin="dense"
+                    required
+                    fullWidth
+                    name="password"
+                    label={ t('general.mobile') }
+                    type="text"
+                    id="mobile"
+                    onChange={ mobileNumberHandler }
+                    autoComplete="current-password"
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    className={ submitBtn }
+                    disableElevation
+                  >
+                    {
+                      isLoading
+                        ? <CircleLoading size={ 13 } color="inherit" />
+                        : <span>{ t('login.send') }</span>
+                    }
+                  </Button>
+                </form>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
       <Snackbar
         open={ isOpenSnackbar }
         autoHideDuration={ 3000 }
