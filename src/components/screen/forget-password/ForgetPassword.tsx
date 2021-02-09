@@ -26,26 +26,33 @@ const useStyles = makeStyles((theme) => createStyles({
     left: 0,
     flexWrap: 'wrap',
     alignItems: 'center',
+    justifyContent: 'center',
+    padding: '1em',
   },
   grid: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: '2em'
   },
   paper: {
     display: 'flex',
+    justifySelf: 'center',
     flexDirection: 'column',
     justifyContent: 'center',
-    width: theme.spacing(40),
-    height: theme.spacing(15),
+    minWidth: theme.spacing(80),
+    minHeight: theme.spacing(40),
     padding: theme.spacing(2),
   },
   submitBtn: {
     background: theme.palette.blueLinearGradient.main,
     marginTop: theme.spacing(2),
     color: 'white',
-  }
+  },
+  spacing3: {
+    margin: theme.spacing(3)
+  },
 }));
 
 const ForgetPassword: React.FC = () => {
@@ -54,7 +61,7 @@ const ForgetPassword: React.FC = () => {
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
   const [serverMessage, setServerMessage] = useState<string>('');
 
-  const { grid, root, paper, submitBtn } = useStyles();
+  const { grid, root, paper, submitBtn, spacing3 } = useStyles();
   const { forgetPassword } = new Account();
   const { isValidaMobileNumber } = new Validation();
   const [_forgetPassword, { isLoading, status, data, reset }] = useMutation(forgetPassword);
@@ -99,55 +106,57 @@ const ForgetPassword: React.FC = () => {
   }
 
   return (
-    <div className={root}>
-      <Grid item container className={grid}>
-        <Paper elevation={3} className={paper}>
-          <Typography component="p">
-            ریست کردن کلمه عبور
-          </Typography>
-          <form
-            noValidate
-            onSubmit={resetPasswordHandler}
-          >
-            <TextField
-              error={showError}
-              variant="standard"
-              margin="dense"
-              required
-              fullWidth
-              name="password"
-              label="موبایل"
-              type="text"
-              id="mobile"
-              onChange={mobileNumberHandler}
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              className={submitBtn}
-              disableElevation
+    <div className={ root }>
+      <Paper elevation={ 3 } className={ paper }>
+        <Grid container className={ `${grid} ${spacing3}` }>
+          <Grid item>
+            <Typography component="p">
+              دریافت کلمه عبور جدید
+            </Typography>
+            <form
+              noValidate
+              onSubmit={ resetPasswordHandler }
             >
-              {
-                isLoading
-                  ? <CircleLoading size={13} color="inherit"/>
-                  : <span>ارسال</span>
-              }
-            </Button>
-          </form>
-        </Paper>
-      </Grid>
+              <TextField
+                error={ showError }
+                variant="standard"
+                margin="dense"
+                required
+                fullWidth
+                name="password"
+                label="موبایل"
+                type="text"
+                id="mobile"
+                onChange={ mobileNumberHandler }
+                autoComplete="current-password"
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                className={ submitBtn }
+                disableElevation
+              >
+                {
+                  isLoading
+                    ? <CircleLoading size={ 13 } color="inherit" />
+                    : <span>ارسال</span>
+                }
+              </Button>
+            </form>
+          </Grid>
+        </Grid>
+      </Paper>
 
       <Snackbar
-        open={isOpenSnackbar}
-        autoHideDuration={3000}
-        onClose={(): void => setIsOpenSnackbar(false)}
+        open={ isOpenSnackbar }
+        autoHideDuration={ 3000 }
+        onClose={ (): void => setIsOpenSnackbar(false) }
       >
         <Alert
-          onClose={(): void => setIsOpenSnackbar(false)}
+          onClose={ (): void => setIsOpenSnackbar(false) }
           severity="success"
         >
-          {serverMessage}
+          { serverMessage }
         </Alert>
       </Snackbar>
     </div>
