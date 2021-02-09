@@ -1,7 +1,6 @@
-import React, { useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryCache } from 'react-query';
-import CircleLoading from '../../../public/loading/CircleLoading';
 import { EmploymentApplication } from '../../../../services/api';
 import {
   errorHandler,
@@ -9,10 +8,7 @@ import {
   successSweetAlert,
 } from '../../../../utils';
 import {
-  ActionInterface,
   DataTableCustomActionInterface,
-  PrescriptionInterface,
-  PrescriptionResponseInterface
 } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
@@ -27,9 +23,8 @@ import FormContainer from '../../../public/form-container/FormContainer';
 import {
   Box,
   Button, Dialog, DialogActions, DialogContent,
-  DialogTitle, Divider, FormControlLabel, Grid,
-  Paper,
-  Switch, TextField, useMediaQuery, useTheme
+  DialogTitle, Divider, Grid,
+  useMediaQuery, useTheme
 } from '@material-ui/core';
 import { ColorEnum, EmploymentApplicationEnum } from '../../../../enum';
 import FileLink from '../../../public/picture/fileLink';
@@ -222,7 +217,6 @@ const EmploymentApplicationList: React.FC = () => {
         field: 'genderStr',
         title: t('general.gender'),
         type: 'string',
-        searchable: true,
       },
       {
         field: 'mobile',
@@ -234,7 +228,6 @@ const EmploymentApplicationList: React.FC = () => {
         field: 'workExperienceYear',
         title: t('employment.workExperience'),
         type: 'number',
-        searchable: true,
       },
       {
         field: 'id',
@@ -257,7 +250,6 @@ const EmploymentApplicationList: React.FC = () => {
         field: 'resumeFileKey',
         title: t('employment.resume'),
         type: 'string',
-        searchable: true,
         render: (row: any): any => {
           return (
             <>
