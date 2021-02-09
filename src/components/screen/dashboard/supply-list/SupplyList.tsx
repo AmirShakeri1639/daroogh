@@ -255,7 +255,6 @@ const SupplyList: React.FC = () => {
     state?.offer1,
     state?.offer2,
     state?.cnt,
-    // state?.expireDate,
     isoDate,
   ]);
 
@@ -511,7 +510,8 @@ const SupplyList: React.FC = () => {
         selectedMonth === '' ||
         !monthIsValid(Number(selectedMonth)) ||
         !dayIsValid(Number(selectedDay)) ||
-        selectedYear.length < 4
+        selectedYear.length < 4 ||
+        isWrongDate
       ) {
         return;
       }
