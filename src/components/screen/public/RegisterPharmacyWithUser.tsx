@@ -7,11 +7,12 @@ import {
   Grid,
   Typography,
   Divider,
+  makeStyles,
+  createStyles,
 } from '@material-ui/core';
 import Pharmacy from '../../../services/api/Pharmacy';
 import { LabelValue, PharmacyWithUserInterface } from '../../../interfaces';
 import { queryCache, useMutation } from 'react-query';
-import { useClasses } from '../dashboard/classes';
 import { ActionInterface } from '../../../interfaces';
 import { useTranslation } from 'react-i18next';
 import {
@@ -21,7 +22,7 @@ import {
   warningSweetAlert,
 } from '../../../utils';
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown';
-import { WorkTimeEnum } from '../../../enum';
+import { ColorEnum, WorkTimeEnum } from '../../../enum';
 import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
@@ -64,6 +65,50 @@ const initialState: PharmacyWithUserInterface = {
     isValidBirthDate: true,
   },
 };
+
+export const useClasses = makeStyles((theme) => createStyles({
+  parent: {
+    paddingTop: theme.spacing(2),
+  },
+  dropdown: {
+    margin: theme.spacing(1),
+    minWidth: '100%',
+  },
+  silverBackground: {
+    background: '#ebebeb',
+  },
+  addButton: {
+    background: theme.palette.blueLinearGradient.main,
+  },
+  spacing1: {
+    margin: theme.spacing(1)
+  },
+  spacing3: {
+    margin: theme.spacing(3)
+  },
+  formItem: {
+    display: 'flex',
+    justifySelf: 'stretch',
+    margin: theme.spacing(1)
+  },
+  titleContainer: {
+    padding: theme.spacing(2)
+  },
+  formTitle: {
+    margin: 0
+  },
+  rootFull: {
+    flexGrow: 1,
+    margin: theme.spacing(1)
+  },
+  longItem: {
+    width: '75%',
+  },
+  centerItem: {
+    display: 'flex',
+    margin: 'auto'
+  },
+}));
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -221,7 +266,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
     spacing1,
     spacing3,
     formItem,
-    formItemSmall,
     titleContainer,
     formTitle,
     rootFull,
