@@ -118,10 +118,10 @@ const ForgetPassword: React.FC = () => {
             { t('general.systemFullTitle') }
           </h2>
         </Grid>
-        <Divider />
         <hr style={ {
           borderTop: '1px solid silver',
-          width: '80%',
+          width: '50%',
+          minWidth: '18em',
           marginBottom: '2rem',
           borderBottom: '1px solid white'
         } } />
