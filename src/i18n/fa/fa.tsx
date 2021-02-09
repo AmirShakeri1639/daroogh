@@ -4,6 +4,7 @@ export default {
       general: {
         emal: 'اعمال',
         systemTitle: 'سامانه تبادل دارو',
+        systemFullTitle: 'سامانه تبادلات دارویی داروگ',
         daroog: 'داروگ',
         tabadol: 'تبادل',
         special: 'متن آزمایشی داروگ',
@@ -162,6 +163,8 @@ export default {
         failed:
           'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
+        getNewPassword: 'دریافت کلمه عبور جدید',
+        send: 'ارسال',
       },
       user: {
         role: 'نقش',
