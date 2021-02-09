@@ -96,7 +96,7 @@ const useStyle = makeStyles((theme) =>
       marginTop: 15,
     },
     submitBtn: {
-      height: 50,
+      height: 30,
       width: 100,
     },
     label: {
@@ -106,6 +106,9 @@ const useStyle = makeStyles((theme) =>
     },
     contentContainer: {
       marginTop: theme.spacing(2),
+    },
+    countContainer: {
+      height: '100%',
     },
   })
 );
@@ -161,6 +164,8 @@ const Create: React.FC = () => {
     submitBtn,
     cancelButton,
     fieldset,
+    countContainer,
+    // selectInput,
   } = useStyle();
 
   const resetValues = (): void => {
@@ -441,7 +446,6 @@ const Create: React.FC = () => {
 
   const formHandler = async (): Promise<any> => {
     try {
-      console.log('wrong', isWrongDate);
       if (
         temporaryDrugs.length === 0 ||
         packTitle === '' ||
@@ -559,60 +563,80 @@ const Create: React.FC = () => {
     <MaterialContainer>
       <Grid container spacing={1} alignItems="center">
         <Grid item xs={12}>
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justify="space-between"
-          >
-            <h3>{t('pack.create')}</h3>
+          <FieldSetLegend legend={t('pack.create')}>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      label={t('pack.title')}
+                      value={packTitle}
+                      onChange={(e): void => setPackTitle(e.target.value)}
+                    />
+                  </Grid>
 
-            <Button
-              color="blue"
-              type="button"
-              onClick={formHandler}
-              className={submitBtn}
-            >
-              {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
-            </Button>
-          </Grid>
-        </Grid>
+                  <Grid item xs={12}>
+                    <FormControl
+                      variant="outlined"
+                      size="small"
+                      className="w-100"
+                    >
+                      <InputLabel id="category-pack">
+                        {t('pack.category')}
+                      </InputLabel>
+                      <Select
+                        labelId="category-pack"
+                        id="category"
+                        label={t('pack.category')}
+                        placeholder={t('pack.category')}
+                        className="w-100"
+                        value={selectedCategory}
+                        onChange={(e): void =>
+                          setSelectedCategory(e.target.value as string)
+                        }
+                      >
+                        <MenuItem value="" />
+                        {itemsGenerator()}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid
+                  container
+                  spacing={1}
+                  justify="center"
+                  alignItems="center"
+                  className={countContainer}
+                >
+                  <Grid item xs={12}>
+                    <span>تعداد کل اقلام: {packTotalItems}</span>
+                  </Grid>
 
-        <Grid item xs={12} sm={6} lg={3}>
-          <Input
-            className="w-100"
-            label={t('pack.title')}
-            value={packTitle}
-            onChange={(e): void => setPackTitle(e.target.value)}
-          />
-        </Grid>
+                  <Grid item xs={12}>
+                    <span>
+                      مجموع قیمت اقلام: {thousandsSeperatorFa(packTotalPrice)}
+                    </span>
+                  </Grid>
+                </Grid>
+              </Grid>
 
-        <Grid item xs={12} sm={6} lg={3}>
-          <span>تعداد کل اقلام: {packTotalItems}</span>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={3}>
-          <FormControl variant="outlined" className="w-100">
-            <InputLabel id="category-pack">{t('pack.category')}</InputLabel>
-            <Select
-              labelId="category-pack"
-              id="category"
-              label={t('pack.category')}
-              placeholder={t('pack.category')}
-              className="w-100"
-              value={selectedCategory}
-              onChange={(e): void =>
-                setSelectedCategory(e.target.value as string)
-              }
-            >
-              <MenuItem value="" />
-              {itemsGenerator()}
-            </Select>
-          </FormControl>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={3}>
-          <span>مجموع قیمت اقلام: {thousandsSeperatorFa(packTotalPrice)}</span>
+              <Grid item xs={12} className="text-left">
+                <Button
+                  color="blue"
+                  type="button"
+                  onClick={formHandler}
+                  className={submitBtn}
+                >
+                  {isLoadingSave
+                    ? t('general.pleaseWait')
+                    : t('general.submit')}
+                </Button>
+              </Grid>
+            </Grid>
+          </FieldSetLegend>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
@@ -621,7 +645,6 @@ const Create: React.FC = () => {
             <span>{t('pack.addDrug')}</span>
           </Button>
         </Grid>
-
         {contentHandler()}
       </Grid>
 
