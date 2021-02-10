@@ -30,7 +30,11 @@ import { ColorEnum, EmploymentApplicationEnum } from '../../../../enum';
 import FileLink from '../../../public/picture/fileLink';
 import { api } from '../../../../config/default.json';
 
-const EmploymentApplicationList: React.FC = () => {
+interface Props {
+  full?: boolean;
+}
+
+const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const { t } = useTranslation();
   const ref = useDataTableRef();
   const theme = useTheme();
@@ -39,12 +43,13 @@ const EmploymentApplicationList: React.FC = () => {
   const [isOpenDetails, setIsOpenDetails] = useState(false);
   const [detailsItem, setDetailsItem] = useState<any>();
   const {
-    root,
     spacing1,
-    dialogBig,
   } = useClasses();
 
-  const { all, cancel, urls } = new EmploymentApplication();
+  const { 
+    all, notCanceled, cancel, 
+    urls 
+  } = new EmploymentApplication();
   const { urls: fileUrls } = new File();
 
   const detialsDialog = (): JSX.Element => {
@@ -283,16 +288,19 @@ const EmploymentApplicationList: React.FC = () => {
     }
   }
 
-  const actions: DataTableCustomActionInterface[] = [
-    {
-      icon: (): any => (
-        <FontAwesomeIcon icon={ faBan } color={ ColorEnum.Red } />
-      ),
-      tooltip: t('general.cancel'),
-      position: 'row',
-      action: async (e: any, row: any): Promise<void> => await cancelHandler(row),
-    }
-  ]
+  const actions: DataTableCustomActionInterface[] =
+    full ?
+      [
+        {
+          icon: (): any => (
+            <FontAwesomeIcon icon={ faBan } color={ ColorEnum.Red } />
+          ),
+          tooltip: t('general.cancel'),
+          position: 'row',
+          action: async (e: any, row: any): Promise<void> => await cancelHandler(row),
+        }
+      ]
+      : [];
 
   return (
     <FormContainer title={ t('employment.application') }>
@@ -301,9 +309,10 @@ const EmploymentApplicationList: React.FC = () => {
         columns={ tableColumns() }
         customActions={ actions }
         queryKey={ EmploymentApplicationEnum.GET_ALL }
-        queryCallback={ all }
-        urlAddress={ urls.all }
+        queryCallback={ full ? all : notCanceled }
+        urlAddress={ full ? urls.all : urls.notCanceled }
         initLoad={ false }
+        defaultFilter={ full ? '' : 'cancelDate eq null' }
       />
       { isOpenDetails && detialsDialog() }
     </FormContainer>

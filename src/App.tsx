@@ -9,6 +9,7 @@ import ViewPharmacyInfo from './components/screen/dashboard/drug-transfer/ViewPh
 import routes from './routes';
 import ExchangeApprove from './components/screen/dashboard/drug-transfer/exchange/ExchangeApprove';
 import DashboardContent from './components/screen/dashboard/DashboardContent';
+import { isAdmin } from './utils';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -290,7 +291,7 @@ const App = (): JSX.Element => {
             </PrivateRoute>
 
             <PrivateRoute exact path={jobSearchList}>
-              <Dashboard component={<JobSearchList />} />
+              <Dashboard component={<JobSearchList full={ isAdmin() } />} />
             </PrivateRoute>
 
             <PrivateRoute exact path={prescriptionList}>
