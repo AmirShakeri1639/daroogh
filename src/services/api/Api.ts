@@ -26,7 +26,9 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
     (async (): Promise<any> => {
       const message = error?.response?.data?.message;
       await errorSweetAlert(
-        message === undefined ? 'شما مجوز دسترسی به این صفحه را ندارید!' : message
+        message === undefined
+          ? 'شما مجوز دسترسی به این صفحه را ندارید!'
+          : message
       );
     })();
   } else if (status === 404) {
@@ -68,14 +70,9 @@ class Api {
   }
 
   protected async postJsonData(url: string, data: any = null): Promise<any> {
-    // try {
     return await this.authorizedUserRequest().post(url, data, {
       cancelToken: this.axiosSource.token,
     });
-    // } catch (e) {
-    //   console.log('error in postjsondata:', e)
-    //   throw new Error(e);
-    // }
   }
 
   protected async postFormData(_url: string, _data: any): Promise<any> {
