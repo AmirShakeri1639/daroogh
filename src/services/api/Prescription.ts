@@ -8,7 +8,9 @@ class Prescription extends Api {
     }
 
     getList = async (skip: number, top: number = 10): Promise<any> => {
-        const result = await this.postJsonData(this.urls.getList);
+        const result = await this.postJsonData(
+            `${this.urls.getList}?$top=${top}&$skip=${skip * top}&$orderby=id desc`
+        );
         return result.data;
     }
 

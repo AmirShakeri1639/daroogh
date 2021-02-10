@@ -117,7 +117,7 @@ const PharmacyUsersList = lazy(() =>
 );
 
 const JobSearchList = lazy(() =>
-  import('./components/screen/dashboard/job-search/job-search')
+  import('./components/screen/dashboard/job-search/jobSearchList')
 );
 
 const PrescriptionList = lazy(() =>

@@ -180,7 +180,6 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const getExpireDate = (date: any): string => {
-    debugger;
     const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
     const fromDate = new Date(eDate);
