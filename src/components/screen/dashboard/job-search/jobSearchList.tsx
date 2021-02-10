@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryCache } from 'react-query';
-import { EmploymentApplication } from '../../../../services/api';
+import { EmploymentApplication, File } from '../../../../services/api';
 import {
   errorHandler,
   isNullOrEmpty,
@@ -14,7 +14,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBan, faInfoCircle
+  faBan, faInfoCircle, faDownload
 } from '@fortawesome/free-solid-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
@@ -28,6 +28,7 @@ import {
 } from '@material-ui/core';
 import { ColorEnum, EmploymentApplicationEnum } from '../../../../enum';
 import FileLink from '../../../public/picture/fileLink';
+import { api } from '../../../../config/default.json';
 
 const EmploymentApplicationList: React.FC = () => {
   const { t } = useTranslation();
@@ -44,6 +45,7 @@ const EmploymentApplicationList: React.FC = () => {
   } = useClasses();
 
   const { all, cancel, urls } = new EmploymentApplication();
+  const { urls: fileUrls } = new File();
 
   const detialsDialog = (): JSX.Element => {
     const {
@@ -254,7 +256,7 @@ const EmploymentApplicationList: React.FC = () => {
           return (
             <>
               { !isNullOrEmpty(row.resumeFileKey) &&
-                <FileLink fileKey={ row.resumeFileKey } fileName="resume.pdf" />
+                <FileLink fileKey={ row.resumeFileKey } />
               }
             </>
           )
