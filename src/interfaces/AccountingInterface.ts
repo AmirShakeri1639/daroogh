@@ -12,6 +12,7 @@ export interface AccountingInterface {
   description: string;
   amount: number;
   isChecked?: boolean;
+  exchangeID: number | null;
 }
 
 export interface BankGetwayesInterface {

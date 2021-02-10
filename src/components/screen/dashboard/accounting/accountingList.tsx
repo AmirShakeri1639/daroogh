@@ -11,16 +11,23 @@ import {
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { AccountingEnum } from '../../../../enum/query';
-import { Container, Grid, Paper } from '@material-ui/core';
+import { Container, createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { getJalaliDate } from '../../../../utils/jalali';
-import { Convertor } from '../../../../utils';
+import { Convertor, EncrDecrService } from '../../../../utils';
+import routes from '../../../../routes';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faExchangeAlt,
+} from '@fortawesome/free-solid-svg-icons';
 
 const initialState: AccountingInterface = {
   id: 0,
   date: '2020-12-07T21:43:46.103Z',
   description: '',
   amount: 0,
+  exchangeID: null
 };
 
 const AccountingList: React.FC = () => {
@@ -29,6 +36,31 @@ const AccountingList: React.FC = () => {
   const { container } = useClasses();
 
   const { all } = new Accounting();
+
+  const useStyles = makeStyles((theme) =>
+    createStyles({
+      linkWrapper: {
+        display: 'flex',
+        '&:hover': {
+          backgroundColor: 'rgba(0, 0, 0, .05)',
+          transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
+        },
+        '& a': {
+          color: 'rgba(0, 0, 0, 0.85)',
+          textDecoration: 'none',
+          width: '100%',
+          display: 'flex',
+          padding: '.2em .5em',
+          alignItems: 'center',
+          '& div:nth-child(2)': {
+            display: 'inline-block',
+          },
+        },
+      },
+    })
+  );
+
+  const { linkWrapper } = useStyles();
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
@@ -78,6 +110,33 @@ const AccountingList: React.FC = () => {
           );
         },
       },
+      {
+        field: 'exchangeID',
+        title: t('exchange.exchange'),
+        type: 'string',
+        render: (row: any): any => {
+          let exchangeUrl = '';
+          if (row.exchangeID) {
+            const { transfer } = routes;
+            const encDecService = new EncrDecrService();
+            const encryptedId = encDecService.encrypt(row.exchangeID);
+            exchangeUrl = `${transfer}?eid=${encodeURIComponent(encryptedId)}`;
+          }
+          return (
+            <>
+              { exchangeUrl.length > 0 &&
+                <div className={ linkWrapper }>
+                  <Link to={ exchangeUrl }>
+                    <FontAwesomeIcon icon={ faExchangeAlt } />
+                    &nbsp;
+                    { t('exchange.viewExchange') }
+                  </Link>
+                </div>
+              }
+            </>
+          )
+        }
+      }
     ];
   };
 

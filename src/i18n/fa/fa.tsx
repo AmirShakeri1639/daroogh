@@ -259,6 +259,7 @@ export default {
         difference: 'اختلاف قیمت',
         continue: 'ادامه تبادل',
         exchangeManagement: 'مدیریت تبادل',
+        viewExchange: 'مشاهده تبادل',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
