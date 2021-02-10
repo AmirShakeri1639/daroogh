@@ -190,8 +190,6 @@ const FirstStep: React.FC = () => {
     const data: AdvancedSearchInterface = {};
     const searchData = setDataOfSearch(data);
 
-    console.log('searchData', searchData);
-
     try {
       const result = await advancedSearch(
         Object.assign(searchData, {
