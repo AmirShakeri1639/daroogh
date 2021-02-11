@@ -35,11 +35,14 @@ import {
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { DrugType } from '../../../../../enum/pharmacyDrug';
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
+import routes from '../../../../../routes';
+
+const { packsList } = routes;
 
 const { searchDrug } = new Drug();
 
@@ -152,6 +155,7 @@ const Create: React.FC = () => {
   const [comissionPercent, setComissionPercent] = useState<string>('');
 
   const { t } = useTranslation();
+  const { push } = useHistory();
 
   const { packId } = useParams() as { packId: string };
 
@@ -356,6 +360,9 @@ const Create: React.FC = () => {
       }
       setIsBackdropLoading(false);
       await successSweetAlert(t('alert.successfulCreateTextMessage'));
+      push({
+        pathname: packsList,
+      });
     },
   });
 
