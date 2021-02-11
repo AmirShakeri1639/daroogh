@@ -87,9 +87,9 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
         </Grid>
         <Detail
           drugName={drugName}
-          amount={amount}
+          amount={Number(amount)}
           expireDate={expireDate}
-          count={cnt}
+          count={Number(cnt)}
           offer1={offer1}
           offer2={offer2}
         />
