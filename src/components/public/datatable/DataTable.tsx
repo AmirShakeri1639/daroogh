@@ -349,12 +349,10 @@ const DataTable: React.ForwardRefRenderFunction<
             })
               .then((response) => response.json())
               .then((result) => {
-                // debugger;
                 // result.items.forEach((a: any) => {
                 //   if (a.sendDate)
                 //     a.sendDate = moment(a.sendDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
                 // })
-                // debugger;
                 resolve({
                   data: result.items,
                   page: query.page,

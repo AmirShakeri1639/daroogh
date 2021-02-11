@@ -11,7 +11,7 @@ class Reports extends Api {
 
   getBestPharmaciesList = async (skip: number, top: number = 10): Promise<any> => {
     try {
-      const result = await this.getData(
+      const result = await this.postData(
         `${this.urls.getBestPharmaciesList}`);
       return result.data;
     } catch (e) {

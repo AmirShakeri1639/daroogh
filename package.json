@@ -95,6 +95,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "st": "BROWSER='Google Chrome' react-scripts start",
     "build": "react-scripts build",
     "build:dev": "SET NODE_ENV=dev npm run build --dev --configuration=dev && react-scripts build",
     "lint": "eslint './src/**/*.{jsx,js,ts,tsx}'",

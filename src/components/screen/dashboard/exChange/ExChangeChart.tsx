@@ -1,3 +1,4 @@
+import { from } from 'jalali-moment';
 import React, { PureComponent } from 'react';
 import { useQuery } from 'react-query';
 import {
@@ -11,13 +12,8 @@ import {
   Tooltip,
 } from 'recharts';
 import Reports from '../../../../services/api/Reports';
+import './style.css';
 
-// const data = [
-//   { name: 'Group A', value: 400 },
-//   { name: 'Group B', value: 300 },
-//   { name: 'Group C', value: 300 },
-//   { name: 'Group D', value: 200 },
-// ];
 const { getExchangeStatus } = new Reports();
 
 const RADIAN = Math.PI / 180;
@@ -60,8 +56,8 @@ const ExChangeChart: React.FC = () => {
     );
   };
   return (
-    <ResponsiveContainer width="100%" height={450}>
-      <PieChart height={650}>
+    <ResponsiveContainer width="90%" height={400}>
+      <PieChart height={600}>
         <Pie
           data={data}
           cx="50%"
@@ -80,7 +76,7 @@ const ExChangeChart: React.FC = () => {
             ))}
         </Pie>
         <Tooltip />
-        <Legend verticalAlign="top" height={36} />
+        <Legend layout="vertical" align="right" verticalAlign="middle" iconType="circle" />
         {data &&
           data.length &&
           data.map((entry: any, index: number) => (
@@ -88,6 +84,7 @@ const ExChangeChart: React.FC = () => {
               key={`Line-${index}`}
               dataKey="item1"
               name={'ami'}
+              alignmentBaseline="text-after-edge"
               type="monotone"
               stroke={'#' + entry.item4}
             />
