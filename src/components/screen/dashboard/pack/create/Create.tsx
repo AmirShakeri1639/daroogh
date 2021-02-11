@@ -169,7 +169,6 @@ const Create: React.FC = () => {
     cancelButton,
     fieldset,
     countContainer,
-    // selectInput,
   } = useStyle();
 
   const resetValues = (): void => {
@@ -686,6 +685,26 @@ const Create: React.FC = () => {
             <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
+                  <label>{t('general.number')}</label>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Input
+                    numberFormat
+                    className="w-100"
+                    label={`${t('general.number')} ${t('drug.drug')}`}
+                    onChange={(e): void => {
+                      setNumber(e);
+                    }}
+                    value={number}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
                   <label htmlFor="">{`${t('general.price')} (${t(
                     'general.rial'
                   )})`}</label>
@@ -700,26 +719,6 @@ const Create: React.FC = () => {
                     onChange={(e): void => {
                       setAmount(e);
                     }}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <label>{t('general.number')}</label>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Input
-                    numberFormat
-                    className="w-100"
-                    label={`${t('general.number')} ${t('drug.drug')}`}
-                    onChange={(e): void => {
-                      setNumber(e);
-                    }}
-                    value={number}
                   />
                 </Grid>
               </Grid>
