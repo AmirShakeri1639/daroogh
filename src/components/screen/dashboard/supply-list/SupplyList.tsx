@@ -31,7 +31,6 @@ import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 import { Autocomplete } from '@material-ui/lab';
-import ModalContent from '../../../public/modal-content/ModalContent';
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import { DrugType } from '../../../../enum/pharmacyDrug';
@@ -602,6 +601,27 @@ const SupplyList: React.FC = () => {
             <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
+                  <label>{t('general.number')}</label>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Input
+                    numberFormat
+                    className="w-100"
+                    label={`${t('general.number')} ${t('drug.drug')}`}
+                    onChange={debounce(
+                      (e) => dispatch({ type: 'cnt', value: e }),
+                      500
+                    )}
+                    value={state?.cnt}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
                   <label htmlFor="">{`${t('general.price')} (${t(
                     'general.rial'
                   )})`}</label>
@@ -614,30 +634,9 @@ const SupplyList: React.FC = () => {
                     className="w-100"
                     label={t('general.price')}
                     onChange={debounce(
-                      (e) => dispatch({ type: 'amount', value: Number(e) }),
+                      (e) => dispatch({ type: 'amount', value: e }),
                       500
                     )}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <label>{t('general.number')}</label>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Input
-                    numberFormat
-                    className="w-100"
-                    label={`${t('general.number')} ${t('drug.drug')}`}
-                    onChange={debounce(
-                      (e) => dispatch({ type: 'cnt', value: Number(e) }),
-                      500
-                    )}
-                    value={state?.cnt}
                   />
                 </Grid>
               </Grid>
