@@ -78,7 +78,7 @@ const Pack: React.FC = () => {
 
   const contentHandler = (): JSX.Element[] | null => {
     if (data !== undefined && !isLoading) {
-      return data.items.map((item: any) => {
+      return data.items.reverse().map((item: any) => {
         const { id, name, pharmacyDrug } = item;
         let totalPrice = 0;
         pharmacyDrug.forEach((item: any) => {
