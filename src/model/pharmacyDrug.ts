@@ -3,8 +3,8 @@ export class PharmacyDrugSupplyList {
   public expireDate: string = '';
   public amount: number | string = '';
   public cnt: number | string = '';
-  public offer1: number = 0;
-  public offer2: number = 0;
+  public offer1: number | string = '';
+  public offer2: number | string = '';
   public batchNO: string = '';
   public drugID: any = 0;
 }

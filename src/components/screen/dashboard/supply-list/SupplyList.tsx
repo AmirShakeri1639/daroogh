@@ -96,12 +96,13 @@ const useStyle = makeStyles((theme) =>
       marginTop: 15,
     },
     blankCard: {
-      height: 150,
+      minHeight: 150,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
+      height: '100%',
       color: '#C9A3A3',
       '& span': {
         marginTop: 20,
@@ -656,7 +657,7 @@ const SupplyList: React.FC = () => {
                       (e) =>
                         dispatch({
                           type: 'offer1',
-                          value: Number(e),
+                          value: e,
                         }),
                       500
                     )}
@@ -672,7 +673,7 @@ const SupplyList: React.FC = () => {
                       (e) =>
                         dispatch({
                           type: 'offer2',
-                          value: Number(e),
+                          value: e,
                         }),
                       500
                     )}
@@ -681,8 +682,9 @@ const SupplyList: React.FC = () => {
                 <Grid item xs={12} sm>
                   <span className="txt-sm text-muted">
                     (به ازای هر{' '}
-                    <span className="txt-bold">{state?.offer2}</span> خرید،{' '}
-                    <span className="txt-bold">{state?.offer1}</span> عدد
+                    <span className="txt-bold">{state?.offer2 || '*'}</span>{' '}
+                    خرید،{' '}
+                    <span className="txt-bold">{state?.offer1 || '*'}</span> عدد
                     رایگان)
                   </span>
                 </Grid>
