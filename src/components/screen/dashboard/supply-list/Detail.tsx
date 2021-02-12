@@ -41,7 +41,7 @@ const useStyle = makeStyles((theme) =>
 );
 
 const Detail: React.FC<DetailSupplyInterface> = (props) => {
-  const { drugName, count, offer1, offer2, expireDate, amount } = props;
+  const { drugName, count, offer1, offer2, expireDate, amount, enName } = props;
   const { paper, container, textLeft, icon } = useStyle();
 
   const { t } = useTranslation();
@@ -57,6 +57,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                 <Grid item xs={12} className="drug-container">
                   <FontAwesomeIcon icon={faPills} />
                   <span className="drug-name">{drugName}</span>
+                  <div className="text-muted txt-sm">{enName || ''}</div>
                 </Grid>
 
                 <Grid item xs={6}>

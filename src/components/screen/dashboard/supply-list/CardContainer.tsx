@@ -33,7 +33,7 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
   const { drug, editHandler } = props;
 
   const {
-    drug: { name },
+    drug: { name, enName },
     cnt,
     expireDate,
     offer1,
@@ -101,6 +101,7 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
           count={cnt}
           offer1={offer1}
           offer2={offer2}
+          enName={enName}
         />
       </Grid>
 

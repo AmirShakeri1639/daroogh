@@ -170,6 +170,7 @@ export interface DetailSupplyInterface {
   offer1: number;
   amount: number;
   offer2: number;
+  enName: string;
 }
 
 export interface TextLinePropsInterface {
