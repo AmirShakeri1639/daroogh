@@ -37,6 +37,7 @@ import { Alert } from '@material-ui/lab';
 import Accounting from '../../../services/api/Accounting';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
 import CreditCardIcon from '@material-ui/icons/CreditCard';
+import Utils from '../../public/utility/Utils';
 
 const drawerWidth = 240;
 
@@ -222,11 +223,13 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   });
 
   const [isIndebtPharmacyState, setIsIndebtPharmacyState] = useState<boolean>();
+  const [debtValueState, setDebtValueState] = useState<number | null>(null);
   const { isIndebtPharmacy } = new Accounting();
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {
       const res = await isIndebtPharmacy();
-      setIsIndebtPharmacyState(res.data);
+      setIsIndebtPharmacyState(res.data.isInDebt);
+      setDebtValueState(-50250)
     } catch (error) {
       errorHandler(error);
     }
@@ -330,20 +333,21 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               </Hidden>
             </Typography>
 
-            <Button
-              style={{ color: ColorEnum.White }}
-              onClick={(): void => history.push(transfer)}
-            >
-              <Hidden smDown>{t('exchange.create')}</Hidden>
-              <Tooltip title="ایجاد تبادل">
+            <Tooltip title="ایجاد تبادل">
+              <IconButton edge="end"
+                style={{ color: ColorEnum.White }}
+                onClick={(): void => history.push(transfer)}
+              >
                 <AddCircleOutlineIcon />
-              </Tooltip>
-            </Button>
+                <Hidden smDown><span style={{ fontSize: 14 }}>{t('exchange.create')}</span></Hidden>
+              </IconButton>
+            </Tooltip>
 
             <Tooltip title="کیف پول">
               <IconButton edge="end" onClick={(e: any) => setcreditAnchorEl(e.currentTarget)}
-                style={{ color: `${creditAmount >= 0 ? '#72fd72' : 'red'}`}}>
+                style={{ color: `${!debtValueState ? 'white' : debtValueState >= 0 ? '#72fd72' : '#f95e5e'}` }}>
                 <CreditCardIcon />
+                {debtValueState && <Hidden smDown><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span></span></Hidden>}
               </IconButton>
             </Tooltip>
 
@@ -441,15 +445,17 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
           {component}
 
         </main>
-        <StyledMenu
-          id="customized-menu"
-          anchorEl={creditAnchorEl}
-          keepMounted
-          open={Boolean(creditAnchorEl)}
-          onClose={() => setcreditAnchorEl(null)}
-        >
-          <div style={{ padding: 5 }}><span>نامشخص</span></div>
-        </StyledMenu>
+        {debtValueState &&
+          <StyledMenu
+            id="customized-menu"
+            anchorEl={creditAnchorEl}
+            keepMounted
+            open={Boolean(creditAnchorEl)}
+            onClose={() => setcreditAnchorEl(null)}
+          >
+            <div style={{ padding: 5 }}><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>{debtValueState < 0 && ' بدهکار'}</span></div>
+          </StyledMenu>
+        }
       </div>
     </Context.Provider >
   );

@@ -19,6 +19,8 @@ import DateTimePicker from '../datepicker/DatePicker';
 import { LookupFilter } from '../../../interfaces/DataTableColumns';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Utils from '../utility/Utils';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -68,9 +70,9 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
   const handleChange = (event: any): void => {
     let value = props.columnDef.type !== 'date' ? event.target.value : event;
     setValue(value);
-    debugger;
     if (props.columnDef.type === 'date') {
-      value = Utils.convertShamsiToGeo(value, 'YYYY-M-D')
+      if (value !== '')
+        value = Utils.convertShamsiToGeo(value, 'YYYY-M-D')
     }
     props.onFilterChanged(props.columnDef.tableData.id, {
       fieldValue: value,
@@ -189,7 +191,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
 
 
   const filterOperatorMenu = (): JSX.Element[] => {
-    const option = !props.columnDef.lookupFilter ? filterOptions : props.columnDef.type !== 'date' ? filterLookupOptions : filterDateOptions;
+    const option = !props.columnDef.lookupFilter && props.columnDef.type !== 'date' ? filterOptions : props.columnDef.type !== 'date' ? filterLookupOptions : filterDateOptions;
     const res = option.map((option, index) => {
       return (<MenuItem
         selected={index === selectedIndex}
@@ -256,17 +258,40 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
               ))}
             </Select>
           </FormControl>) :
-          (<TextField
+          (<Input
             inputProps={{
               readOnly: true,
             }}
             className="w-100"
             type="text"
-            size="small"
             onChange={handleChange}
             value={value}
-            style={{ marginTop: 3 }}
-            onClick={toggleIsOpenDatePicker}
+            style={{ marginTop: 10, minWidth: 145, fontSize: 11 }}
+            endAdornment={
+              <InputAdornment position="end" style={{ marginRight: 0 }}>
+                {value &&
+                  <IconButton
+                    aria-label="Select Filter"
+                  >
+                    <CloseIcon onClick={() => handleChange('')} />
+                  </IconButton>
+                }
+                <IconButton
+                  aria-label="Select Filter"
+                >
+                  <FilterListIcon onClick={handleFilterClick} />
+                </IconButton>
+              </InputAdornment>
+            }
+            startAdornment={
+              <InputAdornment position="start" style={{ marginLeft: 0 }}>
+                <IconButton
+                  aria-label="Select Filter"
+                >
+                  <DateRangeIcon onClick={toggleIsOpenDatePicker} />
+                </IconButton>
+              </InputAdornment>
+            }
           />)}
       < Menu
         id={`${props.columnDef.field}-menu`}
