@@ -133,8 +133,8 @@ const Create: React.FC = () => {
   const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [amount, setAmount] = useState<string>('');
   const [number, setNumber] = useState<string | number>('');
-  const [offer1, setOffer1] = useState<number>(0);
-  const [offer2, setOffer2] = useState<number>(0);
+  const [offer1, setOffer1] = useState<string>('');
+  const [offer2, setOffer2] = useState<string>('');
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
@@ -178,8 +178,8 @@ const Create: React.FC = () => {
     setSelectedMonth('');
     setSelectedDay('');
     setSelectedDrug('');
-    setOffer1(0);
-    setOffer2(0);
+    setOffer1('');
+    setOffer2('');
     setIsoDate('');
     setDaysDiff('');
     setSelectedDate('');
@@ -263,7 +263,7 @@ const Create: React.FC = () => {
         // @ts-ignore
         const { value: drugId, id } = selectedDrug;
         if (
-          (offer1 > 0 && offer2 > 0 && Number(number) > 0) ||
+          (Number(offer1) > 0 && Number(offer2) > 0 && Number(number) > 0) ||
           (drugId && Number(amount) > 0)
         ) {
           const result = await getComissionAndRecommendation({
@@ -334,10 +334,10 @@ const Create: React.FC = () => {
 
         setTemporaryDrugs(mapApiDrugsToStandardDrugs(pharmacyDrug));
 
-        let totalPrice = 0;
-        pharmacyDrug.forEach((item: any) => {
-          totalPrice += item.amount;
-        });
+        // let totalPrice = 0;
+        // pharmacyDrug.forEach((item: any) => {
+        //   totalPrice += item.amount;
+        // });
 
         setPackTotalPrice(getTotalPrice(pharmacyDrug));
         setIsBackdropLoading(false);
@@ -734,7 +734,7 @@ const Create: React.FC = () => {
                     value={offer1}
                     label={t('general.number')}
                     onChange={(e): void => {
-                      setOffer1(Number(e.target.value));
+                      setOffer1(e.target.value);
                     }}
                   />
                 </Grid>
@@ -745,14 +745,16 @@ const Create: React.FC = () => {
                     label={t('general.number')}
                     // className={offerInput}
                     onChange={(e): void => {
-                      setOffer2(Number(e.target.value));
+                      setOffer2(e.target.value);
                     }}
                   />
                 </Grid>
                 <Grid item xs={12} sm>
                   <span className="txt-sm text-muted">
-                    (به ازای هر <span className="txt-bold">{offer2}</span> خرید،{' '}
-                    <span className="txt-bold">{offer1}</span> عدد رایگان)
+                    (به ازای هر{' '}
+                    <span className="txt-bold">{offer2 || '*'}</span> خرید،{' '}
+                    <span className="txt-bold">{offer1 || '*'}</span> عدد
+                    رایگان)
                   </span>
                 </Grid>
               </Grid>
