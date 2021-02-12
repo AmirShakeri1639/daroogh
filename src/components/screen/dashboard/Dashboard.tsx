@@ -229,7 +229,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     try {
       const res = await isIndebtPharmacy();
       setIsIndebtPharmacyState(res.data.isInDebt);
-      setDebtValueState(-50250)
+      setDebtValueState(res.data.debt)
     } catch (error) {
       errorHandler(error);
     }
