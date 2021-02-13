@@ -70,7 +70,7 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'description':
       return {
         ...state,
-        description: value.trim(),
+        description: value,
       };
     case 'transactionType':
       return {
