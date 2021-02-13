@@ -6,6 +6,7 @@ import {
   Paper,
   MenuItem,
   TextField,
+  Container,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { MaterialContainer, Modal, BackDrop } from '../../../public';
@@ -555,7 +556,7 @@ const SupplyList: React.FC = () => {
 
   return (
     <>
-      <MaterialContainer>
+      <Container>
         <h1 className="txt-md">{t('drug.SuppliedDrugsList')}</h1>
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
@@ -572,7 +573,7 @@ const SupplyList: React.FC = () => {
           </Grid>
           {displayHandler()}
         </Grid>
-      </MaterialContainer>
+      </Container>
 
       <Modal open={isOpenModalOfNewList} toggle={toggleIsOpenModalOfNewList}>
         <div className={modalContainer}>
