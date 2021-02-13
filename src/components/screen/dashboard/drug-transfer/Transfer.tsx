@@ -85,6 +85,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
   const [is3PercentOk, setIs3PercentOk] = React.useState(true);
   const [eid, setEid] = useState<number>(0);
+  const [lockedAction, setLockedAction] = React.useState(true);
 
   const { viewExchangeId, exchangeState } = props;
 
@@ -128,7 +129,13 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
           const basketB: AllPharmacyDrugInterface[] = [];
-
+          const locked =
+            res.state === 1 ||
+            (!res.currentPharmacyIsA &&
+              (res.state === 2 || res.state === 12) &&
+              res.lockSuggestion === false) ||
+            (res.currentPharmacyIsA && res.state === 1);
+          setLockedAction(locked ?? true);
           if (res.cartA !== undefined) {
             res.cartA.forEach((item) => {
               basketA.push({
@@ -387,6 +394,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setShowApproveModalForm,
     is3PercentOk,
     setIs3PercentOk,
+    lockedAction,
+    setLockedAction,
   });
 
   return (

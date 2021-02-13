@@ -224,6 +224,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     viewExhcnage,
     setViewExchange,
     exchangeId,
+    lockedAction
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
@@ -608,10 +609,10 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
         </Button>
       </>
     ) : (
-      <>
-        <b>{pharmacyDrug.currentCnt}</b> عدد انتخاب شده
-      </>
-    );
+        <>
+          <b>{pharmacyDrug.currentCnt}</b> عدد انتخاب شده
+        </>
+      );
   };
 
   const handleExpandClick = (): any => {
@@ -621,12 +622,13 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   const AddRemoveAction = (): JSX.Element => {
     let element = <></>;
     if (
-      !viewExhcnage ||
-      viewExhcnage.state === 1 ||
-      (!viewExhcnage.currentPharmacyIsA &&
-        (viewExhcnage.state === 2 || viewExhcnage.state === 12) &&
-        viewExhcnage.lockSuggestion === false) ||
-      (viewExhcnage.currentPharmacyIsA && viewExhcnage.state === 1)
+      // !viewExhcnage ||
+      // viewExhcnage.state === 1 ||
+      // (!viewExhcnage.currentPharmacyIsA &&
+      //   (viewExhcnage.state === 2 || viewExhcnage.state === 12) &&
+      //   viewExhcnage.lockSuggestion === false) ||
+      // (viewExhcnage.currentPharmacyIsA && viewExhcnage.state === 1)
+      lockedAction
     ) {
       element = (
         <Grid container>
@@ -683,12 +685,12 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
       >
         {(pharmacyDrug?.cardColor === ColorEnum.AddedByB ||
           pharmacyDrug?.cardColor === ColorEnum.NotConfirmed) && (
-          <Ribbon
-            text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
-              ? 'اضافه'
-              : 'حذف'}
-          />
-        )}
+            <Ribbon
+              text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
+                ? 'اضافه'
+                : 'حذف'}
+            />
+          )}
         <CardContent>{basicDetail}</CardContent>
         {!isPack && (
           <CardActions disableSpacing className={action}>

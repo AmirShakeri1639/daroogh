@@ -208,7 +208,8 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                   style={{ display: 'flex', alignItems: 'center' }}
                 >
                   <FontAwesomeIcon icon={faPills} size="1x" />
-                  <span style={{ marginRight: 5 }}>{item.drug.name}</span>
+                  <span style={{ marginRight: 5 }}>{item.drug.name}
+                    {item.drug.enName && `(${item.drug.enName})`}</span>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
                   <ul className={ulCardName}>
@@ -249,6 +250,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <li>
               <span style={{ fontSize: 13 }}>
                 {pharmacyDrug?.drug.genericName}
+                {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
               </span>
             </li>
           </ul>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Avatar, Button, Container, Grid, Hidden, List, Paper, Tooltip } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
@@ -11,6 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
+import Menu, { MenuProps } from '@material-ui/core/Menu';
 import {
   AccountCircle,
   ChevronRight as ChevronRightIcon,
@@ -35,6 +36,8 @@ import { Message } from '../../../services/api';
 import { Alert } from '@material-ui/lab';
 import Accounting from '../../../services/api/Accounting';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
+import CreditCardIcon from '@material-ui/icons/CreditCard';
+import Utils from '../../public/utility/Utils';
 
 const drawerWidth = 240;
 
@@ -162,6 +165,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5',
+  },
+})((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
+
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const history = useHistory();
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
@@ -169,6 +192,8 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
   const [activePage, setActivePage] = useState<string>('dashboard');
+  const [creditAnchorEl, setcreditAnchorEl] = React.useState(null);
+  const [creditAmount, setCreditAmount] = useState<number>(0);
 
   const { transfer } = routes;
 
@@ -198,11 +223,13 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   });
 
   const [isIndebtPharmacyState, setIsIndebtPharmacyState] = useState<boolean>();
+  const [debtValueState, setDebtValueState] = useState<number | null>(null);
   const { isIndebtPharmacy } = new Accounting();
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {
       const res = await isIndebtPharmacy();
-      setIsIndebtPharmacyState(res.data);
+      setIsIndebtPharmacyState(res.data.isInDebt);
+      setDebtValueState(res.data.debt)
     } catch (error) {
       errorHandler(error);
     }
@@ -306,15 +333,23 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               </Hidden>
             </Typography>
 
-            <Button
-              style={{ color: ColorEnum.White }}
-              onClick={(): void => history.push(transfer)}
-            >
-              <Hidden smDown>{t('exchange.create')}</Hidden>
-              <Tooltip title="ایجاد تبادل">
+            <Tooltip title="ایجاد تبادل">
+              <IconButton edge="end"
+                style={{ color: ColorEnum.White }}
+                onClick={(): void => history.push(transfer)}
+              >
                 <AddCircleOutlineIcon />
-              </Tooltip>
-            </Button>
+                <Hidden smDown><span style={{ fontSize: 14 }}>{t('exchange.create')}</span></Hidden>
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="کیف پول">
+              <IconButton edge="end" onClick={(e: any) => setcreditAnchorEl(e.currentTarget)}
+                style={{ color: `${!debtValueState ? 'white' : debtValueState >= 0 ? '#72fd72' : '#f95e5e'}` }}>
+                <CreditCardIcon />
+                {debtValueState && <Hidden smDown><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span></span></Hidden>}
+              </IconButton>
+            </Tooltip>
 
             <IconButton
               edge="end"
@@ -410,8 +445,19 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
           {component}
 
         </main>
+        {debtValueState &&
+          <StyledMenu
+            id="customized-menu"
+            anchorEl={creditAnchorEl}
+            keepMounted
+            open={Boolean(creditAnchorEl)}
+            onClose={() => setcreditAnchorEl(null)}
+          >
+            <div style={{ padding: 5 }}><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>{debtValueState < 0 && ' بدهکار'}</span></div>
+          </StyledMenu>
+        }
       </div>
-    </Context.Provider>
+    </Context.Provider >
   );
 };
 

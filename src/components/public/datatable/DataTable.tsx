@@ -114,51 +114,14 @@ const DataTable: React.ForwardRefRenderFunction<
     detailPanel,
   } = props;
 
-  // React.useImperativeHandle(forwardedRef, () => ({
-  //   loadItems(): any {
-  //     debugger;
-  //     tableRef.current && tableRef.current.onQueryChange();
-  //   },
-  // }));
-
   const { t } = useTranslation();
 
   const queryCache = useQueryCache();
-
-  // const { isLoading: isLoadingFetchData } = usePaginatedQuery(
-  //   [queryKey, page],
-  //   () =>
-  //     queryCallback(
-  //       page,
-  //       pageSize,
-  //       columns.filter((x: DataTableColumns) => x.searchable),
-  //       searchText,
-  //       {
-  //         orderByIndex: 0,
-  //         orderByName: columns[0].field,
-  //         orderDirection: 'desc',
-  //       }
-  //     ),
-  //   {
-  //     onSuccess: (data) => {
-  //       const { items, count } = data;
-  //       setEntries(itemsSanitizer(items, queryKey));
-  //       setItemsCount(count);
-  //       setLoader(false);
-  //     },
-  //     onError: async () => {
-  //       await errorSweetAlert(t('error.loading-data'));
-  //       setLoader(false);
-  //     },
-  //   }
-  // );
 
   const materialTableProps = {
     onRowClick,
     onSelectionChange: (): any => void 0,
   };
-
-  // const reFetchData = (): any => queryCache.invalidateQueries(queryKey);
 
   let tableActions: any[] = [
     {
@@ -255,14 +218,6 @@ const DataTable: React.ForwardRefRenderFunction<
     });
   }
 
-  // useImperativeHandle(forwardedRef, () => ({
-  //   loadItems(): void {
-  //     reFetchData();
-  //   },
-  // }));
-
-  // function InitData(): JSX.Element {}
-
   useEffect(() => {
     tableRef.current.onQueryChange();
   }, [filters]);
@@ -273,13 +228,7 @@ const DataTable: React.ForwardRefRenderFunction<
     });
   }, [columns]);
 
-  const newGuid = (): string => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = (Math.random() * 16) | 0,
-        v = c == 'x' ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  };
+
 
   const ReportContainer = (): JSX.Element => (
     <Dialog
@@ -338,31 +287,6 @@ const DataTable: React.ForwardRefRenderFunction<
         }}
         components={{
           Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
-          // FilterRow: (props: any): any => (
-          //   <tr>
-          //     <td style={{ width: '20px' }} />
-          //     {props.columns.map((column: any) => {
-          //       const tempProps = { ...props };
-          //       tempProps.column = column;
-          //       Object.preventExtensions(tempProps);
-
-          //       return (
-          //         <td key={`td-${column.field}-${newGuid()}`}>
-          //           <FilterInput {...tempProps} />
-          //         </td>
-          //       );
-          //     })}
-          //   </tr>
-          // ),
-          // Pagination: (props: any): any => (
-          //   <TablePagination
-          //     {...props}
-          //     rowsPerPageOptions={[5, 10, 25, 50]}
-          //     rowsPerPage={pageSize}
-          //     count={itemsCount}
-          //     page={page}
-          //   />
-          // ),
         }}
         columns={columns}
         data={(query): any =>
@@ -412,6 +336,7 @@ const DataTable: React.ForwardRefRenderFunction<
                 url += `&$orderby=id desc`;
               }
             }
+            debugger;
             const user = localStorage.getItem('user') || '{}';
             const { token } = JSON.parse(user);
             fetch(url, {

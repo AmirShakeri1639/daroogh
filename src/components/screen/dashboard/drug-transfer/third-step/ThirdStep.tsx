@@ -87,6 +87,7 @@ const ThirdStep: React.FC = () => {
     exchangeStateCode,
     messageOfExchangeState,
     viewExhcnage,
+    lockedAction
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const {
@@ -102,7 +103,6 @@ const ThirdStep: React.FC = () => {
   const [orginalUPharmacyDrug, setOrginalUPharmacyDrug] = useState<
     AllPharmacyDrugInterface[]
   >([]);
-  // const [viewExhcnage, setViewExchange] = useState([]);
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
@@ -199,16 +199,16 @@ const ThirdStep: React.FC = () => {
                     }
                   />
                 ) : (
-                  <CardContainer
-                    basicDetail={
-                      <ExCardContent formType={2} pharmacyDrug={item} />
-                    }
-                    isPack={false}
-                    pharmacyDrug={Object.assign(item, {
-                      currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
-                    })}
-                  />
-                )}
+                    <CardContainer
+                      basicDetail={
+                        <ExCardContent formType={2} pharmacyDrug={item} />
+                      }
+                      isPack={false}
+                      pharmacyDrug={Object.assign(item, {
+                        currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
+                      })}
+                    />
+                  )}
               </div>
             </Grid>
           );
@@ -242,16 +242,16 @@ const ThirdStep: React.FC = () => {
                     }
                   />
                 ) : (
-                  <CardContainer
-                    basicDetail={
-                      <ExCardContent formType={2} pharmacyDrug={item} />
-                    }
-                    isPack={false}
-                    pharmacyDrug={Object.assign(item, {
-                      currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
-                    })}
-                  />
-                )}
+                    <CardContainer
+                      basicDetail={
+                        <ExCardContent formType={2} pharmacyDrug={item} />
+                      }
+                      isPack={false}
+                      pharmacyDrug={Object.assign(item, {
+                        currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
+                      })}
+                    />
+                  )}
               </div>
             </Grid>
           );
@@ -264,7 +264,7 @@ const ThirdStep: React.FC = () => {
 
   const handleChange = (event: any): any => {
     setIsSelected(event.target.checked);
-    if (event.target.checked) refetch();
+    if (event.target.checked && lockedAction) refetch();
     else setUAllPharmacyDrug([]);
   };
 
@@ -294,25 +294,25 @@ const ThirdStep: React.FC = () => {
                 (viewExhcnage.state === 1 ||
                   viewExhcnage.state === 2 ||
                   viewExhcnage.state === 12))) && (
-              <Grid
-                item
-                xs={12}
-                md={12}
-                style={{ marginTop: 10, paddingBottom: 0 }}
-              >
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={isSelected}
-                      onChange={handleChange}
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label="انتخاب دارو از سبد عرضه خود"
-                />
-              </Grid>
-            )}
+                <Grid
+                  item
+                  xs={12}
+                  md={12}
+                  style={{ marginTop: 10, paddingBottom: 0 }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={isSelected}
+                        onChange={handleChange}
+                        name="checkedB"
+                        color="primary"
+                      />
+                    }
+                    label="انتخاب دارو از سبد عرضه خود"
+                  />
+                </Grid>
+              )}
             <Grid container spacing={1}>
               <>
                 {isLoading && <CircleLoading />}
