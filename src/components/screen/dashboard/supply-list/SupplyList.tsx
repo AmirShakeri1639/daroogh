@@ -540,6 +540,12 @@ const SupplyList: React.FC = () => {
         )}-${numberWithZero(jalail2Gregorian.gd)}T00:00:00Z`;
       }
       state.expireDate = date;
+      if (state.offer1 === '') {
+        state.offer1 = 0;
+      }
+      if (state.offer2 === '') {
+        state.offer2 = 0;
+      }
       //@ts-ignore
       state.drugID = selectedDrug.id;
       await _savePharmacyDrug(state);
