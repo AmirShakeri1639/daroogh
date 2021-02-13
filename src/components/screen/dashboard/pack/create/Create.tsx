@@ -549,8 +549,8 @@ const Create: React.FC = () => {
       cnt: Number(number),
       drugID: selectedDrug,
       expireDate: date,
-      offer1: Number(offer1),
-      offer2: Number(offer2),
+      offer1: offer1 !== '' ? Number(offer1) : 0,
+      offer2: offer2 !== '' ? Number(offer2) : 0,
       id: 0,
       batchNO: '',
     };
