@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) =>
         transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
       },
       '& a': {
-        color: 'rgba(0, 0, 0, 0.85)',
+        color: '#4625B2',
         textDecoration: 'none',
         width: '100%',
         display: 'flex',
@@ -176,14 +176,14 @@ const ListItems: React.FC = () => {
         {/* //// Role */ }
         <List component="div" className={ linkWrapper }>
           <Link to={ dashboard } className={ notNested }>
-            <ListItemIcon>
+            <ListItemIcon style={{color: '#4625B2'}}>
               <DashboardIcon />
             </ListItemIcon>
             <ListItemText primary={ t('general.dashboard') } />
           </Link>
         </List>
         <ListItem button onClick={ (): void => setIsOpenRoleMenu((val) => !val) }>
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <ContactMailTwoToneIcon />
           </ListItemIcon>
           <ListItemText primary={ t('user.role') } />
@@ -192,7 +192,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenRoleMenu } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ createRole } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <AddIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.create-new-role') } />
@@ -202,7 +202,7 @@ const ListItems: React.FC = () => {
 
         {/* //// User */ }
         <ListItem button onClick={ (): void => setIsOpenUserMenu((val) => !val) }>
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <PermIdentityTwoToneIcon />
           </ListItemIcon>
           <ListItemText primary={ t('user.user') } />
@@ -211,7 +211,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenUserMenu } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ createUser } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <PersonAddTwoToneIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.create-user') } />
@@ -219,7 +219,7 @@ const ListItems: React.FC = () => {
           </List>
           <List component="div" className={ linkWrapper }>
             <Link to={ usersList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <GroupTwoToneIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.users-list') } />
@@ -227,7 +227,7 @@ const ListItems: React.FC = () => {
           </List>
           <List component="div" className={ linkWrapper }>
             <Link to={ changeUserPassword } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <LockIcon />
               </ListItemIcon>
               <ListItemText primary={ t('user.changeUserPassword') } />
@@ -235,7 +235,7 @@ const ListItems: React.FC = () => {
           </List>
           <List component="div" className={ linkWrapper }>
             <Link to={ jobSearchList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <FontAwesomeIcon icon={ faUserMd } size="lg" />
               </ListItemIcon>
               <ListItemText primary={ t('jobSearch.jobSearch') } />
@@ -245,7 +245,7 @@ const ListItems: React.FC = () => {
 
         {/* //// Drug */ }
         <ListItem button onClick={ (): void => setIsOpenDrugMenu((val) => !val) }>
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <Extension />
           </ListItemIcon>
           <ListItemText primary={ t('drug.drug') } />
@@ -254,7 +254,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenDrugMenu } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ drugsList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <EnhancedEncryption />
               </ListItemIcon>
               <ListItemText primary={ t('drug.list') } />
@@ -264,7 +264,7 @@ const ListItems: React.FC = () => {
 
         {/* //// Category */ }
         <ListItem button onClick={ (): void => setIsOpenCategory((val) => !val) }>
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <CategoryIcon />
           </ListItemIcon>
           <ListItemText primary={ t('category.category') } />
@@ -273,7 +273,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenCategory } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ categoryList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <AddToPhotosIcon />
               </ListItemIcon>
               <ListItemText primary={ t('category.list') } />
@@ -286,7 +286,7 @@ const ListItems: React.FC = () => {
           button
           onClick={ (): void => setIsOpenPharmacyMenu((val) => !val) }
         >
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <LocalPharmacy />
           </ListItemIcon>
           <ListItemText primary={ t('pharmacy.pharmacy') } />
@@ -295,7 +295,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenPharmacyMenu } timeout="auto" unmountOnExit>
           {/* <List component="div" className={linkWrapper}>
             <Link to={createPharmacy} className={nested}>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <AddBox />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.create')} />
@@ -303,7 +303,7 @@ const ListItems: React.FC = () => {
           </List> */}
           <List component="div" className={ linkWrapper }>
             <Link to={ pharmaciesList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <Business />
               </ListItemIcon>
               <ListItemText primary={ t('pharmacy.list') } />
@@ -316,7 +316,7 @@ const ListItems: React.FC = () => {
           button
           onClick={ (): void => setIsOpenMessageMenu((val) => !val) }
         >
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <MessageIcon />
           </ListItemIcon>
           <ListItemText primary={ t('message.message') } />
@@ -325,7 +325,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenMessageMenu } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ createMessage } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <AddIcon />
               </ListItemIcon>
               <ListItemText primary={ t('message.createMessage') } />
@@ -333,7 +333,7 @@ const ListItems: React.FC = () => {
           </List>
           <List component="div" className={ linkWrapper }>
             <Link to={ messagesList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <ListIcon />
               </ListItemIcon>
               <ListItemText primary={ t('message.messagesList') } />
@@ -344,7 +344,7 @@ const ListItems: React.FC = () => {
           button
           onClick={ (): void => setIsOpenExchangeManagement((val) => !val) }
         >
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <CategoryIcon />
           </ListItemIcon>
           <ListItemText primary={ t('exchange.exchange') } />
@@ -353,7 +353,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenExchangeManagement } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ exchangeManagementList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <ContactPhoneIcon />
               </ListItemIcon>
               <ListItemText primary={ t('exchange.exchangeManagement') } />
@@ -369,7 +369,7 @@ const ListItems: React.FC = () => {
       <>
         <h3 className={ spacing3 }>{ t('pharmacy.pharmacy') }</h3>
         <ListItem button onClick={ (): void => setIsOpenExchange((val) => !val) }>
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <CategoryIcon />
           </ListItemIcon>
           <ListItemText primary={ t('exchange.exchange') } />
@@ -378,7 +378,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenExchange } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ supplyList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <AppsIcon />
               </ListItemIcon>
               <ListItemText
@@ -389,7 +389,7 @@ const ListItems: React.FC = () => {
 
           <List component="div" className={ linkWrapper }>
             <Link to={ packsList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <FontAwesomeIcon icon={ faBars } size="lg" />
               </ListItemIcon>
               <ListItemText primary={ t('pack.submitMyPacks') } />
@@ -398,7 +398,7 @@ const ListItems: React.FC = () => {
 
           <List component="div" className={ linkWrapper }>
             <Link to={ transfer } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <AddToPhotosIcon />
               </ListItemIcon>
               <ListItemText
@@ -409,7 +409,7 @@ const ListItems: React.FC = () => {
 
           <List component="div" className={ linkWrapper }>
             <Link to={ desktop } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary={ t('general.records') } />
@@ -418,7 +418,7 @@ const ListItems: React.FC = () => {
         </Collapse>
 
         <ListItem button onClick={ (): void => setIsopenFavoriteList((v) => !v) }>
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <Bookmark />
           </ListItemIcon>
           <ListItemText primary={ t('general.yourFavorite') } />
@@ -427,7 +427,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isopenFavoriteList } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ drugFavoriteList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <FontAwesomeIcon icon={ faPills } />
               </ListItemIcon>
               <ListItemText primary={ t('drug.drug') } />
@@ -436,7 +436,7 @@ const ListItems: React.FC = () => {
 
           <List component="div" className={ linkWrapper }>
             <Link to={ drugCategoryfavoriteList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <FontAwesomeIcon icon={ faBars } />
               </ListItemIcon>
               <ListItemText
@@ -450,7 +450,7 @@ const ListItems: React.FC = () => {
           button
           onClick={ (): void => setIsOpenAccounting((val) => !val) }
         >
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <AccountBalanceIcon />
           </ListItemIcon>
           <ListItemText primary={ t('accounting.accounting') } />
@@ -459,7 +459,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenAccounting } timeout="auto" unmountOnExit>
           <List component="div" className={ linkWrapper }>
             <Link to={ transactions } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary={ t('accounting.transactions') } />
@@ -467,7 +467,7 @@ const ListItems: React.FC = () => {
           </List>
           <List component="div" className={ linkWrapper }>
             <Link to={ accountingInfo } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary={ t('accounting.accountingForPayment') } />
@@ -476,7 +476,7 @@ const ListItems: React.FC = () => {
         </Collapse>
 
         <ListItem button onClick={ (): void => setIsOpenMembers((v) => !v) }>
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <PermIdentityTwoToneIcon />
           </ListItemIcon>
           <ListItemText primary={ t('user.members') } />
@@ -485,7 +485,7 @@ const ListItems: React.FC = () => {
         <Collapse in={ isOpenMembers } timeout="auto" unmountOnExit>
           {/* <List component="div" className={linkWrapper}>
             <Link to={membershipRequests} className={nested}>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <BookmarkBorderIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.membershipRequestsList')} />
@@ -493,7 +493,7 @@ const ListItems: React.FC = () => {
           </List>
           <List component="div" className={linkWrapper}>
             <Link to={memberRole} className={nested}>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <FontAwesomeIcon icon={faUserTag} size="lg" />
               </ListItemIcon>
               <ListItemText primary={t('pharmacy.memberRole')} />
@@ -501,7 +501,7 @@ const ListItems: React.FC = () => {
           </List> */}
           <List component="div" className={ linkWrapper }>
             <Link to={ pharmacyUsersList } className={ nested }>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <FontAwesomeIcon icon={ faUser } size="lg" />
               </ListItemIcon>
               <ListItemText primary={ t('user.users-list') } />
@@ -510,7 +510,7 @@ const ListItems: React.FC = () => {
         </Collapse>
         <List component="div" className={ linkWrapper }>
           <Link to={ jobSearchList } className={ notNested }>
-            <ListItemIcon>
+            <ListItemIcon style={{color: '#4625B2'}}>
               <FontAwesomeIcon icon={ faUserMd } size="lg" />
             </ListItemIcon>
             <ListItemText primary={ t('jobSearch.jobSearch') } />
@@ -518,7 +518,7 @@ const ListItems: React.FC = () => {
         </List>
         <List component="div" className={ linkWrapper }>
           <Link to={ prescriptionList } className={ notNested }>
-            <ListItemIcon>
+            <ListItemIcon style={{color: '#4625B2'}}>
               <FontAwesomeIcon icon={ faFileMedical } size="lg" />
             </ListItemIcon>
             <ListItemText primary={ t('prescription.peoplePrescription') } />
@@ -528,7 +528,7 @@ const ListItems: React.FC = () => {
           button
           onClick={(): void => setIsOpenUserPharmacyMenu((val) => !val)}
         >
-          <ListItemIcon>
+          <ListItemIcon style={{color: '#4625B2'}}>
             <LocalPharmacy />
           </ListItemIcon>
           <ListItemText primary={t('pharmacy.pharmacy')} />
@@ -537,7 +537,7 @@ const ListItems: React.FC = () => {
         <Collapse in={isOpenUserPharmacyMenu} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
             <Link to={pharmacyUsersList} className={nested}>
-              <ListItemIcon>
+              <ListItemIcon style={{color: '#4625B2'}}>
                 <FontAwesomeIcon icon={faUser} size="lg" />
               </ListItemIcon>
               <ListItemText primary={t('user.users-list')} />

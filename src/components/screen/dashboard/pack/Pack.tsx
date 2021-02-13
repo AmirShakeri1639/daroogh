@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStyles, Grid, makeStyles } from '@material-ui/core';
+import { Container, createStyles, Grid, makeStyles } from '@material-ui/core';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -102,7 +102,7 @@ const Pack: React.FC = () => {
   };
 
   return (
-    <MaterialContainer>
+    <Container>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <h3>لیست پک ها</h3>
@@ -119,7 +119,7 @@ const Pack: React.FC = () => {
       </Grid>
 
       <BackDrop isOpen={isLoadingRemovePack} />
-    </MaterialContainer>
+    </Container>
   );
 };
 
