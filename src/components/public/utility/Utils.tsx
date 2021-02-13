@@ -31,6 +31,12 @@ export default class Utils {
     else return null;
   }
 
+  static convertShamsiToGeo(date: any, format: string): string | null {
+    if (date)
+      return mom(date, 'jYYYY/jMM/jDD').locale('en').format(format);
+    else return null;
+  }
+
   static getExpireDate = (date: any): string => {
     const faDate = mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     const eDate = mom.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
@@ -42,5 +48,13 @@ export default class Utils {
     const res = `${faDate} (${differenceInDays} روز)`;
 
     return res;
+  };
+
+  static newGuid = (): string => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   };
 }
