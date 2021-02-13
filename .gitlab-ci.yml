@@ -25,4 +25,4 @@ deploy_daroog:
       - node_modules/
   environment:
     name: staging
-    url: http://sumon.ir
+    url: http://tabadol.daroog.org

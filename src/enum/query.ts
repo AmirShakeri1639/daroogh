@@ -10,11 +10,17 @@ export enum CategoryQueryEnum {
 
 export enum MessageQueryEnum {
   GET_ALL_MESSAGES = 'getAllMessages',
+  GET_USER_MESSAGES = 'getUserMessages',
 }
 
 export enum DrugEnum {
   GET_ALL = 'all',
 }
+
+export enum ReportsEnum {
+  GET_BEST_PHARMACIES_LIST = 'getBestPharmaciesList',
+}
+
 
 export enum PharmacyEnum {
   GET_ALL = 'all',
@@ -36,6 +42,10 @@ export enum PharmacyDrugEnum {
   GET_FAVORITE_LIST = 'getFavoriteList',
 }
 
+export enum PharmacyUsersEnum {
+  GET_PHARMACY_USERS = 'getPharmacyUsers',
+}
+
 export enum AllPharmacyDrug {
   GET_ALL_PHARMACY_DRUG = 'allPharmacyDrug',
 }
@@ -52,4 +62,12 @@ export enum PackEnum {
 
 export enum ExchangeEnum {
   GET_ALL_EXCHANGE = 'allExchange',
+}
+
+export enum PrescriptionEnum {
+  GET_LIST = 'getList',
+}
+
+export enum EmploymentApplicationEnum {
+  GET_ALL = 'getAllEmploymentApplications'
 }

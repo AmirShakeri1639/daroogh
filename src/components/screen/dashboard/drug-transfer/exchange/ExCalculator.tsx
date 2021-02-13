@@ -49,12 +49,14 @@ interface Props {
   exchange: ViewExchangeInterface | undefined;
   onClose?: () => void;
   full?: boolean;
+  pharmacyNameA?: string;
+  pharmacyNameB?: string;
 }
 
 const ExCalculator: React.FC<Props> = (props) => {
   const exchange: ViewExchangeInterface =
     props.exchange == undefined ? ViewExchangeInitialState : props.exchange;
-  const { onClose, full = true } = props;
+  const { onClose, full = true, pharmacyNameA, pharmacyNameB } = props;
   // if (showActions === undefined) showActions = true;
 
   const { t } = useTranslation();
@@ -99,6 +101,7 @@ const ExCalculator: React.FC<Props> = (props) => {
   const l = (v: string | number): string => {
     return v.toLocaleString('fa-IR');
   };
+
 
   // useEffect(() => {
   reCheckData();
@@ -163,9 +166,13 @@ const ExCalculator: React.FC<Props> = (props) => {
 
     let totalCount = 0;
     let totalPrice = 0;
-
     const makeRow = (i: any): JSX.Element => {
-      if (isNullOrEmpty(i.confirmed) || i.confirmed) {
+      if (
+        (isNullOrEmpty(i.confirmed) || i.confirmed)
+        && (i.cardColor === ColorEnum.AddedByB
+          || i.cardColor === ColorEnum.Confirmed
+        )
+      ) {
         totalCount += i.currentCnt ? i.currentCnt : i.cnt;
         totalPrice += i.amount * (i.currentCnt ? i.currentCnt : i.cnt);
 
@@ -175,7 +182,7 @@ const ExCalculator: React.FC<Props> = (props) => {
               { i.drug.name }
             </TableCell>
             <TableCell align="center" className={ darkText }>
-              { i.currentCnt ? i.currentCnt : i.cnt}
+              { i.currentCnt ? i.currentCnt : i.cnt }
             </TableCell>
             <TableCell align="center" className={ darkText }>
               { Convertor.thousandsSeperatorFa(i.amount) }
@@ -306,8 +313,8 @@ const ExCalculator: React.FC<Props> = (props) => {
             onChange={ handleChange }
             centered
           >
-            <Tab label={ t('exchange.you') } />
-            <Tab label={ t('exchange.otherSide') } />
+            <Tab label={ pharmacyNameA ?? t('exchange.you') } />
+            <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
           </Tabs>
           {/* <SwipeableViews
               enableMouseEvents

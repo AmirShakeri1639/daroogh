@@ -37,6 +37,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 import Ribbon from '../../../../public/ribbon/Ribbon';
+import { ColorEnum } from '../../../../../enum';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -223,6 +224,7 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
     viewExhcnage,
     setViewExchange,
     exchangeId,
+    lockedAction
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
@@ -607,10 +609,10 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
         </Button>
       </>
     ) : (
-      <>
-        <b>{pharmacyDrug.currentCnt}</b> عدد انتخاب شده
-      </>
-    );
+        <>
+          <b>{pharmacyDrug.currentCnt}</b> عدد انتخاب شده
+        </>
+      );
   };
 
   const handleExpandClick = (): any => {
@@ -620,12 +622,13 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
   const AddRemoveAction = (): JSX.Element => {
     let element = <></>;
     if (
-      !viewExhcnage ||
-      viewExhcnage.state === 1 ||
-      (!viewExhcnage.currentPharmacyIsA &&
-        (viewExhcnage.state === 2 || viewExhcnage.state === 12) &&
-        viewExhcnage.lockSuggestion === false) ||
-      (viewExhcnage.currentPharmacyIsA && viewExhcnage.state === 1)
+      // !viewExhcnage ||
+      // viewExhcnage.state === 1 ||
+      // (!viewExhcnage.currentPharmacyIsA &&
+      //   (viewExhcnage.state === 2 || viewExhcnage.state === 12) &&
+      //   viewExhcnage.lockSuggestion === false) ||
+      // (viewExhcnage.currentPharmacyIsA && viewExhcnage.state === 1)
+      lockedAction
     ) {
       element = (
         <Grid container>
@@ -680,12 +683,14 @@ const CardContainer: React.FC<CardPropsInterface> = (props) => {
         className={`${root} ${isPack ? pack : ''}`}
         style={{ backgroundColor: pharmacyDrug.cardColor }}
       >
-        {(pharmacyDrug?.cardColor === '#00cc00' ||
-          pharmacyDrug?.cardColor === '#009900') && (
-          <Ribbon
-            text={pharmacyDrug?.cardColor === '#00cc00' ? 'اضافه' : 'حذف'}
-          />
-        )}
+        {(pharmacyDrug?.cardColor === ColorEnum.AddedByB ||
+          pharmacyDrug?.cardColor === ColorEnum.NotConfirmed) && (
+            <Ribbon
+              text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
+                ? 'اضافه'
+                : 'حذف'}
+            />
+          )}
         <CardContent>{basicDetail}</CardContent>
         {!isPack && (
           <CardActions disableSpacing className={action}>

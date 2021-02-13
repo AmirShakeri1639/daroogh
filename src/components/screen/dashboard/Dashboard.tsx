@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import DaroogLogo from '../../../assets/images/daroog-logo.png';
+import React, { useState, useEffect } from 'react';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Avatar, Button, Grid, Hidden, List, Tooltip } from '@material-ui/core';
+import { Avatar, Button, Container, Grid, Hidden, List, Paper, Tooltip } from '@material-ui/core';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -12,6 +11,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import MenuIcon from '@material-ui/icons/Menu';
+import Menu, { MenuProps } from '@material-ui/core/Menu';
 import {
   AccountCircle,
   ChevronRight as ChevronRightIcon,
@@ -20,19 +20,24 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { useTranslation } from 'react-i18next';
 import Context from './Context';
 import UserMenu from './appbar/UserMenu';
+import NotificationMenu from './appbar/NotificationMenu';
 import ListItems from './sidebar/ListItems';
-import DashboardActivePage from './DashboardActivePage';
 import { MaterialDrawer } from '../../public';
-import { JwtData } from '../../../utils';
+import { errorHandler, JwtData } from '../../../utils';
 import { LoggedInUserInterface } from '../../../interfaces';
 import { logoutUser } from '../../../utils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDoorOpen } from '@fortawesome/free-solid-svg-icons';
-import { ColorEnum } from '../../../enum';
+import { ColorEnum, MessageQueryEnum } from '../../../enum';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../routes';
 import Ribbon from '../../public/ribbon/Ribbon';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import { useQuery } from 'react-query';
+import { Message } from '../../../services/api';
+import { Alert } from '@material-ui/lab';
+import Accounting from '../../../services/api/Accounting';
+import BestPharmaciesList from './pharmacy/bestPharmaciesList';
+import CreditCardIcon from '@material-ui/icons/CreditCard';
+import Utils from '../../public/utility/Utils';
 
 const drawerWidth = 240;
 
@@ -40,15 +45,32 @@ interface DashboardPropsInterface {
   component: React.ReactNode;
 }
 
+const { getUserMessages } = new Message();
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+  },
+  alert: {
+    width: '100%',
+    marginTop: 5,
+    textAlign: 'center',
   },
   toolbar: {
     paddingRight: 24,
   },
   trialToolbar: {
     paddingRight: 70,
+  },
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
   },
   toolbarIcon: {
     display: 'flex',
@@ -143,35 +165,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type DashboardActivePage =
-  | 'dashboard'
-  | 'createRole'
-  | 'createUser'
-  | 'usersList'
-  | 'createDrug'
-  | 'drugsList'
-  | 'categoryList'
-  | 'pharmaciesList'
-  | 'exchange'
-  | 'createPharmacy'
-  | 'supplyList'
-  | 'accountingList'
-  | 'membershipRequestsList';
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5',
+  },
+})((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
 
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const history = useHistory();
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
   const [isTrial, setIsTrial] = React.useState(true);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
   const [activePage, setActivePage] = useState<string>('dashboard');
+  const [creditAnchorEl, setcreditAnchorEl] = React.useState(null);
+  const [creditAmount, setCreditAmount] = useState<number>(0);
 
   const { transfer } = routes;
 
   const classes = useStyles();
 
+  const {
+    data: userMessages,
+    isLoading: isLoadingUserMessages,
+  } = useQuery(MessageQueryEnum.GET_USER_MESSAGES, () => getUserMessages(true));
+
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
-
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
   const activePageHandler = (page: string): void => {
@@ -184,7 +218,22 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     setAnchorEl,
     activePage,
     activePageHandler,
+    notifEl,
+    setNotifEl,
   });
+
+  const [isIndebtPharmacyState, setIsIndebtPharmacyState] = useState<boolean>();
+  const [debtValueState, setDebtValueState] = useState<number | null>(null);
+  const { isIndebtPharmacy } = new Accounting();
+  const handleIsIndebtPharmacy = async (): Promise<any> => {
+    try {
+      const res = await isIndebtPharmacy();
+      setIsIndebtPharmacyState(res.data.isInDebt);
+      setDebtValueState(res.data.debt)
+    } catch (error) {
+      errorHandler(error);
+    }
+  };
 
   const { t } = useTranslation();
 
@@ -194,14 +243,51 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     setAnchorEl(e.currentTarget);
   };
 
+  const handleNotificationIconButton = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): void => {
+    setNotifEl(e.currentTarget);
+  };
+
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
-  React.useEffect(() => {
+
+  useEffect(() => {
     const { userData } = new JwtData();
     setLoggedInUser(userData);
+
+    async function getIsIndebtPharmacy(): Promise<void> {
+      await handleIsIndebtPharmacy();
+    }
+
+    getIsIndebtPharmacy();
   }, []);
 
   const listItemsGenerator = (): any => {
     return <ListItems />;
+  };
+
+  const alertContent = (): JSX.Element => {
+    let element: JSX.Element = <></>;
+    const user = localStorage.getItem('user') || '{}';
+    const { name, family } = JSON.parse(user);
+    const title = (
+      <span>
+        {name} {family} عزیز ،
+      </span>
+    );
+    const body = (
+      <span style={{ marginRight: 5 }}>
+        بعلت اینکه سقف بدهی شما بیشتر از حد مجاز می باشد، امکان هیچگونه عملیاتی
+        برای شما میسر نمی باشد. لطفا نسبت به پرداخت بدهی خود اقدام نمایید.
+      </span>
+    );
+    element = (
+      <>
+        {title}
+        {body}
+      </>
+    );
+    return element;
   };
 
   return (
@@ -230,6 +316,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             >
               <MenuIcon />
             </IconButton>
+
             <Typography
               component="h1"
               variant="h6"
@@ -245,20 +332,40 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 </span>
               </Hidden>
             </Typography>
-            <Button
-              style={{ color: ColorEnum.White }}
-              onClick={(): void => history.push(transfer)}
-            >
-              <Hidden smDown>{t('exchange.create')}</Hidden>
-              <Tooltip title="ایجاد تبادل">
+
+            <Tooltip title="ایجاد تبادل">
+              <IconButton edge="end"
+                style={{ color: ColorEnum.White }}
+                onClick={(): void => history.push(transfer)}
+              >
                 <AddCircleOutlineIcon />
-              </Tooltip>
-            </Button>
-            <IconButton color="inherit">
-              {/* <Badge badgeContent={4} color="secondary"> */}
-              <NotificationsIcon />
-              {/* </Badge> */}
+                <Hidden smDown><span style={{ fontSize: 14 }}>{t('exchange.create')}</span></Hidden>
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="کیف پول">
+              <IconButton edge="end" onClick={(e: any) => setcreditAnchorEl(e.currentTarget)}
+                style={{ color: `${!debtValueState ? 'white' : debtValueState >= 0 ? '#72fd72' : '#f95e5e'}` }}>
+                <CreditCardIcon />
+                {debtValueState && <Hidden smDown><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span></span></Hidden>}
+              </IconButton>
+            </Tooltip>
+
+            <IconButton
+              edge="end"
+              color="inherit"
+              onClick={handleNotificationIconButton}
+            >
+              <Badge
+                badgeContent={
+                  userMessages !== undefined ? userMessages.items.length : 0
+                }
+                color="secondary"
+              >
+                <NotificationsIcon />
+              </Badge>
             </IconButton>
+
             <IconButton
               edge="end"
               aria-label="account of current user"
@@ -269,9 +376,15 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             >
               <AccountCircle />
             </IconButton>
+
             <UserMenu />
+
+            <NotificationMenu
+              messages={isLoadingUserMessages ? [] : userMessages?.items}
+            />
           </Toolbar>
         </AppBar>
+
         <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
           <div className={classes.toolbarIcon}>
             <span
@@ -322,10 +435,29 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
         </MaterialDrawer>
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
+          <div className={classes.alert}>
+            {isIndebtPharmacyState && (
+              <Alert variant="filled" severity="error" style={{ margin: 10 }}>
+                {alertContent()}
+              </Alert>
+            )}
+          </div>
           {component}
+
         </main>
+        {debtValueState &&
+          <StyledMenu
+            id="customized-menu"
+            anchorEl={creditAnchorEl}
+            keepMounted
+            open={Boolean(creditAnchorEl)}
+            onClose={() => setcreditAnchorEl(null)}
+          >
+            <div style={{ padding: 5 }}><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>{debtValueState < 0 && ' بدهکار'}</span></div>
+          </StyledMenu>
+        }
       </div>
-    </Context.Provider>
+    </Context.Provider >
   );
 };
 

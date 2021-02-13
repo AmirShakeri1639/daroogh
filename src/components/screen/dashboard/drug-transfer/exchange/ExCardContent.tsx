@@ -25,6 +25,7 @@ import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import Utils from '../../../../public/utility/Utils';
 import Ribbon from '../../../../public/ribbon/Ribbon';
+import { ColorEnum } from '../../../../../enum';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -144,9 +145,11 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   const PackContent = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
-        {pharmacyDrug?.cardColor === '#00cc00' && (
+        {pharmacyDrug?.cardColor === ColorEnum.AddedByB && (
           <Ribbon
-            text={pharmacyDrug?.cardColor === '#00cc00' ? 'اضافه' : 'حذف'}
+            text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
+              ? 'اضافه'
+              : 'حذف'}
           />
         )}
         <Grid item xs={12}>
@@ -179,6 +182,19 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
     );
   };
 
+  const getExpireDate = (date: any): string => {
+    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
+    const fromDate = new Date(eDate);
+    const today = new Date();
+
+    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
+
+    const res = `${faDate} (${differenceInDays} روز)`;
+
+    return res;
+  };
+
   const PackDetailContent = (): JSX.Element[] | any => {
     if (packInfo && packInfo.length > 0) {
       return packInfo.map((item: AllPharmacyDrugInterface) => {
@@ -192,15 +208,14 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                   style={{ display: 'flex', alignItems: 'center' }}
                 >
                   <FontAwesomeIcon icon={faPills} size="1x" />
-                  <span style={{ marginRight: 5 }}>{item.drug.name}</span>
+                  <span style={{ marginRight: 5 }}>{item.drug.name}
+                    {item.drug.enName && `(${item.drug.enName})`}</span>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
                   <ul className={ulCardName}>
                     <li className={colLeftIcon}>
                       <EventBusyIcon />
-                      {moment(item.expireDate, 'YYYY/MM/DD')
-                        .locale('fa')
-                        .format('YYYY/MM/DD')}
+                      {getExpireDate(item.expireDate)}
                     </li>
                     <li className={colLeftIcon}>
                       <CardGiftcardIcon />
@@ -235,6 +250,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <li>
               <span style={{ fontSize: 13 }}>
                 {pharmacyDrug?.drug.genericName}
+                {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
               </span>
             </li>
           </ul>
@@ -275,9 +291,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <Grid item xs={11}>
               <TextLine
                 rightText={t('general.expireDate')}
-                leftText={moment(pharmacyDrug?.expireDate, 'YYYY/MM/DD')
-                  .locale('fa')
-                  .format('YYYY/MM/DD')}
+                leftText={getExpireDate(pharmacyDrug?.expireDate)}
               />
             </Grid>
           </Grid>

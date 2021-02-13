@@ -15,8 +15,6 @@ import {
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useTranslation } from 'react-i18next';
-import MailIcon from '@material-ui/icons/Mail';
-import LockIcon from '@material-ui/icons/Lock';
 import {
   ActionInterface,
   LoginInitialStateInterface,
@@ -120,19 +118,14 @@ const Login: React.FC = (): JSX.Element => {
 
         if (process.env.NODE_ENV === 'production') {
           (async (): Promise<any> => {
-            const cookiesArray = document.cookie.split(';');
-            const regexNajva = /najva_token=[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}/g;
-            if (cookiesArray.length > 0) {
-              const najvaToken = cookiesArray
-                .filter((item) => regexNajva.test(item.trim()))[0]
-                .trim()
-                .split('=')[1];
-
-              try {
-                await setNotification(najvaToken);
-              } catch (e) {
-                errorHandler(e);
-              }
+            try {
+              window.najvaUserSubscribed = async function(
+                najva_user_token: string
+              ): Promise<void> {
+                await setNotification(najva_user_token);
+              };
+            } catch (e) {
+              errorHandler(e);
             }
           })();
         }

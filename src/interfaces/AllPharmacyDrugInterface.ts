@@ -25,6 +25,7 @@ export interface DrugI {
   id: number;
   categoryId: { id: number; name: string; type: number; typeString: string };
   name: string;
+  enName: string;
   genericName: string;
   companyName: string;
   type: string;

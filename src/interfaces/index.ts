@@ -69,6 +69,8 @@ export type { MembershipRequestInterface } from './MembershipRequestInterface';
 export type { ViewExchangeInterface, AddDrugInterface, CardInfo } from './ViewExchangeInterface';
 export type { UserRoleInterface } from './user';
 export type { SettingsInterface } from './SettingsInterface';
+export type { PrescriptionInterface, PrescriptionResponseInterface } from './PrescriptionInterface';
+export type { EmploymentApplicationInterface } from './EmploymentApplicationInterface';
 
 export * from './component';
 export * from './general';

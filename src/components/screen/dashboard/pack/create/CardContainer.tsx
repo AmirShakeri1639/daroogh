@@ -42,7 +42,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
     offer1,
     offer2,
     amount,
-    drugID: { drugName, id },
+    drugID: { drugName, id, enName },
   } = item;
 
   const queryCache = useQueryCache();
@@ -87,11 +87,12 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
         </Grid>
         <Detail
           drugName={drugName}
-          amount={amount}
+          amount={Number(amount)}
           expireDate={expireDate}
-          count={cnt}
-          offer1={offer1}
-          offer2={offer2}
+          count={Number(cnt)}
+          offer1={Number(offer1)}
+          offer2={Number(offer2)}
+          enName={enName}
         />
       </Grid>
     </Paper>

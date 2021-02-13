@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { calcTotalPrices } from '../../../../utils/ExchangeTools';
 import fa from '../../../../i18n/fa/fa';
 import CircularProgressWithLabel from '../../../public/loading/CircularProgressWithLabel';
+import { ColorEnum } from '../../../../enum';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -84,6 +85,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
   const [is3PercentOk, setIs3PercentOk] = React.useState(true);
   const [eid, setEid] = useState<number>(0);
+  const [lockedAction, setLockedAction] = React.useState(true);
 
   const { viewExchangeId, exchangeState } = props;
 
@@ -106,11 +108,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     const color =
       res && res.currentPharmacyIsA
         ? item.addedByB
-          ? '#00cc00'
+          ? ColorEnum.AddedByB
           : item.confirmed !== undefined && item.confirmed === false
-          ? '#009900'
-          : '#33ff33'
-        : '#33ff33';
+            ? ColorEnum.NotConfirmed
+            : ColorEnum.Confirmed
+        : ColorEnum.Confirmed;
 
     return color;
   };
@@ -127,7 +129,13 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
           const basketB: AllPharmacyDrugInterface[] = [];
-
+          const locked =
+            res.state === 1 ||
+            (!res.currentPharmacyIsA &&
+              (res.state === 2 || res.state === 12) &&
+              res.lockSuggestion === false) ||
+            (res.currentPharmacyIsA && res.state === 1);
+          setLockedAction(locked ?? true);
           if (res.cartA !== undefined) {
             res.cartA.forEach((item) => {
               basketA.push({
@@ -386,6 +394,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setShowApproveModalForm,
     is3PercentOk,
     setIs3PercentOk,
+    lockedAction,
+    setLockedAction,
   });
 
   return (
@@ -399,21 +409,21 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 <CircularProgress size={20} />
               </div>
             ) : (
-              <>
-                {activeStep > 0 && (
-                  <>
-                    <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
-                      <ProgressBar />
-                    </Grid>
-                  </>
-                )}
+                <>
+                  {activeStep > 0 && (
+                    <>
+                      <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
+                        <ProgressBar />
+                      </Grid>
+                    </>
+                  )}
 
-                {activeStep === 0 && <FirstStep />}
-                {activeStep === 1 && <SecondStep />}
-                {activeStep === 2 && <ThirdStep />}
-                {activeStep === 3 && <FourthStep />}
-              </>
-            )}
+                  {activeStep === 0 && <FirstStep />}
+                  {activeStep === 1 && <SecondStep />}
+                  {activeStep === 2 && <ThirdStep />}
+                  {activeStep === 3 && <FourthStep />}
+                </>
+              )}
           </Grid>
         </MaterialContainer>
       </div>

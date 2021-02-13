@@ -41,6 +41,10 @@ import { Map } from '../../../public';
 import FilterInput from '../../../public/datatable/FilterInput';
 import routes from '../../../../routes';
 import { useHistory } from 'react-router-dom';
+import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
+import ExCalculator from '../drug-transfer/exchange/ExCalculator';
+import DetailExchange from './DetailExchange';
+import Utils from '../../../public/utility/Utils';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -101,23 +105,20 @@ const ExchangeManagement: React.FC = () => {
   };
 
   const { getAllExchange } = new Exchange();
+  const { getViewExchange } = new PharmacyDrug();
+
+  const [showExCalculator, setShowExCalculator] = useState(false);
+  const toggleShowExCalculator = (): void =>
+    setShowExCalculator(!showExCalculator);
+
 
   const detailPanel = (row: any): JSX.Element => {
-    return (
-      <div style={{ height: 100, backgroundColor: '#e6ffee', padding: 5 }}>
-        <ul>
-          <li>
-            <span>داروخانه طرف اول : </span>
-            <span style={{ fontWeight: 'bold' }}>{row.pharmacyNameA}</span>
-          </li>
-          <li>
-            <span>داروخانه طرف دوم : </span>
-            <span style={{ fontWeight: 'bold' }}>{row.pharmacyNameB}</span>
-          </li>
-        </ul>
-      </div>
-    );
-  };
+    return (<Paper style={{ backgroundColor: 'white', padding: 20, margin: 20, boxShadow: 'inset 0px 0px 8px 0px' }}>
+      <DetailExchange exchangeId={row.id} pharmacyNameA={row.pharmacyNameA} pharmacyNameB={row.pharmacyNameB} />
+    </Paper>)
+  }
+
+
 
   const [isShowPharmacyInfoModal, setIsShowPharmacyInfoModal] = useState(false);
   const toggleIsShowPharmacyInfoModalForm = (): void => {
@@ -190,16 +191,17 @@ const ExchangeManagement: React.FC = () => {
                   <CardContent style={{ textAlign: 'center' }}>
                     {pharmacyInfoState?.data.x && pharmacyInfoState?.data.y ? (
                       <Map
+                        draggable={true}
                         defaultLatLng={[
                           pharmacyInfoState?.data.x,
                           pharmacyInfoState?.data.y,
                         ]}
                       />
                     ) : (
-                      <span style={{ color: 'red' }}>
-                        مختصات جغرافیایی این داروخانه ثبت نشده است
-                      </span>
-                    )}
+                        <span style={{ color: 'red' }}>
+                          مختصات جغرافیایی این داروخانه ثبت نشده است
+                        </span>
+                      )}
                   </CardContent>
                 </Card>
               </Grid>
@@ -257,39 +259,41 @@ const ExchangeManagement: React.FC = () => {
           color: 'black',
           whiteSpace: 'nowrap',
         },
+        searchable: true,
       },
       {
         title: 'وضعیت',
-        field: 'state',
-        type: 'numeric',
+        field: 'stateString',
+        fieldLookup: 'currentState',
+        type: 'string',
         headerStyle: {
           textAlign: 'right',
           direction: 'ltr',
         },
         cellStyle: { textAlign: 'right' },
-        lookup: {
-          0: 'نامشخص',
-          1: 'ارسال نشده',
-          2: 'منتظر تائید طرف دوم',
-          3: 'منتظر تائید طرف اول',
-          4: 'تائید هر دو طرف و منتظر پرداخت',
-          5: 'مخالفت توسط طرف دوم',
-          6: 'مخالفت توسط طرف اول',
-          7: 'لغو شده',
-          8: 'تائید طرفین و پرداخت طرف اول',
-          9: 'تائید طرفین و پرداخت طرف دوم',
-          10: 'تائید و پرداخت هر دو طرف',
-        },
+        lookupFilter: [
+          { code: 0, name: 'نامشخص' },
+          { code: 1, name: 'ارسال نشده' },
+          { code: 2, name: 'منتظر تائید طرف دوم' },
+          { code: 3, name: 'منتظر تائید طرف اول' },
+          { code: 4, name: 'تائید هر دو طرف و منتظر پرداخت' },
+          { code: 5, name: 'مخالفت توسط طرف دوم' },
+          { code: 6, name: 'مخالفت توسط طرف اول' },
+          { code: 7, name: 'لغو شده' },
+          { code: 8, name: 'تائید طرفین و پرداخت طرف اول' },
+          { code: 9, name: 'تائید طرفین و پرداخت طرف دوم' },
+          { code: 10, name: 'تائید و پرداخت هر دو طرف' },
+        ],
       },
-      // {
-      //   title: 'شرح وضعیت',
-      //   field: 'stateString',
-      //   type: 'string',
-      //   width: '150px',
-      //   headerStyle: { textAlign: 'right', direction: 'rtl' },
-      //   cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
-      //   lookup: { 1: 'ta', 2: 'do' },
-      // },
+      {
+        title: 'تاریخ ارسال',
+        field: 'sendDate',
+        type: 'date',
+        width: '150px',
+        headerStyle: { textAlign: 'right', direction: 'rtl' },
+        cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
+        render: (row: any): any => { return (<> {row.sendDate ? Utils.convertGeoToShamsi(row.sendDate) : 'نامشخص'}</>) }
+      },
       {
         title: 'داروخانه طرف اول',
         field: 'pharmacyNameA',

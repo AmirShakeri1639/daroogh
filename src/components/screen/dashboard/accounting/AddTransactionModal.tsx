@@ -1,18 +1,32 @@
 import React, { useReducer, useState } from 'react';
 import {
-  Button, Container, Dialog, DialogActions, DialogContent,
-  DialogTitle, Divider, FormControlLabel, Grid, Paper,
-  Radio, RadioGroup, TextField, useMediaQuery, useTheme
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControlLabel,
+  Grid,
+  Paper,
+  Radio,
+  RadioGroup,
+  TextField,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
 import {
   AccountingTransactionInterface,
-  ActionInterface
+  ActionInterface,
 } from '../../../../interfaces';
 import { Accounting } from '../../../../services/api';
 import {
-  errorHandler, errorSweetAlert, successSweetAlert
+  errorHandler,
+  errorSweetAlert,
+  successSweetAlert,
 } from '../../../../utils';
 import { todayJalali } from '../../../../utils/jalali';
 import { useClasses } from '../classes';
@@ -32,7 +46,7 @@ const initialState: AccountingTransactionInterface = {
   tarikh: todayJalali(),
   description: '',
   transactionType: TransactionTypeEnum.Creditor,
-}
+};
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -56,7 +70,7 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'description':
       return {
         ...state,
-        description: value.trim(),
+        description: value,
       };
     case 'transactionType':
       return {
@@ -70,26 +84,25 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
-
-const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose, pharmacyName }) => {
-  const [state, dispatch] = useReducer(reducer, { ...initialState, pharmacyId });
+const AddTransactionModal: React.FC<Props> = ({
+  pharmacyId,
+  onClose,
+  pharmacyName,
+}) => {
+  const [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    pharmacyId,
+  });
   const [dialogOpen, setDialogOpen] = useState(true);
 
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    debugger;
-    console.log('e.target in changeHandler:', e.target)
-    console.log('e.target.value in changeHandler:', e.target.value)
     dispatch({ type: e.target.name, value: e.target.value });
-  }
+  };
 
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const {
-    formContainer,
-    formItem,
-    parent,
-  } = useClasses();
+  const { formContainer, formItem, parent } = useClasses();
   const [showError, setShowError] = useState(false);
 
   const { add } = new Accounting();
@@ -102,23 +115,24 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose, pharmacyNam
       await errorSweetAlert(e ? e : t('alert.failed'));
       setDialogOpen(true);
       errorHandler(e);
-    }
+    },
   });
 
   const submit = async (el: any): Promise<any> => {
     el.preventDefault();
 
-    const {
-      pharmacyId, amount, tarikh, description, transactionType
-    } = state;
+    const { pharmacyId, amount, tarikh, description, transactionType } = state;
 
     if (state.amount !== 0 && state.description.length > 2) {
       setShowError(false);
       if (window.confirm(t('accounting.areYouSure'))) {
-        const amountToSend = transactionType == TransactionTypeEnum.Creditor
-          ? -(amount) : amount;
+        const amountToSend =
+          transactionType == TransactionTypeEnum.Creditor ? -amount : amount;
         const result = await _add({
-          pharmacyId, tarikh, description, amount: amountToSend
+          pharmacyId,
+          tarikh,
+          description,
+          amount: amountToSend,
         });
 
         if (result !== undefined) {
@@ -130,109 +144,118 @@ const AddTransactionModal: React.FC<Props> = ({ pharmacyId, onClose, pharmacyNam
     } else {
       setShowError(true);
     }
-  }
+  };
 
   const addTransactionForm = (): JSX.Element => {
     return (
-      <Container maxWidth="lg" className={ parent }>
+      <Container maxWidth="lg" className={parent}>
         <Paper>
-          <form
-            autoComplete="off"
-            className={ formContainer }
-          >
-            <Grid container spacing={ 3 }>
-              <Grid item xs={ 12 }>
+          <form autoComplete="off" className={formContainer}>
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
                 <TextField
-                  label={ t('accounting.amount') }
+                  label={t('accounting.amount')}
                   required
-                  error={ state.amount == 0 && showError }
-                  helperText={ t('accounting.enterAmountInRial') }
+                  error={state.amount == 0 && showError}
+                  helperText={t('accounting.enterAmountInRial')}
                   variant="outlined"
-                  InputProps={ {
+                  InputProps={{
                     inputComponent: NumberFormatCustom as any,
-                    endAdornment:
+                    endAdornment: (
                       <InputAdornment position="start">
-                        { t('general.rial') }
-                      </InputAdornment>,
-                  } }
-                  value={ state.amount }
-                  className={ formItem }
+                        {t('general.rial')}
+                      </InputAdornment>
+                    ),
+                  }}
+                  value={state.amount}
+                  className={formItem}
                   name="amount"
-                  onChange={ changeHandler }
+                  onChange={changeHandler}
                 />
               </Grid>
-              <Grid item xs={ 12 }>
+              <Grid item xs={12}>
                 <TextField
-                  error={ state.description.length < 3 && showError }
-                  label={ t('general.description') }
+                  error={state.description.length < 3 && showError}
+                  label={t('general.description')}
                   required
                   variant="outlined"
-                  value={ state.description }
-                  className={ formItem }
+                  value={state.description}
+                  className={formItem}
                   name="description"
-                  onChange={ changeHandler }
+                  onChange={changeHandler}
                 />
               </Grid>
-              <Grid item xs={ 12 }>
-                <RadioGroup aria-label="transaction-type" name="transactionType"
-                  value={ state.transactionType } onChange={ (e): void => {
-                    dispatch({ type: 'transactionType', value: (e.target as HTMLInputElement).value })
-                  } }>
+              <Grid item xs={12}>
+                <RadioGroup
+                  aria-label="transaction-type"
+                  name="transactionType"
+                  value={state.transactionType}
+                  onChange={(e): void => {
+                    dispatch({
+                      type: 'transactionType',
+                      value: (e.target as HTMLInputElement).value,
+                    });
+                  }}
+                >
                   <FormControlLabel
-                    value={ TransactionTypeEnum.Creditor }
-                    control={ <Radio /> }
-                    checked={ state.transactionType == TransactionTypeEnum.Creditor }
-                    label={ t('accounting.creditor') } />
+                    value={TransactionTypeEnum.Creditor}
+                    control={<Radio />}
+                    checked={
+                      state.transactionType == TransactionTypeEnum.Creditor
+                    }
+                    label={t('accounting.creditor')}
+                  />
                   <FormControlLabel
-                    value={ TransactionTypeEnum.Debtor }
-                    checked={ state.transactionType == TransactionTypeEnum.Debtor }
-                    control={ <Radio /> }
-                    label={ t('accounting.debtor') } />
+                    value={TransactionTypeEnum.Debtor}
+                    checked={
+                      state.transactionType == TransactionTypeEnum.Debtor
+                    }
+                    control={<Radio />}
+                    label={t('accounting.debtor')}
+                  />
                 </RadioGroup>
               </Grid>
             </Grid>
           </form>
         </Paper>
       </Container>
-    )
-  }
+    );
+  };
 
   return (
     <>
-      <Dialog open={ dialogOpen } fullScreen={ fullScreen }>
+      <Dialog open={dialogOpen} fullScreen={fullScreen}>
         <DialogTitle>
-          { `${t('accounting.addTransaction')} \
-             - ${t('pharmacy.pharmacy')} ${pharmacyName}` }
+          {`${t('accounting.addTransaction')} \
+             - ${t('pharmacy.pharmacy')} ${pharmacyName}`}
         </DialogTitle>
         <Divider />
-        <DialogContent>
-          { addTransactionForm() }
-        </DialogContent>
+        <DialogContent>{addTransactionForm()}</DialogContent>
         <DialogActions>
           <Button
             type="submit"
             variant="outlined"
             color="primary"
-            onClick={ (e): void => {
+            onClick={(e): void => {
               submit(e);
-            } }
+            }}
           >
-            { t('action.save') }
+            {t('action.save')}
           </Button>
           <Button
             variant="outlined"
             color="secondary"
-            onClick={ (): void => {
+            onClick={(): void => {
               setDialogOpen(false);
               if (onClose) onClose();
-            } }
+            }}
           >
-            { t('general.ok') }
+            {t('general.ok')}
           </Button>
         </DialogActions>
       </Dialog>
     </>
-  )
-}
+  );
+};
 
 export default AddTransactionModal;

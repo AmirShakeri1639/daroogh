@@ -1,5 +1,5 @@
-import React, { useReducer, useState } from 'react';
-import { useMutation, useQueryCache } from 'react-query';
+import React, { useEffect, useReducer, useState } from 'react';
+import { useMutation, useQuery, useQueryCache } from 'react-query';
 import {
   createStyles,
   Divider,
@@ -10,6 +10,13 @@ import {
   Grid,
   Button,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  Input,
+  Checkbox,
+  ListItemText,
+  MenuItem,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
@@ -34,14 +41,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
-import { UserQueryEnum } from '../../../../enum/query';
+import {
+  PharmacyUsersEnum,
+  RoleQueryEnum,
+  UserQueryEnum,
+} from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { MaterialContainer } from '../../../public';
 import ModalContent from '../../../public/modal-content/ModalContent';
 import { NewPharmacyUserData } from '../../../../model';
-import { User } from '../../../../services/api';
+import { Role, User } from '../../../../services/api';
 import RoleForm from '../user/RoleForm';
 
 const useClasses = makeStyles((theme) =>
@@ -167,11 +178,25 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+const { getAllRoles } = new Role();
+
 const { addPharmacyUser } = new User();
 
 const UsersList: React.FC = () => {
   const ref = useDataTableRef();
   const { t } = useTranslation();
+
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
@@ -181,13 +206,26 @@ const UsersList: React.FC = () => {
     boolean
   >(false);
   const [showError, setShowError] = useState(false);
+  const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
 
   const toggleIsOpenModalOfUser = (): void =>
     setIsOpenModalOfCreateUser((v) => !v);
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
-  const { getAllUsers, removeUser, disableUser, saveNewUser } = new User();
+  const {
+    getCurrentPharmacyUsers,
+    removeUser,
+    disableUser,
+    saveNewUser,
+  } = new User();
+
+  const {
+    isLoading: roleListLoading,
+    data: roleListData,
+  } = useQuery(RoleQueryEnum.GET_ALL_ROLES, () =>
+    getAllRoles(RoleType.PHARMACY)
+  );
 
   const queryCache = useQueryCache();
 
@@ -257,11 +295,11 @@ const UsersList: React.FC = () => {
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const inputValuesValidation = (): boolean => {
-    const { name, family, mobile, email, username, nationalCode } = state;
+    const { name, family, mobile, email, userName, nationalCode } = state;
 
     return (
       name.trim().length < 2 ||
-      username.trim().length < 1 ||
+      userName.trim().length < 1 ||
       family.trim().length < 2 ||
       mobile.trim().length < 11 ||
       (email !== '' && !emailRegex.test(email.toLowerCase())) ||
@@ -283,6 +321,7 @@ const UsersList: React.FC = () => {
       userName: state.userName,
       nationalCode: state.nationalCode,
       birthDate: state.birthDate,
+      roleUser: selectedRoles.map((item) => ({ roleID: item }))
     };
 
     await _addPharmacyUser(data);
@@ -464,6 +503,32 @@ const UsersList: React.FC = () => {
     },
   ];
 
+  const rolesListGenerator = (): any => {
+    if (roleListData !== undefined && !roleListLoading) {
+      return (
+        roleListData.items
+          // filter role of 'all-users' from array
+          .filter((item: any) => item.id !== 1)
+          .map((item: { id: number; name: string }) => {
+            return (
+              <MenuItem key={item.id} value={item.id}>
+                <Checkbox checked={selectedRoles.indexOf(item.id) !== -1} />
+                <ListItemText primary={item.name} />
+              </MenuItem>
+            );
+          })
+      );
+    }
+
+    return <MenuItem />;
+  };
+
+  const handleChange = async (
+    event: React.ChangeEvent<{ value: unknown }>
+  ): Promise<any> => {
+    setSelectedRoles(event.target.value as number[]);
+  };
+
   return (
     <MaterialContainer>
       <Grid container spacing={1} className={buttonContainer}>
@@ -483,12 +548,12 @@ const UsersList: React.FC = () => {
         // editAction={editUserHandler}
         // editUser={enableUserHandler}
         // removeAction={removeUserHandler}
-        queryKey={UserQueryEnum.GET_ALL_USERS}
-        queryCallback={getAllUsers}
+        queryKey={PharmacyUsersEnum.GET_PHARMACY_USERS}
+        queryCallback={getCurrentPharmacyUsers}
         initLoad={false}
         isLoading={isLoadingRemoveUser || isLoadingEditUser}
         pageSize={10}
-        urlAddress={UrlAddress.getAllUser}
+        urlAddress={UrlAddress.getPharmacyUsers}
         // stateAction={disableUserHandler}
         customActions={customDataTAbleACtions}
       />
@@ -514,6 +579,7 @@ const UsersList: React.FC = () => {
           </CardContent>
         </Card>
       </Modal>
+
       <Modal open={isOpenSaveModal} toggle={toggleIsOpenSaveModalForm}>
         <Card className={root}>
           <CardHeader
@@ -656,6 +722,31 @@ const UsersList: React.FC = () => {
                 value={state?.birthDate}
                 onClick={toggleIsOpenDatePicker}
               />
+            </Grid>
+
+            <Grid item xs={12} sm={6} xl={3}>
+              <FormControl size="small" className="w-100" variant="outlined">
+                <InputLabel id="user-roles-list">نقش های کاربر:</InputLabel>
+                <Select
+                  labelId="user-roles-list"
+                  id="roles-list"
+                  multiple
+                  input={<Input />}
+                  label="نقش های کاربر:"
+                  MenuProps={MenuProps}
+                  value={selectedRoles}
+                  onChange={handleChange}
+                  renderValue={(selected: any): string => {
+                    const items = roleListData?.items
+                      .filter((item: any) => selected.indexOf(item.id) !== -1)
+                      .map((item: any) => item.name);
+
+                    return ((items as string[]) ?? []).join(', ');
+                  }}
+                >
+                  {rolesListGenerator()}
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </form>

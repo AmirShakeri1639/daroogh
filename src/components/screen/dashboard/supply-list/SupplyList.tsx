@@ -31,7 +31,6 @@ import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 import { Autocomplete } from '@material-ui/lab';
-import ModalContent from '../../../public/modal-content/ModalContent';
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import { DrugType } from '../../../../enum/pharmacyDrug';
@@ -97,12 +96,13 @@ const useStyle = makeStyles((theme) =>
       marginTop: 15,
     },
     blankCard: {
-      height: 150,
+      minHeight: 150,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
       cursor: 'pointer',
+      height: '100%',
       color: '#C9A3A3',
       '& span': {
         marginTop: 20,
@@ -172,7 +172,6 @@ const SupplyList: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, new PharmacyDrugSupplyList());
   const [drugList, setDrugList] = useState<DrugInterface[]>([]);
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
   const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -256,7 +255,6 @@ const SupplyList: React.FC = () => {
     state?.offer1,
     state?.offer2,
     state?.cnt,
-    // state?.expireDate,
     isoDate,
   ]);
 
@@ -265,8 +263,6 @@ const SupplyList: React.FC = () => {
     setSelectedMonth('');
     setSelectedYear('');
   };
-
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
   const resetStates = (): void => {
     dispatch({ type: 'reset' });
@@ -309,7 +305,6 @@ const SupplyList: React.FC = () => {
     }
   );
 
-  // :smile:
   const isJalaliDate = (num: number): boolean => num < 2000;
 
   const calculatDateDiference = (): void => {
@@ -515,7 +510,8 @@ const SupplyList: React.FC = () => {
         selectedMonth === '' ||
         !monthIsValid(Number(selectedMonth)) ||
         !dayIsValid(Number(selectedDay)) ||
-        selectedYear.length < 4
+        selectedYear.length < 4 ||
+        isWrongDate
       ) {
         return;
       }
@@ -543,6 +539,12 @@ const SupplyList: React.FC = () => {
         )}-${numberWithZero(jalail2Gregorian.gd)}T00:00:00Z`;
       }
       state.expireDate = date;
+      if (state.offer1 === '') {
+        state.offer1 = 0;
+      }
+      if (state.offer2 === '') {
+        state.offer2 = 0;
+      }
       //@ts-ignore
       state.drugID = selectedDrug.id;
       await _savePharmacyDrug(state);
@@ -606,6 +608,27 @@ const SupplyList: React.FC = () => {
             <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
+                  <label>{t('general.number')}</label>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Input
+                    numberFormat
+                    className="w-100"
+                    label={`${t('general.number')} ${t('drug.drug')}`}
+                    onChange={debounce(
+                      (e) => dispatch({ type: 'cnt', value: e }),
+                      500
+                    )}
+                    value={state?.cnt}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
                   <label htmlFor="">{`${t('general.price')} (${t(
                     'general.rial'
                   )})`}</label>
@@ -618,30 +641,9 @@ const SupplyList: React.FC = () => {
                     className="w-100"
                     label={t('general.price')}
                     onChange={debounce(
-                      (e) => dispatch({ type: 'amount', value: Number(e) }),
+                      (e) => dispatch({ type: 'amount', value: e }),
                       500
                     )}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <label>{t('general.number')}</label>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Input
-                    numberFormat
-                    className="w-100"
-                    label={`${t('general.number')} ${t('drug.drug')}`}
-                    onChange={debounce(
-                      (e) => dispatch({ type: 'cnt', value: Number(e) }),
-                      500
-                    )}
-                    value={state?.cnt}
                   />
                 </Grid>
               </Grid>
@@ -661,7 +663,7 @@ const SupplyList: React.FC = () => {
                       (e) =>
                         dispatch({
                           type: 'offer1',
-                          value: Number(e),
+                          value: e,
                         }),
                       500
                     )}
@@ -677,7 +679,7 @@ const SupplyList: React.FC = () => {
                       (e) =>
                         dispatch({
                           type: 'offer2',
-                          value: Number(e),
+                          value: e,
                         }),
                       500
                     )}
@@ -686,15 +688,16 @@ const SupplyList: React.FC = () => {
                 <Grid item xs={12} sm>
                   <span className="txt-sm text-muted">
                     (به ازای هر{' '}
-                    <span className="txt-bold">{state?.offer2}</span> خرید،{' '}
-                    <span className="txt-bold">{state?.offer1}</span> عدد
+                    <span className="txt-bold">{state?.offer2 || '*'}</span>{' '}
+                    خرید،{' '}
+                    <span className="txt-bold">{state?.offer1 || '*'}</span> عدد
                     رایگان)
                   </span>
                 </Grid>
               </Grid>
             </Grid>
 
-            <Grid item xs={7}>
+            <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
                   <span style={{ marginBottom: 8 }}>
@@ -714,7 +717,7 @@ const SupplyList: React.FC = () => {
                     error={Number(selectedDay) > 31}
                   />
                 </Grid>
-                <span style={{ alignSelf: 'center' }}>/</span>
+                {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                 <Grid item xs={3}>
                   <Input
                     value={selectedMonth}
@@ -724,7 +727,7 @@ const SupplyList: React.FC = () => {
                     onChange={(e): void => setSelectedMonth(e.target.value)}
                   />
                 </Grid>
-                <span style={{ alignSelf: 'center' }}>/</span>
+                {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                 <Grid item xs={3}>
                   <Input
                     value={selectedYear}
@@ -734,13 +737,13 @@ const SupplyList: React.FC = () => {
                   />
                 </Grid>
 
-                <Grid item xs={2} className={expireDate}>
+                <Grid item xs={3} className={expireDate}>
                   {daysDiff !== '' && <span>{daysDiff} روز</span>}
                 </Grid>
               </Grid>
               <Grid item xs={12}>
                 {isWrongDate && (
-                  <p className="text-danger txt-xs">{t('date.wrongDate')}</p>
+                  <p className="text-danger txt-xs">{t('date.afterToday')}</p>
                 )}
               </Grid>
               {/* <Input

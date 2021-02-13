@@ -8,6 +8,8 @@ import { CssBaseline } from '@material-ui/core';
 import ViewPharmacyInfo from './components/screen/dashboard/drug-transfer/ViewPharmacyInfo';
 import routes from './routes';
 import ExchangeApprove from './components/screen/dashboard/drug-transfer/exchange/ExchangeApprove';
+import DashboardContent from './components/screen/dashboard/DashboardContent';
+import { isAdmin } from './utils';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -115,6 +117,14 @@ const PharmacyUsersList = lazy(() =>
   import('./components/screen/dashboard/pharmacy/UsersList')
 );
 
+const JobSearchList = lazy(() =>
+  import('./components/screen/dashboard/job-search/jobSearchList')
+);
+
+const PrescriptionList = lazy(() =>
+  import('./components/screen/dashboard/prescription/prescriptionList')
+);
+
 const {
   login,
   drugFavoriteList,
@@ -143,6 +153,8 @@ const {
   createPack,
   exchangeManagementList,
   pharmacyUsersList,
+  jobSearchList,
+  prescriptionList,
 } = routes;
 
 const App = (): JSX.Element => {
@@ -167,10 +179,10 @@ const App = (): JSX.Element => {
             </PublicRoute>
 
             <PrivateRoute exact path={dashboard}>
-              <Dashboard component={<></>} />
+              <Dashboard component={<DashboardContent/>} />
             </PrivateRoute>
 
-            <PrivateRoute exact path="/dashboardActivePage">
+            <PrivateRoute exact path="/dashboardActivePage">s
               <Dashboard component={<DashboardActivePage />} />
             </PrivateRoute>
 
@@ -276,6 +288,14 @@ const App = (): JSX.Element => {
 
             <PrivateRoute exact path={pharmacyUsersList}>
               <Dashboard component={<PharmacyUsersList />} />
+            </PrivateRoute>
+
+            <PrivateRoute exact path={jobSearchList}>
+              <Dashboard component={<JobSearchList full={ isAdmin() } />} />
+            </PrivateRoute>
+
+            <PrivateRoute exact path={prescriptionList}>
+              <Dashboard component={<PrescriptionList />} />
             </PrivateRoute>
 
             {/*<Route component={<>404 Not Found</>} />*/}
