@@ -345,7 +345,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
 
             <Tooltip title="کیف پول">
               <IconButton edge="end" onClick={(e: any) => setcreditAnchorEl(e.currentTarget)}
-                style={{ color: `${!debtValueState ? 'white' : debtValueState >= 0 ? '#72fd72' : '#f95e5e'}` }}>
+                style={{ color: `${!debtValueState ? 'white' : debtValueState <= 0 ? '#72fd72' : '#f95e5e'}` }}>
                 <CreditCardIcon />
                 {debtValueState && <Hidden smDown><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span></span></Hidden>}
               </IconButton>
@@ -453,7 +453,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             open={Boolean(creditAnchorEl)}
             onClose={() => setcreditAnchorEl(null)}
           >
-            <div style={{ padding: 5 }}><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>{debtValueState < 0 && ' بدهکار'}</span></div>
+            <div style={{ padding: 5 }}><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>{debtValueState > 0 && ' بدهکار'}</span></div>
           </StyledMenu>
         }
       </div>
