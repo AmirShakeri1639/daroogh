@@ -16,6 +16,7 @@ import { useClasses } from '../classes';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { TableColumnInterface } from '../../../../interfaces';
 import { useQuery } from 'react-query';
+import { Rating } from '@material-ui/lab';
 const { getBestPharmaciesList } = new Reports();
 
 const BestPharmaciesList: React.FC = () => {
@@ -36,6 +37,7 @@ const BestPharmaciesList: React.FC = () => {
                   <TableRow>
                     <TableCell>نام</TableCell>
                     <TableCell>رتبه</TableCell>
+                    <TableCell>امتیاز</TableCell>
                     <TableCell>استان</TableCell>
                     <TableCell>شهر</TableCell>
                     <TableCell>ستاره</TableCell>
@@ -46,12 +48,13 @@ const BestPharmaciesList: React.FC = () => {
                     data.items &&
                     data.items.length &&
                     data.items.map((entry: any, index: number) => (
-                      <TableRow hover tabIndex={-1} key={1}>
+                      <TableRow hover tabIndex={-1} key={entry.name} selected={entry.isMyself}>
                         <TableCell>{entry.name}</TableCell>
                         <TableCell>{entry.rank}</TableCell>
+                        <TableCell>{entry.finalScore.toFixed(2)}</TableCell>
                         <TableCell>{entry.province}</TableCell>
                         <TableCell>{entry.city}</TableCell>
-                        <TableCell>{entry.star}</TableCell>
+                        <TableCell><Rating name="half-rating-read" defaultValue={entry.star} precision={0.1} readOnly /></TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
