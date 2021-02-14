@@ -5,7 +5,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 setRTLTextPlugin(
   'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-  () => {},
+  () => { },
   true // Lazy load the plugin
 );
 
@@ -64,17 +64,14 @@ const Map: React.FC<Props> = (props) => {
           trackUserLocation: true,
         })
       );
-      let marker: any ;
+      let marker: any;
       if (defaultLatLng && defaultLatLng.length) {
-         marker = new mapboxgl.Marker({
+        marker = new mapboxgl.Marker({
           draggable: draggable,
         })
           .setLngLat(defaultLatLng)
           .addTo(map);
-      
-
-    }
-    
+      }
 
       map.on('load', () => {
         setMap(map);
@@ -89,14 +86,17 @@ const Map: React.FC<Props> = (props) => {
           .setLngLat(e.lngLat)
           .addTo(map);
         if (onClick) onClick(e);
-
-        marker.on('dragend', markerDragHandler);
+        if (marker !== undefined) {
+          marker.on('dragend', markerDragHandler);
+        }
       });
       const markerDragHandler = (): void => {
         const lngLat = marker.getLngLat();
         if (onClick) onClick({ lngLat: { ...lngLat } });
       };
-      marker.on('dragend', markerDragHandler);
+      if (marker !== undefined) {
+        marker.on('dragend', markerDragHandler);
+      }
     };
 
     if (!map) initializeMap(setMap, mapContainer);
@@ -104,15 +104,15 @@ const Map: React.FC<Props> = (props) => {
 
   return (
     <div
-      className={container}
-      ref={mapContainer}
-      style={{
+      className={ container }
+      ref={ mapContainer }
+      style={ {
         width: '100%',
         height: 'calc(100vh - 150px)',
         maxHeight: maxHeight,
         // position: 'absolute',
         direction: 'rtl',
-      }}
+      } }
     />
   );
 };

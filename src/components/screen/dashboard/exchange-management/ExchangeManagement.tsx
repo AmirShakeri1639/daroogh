@@ -44,6 +44,7 @@ import { useHistory } from 'react-router-dom';
 import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 import ExCalculator from '../drug-transfer/exchange/ExCalculator';
 import DetailExchange from './DetailExchange';
+import Utils from '../../../public/utility/Utils';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -197,10 +198,10 @@ const ExchangeManagement: React.FC = () => {
                         ]}
                       />
                     ) : (
-                      <span style={{ color: 'red' }}>
-                        مختصات جغرافیایی این داروخانه ثبت نشده است
-                      </span>
-                    )}
+                        <span style={{ color: 'red' }}>
+                          مختصات جغرافیایی این داروخانه ثبت نشده است
+                        </span>
+                      )}
                   </CardContent>
                 </Card>
               </Grid>
@@ -258,37 +259,40 @@ const ExchangeManagement: React.FC = () => {
           color: 'black',
           whiteSpace: 'nowrap',
         },
+        searchable: true,
       },
       {
         title: 'وضعیت',
-        field: 'state',
-        type: 'numeric',
+        field: 'stateString',
+        fieldLookup: 'currentState',
+        type: 'string',
         headerStyle: {
           textAlign: 'right',
           direction: 'ltr',
         },
         cellStyle: { textAlign: 'right' },
-        lookup: {
-          0: 'نامشخص',
-          1: 'ارسال نشده',
-          2: 'منتظر تائید طرف دوم',
-          3: 'منتظر تائید طرف اول',
-          4: 'تائید هر دو طرف و منتظر پرداخت',
-          5: 'مخالفت توسط طرف دوم',
-          6: 'مخالفت توسط طرف اول',
-          7: 'لغو شده',
-          8: 'تائید طرفین و پرداخت طرف اول',
-          9: 'تائید طرفین و پرداخت طرف دوم',
-          10: 'تائید و پرداخت هر دو طرف',
-        },
+        lookupFilter: [
+          { code: 0, name: 'نامشخص' },
+          { code: 1, name: 'ارسال نشده' },
+          { code: 2, name: 'منتظر تائید طرف دوم' },
+          { code: 3, name: 'منتظر تائید طرف اول' },
+          { code: 4, name: 'تائید هر دو طرف و منتظر پرداخت' },
+          { code: 5, name: 'مخالفت توسط طرف دوم' },
+          { code: 6, name: 'مخالفت توسط طرف اول' },
+          { code: 7, name: 'لغو شده' },
+          { code: 8, name: 'تائید طرفین و پرداخت طرف اول' },
+          { code: 9, name: 'تائید طرفین و پرداخت طرف دوم' },
+          { code: 10, name: 'تائید و پرداخت هر دو طرف' },
+        ],
       },
       {
         title: 'تاریخ ارسال',
         field: 'sendDate',
-        type: 'string',
+        type: 'date',
         width: '150px',
         headerStyle: { textAlign: 'right', direction: 'rtl' },
         cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
+        render: (row: any): any => { return (<> {row.sendDate ? Utils.convertGeoToShamsi(row.sendDate) : 'نامشخص'}</>) }
       },
       {
         title: 'داروخانه طرف اول',

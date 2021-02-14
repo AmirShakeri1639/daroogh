@@ -103,6 +103,7 @@ const SecondStep: React.FC = () => {
     exchangeStateCode,
     messageOfExchangeState,
     viewExhcnage,
+    lockedAction
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const theme = useTheme();
@@ -202,7 +203,8 @@ const SecondStep: React.FC = () => {
   useEffect(() => {
     const id = params.eid == null ? undefined : params.eid;
     if (id !== undefined && !selectedPharmacyForTransfer) return;
-    refetch();
+    if (lockedAction)
+      refetch();
   }, [selectedPharmacyForTransfer]);
 
   useEffect(() => {
@@ -243,16 +245,16 @@ const SecondStep: React.FC = () => {
                     }
                   />
                 ) : (
-                  <CardContainer
-                    basicDetail={
-                      <ExCardContent formType={2} pharmacyDrug={item} />
-                    }
-                    isPack={false}
-                    pharmacyDrug={Object.assign(item, {
-                      currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
-                    })}
-                  />
-                )}
+                    <CardContainer
+                      basicDetail={
+                        <ExCardContent formType={2} pharmacyDrug={item} />
+                      }
+                      isPack={false}
+                      pharmacyDrug={Object.assign(item, {
+                        currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
+                      })}
+                    />
+                  )}
               </div>
             </Grid>
           );
@@ -285,14 +287,14 @@ const SecondStep: React.FC = () => {
                     }
                   />
                 ) : (
-                  <CardContainer
-                    basicDetail={
-                      <ExCardContent formType={2} pharmacyDrug={item} />
-                    }
-                    isPack={false}
-                    pharmacyDrug={item}
-                  />
-                )}
+                    <CardContainer
+                      basicDetail={
+                        <ExCardContent formType={2} pharmacyDrug={item} />
+                      }
+                      isPack={false}
+                      pharmacyDrug={item}
+                    />
+                  )}
               </div>
             </Grid>
           );

@@ -25,6 +25,7 @@ import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import Utils from '../../../../public/utility/Utils';
 import Ribbon from '../../../../public/ribbon/Ribbon';
+import { ColorEnum } from '../../../../../enum';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -144,9 +145,11 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   const PackContent = (): JSX.Element => {
     return (
       <Grid container spacing={1} className={container}>
-        {pharmacyDrug?.cardColor === '#00cc00' && (
+        {pharmacyDrug?.cardColor === ColorEnum.AddedByB && (
           <Ribbon
-            text={pharmacyDrug?.cardColor === '#00cc00' ? 'اضافه' : 'حذف'}
+            text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
+              ? 'اضافه'
+              : 'حذف'}
           />
         )}
         <Grid item xs={12}>
@@ -205,7 +208,8 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                   style={{ display: 'flex', alignItems: 'center' }}
                 >
                   <FontAwesomeIcon icon={faPills} size="1x" />
-                  <span style={{ marginRight: 5 }}>{item.drug.name}</span>
+                  <span style={{ marginRight: 5 }}>{item.drug.name}
+                    {item.drug.enName && `(${item.drug.enName})`}</span>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
                   <ul className={ulCardName}>
@@ -246,6 +250,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <li>
               <span style={{ fontSize: 13 }}>
                 {pharmacyDrug?.drug.genericName}
+                {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
               </span>
             </li>
           </ul>

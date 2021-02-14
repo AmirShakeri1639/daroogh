@@ -6,7 +6,8 @@ import {
   Paper,
   TextField,
   Typography,
-  Snackbar
+  Snackbar,
+  Divider
 } from "@material-ui/core";
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,6 +16,7 @@ import Account from "../../../services/api/Account";
 import Validation from "../../../utils/validation";
 import CircleLoading from "../../public/loading/CircleLoading";
 import { Alert } from "../../public/alert/Alert";
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles((theme) => createStyles({
   root: {
@@ -26,35 +28,45 @@ const useStyles = makeStyles((theme) => createStyles({
     left: 0,
     flexWrap: 'wrap',
     alignItems: 'center',
+    justifyContent: 'center',
+    padding: '1em',
   },
   grid: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: '2em'
   },
   paper: {
     display: 'flex',
+    justifySelf: 'center',
     flexDirection: 'column',
     justifyContent: 'center',
-    width: theme.spacing(40),
-    height: theme.spacing(15),
+    minWidth: '60vw',
+    minHeight: '50vh',
+    maxWidth: '80em',
+    maxHeight: '80em',
     padding: theme.spacing(2),
   },
   submitBtn: {
     background: theme.palette.blueLinearGradient.main,
     marginTop: theme.spacing(2),
     color: 'white',
-  }
+  },
+  spacing3: {
+    margin: theme.spacing(3)
+  },
 }));
 
 const ForgetPassword: React.FC = () => {
+  const { t } = useTranslation();
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
   const [serverMessage, setServerMessage] = useState<string>('');
 
-  const { grid, root, paper, submitBtn } = useStyles();
+  const { grid, root, paper, submitBtn, spacing3 } = useStyles();
   const { forgetPassword } = new Account();
   const { isValidaMobileNumber } = new Validation();
   const [_forgetPassword, { isLoading, status, data, reset }] = useMutation(forgetPassword);
@@ -99,55 +111,72 @@ const ForgetPassword: React.FC = () => {
   }
 
   return (
-    <div className={root}>
-      <Grid item container className={grid}>
-        <Paper elevation={3} className={paper}>
-          <Typography component="p">
-            ریست کردن کلمه عبور
-          </Typography>
-          <form
-            noValidate
-            onSubmit={resetPasswordHandler}
-          >
-            <TextField
-              error={showError}
-              variant="standard"
-              margin="dense"
-              required
-              fullWidth
-              name="password"
-              label="موبایل"
-              type="text"
-              id="mobile"
-              onChange={mobileNumberHandler}
-              autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              className={submitBtn}
-              disableElevation
-            >
-              {
-                isLoading
-                  ? <CircleLoading size={13} color="inherit"/>
-                  : <span>ارسال</span>
-              }
-            </Button>
-          </form>
-        </Paper>
+    <div className={ root }>
+      <Grid container className={ grid }>
+        <Grid item xs={ 12 } >
+          <h2>
+            { t('general.systemFullTitle') }
+          </h2>
+        </Grid>
+        <hr style={ {
+          borderTop: '1px solid silver',
+          width: '50%',
+          minWidth: '18em',
+          marginBottom: '2rem',
+          borderBottom: '1px solid white'
+        } } />
+        <Grid item>
+          <Paper elevation={ 3 } className={ paper }>
+            <Grid container className={ grid }>
+              <Grid item>
+                <Typography component="p">
+                  { t('login.getNewPassword') }
+                </Typography>
+                <form
+                  noValidate
+                  onSubmit={ resetPasswordHandler }
+                >
+                  <TextField
+                    error={ showError }
+                    variant="standard"
+                    margin="dense"
+                    required
+                    fullWidth
+                    name="password"
+                    label={ t('general.mobile') }
+                    type="text"
+                    id="mobile"
+                    onChange={ mobileNumberHandler }
+                    autoComplete="current-password"
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    className={ submitBtn }
+                    disableElevation
+                  >
+                    {
+                      isLoading
+                        ? <CircleLoading size={ 13 } color="inherit" />
+                        : <span>{ t('login.send') }</span>
+                    }
+                  </Button>
+                </form>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
       </Grid>
-
       <Snackbar
-        open={isOpenSnackbar}
-        autoHideDuration={3000}
-        onClose={(): void => setIsOpenSnackbar(false)}
+        open={ isOpenSnackbar }
+        autoHideDuration={ 3000 }
+        onClose={ (): void => setIsOpenSnackbar(false) }
       >
         <Alert
-          onClose={(): void => setIsOpenSnackbar(false)}
+          onClose={ (): void => setIsOpenSnackbar(false) }
           severity="success"
         >
-          {serverMessage}
+          { serverMessage }
         </Alert>
       </Snackbar>
     </div>

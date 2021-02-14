@@ -14,7 +14,7 @@ export default {
   toolbar: {
     nRowsSelected: "{0} ردیف انتخاب شده است",
     searchPlaceholder: "جستجو",
-    addRemoveColumns: "افزودن و یا حذف ستون ها",
+    addRemoveColumns: "نمایش و یا مخفی کردن ستون ها",
     showColumnsTitle: "نمایش ستون ها",
     showColumnsAriaLabel: "نمایش ستون ها",
     searchTooltip: "جستجو",

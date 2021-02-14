@@ -6,6 +6,7 @@ import {
   InputLabel,
   makeStyles,
   createStyles,
+  FormControl,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
@@ -13,7 +14,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
-import { Category, Drug, Pack } from '../../../../../services/api';
+import { Category, Comission, Drug, Pack } from '../../../../../services/api';
 import {
   BackDrop,
   Button,
@@ -21,7 +22,7 @@ import {
   MaterialContainer,
   Modal,
 } from '../../../../public';
-import { omit, remove } from 'lodash';
+import { omit, remove, has } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
 import { useEffectOnce } from '../../../../../hooks';
@@ -34,10 +35,14 @@ import {
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { DrugType } from '../../../../../enum/pharmacyDrug';
 // @ts-ignore
 import jalaali from 'jalaali-js';
+import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
+import routes from '../../../../../routes';
+
+const { packsList } = routes;
 
 const { searchDrug } = new Drug();
 
@@ -49,6 +54,15 @@ const { numberWithZero, thousandsSeperatorFa } = Convertor;
 
 const useStyle = makeStyles((theme) =>
   createStyles({
+    fieldset: {
+      borderColor: '#f5f5f5',
+      borderRadius: 10,
+      color: '#6d6d6d',
+      marginTop: 20,
+      '& legend': {
+        color: '#7e7e7e',
+      },
+    },
     addButton: {
       display: 'flex',
       height: 152,
@@ -85,7 +99,7 @@ const useStyle = makeStyles((theme) =>
       marginTop: 15,
     },
     submitBtn: {
-      height: 50,
+      height: 30,
       width: 100,
     },
     label: {
@@ -96,8 +110,13 @@ const useStyle = makeStyles((theme) =>
     contentContainer: {
       marginTop: theme.spacing(2),
     },
+    countContainer: {
+      height: '100%',
+    },
   })
 );
+
+const { getComissionAndRecommendation } = new Comission();
 
 const monthMinimumLength = 28;
 
@@ -114,8 +133,8 @@ const Create: React.FC = () => {
   const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [amount, setAmount] = useState<string>('');
   const [number, setNumber] = useState<string | number>('');
-  const [offer1, setOffer1] = useState<number>(0);
-  const [offer2, setOffer2] = useState<number>(0);
+  const [offer1, setOffer1] = useState<string>('');
+  const [offer2, setOffer2] = useState<string>('');
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
@@ -132,8 +151,11 @@ const Create: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [isWrongDate, setIsWrongDate] = useState(false);
+  const [daroogRecommendation, setDaroogRecommendation] = useState<string>('');
+  const [comissionPercent, setComissionPercent] = useState<string>('');
 
   const { t } = useTranslation();
+  const { push } = useHistory();
 
   const { packId } = useParams() as { packId: string };
 
@@ -145,6 +167,8 @@ const Create: React.FC = () => {
     label,
     submitBtn,
     cancelButton,
+    fieldset,
+    countContainer,
   } = useStyle();
 
   const resetValues = (): void => {
@@ -154,8 +178,8 @@ const Create: React.FC = () => {
     setSelectedMonth('');
     setSelectedDay('');
     setSelectedDrug('');
-    setOffer1(0);
-    setOffer2(0);
+    setOffer1('');
+    setOffer2('');
     setIsoDate('');
     setDaysDiff('');
     setSelectedDate('');
@@ -233,6 +257,37 @@ const Create: React.FC = () => {
     }
   }, [selectedDay, selectedMonth, selectedYear]);
 
+  useEffect(() => {
+    (async (): Promise<any> => {
+      try {
+        // @ts-ignore
+        const { value: drugId, id } = selectedDrug;
+        if (
+          (Number(offer1) > 0 && Number(offer2) > 0 && Number(number) > 0) ||
+          (drugId && Number(amount) > 0)
+        ) {
+          const result = await getComissionAndRecommendation({
+            drugId: id,
+            price: amount,
+            offer1: offer1,
+            offer2: offer2,
+            expireDate: isoDate,
+            pharmacyId: '0',
+          });
+          const { data } = result;
+          if (has(data, 'commissionPercent')) {
+            setComissionPercent(data.commissionPercent);
+          }
+          if (has(data, 'suggestionStr')) {
+            setDaroogRecommendation(data.suggestionStr);
+          }
+        }
+      } catch (e) {
+        errorHandler(e);
+      }
+    })();
+  }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
+
   const toggleIsOpenModal = (): void => {
     if (isOpenModal) {
       resetValues();
@@ -279,10 +334,10 @@ const Create: React.FC = () => {
 
         setTemporaryDrugs(mapApiDrugsToStandardDrugs(pharmacyDrug));
 
-        let totalPrice = 0;
-        pharmacyDrug.forEach((item: any) => {
-          totalPrice += item.amount;
-        });
+        // let totalPrice = 0;
+        // pharmacyDrug.forEach((item: any) => {
+        //   totalPrice += item.amount;
+        // });
 
         setPackTotalPrice(getTotalPrice(pharmacyDrug));
         setIsBackdropLoading(false);
@@ -304,6 +359,9 @@ const Create: React.FC = () => {
       }
       setIsBackdropLoading(false);
       await successSweetAlert(t('alert.successfulCreateTextMessage'));
+      push({
+        pathname: packsList,
+      });
     },
   });
 
@@ -397,7 +455,8 @@ const Create: React.FC = () => {
       if (
         temporaryDrugs.length === 0 ||
         packTitle === '' ||
-        selectedCategory === ''
+        selectedCategory === '' ||
+        isWrongDate
       ) {
         return;
       }
@@ -490,8 +549,8 @@ const Create: React.FC = () => {
       cnt: Number(number),
       drugID: selectedDrug,
       expireDate: date,
-      offer1: Number(offer1),
-      offer2: Number(offer2),
+      offer1: offer1 !== '' ? Number(offer1) : 0,
+      offer2: offer2 !== '' ? Number(offer2) : 0,
       id: 0,
       batchNO: '',
     };
@@ -510,57 +569,80 @@ const Create: React.FC = () => {
     <MaterialContainer>
       <Grid container spacing={1} alignItems="center">
         <Grid item xs={12}>
-          <Grid
-            container
-            spacing={1}
-            alignItems="center"
-            justify="space-between"
-          >
-            <h3>{t('pack.create')}</h3>
+          <FieldSetLegend legend={t('pack.create')}>
+            <Grid container spacing={1}>
+              <Grid item xs={12} md={6}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      label={t('pack.title')}
+                      value={packTitle}
+                      onChange={(e): void => setPackTitle(e.target.value)}
+                    />
+                  </Grid>
 
-            <Button
-              color="blue"
-              type="button"
-              onClick={formHandler}
-              className={submitBtn}
-            >
-              {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
-            </Button>
-          </Grid>
-        </Grid>
+                  <Grid item xs={12}>
+                    <FormControl
+                      variant="outlined"
+                      size="small"
+                      className="w-100"
+                    >
+                      <InputLabel id="category-pack">
+                        {t('pack.category')}
+                      </InputLabel>
+                      <Select
+                        labelId="category-pack"
+                        id="category"
+                        label={t('pack.category')}
+                        placeholder={t('pack.category')}
+                        className="w-100"
+                        value={selectedCategory}
+                        onChange={(e): void =>
+                          setSelectedCategory(e.target.value as string)
+                        }
+                      >
+                        <MenuItem value="" />
+                        {itemsGenerator()}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Grid
+                  container
+                  spacing={1}
+                  justify="center"
+                  alignItems="center"
+                  className={countContainer}
+                >
+                  <Grid item xs={12}>
+                    <span>تعداد کل اقلام: {packTotalItems}</span>
+                  </Grid>
 
-        <Grid item xs={12} sm={6} lg={3}>
-          <Input
-            className="w-100"
-            label={t('pack.title')}
-            value={packTitle}
-            onChange={(e): void => setPackTitle(e.target.value)}
-          />
-        </Grid>
+                  <Grid item xs={12}>
+                    <span>
+                      مجموع قیمت اقلام: {thousandsSeperatorFa(packTotalPrice)}
+                    </span>
+                  </Grid>
+                </Grid>
+              </Grid>
 
-        <Grid item xs={12} sm={6} lg={3}>
-          <InputLabel id="category">{t('pack.category')}</InputLabel>
-          <Select
-            labelId="category-id"
-            id="category"
-            placeholder={t('pack.category')}
-            className="w-100"
-            value={selectedCategory}
-            onChange={(e): void =>
-              setSelectedCategory(e.target.value as string)
-            }
-          >
-            <MenuItem value="" />
-            {itemsGenerator()}
-          </Select>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={3}>
-          <span>تعداد کل اقلام: {packTotalItems}</span>
-        </Grid>
-
-        <Grid item xs={12} sm={6} lg={3}>
-          <span>مجموع قیمت اقلام: {thousandsSeperatorFa(packTotalPrice)}</span>
+              <Grid item xs={12} className="text-left">
+                <Button
+                  color="blue"
+                  type="button"
+                  onClick={formHandler}
+                  className={submitBtn}
+                >
+                  {isLoadingSave
+                    ? t('general.pleaseWait')
+                    : t('general.submit')}
+                </Button>
+              </Grid>
+            </Grid>
+          </FieldSetLegend>
         </Grid>
 
         <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
@@ -569,7 +651,6 @@ const Create: React.FC = () => {
             <span>{t('pack.addDrug')}</span>
           </Button>
         </Grid>
-
         {contentHandler()}
       </Grid>
 
@@ -604,6 +685,26 @@ const Create: React.FC = () => {
             <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
+                  <label>{t('general.number')}</label>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Input
+                    numberFormat
+                    className="w-100"
+                    label={`${t('general.number')} ${t('drug.drug')}`}
+                    onChange={(e): void => {
+                      setNumber(e);
+                    }}
+                    value={number}
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
                   <label htmlFor="">{`${t('general.price')} (${t(
                     'general.rial'
                   )})`}</label>
@@ -624,26 +725,6 @@ const Create: React.FC = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <label>{t('general.number')}</label>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Input
-                    numberFormat
-                    className="w-100"
-                    label={`${t('general.number')} ${t('drug.drug')}`}
-                    onChange={(e): void => {
-                      setNumber(e);
-                    }}
-                    value={number}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-
-            <Grid item xs={12}>
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={12}>
                   <span>آفر</span>
@@ -653,7 +734,7 @@ const Create: React.FC = () => {
                     value={offer1}
                     label={t('general.number')}
                     onChange={(e): void => {
-                      setOffer1(Number(e.target.value));
+                      setOffer1(e.target.value);
                     }}
                   />
                 </Grid>
@@ -664,14 +745,16 @@ const Create: React.FC = () => {
                     label={t('general.number')}
                     // className={offerInput}
                     onChange={(e): void => {
-                      setOffer2(Number(e.target.value));
+                      setOffer2(e.target.value);
                     }}
                   />
                 </Grid>
                 <Grid item xs={12} sm>
                   <span className="txt-sm text-muted">
-                    (به ازای هر <span className="txt-bold">{offer2}</span> خرید،{' '}
-                    <span className="txt-bold">{offer1}</span> عدد رایگان)
+                    (به ازای هر{' '}
+                    <span className="txt-bold">{offer2 || '*'}</span> خرید،{' '}
+                    <span className="txt-bold">{offer1 || '*'}</span> عدد
+                    رایگان)
                   </span>
                 </Grid>
               </Grid>
@@ -738,6 +821,20 @@ const Create: React.FC = () => {
               /> */}
             </Grid>
           </Grid>
+
+          {comissionPercent !== '' && (
+            <Grid item xs={12}>
+              {`پورسانت: ${comissionPercent}%`}
+            </Grid>
+          )}
+
+          {daroogRecommendation !== '' && (
+            <Grid item xs={12}>
+              <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
+                <span>{daroogRecommendation}</span>
+              </FieldSetLegend>
+            </Grid>
+          )}
 
           <Grid
             container

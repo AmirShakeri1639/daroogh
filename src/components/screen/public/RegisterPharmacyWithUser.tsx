@@ -7,30 +7,36 @@ import {
   Grid,
   Typography,
   Divider,
+  makeStyles,
+  createStyles,
+  InputAdornment,
+  IconButton,
 } from '@material-ui/core';
 import Pharmacy from '../../../services/api/Pharmacy';
 import { LabelValue, PharmacyWithUserInterface } from '../../../interfaces';
 import { queryCache, useMutation } from 'react-query';
-import { useClasses } from '../dashboard/classes';
 import { ActionInterface } from '../../../interfaces';
 import { useTranslation } from 'react-i18next';
 import {
   errorHandler,
-  isNullOrEmpty,
   sweetAlert,
   warningSweetAlert,
 } from '../../../utils';
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown';
-import { WorkTimeEnum } from '../../../enum';
+import { ColorEnum, WorkTimeEnum } from '../../../enum';
 import Modal from '../../public/modal/Modal';
 import DateTimePicker from '../../public/datepicker/DatePicker';
 import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
 import { Map, ThreePartDatePicker } from '../../public';
-import { DefaultCountryDivisionID } from '../../../enum/consts';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../routes';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faEye, faEyeSlash,
+} from '@fortawesome/free-regular-svg-icons';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 
-const initialState: PharmacyWithUserInterface = {
+const initialState = {
   pharmacy: {
     id: 0,
     name: '',
@@ -63,7 +69,52 @@ const initialState: PharmacyWithUserInterface = {
     birthDateDay: '',
     isValidBirthDate: true,
   },
+  isVisiblePassword: false,
 };
+
+export const useClasses = makeStyles((theme) => createStyles({
+  parent: {
+    paddingTop: theme.spacing(2),
+  },
+  dropdown: {
+    margin: theme.spacing(1),
+    minWidth: '100%',
+  },
+  silverBackground: {
+    background: '#ebebeb',
+  },
+  addButton: {
+    background: theme.palette.blueLinearGradient.main,
+  },
+  spacing1: {
+    margin: theme.spacing(1)
+  },
+  spacing3: {
+    margin: theme.spacing(3)
+  },
+  formItem: {
+    display: 'flex',
+    justifySelf: 'stretch',
+    margin: theme.spacing(1)
+  },
+  titleContainer: {
+    padding: theme.spacing(2)
+  },
+  formTitle: {
+    margin: 0
+  },
+  rootFull: {
+    flexGrow: 1,
+    margin: theme.spacing(1)
+  },
+  longItem: {
+    width: '75%',
+  },
+  centerItem: {
+    display: 'flex',
+    margin: 'auto'
+  },
+}));
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -196,6 +247,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         user: { ...state.user, isValidBirthDate: value },
       };
+    case 'isVisiblePassword':
+      return {
+        ...state,
+        isVisiblePassword: value,
+      }
     case 'reset':
       return initialState;
     default:
@@ -221,7 +277,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
     spacing1,
     spacing3,
     formItem,
-    formItemSmall,
     titleContainer,
     formTitle,
     rootFull,
@@ -353,113 +408,140 @@ const RegisterPharmacyWithUser: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" className={parent}>
+    <Container maxWidth="lg" className={ parent }>
       <Paper>
-        <div className={`${titleContainer} ${silverBackground}`}>
+        <div className={ `${titleContainer} ${silverBackground}` }>
           <Typography
             variant="h2"
             component="h2"
-            className={`${formTitle} txt-md`}
+            className={ `${formTitle} txt-md` }
           >
-            <h2>{t('pharmacy.new')}</h2>
+            <h2>{ t('pharmacy.new') }</h2>
           </Typography>
         </div>
         <Divider />
-        <form autoComplete="off" className={rootFull} onSubmit={submit}>
-          {/* ////////////////////// USER ///////////////////// */}
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <div className={titleContainer}>
+        <form autoComplete="off" className={ rootFull } onSubmit={ submit }>
+          {/* ////////////////////// USER ///////////////////// */ }
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
                 <Typography
                   variant="h3"
                   component="h3"
-                  className={`${formTitle} txt-md`}
+                  className={ `${formTitle} txt-md` }
                 >
-                  <h3>{t('pharmacy.manager')}</h3>
+                  <h3>{ t('pharmacy.manager') }</h3>
                 </Typography>
               </div>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state.user.name.length < 2 && showError}
-                label={t('general.name')}
+                error={ state.user.name.length < 2 && showError }
+                label={ t('general.name') }
                 required
                 variant="outlined"
-                value={state.user.name}
-                className={formItem}
-                onChange={(e): void =>
+                value={ state.user.name }
+                className={ formItem }
+                onChange={ (e): void =>
                   dispatch({ type: 'user.name', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state.user.family.length < 2 && showError}
-                label={t('user.family')}
+                error={ state.user.family.length < 2 && showError }
+                label={ t('user.family') }
                 required
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
-                value={state.user.family}
-                onChange={(e): void =>
+                value={ state.user.family }
+                onChange={ (e): void =>
                   dispatch({ type: 'user.family', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state.user.userName.length < 3 && showError}
-                label={t('login.username')}
+                error={ state.user.userName.length < 3 && showError }
+                label={ t('login.username') }
                 required
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
                 autoComplete="off"
-                value={state.user.userName}
-                onChange={(e): void =>
+                value={ state.user.userName }
+                onChange={ (e): void =>
                   dispatch({ type: 'user.userName', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state?.password?.length < 3 && showError}
-                label={t('login.password')}
+                error={ state?.password?.length < 3 && showError }
+                label={ t('login.password') }
                 required
                 autoComplete="new-password"
-                type="password"
-                className={formItem}
+                type={ state.isVisiblePassword ? 'text' : 'password' }
+                className={ formItem }
                 variant="outlined"
-                value={state.user.password}
-                onChange={(e): void =>
+                value={ state.user.password }
+                onChange={ (e): void =>
                   dispatch({ type: 'user.password', value: e.target.value })
                 }
+                InputProps={ {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FontAwesomeIcon icon={ faKey } color={ ColorEnum.PaleGray } />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={ (): void => {
+                          dispatch({ type: 'isVisiblePassword', value: !state.isVisiblePassword })
+                        } }
+                        onMouseDown={ (e: React.MouseEvent<HTMLButtonElement>): void => {
+                          e.preventDefault();
+                        } }
+                        edge="end"
+                      >
+                        { state.isVisiblePassword ? (
+                          <FontAwesomeIcon icon={ faEye } />
+                        ) : (
+                            <FontAwesomeIcon icon={ faEyeSlash } />
+                          ) }
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                } }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state.user.nationalCode.length < 10 && showError}
-                label={t('user.nationalCode')}
+                error={ state.user.nationalCode.length < 10 && showError }
+                label={ t('user.nationalCode') }
                 required
                 type="text"
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
-                value={state.user.nationalCode}
-                onChange={(e): void =>
+                value={ state.user.nationalCode }
+                onChange={ (e): void =>
                   dispatch({ type: 'user.nationalCode', value: e.target.value })
                 }
               />
             </Grid>
             <Grid
               item
-              xs={12}
-              sm={6}
-              style={{ display: 'flex', alignItems: 'center' }}
+              xs={ 12 }
+              sm={ 6 }
+              style={ { display: 'flex', alignItems: 'center' } }
             >
               <ThreePartDatePicker
-                label={t('user.birthDate')}
-                onChange={(value: string, isValid: boolean): void => {
+                label={ t('user.birthDate') }
+                onChange={ (value: string, isValid: boolean): void => {
                   dispatch({ type: 'user.isValidBirthDate', value: isValid });
                   dispatch({ type: 'user.birthDate', value: value });
-                }}
+                } }
               />
 
               {/* <TextField
@@ -476,37 +558,37 @@ const RegisterPharmacyWithUser: React.FC = () => {
               /> */}
             </Grid>
           </Grid>
-          <div className={spacing3}></div>
+          <div className={ spacing3 }></div>
           <Divider />
-          {/* ////////////////////// PHARMACY ///////////////////// */}
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <div className={titleContainer}>
-                <Typography variant="h3" className={`${formTitle} txt-md`}>
-                  <h3>{t('pharmacy.pharmacy')}</h3>
+          {/* ////////////////////// PHARMACY ///////////////////// */ }
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" className={ `${formTitle} txt-md` }>
+                  <h3>{ t('pharmacy.pharmacy') }</h3>
                 </Typography>
               </div>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state.pharmacy.name.trim().length < 3 && showError}
+                error={ state.pharmacy.name.trim().length < 3 && showError }
                 required
                 variant="outlined"
-                label={t('pharmacy.name')}
-                className={formItem}
-                value={state.pharmacy.name}
-                onChange={(e): void =>
+                label={ t('pharmacy.name') }
+                className={ formItem }
+                value={ state.pharmacy.name }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.name', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
                 variant="outlined"
-                className={formItem}
-                label={t('general.description')}
-                value={state.pharmacy.description}
-                onChange={(e): void =>
+                className={ formItem }
+                label={ t('general.description') }
+                value={ state.pharmacy.description }
+                onChange={ (e): void =>
                   dispatch({
                     type: 'pharmacy.description',
                     value: e.target.value,
@@ -514,81 +596,81 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <TextField
-                error={state.pharmacy.address.trim().length < 3 && showError}
+                error={ state.pharmacy.address.trim().length < 3 && showError }
                 variant="outlined"
                 required
-                label={t('general.address')}
-                className={formItem}
-                value={state.pharmacy.address}
-                onChange={(e): void =>
+                label={ t('general.address') }
+                className={ formItem }
+                value={ state.pharmacy.address }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.address', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={state.pharmacy.mobile.trim().length < 10 && showError}
-                label={t('general.mobile')}
+                error={ state.pharmacy.mobile.trim().length < 10 && showError }
+                label={ t('general.mobile') }
                 type="number"
                 required
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
-                value={state.pharmacy.mobile}
-                onChange={(e): void =>
+                value={ state.pharmacy.mobile }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.mobile', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={state.pharmacy.telphon.trim().length < 8 && showError}
+                error={ state.pharmacy.telphon.trim().length < 8 && showError }
                 variant="outlined"
                 required
-                label={t('general.phone')}
-                value={state.pharmacy.telphon}
-                className={formItem}
-                onChange={(e): void =>
+                label={ t('general.phone') }
+                value={ state.pharmacy.telphon }
+                className={ formItem }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.telphon', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 variant="outlined"
-                className={formItem}
-                label={t('general.website')}
-                value={state.pharmacy.webSite}
-                onChange={(e): void =>
+                className={ formItem }
+                label={ t('general.website') }
+                value={ state.pharmacy.webSite }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.webSite', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 error={
                   state.pharmacy.email &&
                   !emailRegex.test(state.pharmacy.email) &&
                   showError
                 }
-                label={t('general.email')}
+                label={ t('general.email') }
                 type="email"
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
-                value={state.pharmacy.email}
-                onChange={(e): void =>
+                value={ state.pharmacy.email }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.email', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 variant="outlined"
-                className={formItem}
-                label={t('general.postalCode')}
-                value={state.pharmacy.postalCode}
-                onChange={(e): void =>
+                className={ formItem }
+                label={ t('general.postalCode') }
+                value={ state.pharmacy.postalCode }
+                onChange={ (e): void =>
                   dispatch({
                     type: 'pharmacy.postalCode',
                     value: e.target.value,
@@ -596,95 +678,95 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 variant="outlined"
-                label={t('pharmacy.hix')}
-                className={formItem}
-                value={state.hix}
-                onChange={(e): void =>
+                label={ t('pharmacy.hix') }
+                className={ formItem }
+                value={ state.hix }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.hix', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 variant="outlined"
-                className={formItem}
-                label={t('pharmacy.gli')}
-                value={state.gli}
-                onChange={(e): void =>
+                className={ formItem }
+                label={ t('pharmacy.gli') }
+                value={ state.gli }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.gli', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <DaroogDropdown
-                defaultValue={state?.pharmacy.workTime}
-                data={workTimeList}
-                className={`${formItem} ${dropdown}`}
-                label={t('pharmacy.workTime')}
-                onChangeHandler={(v): void => {
+                defaultValue={ state?.pharmacy.workTime }
+                data={ workTimeList }
+                className={ `${formItem} ${dropdown}` }
+                label={ t('pharmacy.workTime') }
+                onChangeHandler={ (v): void => {
                   return dispatch({ type: 'pharmacy.workTime', value: v });
-                }}
+                } }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <CountryDivisionSelect
-                error={state.pharmacy.countryDivisionID == -1 && showError}
-                label={t('general.location')}
-                onSelectedHandler={(id): void => {
+                error={ state.pharmacy.countryDivisionID == -1 && showError }
+                label={ t('general.location') }
+                onSelectedHandler={ (id): void => {
                   dispatch({ type: 'pharmacy.countryDivisionID', value: id });
-                }}
+                } }
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <div
-                style={{
+                style={ {
                   overflow: 'hidden',
-                }}
+                } }
               >
                 <Map
-                  draggable={true}
-                  onClick={(e: any): void => {
+                  draggable={ true }
+                  onClick={ (e: any): void => {
                     dispatch({ type: 'pharmacy.x', value: e.lngLat.lng });
                     dispatch({ type: 'pharmacy.y', value: e.lngLat.lat });
-                  }}
+                  } }
                 />
               </div>
             </Grid>
           </Grid>
-          <div className={spacing1}>&nbsp;</div>
+          <div className={ spacing1 }>&nbsp;</div>
           <Divider />
-          {/* //////// SUBMIT //////////// */}
-          <Grid item xs={12} className={spacing3}>
+          {/* //////// SUBMIT //////////// */ }
+          <Grid item xs={ 12 } className={ spacing3 }>
             <Button
               type="submit"
               variant="contained"
               color="primary"
               size="large"
-              className={`${addButton} ${longItem} ${centerItem}`}
+              className={ `${addButton} ${longItem} ${centerItem}` }
             >
-              {isLoadingNewUser ? (
+              { isLoadingNewUser ? (
                 t('general.pleaseWait')
               ) : (
-                <span>{t('action.register')}</span>
-              )}
+                  <span>{ t('action.register') }</span>
+                ) }
             </Button>
           </Grid>
         </form>
-        <div className={spacing3}>&nbsp;</div>
+        <div className={ spacing3 }>&nbsp;</div>
       </Paper>
-      <div className={spacing3}>&nbsp;</div>
-      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
+      <div className={ spacing3 }>&nbsp;</div>
+      <Modal open={ isOpenDatePicker } toggle={ toggleIsOpenDatePicker }>
         <DateTimePicker
-          selectedDateHandler={(e): void => {
+          selectedDateHandler={ (e): void => {
             dispatch({ type: 'user.birthDate', value: e });
             toggleIsOpenDatePicker();
-          }}
+          } }
         />
       </Modal>
-      <div className={spacing3}>&nbsp;</div>
+      <div className={ spacing3 }>&nbsp;</div>
     </Container>
   );
 };

@@ -1,5 +1,5 @@
 import { isNullOrEmpty } from '.';
-import { ExchangeStateEnum } from '../enum';
+import { ColorEnum, ExchangeStateEnum } from '../enum';
 import moment from 'jalali-moment';
 import {
   AllPharmacyDrugInterface,
@@ -172,20 +172,34 @@ export interface DifferenceCheckOutputInterface {
 const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
   return (
     cart.length > 0
-      ? cart.map(i => {
+      ? cart.map((i: any) => {
         if (i.packID !== null && i.packDetails && i.packDetails.length > 0) {
           return i.packDetails.map((p: any) => {
             return (
-              isNullOrEmpty(p.confirmed) || p.confirmed
+              (
+                (isNullOrEmpty(p.confirmed) || p.confirmed) &&
+                (
+                  isNullOrEmpty(p.cardColor) 
+                  || p.cardColor === ColorEnum.AddedByB
+                  || p.cardColor === ColorEnum.Confirmed
+                )
+              )
                 ? p.currentCnt
                   ? p.currentCnt * p.amount
                   : p.cnt * p.amount
                 : 0
             )
-          }).reduce((sum, price) => sum + price)
+          }).reduce((sum: number, price: number) => sum + price)
         } else {
           return (
-            isNullOrEmpty(i.confirmed) || i.confirmed
+            (
+              (isNullOrEmpty(i.confirmed) || i.confirmed) &&
+              (
+                isNullOrEmpty(i.cardColor) 
+                || i.cardColor === ColorEnum.AddedByB
+                || i.cardColor === ColorEnum.Confirmed
+              )
+            )
               ? i.currentCnt
                 ? i.currentCnt * i.amount
                 : i.cnt * i.amount
@@ -211,11 +225,18 @@ export const differenceCheck = (
     totalPriceA = calcPrice(cartA);
   } else if (exchange.cartA && exchange.cartA.length > 0) {
     totalPriceA = exchange.cartA
-      .map(i => {
+      .map((i: any) => {
         return (
           // i.packID !== null
           //   ? i.totalAmount :
-          isNullOrEmpty(i.confirmed) || i.confirmed ? i.cnt * i.amount : 0
+          (
+            (isNullOrEmpty(i.confirmed) || i.confirmed) &&
+            (
+              isNullOrEmpty(i.cardColor) 
+              || i.cardColor === ColorEnum.AddedByB
+              || i.cardColor === ColorEnum.Confirmed
+            )
+          ) ? i.cnt * i.amount : 0
         )
       })
       .reduce((sum, price) => sum + price);
@@ -227,11 +248,18 @@ export const differenceCheck = (
     totalPriceB = calcPrice(cartB);
   } else if (exchange.cartB && exchange.cartB.length > 0) {
     totalPriceB = exchange.cartB
-      .map(i => {
+      .map((i: any) => {
         return (
           // i.packID !== null
           //   ? i.totalAmount :
-          isNullOrEmpty(i.confirmed) || i.confirmed ? i.cnt * i.amount : 0
+          (
+            (isNullOrEmpty(i.confirmed) || i.confirmed) &&
+            (
+              isNullOrEmpty(i.cardColor)
+              || i.cardColor === ColorEnum.AddedByB
+              || i.cardColor === ColorEnum.Confirmed
+            )
+          ) ? i.cnt * i.amount : 0
         )
       })
       .reduce((sum, price) => sum + price);
