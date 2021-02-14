@@ -72,7 +72,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     setValue(value);
     if (props.columnDef.type === 'date') {
       if (value !== '')
-        value = Utils.convertShamsiToGeo(value, 'YYYY-M-D')
+        value = Utils.convertShamsiToGeo(value,filterOption.operator === 'gt' ? 'YYYY-MM-DD' : 'YYYY-M-D')
     }
     props.onFilterChanged(props.columnDef.tableData.id, {
       fieldValue: value,
