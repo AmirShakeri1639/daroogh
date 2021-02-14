@@ -179,7 +179,8 @@ const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
               (
                 (isNullOrEmpty(p.confirmed) || p.confirmed) &&
                 (
-                  p.cardColor === ColorEnum.AddedByB
+                  isNullOrEmpty(p.cardColor) 
+                  || p.cardColor === ColorEnum.AddedByB
                   || p.cardColor === ColorEnum.Confirmed
                 )
               )
@@ -194,7 +195,8 @@ const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
             (
               (isNullOrEmpty(i.confirmed) || i.confirmed) &&
               (
-                i.cardColor === ColorEnum.AddedByB
+                isNullOrEmpty(i.cardColor) 
+                || i.cardColor === ColorEnum.AddedByB
                 || i.cardColor === ColorEnum.Confirmed
               )
             )
@@ -230,7 +232,8 @@ export const differenceCheck = (
           (
             (isNullOrEmpty(i.confirmed) || i.confirmed) &&
             (
-              i.cardColor === ColorEnum.AddedByB
+              isNullOrEmpty(i.cardColor) 
+              || i.cardColor === ColorEnum.AddedByB
               || i.cardColor === ColorEnum.Confirmed
             )
           ) ? i.cnt * i.amount : 0
@@ -252,7 +255,8 @@ export const differenceCheck = (
           (
             (isNullOrEmpty(i.confirmed) || i.confirmed) &&
             (
-              i.cardColor === ColorEnum.AddedByB
+              isNullOrEmpty(i.cardColor)
+              || i.cardColor === ColorEnum.AddedByB
               || i.cardColor === ColorEnum.Confirmed
             )
           ) ? i.cnt * i.amount : 0
