@@ -10,6 +10,7 @@ import routes from './routes';
 import ExchangeApprove from './components/screen/dashboard/drug-transfer/exchange/ExchangeApprove';
 import DashboardContent from './components/screen/dashboard/DashboardContent';
 import { isAdmin } from './utils';
+import ReactGA from 'react-ga';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -159,6 +160,9 @@ const {
 
 const App = (): JSX.Element => {
   const exchangeBase = 'exchange';
+
+  ReactGA.initialize('G-G1C616XR26');
+  ReactGA.pageview(window.location.pathname + window.location.search);
 
   return (
     <>
