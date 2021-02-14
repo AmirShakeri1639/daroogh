@@ -8,7 +8,12 @@ import {
   TextField,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { MaterialContainer, Modal, BackDrop } from '../../../public';
+import {
+  MaterialContainer,
+  Modal,
+  BackDrop,
+  AutoComplete,
+} from '../../../public';
 import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -30,7 +35,7 @@ import { useEffectOnce } from '../../../../hooks';
 import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
-import { Autocomplete } from '@material-ui/lab';
+// import { Autocomplete } from '@material-ui/lab';
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import { DrugType } from '../../../../enum/pharmacyDrug';
@@ -192,6 +197,7 @@ const SupplyList: React.FC = () => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
   const [isWrongDate, setIsWrongDate] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const { t } = useTranslation();
   const queryCache = useQueryCache();
@@ -578,7 +584,7 @@ const SupplyList: React.FC = () => {
         <div className={modalContainer}>
           <Grid container spacing={1} className={formContent}>
             <Grid item xs={12}>
-              <Autocomplete
+              {/* <Autocomplete
                 loading={isLoading}
                 id="drug-list"
                 noOptionsText={t('general.noData')}
@@ -602,6 +608,15 @@ const SupplyList: React.FC = () => {
                     variant="outlined"
                   />
                 )}
+              />
+               */}
+              <AutoComplete
+                isLoading={isLoading}
+                onChange={(e): void => setSearchTerm(e.target.value)}
+                loadingText={t('general.loading')}
+                className="w-100"
+                placeholder={t('drug.name')}
+                options={[{ value: '', label: '' }]}
               />
             </Grid>
 

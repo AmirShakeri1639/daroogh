@@ -1,0 +1,39 @@
+@import 'src/assets/scss/fonts';
+
+$borderRadius: 4px;
+
+.container {
+  position: relative;
+  border: 1px solid rgb(200, 200, 200);
+  border-radius: $borderRadius;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  .input {
+    border: none;
+    padding: 5px 0;
+    height: 37px;
+    font-family: Vazir;
+    &::placeholder {
+      color: rgb(200, 200, 200);
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+  svg {
+    color: rgb(143, 143, 143);
+    margin-right: 10px;
+  }
+}
+
+.div-list {
+  position: absolute;
+  background-color: #fff;
+  border-radius: $borderRadius;
+  height: fit-content;
+  padding: 10px;
+  ul {
+    list-style-type: none;
+  }
+}
