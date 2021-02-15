@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, Suspense, useEffect } from 'react';
 import { HashRouter as Router, Switch } from 'react-router-dom';
 import PublicRoute from './routes/PublicRoute';
 import CircleLoading from './components/public/loading/CircleLoading';
@@ -10,6 +10,7 @@ import routes from './routes';
 import DashboardContent from './components/screen/dashboard/DashboardContent';
 import { isAdmin } from './utils';
 import Appbar from './components/screen/dashboard/AppBar';
+import ReactGA from 'react-ga';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -169,6 +170,11 @@ const LoadingComponent: React.FC = () => {
 };
 
 const App = (): JSX.Element => {
+  ReactGA.initialize('G-G1C616XR26');
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }, []);
+
   return (
     <>
       <Router>

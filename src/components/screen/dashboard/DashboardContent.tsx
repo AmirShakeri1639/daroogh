@@ -1,8 +1,9 @@
 import { Container, Grid, makeStyles, Paper } from '@material-ui/core';
 import React, { useState } from 'react';
+import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
-
+import './style.css';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -20,12 +21,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 const DashboardContent: React.FC<any> = () => {
   const classes = useStyles();
-  
+
   return (
     <Container maxWidth="lg" className={classes.container}>
       {/* <Map /> */}
       <Grid container spacing={3}>
-      <Grid item xs={12}>
+        <Grid item xs={12}>
           <Paper className={classes.paper}>
             <ExChangeChart></ExChangeChart>
           </Paper>
@@ -35,7 +36,13 @@ const DashboardContent: React.FC<any> = () => {
             <BestPharmaciesList></BestPharmaciesList>
           </Paper>
         </Grid>
-
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <div id="map">
+              <MapCluster></MapCluster>
+            </div>
+          </Paper>
+        </Grid>
       </Grid>
     </Container>
   );
