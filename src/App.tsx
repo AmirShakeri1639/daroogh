@@ -164,7 +164,7 @@ const App = (): JSX.Element => {
   ReactGA.initialize('G-G1C616XR26');
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
-  });
+  }, []);
 
   return (
     <>
