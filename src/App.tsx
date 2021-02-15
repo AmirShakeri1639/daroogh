@@ -7,9 +7,9 @@ import { ReactQueryDevtools } from 'react-query-devtools';
 import { CssBaseline } from '@material-ui/core';
 import ViewPharmacyInfo from './components/screen/dashboard/drug-transfer/ViewPharmacyInfo';
 import routes from './routes';
-import ExchangeApprove from './components/screen/dashboard/drug-transfer/exchange/ExchangeApprove';
 import DashboardContent from './components/screen/dashboard/DashboardContent';
 import { isAdmin } from './utils';
+import Appbar from './components/screen/dashboard/AppBar';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -157,14 +157,23 @@ const {
   prescriptionList,
 } = routes;
 
-const App = (): JSX.Element => {
-  const exchangeBase = 'exchange';
+const LoadingComponent: React.FC = () => {
+  return (
+    <>
+      <Appbar showButtons={false} />
+      <div style={{ marginTop: 75 }}>
+        <CircleLoading />
+      </div>
+    </>
+  );
+};
 
+const App = (): JSX.Element => {
   return (
     <>
       <Router>
         <Switch>
-          <Suspense fallback={<CircleLoading />}>
+          <Suspense fallback={<LoadingComponent />}>
             <CssBaseline />
             <PublicRoute exact path={['/', login]}>
               <Login />
@@ -179,10 +188,10 @@ const App = (): JSX.Element => {
             </PublicRoute>
 
             <PrivateRoute exact path={dashboard}>
-              <Dashboard component={<DashboardContent/>} />
+              <Dashboard component={<DashboardContent />} />
             </PrivateRoute>
 
-            <PrivateRoute exact path="/dashboardActivePage">s
+            <PrivateRoute exact path="/dashboardActivePage">
               <Dashboard component={<DashboardActivePage />} />
             </PrivateRoute>
 
@@ -291,7 +300,7 @@ const App = (): JSX.Element => {
             </PrivateRoute>
 
             <PrivateRoute exact path={jobSearchList}>
-              <Dashboard component={<JobSearchList full={ isAdmin() } />} />
+              <Dashboard component={<JobSearchList full={isAdmin()} />} />
             </PrivateRoute>
 
             <PrivateRoute exact path={prescriptionList}>
