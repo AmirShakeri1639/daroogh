@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { Menu, MenuItem, ListItemIcon } from "@material-ui/core";
+import { Menu, MenuItem, ListItemIcon } from '@material-ui/core';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { useTranslation } from "react-i18next";
-import Context from "../Context";
+import { useTranslation } from 'react-i18next';
+import Context from '../Context';
 import { logoutUser } from '../../../../utils';
 
 const UserMenu: React.FC = () => {
@@ -12,7 +12,7 @@ const UserMenu: React.FC = () => {
 
   const logout = (): void => {
     logoutUser();
-  }
+  };
 
   return (
     <Menu
@@ -21,10 +21,6 @@ const UserMenu: React.FC = () => {
       keepMounted
       open={Boolean(anchorEl)}
       onClose={handleClose}
-      // anchorOrigin={{
-      //   vertical: 'bottom',
-      //   horizontal: 'left',
-      // }}
     >
       <MenuItem onClick={logout} className="txt-sm">
         <ListItemIcon>
@@ -33,7 +29,7 @@ const UserMenu: React.FC = () => {
         {t('login.sign-out')}
       </MenuItem>
     </Menu>
-  )
+  );
 };
 
 export default UserMenu;

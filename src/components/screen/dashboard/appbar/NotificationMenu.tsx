@@ -69,7 +69,7 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
   };
 
   const itemsGenerator = (): JSX.Element[] | JSX.Element => {
-    if (messages.length > 0) {
+    if (messages !== undefined && messages.length > 0) {
       return messages.map((message, index) => {
         return (
           <Fragment key={message.id}>
