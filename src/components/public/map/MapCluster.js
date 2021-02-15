@@ -29,9 +29,8 @@ const MapCluster = () => {
     pitch: 0,
   });
   const mapRef = useRef(null);
-  
+
   const onClick = (event) => {
-    debugger;
     if (event.features.length == 0) {
       return;
     }

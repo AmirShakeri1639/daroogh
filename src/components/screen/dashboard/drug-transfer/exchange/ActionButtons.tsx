@@ -217,7 +217,6 @@ const ActionButtons = (): JSX.Element => {
     { isLoading: isLoadingConfirmOrNotExchange },
   ] = useMutation(confirmOrNotExchange, {
     onSuccess: async (res) => {
-      debugger;
       if (res) {
         await sweetAlert({
           type: 'success',
