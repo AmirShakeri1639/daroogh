@@ -172,6 +172,7 @@ export default {
       },
       user: {
         role: 'نقش',
+        rolesList: 'لیست نقش ها',
         user: 'کاربر',
         name: 'نام کاربر',
         family: 'نام خانوادگی',
