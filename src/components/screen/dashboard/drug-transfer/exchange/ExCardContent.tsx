@@ -236,7 +236,11 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                     </li>
                     <li className={colLeftIcon}>
                       <CardGiftcardIcon />
-                      {item.offer1} به {item.offer2}
+                      {!(item.offer1 === 0 && item.offer2 === 0) ?
+                       <>{item.offer1} به {item.offer2} </>
+                       : 
+                       "ندارد" }
+                      
                     </li>
                     <li className={colLeftIcon}>
                       <MoneyIcon />
@@ -322,7 +326,12 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <Grid item xs={11}>
               <TextLine
                 rightText={t('general.offer')}
-                leftText={`${pharmacyDrug?.offer1} به ${pharmacyDrug?.offer2}`}
+
+                leftText= {!(pharmacyDrug?.offer1 === 0 && pharmacyDrug?.offer2 === 0) ?
+                  <>{pharmacyDrug?.offer1} به {pharmacyDrug?.offer2} </>
+                  : 
+                  "ندارد" }
+                
               />
             </Grid>
           </Grid>
