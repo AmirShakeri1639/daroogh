@@ -90,9 +90,9 @@ const MapCluster = () => {
                       cy={entry.item2}
                       r={entry.item2}
                       stroke="blue"
-                      fill="blue"
+                      fill={Math.floor(Math.random() * 16777215).toString(16)}
                     />
-                    <text 
+                    <text
                       fontSizeAdjust="0.50"
                       x="50%"
                       y="50%"
