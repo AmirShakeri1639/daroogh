@@ -30,6 +30,7 @@ export default {
         type: 'نوع',
         pleaseWait: 'لطفا صبر کنید',
         cancel: 'انصراف',
+        bikhial: 'بیخیال',
         save: 'ذخیره',
         edit: 'ویرایش',
         options: 'امکانات',
@@ -235,7 +236,7 @@ export default {
         'new-category': 'ایجاد دسته بندی',
       },
       exchange: {
-        create: 'ایجاد تبادل',
+        create: 'ایجاد {{var}} تبادل',
         exchange: 'تبادل',
         desktop: 'کارتابل',
         expirationDate: 'تاریخ انقضای تبادل',

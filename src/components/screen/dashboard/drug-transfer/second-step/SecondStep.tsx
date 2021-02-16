@@ -32,6 +32,8 @@ import DesktopCardContent from '../desktop/DesktopCardContent';
 import ActionButtons from '../exchange/ActionButtons';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
+import { useDispatch } from 'react-redux';
+import { setTransferEnd } from '../../../../../redux/actions';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -103,12 +105,19 @@ const SecondStep: React.FC = () => {
     exchangeStateCode,
     messageOfExchangeState,
     viewExhcnage,
-    lockedAction
+    lockedAction,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { cancelExchange } = new PharmacyDrug();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return (): void => {
+      dispatch(setTransferEnd());
+    };
+  }, []);
 
   const [] = useMutation(cancelExchange, {
     onSuccess: async (res) => {
@@ -203,8 +212,7 @@ const SecondStep: React.FC = () => {
   useEffect(() => {
     const id = params.eid == null ? undefined : params.eid;
     if (id !== undefined && !selectedPharmacyForTransfer) return;
-    if (lockedAction)
-      refetch();
+    if (lockedAction) refetch();
   }, [selectedPharmacyForTransfer]);
 
   useEffect(() => {
@@ -245,16 +253,16 @@ const SecondStep: React.FC = () => {
                     }
                   />
                 ) : (
-                    <CardContainer
-                      basicDetail={
-                        <ExCardContent formType={2} pharmacyDrug={item} />
-                      }
-                      isPack={false}
-                      pharmacyDrug={Object.assign(item, {
-                        currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
-                      })}
-                    />
-                  )}
+                  <CardContainer
+                    basicDetail={
+                      <ExCardContent formType={2} pharmacyDrug={item} />
+                    }
+                    isPack={false}
+                    pharmacyDrug={Object.assign(item, {
+                      currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
+                    })}
+                  />
+                )}
               </div>
             </Grid>
           );
@@ -287,14 +295,14 @@ const SecondStep: React.FC = () => {
                     }
                   />
                 ) : (
-                    <CardContainer
-                      basicDetail={
-                        <ExCardContent formType={2} pharmacyDrug={item} />
-                      }
-                      isPack={false}
-                      pharmacyDrug={item}
-                    />
-                  )}
+                  <CardContainer
+                    basicDetail={
+                      <ExCardContent formType={2} pharmacyDrug={item} />
+                    }
+                    isPack={false}
+                    pharmacyDrug={item}
+                  />
+                )}
               </div>
             </Grid>
           );
