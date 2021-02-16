@@ -1,8 +1,12 @@
-import { LoggedInUserInterface, TokenInterface } from "../interfaces";
+import { LoggedInUserInterface } from "../interfaces";
+import {
+  TokenUserId, TokenRoles, TokenUserData
+} from "../interfaces/LoggedInUserInterface";
 import { errorHandler } from "./index";
 
 class JwtData {
   userData: LoggedInUserInterface = {
+    userId: '',
     name: '',
     family: '',
     token: '',
@@ -11,9 +15,10 @@ class JwtData {
     pharmacyName: '',
   };
 
-  parsedToken: TokenInterface = {
-    'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': [],
-    'http://schemas.microsoft.com/ws/2008/06/identity/claims/userdata': '',
+  parsedToken: any = {
+    TokenRoles: [],
+    TokenUserData: '',
+    TokenUserId: '',
   };
 
   parseJwt = (token: string): any => {
@@ -35,6 +40,7 @@ class JwtData {
       }
       const userFromStorageJSON = JSON.parse(userFromStorage);
       this.userData = {
+        userId: 0,
         name: userFromStorageJSON.name,
         family: userFromStorageJSON.family,
         token: userFromStorageJSON.token,
@@ -42,17 +48,15 @@ class JwtData {
         pharmacyName: userFromStorageJSON.pharmacyName,
         currentPharmacyKey: userFromStorageJSON.currentPharmacyKey
       };
-
       this.parsedToken = this.parseJwt(this.userData.token);
+      this.userData.userId = this.parsedToken[TokenUserId] ?? 0;
     } catch (e) {
       errorHandler(e);
     }
   }
 
   roles = (): any => {
-    const rolesArray =
-      this.parsedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-
+    const rolesArray = this.parsedToken[TokenRoles];
     return rolesArray;
   }
 }
