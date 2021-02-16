@@ -129,7 +129,6 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
   ];
 
   const handleEnumChange = (event: any) => {
-    debugger;
     const code = event.target.value as [];
     const res = (props.columnDef.lookupFilter as LookupFilter[]).filter(x => code.includes(x.name as never));
     setPersonName(code);

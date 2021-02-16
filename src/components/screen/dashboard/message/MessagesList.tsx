@@ -19,6 +19,8 @@ import { useMutation } from 'react-query';
 import { Message } from '../../../../services/api';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 
+const { convertISOTime } = Convertor;
+
 const MessagesList: React.FC = () => {
   const [name, setName] = useState<string>('');
   const [family, setFamily] = useState<string>('');
@@ -41,25 +43,26 @@ const MessagesList: React.FC = () => {
     return [
       {
         field: 'subject',
-        title: 'موضوع',
+        title: t('general.subject'),
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'sendDate',
-        title: 'تاریخ ارسال',
+        title: t('date.sendDate'),
         type: 'datetime',
         cellStyle: { textAlign: 'right' },
+        render: (rowData: any): any => convertISOTime(rowData.sendDate, true),
       },
       {
         field: 'reciveDate',
-        title: 'تاریخ دریافت',
+        title: t('date.recieveDate'),
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'url',
-        title: 'آدرس',
+        title: t('general.address2'),
         type: 'string',
         cellStyle: { textAlign: 'right' },
       },
