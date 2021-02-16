@@ -9,7 +9,7 @@ import { ChevronRight as ChevronRightIcon } from '@material-ui/icons';
 import Context from './Context';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
-import { errorHandler, JwtData, logoutUser } from '../../../utils';
+import { errorHandler, isNullOrEmpty, JwtData, logoutUser } from '../../../utils';
 import { ColorEnum } from '../../../enum';
 import { Alert } from '@material-ui/lab';
 import Utils from '../../public/utility/Utils';
@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { Accounting } from '../../../services/api';
 import { LoggedInUserInterface } from '../../../interfaces';
 import changeProfilePic from './user/changeProfilePic';
+import routes from '../../../routes';
 
 const { isIndebtPharmacy } = new Accounting();
 
@@ -196,6 +197,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
+  const [avatarChanged, setAvatarChanged] = useState<any>();
 
   const classes = useStyles();
 
@@ -214,7 +216,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   useEffect(() => {
     const { userData } = new JwtData();
     setLoggedInUser(userData);
+  }, [avatarChanged]);
 
+  useEffect(() => {
     async function getIsIndebtPharmacy(): Promise<void> {
       await handleIsIndebtPharmacy();
     }
@@ -275,9 +279,17 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     return element;
   };
 
+  const avatar = (imageKey: string = ''): any => {
+    return (
+      isNullOrEmpty(imageKey)
+        ? avatarPic
+        : `${routes.fileUrl}${imageKey}`
+    );
+  }
+
   return (
-    <Context.Provider value={contextInitialValues()}>
-      <div className={classes.root}>
+    <Context.Provider value={ contextInitialValues() }>
+      <div className={ classes.root }>
         <Appbar />
 
         <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
@@ -302,27 +314,36 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               </div>
             </div>
 
-            <Divider className={classes.divider} />
+            <Divider className={ classes.divider } />
 
-            <Grid container className={classes.largeSpacing}>
-              <Grid item xs={3}>
-                {/* <>
-                {loggedInUser?.imageKey != null &&
-                    <Picture fileKey ={loggedInUser?.imageKey}/> }
-
-                {
-                  loggedInUser?.imageKey === null && */}
-                <Avatar
-                  alt={ t('user.user') }
-                  className={ classes.largeAvatar }
-                  src={ avatarPic }
-                  onClick={ (e: any): any => {
-                    e.preventDefault();
-                    changeProfilePic(loggedInUser?.userId);
-                  } }
-                />
-                {/* }
-               </> */}
+            <Grid container className={ classes.largeSpacing }>
+              <Grid item xs={ 3 }>
+                <>
+                  <label>
+                    <input
+                      type='file'
+                      style={ { display: 'none' } }
+                      id='profilePicUpload'
+                      name='profilePicUpload'
+                      onChange={ (e: any): void => {
+                        e.preventDefault();
+                        if (e.target.files.length > 0) {
+                          changeProfilePic(loggedInUser?.userId, e.target.files[0])
+                            .then((response: any) => {
+                              const { userData } = new JwtData();
+                              setAvatarChanged(userData.imageKey);
+                              setLoggedInUser(userData);
+                            });
+                        }
+                      } }
+                    />
+                    <Avatar
+                      alt={ t('user.user') }
+                      className={ classes.largeAvatar }
+                      src={ avatar(loggedInUser?.imageKey) }
+                    />
+                  </label>
+                </>
               </Grid>
               <Grid item xs={ 9 }>
                 <Grid item xs={ 12 }>
@@ -376,20 +397,20 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
           { component }
         </main>
 
-        {debtValueState && (
+        { debtValueState && (
           <StyledMenu
             id="customized-menu"
             anchorEl={ creditAnchorEl }
             keepMounted
-            open={Boolean(creditAnchorEl)}
-            onClose={(): void => setcreditAnchorEl(null)}
+            open={ Boolean(creditAnchorEl) }
+            onClose={ (): void => setcreditAnchorEl(null) }
           >
-            <div style={{ padding: 5 }}>
-              <span style={{ fontSize: 14 }}>
-                {' '}
-                <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b>
-                <span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>
-                {debtValueState > 0 && ' بدهکار'}
+            <div style={ { padding: 5 } }>
+              <span style={ { fontSize: 14 } }>
+                { ' ' }
+                <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
+                <span style={ { fontSize: 10, marginRight: 2 } }>ریال</span>
+                { debtValueState > 0 && ' بدهکار' }
               </span>
             </div>
           </StyledMenu>

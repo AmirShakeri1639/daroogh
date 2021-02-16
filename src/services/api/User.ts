@@ -122,6 +122,7 @@ class User extends Api {
       `${this.urls.changeProfileImage}${userId}`,
       { file: pic }
     )
+    return result.data;
   }
 }
 
