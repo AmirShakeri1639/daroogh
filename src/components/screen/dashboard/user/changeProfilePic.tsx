@@ -12,7 +12,6 @@ const uploadProfilePic = async (userId: number | string, file: any): Promise<any
   const user = new User();
   const response = await user.changeProfileImage(userId, file);
   saveToStorage(response.data.pictureFileKey);
-  await successSweetAlert('تصویر پروفایل با موفقیت تغییر کرد.');
   return response.data.pictureFileKey;
 }
 
