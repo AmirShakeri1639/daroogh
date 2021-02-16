@@ -147,9 +147,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
       <Grid container spacing={1} className={container}>
         {pharmacyDrug?.cardColor === ColorEnum.AddedByB && (
           <Ribbon
-            text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
-              ? 'اضافه'
-              : 'حذف'}
+            text={
+              pharmacyDrug?.cardColor === ColorEnum.AddedByB ? 'اضافه' : 'حذف'
+            }
           />
         )}
         <Grid item xs={12}>
@@ -159,8 +159,21 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             </Grid>
             <Grid item xs={11}>
               <TextLine
-                rightText={'نام دسته'}
+                rightText={'عنوان پک'}
                 leftText={pharmacyDrug?.packName}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid alignItems="flex-end" container spacing={1}>
+            <Grid item xs={1} style={{ textAlign: 'left' }}>
+              <FontAwesomeIcon icon={faBoxes} size="sm" />
+            </Grid>
+            <Grid item xs={11}>
+              <TextLine
+                rightText={'دسته بندی'}
+                leftText={pharmacyDrug?.packCategoryName}
               />
             </Grid>
           </Grid>
@@ -183,7 +196,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    const faDate = moment(date, 'YYYY/MM/DD')
+      .locale('fa')
+      .format('YYYY/MM/DD');
     const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
     const fromDate = new Date(eDate);
     const today = new Date();
@@ -208,8 +223,10 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                   style={{ display: 'flex', alignItems: 'center' }}
                 >
                   <FontAwesomeIcon icon={faPills} size="1x" />
-                  <span style={{ marginRight: 5 }}>{item.drug.name}
-                    {item.drug.enName && `(${item.drug.enName})`}</span>
+                  <span style={{ marginRight: 5 }}>
+                    {item.drug.name}
+                    {item.drug.enName && `(${item.drug.enName})`}
+                  </span>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
                   <ul className={ulCardName}>
