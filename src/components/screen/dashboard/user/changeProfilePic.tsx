@@ -10,7 +10,6 @@ const saveToStorage = async (imageKey: string): Promise<any> => {
   localStorage.setItem('user', JSON.stringify(userData));
   const fileApi = new File();
   const blob = await fileApi.get(imageKey);
-  console.log('BLOBBBB:', blob)
   localStorage.setItem('avatar', window.URL.createObjectURL(blob));
 }
 

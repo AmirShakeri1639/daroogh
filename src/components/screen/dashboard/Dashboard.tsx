@@ -279,7 +279,6 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   };
 
   const avatar = (): any => {
-    debugger;
     return (
       localStorage.getItem('avatar') ?? avatarPic
     );
