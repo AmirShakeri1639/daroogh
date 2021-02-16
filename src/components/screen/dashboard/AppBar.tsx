@@ -270,21 +270,15 @@ const Appbar: React.FC<AppbarProps> = ({ showButtons }) => {
                 onClick={(): void => push(transfer)}
               >
                 <SvgIcon fileName="plus" size="12px" />
-              </IconButton>
-            </span>
-            <span>
-              <IconButton
-                edge="end"
-                style={{ color: ColorEnum.White }}
-                onClick={(): void => push(transfer)}
-              >
                 <Hidden smDown>
-                  <span style={{ fontSize: 14 }}>
-                    {' '}
-                    {'	' + t('exchange.create')}{' '}
+                  <span style={{ fontSize: 14, paddingRight: 6 }}>
+                   {t('exchange.create')}
                   </span>
                 </Hidden>
               </IconButton>
+            </span>
+            <span>
+             
             </span>
           </div>
         </Tooltip>
