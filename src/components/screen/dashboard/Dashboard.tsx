@@ -17,6 +17,7 @@ import Appbar from './AppBar';
 import { useTranslation } from 'react-i18next';
 import { Accounting } from '../../../services/api';
 import { LoggedInUserInterface } from '../../../interfaces';
+import changeProfilePic from './user/changeProfilePic';
 
 const { isIndebtPharmacy } = new Accounting();
 
@@ -172,17 +173,17 @@ const StyledMenu = withStyles({
   },
 })((props: MenuProps) => (
   <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
+    elevation={ 0 }
+    getContentAnchorEl={ null }
+    anchorOrigin={ {
       vertical: 'bottom',
       horizontal: 'center',
-    }}
-    transformOrigin={{
+    } }
+    transformOrigin={ {
       vertical: 'top',
       horizontal: 'center',
-    }}
-    {...props}
+    } }
+    { ...props }
   />
 ));
 
@@ -256,19 +257,19 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     const { name, family } = JSON.parse(user);
     const title = (
       <span>
-        {name} {family} عزیز ،
+        {name } {family } عزیز ،
       </span>
     );
     const body = (
-      <span style={{ marginRight: 5 }}>
+      <span style={ { marginRight: 5 } }>
         بعلت اینکه سقف بدهی شما بیشتر از حد مجاز می باشد، امکان هیچگونه عملیاتی
         برای شما میسر نمی باشد. لطفا نسبت به پرداخت بدهی خود اقدام نمایید.
       </span>
     );
     element = (
       <>
-        {title}
-        {body}
+        {title }
+        {body }
       </>
     );
     return element;
@@ -279,22 +280,22 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
       <div className={classes.root}>
         <Appbar />
 
-        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
-          <div className={classes.drawerBackground}>
-            <div className={classes.toolbarIcon}>
-              <div className={classes.headerHolder}>
-                <div className={classes.logoTypeHolder}>
-                  <img className={classes.logoType} src="logotype.svg" />
+        <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
+          <div className={ classes.drawerBackground }>
+            <div className={ classes.toolbarIcon }>
+              <div className={ classes.headerHolder }>
+                <div className={ classes.logoTypeHolder }>
+                  <img className={ classes.logoType } src="logotype.svg" />
                   <span
-                    className={classes.systemTitle}
-                    style={{ textAlign: 'right' }}
+                    className={ classes.systemTitle }
+                    style={ { textAlign: 'right' } }
                   >
-                    {t('general.systemTitle')}
+                    { t('general.systemTitle') }
                   </span>
                 </div>
                 <IconButton
-                  className={classes.roundicon}
-                  onClick={handleDrawerClose}
+                  className={ classes.roundicon }
+                  onClick={ handleDrawerClose }
                 >
                   <ChevronRightIcon />
                 </IconButton>
@@ -312,69 +313,73 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 {
                   loggedInUser?.imageKey === null && */}
                 <Avatar
-                  alt={t('user.user')}
-                  className={classes.largeAvatar}
-                  src={avatarPic}
+                  alt={ t('user.user') }
+                  className={ classes.largeAvatar }
+                  src={ avatarPic }
+                  onClick={ (e: any): any => {
+                    e.preventDefault();
+                    changeProfilePic(loggedInUser?.userId);
+                  } }
                 />
                 {/* }
                </> */}
               </Grid>
-              <Grid item xs={9}>
-                <Grid item xs={12}>
-                  <span style={{ color: '#4625B2', fontSize: 'large' }}>
-                    {loggedInUser?.name} {loggedInUser?.family}
+              <Grid item xs={ 9 }>
+                <Grid item xs={ 12 }>
+                  <span style={ { color: '#4625B2', fontSize: 'large' } }>
+                    { loggedInUser?.name } { loggedInUser?.family }
                   </span>
                 </Grid>
-                <Grid item xs={12}>
-                  <span style={{ color: '#6B4ECC', fontSize: 'small' }}>
-                    {t('pharmacy.pharmacy')} {loggedInUser?.pharmacyName}
+                <Grid item xs={ 12 }>
+                  <span style={ { color: '#6B4ECC', fontSize: 'small' } }>
+                    { t('pharmacy.pharmacy') } { loggedInUser?.pharmacyName }
                   </span>
                 </Grid>
                 <Grid
                   item
-                  xs={12}
-                  style={{ display: 'flex', justifyContent: 'flex-end' }}
+                  xs={ 12 }
+                  style={ { display: 'flex', justifyContent: 'flex-end' } }
                 >
                   <IconButton
                     edge="start"
                     color="inherit"
-                    onClick={(): void => logoutUser()}
+                    onClick={ (): void => logoutUser() }
                   >
-                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
-                    <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
-                      {t('login.exit')}
+                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
+                    <span style={ { color: ColorEnum.Red, fontSize: 'medium' } }>
+                      { t('login.exit') }
                     </span>
                   </IconButton>
                 </Grid>
               </Grid>
             </Grid>
-            <Divider className={classes.divider} />
+            <Divider className={ classes.divider } />
             <List
-              style={{ color: '#4625B2' }}
+              style={ { color: '#4625B2' } }
               component="nav"
               aria-labelledby="nested-list-items"
             >
-              {listItemsGenerator()}
+              { listItemsGenerator() }
             </List>
-            <Divider className={classes.divider} />
+            <Divider className={ classes.divider } />
           </div>
         </MaterialDrawer>
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <div className={classes.alert}>
-            {isIndebtPharmacyState && (
-              <Alert variant="filled" severity="error" style={{ margin: 10 }}>
-                {alertContent()}
+        <main className={ classes.content }>
+          <div className={ classes.appBarSpacer } />
+          <div className={ classes.alert }>
+            { isIndebtPharmacyState && (
+              <Alert variant="filled" severity="error" style={ { margin: 10 } }>
+                {alertContent() }
               </Alert>
-            )}
+            ) }
           </div>
-          {component}
+          { component }
         </main>
 
         {debtValueState && (
           <StyledMenu
             id="customized-menu"
-            anchorEl={creditAnchorEl}
+            anchorEl={ creditAnchorEl }
             keepMounted
             open={Boolean(creditAnchorEl)}
             onClose={(): void => setcreditAnchorEl(null)}
@@ -388,7 +393,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               </span>
             </div>
           </StyledMenu>
-        )}
+        ) }
       </div>
     </Context.Provider>
   );
