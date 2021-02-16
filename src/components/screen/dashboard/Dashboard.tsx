@@ -18,7 +18,6 @@ import { useTranslation } from 'react-i18next';
 import { Accounting } from '../../../services/api';
 import { LoggedInUserInterface } from '../../../interfaces';
 import changeProfilePic from './user/changeProfilePic';
-import routes from '../../../routes';
 
 const { isIndebtPharmacy } = new Accounting();
 
@@ -279,11 +278,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     return element;
   };
 
-  const avatar = (imageKey: string = ''): any => {
+  const avatar = (): any => {
     return (
-      isNullOrEmpty(imageKey)
-        ? avatarPic
-        : `${routes.fileUrl}${imageKey}`
+      localStorage.getItem('avatar') ?? avatarPic
     );
   }
 
@@ -319,7 +316,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             <Grid container className={ classes.largeSpacing }>
               <Grid item xs={ 3 }>
                 <>
-                  <label>
+                  <label style={ { cursor: 'pointer' } }>
                     <input
                       type='file'
                       style={ { display: 'none' } }
@@ -340,7 +337,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                     <Avatar
                       alt={ t('user.user') }
                       className={ classes.largeAvatar }
-                      src={ avatar(loggedInUser?.imageKey) }
+                      src={ avatar() }
                     />
                   </label>
                 </>
