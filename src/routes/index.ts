@@ -1,3 +1,5 @@
+import { api } from '../config/default.json';
+
 const dashboard = 'dashboard';
 const exchange = 'exchange';
 const finance = 'finance';
@@ -58,4 +60,6 @@ export default {
   jobSearchList: `/${dashboard}/${jobSearch}/list`,
 
   prescriptionList: `/${dashboard}/${prescription}/list`,
+  
+  fileUrl: `${api.baseUrl}/File/GetFile?key=`,
 };

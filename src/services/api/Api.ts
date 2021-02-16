@@ -80,7 +80,7 @@ class Api {
     for (const key in _data) {
       const val = _data[key];
       if (val !== null) {
-        formData.set(key, Array.isArray(val) ? `[${val}]` : val);
+        formData.append(key, Array.isArray(val) ? `[${val}]` : val);
       }
     }
     try {

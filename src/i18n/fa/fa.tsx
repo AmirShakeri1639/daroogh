@@ -196,6 +196,7 @@ export default {
         sendDate: 'تاریخ درخواست',
         accepted: 'پذیرفته شده',
         members: 'اعضا',
+        profilePicChanged: 'تصویر پروفایل با موفقیت تغییر کرد.',
       },
       drug: {
         drug: 'دارو',
