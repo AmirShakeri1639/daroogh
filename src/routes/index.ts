@@ -19,6 +19,7 @@ const prescription = 'prescription';
 export default {
   login: '/login',
   registerPharmacyWithUser: `/register-pharmacy-with-user`,
+  forgetPassword: '/forget-password',
 
   dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,

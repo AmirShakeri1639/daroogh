@@ -8,7 +8,9 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import Button from '../../../../public/button/Button';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { EncrDecrService } from '../../../../../utils';
+import { setTransferStart } from '../../../../../redux/actions';
 import routes from '../../../../../routes';
 
 const useStyle = makeStyles((theme) =>
@@ -49,6 +51,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { push } = useHistory();
+  const dispatch = useDispatch();
 
   const encDecService = new EncrDecrService();
 
@@ -82,6 +85,11 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     }
   };
 
+  const transferStartHandler = (): void => {
+    transferStart(notSendExchangeID);
+    dispatch(setTransferStart());
+  };
+
   return (
     <Paper className={paper}>
       <Grid container spacing={1}>
@@ -112,7 +120,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
             type="button"
             variant="outlined"
             color={notSendExchangeID !== null ? 'pink' : 'blue'}
-            onClick={(): void => transferStart(notSendExchangeID)}
+            onClick={transferStartHandler}
           >
             {notSendExchangeID !== null
               ? t('exchange.continue')

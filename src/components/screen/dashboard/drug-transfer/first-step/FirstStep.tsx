@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   createStyles,
   Grid,
-  Slider,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -29,6 +28,8 @@ import { errorHandler, sanitizeReactSelect } from '../../../../../utils';
 import Search from '../../../../../services/api/Search';
 import { SelectOption } from '../../../../../interfaces';
 import { AdvancedSearchInterface } from '../../../../../interfaces/search';
+import { useDispatch } from 'react-redux';
+import { setTransferEnd } from '../../../../../redux/actions';
 
 const { getRelatedPharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
@@ -146,6 +147,7 @@ const FirstStep: React.FC = () => {
   const [isInSearchMode, setIsInSearchMode] = useState<boolean>(false);
 
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
@@ -203,6 +205,10 @@ const FirstStep: React.FC = () => {
     }
     setIsLoading(false);
   }
+
+  useEffect(() => {
+    dispatch(setTransferEnd());
+  }, []);
 
   useEffect(() => {
     if (searchedDrugs.length > 0) {

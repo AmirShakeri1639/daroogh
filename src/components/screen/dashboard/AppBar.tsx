@@ -8,7 +8,7 @@ import {
   Tooltip,
   Badge,
 } from '@material-ui/core';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import clsx from 'clsx';
 import Ribbon from '../../public/ribbon/Ribbon';
 import { ColorEnum, MessageQueryEnum } from '../../../enum';
@@ -23,6 +23,9 @@ import Utils from '../../public/utility/Utils';
 import NotificationMenu from './appbar/NotificationMenu';
 import UserMenu from './appbar/UserMenu';
 import { useQuery } from 'react-query';
+import { connect, ConnectedProps, useDispatch } from 'react-redux';
+import { setTransferEnd } from '../../../redux/actions';
+import { sweetAlert } from '../../../utils';
 
 const drawerWidth = 240;
 const { getUserMessages } = new Message();
@@ -173,7 +176,18 @@ interface AppbarProps {
   showButtons?: boolean;
 }
 
-const Appbar: React.FC<AppbarProps> = ({ showButtons }) => {
+const mapStateToProps = (state: any) => ({
+  transfer: state.transfer,
+});
+
+const connector = connect(mapStateToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
+  showButtons,
+  transfer: _transfer,
+}) => {
   const {
     setIsOpenDrawer,
     isOpenDrawer,
@@ -216,6 +230,22 @@ const Appbar: React.FC<AppbarProps> = ({ showButtons }) => {
     e: React.MouseEvent<HTMLButtonElement>
   ): void => {
     setNotifEl(e.currentTarget);
+  };
+
+  const newTransferHandler = async (): Promise<void> => {
+    if (_transfer.isStarted) {
+      const res = await sweetAlert({
+        text: 'روند تبادل فعلی را حذف و دوباره شروع میکنید؟',
+        type: 'warning',
+        cancelButtonText: t('general.bikhial'),
+        showCancelButton: true,
+      });
+
+      if (!res) {
+        return;
+      }
+    }
+    window.location.reload();
   };
 
   return (
@@ -267,25 +297,26 @@ const Appbar: React.FC<AppbarProps> = ({ showButtons }) => {
               <IconButton
                 edge="end"
                 style={{ color: ColorEnum.White }}
-                onClick={(): void => push(transfer)}
+                onClick={newTransferHandler}
               >
                 <SvgIcon fileName="plus" size="12px" />
               </IconButton>
             </span>
-            <span>
-              <IconButton
-                edge="end"
-                style={{ color: ColorEnum.White }}
-                onClick={(): void => push(transfer)}
-              >
-                <Hidden smDown>
+            <Hidden smDown>
+              <span>
+                <IconButton
+                  edge="end"
+                  style={{ color: ColorEnum.White }}
+                  onClick={newTransferHandler}
+                >
                   <span style={{ fontSize: 14 }}>
-                    {' '}
-                    {'	' + t('exchange.create')}{' '}
+                    {t('exchange.create', {
+                      var: _transfer.isStarted ? 'مجدد' : '',
+                    })}
                   </span>
-                </Hidden>
-              </IconButton>
-            </span>
+                </IconButton>
+              </span>
+            </Hidden>
           </div>
         </Tooltip>
 
@@ -360,4 +391,4 @@ Appbar.defaultProps = {
   showButtons: true,
 };
 
-export default Appbar;
+export default connector(Appbar);
