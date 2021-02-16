@@ -319,7 +319,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
             <Grid container className={ classes.largeSpacing }>
               <Grid item xs={ 3 }>
                 <>
-                  <label>
+                  <label style={ { cursor: 'pointer' } }>
                     <input
                       type='file'
                       style={ { display: 'none' } }
