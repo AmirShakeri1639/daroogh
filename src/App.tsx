@@ -5,7 +5,6 @@ import CircleLoading from './components/public/loading/CircleLoading';
 import PrivateRoute from './routes/PrivateRoute';
 import { ReactQueryDevtools } from 'react-query-devtools';
 import { CssBaseline } from '@material-ui/core';
-import ViewPharmacyInfo from './components/screen/dashboard/drug-transfer/ViewPharmacyInfo';
 import routes from './routes';
 import DashboardContent from './components/screen/dashboard/DashboardContent';
 import { isAdmin } from './utils';
@@ -156,6 +155,7 @@ const {
   pharmacyUsersList,
   jobSearchList,
   prescriptionList,
+  forgetPassword,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -184,135 +184,99 @@ const App = (): JSX.Element => {
             <PublicRoute exact path={['/', login]}>
               <Login />
             </PublicRoute>
-
-            <PublicRoute exact path="/forget-password">
+            <PublicRoute exact path={forgetPassword}>
               <ForgetPassword />
             </PublicRoute>
-
             <PublicRoute exact path={registerPharmacyWithUser}>
               <RegisterPharmacyWithUser />
             </PublicRoute>
-
             <PrivateRoute exact path={dashboard}>
               <Dashboard component={<DashboardContent />} />
             </PrivateRoute>
-
             <PrivateRoute exact path="/dashboardActivePage">
               <Dashboard component={<DashboardActivePage />} />
             </PrivateRoute>
-
-            <PrivateRoute path="/dashboard/drug-transfer">
-              <ViewPharmacyInfo />
-            </PrivateRoute>
-
             <PrivateRoute path={desktop}>
               <Dashboard component={<Desktop />} />
             </PrivateRoute>
-
             <PrivateRoute path={transfer}>
               <Dashboard component={<Transfer />} />
             </PrivateRoute>
-
             <PrivateRoute path={supplyList}>
               <Dashboard component={<SupplyList />} />
             </PrivateRoute>
-
             <PrivateRoute path={transactions}>
               <Dashboard component={<Transactions />} />
             </PrivateRoute>
-
             <PrivateRoute path={membershipRequests}>
               <Dashboard component={<MembershipRequests />} />
             </PrivateRoute>
-
             <PrivateRoute path={memberRole}>
               <Dashboard component={<MemberRole />} />
             </PrivateRoute>
-
             <PrivateRoute path={createRole}>
               <Dashboard component={<CreateRole />} />
             </PrivateRoute>
-
             <PrivateRoute path={createUser}>
               <Dashboard component={<CreateUser />} />
             </PrivateRoute>
-
             <PrivateRoute path={usersList}>
               <Dashboard component={<UsersList />} />
             </PrivateRoute>
-
             <PrivateRoute path={changeUserPassword}>
               <Dashboard component={<ChangeUserPassword />} />
             </PrivateRoute>
-
             <PrivateRoute path={createDrug}>
               <Dashboard component={<CreateDrug />} />
             </PrivateRoute>
-
             <PrivateRoute path={drugsList}>
               <Dashboard component={<DrugsList />} />
             </PrivateRoute>
-
             <PrivateRoute path={categoryList}>
               <Dashboard component={<CategoryList />} />
             </PrivateRoute>
-
             <PrivateRoute path={createPharmacy}>
               <Dashboard component={<CreatePharmacy />} />
             </PrivateRoute>
-
             <PrivateRoute path={pharmaciesList}>
               <Dashboard component={<PharmaciesList />} />
             </PrivateRoute>
-
             <PrivateRoute path={createMessage}>
               <Dashboard component={<CreateMessage />} />
             </PrivateRoute>
-
             <PrivateRoute path={messagesList}>
               <Dashboard component={<MessagesList />} />
             </PrivateRoute>
-
             <PrivateRoute path={drugFavoriteList}>
               <Dashboard component={<FavoriteList />} />
             </PrivateRoute>
-
             <PrivateRoute path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />
             </PrivateRoute>
-
             <PrivateRoute path={accountingInfo}>
               <Dashboard component={<AccountingInfo />} />
             </PrivateRoute>
-
             <PrivateRoute path={packsList}>
               <Dashboard component={<PackList />} />
             </PrivateRoute>
-
             <PrivateRoute exact path={createPack}>
               <Dashboard component={<CreatePack />} />
             </PrivateRoute>
-
             <PrivateRoute path={`${createPack}/:packId`}>
               <Dashboard component={<CreatePack />} />
             </PrivateRoute>
-
             <PrivateRoute exact path={exchangeManagementList}>
               <Dashboard component={<ExchangeManagement />} />
             </PrivateRoute>
-
             <PrivateRoute exact path={pharmacyUsersList}>
               <Dashboard component={<PharmacyUsersList />} />
             </PrivateRoute>
-
             <PrivateRoute exact path={jobSearchList}>
               <Dashboard component={<JobSearchList full={isAdmin()} />} />
             </PrivateRoute>
-
             <PrivateRoute exact path={prescriptionList}>
               <Dashboard component={<PrescriptionList />} />
             </PrivateRoute>
-
             {/*<Route component={<>404 Not Found</>} />*/}
           </Suspense>
         </Switch>

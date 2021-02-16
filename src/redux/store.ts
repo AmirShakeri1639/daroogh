@@ -2,7 +2,7 @@ import { createStore, combineReducers } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel1';
-import { userReducer } from './reducer';
+import { userReducer, transferReducer } from './reducers';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 const reduxPersistConfig = {
@@ -14,6 +14,7 @@ const reduxPersistConfig = {
 
 const reducers = combineReducers({
   user: userReducer,
+  transfer: transferReducer,
 });
 
 // @ts-ignore
