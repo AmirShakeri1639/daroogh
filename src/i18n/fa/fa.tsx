@@ -30,11 +30,13 @@ export default {
         type: 'نوع',
         pleaseWait: 'لطفا صبر کنید',
         cancel: 'انصراف',
+        bikhial: 'بیخیال',
         save: 'ذخیره',
         edit: 'ویرایش',
         options: 'امکانات',
         expireDate: 'تاریخ انقضا',
         address: 'نشانی',
+        address2: 'آدرس',
         landlinePhone: 'تلفن ثابت',
         mobile: 'همراه',
         phone: 'تلفن',
@@ -97,6 +99,7 @@ export default {
         details: 'جزئیات',
         maritalStatus: 'تاهل',
         descriptions: 'توضیح',
+        subject: 'موضوع',
       },
       pack: {
         pack: 'پک',
@@ -114,6 +117,8 @@ export default {
         date: 'تاریخ',
         wrongDate: 'تاریخ اشتباه است',
         afterToday: 'تاریخ باید از امروز به بعد انتخاب شود',
+        sendDate: 'تاریخ ارسال',
+        recieveDate: 'تاریخ درییافت',
       },
       province: {
         selectCounty: 'انتخاب استان',
@@ -168,6 +173,7 @@ export default {
       },
       user: {
         role: 'نقش',
+        rolesList: 'لیست نقش ها',
         user: 'کاربر',
         name: 'نام کاربر',
         family: 'نام خانوادگی',
@@ -231,7 +237,7 @@ export default {
         'new-category': 'ایجاد دسته بندی',
       },
       exchange: {
-        create: 'ایجاد تبادل',
+        create: 'ایجاد {{var}} تبادل',
         exchange: 'تبادل',
         desktop: 'کارتابل',
         expirationDate: 'تاریخ انقضای تبادل',
@@ -299,7 +305,7 @@ export default {
         name: 'نام داروخانه',
         hix: 'HIX',
         star: 'تعداد ستاره',
-        province:'استان',
+        province: 'استان',
         city: 'شهر',
         gli: 'GLN',
         workTime: 'ساعت کار',
@@ -315,7 +321,7 @@ export default {
         long: 'طول جغرافیایی',
         lat: 'عرض جغرافیایی',
         location: 'مکان',
-     },
+      },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
         GOVERNMENTAL: 'دولتی',
@@ -433,7 +439,6 @@ export default {
         guarantee: 'وثیقه',
         previousWorkplace: 'محل کار قبلی',
         previousWorkplacePhone: 'تلفن محل کار قبلی',
-
       },
     },
   },

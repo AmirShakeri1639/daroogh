@@ -1,4 +1,4 @@
-import { Action } from './interface';
+import { Action } from '../interface';
 
 interface User {
   name: string;
