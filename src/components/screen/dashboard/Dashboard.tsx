@@ -334,6 +334,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                       type='file'
                       style={ { display: 'none' } }
                       id='profilePicUpload'
+                      accept="image/jpeg"
                       name='profilePicUpload'
                       onChange={ (e: any): void => {
                         e.preventDefault();

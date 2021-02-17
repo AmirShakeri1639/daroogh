@@ -1,17 +1,24 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import {
   Button,
-  Container, createStyles, Divider, Grid, makeStyles, Paper, TextField, Typography
+  Container, createStyles, Divider, Grid,
+  makeStyles, Paper, TextField, Typography
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ActionInterface } from '../../../../interfaces';
 import { ProfileInterface } from '../../../../interfaces/profile';
-import { userReducer } from '../../../../redux/reducers';
 import { User } from '../../../../services/api';
 import { ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
-import { errorHandler, errorSweetAlert, successSweetAlert, warningSweetAlert } from '../../../../utils';
+import {
+  errorHandler,
+  errorSweetAlert, JwtData, successSweetAlert, warningSweetAlert
+} from '../../../../utils';
 import { useMutation } from 'react-query';
+import changeProfilePic from '../user/changeProfilePic';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCamera } from '@fortawesome/free-solid-svg-icons';
+
 
 export const useClasses = makeStyles((theme) => createStyles({
   parent: {
@@ -57,6 +64,18 @@ export const useClasses = makeStyles((theme) => createStyles({
   centerItem: {
     display: 'flex',
     margin: 'auto'
+  },
+  profileImageCamera: {
+    display: 'none',
+  },
+  profileImage: {
+    borderRadius: '.5em',
+    boxShadow: '0 0 3px',
+    cursor: 'pointer',
+    transition: 'all .5s ease-in-out',
+    '&:hover': {
+      filter: 'opacity(0.8) contrast(1.2)',
+    },
   },
 }));
 
@@ -169,18 +188,16 @@ const Profile: React.FC = () => {
 
   const {
     parent,
-    dropdown,
-    silverBackground,
+    profileImage,
     addButton,
     spacing1,
     spacing3,
     padding3,
     formItem,
-    titleContainer,
-    formTitle,
     rootFull,
     longItem,
     centerItem,
+    profileImageCamera,
   } = useClasses();
 
   const { profile, saveNewUser } = new User();
@@ -233,11 +250,11 @@ const Profile: React.FC = () => {
     if (isFormValid()) {
       try {
         const {
-          name, family, mobile, email, userName,
+          id, name, family, mobile, email, userName,
           active, nationalCode, birthDate, pharmacyID,
         } = state;
         await _save({
-          name, family, mobile, email, userName,
+          id, name, family, mobile, email, userName,
           active, nationalCode, birthDate, pharmacyID,
         });
       } catch (e) {
@@ -262,7 +279,29 @@ const Profile: React.FC = () => {
             <Divider />
             <Grid container>
               <Grid item xs={ 12 } sm={ 4 } md={ 2 } className={ padding3 }>
-                <img src={ `${fileUrl}${state.pictureFileKey}` } />
+                <label style={ { cursor: 'pointer' } }>
+                  <input
+                    type='file'
+                    style={ { display: 'none' } }
+                    accept="image/jpeg"
+                    id='profilePicUpload'
+                    name='profilePicUpload'
+                    onChange={ (e: any): void => {
+                      e.preventDefault();
+                      if (e.target.files.length > 0) {
+                        changeProfilePic(state.id, e.target.files[0])
+                          .then((response) => {
+                            dispatch({ type: 'pictureFileKey', value: response });
+                          })
+                      }
+                    } }
+                  />
+                  <img
+                    src={ `${fileUrl}${state.pictureFileKey}` }
+                    className={ profileImage }
+                  />
+                  <FontAwesomeIcon icon={faCamera} className={ profileImageCamera } />
+                </label>
               </Grid>
               <Grid item xs={ 12 } sm={ 8 } md={ 10 }>
                 <form autoComplete="off" className={ rootFull } onSubmit={ submit }>
@@ -356,6 +395,7 @@ const Profile: React.FC = () => {
                       style={ { display: 'flex', alignItems: 'center' } }
                     >
                       <ThreePartDatePicker
+                        fullDate={ state.birthDate }
                         label={ t('user.birthDate') }
                         onChange={ (value: string, isValid: boolean): void => {
                           dispatch({ type: 'isValidBirthDate', value: isValid });
