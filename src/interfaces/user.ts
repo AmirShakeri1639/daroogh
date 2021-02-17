@@ -3,8 +3,8 @@ import {
   PackStatusEnum,
   PharmacyTypeEnum,
   WorkTimeEnum,
-} from "../enum";
-import { DefaultCountryDivisionID, DefaultProvince } from "../enum/consts";
+} from '../enum';
+import { DefaultCountryDivisionID, DefaultProvince } from '../enum/consts';
 
 export class DateUserId {
   public _date: string = '';
@@ -55,7 +55,7 @@ export class Survey {
   public id: number = 0;
   public pharmacyID: number = 0;
   public exchangeID: number = 0;
-  public description?: string = ''
+  public description?: string = '';
   public _date: string = '';
   public _userid: number = 0;
   public exchange?: string[] = [];
@@ -68,7 +68,7 @@ export class Exchange {
   public pharmacyIdA: number = 0;
   public pharmacyIdB: number = 0;
   public totalPourcentageA: number = 0;
-  public totalPourcentageB: number = 0
+  public totalPourcentageB: number = 0;
   public totalAmountA: number = 0;
   public totalAmountB: number = 0;
   public confirmA?: boolean = false;
@@ -100,7 +100,7 @@ export class OnlinePayment {
   public paymentKey?: string = '';
   public _date: string = '';
   public _userid: number = 0;
-  public accounting?: string [] = [];
+  public accounting?: string[] = [];
 }
 
 export class Accounting {
@@ -328,4 +328,13 @@ export interface ChangeUserPasswordInterface {
 export interface UserRoleInterface {
   roleID: number | string;
   userID: number | string;
+}
+
+export interface UserSearch {
+  active: boolean;
+  family: string;
+  firstName: string;
+  id: number;
+  pharmacyName: string;
+  userName: string;
 }
