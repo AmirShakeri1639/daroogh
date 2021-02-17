@@ -8,6 +8,7 @@ import { NewPharmacyUserData } from '../../model';
 
 class User extends Api {
   readonly urls = {
+    profile: '/User/Profile',
     all: '/User/AllUsers',
     save: '/User/Save',
     remove: '/User/Remove/',
@@ -21,9 +22,9 @@ class User extends Api {
     changeProfileImage: '/User/ChangeProfileImage?userId=',
   };
 
-  getUserData = async (): Promise<any> => {
+  profile = async (): Promise<any> => {
     try {
-      const result = await this.postJsonData('/User/Profile');
+      const result = await this.postJsonData(this.urls.profile);
       return result.data;
     } catch (e) {
       errorHandler(e);

@@ -125,6 +125,10 @@ const PrescriptionList = lazy(() =>
   import('./components/screen/dashboard/prescription/prescriptionList')
 );
 
+const ProfileLazy = lazy(() =>
+  import('./components/screen/dashboard/user/Profile')
+);
+
 const {
   login,
   drugFavoriteList,
@@ -156,6 +160,7 @@ const {
   jobSearchList,
   prescriptionList,
   forgetPassword,
+  profile,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -170,7 +175,7 @@ const LoadingComponent: React.FC = () => {
 };
 
 const App = (): JSX.Element => {
-  ReactGA.initialize('G-G1C616XR26');
+  ReactGA.initialize('G-TKSLN0VE57');
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
   }, [window.location.pathname, window.location.search]);
@@ -278,6 +283,9 @@ const App = (): JSX.Element => {
               <Dashboard component={<PrescriptionList />} />
             </PrivateRoute>
             {/*<Route component={<>404 Not Found</>} />*/}
+            <PrivateRoute exact path={profile}>
+              <Dashboard component={<ProfileLazy />} />
+            </PrivateRoute>
           </Suspense>
         </Switch>
       </Router>

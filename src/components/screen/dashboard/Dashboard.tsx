@@ -18,9 +18,10 @@ import { useTranslation } from 'react-i18next';
 import { Accounting } from '../../../services/api';
 import { LoggedInUserInterface } from '../../../interfaces';
 import changeProfilePic from './user/changeProfilePic';
+import routes from '../../../routes';
+import { Link } from 'react-router-dom';
 
 const { isIndebtPharmacy } = new Accounting();
-
 const drawerWidth = 240;
 
 interface DashboardPropsInterface {
@@ -165,6 +166,14 @@ const useStyles = makeStyles((theme) => ({
   paleText: {
     color: ColorEnum.PaleGray,
   },
+  simpleLink: {
+    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'all .7s',
+    '&:hover': {
+      background: '#bbdefb',
+    }
+  },
 }));
 
 const StyledMenu = withStyles({
@@ -197,6 +206,10 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
   const [avatarChanged, setAvatarChanged] = useState<any>();
+
+  const {
+    profile
+  } = routes;
 
   const classes = useStyles();
 
@@ -344,9 +357,12 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               </Grid>
               <Grid item xs={ 9 }>
                 <Grid item xs={ 12 }>
-                  <span style={ { color: '#4625B2', fontSize: 'large' } }>
-                    { loggedInUser?.name } { loggedInUser?.family }
-                  </span>
+                  <Link to={ profile } className={ classes.simpleLink }>
+                    <span
+                      style={ { color: '#4625B2', fontSize: 'large' } }>
+                      { loggedInUser?.name } { loggedInUser?.family }
+                    </span>
+                  </Link>
                 </Grid>
                 <Grid item xs={ 12 }>
                   <span style={ { color: '#6B4ECC', fontSize: 'small' } }>
