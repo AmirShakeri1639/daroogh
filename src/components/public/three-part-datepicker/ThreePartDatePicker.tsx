@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { createStyles, Grid, makeStyles, TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ActionInterface } from '../../../interfaces';
@@ -14,6 +14,7 @@ const useClasses = makeStyles((theme) =>
 );
 
 interface Props {
+  fullDate?: string;
   day?: string | number;
   month?: string | number;
   year?: string | number;
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const initialState: Props = {
+  fullDate: '',
   day: '',
   month: '',
   year: '',
@@ -47,6 +49,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         year: value,
       };
+    case 'fullDate':
+      return {
+        ...state,
+        fullDate: value,
+      };
     case 'selectedDate':
       return {
         ...state,
@@ -71,6 +78,20 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
     month: isNullOrEmpty(props.month) ? '' : props.month,
     year: isNullOrEmpty(props.year) ? '' : props.year,
   });
+  useEffect(() => {
+    if ((isNullOrEmpty(props.day)
+    || isNullOrEmpty(props.month)
+    || isNullOrEmpty(props.year)
+    ) && props.fullDate !== undefined && props?.fullDate?.length >= 8) {
+      const { fullDate: full } = props;
+      const yearLen = full.length === 10 ? 4 : 2;
+      try {
+        dispatch({ type: 'day', value: full.slice(-2) });
+        dispatch({ type: 'month', value: full.slice(yearLen + 1, yearLen + 3) });
+        dispatch({ type: 'year', value: full.slice(yearLen - 2, yearLen) });
+      } catch { }
+    }
+  }, [props.fullDate])
 
   const {
     formItemSmall,
@@ -137,7 +158,7 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
         type="number"
         className={ formItemSmall }
         variant="outlined"
-        value={state.day}
+        value={ state.day }
         onChange={ (e): void => {
           e.target.value = e.target.value.substr(0, 2)
           if (e.target.value !== '') {
@@ -157,7 +178,7 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
         type="number"
         className={ formItemSmall }
         variant="outlined"
-        value={state.month}
+        value={ state.month }
         onChange={ (e): void => {
           e.target.value = e.target.value.substr(0, 2)
           if (e.target.value !== '') {
@@ -180,7 +201,7 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
         type="number"
         className={ formItemSmall }
         variant="outlined"
-        value={state.year}
+        value={ state.year }
         onChange={ (e): void => {
           e.target.value = e.target.value.substr(0, 2)
           if (e.target.value !== '') {
