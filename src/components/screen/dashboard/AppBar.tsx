@@ -329,8 +329,8 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
                 !debtValueState
                   ? 'white'
                   : debtValueState >= 0
-                  ? '#72fd72'
-                  : '#f95e5e'
+                  ? '#f95e5e'
+                  : '#72fd72'
               }`,
             }}
           >
