@@ -1,5 +1,4 @@
 export class SaveSurvey {
-  pharmacyID: number = 0;
   exchangeID: number = 0;
   questionGroupID: number = 0;
   description: string = '';

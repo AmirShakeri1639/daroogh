@@ -14,6 +14,7 @@ import {
 } from '../../model/exchange';
 import { errorHandler } from '../../utils';
 import Api from './Api';
+import { SaveSurvey } from '../../model/SaveSurvey';
 
 class PharmacyDrug extends Api {
   readonly urls = {
@@ -35,6 +36,7 @@ class PharmacyDrug extends Api {
     pharmacyInfo: '/Exchange/GetExchangePharmacyInfo',
     getQuestionGroupOfExchange: '/QuestionGroups/GetQuestionGroupOfExchange/',
     detailPharmacyInfo: 'Pharmacy/Detail/',
+    saveSurvey: 'Survey/Save/'
   };
 
   getAllPharmacyDrug = async (
@@ -243,6 +245,17 @@ class PharmacyDrug extends Api {
       `${this.urls.getQuestionGroupOfExchange}${exchangeID}`
     );
     return result;
+  };
+
+  saveSurvey = async (data: SaveSurvey): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        this.urls.saveSurvey, data
+      );
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
   };
 }
 

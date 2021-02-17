@@ -9,7 +9,7 @@ import { ChevronRight as ChevronRightIcon } from '@material-ui/icons';
 import Context from './Context';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
-import { errorHandler, JwtData, logoutUser } from '../../../utils';
+import { errorHandler, isNullOrEmpty, JwtData, logoutUser } from '../../../utils';
 import { ColorEnum } from '../../../enum';
 import { Alert } from '@material-ui/lab';
 import Utils from '../../public/utility/Utils';
@@ -17,6 +17,7 @@ import Appbar from './AppBar';
 import { useTranslation } from 'react-i18next';
 import { Accounting } from '../../../services/api';
 import { LoggedInUserInterface } from '../../../interfaces';
+import changeProfilePic from './user/changeProfilePic';
 
 const { isIndebtPharmacy } = new Accounting();
 
@@ -172,17 +173,17 @@ const StyledMenu = withStyles({
   },
 })((props: MenuProps) => (
   <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
+    elevation={ 0 }
+    getContentAnchorEl={ null }
+    anchorOrigin={ {
       vertical: 'bottom',
       horizontal: 'center',
-    }}
-    transformOrigin={{
+    } }
+    transformOrigin={ {
       vertical: 'top',
       horizontal: 'center',
-    }}
-    {...props}
+    } }
+    { ...props }
   />
 ));
 
@@ -195,6 +196,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
+  const [avatarChanged, setAvatarChanged] = useState<any>();
 
   const classes = useStyles();
 
@@ -213,7 +215,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   useEffect(() => {
     const { userData } = new JwtData();
     setLoggedInUser(userData);
+  }, [avatarChanged]);
 
+  useEffect(() => {
     async function getIsIndebtPharmacy(): Promise<void> {
       await handleIsIndebtPharmacy();
     }
@@ -256,139 +260,158 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     const { name, family } = JSON.parse(user);
     const title = (
       <span>
-        {name} {family} عزیز ،
+        {name } {family } عزیز ،
       </span>
     );
     const body = (
-      <span style={{ marginRight: 5 }}>
+      <span style={ { marginRight: 5 } }>
         بعلت اینکه سقف بدهی شما بیشتر از حد مجاز می باشد، امکان هیچگونه عملیاتی
         برای شما میسر نمی باشد. لطفا نسبت به پرداخت بدهی خود اقدام نمایید.
       </span>
     );
     element = (
       <>
-        {title}
-        {body}
+        {title }
+        {body }
       </>
     );
     return element;
   };
 
+  const avatar = (): any => {
+    return (
+      localStorage.getItem('avatar') ?? avatarPic
+    );
+  }
+
   return (
-    <Context.Provider value={contextInitialValues()}>
-      <div className={classes.root}>
+    <Context.Provider value={ contextInitialValues() }>
+      <div className={ classes.root }>
         <Appbar />
 
-        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
-          <div className={classes.drawerBackground}>
-            <div className={classes.toolbarIcon}>
-              <div className={classes.headerHolder}>
-                <div className={classes.logoTypeHolder}>
-                  <img className={classes.logoType} src="logotype.svg" />
+        <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
+          <div className={ classes.drawerBackground }>
+            <div className={ classes.toolbarIcon }>
+              <div className={ classes.headerHolder }>
+                <div className={ classes.logoTypeHolder }>
+                  <img className={ classes.logoType } src="logotype.svg" />
                   <span
-                    className={classes.systemTitle}
-                    style={{ textAlign: 'right' }}
+                    className={ classes.systemTitle }
+                    style={ { textAlign: 'right' } }
                   >
-                    {t('general.systemTitle')}
+                    { t('general.systemTitle') }
                   </span>
                 </div>
                 <IconButton
-                  className={classes.roundicon}
-                  onClick={handleDrawerClose}
+                  className={ classes.roundicon }
+                  onClick={ handleDrawerClose }
                 >
                   <ChevronRightIcon />
                 </IconButton>
               </div>
             </div>
 
-            <Divider className={classes.divider} />
+            <Divider className={ classes.divider } />
 
-            <Grid container className={classes.largeSpacing}>
-              <Grid item xs={3}>
-                {/* <>
-                {loggedInUser?.imageKey != null &&
-                    <Picture fileKey ={loggedInUser?.imageKey}/> }
-
-                {
-                  loggedInUser?.imageKey === null && */}
-                <Avatar
-                  alt={t('user.user')}
-                  className={classes.largeAvatar}
-                  src={avatarPic}
-                />
-                {/* }
-               </> */}
+            <Grid container className={ classes.largeSpacing }>
+              <Grid item xs={ 3 }>
+                <>
+                  <label style={ { cursor: 'pointer' } }>
+                    <input
+                      type='file'
+                      style={ { display: 'none' } }
+                      id='profilePicUpload'
+                      name='profilePicUpload'
+                      onChange={ (e: any): void => {
+                        e.preventDefault();
+                        if (e.target.files.length > 0) {
+                          changeProfilePic(loggedInUser?.userId, e.target.files[0])
+                            .then((response: any) => {
+                              const { userData } = new JwtData();
+                              setAvatarChanged(userData.imageKey);
+                              setLoggedInUser(userData);
+                            });
+                        }
+                      } }
+                    />
+                    <Avatar
+                      alt={ t('user.user') }
+                      className={ classes.largeAvatar }
+                      src={ avatar() }
+                    />
+                  </label>
+                </>
               </Grid>
-              <Grid item xs={9}>
-                <Grid item xs={12}>
-                  <span style={{ color: '#4625B2', fontSize: 'large' }}>
-                    {loggedInUser?.name} {loggedInUser?.family}
+              <Grid item xs={ 9 }>
+                <Grid item xs={ 12 }>
+                  <span style={ { color: '#4625B2', fontSize: 'large' } }>
+                    { loggedInUser?.name } { loggedInUser?.family }
                   </span>
                 </Grid>
-                <Grid item xs={12}>
-                  <span style={{ color: '#6B4ECC', fontSize: 'small' }}>
-                    {t('pharmacy.pharmacy')} {loggedInUser?.pharmacyName}
+                <Grid item xs={ 12 }>
+                  <span style={ { color: '#6B4ECC', fontSize: 'small' } }>
+                    { t('pharmacy.pharmacy') } { loggedInUser?.pharmacyName }
                   </span>
                 </Grid>
                 <Grid
                   item
-                  xs={12}
-                  style={{ display: 'flex', justifyContent: 'flex-end' }}
+                  xs={ 12 }
+                  style={ { display: 'flex', justifyContent: 'flex-end' } }
                 >
                   <IconButton
                     edge="start"
                     color="inherit"
-                    onClick={(): void => logoutUser()}
+                    onClick={ (): void => logoutUser() }
                   >
-                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
-                    <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
-                      {t('login.exit')}
+                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
+                    <span style={ { color: ColorEnum.Red, fontSize: 'medium' } }>
+                      { t('login.exit') }
                     </span>
                   </IconButton>
                 </Grid>
               </Grid>
             </Grid>
-            <Divider className={classes.divider} />
+            <Divider className={ classes.divider } />
             <List
-              style={{ color: '#4625B2' }}
+              style={ { color: '#4625B2' } }
               component="nav"
               aria-labelledby="nested-list-items"
             >
-              {listItemsGenerator()}
+              { listItemsGenerator() }
             </List>
-            <Divider className={classes.divider} />
+            <Divider className={ classes.divider } />
           </div>
         </MaterialDrawer>
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <div className={classes.alert}>
-            {isIndebtPharmacyState && (
-              <Alert variant="filled" severity="error" style={{ margin: 10 }}>
-                {alertContent()}
+        <main className={ classes.content }>
+          <div className={ classes.appBarSpacer } />
+          <div className={ classes.alert }>
+            { isIndebtPharmacyState && (
+              <Alert variant="filled" severity="error" style={ { margin: 10 } }>
+                {alertContent() }
               </Alert>
-            )}
+            ) }
           </div>
-          {component}
+          { component }
         </main>
 
-        {debtValueState && (
+        { debtValueState && (
           <StyledMenu
             id="customized-menu"
-            anchorEl={creditAnchorEl}
+            anchorEl={ creditAnchorEl }
             keepMounted
-            open={Boolean(creditAnchorEl)}
-            onClose={(): void => setcreditAnchorEl(null)}
+            open={ Boolean(creditAnchorEl) }
+            onClose={ (): void => setcreditAnchorEl(null) }
           >
-            <div style={{ padding: 5 }}>
-              <span style={{ fontSize: 14 }}>
-                {' '}
-                <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b>
-                <span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>
-                {debtValueState > 0 && ' بدهکار'}
+            <div style={ { padding: 5 } }>
+              <span style={ { fontSize: 14 } }>
+                { ' ' }
+                <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
+                <span style={ { fontSize: 10, marginRight: 2 } }>ریال</span>
+                { debtValueState > 0 && ' بدهکار' }
               </span>
             </div>
           </StyledMenu>
-        )}
+        ) }
       </div>
     </Context.Provider>
   );

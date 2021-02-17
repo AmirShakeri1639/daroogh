@@ -64,7 +64,6 @@ export type { DrugI } from './AllPharmacyDrugInterface';
 export type { PharmacyWithUserInterface } from './PharmacyWithUserInterface';
 export type { CountryDivisionInterface } from './CountryDivisionInterface';
 export type { LoggedInUserInterface } from './LoggedInUserInterface';
-export type { TokenInterface } from './LoggedInUserInterface';
 export type { MembershipRequestInterface } from './MembershipRequestInterface';
 export type { ViewExchangeInterface, AddDrugInterface, CardInfo } from './ViewExchangeInterface';
 export type { UserRoleInterface } from './user';

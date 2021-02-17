@@ -5,7 +5,8 @@ import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface } from '../
 class Reports extends Api {
   readonly urls = {
     getBestPharmaciesList: '/Reports/GetBestPharmacyListScores',
-    getExchangeStatus: '/Reports/getExchangeStatus'
+    getExchangeStatus: '/Reports/getExchangeStatus',
+    getExchangeCount: '/Reports/GetExchangeCount'
   }
 
 
@@ -22,6 +23,15 @@ class Reports extends Api {
     try {
       const result = await this.getData(
         `${this.urls.getExchangeStatus}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e)
+    }
+  }
+  getExchangeCount = async (): Promise<any> => {
+    try {
+      const result = await this.getData(
+        `${this.urls.getExchangeCount}`);
       return result.data;
     } catch (e) {
       errorHandler(e)

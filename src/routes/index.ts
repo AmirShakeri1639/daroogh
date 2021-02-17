@@ -1,3 +1,5 @@
+import { api } from '../config/default.json';
+
 const dashboard = 'dashboard';
 const exchange = 'exchange';
 const finance = 'finance';
@@ -17,6 +19,7 @@ const prescription = 'prescription';
 export default {
   login: '/login',
   registerPharmacyWithUser: `/register-pharmacy-with-user`,
+  forgetPassword: '/forget-password',
 
   dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,
@@ -58,4 +61,6 @@ export default {
   jobSearchList: `/${dashboard}/${jobSearch}/list`,
 
   prescriptionList: `/${dashboard}/${prescription}/list`,
+  
+  fileUrl: `${api.baseUrl}/File/GetFile?key=`,
 };
