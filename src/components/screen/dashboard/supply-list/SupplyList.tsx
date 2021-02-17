@@ -593,7 +593,7 @@ const SupplyList: React.FC = () => {
                   (e, newValue) => searchDrugs(newValue),
                   500
                 )}
-                getOptionLabel={(option: any) => option.drugName}
+                getOptionLabel={(option: any) => option.drugName ?? ''}
                 openOnFocus
                 renderInput={(params) => (
                   <TextField
