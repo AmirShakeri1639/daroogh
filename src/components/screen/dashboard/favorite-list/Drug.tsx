@@ -195,7 +195,7 @@ const Drug: React.FC = () => {
                 onChange={(event, value, reason): void => {
                   setDrugName(value.id);
                 }}
-                getOptionLabel={(option: any) => option.name}
+                getOptionLabel={(option: any) => option.name ?? ''}
                 renderInput={(params) => (
                   <TextField
                     {...params}
