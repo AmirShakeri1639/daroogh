@@ -10,6 +10,8 @@ import { userReducer } from '../../../../redux/reducers';
 import { User } from '../../../../services/api';
 import { ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
+import { errorHandler, errorSweetAlert, successSweetAlert, warningSweetAlert } from '../../../../utils';
+import { useMutation } from 'react-query';
 
 export const useClasses = makeStyles((theme) => createStyles({
   parent: {
@@ -134,6 +136,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         pictureFileKey: value
       };
+    case 'pharmacyID':
+      return {
+        ...state,
+        pharmacyID: value
+      };
     case 'isValidBirthDate':
       return {
         ...state,
@@ -142,7 +149,7 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'full':
       return {
         ...state,
-        value
+        ...value
       };
     case 'reset':
       return initialState;
@@ -176,9 +183,10 @@ const Profile: React.FC = () => {
     centerItem,
   } = useClasses();
 
+  const { profile, saveNewUser } = new User();
+
   useEffect(() => {
     async function getProfile(): Promise<any> {
-      const { profile } = new User();
       const data = await profile();
       console.log('data : ', data);
       dispatch({ type: 'full', value: data });
@@ -192,11 +200,55 @@ const Profile: React.FC = () => {
     console.log('ddata from state OUTSIDE: ', state);
   }, [state?.name]);
 
+  const [_save, { isLoading: isLoadingSave }] = useMutation(saveNewUser, {
+    onSuccess: async (data: any) => {
+      if (showError) {
+        setShowError(false);
+      }
+      await successSweetAlert(t('alert.successfulSave'));
+    }
+  })
+
+  const isFormValid = (): boolean => {
+    const {
+      name, family, nationalCode, mobile,
+      userName, isValidBirthDate
+    } = state;
+
+    return !(
+      mobile.trim().length < 10 ||
+      !isValidBirthDate ||
+      name.trim().length < 2 ||
+      family.trim().length < 2 ||
+      userName.trim().length < 3 ||
+      nationalCode.length !== 10
+    )
+  }
+
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
     console.log('e on submit:', e)
-  }
+
+    if (isFormValid()) {
+      try {
+        const {
+          name, family, mobile, email, userName,
+          active, nationalCode, birthDate, pharmacyID,
+        } = state;
+        await _save({
+          name, family, mobile, email, userName,
+          active, nationalCode, birthDate, pharmacyID,
+        });
+      } catch (e) {
+        await errorSweetAlert(t('error.save'));
+        errorHandler(e);
+      }
+    } else {
+      await warningSweetAlert(t('alert.fillFormCarefully'));
+      setShowError(true);
+    }
+  };
 
   const profileForm = (): JSX.Element => {
     return (
