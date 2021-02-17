@@ -185,7 +185,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon style={{ color: '#4625B2' }}>
               <ContactMailTwoToneIcon />
             </ListItemIcon>
-            <ListItemText primary={t('user.rolesList')} />
+            <ListItemText primary={t('user.roles')} />
           </Link>
         </List>
 
@@ -256,7 +256,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon style={{ color: '#4625B2' }}>
               <EnhancedEncryption />
             </ListItemIcon>
-            <ListItemText primary={t('drug.list')} />
+            <ListItemText primary={t('drug.drugs')} />
           </Link>
         </List>
         {/* <ListItem button onClick={(): void => setIsOpenDrugMenu((val) => !val)}>
@@ -283,7 +283,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon style={{ color: '#4625B2' }}>
               <AddToPhotosIcon />
             </ListItemIcon>
-            <ListItemText primary={t('category.list')} />
+            <ListItemText primary={t('category.categories')} />
           </Link>
         </List>
         {/* <ListItem button onClick={(): void => setIsOpenCategory((val) => !val)}>
@@ -310,7 +310,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon style={{ color: '#4625B2' }}>
               <Business />
             </ListItemIcon>
-            <ListItemText primary={t('pharmacy.list')} />
+            <ListItemText primary={t('pharmacy.pharmacies')} />
           </Link>
         </List>
         {/* <ListItem

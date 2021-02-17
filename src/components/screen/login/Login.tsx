@@ -25,8 +25,7 @@ import CircleLoading from '../../public/loading/CircleLoading';
 import Account from '../../../services/api/Account';
 import { useMutation } from 'react-query';
 import { errorHandler, errorSweetAlert } from '../../../utils';
-import { Settings } from '../../../services/api';
-import { User } from '../../../services/api';
+import { Settings, User, File } from '../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -110,16 +109,21 @@ const Login: React.FC = (): JSX.Element => {
   const { loginUser } = new Account();
 
   const [_loginUser, { isLoading }] = useMutation(loginUser, {
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       if (data !== undefined) {
         localStorage.setItem('user', JSON.stringify(data));
         localStorage.setItem('mainToken', data.token);
         localStorage.setItem('mainPharmacyName', data.pharmacyName);
 
+        // Save blob of profile pic in local storage
+        const fileApi = new File();
+        const blob = await fileApi.get(data.imageKey);
+        localStorage.setItem('avatar', window.URL.createObjectURL(blob));
+
         if (process.env.NODE_ENV === 'production') {
           (async (): Promise<any> => {
             try {
-              window.najvaUserSubscribed = async function(
+              window.najvaUserSubscribed = async function (
                 najva_user_token: string
               ): Promise<void> {
                 await setNotification(najva_user_token);
@@ -182,70 +186,70 @@ const Login: React.FC = (): JSX.Element => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
+      <div className={ classes.paper }>
+        <Avatar className={ classes.avatar }>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           ورود
         </Typography>
-        <form className={classes.form} noValidate onSubmit={formSubmitHandler}>
+        <form className={ classes.form } noValidate onSubmit={ formSubmitHandler }>
           <TextField
-            error={state.username.trim().length === 0 && showError}
+            error={ state.username.trim().length === 0 && showError }
             variant="outlined"
             margin="normal"
             required
             fullWidth
             id="email"
-            label={t('login.username')}
+            label={ t('login.username') }
             name="email"
             autoComplete="email"
-            onChange={usernameHandler}
-            InputProps={{
+            onChange={ usernameHandler }
+            InputProps={ {
               startAdornment: (
                 <InputAdornment position="start">
-                  <FontAwesomeIcon icon={faUser} size="lg" fill="#ccc" />
+                  <FontAwesomeIcon icon={ faUser } size="lg" fill="#ccc" />
                 </InputAdornment>
               ),
-            }}
+            } }
           />
           <TextField
-            error={state.password.trim().length === 0 && showError}
+            error={ state.password.trim().length === 0 && showError }
             variant="outlined"
             margin="normal"
             required
             fullWidth
             name="password"
             label="کلمه عبور"
-            type={state.isVisiblePassword ? 'text' : 'password'}
+            type={ state.isVisiblePassword ? 'text' : 'password' }
             id="password"
-            onChange={passwordHandler}
+            onChange={ passwordHandler }
             autoComplete="current-password"
-            InputProps={{
+            InputProps={ {
               startAdornment: (
                 <InputAdornment position="start">
-                  <FontAwesomeIcon icon={faKey} size="lg" />
+                  <FontAwesomeIcon icon={ faKey } size="lg" />
                 </InputAdornment>
               ),
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
+                    onClick={ handleClickShowPassword }
+                    onMouseDown={ handleMouseDownPassword }
                     edge="end"
                   >
-                    {state.isVisiblePassword ? (
+                    { state.isVisiblePassword ? (
                       <Visibility />
                     ) : (
-                      <VisibilityOff />
-                    )}
+                        <VisibilityOff />
+                      ) }
                   </IconButton>
                 </InputAdornment>
               ),
-            }}
+            } }
           />
-          <Link className={classes.link} to="/forget-password">
+          <Link className={ classes.link } to="/forget-password">
             رمز عبور را فراموش کردم
           </Link>
           <Button
@@ -253,22 +257,22 @@ const Login: React.FC = (): JSX.Element => {
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
-            disabled={isLoading}
+            className={ classes.submit }
+            disabled={ isLoading }
           >
-            <Typography variant="button">{t('login.login')}</Typography>
-            {isLoading ? (
-              <CircleLoading size={16} color="inherit" />
+            <Typography variant="button">{ t('login.login') }</Typography>
+            { isLoading ? (
+              <CircleLoading size={ 16 } color="inherit" />
             ) : (
-              <LockOpenIcon fontSize="inherit" className={classes.margin} />
-            )}
+                <LockOpenIcon fontSize="inherit" className={ classes.margin } />
+              ) }
           </Button>
           <Link
-            className={`${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root`}
+            className={ `${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root` }
             to="/register-pharmacy-with-user"
           >
             <Typography variant="button">
-              {t('login.registerPharmacyWithUser')}
+              { t('login.registerPharmacyWithUser') }
             </Typography>
           </Link>
         </form>

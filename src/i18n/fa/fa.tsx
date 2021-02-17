@@ -174,6 +174,7 @@ export default {
       user: {
         role: 'نقش',
         rolesList: 'لیست نقش ها',
+        roles: 'نقش‌ها',
         user: 'کاربر',
         name: 'نام کاربر',
         family: 'نام خانوادگی',
@@ -206,6 +207,7 @@ export default {
       },
       drug: {
         drug: 'دارو',
+        drugs: 'داروها',
         category: 'دسته‌بندی',
         categoryID: 'شناسه دسته‌بندی',
         name: 'نام دارو',
@@ -232,6 +234,7 @@ export default {
       },
       category: {
         category: 'دسته‌بندی',
+        categories: 'دسته‌بندی‌ها',
         list: 'لیست دسته‌بندی',
         'edit-category': 'ویرایش دسته بندی',
         'new-category': 'ایجاد دسته بندی',
@@ -297,6 +300,7 @@ export default {
       },
       pharmacy: {
         pharmacy: 'داروخانه',
+        pharmacies: 'داروخانه‌ها',
         pharmacyId: 'شناسه',
         topList: 'لیست داروخانه های برتر',
         create: 'ایجاد داروخانه',
