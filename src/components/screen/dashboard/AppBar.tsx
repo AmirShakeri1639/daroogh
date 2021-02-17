@@ -300,23 +300,16 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
                 onClick={newTransferHandler}
               >
                 <SvgIcon fileName="plus" size="12px" />
+                <Hidden smDown>
+                  <span style={{ fontSize: 14, paddingRight: 6 }}>
+                   {t('exchange.create')}
+                  </span>
+                </Hidden>
               </IconButton>
             </span>
-            <Hidden smDown>
-              <span>
-                <IconButton
-                  edge="end"
-                  style={{ color: ColorEnum.White }}
-                  onClick={newTransferHandler}
-                >
-                  <span style={{ fontSize: 14 }}>
-                    {t('exchange.create', {
-                      var: _transfer.isStarted ? 'مجدد' : '',
-                    })}
-                  </span>
-                </IconButton>
-              </span>
-            </Hidden>
+            <span>
+             
+            </span>
           </div>
         </Tooltip>
 
