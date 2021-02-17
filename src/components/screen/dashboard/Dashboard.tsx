@@ -409,7 +409,6 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
           </div>
           { component }
         </main>
-
         { debtValueState && (
           <StyledMenu
             id="customized-menu"
