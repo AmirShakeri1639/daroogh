@@ -386,7 +386,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                 (e, newValue) => searchPharmacyByName(newValue),
                 500
               )}
-              getOptionLabel={(option: any) => option.name}
+              getOptionLabel={(option: any) => option.name ?? ''}
               openOnFocus
               renderInput={(params) => (
                 <TextField
