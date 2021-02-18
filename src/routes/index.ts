@@ -65,4 +65,5 @@ export default {
   fileUrl: `${api.baseUrl}/File/GetFile?key=`,
   
   profile: `/${dashboard}/${user}/profile`,
+  settings: `/${dashboard}/settings`,
 };

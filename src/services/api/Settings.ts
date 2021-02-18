@@ -4,8 +4,18 @@ import { SettingsInterface } from '../../interfaces';
 
 class Settings extends Api {
   readonly urls = {
-    get: '/Setting/ViewPublic',
-    save: '/Setting/Save'
+    getPublic: '/Setting/ViewPublic',
+    get: '/Setting/View',
+    save: '/Setting/Save',
+  }
+
+  getPublic = async (): Promise<any> => {
+    try {
+      const result = await this.postJsonData(this.urls.getPublic);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
   }
 
   get = async (): Promise<any> => {

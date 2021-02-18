@@ -447,6 +447,30 @@ export default {
         previousWorkplace: 'محل کار قبلی',
         previousWorkplacePhone: 'تلفن محل کار قبلی',
       },
+      settings: {
+        settings: 'تنظیمات',
+
+        password: 'رمز عبور',
+        passwordMinLength: 'حداقل طول مجاز رمز عبور',
+        passwordRequiredLetter: 'استفاده از حروف در رمز عبور اجباری است',
+        passwordRequiredSymbol: 'استفاده از علائم در رمز عبور اجباری است',
+        ticketExireDuration: 'مدت اعتبار رمزیکبار مصرف به دقیقه',
+        
+        exchange: 'تبادل',
+        diffrenceAllowPercentageInExchange: 'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
+        exchangeDeadline: 'مهلت تائید یک تبادل به ساعت',
+        debtAmountAllow: 'مبلغ مجاز بدهکاری',
+        debtTimeAllow: 'مدت مجازی بدهکاری به ساعت',
+        surveyTime: 'چند ساعت بعد از تبادل موفق برای طرفین نظرسنجی ارسال شود',
+
+        message: 'پیام',
+        messageExpireDayDefault: 'مدت انقضای پیام به روز',
+        smsNumber: 'شماره خط پیامک',
+        smsAPIkey: 'کلید سامانه پیامک',
+        notificationAPIkey: 'کلید سامانه ارسال اعلان‌ها',
+        notificationSenderkey: 'کلید ارسال کننده اعلان‌ها',
+        applicationUrl: 'Application URL',
+      }
     },
   },
 };

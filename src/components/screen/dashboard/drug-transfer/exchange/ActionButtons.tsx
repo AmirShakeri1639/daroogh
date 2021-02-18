@@ -96,8 +96,8 @@ const style = makeStyles((theme) =>
       },
     },
     questionHeader: {
-      display: 'flex',
-      alignItems: 'center',
+      display: 'grid',
+      textAlign: 'center',
       height: 50,
       flexDirection: 'column',
       padding: theme.spacing(2),
@@ -236,7 +236,7 @@ const ActionButtons = (): JSX.Element => {
           type: 'success',
           text: res.data.message,
         });
-        history.push(desktop);
+        // history.push(desktop);
       }
     },
   });
@@ -258,7 +258,6 @@ const ActionButtons = (): JSX.Element => {
 
   const handleSaveSurvey = async (): Promise<any> => {
     try {
-      debugger;
       var input = surveyInput;
       input.exchangeID = exchangeId;
       input.questionGroupID = questionGroupId;
@@ -659,7 +658,7 @@ const ActionButtons = (): JSX.Element => {
         setOpenSurvayModal(false);
       }}
     >
-      <DialogTitle style={{ borderBottom: '1px silver solid' }}>
+      <DialogTitle style={{ borderBottom: '1px silver solid', textAlign: 'center' }}>
         {'ثبت نظر (نظرسنجی)'}
       </DialogTitle>
       <DialogContent >
@@ -682,6 +681,7 @@ const ActionButtons = (): JSX.Element => {
               steps={getQuestions.question.length}
               position="static"
               variant="text"
+              style={{backgroundColor: '#f1f1f1'}}
               activeStep={activeQuestionStep}
               nextButton={
                 <MatButton
@@ -801,7 +801,10 @@ const ActionButtons = (): JSX.Element => {
               </MatButton>
             ) : (
                 <MatButton
-                  onClick={async (): Promise<any> => await handleConfirmOrNotExchange(false)}
+                  onClick={async (): Promise<any> => {
+                    await handleConfirmOrNotExchange(false);
+                    await handleGetQuestionGroupOfExchange()
+                  }}
                   variant="contained"
                   color="primary"
                   autoFocus
