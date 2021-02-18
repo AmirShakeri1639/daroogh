@@ -39,8 +39,8 @@ import ModalContent from '../../../public/modal-content/ModalContent';
 const useClasses = makeStyles((theme) =>
   createStyles({
     root: {
-      minWidth: 500,
-      width: '100%',
+      minWidth: 360,
+      width: '99vw',
       maxWidth: 1000,
       '& > .MuiCardContent-root': {
         padding: 0,

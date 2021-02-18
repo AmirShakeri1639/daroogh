@@ -245,8 +245,11 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
       if (!res) {
         return;
       }
+      window.location.reload();
     }
-    window.location.reload();
+    push({
+      pathname: transfer,
+    });
   };
 
   return (
@@ -303,14 +306,14 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
                 <SvgIcon fileName="plus" size="12px" />
                 <Hidden smDown>
                   <span style={{ fontSize: 14, paddingRight: 6 }}>
-                   {t('exchange.create')}
+                    {t('exchange.create', {
+                      var: _transfer.isStarted ? t('general.again.0') : '',
+                    })}
                   </span>
                 </Hidden>
               </IconButton>
             </span>
-            <span>
-             
-            </span>
+            <span></span>
           </div>
         </Tooltip>
 
@@ -366,7 +369,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
               onClick={handleUserIconButton}
               color="inherit"
             >
-              <FontAwesomeIcon icon={ faUserCircle } />
+              <FontAwesomeIcon icon={faUserCircle} />
             </IconButton>
           </>
         )}
