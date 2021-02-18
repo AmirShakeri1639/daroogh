@@ -191,12 +191,6 @@ const App = (): JSX.Element => {
       page: window.location.pathname,
     }); // Update the user's current page
     ReactGA.pageview(window.location.href); // Record a pageview for the given page
-    console.log('IN app GA');
-    console.log('gaOptions:', gaOptions);
-    console.log(
-      'location:',
-      window.location.pathname + ' ' + window.location.search
-    );
   }, [window.location.href]);
 
   return (
