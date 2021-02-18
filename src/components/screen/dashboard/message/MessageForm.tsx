@@ -124,12 +124,10 @@ const MessageForm: React.FC = () => {
   };
 
   const inputsIsValid = (): boolean => {
-    const { message1, subject, type } = state;
-    console.log('sat-->', state);
+    const { message1, subject } = state;
     return (
       subject.trim().length > 1 &&
       message1.trim().length > 1 &&
-      type.length > 0 &&
       selectedUser !== ''
     );
   };
