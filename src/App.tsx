@@ -129,6 +129,10 @@ const ProfileLazy = lazy(() =>
   import('./components/screen/dashboard/user/Profile')
 );
 
+const SettingsLazy = lazy(() =>
+  import('./components/screen/dashboard/settings/Settings')
+);
+
 const {
   login,
   drugFavoriteList,
@@ -161,6 +165,7 @@ const {
   prescriptionList,
   forgetPassword,
   profile,
+  settings,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -179,7 +184,7 @@ const App = (): JSX.Element => {
 
   useEffect(() => {
     const userInStorage = localStorage.getItem('user');
-    const gaOptions: any = {}
+    const gaOptions: any = {};
     if (userInStorage) {
       const user = JSON.parse(userInStorage);
       gaOptions.user_name = user.name;
@@ -188,14 +193,9 @@ const App = (): JSX.Element => {
     }
     ReactGA.set({
       ...gaOptions,
-      page: window.location.pathname
+      page: window.location.pathname,
     }); // Update the user's current page
-    ReactGA.pageview(
-      window.location.href
-    ); // Record a pageview for the given page
-    console.log('IN app GA')
-    console.log('gaOptions:', gaOptions);
-    console.log('location:', window.location.pathname + ' ' + window.location.search)    
+    ReactGA.pageview(window.location.href); // Record a pageview for the given page
   }, [window.location.href]);
 
   return (
@@ -303,6 +303,9 @@ const App = (): JSX.Element => {
             {/*<Route component={<>404 Not Found</>} />*/ }
             <PrivateRoute exact path={ profile }>
               <Dashboard component={ <ProfileLazy /> } />
+            </PrivateRoute>
+            <PrivateRoute exact path={ settings }>
+              <Dashboard component={ <SettingsLazy /> } />
             </PrivateRoute>
           </Suspense>
         </Switch>

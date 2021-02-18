@@ -258,7 +258,6 @@ const ActionButtons = (): JSX.Element => {
 
   const handleSaveSurvey = async (): Promise<any> => {
     try {
-      debugger;
       var input = surveyInput;
       input.exchangeID = exchangeId;
       input.questionGroupID = questionGroupId;
