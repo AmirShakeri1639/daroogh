@@ -12,7 +12,7 @@ import { ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
 import {
   errorHandler,
-  errorSweetAlert, JwtData, successSweetAlert, warningSweetAlert
+  errorSweetAlert, successSweetAlert, warningSweetAlert
 } from '../../../../utils';
 import { useMutation } from 'react-query';
 import changeProfilePic from '../user/changeProfilePic';
@@ -65,8 +65,29 @@ export const useClasses = makeStyles((theme) => createStyles({
     display: 'flex',
     margin: 'auto'
   },
+  avatarContainer: {
+    cursor: 'pointer',
+    display: 'block',
+    position: 'relative',
+    '&:hover $profileImageCamera': {
+      zIndex: '1000',
+      opacity: '.5',
+    }
+  },
   profileImageCamera: {
-    display: 'none',
+    display: 'flex',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '60px',
+    background: 'rgba(0,0,0,.3)',
+    boxSizing: 'border-box',
+    padding: '.5em',
+    bottom: '5px',
+    borderRadius: '.5em',
+    opacity: '0',
+    transition: 'all 1s ease-in-out',
   },
   profileImage: {
     borderRadius: '.5em',
@@ -198,6 +219,7 @@ const Profile: React.FC = () => {
     longItem,
     centerItem,
     profileImageCamera,
+    avatarContainer,
   } = useClasses();
 
   const { profile, saveNewUser } = new User();
@@ -279,7 +301,7 @@ const Profile: React.FC = () => {
             <Divider />
             <Grid container>
               <Grid item xs={ 12 } sm={ 4 } md={ 2 } className={ padding3 }>
-                <label style={ { cursor: 'pointer' } }>
+                <label className={ avatarContainer }>
                   <input
                     type='file'
                     style={ { display: 'none' } }
@@ -300,7 +322,9 @@ const Profile: React.FC = () => {
                     src={ `${fileUrl}${state.pictureFileKey}` }
                     className={ profileImage }
                   />
-                  <FontAwesomeIcon icon={faCamera} className={ profileImageCamera } />
+                  <div className={ profileImageCamera }>
+                    <FontAwesomeIcon icon={ faCamera } size="2x" />
+                  </div>
                 </label>
               </Grid>
               <Grid item xs={ 12 } sm={ 8 } md={ 10 }>
