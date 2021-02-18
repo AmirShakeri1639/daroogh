@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { createStyles, Grid, makeStyles, TextField } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ActionInterface } from '../../../interfaces';
@@ -80,8 +80,8 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
   });
   useEffect(() => {
     if ((isNullOrEmpty(props.day)
-    || isNullOrEmpty(props.month)
-    || isNullOrEmpty(props.year)
+      || isNullOrEmpty(props.month)
+      || isNullOrEmpty(props.year)
     ) && props.fullDate !== undefined && props?.fullDate?.length >= 8) {
       const { fullDate: full } = props;
       const yearLen = full.length === 10 ? 4 : 2;
@@ -97,35 +97,15 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
     formItemSmall,
   } = useClasses();
 
-  /* const isValid = (d: {
-    day: string; month: string; year: string;
-  }): boolean => {
-    const { day, month, year } = d;
-
-    return (
-      !isNullOrEmpty(year) &&
-      !isNullOrEmpty(month) &&
-      !isNullOrEmpty(day)
-      && (
-        (day.trim().length < 1
-          && (month.trim().length > 0 || year.trim().length > 0))
-        || (month.trim().length < 1
-          && (day.trim().length > 0 || year.trim().length > 0))
-        || (year.trim().length < 1
-          && (day.trim().length > 0 || month.trim().length > 0))
-        || +day < 1 || +day > 31
-        || +month < 1 || +month > 12
-        || +year < 1 || +year > 99
-      )
-    )
-  } */
-
   const setSelectedDate = (d: {
     day?: string; month?: string; year?: string;
   }): void => {
-    let bdDay = d.day === undefined ? +state.day : d.day === '' ? 0 : +d.day;
-    const bdMonth = d.month === undefined ? +state.month : d.month === '' ? 0 : +d.month;
-    const bdYear = d.year === undefined ? +state.year : d.year === '' ? 0 : +d.year;
+    let bdDay = d.day === undefined
+      ? +state.day : d.day === '' ? 0 : +d.day;
+    const bdMonth = d.month === undefined
+      ? +state.month : d.month === '' ? 0 : +d.month;
+    const bdYear = d.year === undefined
+      ? +state.year : d.year === '' ? 0 : +d.year;
     bdDay = bdMonth > 6 && bdDay == 31 ? 30 : bdDay;
     bdDay = bdMonth == 12 && bdDay == 30 ? 29 : bdDay;
 
@@ -147,8 +127,9 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
   }
 
   return (
-    <Grid item xs={ 12 } sm={ 6 } style={ { display: 'flex', alignItems: 'center' } }>
-      <span>{ props.label }</span>
+    <Grid item xs={ 12 }
+      style={ { display: 'flex', alignItems: 'center' } }>
+      <span style={{ whiteSpace: 'pre', margin: '0 .2em' }}>{ props.label }</span>
       <TextField
         error={
           (state.day === '' && (state.month !== '' || state.year !== ''))
@@ -212,7 +193,7 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
           setSelectedDate({ year: e.target.value });
         } }
       />
-      <span>13</span>
+      <span style={{ margin: '0 .2em' }}>13</span>
     </Grid>
   )
 }

@@ -227,20 +227,14 @@ const Profile: React.FC = () => {
   useEffect(() => {
     async function getProfile(): Promise<any> {
       const data = await profile();
-      console.log('data : ', data);
       dispatch({ type: 'full', value: data });
-      console.log('ddata from state: ', state)
     }
 
     getProfile();
   }, [])
 
-  useEffect(() => {
-    console.log('ddata from state OUTSIDE: ', state);
-  }, [state?.name]);
-
-  const [_save, { isLoading: isLoadingSave }] = useMutation(saveNewUser, {
-    onSuccess: async (data: any) => {
+  const [_save] = useMutation(saveNewUser, {
+    onSuccess: async () => {
       if (showError) {
         setShowError(false);
       }
@@ -267,8 +261,6 @@ const Profile: React.FC = () => {
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
-    console.log('e on submit:', e)
-
     if (isFormValid()) {
       try {
         const {
@@ -291,9 +283,7 @@ const Profile: React.FC = () => {
 
   const profileForm = (): JSX.Element => {
     return (
-      <>
-        { console.log('profile:', state) }
-        <Container maxWidth="lg" className={ parent }>
+      <Container maxWidth="lg" className={ parent }>
           <Paper className={ padding3 }>
             <Typography component="h2">
               <h2>{ t('user.profile') }</h2>
@@ -451,7 +441,6 @@ const Profile: React.FC = () => {
             </Grid>
           </Paper>
         </Container>
-      </>
     )
   }
 
