@@ -34,12 +34,13 @@ const ModalContent: React.FC<ModalPropsInterface> = (props) => {
 
   const { t } = useTranslation();
 
-  const getWidth = (): number => {
-    if (size === 'md') {
-      return 500;
-    } else if (size === 'lg') {
-      return 992;
-    } else if (size === 'xl') {
+  const getWidth = (): number | string => {
+    const currentWidth = window.outerWidth;
+    if (currentWidth <= 500) {
+      return '100vw';
+    } else if (currentWidth > 500 && currentWidth <= 992) {
+      return 850;
+    } else if (currentWidth > 992) {
       return window.outerWidth * 0.8;
     }
     return 0;
@@ -47,7 +48,7 @@ const ModalContent: React.FC<ModalPropsInterface> = (props) => {
 
   return (
     <Modal open={open} toggle={toggle} zIndex={zIndex ?? 1050}>
-      <div className={`${style['container']}`}>
+      <div className={`${style['container']}`} style={{ width: getWidth() }}>
         <div className={`${style['content']}`}>{children}</div>
         <div className={`${style['footer']}`}>
           <Button
