@@ -100,6 +100,9 @@ export default {
         maritalStatus: 'تاهل',
         descriptions: 'توضیح',
         subject: 'موضوع',
+        again: {
+          0: 'مجدد',
+        },
       },
       pack: {
         pack: 'پک',
