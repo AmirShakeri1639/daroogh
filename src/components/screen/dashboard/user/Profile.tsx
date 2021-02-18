@@ -104,9 +104,6 @@ const initialState: ProfileInterface = {
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
 
-  console.log('action in reducer:', action);
-  console.log('state in reducer:', state);
-
   switch (action.type) {
     case 'id':
       return {
