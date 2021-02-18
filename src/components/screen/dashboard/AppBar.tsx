@@ -1,3 +1,4 @@
+import React, { useContext } from 'react';
 import {
   Toolbar,
   AppBar,
@@ -8,7 +9,6 @@ import {
   Tooltip,
   Badge,
 } from '@material-ui/core';
-import React, { useContext, useEffect } from 'react';
 import clsx from 'clsx';
 import Ribbon from '../../public/ribbon/Ribbon';
 import { ColorEnum, MessageQueryEnum } from '../../../enum';
@@ -23,9 +23,10 @@ import Utils from '../../public/utility/Utils';
 import NotificationMenu from './appbar/NotificationMenu';
 import UserMenu from './appbar/UserMenu';
 import { useQuery } from 'react-query';
-import { connect, ConnectedProps, useDispatch } from 'react-redux';
-import { setTransferEnd } from '../../../redux/actions';
+import { connect, ConnectedProps } from 'react-redux';
 import { sweetAlert } from '../../../utils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 const drawerWidth = 240;
 const { getUserMessages } = new Message();
@@ -365,7 +366,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
               onClick={handleUserIconButton}
               color="inherit"
             >
-              <SvgIcon fileName="logout" />
+              <FontAwesomeIcon icon={ faUserCircle } />
             </IconButton>
           </>
         )}

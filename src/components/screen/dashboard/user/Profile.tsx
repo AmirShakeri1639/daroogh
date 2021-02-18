@@ -24,13 +24,6 @@ export const useClasses = makeStyles((theme) => createStyles({
   parent: {
     paddingTop: theme.spacing(2),
   },
-  dropdown: {
-    margin: theme.spacing(1),
-    minWidth: '100%',
-  },
-  silverBackground: {
-    background: '#ebebeb',
-  },
   addButton: {
     background: theme.palette.blueLinearGradient.main,
   },
@@ -47,12 +40,6 @@ export const useClasses = makeStyles((theme) => createStyles({
     display: 'flex',
     justifySelf: 'stretch',
     margin: theme.spacing(1)
-  },
-  titleContainer: {
-    padding: theme.spacing(2)
-  },
-  formTitle: {
-    margin: 0
   },
   rootFull: {
     flexGrow: 1,
