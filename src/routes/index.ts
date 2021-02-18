@@ -63,4 +63,6 @@ export default {
   prescriptionList: `/${dashboard}/${prescription}/list`,
   
   fileUrl: `${api.baseUrl}/File/GetFile?key=`,
+  
+  profile: `/${dashboard}/${user}/profile`,
 };

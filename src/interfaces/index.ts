@@ -70,6 +70,7 @@ export type { UserRoleInterface } from './user';
 export type { SettingsInterface } from './SettingsInterface';
 export type { PrescriptionInterface, PrescriptionResponseInterface } from './PrescriptionInterface';
 export type { EmploymentApplicationInterface } from './EmploymentApplicationInterface';
+export type { ProfileInterface } from './profile';
 
 export * from './component';
 export * from './general';
