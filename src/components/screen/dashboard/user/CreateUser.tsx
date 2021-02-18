@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Container,
   Grid,
-  Paper,
   createStyles,
   Typography,
   Divider,
@@ -31,21 +30,19 @@ const CreateUser: React.FC = () => {
     <Container maxWidth="lg" className={container}>
       <Grid container spacing={0}>
         <Grid xs={12} item>
-          <Paper>
-            <div className={titleContainer}>
-              <Typography
-                variant="h6"
-                component="h6"
-                className={`${formTitle} txt-md`}
-              >
-                کاربر جدید
-              </Typography>
-            </div>
+          <div className={titleContainer}>
+            <Typography
+              variant="h6"
+              component="h6"
+              className={`${formTitle} txt-md`}
+            >
+              کاربر جدید
+            </Typography>
+          </div>
 
-            <Divider />
+          <Divider />
 
-            <UserForm />
-          </Paper>
+          <UserForm />
         </Grid>
       </Grid>
     </Container>
