@@ -82,6 +82,9 @@ const CategoryList = lazy(() =>
 const FavoriteList = lazy(() =>
   import('./components/screen/dashboard/favorite-list/Drug')
 );
+const Prescription = lazy(() =>
+  import('./components/screen/dashboard/peopleSection/Prescription')
+);
 
 const CreatePharmacy = lazy(() =>
   import('./components/screen/dashboard/pharmacy/createPharmacy')
@@ -128,6 +131,7 @@ const PrescriptionList = lazy(() =>
 const {
   login,
   drugFavoriteList,
+  prescription,
   dashboard,
   transfer,
   desktop,
@@ -249,6 +253,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute path={drugFavoriteList}>
               <Dashboard component={<FavoriteList />} />
+            </PrivateRoute>
+            <PrivateRoute path={prescription}>
+              <Dashboard component={<Prescription />} />
             </PrivateRoute>
             <PrivateRoute path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />

@@ -113,6 +113,8 @@ const {
   createMessage,
   messagesList,
   drugFavoriteList,
+  jobApplication,
+  prescription,
   drugCategoryfavoriteList,
   packsList,
   createPack,
@@ -147,6 +149,9 @@ const ListItems: React.FC = () => {
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(
     isOpenPageOfThisGroup('favorite')
   );
+  const [isopenpeopleSection, setIsopenpeopleSection] = useState(
+    isOpenPageOfThisGroup('peopleSection')
+  );
   const [isOpenExchangeManagement, setIsOpenExchangeManagement] = useState<
     boolean
   >(false);
@@ -164,7 +169,31 @@ const ListItems: React.FC = () => {
 
   const preventDefault = (event: React.SyntheticEvent): any =>
     event.preventDefault();
+  const publicMenu = (): JSX.Element => {
+    return (
+      <>
+        <h3 className={spacing3}>{t('general.peopleSection')}</h3>
 
+        <List component="div" className={linkWrapper}>
+          <Link to={prescription} className={notNested}>
+            <ListItemIcon style={{ color: '#4625B2' }}>
+              <FontAwesomeIcon icon={faFileMedical} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('peopleSection.prescription')} />
+          </Link>
+        </List>
+
+        <List component="div" className={linkWrapper}>
+          <Link to={jobApplication} className={notNested}>
+            <ListItemIcon style={{ color: '#4625B2' }}>
+              <FontAwesomeIcon icon={faBars} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('peopleSection.jobApplication')} />
+          </Link>
+        </List>
+      </>
+    );
+  };
   const adminMenu = (): JSX.Element => {
     return (
       <>
@@ -607,6 +636,7 @@ const ListItems: React.FC = () => {
               GetValuesOfEnum(PharmacyRoleEnum).includes(item)
             )) &&
             pharmacyMenu()}
+          {!(rolesArray?.indexOf(RolesEnum.PUBLIC) >= 0) && publicMenu()}
         </>
       )}
     </div>
