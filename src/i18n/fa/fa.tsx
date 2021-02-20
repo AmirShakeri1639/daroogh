@@ -122,6 +122,7 @@ export default {
         afterToday: 'تاریخ باید از امروز به بعد انتخاب شود',
         sendDate: 'تاریخ ارسال',
         recieveDate: 'تاریخ درییافت',
+        minimumDate: 'تاریخ انتخابی باید حداقل برای {{day}} روز آینده باشد',
       },
       province: {
         selectCounty: 'انتخاب استان',

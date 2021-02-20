@@ -1,3 +1,5 @@
+import { SearchTypeEnum } from '../enum/search';
+
 export interface AdvancedSearchInterface {
   pharmacyId?: number;
   categoryId?: number;
@@ -16,4 +18,11 @@ export interface SearchPharmacyInterface {
   adminFamily: string;
   adminFirstName: string;
   name: string;
+}
+
+export interface SearchDrugInCategory {
+  name?: string;
+  categoryId?: number | string;
+  searchType?: SearchTypeEnum;
+  count?: number | string;
 }
