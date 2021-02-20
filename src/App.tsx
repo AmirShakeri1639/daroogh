@@ -10,6 +10,7 @@ import DashboardContent from './components/screen/dashboard/DashboardContent';
 import { isAdmin } from './utils';
 import Appbar from './components/screen/dashboard/AppBar';
 import ReactGA from 'react-ga';
+import { createBrowserHistory } from 'history';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -180,9 +181,9 @@ const LoadingComponent: React.FC = () => {
 };
 
 const App = (): JSX.Element => {
+  const history = createBrowserHistory();
   ReactGA.initialize('G-TKSLN0VE57');
-
-  useEffect(() => {
+  history.listen((e): any => {
     const userInStorage = localStorage.getItem('user');
     const gaOptions: any = {};
     if (userInStorage) {
@@ -193,10 +194,11 @@ const App = (): JSX.Element => {
     }
     ReactGA.set({
       ...gaOptions,
-      page: window.location.pathname,
+      page: `${e.location.pathname}${e.location.search}${e.location.hash}`,
     }); // Update the user's current page
-    ReactGA.pageview(window.location.href); // Record a pageview for the given page
-  }, [window.location.href]);
+    // Record a pageview for the given page
+    ReactGA.pageview(`${e.location.pathname}${e.location.search}${e.location.hash}`);
+  })
 
   return (
     <>
