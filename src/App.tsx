@@ -307,6 +307,9 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={ settings }>
               <Dashboard component={ <SettingsLazy /> } />
             </PrivateRoute>
+            <PrivateRoute exact path={ settings }>
+              <Dashboard component={ <SettingsLazy /> } />
+            </PrivateRoute>
           </Suspense>
         </Switch>
       </Router>
