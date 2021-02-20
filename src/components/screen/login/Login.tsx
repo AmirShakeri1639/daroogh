@@ -136,8 +136,8 @@ const Login: React.FC = (): JSX.Element => {
 
         // Get settings from SERVER
         (async (): Promise<any> => {
-          const { get } = new Settings();
-          const result = await get();
+          const { getPublic } = new Settings();
+          const result = await getPublic();
           const { smsAPIkey, ...settings } = result;
           localStorage.setItem('settings', JSON.stringify(settings));
         })();

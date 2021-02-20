@@ -12,6 +12,7 @@ import store from './redux/store';
 import './i18n';
 import './assets/scss/main.scss';
 import './scrollbar.css';
+import './public-style.css';
 
 const queryCache = new QueryCache({
   defaultConfig: {
