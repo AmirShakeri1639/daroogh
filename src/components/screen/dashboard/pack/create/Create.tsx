@@ -22,7 +22,7 @@ import {
   MaterialContainer,
   Modal,
 } from '../../../../public';
-import { omit, remove, has } from 'lodash';
+import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
 import { useEffectOnce } from '../../../../../hooks';
@@ -41,16 +41,21 @@ import { DrugType } from '../../../../../enum/pharmacyDrug';
 import jalaali from 'jalaali-js';
 import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
 import routes from '../../../../../routes';
+import { SearchDrugInCategory } from '../../../../../interfaces/search';
 
 const { packsList } = routes;
 
-const { searchDrug } = new Drug();
+const { seerchDrugInCategory } = new Drug();
 
 const { getAllCategories } = new Category();
 
 const { savePack, getPackDetail } = new Pack();
 
+const { getComissionAndRecommendation } = new Comission();
+
 const { numberWithZero, thousandsSeperatorFa } = Convertor;
+
+const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -116,19 +121,16 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const { getComissionAndRecommendation } = new Comission();
-
 const monthMinimumLength = 28;
 
 const monthIsValid = (month: number): boolean => month < 13;
 const dayIsValid = (day: number): boolean => day < 32;
 
 const Create: React.FC = () => {
-  const [packTitle, setPackTitle] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('-1');
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [amount, setAmount] = useState<string>('');
@@ -153,6 +155,7 @@ const Create: React.FC = () => {
   const [isWrongDate, setIsWrongDate] = useState(false);
   const [daroogRecommendation, setDaroogRecommendation] = useState<string>('');
   const [comissionPercent, setComissionPercent] = useState<string>('');
+  const [hasMinimumDate, setHasMinimumDate] = useState(true);
 
   const { t } = useTranslation();
   const { push } = useHistory();
@@ -185,6 +188,7 @@ const Create: React.FC = () => {
     setSelectedDate('');
     setOptions([]);
     setIsWrongDate(false);
+    setHasMinimumDate(true);
   };
 
   const isJalaliDate = (num: number): boolean => num < 2000;
@@ -225,6 +229,12 @@ const Create: React.FC = () => {
     const daysDiff = String(
       selectedDateMomentObject.diff(todayMomentObject, 'days')
     );
+
+    if (Number(daysDiff) < drugExpireDay) {
+      setHasMinimumDate(false);
+    } else {
+      setHasMinimumDate(true);
+    }
 
     if (Number(daysDiff) < 0) {
       setIsWrongDate(true);
@@ -328,7 +338,6 @@ const Create: React.FC = () => {
           pharmacyDrug,
         } = result;
 
-        setPackTitle(name);
         setPackTotalItems(pharmacyDrug.length);
         setSelectedCategory(categoryId);
 
@@ -354,7 +363,6 @@ const Create: React.FC = () => {
   const [_savePack] = useMutation(savePack, {
     onSuccess: async () => {
       if (packId === undefined) {
-        setPackTitle('');
         setSelectedCategory('');
       }
       setIsBackdropLoading(false);
@@ -423,7 +431,13 @@ const Create: React.FC = () => {
         return;
       }
       setIsLoading(true);
-      const result = await searchDrug(title);
+      const data: SearchDrugInCategory = {
+        name: title,
+      };
+      if (selectedCategory !== '-1' && !isUndefined(selectedCategory)) {
+        data.categoryId = selectedCategory;
+      }
+      const result = await seerchDrugInCategory(data);
 
       const items = result.map((item: any) => ({
         id: item.id,
@@ -454,9 +468,9 @@ const Create: React.FC = () => {
     try {
       if (
         temporaryDrugs.length === 0 ||
-        packTitle === '' ||
         selectedCategory === '' ||
-        isWrongDate
+        isWrongDate ||
+        !hasMinimumDate
       ) {
         return;
       }
@@ -492,7 +506,8 @@ const Create: React.FC = () => {
       await _savePack({
         id: packId !== undefined ? packId : 0,
         categoryID: selectedCategory,
-        name: packTitle,
+        // name: packTitle,
+        name: '',
         pharmacyDrug: data as PharmacyDrugSupplyList[],
       });
     } catch (e) {
@@ -571,17 +586,8 @@ const Create: React.FC = () => {
         <Grid item xs={12}>
           <FieldSetLegend legend={t('pack.create')}>
             <Grid container spacing={1}>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <Input
-                      className="w-100"
-                      label={t('pack.title')}
-                      value={packTitle}
-                      onChange={(e): void => setPackTitle(e.target.value)}
-                    />
-                  </Grid>
-
                   <Grid item xs={12}>
                     <FormControl
                       variant="outlined"
@@ -598,48 +604,48 @@ const Create: React.FC = () => {
                         placeholder={t('pack.category')}
                         className="w-100"
                         value={selectedCategory}
-                        onChange={(e): void =>
-                          setSelectedCategory(e.target.value as string)
-                        }
+                        onChange={(e): void => {
+                          setSelectedCategory(e.target.value as string);
+                        }}
                       >
-                        <MenuItem value="" />
+                        <MenuItem value="-1">همه دسته ها</MenuItem>
                         {itemsGenerator()}
                       </Select>
                     </FormControl>
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Grid
-                  container
-                  spacing={1}
-                  justify="center"
-                  alignItems="center"
-                  className={countContainer}
-                >
-                  <Grid item xs={12}>
-                    <span>تعداد کل اقلام: {packTotalItems}</span>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <span>
-                      مجموع قیمت اقلام: {thousandsSeperatorFa(packTotalPrice)}
-                    </span>
-                  </Grid>
-                </Grid>
-              </Grid>
 
               <Grid item xs={12} className="text-left">
-                <Button
-                  color="blue"
-                  type="button"
-                  onClick={formHandler}
-                  className={submitBtn}
-                >
-                  {isLoadingSave
-                    ? t('general.pleaseWait')
-                    : t('general.submit')}
-                </Button>
+                <Grid container spacing={1} alignItems="center">
+                  <Grid item xs={6}>
+                    <Grid container spacing={1}>
+                      <Grid item xs={6} className="text-right">
+                        <span>تعداد کل اقلام: {packTotalItems}</span>
+                      </Grid>
+
+                      <Grid item xs={6} className="text-right">
+                        <span>
+                          مجموع قیمت اقلام:{' '}
+                          {thousandsSeperatorFa(packTotalPrice)}
+                        </span>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Button
+                      color="blue"
+                      type="button"
+                      onClick={formHandler}
+                      className={submitBtn}
+                    >
+                      {isLoadingSave
+                        ? t('general.pleaseWait')
+                        : t('general.submit')}
+                    </Button>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </FieldSetLegend>
@@ -668,8 +674,11 @@ const Create: React.FC = () => {
                 onChange={(event, value, reason): void => {
                   setSelectedDrug(value);
                 }}
-                getOptionLabel={(option: any) => option.drugName}
-                onInputChange={(e, newValue) => searchDrugs(newValue)}
+                getOptionLabel={(option: any): string => option.drugName}
+                onInputChange={debounce(
+                  (e, newValue) => searchDrugs(newValue),
+                  500
+                )}
                 openOnFocus
                 renderInput={(params) => (
                   <TextField
@@ -810,6 +819,13 @@ const Create: React.FC = () => {
               <Grid item xs={12}>
                 {isWrongDate && (
                   <p className="text-danger txt-xs">{t('date.afterToday')}</p>
+                )}
+                {!hasMinimumDate && (
+                  <p className="text-danger txt-xs">
+                    {t('date.minimumDate', {
+                      day: drugExpireDay,
+                    })}
+                  </p>
                 )}
               </Grid>
               {/* <Input

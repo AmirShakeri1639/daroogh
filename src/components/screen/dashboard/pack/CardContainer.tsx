@@ -42,7 +42,6 @@ const { createPack } = routes;
 const CardContainer: React.FC<CardContainerProps> = (props) => {
   const { root, redTrash } = useStyle();
   const { id, removeHandler } = props;
-  console.log('props', props);
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
