@@ -1,6 +1,9 @@
-import Api from './Api'
-import { errorHandler } from "../../utils";
-import { DrugInterface } from '../../interfaces'
+import Api from './Api';
+import { errorHandler } from '../../utils';
+import { DrugInterface } from '../../interfaces';
+import { SearchDrugInCategory } from '../../interfaces/search';
+import { SearchTypeEnum } from '../../enum';
+import { isUndefined } from 'lodash';
 
 class Drug extends Api {
   readonly urls = {
@@ -8,48 +11,46 @@ class Drug extends Api {
     save: '/Drugs/Save',
     get: '/Drugs/Detail/',
     remove: '/Drugs/Remove/',
-    types: '/Drugs/AllDrugTypes'
-  }
+    types: '/Drugs/AllDrugTypes',
+  };
 
   save = async (data: DrugInterface): Promise<any> => {
     try {
-      const result = await this.postJsonData(
-        this.urls.save,
-        data
-      );
+      const result = await this.postJsonData(this.urls.save, data);
       return result.data;
-    } catch(e) {
+    } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
   all = async (skip: number = 0, top: number = 10): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`);
+        `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`
+      );
       return result.data;
     } catch (e) {
-      errorHandler(e)
+      errorHandler(e);
     }
-  }
+  };
 
   get = async (id: number | string): Promise<any> => {
     try {
       const result = await this.postJsonData(`${this.urls.get}${id}`);
       return result.data;
     } catch (e) {
-      errorHandler(e)
+      errorHandler(e);
     }
-  }
+  };
 
   remove = async (id: number | string): Promise<any> => {
     try {
       const result = await this.postJsonData(`${this.urls.remove}${id}`);
       return result.data;
     } catch (e) {
-      errorHandler(e)
+      errorHandler(e);
     }
-  }
+  };
 
   types = async (): Promise<any> => {
     try {
@@ -58,14 +59,30 @@ class Drug extends Api {
     } catch (e) {
       errorHandler(e);
     }
-  }
+  };
 
-  searchDrug = async (name: string, searchType: string = '', count = 100): Promise<any> => {
+  searchDrug = async (
+    name: string,
+    searchType: string = '',
+    count = 100
+  ): Promise<any> => {
     const result = await this.getData(
       `/Search/SearchMedicalDrug?name=${name}&searchType=${searchType}&count=${count}`
     );
     return result.data;
-  }
+  };
+
+  seerchDrugInCategory = async (data: SearchDrugInCategory): Promise<any> => {
+    let queryString = `/Search/SearchDrugInCategory?name=${data.name ??
+      ''}&searchType=${data.searchType ??
+      SearchTypeEnum.CONTAINS}&count=${data.count ?? 99}`;
+    if (!isUndefined(data.categoryId)) {
+      queryString += `&categoryId=${data.categoryId}`;
+    }
+    const result = await this.getData(queryString);
+
+    return result.data;
+  };
 }
 
 export default Drug;
