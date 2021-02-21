@@ -7,6 +7,11 @@ class Exchange extends Api {
     pharmacyInfo: '/Exchange/GetExchangePharmacyInfo?exchangeID=',
     dashboard: '/Exchange/Dashboard',
     allExchange: '/Exchange/AllExchange',
+    // state 3 = CONFIRMB_AND_WAITFORA
+    // state 2 = WAITFORB (12 for B)
+    getForWidget: `/Exchange/Dashboard?$top=5&$orderby=id desc` //&$filter=` +
+      // `(contains(cast(state, 'Edm.String'), '3') and currentPharmacyIsA eq true) or ` +
+      // `(contains(cast(state, 'Edm.String'), '2') and currentPharmacyIsA eq false)`,
   };
 
   getPharmacyInfoOfExchange = async (
@@ -26,6 +31,11 @@ class Exchange extends Api {
       errorHandler(e);
     }
   };
+
+  getForWidget = async (): Promise<any> => {
+    const result = await this.postJsonData(this.urls.getForWidget);
+    return result.data;
+  }
 
   getAllExchange = async (
     skip: number = 0,
