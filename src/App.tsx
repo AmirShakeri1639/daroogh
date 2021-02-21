@@ -183,22 +183,33 @@ const LoadingComponent: React.FC = () => {
 const App = (): JSX.Element => {
   const history = createBrowserHistory();
   ReactGA.initialize('G-TKSLN0VE57');
-  history.listen((e): any => {
-    const userInStorage = localStorage.getItem('user');
-    const gaOptions: any = {};
-    if (userInStorage) {
-      const user = JSON.parse(userInStorage);
-      gaOptions.user_name = user.name;
-      gaOptions.user_family = user.family;
-      gaOptions.pharmacyName = user.pharmacyName;
-    }
-    ReactGA.set({
-      ...gaOptions,
-      page: `${e.location.pathname}${e.location.search}${e.location.hash}`,
-    }); // Update the user's current page
-    // Record a pageview for the given page
-    ReactGA.pageview(`${e.location.pathname}${e.location.search}${e.location.hash}`);
-  })
+  // history.listen((e): any => {
+  //   const userInStorage = localStorage.getItem('user');
+  //   const gaOptions: any = {};
+  //   if (userInStorage) {
+  //     const user = JSON.parse(userInStorage);
+  //     gaOptions.user_name = user.name;
+  //     gaOptions.user_family = user.family;
+  //     gaOptions.pharmacyName = user.pharmacyName;
+  //   }
+  //   ReactGA.set({
+  //     ...gaOptions,
+  //     page: `${e.location.pathname}${e.location.search}${e.location.hash}`,
+  //   }); // Update the user's current page
+  //   // Record a pageview for the given page
+  //   ReactGA.pageview(`${e.location.pathname}${e.location.search}${e.location.hash}`);
+  // })
+
+  const gaScript = document.createElement('script');
+  gaScript.async = true;
+  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-TKSLN0VE57";
+  document.body.appendChild(gaScript);
+  const gaScript2 = document.createElement('script');
+  gaScript2.text = " window.dataLayer = window.dataLayer || [];" +
+    "function gtag(){dataLayer.push(arguments);}" +
+    "gtag('js', new Date());" +
+    "gtag('config', 'UA-31704707-1');";
+  document.body.appendChild(gaScript2);
 
   return (
     <>
