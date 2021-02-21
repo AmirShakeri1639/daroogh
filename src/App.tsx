@@ -130,7 +130,7 @@ const ProfileLazy = lazy(() =>
   import('./components/screen/dashboard/user/Profile')
 );
 
-const SettingsLazy = lazy(() =>
+const SettingsForm = lazy(() =>
   import('./components/screen/dashboard/settings/Settings')
 );
 
@@ -318,10 +318,7 @@ const App = (): JSX.Element => {
               <Dashboard component={ <ProfileLazy /> } />
             </PrivateRoute>
             <PrivateRoute exact path={ settings }>
-              <Dashboard component={ <SettingsLazy /> } />
-            </PrivateRoute>
-            <PrivateRoute exact path={ settings }>
-              <Dashboard component={ <SettingsLazy /> } />
+              <Dashboard component={ <SettingsForm /> } />
             </PrivateRoute>
           </Suspense>
         </Switch>
