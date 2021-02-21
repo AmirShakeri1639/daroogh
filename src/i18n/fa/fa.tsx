@@ -274,6 +274,8 @@ export default {
         continue: 'ادامه تبادل',
         exchangeManagement: 'مدیریت تبادل',
         viewExchange: 'مشاهده تبادل',
+        widget: 'ابزارک تبادل',
+        waitingForYourConfirmation: 'تبادل‌های در انتظار تایید شما',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
@@ -471,7 +473,10 @@ export default {
         notificationAPIkey: 'کلید سامانه ارسال اعلان‌ها',
         notificationSenderkey: 'کلید ارسال کننده اعلان‌ها',
         applicationUrl: 'Application URL',
-      }
+      },
+      survey: {
+        widget: 'ابزارک نظرسنجی',
+      },
     },
   },
 };
