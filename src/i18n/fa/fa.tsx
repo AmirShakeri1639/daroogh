@@ -462,6 +462,7 @@ export default {
         debtAmountAllow: 'مبلغ مجاز بدهکاری',
         debtTimeAllow: 'مدت مجازی بدهکاری به ساعت',
         surveyTime: 'چند ساعت بعد از تبادل موفق برای طرفین نظرسنجی ارسال شود',
+        drugExpireDay: 'حداقل مدت اعتبار دارو به روز',
 
         message: 'پیام',
         messageExpireDayDefault: 'مدت انقضای پیام به روز',
