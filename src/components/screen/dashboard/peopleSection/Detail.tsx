@@ -83,7 +83,13 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
                     <Grid item xs={11}>
                       <TextLine
                         rightText={'اسامی داروها'}
-                        leftText={comment || t('general.undefined')}
+                        leftText={
+                          (comment &&
+                            (comment.length > 30
+                              ? comment.substring(0, 30) + '...'
+                              : comment)) ||
+                          t('general.undefined')
+                        }
                       />
                     </Grid>
                   </Grid>

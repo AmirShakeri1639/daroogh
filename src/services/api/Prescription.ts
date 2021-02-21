@@ -9,6 +9,7 @@ class Prescription extends Api {
     getPrescriptionOfUser: '/Prescription/GetPrescriptionOfUser',
     send: '/Prescription/Send',
     cancel: '/Prescription/Cancel',
+    detail: '/Prescription/Detail',
   };
 
   getList = async (skip: number, top: number = 10): Promise<any> => {
@@ -24,6 +25,10 @@ class Prescription extends Api {
     const result = await this.postJsonData(
       `${this.urls.getPrescriptionOfUser}`
     );
+    return result.data;
+  };
+  detail = async (id: number): Promise<any> => {
+    const result = await this.postJsonData(`${this.urls.detail}/${id}`);
     return result.data;
   };
   cancel = async (id: number): Promise<any> => {
