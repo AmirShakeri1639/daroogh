@@ -7,16 +7,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ActionInterface, SettingsInterface } from '../../../../interfaces';
 import { Settings } from '../../../../services/api';
-import { ThreePartDatePicker } from '../../../public';
-import routes from '../../../../routes';
 import {
   errorHandler,
   errorSweetAlert, successSweetAlert, warningSweetAlert
 } from '../../../../utils';
 import { useMutation } from 'react-query';
-import changeProfilePic from '../user/changeProfilePic';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
 
 
 export const useClasses = makeStyles((theme) => createStyles({
@@ -173,7 +168,7 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
-const Profile: React.FC = () => {
+const SettingsForm: React.FC = () => {
   const { t } = useTranslation();
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showError, setShowError] = useState<boolean>(false);
@@ -504,4 +499,4 @@ const Profile: React.FC = () => {
   )
 }
 
-export default Profile;
+export default SettingsForm;
