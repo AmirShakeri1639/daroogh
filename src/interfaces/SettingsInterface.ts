@@ -14,4 +14,5 @@ export interface SettingsInterface {
   debtTimeAllow: number;
   ticketExireDuration: number;
   surveyTime?: number;
+  drugExpireDay?: number;
 }
