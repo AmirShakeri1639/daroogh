@@ -78,6 +78,7 @@ export default {
         add: 'اضافه کردن',
         favorite: 'علاقه مندی',
         yourFavorite: 'علاقه مندی شما',
+        peopleSection: 'بخش مردمی',
         undefined: 'تعریف نشده',
         toman: 'تومان',
         ok: 'خب',
@@ -226,6 +227,12 @@ export default {
         newDrug: 'داروی جدید',
         SuppliedDrugsList: 'لیست داروهای عرضه شده توسط شما',
         latinName: 'نام لاتین',
+      },
+      peopleSection: {
+        prescription: 'نسخه',
+        addPrescription: 'افزودن نسخه',
+        listPrescription: 'لیست نسخه ها',
+        jobApplication: 'درخواست کار'
       },
       message: {
         message: 'پیام',
