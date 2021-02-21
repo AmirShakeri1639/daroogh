@@ -19,20 +19,21 @@ import { useQuery } from 'react-query';
 import { Rating } from '@material-ui/lab';
 const { getBestPharmaciesList } = new Reports();
 
-const BestPharmaciesList: React.FC = () => {
+const BestPharmaciesList: React.FC<{ for24Hour: boolean }> = (props) => {
   const { t } = useTranslation();
 
-  const { container,table } = useClasses();
-  const { data } = useQuery('getBestPharmaciesList', getBestPharmaciesList);
+  const { container, table } = useClasses();
+  const { data } = useQuery('getBestPharmaciesList', () => {
+    return getBestPharmaciesList(props.for24Hour);
+  });
 
   return (
     <Container maxWidth="lg" className={container}>
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          <div>{t('pharmacy.topList')}</div>
           <Paper>
             <TableContainer className={container}>
-              <Table stickyHeader className={table}  size="small" aria-label="sticky table">
+              <Table stickyHeader className={table} size="small" aria-label="sticky table">
                 <TableHead>
                   <TableRow>
                     <TableCell>نام</TableCell>
@@ -54,7 +55,14 @@ const BestPharmaciesList: React.FC = () => {
                         <TableCell>{entry.finalScore.toFixed(2)}</TableCell>
                         <TableCell>{entry.province}</TableCell>
                         <TableCell>{entry.city}</TableCell>
-                        <TableCell><Rating name="half-rating-read" defaultValue={entry.star} precision={0.1} readOnly /></TableCell>
+                        <TableCell>
+                          <Rating
+                            name="half-rating-read"
+                            defaultValue={entry.star}
+                            precision={0.1}
+                            readOnly
+                          />
+                        </TableCell>
                       </TableRow>
                     ))}
                 </TableBody>
