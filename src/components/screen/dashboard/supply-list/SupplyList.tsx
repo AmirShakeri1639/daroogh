@@ -163,6 +163,8 @@ const { numberWithZero, convertISOTime } = Convertor;
 const monthIsValid = (month: number): boolean => month < 13;
 const dayIsValid = (day: number): boolean => day < 32;
 
+const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
+
 const monthMinimumLength = 28;
 
 const SupplyList: React.FC = () => {
@@ -193,6 +195,7 @@ const SupplyList: React.FC = () => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
   const [isWrongDate, setIsWrongDate] = useState(false);
+  const [hasMinimumDate, setHasMinimumDate] = useState(true);
 
   const { t } = useTranslation();
   const queryCache = useQueryCache();
@@ -276,6 +279,7 @@ const SupplyList: React.FC = () => {
     setIsoDate('');
     setOptions([]);
     setIsWrongDate(false);
+    setHasMinimumDate(true);
   };
 
   const toggleIsOpenModalOfNewList = (): void => {
@@ -344,6 +348,12 @@ const SupplyList: React.FC = () => {
     const daysDiff = String(
       selectedDateMomentObject.diff(todayMomentObject, 'days')
     );
+
+    if (Number(daysDiff) < drugExpireDay) {
+      setHasMinimumDate(false);
+    } else {
+      setHasMinimumDate(true);
+    }
 
     if (Number(daysDiff) < 0) {
       setIsWrongDate(true);
@@ -512,7 +522,8 @@ const SupplyList: React.FC = () => {
         !monthIsValid(Number(selectedMonth)) ||
         !dayIsValid(Number(selectedDay)) ||
         selectedYear.length < 4 ||
-        isWrongDate
+        isWrongDate ||
+        !hasMinimumDate
       ) {
         return;
       }
@@ -593,7 +604,7 @@ const SupplyList: React.FC = () => {
                   (e, newValue) => searchDrugs(newValue),
                   500
                 )}
-                getOptionLabel={(option: any) => option.drugName}
+                getOptionLabel={(option: any) => option.drugName ?? ''}
                 openOnFocus
                 renderInput={(params) => (
                   <TextField
@@ -745,6 +756,13 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12}>
                 {isWrongDate && (
                   <p className="text-danger txt-xs">{t('date.afterToday')}</p>
+                )}
+                {!hasMinimumDate && (
+                  <p className="text-danger txt-xs">
+                    {t('date.minimumDate', {
+                      day: drugExpireDay,
+                    })}
+                  </p>
                 )}
               </Grid>
               {/* <Input

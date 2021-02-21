@@ -1,14 +1,21 @@
-import React, { useCallback, useReducer, useState } from 'react';
-import { createStyles, Grid, makeStyles, MenuItem } from '@material-ui/core';
+import React, { useReducer, useState } from 'react';
+import {
+  createStyles,
+  FormControl,
+  Grid,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  TextField,
+  Select,
+} from '@material-ui/core';
 import { ActionInterface } from '../../../../interfaces';
 import { MessageTypeArray, MessageTypeEnum } from '../../../../enum';
 import Input from '../../../public/input/Input';
-import { useQuery, useMutation } from 'react-query';
-import { UserQueryEnum } from '../../../../enum/query';
+import { useMutation } from 'react-query';
 import { useTranslation } from 'react-i18next';
-import { User, Message } from '../../../../services/api';
-import { NewUserData } from '../../../../interfaces/user';
-import Select from '../../../public/select/Select';
+import { Message, Search } from '../../../../services/api';
+import { UserSearch } from '../../../../interfaces/user';
 import Modal from '../../../public/modal/Modal';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import {
@@ -17,6 +24,11 @@ import {
   successSweetAlert,
 } from '../../../../utils';
 import Button from '../../../public/button/Button';
+import { Autocomplete } from '@material-ui/lab';
+import { debounce } from 'lodash';
+
+const { searchUser } = new Search();
+const { createNewMessage } = new Message();
 
 const initialState = {
   subject: '',
@@ -81,6 +93,9 @@ const MessageForm: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
+  const [usersOptions, setUsersOptions] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<any>('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const { formContainer } = useClasses();
   const { t } = useTranslation();
@@ -89,56 +104,31 @@ const MessageForm: React.FC = () => {
     t('message.profile'),
     t('message.sms'),
     t('message.notification'),
-    `${t('message.sms')}_${t('message.notification')}`,
+    `${t('message.sms')} - ${t('message.notification')}`,
   ];
 
-  const { getAllUsers } = new User();
-  const {
-    isLoading: isLoadingGetAllUsers,
-    data: dataGetAllUsers,
-  } = useQuery(UserQueryEnum.GET_ALL_USERS, () => getAllUsers());
-
-  const { createNewMessage } = new Message();
-
-  const [_createNewMessage, { isLoading, data }] = useMutation(
-    createNewMessage,
-    {
-      onSuccess: async () => {
-        await successSweetAlert(t('alert.successfulSave'));
-        if (showError) {
-          setShowError(false);
-        }
-        dispatch({ type: 'reset' });
-      },
-      onError: async () => {
-        await errorSweetAlert(t('error.save'));
-      },
-    }
-  );
-
-  const usersListGenerator = useCallback(() => {
-    if (dataGetAllUsers !== undefined) {
-      return dataGetAllUsers.items.map((d: NewUserData) => {
-        return (
-          <MenuItem key={d.id} value={d.id}>
-            {d.name}
-          </MenuItem>
-        );
-      });
-    }
-  }, [dataGetAllUsers]);
+  const [_createNewMessage] = useMutation(createNewMessage, {
+    onSuccess: async () => {
+      await successSweetAlert(t('alert.successfulSave'));
+      setShowError(false);
+      dispatch({ type: 'reset' });
+      setSelectedUser('');
+    },
+    onError: async () => {
+      await errorSweetAlert(t('error.save'));
+    },
+  });
 
   const toggleIsOpenDatePicker = (): void => {
     setIsOpenDatePicker((v) => !v);
   };
 
   const inputsIsValid = (): boolean => {
-    const { message1, subject, type, userID } = state;
+    const { message1, subject } = state;
     return (
       subject.trim().length > 1 &&
       message1.trim().length > 1 &&
-      type.length > 0 &&
-      userID !== ''
+      selectedUser !== ''
     );
   };
 
@@ -149,7 +139,7 @@ const MessageForm: React.FC = () => {
     try {
       if (!inputsIsValid()) {
         setShowError(true);
-        // return;
+        return;
       }
       if (state.url === '') {
         delete state.url;
@@ -168,9 +158,33 @@ const MessageForm: React.FC = () => {
         );
         state.expireDate = `${gregorianDate.gy}-${gregorianDate.gm}-${gregorianDate.gd}`;
       }
+      state.userID = selectedUser.id;
       await _createNewMessage(state);
     } catch (e) {
       errorHandler(e);
+    }
+  };
+
+  const searchUsers = async (value: string): Promise<any> => {
+    try {
+      if (value.length < 2) {
+        return;
+      }
+      setIsLoading(true);
+      const result = await searchUser(value);
+      const options = result.map((item: UserSearch) => ({
+        ...item,
+        username: `${item.firstName} ${item.family}${
+          item.pharmacyName !== null
+            ? ` - ${t('pharmacy.pharmacy')} ${item.pharmacyName}`
+            : ''
+        } `,
+      }));
+      setUsersOptions(options);
+    } catch (e) {
+      // errorHandler(e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -180,7 +194,7 @@ const MessageForm: React.FC = () => {
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Input
-              error={state.subject.trim().length < 1 && showError}
+              error={state.subject.length < 1 && showError}
               value={state.subject}
               onChange={(e): void =>
                 dispatch({ type: 'subject', value: e.target.value })
@@ -188,25 +202,34 @@ const MessageForm: React.FC = () => {
               className="w-100"
               label="موضوع"
               type="text"
-              required
             />
           </Grid>
           <Grid item xs={12}>
-            <Select
-              error={state.userID === '' && showError}
-              required
-              className="w-100"
-              onChange={(e): void =>
-                dispatch({ type: 'userID', value: e.target.value })
-              }
-              value={state.userID}
-              labelId="users-list"
-              label={t('user.user')}
-            >
-              {!isLoadingGetAllUsers &&
-                dataGetAllUsers !== undefined &&
-                usersListGenerator()}
-            </Select>
+            <Autocomplete
+              loading={isLoading}
+              id="users-list"
+              noOptionsText={t('general.noData')}
+              loadingText={t('general.loading')}
+              options={usersOptions}
+              value={selectedUser}
+              onChange={(event, value, reason): void => {
+                setSelectedUser(value);
+              }}
+              onInputChange={debounce(
+                (e, newValue) => searchUsers(newValue),
+                500
+              )}
+              getOptionLabel={(option: any) => option.username ?? ''}
+              openOnFocus
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  size="small"
+                  label={t('user.user')}
+                  variant="outlined"
+                />
+              )}
+            />
           </Grid>
           <Grid item xs={12}>
             <Input
@@ -236,34 +259,35 @@ const MessageForm: React.FC = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <Select
-              className="w-100"
-              error={state.type === '' && showError}
-              onChange={(e): void =>
-                dispatch({ type: 'type', value: e.target.value })
-              }
-              value={state.type}
-              labelId="user-type"
-              label={t('general.type')}
-              required
-            >
-              {MessageTypeArray(messageTypeArrayValues).map(
-                (item: any): any => {
-                  return (
-                    <MenuItem key={item.val} value={item.val}>
-                      {item.text}
-                    </MenuItem>
-                  );
+            <FormControl size="small" variant="outlined" className="w-100">
+              <InputLabel id="user-type">نوع</InputLabel>
+              <Select
+                className="w-100"
+                error={state.type === '' && showError}
+                onChange={(e): void =>
+                  dispatch({ type: 'type', value: e.target.value })
                 }
-              )}
-            </Select>
+                value={state.type}
+                labelId="user-type"
+                label={t('general.type')}
+              >
+                {MessageTypeArray(messageTypeArrayValues).map(
+                  (item: any): any => {
+                    return (
+                      <MenuItem key={item.val} value={item.val}>
+                        {item.text}
+                      </MenuItem>
+                    );
+                  }
+                )}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12}>
             <Input
               className="w-100"
               error={state.message1.trim().length < 1 && showError}
               isMultiLine
-              required
               label={t('message.message')}
               value={state.message1}
               rows={4}

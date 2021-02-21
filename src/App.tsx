@@ -10,105 +10,60 @@ import DashboardContent from './components/screen/dashboard/DashboardContent';
 import { isAdmin } from './utils';
 import Appbar from './components/screen/dashboard/AppBar';
 import ReactGA from 'react-ga';
+import { createBrowserHistory } from 'history';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
-const ForgetPassword = lazy(() =>
-  import('./components/screen/forget-password/ForgetPassword')
-);
+const ForgetPassword = lazy(() => import('./components/screen/forget-password/ForgetPassword'));
 const RegisterPharmacyWithUser = lazy(() =>
   import('./components/screen/public/RegisterPharmacyWithUser')
 );
 
-const DrugTransfer = lazy(() =>
-  import('./components/screen/dashboard/drug-transfer/Transfer')
-);
-const Desktop = lazy(() =>
-  import('./components/screen/dashboard/drug-transfer/desktop/Desktop')
-);
-const Transfer = lazy(() =>
-  import('./components/screen/dashboard/drug-transfer/Transfer')
-);
-const SupplyList = lazy(() =>
-  import('./components/screen/dashboard/supply-list/SupplyList')
-);
+const DrugTransfer = lazy(() => import('./components/screen/dashboard/drug-transfer/Transfer'));
+const Desktop = lazy(() => import('./components/screen/dashboard/drug-transfer/desktop/Desktop'));
+const Transfer = lazy(() => import('./components/screen/dashboard/drug-transfer/Transfer'));
+const SupplyList = lazy(() => import('./components/screen/dashboard/supply-list/SupplyList'));
 
-const Transactions = lazy(() =>
-  import('./components/screen/dashboard/accounting/accountingList')
-);
+const Transactions = lazy(() => import('./components/screen/dashboard/accounting/accountingList'));
 
 const AccountingInfo = lazy(() =>
   import('./components/screen/dashboard/accounting/AccountingInfo')
 );
 
-const MembershipRequests = lazy(() =>
-  import('./components/screen/dashboard/pharmacy/Membership')
-);
-const MemberRole = lazy(() =>
-  import('./components/screen/dashboard/pharmacy/MemberRole')
-);
+const MembershipRequests = lazy(() => import('./components/screen/dashboard/pharmacy/Membership'));
+const MemberRole = lazy(() => import('./components/screen/dashboard/pharmacy/MemberRole'));
 
-const DashboardActivePage = lazy(() =>
-  import('./components/screen/dashboard/DashboardActivePage')
-);
+const DashboardActivePage = lazy(() => import('./components/screen/dashboard/DashboardActivePage'));
 
-const CreateRole = lazy(() =>
-  import('./components/screen/dashboard/roles/CreateRole')
-);
+const CreateRole = lazy(() => import('./components/screen/dashboard/roles/CreateRole'));
 
-const CreateUser = lazy(() =>
-  import('./components/screen/dashboard/user/CreateUser')
-);
+const CreateUser = lazy(() => import('./components/screen/dashboard/user/CreateUser'));
 
-const UsersList = lazy(() =>
-  import('./components/screen/dashboard/user/UsersList')
-);
+const UsersList = lazy(() => import('./components/screen/dashboard/user/UsersList'));
 
-const ChangeUserPassword = lazy(() =>
-  import('./components/screen/dashboard/user/ChangePassword')
-);
+const ChangeUserPassword = lazy(() => import('./components/screen/dashboard/user/ChangePassword'));
 
-const CreateDrug = lazy(() =>
-  import('./components/screen/dashboard/drug/CreateDrug')
-);
+const CreateDrug = lazy(() => import('./components/screen/dashboard/drug/CreateDrug'));
 
-const DrugsList = lazy(() =>
-  import('./components/screen/dashboard/drug/drugsList')
-);
+const DrugsList = lazy(() => import('./components/screen/dashboard/drug/drugsList'));
 
-const CategoryList = lazy(() =>
-  import('./components/screen/dashboard/category/CategoryList')
-);
-const FavoriteList = lazy(() =>
-  import('./components/screen/dashboard/favorite-list/Drug')
-);
-const Prescription = lazy(() =>
-  import('./components/screen/dashboard/peopleSection/Prescription')
-);
+const CategoryList = lazy(() => import('./components/screen/dashboard/category/CategoryList'));
+const FavoriteList = lazy(() => import('./components/screen/dashboard/favorite-list/Drug'));
+const Prescription = lazy(() => import('./components/screen/dashboard/peopleSection/Prescription'));
 
-const CreatePharmacy = lazy(() =>
-  import('./components/screen/dashboard/pharmacy/createPharmacy')
-);
+const CreatePharmacy = lazy(() => import('./components/screen/dashboard/pharmacy/createPharmacy'));
 
-const PharmaciesList = lazy(() =>
-  import('./components/screen/dashboard/pharmacy/pharmaciesList')
-);
+const PharmaciesList = lazy(() => import('./components/screen/dashboard/pharmacy/pharmaciesList'));
 
-const CreateMessage = lazy(() =>
-  import('./components/screen/dashboard/message/CreateMessage')
-);
+const CreateMessage = lazy(() => import('./components/screen/dashboard/message/CreateMessage'));
 
-const MessagesList = lazy(() =>
-  import('./components/screen/dashboard/message/MessagesList')
-);
+const MessagesList = lazy(() => import('./components/screen/dashboard/message/MessagesList'));
 
 const DrugFavoriteCategory = lazy(() =>
   import('./components/screen/dashboard/favorite-list/category/Category')
 );
 
-const CreatePack = lazy(() =>
-  import('./components/screen/dashboard/pack/create/Create')
-);
+const CreatePack = lazy(() => import('./components/screen/dashboard/pack/create/Create'));
 
 const PackList = lazy(() => import('./components/screen/dashboard/pack/Pack'));
 
@@ -116,17 +71,17 @@ const ExchangeManagement = lazy(() =>
   import('./components/screen/dashboard/exchange-management/ExchangeManagement')
 );
 
-const PharmacyUsersList = lazy(() =>
-  import('./components/screen/dashboard/pharmacy/UsersList')
-);
+const PharmacyUsersList = lazy(() => import('./components/screen/dashboard/pharmacy/UsersList'));
 
-const JobSearchList = lazy(() =>
-  import('./components/screen/dashboard/job-search/jobSearchList')
-);
+const JobSearchList = lazy(() => import('./components/screen/dashboard/job-search/jobSearchList'));
 
 const PrescriptionList = lazy(() =>
   import('./components/screen/dashboard/prescription/prescriptionList')
 );
+
+const ProfileLazy = lazy(() => import('./components/screen/dashboard/user/Profile'));
+
+const SettingsLazy = lazy(() => import('./components/screen/dashboard/settings/Settings'));
 
 const {
   login,
@@ -160,6 +115,8 @@ const {
   jobSearchList,
   prescriptionList,
   forgetPassword,
+  profile,
+  settings,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -174,10 +131,24 @@ const LoadingComponent: React.FC = () => {
 };
 
 const App = (): JSX.Element => {
-  ReactGA.initialize('G-G1C616XR26');
-  useEffect(() => {
-    ReactGA.pageview(window.location.pathname + window.location.search);
-  }, [window.location.pathname, window.location.search]);
+  const history = createBrowserHistory();
+  ReactGA.initialize('G-TKSLN0VE57');
+  history.listen((e): any => {
+    const userInStorage = localStorage.getItem('user');
+    const gaOptions: any = {};
+    if (userInStorage) {
+      const user = JSON.parse(userInStorage);
+      gaOptions.user_name = user.name;
+      gaOptions.user_family = user.family;
+      gaOptions.pharmacyName = user.pharmacyName;
+    }
+    ReactGA.set({
+      ...gaOptions,
+      page: `${e.location.pathname}${e.location.search}${e.location.hash}`,
+    }); // Update the user's current page
+    // Record a pageview for the given page
+    ReactGA.pageview(`${e.location.pathname}${e.location.search}${e.location.hash}`);
+  });
 
   return (
     <>
@@ -254,9 +225,6 @@ const App = (): JSX.Element => {
             <PrivateRoute path={drugFavoriteList}>
               <Dashboard component={<FavoriteList />} />
             </PrivateRoute>
-            <PrivateRoute path={prescription}>
-              <Dashboard component={<Prescription />} />
-            </PrivateRoute>
             <PrivateRoute path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />
             </PrivateRoute>
@@ -265,6 +233,12 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute path={packsList}>
               <Dashboard component={<PackList />} />
+            </PrivateRoute>
+            <PrivateRoute path={prescription}>
+              <Dashboard component={<Prescription />} />
+            </PrivateRoute>
+            <PrivateRoute path={drugCategoryfavoriteList}>
+              <Dashboard component={<DrugFavoriteCategory />} />
             </PrivateRoute>
             <PrivateRoute exact path={createPack}>
               <Dashboard component={<CreatePack />} />
@@ -285,6 +259,15 @@ const App = (): JSX.Element => {
               <Dashboard component={<PrescriptionList />} />
             </PrivateRoute>
             {/*<Route component={<>404 Not Found</>} />*/}
+            <PrivateRoute exact path={profile}>
+              <Dashboard component={<ProfileLazy />} />
+            </PrivateRoute>
+            <PrivateRoute exact path={settings}>
+              <Dashboard component={<SettingsLazy />} />
+            </PrivateRoute>
+            <PrivateRoute exact path={settings}>
+              <Dashboard component={<SettingsLazy />} />
+            </PrivateRoute>
           </Suspense>
         </Switch>
       </Router>

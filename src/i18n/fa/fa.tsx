@@ -101,6 +101,9 @@ export default {
         maritalStatus: 'تاهل',
         descriptions: 'توضیح',
         subject: 'موضوع',
+        again: {
+          0: 'مجدد',
+        },
       },
       pack: {
         pack: 'پک',
@@ -113,6 +116,7 @@ export default {
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
+        minDateAsDay: 'حداقل تاریخ به روز',
         shamsi: 'شمسی',
         gregorian: 'میلادی',
         date: 'تاریخ',
@@ -120,6 +124,7 @@ export default {
         afterToday: 'تاریخ باید از امروز به بعد انتخاب شود',
         sendDate: 'تاریخ ارسال',
         recieveDate: 'تاریخ درییافت',
+        minimumDate: 'تاریخ انتخابی باید حداقل برای {{day}} روز آینده باشد',
       },
       province: {
         selectCounty: 'انتخاب استان',
@@ -166,8 +171,7 @@ export default {
         username: 'نام کاربری',
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
-        failed:
-          'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
@@ -271,8 +275,7 @@ export default {
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
-        threePercentWarning:
-          'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
+        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
         continue: 'ادامه تبادل',
         exchangeManagement: 'مدیریت تبادل',
@@ -450,6 +453,31 @@ export default {
         guarantee: 'وثیقه',
         previousWorkplace: 'محل کار قبلی',
         previousWorkplacePhone: 'تلفن محل کار قبلی',
+      },
+      settings: {
+        settings: 'تنظیمات',
+
+        password: 'رمز عبور',
+        passwordMinLength: 'حداقل طول مجاز رمز عبور',
+        passwordRequiredLetter: 'استفاده از حروف در رمز عبور اجباری است',
+        passwordRequiredSymbol: 'استفاده از علائم در رمز عبور اجباری است',
+        ticketExireDuration: 'مدت اعتبار رمزیکبار مصرف به دقیقه',
+
+        exchange: 'تبادل',
+        diffrenceAllowPercentageInExchange: 'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
+        exchangeDeadline: 'مهلت تائید یک تبادل به ساعت',
+        debtAmountAllow: 'مبلغ مجاز بدهکاری',
+        debtTimeAllow: 'مدت مجازی بدهکاری به ساعت',
+        surveyTime: 'چند ساعت بعد از تبادل موفق برای طرفین نظرسنجی ارسال شود',
+        drugExpireDay: 'حداقل مدت اعتبار دارو به روز',
+
+        message: 'پیام',
+        messageExpireDayDefault: 'مدت انقضای پیام به روز',
+        smsNumber: 'شماره خط پیامک',
+        smsAPIkey: 'کلید سامانه پیامک',
+        notificationAPIkey: 'کلید سامانه ارسال اعلان‌ها',
+        notificationSenderkey: 'کلید ارسال کننده اعلان‌ها',
+        applicationUrl: 'Application URL',
       },
     },
   },

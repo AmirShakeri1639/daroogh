@@ -79,7 +79,7 @@ const Pack: React.FC = () => {
   const contentHandler = (): JSX.Element[] | null => {
     if (data !== undefined && !isLoading) {
       return data.items.reverse().map((item: any) => {
-        const { id, name, pharmacyDrug } = item;
+        const { id, pharmacyDrug, category } = item;
         let totalPrice = 0;
         pharmacyDrug.forEach((item: any) => {
           totalPrice += item.amount;
@@ -89,7 +89,7 @@ const Pack: React.FC = () => {
             <CardContainer
               totalPrice={totalPrice}
               drugsCounter={pharmacyDrug.length}
-              name={name}
+              name={category.name}
               id={id}
               removeHandler={removeHandler}
             />

@@ -102,6 +102,7 @@ export const GetValuesOfEnum = (e: any): any => {
 
 export * from './pharmacy';
 export * from './role';
+export * from './search';
 
 export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
 export { ColorEnum } from './colors';
@@ -109,4 +110,3 @@ export { CardColors } from './colors';
 export { UserColors } from './colors';
 export { UserGrades } from './UserGrades';
 export { PrescriptionResponseStateEnum } from './prescription';
-
