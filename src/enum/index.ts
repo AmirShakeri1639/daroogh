@@ -67,6 +67,7 @@ export enum RolesEnum {
   USERS = '1',
   ADMIN = '2',
   PHARMACY = '3',
+  PUBLIC = '4',
   PHARMACY_MEMBER_1 = '49',
   PHARMACY_MEMBER_2 = '50',
   PHARMACY_MEMBER_3 = '51',

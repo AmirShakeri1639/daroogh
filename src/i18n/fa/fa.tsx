@@ -78,6 +78,7 @@ export default {
         add: 'اضافه کردن',
         favorite: 'علاقه مندی',
         yourFavorite: 'علاقه مندی شما',
+        peopleSection: 'بخش مردمی',
         undefined: 'تعریف نشده',
         toman: 'تومان',
         ok: 'خب',
@@ -115,6 +116,7 @@ export default {
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
+        minDateAsDay: 'حداقل تاریخ به روز',
         shamsi: 'شمسی',
         gregorian: 'میلادی',
         date: 'تاریخ',
@@ -169,8 +171,7 @@ export default {
         username: 'نام کاربری',
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
-        failed:
-          'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
@@ -227,6 +228,12 @@ export default {
         SuppliedDrugsList: 'لیست داروهای عرضه شده توسط شما',
         latinName: 'نام لاتین',
       },
+      peopleSection: {
+        prescription: 'نسخه',
+        addPrescription: 'افزودن نسخه',
+        listPrescription: 'لیست نسخه ها',
+        jobApplication: 'درخواست کار'
+      },
       message: {
         message: 'پیام',
         messagesList: 'لیست پیام ها',
@@ -268,8 +275,7 @@ export default {
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
-        threePercentWarning:
-          'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
+        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
         continue: 'ادامه تبادل',
         exchangeManagement: 'مدیریت تبادل',
@@ -456,13 +462,14 @@ export default {
         passwordRequiredLetter: 'استفاده از حروف در رمز عبور اجباری است',
         passwordRequiredSymbol: 'استفاده از علائم در رمز عبور اجباری است',
         ticketExireDuration: 'مدت اعتبار رمزیکبار مصرف به دقیقه',
-        
+
         exchange: 'تبادل',
         diffrenceAllowPercentageInExchange: 'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
         exchangeDeadline: 'مهلت تائید یک تبادل به ساعت',
         debtAmountAllow: 'مبلغ مجاز بدهکاری',
         debtTimeAllow: 'مدت مجازی بدهکاری به ساعت',
         surveyTime: 'چند ساعت بعد از تبادل موفق برای طرفین نظرسنجی ارسال شود',
+        drugExpireDay: 'حداقل مدت اعتبار دارو به روز',
 
         message: 'پیام',
         messageExpireDayDefault: 'مدت انقضای پیام به روز',
@@ -471,7 +478,7 @@ export default {
         notificationAPIkey: 'کلید سامانه ارسال اعلان‌ها',
         notificationSenderkey: 'کلید ارسال کننده اعلان‌ها',
         applicationUrl: 'Application URL',
-      }
+      },
     },
   },
 };

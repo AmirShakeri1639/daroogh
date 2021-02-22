@@ -217,13 +217,17 @@ export const differenceCheck = (
   params: DifferenceCheckInterface
 ): DifferenceCheckOutputInterface => {
   const { exchange, percent, cartA = [], cartB = [] } = params;
+  debugger;
   // let { totalPriceA = 0, totalPriceB = 0 } = params;
   let { totalPriceA = 0, totalPriceB = 0 } = exchange;
 
   // if (totalPriceA !== 0 ) {
   if (cartA.length > 0) {
     totalPriceA = calcPrice(cartA);
-  } else if (exchange.cartA && exchange.cartA.length > 0) {
+  } else {
+    totalPriceA = 0;
+  }
+  /* else if (exchange.cartA && exchange.cartA.length > 0) {
     totalPriceA = exchange.cartA
       .map((i: any) => {
         return (
@@ -240,13 +244,16 @@ export const differenceCheck = (
         )
       })
       .reduce((sum, price) => sum + price);
-  }
+  } */
   // }
 
   // if (totalPriceB !== 0) {
   if (cartB.length > 0) {
     totalPriceB = calcPrice(cartB);
-  } else if (exchange.cartB && exchange.cartB.length > 0) {
+  } else {
+    totalPriceB = 0;
+  }
+  /* else if (exchange.cartB && exchange.cartB.length > 0) {
     totalPriceB = exchange.cartB
       .map((i: any) => {
         return (
@@ -263,7 +270,7 @@ export const differenceCheck = (
         )
       })
       .reduce((sum, price) => sum + price);
-  }
+  } */
   // }
 
   let difference: number = 0;
