@@ -30,7 +30,7 @@ import { Settings, User, File } from '../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
-import './login.scss';
+import 'assets/other/login.scss';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
