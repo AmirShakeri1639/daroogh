@@ -65,3 +65,14 @@ body {
   background-color: $base-backcolor-2;
   color           : $base-color-2;
 }
+
+@media (max-width: 1024px) {
+  body {
+    background:
+      url('/images/daroog-logo-nobg-256.png') no-repeat 50% 5%;
+  }
+
+  .paper {
+    margin: 0 auto;
+  }
+}
