@@ -1,0 +1,78 @@
+$base-backcolor  : #3607a5;
+$base-backcolor-2: #fecb06;
+$base-color      : white;
+$base-color-2    : #3607a5;
+
+$base-transition : all .4s ease-in-out;
+$general-radius  : 3em;
+
+body {
+  background:
+    url('/images/daroog-logo-nobg-256.png') no-repeat 5% 5%,
+    url('/images/daroog-icon.png') no-repeat 150% -10%;
+}
+
+.paper {
+  height         : 100vh;
+  display        : flex;
+  flex-direction : column;
+  // align-items: center;
+  justify-content: center;
+  align-content  : center;
+  justify-items  : center;
+  max-width      : 20em;
+  margin-left    : -60%;
+  margin-right   : 60%;
+  margin-top     : 20%;
+}
+
+.no-padding {
+  padding: 0 !important;
+}
+
+.text-field {
+  color     : $base-backcolor;
+  margin-top: 0;
+
+  fieldset {
+    border       : 2px solid $base-backcolor;
+    border-radius: $general-radius;
+  }
+}
+
+.link {
+  text-decoration: none;
+  display        : table;
+  margin         : 1em auto;
+  transition     : $base-transition;
+}
+
+.link:hover {
+  color: #03a9f4;
+}
+
+.button {
+  border-radius   : $general-radius;
+  display         : flex;
+  min-width       : 10em;
+  margin          : 0 auto;
+  background-color: $base-backcolor;
+  color           : $base-color;
+  transition      : $base-transition;
+}
+
+.button:hover {
+  background-color: $base-backcolor-2;
+  color           : $base-color-2;
+}
+
+@media (max-width: 1024px) {
+  body {
+    background:
+      url('/images/daroog-logo-nobg-256.png') no-repeat 50% 5%;
+  }
+
+  .paper {
+    margin: 0 auto;
+  }
+}
