@@ -39,7 +39,7 @@ const useClasses = makeStyles((theme) =>
       backgroundColor: 'aliceblue',
     },
     container: {
-      padding: 5,
+      padding: 6,
       minHeight: 170,
       alignItems: 'center',
       // fontSize: 11,
@@ -48,7 +48,7 @@ const useClasses = makeStyles((theme) =>
       borderRadius: 15,
       backgroundColor: '#E4E4E4',
       width: '100%',
-      padding: 0,
+      padding: 4,
     },
     rowRight: {
       display: 'flex',
@@ -147,9 +147,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
       <Grid container spacing={1} className={container}>
         {pharmacyDrug?.cardColor === ColorEnum.AddedByB && (
           <Ribbon
-            text={pharmacyDrug?.cardColor === ColorEnum.AddedByB
-              ? 'اضافه'
-              : 'حذف'}
+            text={
+              pharmacyDrug?.cardColor === ColorEnum.AddedByB ? 'اضافه' : 'حذف'
+            }
           />
         )}
         <Grid item xs={12}>
@@ -159,8 +159,21 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             </Grid>
             <Grid item xs={11}>
               <TextLine
-                rightText={'نام دسته'}
+                rightText={'عنوان پک'}
                 leftText={pharmacyDrug?.packName}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid alignItems="flex-end" container spacing={1}>
+            <Grid item xs={1} style={{ textAlign: 'left' }}>
+              <FontAwesomeIcon icon={faBoxes} size="sm" />
+            </Grid>
+            <Grid item xs={11}>
+              <TextLine
+                rightText={'دسته بندی'}
+                leftText={pharmacyDrug?.packCategoryName}
               />
             </Grid>
           </Grid>
@@ -183,7 +196,9 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    const faDate = moment(date, 'YYYY/MM/DD')
+      .locale('fa')
+      .format('YYYY/MM/DD');
     const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
     const fromDate = new Date(eDate);
     const today = new Date();
@@ -208,8 +223,10 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                   style={{ display: 'flex', alignItems: 'center' }}
                 >
                   <FontAwesomeIcon icon={faPills} size="1x" />
-                  <span style={{ marginRight: 5 }}>{item.drug.name}
-                    {item.drug.enName && `(${item.drug.enName})`}</span>
+                  <span style={{ marginRight: 5 }}>
+                    {item.drug.name}
+                    {item.drug.enName && `(${item.drug.enName})`}
+                  </span>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
                   <ul className={ulCardName}>
@@ -219,7 +236,13 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                     </li>
                     <li className={colLeftIcon}>
                       <CardGiftcardIcon />
-                      {item.offer1} به {item.offer2}
+                      {!(item.offer1 === 0 && item.offer2 === 0) ? (
+                        <>
+                          {item.offer1} به {item.offer2}{' '}
+                        </>
+                      ) : (
+                        'ندارد'
+                      )}
                     </li>
                     <li className={colLeftIcon}>
                       <MoneyIcon />
@@ -305,7 +328,17 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
             <Grid item xs={11}>
               <TextLine
                 rightText={t('general.offer')}
-                leftText={`${pharmacyDrug?.offer1} به ${pharmacyDrug?.offer2}`}
+                leftText={
+                  !(
+                    pharmacyDrug?.offer1 === 0 && pharmacyDrug?.offer2 === 0
+                  ) ? (
+                    <>
+                      {pharmacyDrug?.offer1} به {pharmacyDrug?.offer2}
+                    </>
+                  ) : (
+                    'ندارد'
+                  )
+                }
               />
             </Grid>
           </Grid>

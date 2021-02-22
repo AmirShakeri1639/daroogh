@@ -179,7 +179,8 @@ const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
               (
                 (isNullOrEmpty(p.confirmed) || p.confirmed) &&
                 (
-                  p.cardColor === ColorEnum.AddedByB
+                  isNullOrEmpty(p.cardColor) 
+                  || p.cardColor === ColorEnum.AddedByB
                   || p.cardColor === ColorEnum.Confirmed
                 )
               )
@@ -194,7 +195,8 @@ const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
             (
               (isNullOrEmpty(i.confirmed) || i.confirmed) &&
               (
-                i.cardColor === ColorEnum.AddedByB
+                isNullOrEmpty(i.cardColor) 
+                || i.cardColor === ColorEnum.AddedByB
                 || i.cardColor === ColorEnum.Confirmed
               )
             )
@@ -215,13 +217,17 @@ export const differenceCheck = (
   params: DifferenceCheckInterface
 ): DifferenceCheckOutputInterface => {
   const { exchange, percent, cartA = [], cartB = [] } = params;
+  debugger;
   // let { totalPriceA = 0, totalPriceB = 0 } = params;
   let { totalPriceA = 0, totalPriceB = 0 } = exchange;
 
   // if (totalPriceA !== 0 ) {
   if (cartA.length > 0) {
     totalPriceA = calcPrice(cartA);
-  } else if (exchange.cartA && exchange.cartA.length > 0) {
+  } else {
+    totalPriceA = 0;
+  }
+  /* else if (exchange.cartA && exchange.cartA.length > 0) {
     totalPriceA = exchange.cartA
       .map((i: any) => {
         return (
@@ -230,20 +236,24 @@ export const differenceCheck = (
           (
             (isNullOrEmpty(i.confirmed) || i.confirmed) &&
             (
-              i.cardColor === ColorEnum.AddedByB
+              isNullOrEmpty(i.cardColor) 
+              || i.cardColor === ColorEnum.AddedByB
               || i.cardColor === ColorEnum.Confirmed
             )
           ) ? i.cnt * i.amount : 0
         )
       })
       .reduce((sum, price) => sum + price);
-  }
+  } */
   // }
 
   // if (totalPriceB !== 0) {
   if (cartB.length > 0) {
     totalPriceB = calcPrice(cartB);
-  } else if (exchange.cartB && exchange.cartB.length > 0) {
+  } else {
+    totalPriceB = 0;
+  }
+  /* else if (exchange.cartB && exchange.cartB.length > 0) {
     totalPriceB = exchange.cartB
       .map((i: any) => {
         return (
@@ -252,14 +262,15 @@ export const differenceCheck = (
           (
             (isNullOrEmpty(i.confirmed) || i.confirmed) &&
             (
-              i.cardColor === ColorEnum.AddedByB
+              isNullOrEmpty(i.cardColor)
+              || i.cardColor === ColorEnum.AddedByB
               || i.cardColor === ColorEnum.Confirmed
             )
           ) ? i.cnt * i.amount : 0
         )
       })
       .reduce((sum, price) => sum + price);
-  }
+  } */
   // }
 
   let difference: number = 0;

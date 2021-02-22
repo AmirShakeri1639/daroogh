@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   createStyles,
   Grid,
-  Slider,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -11,24 +10,32 @@ import {
 } from '@material-ui/core';
 import { debounce } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Button from '../../../../public/button/Button';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { Exchange, PharmacyDrug } from '../../../../../services/api';
-import { PharmacyDrugEnum } from '../../../../../enum/query';
-import CircleLoading from '../../../../public/loading/CircleLoading';
+import { Exchange, PharmacyDrug } from 'services/api';
+import { PharmacyDrugEnum } from 'enum/query';
+import CircleLoading from 'components/public/loading/CircleLoading';
 import CardContainer from './CardContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import { PharmacyDrugInterface } from '../../../../../interfaces/pharmacyDrug';
+import { PharmacyDrugInterface } from 'interfaces/pharmacyDrug';
 import { makeStyles } from '@material-ui/core/styles';
-import { County, MaterialDrawer, Province, Switch } from '../../../../public';
+import {
+  County,
+  MaterialDrawer,
+  Province,
+  Switch,
+  Button,
+  Input,
+  ReactSelect,
+} from 'components/public';
 import CloseIcon from '@material-ui/icons/Close';
-import ReactSelect from '../../../../public/react-select/ReactSelect';
-import Input from '../../../../public/input/Input';
-import { errorHandler, sanitizeReactSelect } from '../../../../../utils';
-import Search from '../../../../../services/api/Search';
-import { SelectOption } from '../../../../../interfaces';
-import { AdvancedSearchInterface } from '../../../../../interfaces/search';
+import { errorHandler, sanitizeReactSelect } from 'utils';
+import Search from 'services/api/Search';
+import { SelectOption } from 'interfaces';
+import { AdvancedSearchInterface } from 'interfaces/search';
+import { useDispatch } from 'react-redux';
+import { setTransferEnd } from 'redux/actions';
+import { useLocalStorage } from 'hooks';
 
 const { getRelatedPharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
@@ -89,6 +96,11 @@ const useStyle = makeStyles((theme) =>
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      '& > div': {
+        '& > p': {
+          margin: '5px 0 0',
+        },
+      },
     },
     monthInput: {
       width: 100,
@@ -127,31 +139,24 @@ const FirstStep: React.FC = () => {
   const [isCheckedJustOffer, setIsCheckedJustOffer] = useState<boolean>(false);
   const [selectedCounty, setSelectedCounty] = useState<string>('-2');
   const [selectedProvince, setSelectedProvince] = useState<string>('-2');
-  const [searchOptions, setSearchOptions] = useState<object[] | undefined>(
-    undefined
-  );
+  const [searchOptions, setSearchOptions] = useState<object[] | undefined>(undefined);
   const [searchedDrugs, setSearchedDrugs] = useState<SelectOption[]>([]);
   const [searchedDrugsReesult, setSearchedDrugsReesult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [searchedCategory, setSearchedCategory] = useState<
-    SelectOption | undefined
-  >(undefined);
-  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(
-    undefined
-  );
+  const [searchedCategory, setSearchedCategory] = useState<SelectOption | undefined>(undefined);
+  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(undefined);
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
-  const [remainingExpireDays, setRemainingExpireDays] = useState<number | null>(
-    null
-  );
+  const [remainingExpireDays, setRemainingExpireDays] = useState<number | null>(null);
   const [isInSearchMode, setIsInSearchMode] = useState<boolean>(false);
 
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const localStorageSettings = JSON.parse(useLocalStorage('settings') ?? '{}');
+  const minimumDrugExpireDay = localStorageSettings.drugExpireDay;
 
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
-  const setDataOfSearch = (
-    item: AdvancedSearchInterface
-  ): AdvancedSearchInterface => {
+  const setDataOfSearch = (item: AdvancedSearchInterface): AdvancedSearchInterface => {
     const drugsIdsArray = searchedDrugs.map((d) => ({ drugID: d.value }));
 
     if (drugsIdsArray.length > 0) {
@@ -205,6 +210,10 @@ const FirstStep: React.FC = () => {
   }
 
   useEffect(() => {
+    dispatch(setTransferEnd());
+  }, []);
+
+  useEffect(() => {
     if (searchedDrugs.length > 0) {
       advancedSearchItems();
     }
@@ -218,11 +227,9 @@ const FirstStep: React.FC = () => {
       const result = await searchDrug(title);
       const mappedItems = result.map((item: any) => ({
         ...item,
-        genericName: `${item.name}${
-          item.genericName !== null ? ` (${item.genericName}) ` : ''
-        }${item.companyName !== null ? `-${item.companyName}` : ''}${
-          item.type !== null ? ` - ${item.type}` : ''
-        }`,
+        genericName: `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
+          item.companyName !== null ? `-${item.companyName}` : ''
+        }${item.type !== null ? ` - ${item.type}` : ''}`,
       }));
       const options = sanitizeReactSelect(mappedItems, 'id', 'genericName');
       setSearchOptions([...options]);
@@ -320,10 +327,6 @@ const FirstStep: React.FC = () => {
     return items;
   };
 
-  function valuetext(value: number): string {
-    return `${value}`;
-  }
-
   return (
     <>
       <Grid item xs={12}>
@@ -361,10 +364,7 @@ const FirstStep: React.FC = () => {
         <div className={drawerContainer}>
           <div id="titleContainer">
             <h6 className="txt-md">فیلترهای جستجو</h6>
-            <CloseIcon
-              onClick={(): void => setIsOpenDrawer(false)}
-              className="cursor-pointer"
-            />
+            <CloseIcon onClick={(): void => setIsOpenDrawer(false)} className="cursor-pointer" />
           </div>
 
           <Divider />
@@ -395,23 +395,23 @@ const FirstStep: React.FC = () => {
 
             <div className={switchContainer}>
               <span>{t('general.justOffer')}</span>
-              <Switch
-                id="just-offer"
-                checked={isCheckedJustOffer}
-                onChange={toggleCheckbox}
-              />
+              <Switch id="just-offer" checked={isCheckedJustOffer} onChange={toggleCheckbox} />
             </div>
 
             <Divider className={divider} />
 
             <div className={dateContainer}>
-              <span>{t('date.minDateAsMonth')}</span>
+              <div>
+                <span>{t('date.minDateAsDay')}</span>
+                <p className="txt-xs text-danger">
+                  عدد انتخابی باید حداقل {minimumDrugExpireDay} باشد
+                </p>
+              </div>
               <Input
                 value={remainingExpireDays || ''}
                 className={monthInput}
-                onChange={(e): any =>
-                  setRemainingExpireDays(Number(e.target.value))
-                }
+                error={Number(remainingExpireDays) < minimumDrugExpireDay}
+                onChange={(e): any => setRemainingExpireDays(Number(e.target.value))}
               />
             </div>
 
@@ -470,12 +470,7 @@ const FirstStep: React.FC = () => {
 
           <Grid container spacing={0}>
             <Grid item xs={12} className={buttonWrapper}>
-              <Button
-                onClick={advancedSearchItems}
-                variant="outlined"
-                type="button"
-                color="pink"
-              >
+              <Button onClick={advancedSearchItems} variant="outlined" type="button" color="pink">
                 {t('general.emal')} {t('general.filter')}
               </Button>
             </Grid>

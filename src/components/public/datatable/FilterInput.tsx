@@ -67,16 +67,16 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     setSelectedIndex(index);
   };
 
-  const handleChange = (event: any): void => {
-    let value = props.columnDef.type !== 'date' ? event.target.value : event;
+  const handleChange = (event: any, operator: any = undefined): void => {
+    let value = event;
     setValue(value);
     if (props.columnDef.type === 'date') {
       if (value !== '')
-        value = Utils.convertShamsiToGeo(value, 'YYYY-M-D')
+        value = Utils.convertShamsiToGeo(value, 'YYYY-MM-DD')
     }
     props.onFilterChanged(props.columnDef.tableData.id, {
       fieldValue: value,
-      operator: filterOption.operator,
+      operator: operator ? operator.operator : filterOption.operator,
     });
   };
 
@@ -129,7 +129,6 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
   ];
 
   const handleEnumChange = (event: any) => {
-    debugger;
     const code = event.target.value as [];
     const res = (props.columnDef.lookupFilter as LookupFilter[]).filter(x => code.includes(x.name as never));
     setPersonName(code);
@@ -157,17 +156,27 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     {
       text: 'برابر',
       value: '',
-      operator: `concat(cast(year(${props.columnDef.field}),Edm.String),concat('-',concat(cast(month(${props.columnDef.field}),Edm.String),concat('-',cast(day(${props.columnDef.field}),Edm.String))))) eq '$'`,
+      operator: `${props.columnDef.field} eq $`,
     },
     {
       text: 'بزرگتر',
       value: '',
-      operator: `concat(cast(year(${props.columnDef.field}),Edm.String),concat('-',concat(cast(month(${props.columnDef.field}),Edm.String),concat('-',cast(day(${props.columnDef.field}),Edm.String))))) gt '$'`,
+      operator: `${props.columnDef.field} gt $`,
+    },
+    {
+      text: 'بزرگتر مساوی',
+      value: '',
+      operator: `${props.columnDef.field} ge $`,
     },
     {
       text: 'کوچکتر',
       value: '',
-      operator: `concat(cast(year(${props.columnDef.field}),Edm.String),concat('-',concat(cast(month(${props.columnDef.field}),Edm.String),concat('-',cast(day(${props.columnDef.field}),Edm.String))))) lt '$'`,
+      operator: `${props.columnDef.field} lt $`,
+    },
+    {
+      text: 'کوچکتر مساوی',
+      value: '',
+      operator: `${props.columnDef.field} le $`,
     },
   ];
 
@@ -195,7 +204,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     const res = option.map((option, index) => {
       return (<MenuItem
         selected={index === selectedIndex}
-        onClick={(): any => handleClose(option, index)}
+        onClick={(): any => { handleClose(option, index); if (value) handleChange(value, option) }}
       >
         {option.text}
       </MenuItem>)
@@ -213,7 +222,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
             id={props.columnDef.field}
             type="text"
             value={value}
-            onChange={handleChange}
+            onChange={(e)=>handleChange(e.target.value)}
             placeholder={`${filterOption.text}`}
             endAdornment={
               <InputAdornment position="end">
@@ -264,7 +273,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
             }}
             className="w-100"
             type="text"
-            onChange={handleChange}
+            onChange={(e) => handleChange(e)}
             value={value}
             style={{ marginTop: 10, minWidth: 145, fontSize: 11 }}
             endAdornment={

@@ -4,10 +4,15 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import RTL, { theme } from './RTL';
+import { QueryCache, ReactQueryCacheProvider } from 'react-query';
+import { Provider as ReduxProvider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import CircleLoading from './components/public/loading/CircleLoading';
+import store from './redux/store';
 import './i18n';
 import './assets/scss/main.scss';
-import { QueryCache, ReactQueryCacheProvider } from 'react-query';
 import './scrollbar.css';
+import './public-style.css';
 
 const queryCache = new QueryCache({
   defaultConfig: {
@@ -17,14 +22,20 @@ const queryCache = new QueryCache({
   },
 });
 
+const { store: _store, persistor } = store();
+
 ReactDOM.render(
-  <ReactQueryCacheProvider queryCache={queryCache}>
-    <RTL>
-      <MuiThemeProvider theme={theme}>
-        <App />
-      </MuiThemeProvider>
-    </RTL>
-  </ReactQueryCacheProvider>,
+  <ReduxProvider store={_store}>
+    <PersistGate persistor={persistor} loading={<CircleLoading />}>
+      <ReactQueryCacheProvider queryCache={queryCache}>
+        <RTL>
+          <MuiThemeProvider theme={theme}>
+            <App />
+          </MuiThemeProvider>
+        </RTL>
+      </ReactQueryCacheProvider>
+    </PersistGate>
+  </ReduxProvider>,
   document.getElementById('root')
 );
 

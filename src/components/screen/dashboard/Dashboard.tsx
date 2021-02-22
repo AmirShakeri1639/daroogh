@@ -1,51 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
-import clsx from 'clsx';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { Avatar, Button, Container, Grid, Hidden, List, Paper, Tooltip } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
+import { Avatar, Grid, List } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import MenuIcon from '@material-ui/icons/Menu';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
-import {
-  AccountCircle,
-  ChevronRight as ChevronRightIcon,
-} from '@material-ui/icons';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import { useTranslation } from 'react-i18next';
+import { ChevronRight as ChevronRightIcon } from '@material-ui/icons';
 import Context from './Context';
-import UserMenu from './appbar/UserMenu';
-import NotificationMenu from './appbar/NotificationMenu';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
-import { errorHandler, JwtData } from '../../../utils';
-import { LoggedInUserInterface } from '../../../interfaces';
-import { logoutUser } from '../../../utils';
-import { ColorEnum, MessageQueryEnum } from '../../../enum';
-import { useHistory } from 'react-router-dom';
-import routes from '../../../routes';
-import Ribbon from '../../public/ribbon/Ribbon';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { useQuery } from 'react-query';
-import { Message } from '../../../services/api';
+import { 
+  errorHandler, JwtData, logoutUser 
+} from '../../../utils';
+import { ColorEnum } from '../../../enum';
 import { Alert } from '@material-ui/lab';
-import Accounting from '../../../services/api/Accounting';
-import BestPharmaciesList from './pharmacy/bestPharmaciesList';
-import CreditCardIcon from '@material-ui/icons/CreditCard';
 import Utils from '../../public/utility/Utils';
+import Appbar from './AppBar';
+import { useTranslation } from 'react-i18next';
+import { Accounting } from '../../../services/api';
+import { LoggedInUserInterface } from '../../../interfaces';
+import changeProfilePic from './user/changeProfilePic';
+import routes from '../../../routes';
+import { Link } from 'react-router-dom';
 
+const { isIndebtPharmacy } = new Accounting();
 const drawerWidth = 240;
 
 interface DashboardPropsInterface {
   component: React.ReactNode;
 }
-
-const { getUserMessages } = new Message();
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,16 +62,34 @@ const useStyles = makeStyles((theme) => ({
     padding: '0 8px',
     ...theme.mixins.toolbar,
   },
+  drawerBackground: {
+    background: '#F6F6F6',
+  },
   daroogLogo: {
     width: '77% !important',
     height: '35px !important',
+  },
+  headerHolder: {
+    width: '100%',
+    padding: '16px',
+  },
+  logoType: {
+    height: '30px',
   },
   systemTitle: {
     textAlign: 'right',
     display: 'block',
     fontSize: 'large',
     width: '100%',
-    padding: '1em',
+    color: '#4625B2',
+  },
+  logoTypeHolder: {
+    width: '60%',
+    float: 'left',
+  },
+  roundicon: {
+    background: 'white',
+    float: 'right',
   },
   appBar: {
     // zIndex: theme.zIndex.drawer + 1,
@@ -97,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    backgroundColor: '#4625b2',
+    backgroundColor: '#4625B2',
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -150,7 +151,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   largeSpacing: {
-    padding: theme.spacing(3),
+    padding: theme.spacing(2),
+  },
+  divider: {
+    backgroundColor: '#9585C9',
+    height: '1px',
   },
   smallAvatar: {
     width: theme.spacing(3),
@@ -163,6 +168,14 @@ const useStyles = makeStyles((theme) => ({
   paleText: {
     color: ColorEnum.PaleGray,
   },
+  simpleLink: {
+    textDecoration: 'none',
+    cursor: 'pointer',
+    transition: 'all .7s',
+    '&:hover': {
+      background: '#bbdefb',
+    }
+  },
 }));
 
 const StyledMenu = withStyles({
@@ -171,40 +184,62 @@ const StyledMenu = withStyles({
   },
 })((props: MenuProps) => (
   <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
+    elevation={ 0 }
+    getContentAnchorEl={ null }
+    anchorOrigin={ {
       vertical: 'bottom',
       horizontal: 'center',
-    }}
-    transformOrigin={{
+    } }
+    transformOrigin={ {
       vertical: 'top',
       horizontal: 'center',
-    }}
-    {...props}
+    } }
+    { ...props }
   />
 ));
 
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
-  const history = useHistory();
+  const [activePage, setActivePage] = useState<string>('dashboard');
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
-  const [isTrial, setIsTrial] = React.useState(true);
+  const [creditAnchorEl, setcreditAnchorEl] = React.useState(null);
+  const [debtValueState, setDebtValueState] = useState<number | null>(null);
+  const [isIndebtPharmacyState, setIsIndebtPharmacyState] = useState<boolean>();
+  const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
-  const [activePage, setActivePage] = useState<string>('dashboard');
-  const [creditAnchorEl, setcreditAnchorEl] = React.useState(null);
-  const [creditAmount, setCreditAmount] = useState<number>(0);
+  const [avatarChanged, setAvatarChanged] = useState<any>();
 
-  const { transfer } = routes;
+  const {
+    profile
+  } = routes;
 
   const classes = useStyles();
 
-  const {
-    data: userMessages,
-    isLoading: isLoadingUserMessages,
-  } = useQuery(MessageQueryEnum.GET_USER_MESSAGES, () => getUserMessages(true));
+  const { t } = useTranslation();
 
-  const handleDrawerOpen = (): void => setIsOpenDrawer(true);
+  const handleIsIndebtPharmacy = async (): Promise<any> => {
+    try {
+      const res = await isIndebtPharmacy();
+      setIsIndebtPharmacyState(res.data.isInDebt);
+      setDebtValueState(res.data.debt);
+    } catch (error) {
+      errorHandler(error);
+    }
+  };
+
+  useEffect(() => {
+    const { userData } = new JwtData();
+    setLoggedInUser(userData);
+  }, [avatarChanged]);
+
+  useEffect(() => {
+    async function getIsIndebtPharmacy(): Promise<void> {
+      await handleIsIndebtPharmacy();
+    }
+
+    getIsIndebtPharmacy();
+  }, []);
+
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
@@ -214,53 +249,21 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   };
 
   const contextInitialValues = (): any => ({
-    anchorEl,
-    setAnchorEl,
     activePage,
     activePageHandler,
+    setIsOpenDrawer,
+    isOpenDrawer,
+    setcreditAnchorEl,
+    debtValueState,
+    setDebtValueState,
+    isIndebtPharmacyState,
+    setIsIndebtPharmacyState,
+    anchorEl,
+    setAnchorEl,
     notifEl,
     setNotifEl,
+    creditAnchorEl,
   });
-
-  const [isIndebtPharmacyState, setIsIndebtPharmacyState] = useState<boolean>();
-  const [debtValueState, setDebtValueState] = useState<number | null>(null);
-  const { isIndebtPharmacy } = new Accounting();
-  const handleIsIndebtPharmacy = async (): Promise<any> => {
-    try {
-      const res = await isIndebtPharmacy();
-      setIsIndebtPharmacyState(res.data.isInDebt);
-      setDebtValueState(res.data.debt)
-    } catch (error) {
-      errorHandler(error);
-    }
-  };
-
-  const { t } = useTranslation();
-
-  const handleUserIconButton = (
-    e: React.MouseEvent<HTMLButtonElement>
-  ): void => {
-    setAnchorEl(e.currentTarget);
-  };
-
-  const handleNotificationIconButton = (
-    e: React.MouseEvent<HTMLButtonElement>
-  ): void => {
-    setNotifEl(e.currentTarget);
-  };
-
-  const [loggedInUser, setLoggedInUser] = useState<LoggedInUserInterface>();
-
-  useEffect(() => {
-    const { userData } = new JwtData();
-    setLoggedInUser(userData);
-
-    async function getIsIndebtPharmacy(): Promise<void> {
-      await handleIsIndebtPharmacy();
-    }
-
-    getIsIndebtPharmacy();
-  }, []);
 
   const listItemsGenerator = (): any => {
     return <ListItems />;
@@ -272,192 +275,163 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     const { name, family } = JSON.parse(user);
     const title = (
       <span>
-        {name} {family} عزیز ،
+        {name } {family } عزیز ،
       </span>
     );
     const body = (
-      <span style={{ marginRight: 5 }}>
+      <span style={ { marginRight: 5 } }>
         بعلت اینکه سقف بدهی شما بیشتر از حد مجاز می باشد، امکان هیچگونه عملیاتی
         برای شما میسر نمی باشد. لطفا نسبت به پرداخت بدهی خود اقدام نمایید.
       </span>
     );
     element = (
       <>
-        {title}
-        {body}
+        {title }
+        {body }
       </>
     );
     return element;
   };
 
+  const avatar = (): any => {
+    return (
+      localStorage.getItem('avatar') ?? avatarPic
+    );
+  }
+
   return (
-    <Context.Provider value={contextInitialValues()}>
-      <div className={classes.root}>
-        <AppBar elevation={0} position="absolute" className={classes.appBar}>
-          <Toolbar className={isTrial ? classes.trialToolbar : classes.toolbar}>
-            {isTrial && (
-              <div style={{ zIndex: 0, overflow: 'hidden' }}>
-                <Ribbon
-                  text="نسخه آزمایشی"
-                  isExchange={false}
-                  isToolbar={true}
-                />
-              </div>
-            )}
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              className={clsx(
-                classes.menuButton,
-                isOpenDrawer && classes.menuButtonHidden
-              )}
-            >
-              <MenuIcon />
-            </IconButton>
+    <Context.Provider value={ contextInitialValues() }>
+      <div className={ classes.root }>
+        <Appbar />
 
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              className={classes.title}
-            >
-              <Hidden smDown>
-                {/* {t('general.dashboard')} */}
-                <span>داروگ</span>
-                <span style={{ fontSize: 14, marginRight: 5 }}>
-                  (سامانه تبادل دارو)
-                </span>
-              </Hidden>
-            </Typography>
-
-            <Tooltip title="ایجاد تبادل">
-              <IconButton edge="end"
-                style={{ color: ColorEnum.White }}
-                onClick={(): void => history.push(transfer)}
-              >
-                <AddCircleOutlineIcon />
-                <Hidden smDown><span style={{ fontSize: 14 }}>{t('exchange.create')}</span></Hidden>
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="کیف پول">
-              <IconButton edge="end" onClick={(e: any) => setcreditAnchorEl(e.currentTarget)}
-                style={{ color: `${!debtValueState ? 'white' : debtValueState >= 0 ? '#72fd72' : '#f95e5e'}` }}>
-                <CreditCardIcon />
-                {debtValueState && <Hidden smDown><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span></span></Hidden>}
-              </IconButton>
-            </Tooltip>
-
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleNotificationIconButton}
-            >
-              <Badge
-                badgeContent={
-                  userMessages !== undefined ? userMessages.items.length : 0
-                }
-                color="secondary"
-              >
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls="user-menu"
-              aria-haspopup="true"
-              onClick={handleUserIconButton}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-
-            <UserMenu />
-
-            <NotificationMenu
-              messages={isLoadingUserMessages ? [] : userMessages?.items}
-            />
-          </Toolbar>
-        </AppBar>
-
-        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
-          <div className={classes.toolbarIcon}>
-            <span
-              className={classes.systemTitle}
-              style={{ textAlign: 'right' }}
-            >
-              {t('general.systemTitle')}
-            </span>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronRightIcon />
-            </IconButton>
-          </div>
-          <Divider />
-          <Grid container className={classes.largeSpacing}>
-            <Grid item xs={3}>
-              <Avatar
-                alt={t('user.user')}
-                className={classes.largeAvatar}
-                src={avatarPic}
-              />
-            </Grid>
-            <Grid item xs={9}>
-              <Grid item xs={12}>
-                {loggedInUser?.name} {loggedInUser?.family}
-              </Grid>
-              <Grid item xs={12} className={classes.paleText}>
-                {t('pharmacy.pharmacy')} {loggedInUser?.pharmacyName}
-              </Grid>
-              <Grid item xs={12}>
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  onClick={(): void => logoutUser()}
-                >
-                  {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
-                  <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
-                    {t('login.exit')}
+        <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
+          <div className={ classes.drawerBackground }>
+            <div className={ classes.toolbarIcon }>
+              <div className={ classes.headerHolder }>
+                <div className={ classes.logoTypeHolder }>
+                  <img className={ classes.logoType } src="logotype.svg" />
+                  <span
+                    className={ classes.systemTitle }
+                    style={ { textAlign: 'right' } }
+                  >
+                    { t('general.systemTitle') }
                   </span>
+                </div>
+                <IconButton
+                  className={ classes.roundicon }
+                  onClick={ handleDrawerClose }
+                >
+                  <ChevronRightIcon />
                 </IconButton>
+              </div>
+            </div>
+
+            <Divider className={ classes.divider } />
+
+            <Grid container className={ classes.largeSpacing }>
+              <Grid item xs={ 3 }>
+                <>
+                  <label style={ { cursor: 'pointer' } }>
+                    <input
+                      type='file'
+                      style={ { display: 'none' } }
+                      id='profilePicUpload'
+                      accept="image/jpeg"
+                      name='profilePicUpload'
+                      onChange={ (e: any): void => {
+                        e.preventDefault();
+                        if (e.target.files.length > 0) {
+                          changeProfilePic(loggedInUser?.userId, e.target.files[0])
+                            .then((response: any) => {
+                              const { userData } = new JwtData();
+                              setAvatarChanged(userData.imageKey);
+                              setLoggedInUser(userData);
+                            });
+                        }
+                      } }
+                    />
+                    <Avatar
+                      alt={ t('user.user') }
+                      className={ classes.largeAvatar }
+                      src={ avatar() }
+                    />
+                  </label>
+                </>
+              </Grid>
+              <Grid item xs={ 9 }>
+                <Grid item xs={ 12 }>
+                  <Link to={ profile } className={ classes.simpleLink }>
+                    <span
+                      style={ { color: '#4625B2', fontSize: 'large' } }>
+                      { loggedInUser?.name } { loggedInUser?.family }
+                    </span>
+                  </Link>
+                </Grid>
+                <Grid item xs={ 12 }>
+                  <span style={ { color: '#6B4ECC', fontSize: 'small' } }>
+                    { t('pharmacy.pharmacy') } { loggedInUser?.pharmacyName }
+                  </span>
+                </Grid>
+                <Grid
+                  item
+                  xs={ 12 }
+                  style={ { display: 'flex', justifyContent: 'flex-end' } }
+                >
+                  <IconButton
+                    edge="start"
+                    color="inherit"
+                    onClick={ (): void => logoutUser() }
+                  >
+                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
+                    <span style={ { color: ColorEnum.Red, fontSize: 'medium' } }>
+                      { t('login.exit') }
+                    </span>
+                  </IconButton>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Divider />
-          <List component="nav" aria-labelledby="nested-list-items">
-            {listItemsGenerator()}
-          </List>
-          <Divider />
-        </MaterialDrawer>
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <div className={classes.alert}>
-            {isIndebtPharmacyState && (
-              <Alert variant="filled" severity="error" style={{ margin: 10 }}>
-                {alertContent()}
-              </Alert>
-            )}
+            <Divider className={ classes.divider } />
+            <List
+              style={ { color: '#4625B2' } }
+              component="nav"
+              aria-labelledby="nested-list-items"
+            >
+              { listItemsGenerator() }
+            </List>
+            <Divider className={ classes.divider } />
           </div>
-          {component}
-
+        </MaterialDrawer>
+        <main className={ classes.content }>
+          <div className={ classes.appBarSpacer } />
+          <div className={ classes.alert }>
+            { isIndebtPharmacyState && (
+              <Alert variant="filled" severity="error" style={ { margin: 10 } }>
+                {alertContent() }
+              </Alert>
+            ) }
+          </div>
+          { component }
         </main>
-        {debtValueState &&
+        { debtValueState && (
           <StyledMenu
             id="customized-menu"
-            anchorEl={creditAnchorEl}
+            anchorEl={ creditAnchorEl }
             keepMounted
-            open={Boolean(creditAnchorEl)}
-            onClose={() => setcreditAnchorEl(null)}
+            open={ Boolean(creditAnchorEl) }
+            onClose={ (): void => setcreditAnchorEl(null) }
           >
-            <div style={{ padding: 5 }}><span style={{ fontSize: 14 }}> <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b><span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>{debtValueState < 0 && ' بدهکار'}</span></div>
+            <div style={ { padding: 5 } }>
+              <span style={ { fontSize: 14 } }>
+                { ' ' }
+                <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
+                <span style={ { fontSize: 10, marginRight: 2 } }>ریال</span>
+                { debtValueState > 0 && ' بدهکار' }
+              </span>
+            </div>
           </StyledMenu>
-        }
+        ) }
       </div>
-    </Context.Provider >
+    </Context.Provider>
   );
 };
 

@@ -67,6 +67,7 @@ export enum RolesEnum {
   USERS = '1',
   ADMIN = '2',
   PHARMACY = '3',
+  PUBLIC = '4',
   PHARMACY_MEMBER_1 = '49',
   PHARMACY_MEMBER_2 = '50',
   PHARMACY_MEMBER_3 = '51',
@@ -101,6 +102,7 @@ export const GetValuesOfEnum = (e: any): any => {
 
 export * from './pharmacy';
 export * from './role';
+export * from './search';
 
 export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
 export { ColorEnum } from './colors';
@@ -108,4 +110,3 @@ export { CardColors } from './colors';
 export { UserColors } from './colors';
 export { UserGrades } from './UserGrades';
 export { PrescriptionResponseStateEnum } from './prescription';
-

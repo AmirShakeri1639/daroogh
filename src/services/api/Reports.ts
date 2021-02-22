@@ -1,33 +1,40 @@
-import Api from './Api'
-import { errorHandler } from "../../utils";
+import Api from './Api';
+import { errorHandler } from '../../utils';
 import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface } from '../../interfaces';
 
 class Reports extends Api {
   readonly urls = {
-    getBestPharmaciesList: '/Reports/GetBestPharmacyListScores',
-    getExchangeStatus: '/Reports/getExchangeStatus'
-  }
+    getBestPharmaciesList: '/Reports/GetBestPharmacyListScores2',
+    getExchangeStatus: '/Reports/getExchangeStatus',
+    getExchangeCount: '/Reports/GetExchangeCount',
+  };
 
-
-  getBestPharmaciesList = async (skip: number, top: number = 10): Promise<any> => {
+  getBestPharmaciesList = async (for24Hour: boolean): Promise<any> => {
     try {
       const result = await this.postData(
-        `${this.urls.getBestPharmaciesList}`);
+        `${this.urls.getBestPharmaciesList}?for24Hour=${for24Hour}`
+      );
       return result.data;
     } catch (e) {
-      errorHandler(e)
+      errorHandler(e);
     }
-  }
+  };
   getExchangeStatus = async (): Promise<any> => {
     try {
-      const result = await this.getData(
-        `${this.urls.getExchangeStatus}`);
+      const result = await this.getData(`${this.urls.getExchangeStatus}`);
       return result.data;
     } catch (e) {
-      errorHandler(e)
+      errorHandler(e);
     }
-  }
-
+  };
+  getExchangeCount = async (): Promise<any> => {
+    try {
+      const result = await this.getData(`${this.urls.getExchangeCount}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
 }
 
 export default Reports;

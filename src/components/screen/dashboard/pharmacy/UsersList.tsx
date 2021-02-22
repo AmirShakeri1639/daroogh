@@ -17,6 +17,7 @@ import {
   Checkbox,
   ListItemText,
   MenuItem,
+  Container,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
@@ -107,10 +108,11 @@ const useClasses = makeStyles((theme) =>
     createUserBtn: {
       background: `${theme.palette.pinkLinearGradient.main} !important`,
       color: '#fff',
-      float: 'right',
+      float: 'left',
     },
     buttonContainer: {
       marginBottom: theme.spacing(2),
+      alignItems: 'left',
     },
   })
 );
@@ -321,7 +323,7 @@ const UsersList: React.FC = () => {
       userName: state.userName,
       nationalCode: state.nationalCode,
       birthDate: state.birthDate,
-      roleUser: selectedRoles.map((item) => ({ roleID: item }))
+      roleUser: selectedRoles.map((item) => ({ roleID: item })),
     };
 
     await _addPharmacyUser(data);
@@ -530,17 +532,7 @@ const UsersList: React.FC = () => {
   };
 
   return (
-    <MaterialContainer>
-      <Grid container spacing={1} className={buttonContainer}>
-        <Button
-          variant="outlined"
-          className={createUserBtn}
-          onClick={toggleIsOpenModalOfUser}
-        >
-          {t('user.create-user')}
-        </Button>
-      </Grid>
-
+    <Container maxWidth="lg">
       <DataTable
         tableRef={ref}
         extraMethods={{ editUser: enableUserHandler }}
@@ -557,6 +549,19 @@ const UsersList: React.FC = () => {
         // stateAction={disableUserHandler}
         customActions={customDataTAbleACtions}
       />
+      <br />
+      <br />
+
+      <Grid container spacing={1} className={buttonContainer}>
+        <Button
+          variant="outlined"
+          className={createUserBtn}
+          onClick={toggleIsOpenModalOfUser}
+        >
+          {t('user.create-user')}
+        </Button>
+      </Grid>
+
       <Modal open={isOpenRoleModal} toggle={toggleIsOpenRoleModal}>
         <Card className={root}>
           <CardHeader
@@ -764,7 +769,7 @@ const UsersList: React.FC = () => {
           }}
         />
       </Modal>
-    </MaterialContainer>
+    </Container>
   );
 };
 
