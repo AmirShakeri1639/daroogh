@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
   Avatar,
@@ -30,7 +30,7 @@ import { Settings, User, File } from '../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
-import 'assets/other/login.scss';
+import 'assets/scss/login.scss';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -88,6 +88,13 @@ const Login: React.FC = (): JSX.Element => {
   const [showError, setShowError] = useState<boolean>(false);
 
   const location = useLocation();
+
+  useEffect(() => {
+    document.body.classList.add("body-login");
+    return function cleanup() {
+      document.body.classList.remove("body-login");
+    }
+  }, [])
 
   const { t } = useTranslation();
   const { push } = useHistory();
