@@ -20,6 +20,8 @@ const Modal: React.FC<ModalPropsInterface> = (props) => {
       bottom: 'auto',
       marginRight: '-45%',
       transform: 'translate(-50%, -50%)',
+      overFlow: 'scroll',
+
       padding: '0',
       borderRadius: '.9rem',
     },

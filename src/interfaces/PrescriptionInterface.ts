@@ -6,6 +6,12 @@ export interface PrescriptionResponseInterface {
     isAccept: boolean;
     state: PrescriptionResponseStateEnum;
 }
+export interface PrescriptionSendInterface {
+    duration: number;
+    contryDivisionCode: string;
+    comment: string;
+    file: string;
+}
 
 export interface PrescriptionInterface {
     id: number;
@@ -21,3 +27,13 @@ export interface PrescriptionInterface {
     readOnly: boolean;
     prescriptionResponse: PrescriptionResponseInterface[];
 }
+
+
+export interface PrescriptionInputInterface {
+    id: number;
+    sendDate: string;
+    contryDivisionCode: string;
+    contryDivisionName: string;
+    comment: string;
+  }
+  
