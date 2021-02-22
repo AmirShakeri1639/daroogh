@@ -58,7 +58,7 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
         <Grid container spacing={1}>
           <Grid item xs={9}>
             <div className={container}>
-              <Grid container spacing={0}>
+              <Grid container spacing={1}>
                 <Grid item xs={12}>
                   <Grid container spacing={0} alignItems="flex-end">
                     <Grid item xs={1} className={textCenter}>
