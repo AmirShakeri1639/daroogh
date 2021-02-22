@@ -26,7 +26,7 @@ import { useQuery } from 'react-query';
 import { connect, ConnectedProps } from 'react-redux';
 import { sweetAlert } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle, faBell, faPlus, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const drawerWidth = 240;
 const { getUserMessages } = new Message();
@@ -185,10 +185,7 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
-  showButtons,
-  transfer: _transfer,
-}) => {
+const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer: _transfer }) => {
   const {
     setIsOpenDrawer,
     isOpenDrawer,
@@ -211,25 +208,14 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
     }
   );
 
-  const {
-    trialToolbar,
-    toolbar,
-    appBar,
-    menuButton,
-    menuButtonHidden,
-    title,
-  } = useStyles();
+  const { trialToolbar, toolbar, appBar, menuButton, menuButtonHidden, title } = useStyles();
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
 
-  const handleUserIconButton = (
-    e: React.MouseEvent<HTMLButtonElement>
-  ): void => {
+  const handleUserIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(e.currentTarget);
   };
 
-  const handleNotificationIconButton = (
-    e: React.MouseEvent<HTMLButtonElement>
-  ): void => {
+  const handleNotificationIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
     setNotifEl(e.currentTarget);
   };
 
@@ -268,23 +254,15 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
             onClick={handleDrawerOpen}
             className={clsx(menuButton, isOpenDrawer && menuButtonHidden)}
           >
-            <SvgIcon fileName="menu" />
+            <FontAwesomeIcon icon={faBars} />
           </IconButton>
         )}
 
-        <Typography
-          component="h1"
-          variant="h6"
-          color="inherit"
-          noWrap
-          className={title}
-        >
+        <Typography component="h1" variant="h6" color="inherit" noWrap className={title}>
           <Hidden smDown>
             {/* {t('general.dashboard')} */}
             <span>داروگ</span>
-            <span style={{ fontSize: 14, marginRight: 5 }}>
-              (سامانه تبادل دارو)
-            </span>
+            <span style={{ fontSize: 14, marginRight: 5 }}>(سامانه تبادل دارو)</span>
           </Hidden>
         </Typography>
 
@@ -303,7 +281,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
                 style={{ color: ColorEnum.White }}
                 onClick={newTransferHandler}
               >
-                <SvgIcon fileName="plus" size="12px" />
+                <FontAwesomeIcon size="xs" icon={faPlus} />
                 <Hidden smDown>
                   <span style={{ fontSize: 14, paddingRight: 6 }}>
                     {t('exchange.create', {
@@ -322,13 +300,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
             edge="end"
             onClick={(e: any): void => setcreditAnchorEl(e.currentTarget)}
             style={{
-              color: `${
-                !debtValueState
-                  ? 'white'
-                  : debtValueState >= 0
-                  ? '#f95e5e'
-                  : '#72fd72'
-              }`,
+              color: `${!debtValueState ? 'white' : debtValueState >= 0 ? '#f95e5e' : '#72fd72'}`,
             }}
           >
             <CreditCardIcon />
@@ -346,18 +318,12 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
 
         {showButtons && (
           <>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleNotificationIconButton}
-            >
+            <IconButton edge="end" color="inherit" onClick={handleNotificationIconButton}>
               <Badge
-                badgeContent={
-                  userMessages !== undefined ? userMessages.items.length : 0
-                }
+                badgeContent={userMessages !== undefined ? userMessages.items.length : 0}
                 color="secondary"
               >
-                <SvgIcon fileName="notification" />
+                <FontAwesomeIcon icon={faBell} />
               </Badge>
             </IconButton>
 
@@ -376,9 +342,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
 
         <UserMenu />
 
-        <NotificationMenu
-          messages={isLoadingUserMessages ? [] : userMessages?.items}
-        />
+        <NotificationMenu messages={isLoadingUserMessages ? [] : userMessages?.items} />
       </Toolbar>
     </AppBar>
   );
