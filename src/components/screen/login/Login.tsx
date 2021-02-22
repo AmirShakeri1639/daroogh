@@ -11,6 +11,7 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  Grid,
 } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -29,16 +30,10 @@ import { Settings, User, File } from '../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
+import './login.scss';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    paper: {
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
     avatar: {
       margin: theme.spacing(1),
       backgroundColor: theme.palette.secondary.main,
@@ -47,16 +42,8 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       marginTop: theme.spacing(1),
     },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-      color: 'white',
-      background: theme.palette.blueLinearGradient.main,
-    },
     margin: {
       margin: theme.spacing(1),
-    },
-    link: {
-      textDecoration: 'none',
     },
   })
 );
@@ -186,95 +173,107 @@ const Login: React.FC = (): JSX.Element => {
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={ classes.paper }>
-        <Avatar className={ classes.avatar }>
+      <div className="paper">
+        {/* <Avatar className={ classes.avatar }>
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
           ورود
-        </Typography>
+        </Typography> */}
         <form className={ classes.form } noValidate onSubmit={ formSubmitHandler }>
-          <TextField
-            error={ state.username.trim().length === 0 && showError }
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label={ t('login.username') }
-            name="email"
-            autoComplete="email"
-            onChange={ usernameHandler }
-            InputProps={ {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <FontAwesomeIcon icon={ faUser } size="lg" fill="#ccc" />
-                </InputAdornment>
-              ),
-            } }
-          />
-          <TextField
-            error={ state.password.trim().length === 0 && showError }
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="کلمه عبور"
-            type={ state.isVisiblePassword ? 'text' : 'password' }
-            id="password"
-            onChange={ passwordHandler }
-            autoComplete="current-password"
-            InputProps={ {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <FontAwesomeIcon icon={ faKey } size="lg" />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={ handleClickShowPassword }
-                    onMouseDown={ handleMouseDownPassword }
-                    edge="end"
-                  >
-                    { state.isVisiblePassword ? (
-                      <Visibility />
-                    ) : (
-                        <VisibilityOff />
-                      ) }
-                  </IconButton>
-                </InputAdornment>
-              ),
-            } }
-          />
-          <Link className={ classes.link } to="/forget-password">
-            رمز عبور را فراموش کردم
-          </Link>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={ classes.submit }
-            disabled={ isLoading }
-          >
-            <Typography variant="button">{ t('login.login') }</Typography>
-            { isLoading ? (
-              <CircleLoading size={ 16 } color="inherit" />
-            ) : (
-                <LockOpenIcon fontSize="inherit" className={ classes.margin } />
-              ) }
-          </Button>
-          <Link
-            className={ `${classes.link} MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root` }
-            to="/register-pharmacy-with-user"
-          >
-            <Typography variant="button">
-              { t('login.registerPharmacyWithUser') }
-            </Typography>
-          </Link>
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
+              <TextField
+                error={ state.username.trim().length === 0 && showError }
+                variant="outlined"
+                margin="normal"
+                required
+                xs={ 12 }
+                fullWidth
+                className="text-field"
+                id="email"
+                label={ t('login.username') }
+                name="email"
+                autoComplete="email"
+                onChange={ usernameHandler }
+                InputProps={ {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FontAwesomeIcon icon={ faUser } size="lg" color="#3607a5" />
+                    </InputAdornment>
+                  ),
+                } }
+              />
+              <TextField
+                xs={ 12 }
+                error={ state.password.trim().length === 0 && showError }
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                className="text-field"
+                name="password"
+                label="کلمه عبور"
+                type={ state.isVisiblePassword ? 'text' : 'password' }
+                id="password"
+                onChange={ passwordHandler }
+                autoComplete="current-password"
+                InputProps={ {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <FontAwesomeIcon icon={ faKey } size="lg" color="#3607a5" />
+                    </InputAdornment>
+                  ),
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={ handleClickShowPassword }
+                        onMouseDown={ handleMouseDownPassword }
+                        edge="end"
+                      >
+                        { state.isVisiblePassword ? (
+                          <Visibility />
+                        ) : (
+                            <VisibilityOff />
+                          ) }
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                } }
+              />
+            </Grid>
+            <Grid item xs={ 12 } className="no-padding">
+              <Button
+                type="submit"
+                className="button"
+                variant="contained"
+                disabled={ isLoading }
+              >
+                <Typography variant="button">{ t('login.login') }</Typography>
+                { isLoading ? (
+                  <CircleLoading size={ 16 } color="inherit" />
+                ) : (
+                    <LockOpenIcon fontSize="inherit" className={ classes.margin } />
+                  ) }
+              </Button>
+            </Grid>
+            <Grid item xs={ 12 } className="no-padding">
+              <Link className="link" to="/forget-password">
+                رمز عبور را فراموش کردم
+              </Link>
+            </Grid>
+            <Grid item xs={ 12 }>
+              <Link
+                className="link MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
+                to="/register-pharmacy-with-user"
+              >
+                <Typography variant="button">
+                  { t('login.registerPharmacyWithUser') }
+                </Typography>
+              </Link>
+            </Grid>
+          </Grid>
         </form>
       </div>
     </Container>
