@@ -6,7 +6,7 @@ $base-color-2    : #3607a5;
 $base-transition : all .4s ease-in-out;
 $general-radius  : 3em;
 
-body {
+.body-login {
   background:
     url('/images/daroog-logo-nobg-256.png') no-repeat 5% 5%,
     url('/images/daroog-icon.png') no-repeat 150% -10%;
@@ -67,7 +67,7 @@ body {
 }
 
 @media (max-width: 1024px) {
-  body {
+  .body-login {
     background:
       url('/images/daroog-logo-nobg-256.png') no-repeat 50% 5%;
   }
