@@ -275,7 +275,6 @@ const PharmaciesList: React.FC = () => {
         field: 'workTimeString',
         title: t('pharmacy.workTime'),
         type: 'string',
-        searchable: true,
       },
       {
         field: 'x',
