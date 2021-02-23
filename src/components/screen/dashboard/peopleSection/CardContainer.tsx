@@ -1,25 +1,10 @@
 import React, { useState } from 'react';
-import {
-  makeStyles,
-  Paper,
-  createStyles,
-  Grid,
-  Button,
-  Box,
-  Divider,
-} from '@material-ui/core';
+import { makeStyles, Paper, createStyles, Grid, Button, Box, Divider } from '@material-ui/core';
 import { MaterialContainer, Modal } from '../../../public';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  FavoriteDrugInterface,
-  PrescriptionDataInterface,
-} from '../../../../interfaces';
-import {
-  faCalendarTimes,
-  faEdit,
-  faTrashAlt,
-} from '@fortawesome/free-regular-svg-icons';
+import { FavoriteDrugInterface, PrescriptionDataInterface } from '../../../../interfaces';
+import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { ColorEnum, TextMessage } from '../../../../enum';
 import { BackDrop, TextLine } from '../../../public';
 import { useClasses } from '../classes';
@@ -92,6 +77,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
     contryDivisionCode,
     comment,
     id,
+    fileKey,
     cancelDate,
   } = data;
 
@@ -110,11 +96,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
               backColor={ColorEnum.White}
               rightText={
                 <>
-                  <FontAwesomeIcon
-                    icon={faCalendarTimes}
-                    size="lg"
-                    className={faIcons}
-                  />
+                  <FontAwesomeIcon icon={faCalendarTimes} size="lg" className={faIcons} />
                   {'کنسل شده در تاریخ : '}
                 </>
               }
@@ -147,6 +129,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
           </Grid>
         )}
         <Detail
+          fileKey={fileKey}
           id={id}
           contryDivisionCode={contryDivisionCode}
           sendDate={sendDate}
@@ -154,7 +137,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
           comment={comment}
         />
       </Grid>
-      <Modal  open={isOpenModal} toggle={toggleIsOpenModal}>
+      <Modal open={isOpenModal} toggle={toggleIsOpenModal}>
         <div className={modalContainer}>
           <Grid container spacing={1}>
             {(!dataApi ||
@@ -167,12 +150,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
             <Grid item xs={12} sm={12}>
               {dataApi &&
                 dataApi.prescriptionResponse.map((rec: any) => (
-                  <Box
-                    bgcolor="primary.main"
-                    color="primary.contrastText"
-                    m={2}
-                    p={2}
-                  >
+                  <Box bgcolor="primary.main" color="primary.contrastText" m={2} p={2}>
                     <Grid container spacing={1}>
                       <Grid item xs={12} sm={3}>
                         <Paper className={paper}>نام داروخانه</Paper>

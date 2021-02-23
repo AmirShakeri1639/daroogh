@@ -46,23 +46,17 @@ const Pack: React.FC = () => {
 
   const queryCache = useQueryCache();
 
-  const { isLoading, data } = useQuery(
-    PackEnum.GET_PHARMACY_PACKS,
-    getPharmacyPacks
-  );
+  const { isLoading, data } = useQuery(PackEnum.GET_PHARMACY_PACKS, getPharmacyPacks);
 
-  const [_removePack, { isLoading: isLoadingRemovePack }] = useMutation(
-    removePack,
-    {
-      onSuccess: () => {
-        queryCache.invalidateQueries(PackEnum.GET_PHARMACY_PACKS);
-        successSweetAlert(t('alert.successfulRemoveTextMessage'));
-      },
-      onError: () => {
-        errorSweetAlert(t('alert.failedRemove'));
-      },
-    }
-  );
+  const [_removePack, { isLoading: isLoadingRemovePack }] = useMutation(removePack, {
+    onSuccess: () => {
+      queryCache.invalidateQueries(PackEnum.GET_PHARMACY_PACKS);
+      successSweetAlert(t('alert.successfulRemoveTextMessage'));
+    },
+    onError: () => {
+      errorSweetAlert(t('alert.failedRemove'));
+    },
+  });
 
   const createPackLink = (): void => {
     push({
@@ -79,7 +73,7 @@ const Pack: React.FC = () => {
   const contentHandler = (): JSX.Element[] | null => {
     if (data !== undefined && !isLoading) {
       return data.items.reverse().map((item: any) => {
-        const { id, pharmacyDrug, category } = item;
+        const { id, name, pharmacyDrug, category } = item;
         let totalPrice = 0;
         pharmacyDrug.forEach((item: any) => {
           totalPrice += item.amount;
@@ -89,7 +83,7 @@ const Pack: React.FC = () => {
             <CardContainer
               totalPrice={totalPrice}
               drugsCounter={pharmacyDrug.length}
-              name={category.name}
+              name={category === null ? name : category.name}
               id={id}
               removeHandler={removeHandler}
             />
