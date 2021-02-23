@@ -35,5 +35,6 @@ export interface PrescriptionInputInterface {
     contryDivisionCode: string;
     contryDivisionName: string;
     comment: string;
+    fileKey: string;
   }
   
