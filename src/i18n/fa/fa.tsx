@@ -482,6 +482,7 @@ export default {
         applicationUrl: 'Application URL',
       },
       survey: {
+        survey: 'نظرسنجی',
         widget: 'ابزارک نظرسنجی',
       },
     },

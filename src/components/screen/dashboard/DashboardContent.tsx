@@ -16,6 +16,8 @@ import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
 import './style.css';
+import ExchangeWidget from './widgets/ExchangeWidget';
+import SurveyWidget from './widgets/SurveyWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,55 +52,56 @@ const DashboardContent: React.FC<any> = () => {
       <Grid container spacing={ 3 }>
         {/* Widgets */ }
         <Grid item xs={ 12 } container spacing={ 3 }>
-          <Grid item xs={ 12 } sm={ 6 }>
-            <>
-              {/* Widget */}
-            </>
+          <Grid item xs={ 12 } sm={ 4 }>
+            <ExchangeWidget />
           </Grid>
-          <Grid item xs={ 12 } sm={ 6 }>
+          <Grid item xs={ 12 } sm={ 4 }>
+            <SurveyWidget />
+          </Grid>
+          <Grid item xs={ 12 } sm={ 4 }>
             <>
-              {/* Widget */}
+              {/* Widget */ }
             </>
           </Grid>
         </Grid>
-        {/* Chart */}
+        {/* Chart */ }
         <Grid item xs={ 12 }>
           <Paper className={ classes.paper }>
             <ExChangeChart></ExChangeChart>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
+        <Grid item xs={ 12 }>
+          <Paper className={ classes.paper }>
             <AppBar position="static" color="default">
               <Tabs
-                value={value}
-                onChange={handleChange}
+                value={ value }
+                onChange={ handleChange }
                 indicatorColor="primary"
                 textColor="primary"
                 variant="fullWidth"
                 aria-label="full width tabs example"
               >
-                <Tab label="داروخانه های برتر روزانه " {...a11yProps(0)} />
-                <Tab label="داروخانه های برتر شبانه روزی" {...a11yProps(1)} />
+                <Tab label="داروخانه های برتر روزانه " { ...a11yProps(0) } />
+                <Tab label="داروخانه های برتر شبانه روزی" { ...a11yProps(1) } />
               </Tabs>
             </AppBar>
             <SwipeableViews
-              axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-              index={value}
-              onChangeIndex={handleChangeIndex}
+              axis={ theme.direction === 'rtl' ? 'x-reverse' : 'x' }
+              index={ value }
+              onChangeIndex={ handleChangeIndex }
             >
-              <TabPanel value={value} index={0} dir={theme.direction}>
-                <BestPharmaciesList for24Hour={false}></BestPharmaciesList>
+              <TabPanel value={ value } index={ 0 } dir={ theme.direction }>
+                <BestPharmaciesList for24Hour={ false }></BestPharmaciesList>
               </TabPanel>
-              <TabPanel value={value} index={1} dir={theme.direction}>
-                <BestPharmaciesList for24Hour={true}></BestPharmaciesList>
+              <TabPanel value={ value } index={ 1 } dir={ theme.direction }>
+                <BestPharmaciesList for24Hour={ true }></BestPharmaciesList>
               </TabPanel>
             </SwipeableViews>
           </Paper>
         </Grid>
 
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
+        <Grid item xs={ 12 }>
+          <Paper className={ classes.paper }>
             <div id="map">
               <MapCluster></MapCluster>
             </div>
@@ -115,16 +118,16 @@ function TabPanel(props: any) {
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
-      id={`scrollable-auto-tabpanel-${index}`}
-      aria-labelledby={`scrollable-auto-tab-${index}`}
-      {...other}
+      hidden={ value !== index }
+      id={ `scrollable-auto-tabpanel-${index}` }
+      aria-labelledby={ `scrollable-auto-tab-${index}` }
+      { ...other }
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
+        <Box p={ 3 }>
+          <Typography>{ children }</Typography>
         </Box>
-      )}
+      ) }
     </div>
   );
 }

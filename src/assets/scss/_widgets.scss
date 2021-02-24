@@ -1,12 +1,32 @@
-.widget-container {
-  border-radius: 1em !important;
+@import "general";
+
+$radius: 1em;
+
+.statswidget-container {
+  cursor: pointer;
+  transition: $base-transition;
   margin: .5em;
-  padding: .5em;
+  padding: 1em 2em .5em 1em;
+  max-width: 25em;
+  border: 1px solid #eee;
+  border-radius: $radius;
 }
 
-.widget-header {
-  background: #eee;
-  border-radius: .5em;
-  padding: 0 1em;
+.statswidget-title {
+  border-radius: $radius;
+  text-align: right;
+  margin-top: 0;
   margin-bottom: 1em !important;
+  font-size: 1.2em;
+}
+
+.statswidget-value {
+  font-weight: bolder;
+  font-size: 3em;
+}
+
+.statswidget-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -47,7 +47,6 @@ class Prescription extends Api {
     return result.data;
   };
   send = async (data: PrescriptionSendInterface): Promise<any> => {
-    debugger;
     const result = await this.postFormData(
       `${this.urls.send}?duration=${data.duration}` +
         `&contryDivisionCode=${data.contryDivisionCode}`,
