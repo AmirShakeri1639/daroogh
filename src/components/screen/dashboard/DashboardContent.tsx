@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   AppBar,
   Box,
@@ -10,14 +11,12 @@ import {
   Typography,
   useTheme,
 } from '@material-ui/core';
-
-import React, { useState } from 'react';
 import SwipeableViews from 'react-swipeable-views';
-import { theme } from 'RTL';
 import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
 import './style.css';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -47,11 +46,24 @@ const DashboardContent: React.FC<any> = () => {
   };
 
   return (
-    <Container maxWidth="lg" className={classes.container}>
-      {/* <Map /> */}
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
+    <Container maxWidth="lg" className={ classes.container }>
+      <Grid container spacing={ 3 }>
+        {/* Widgets */ }
+        <Grid item xs={ 12 } container spacing={ 3 }>
+          <Grid item xs={ 12 } sm={ 6 }>
+            <>
+              {/* Widget */}
+            </>
+          </Grid>
+          <Grid item xs={ 12 } sm={ 6 }>
+            <>
+              {/* Widget */}
+            </>
+          </Grid>
+        </Grid>
+        {/* Chart */}
+        <Grid item xs={ 12 }>
+          <Paper className={ classes.paper }>
             <ExChangeChart></ExChangeChart>
           </Paper>
         </Grid>

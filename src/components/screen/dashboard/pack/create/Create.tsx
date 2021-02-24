@@ -31,6 +31,7 @@ import jalaali from 'jalaali-js';
 import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
 import routes from '../../../../../routes';
 import { SearchDrugInCategory } from '../../../../../interfaces/search';
+import { PackCreation } from 'model/pack';
 
 const { packsList } = routes;
 
@@ -470,13 +471,19 @@ const Create: React.FC = () => {
         drugID: item.drugID.id,
       }));
 
-      await _savePack({
+      const packData: PackCreation = {
         id: packId !== undefined ? packId : 0,
         categoryID: selectedCategory,
         // name: packTitle,
         name: '',
         pharmacyDrug: data as PharmacyDrugSupplyList[],
-      });
+      };
+
+      if (selectedCategory === '-1') {
+        delete packData.categoryID;
+      }
+
+      await _savePack(packData);
     } catch (e) {
       errorHandler(e);
     }
@@ -577,19 +584,19 @@ const Create: React.FC = () => {
 
               <Grid item xs={12} className="text-left">
                 <Grid container spacing={1} alignItems="center">
-                  <Grid item xs={6}>
+                  <Grid item xs={9}>
                     <Grid container spacing={1}>
-                      <Grid item xs={6} className="text-right">
+                      <Grid item xs={4} className="text-right">
                         <span>تعداد کل اقلام: {packTotalItems}</span>
                       </Grid>
 
-                      <Grid item xs={6} className="text-right">
+                      <Grid item xs={8} className="text-right">
                         <span>مجموع قیمت اقلام: {thousandsSeperatorFa(packTotalPrice)}</span>
                       </Grid>
                     </Grid>
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={3}>
                     <Button color="blue" type="button" onClick={formHandler} className={submitBtn}>
                       {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
                     </Button>
