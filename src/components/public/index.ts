@@ -19,3 +19,4 @@ export { default as PictureDialog } from './picture/picture-dialog';
 export { default as CircleLoaaing } from './loading/CircleLoading';
 export { default as ReactSelect } from './react-select/ReactSelect';
 export { default as Input } from './input/Input';
+export { default as StatsWidget } from './widget/StatsWidget';
