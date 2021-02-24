@@ -7,7 +7,7 @@ import routes from '../../../../routes';
 import { EncrDecrService } from '../../../../utils';
 import CircleLoading from '../../../public/loading/CircleLoading';
 
-const ExchangeWidget: React.FC = () => {
+const ExchangeListWidget: React.FC = () => {
   const { t } = useTranslation();
   const { transfer } = routes;
   const [listData, setListData] = useState<any>();
@@ -53,4 +53,4 @@ const ExchangeWidget: React.FC = () => {
   )
 }
 
-export default ExchangeWidget;
+export default ExchangeListWidget;
