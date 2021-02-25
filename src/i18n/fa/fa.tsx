@@ -442,6 +442,7 @@ export default {
       },
       employment: {
         application: 'درخواست کاریابی',
+        applications: 'درخواست‌های کاریابی',
         workExperience: 'سابقه کار',
         resume: 'رزومه',
         readingPrescriptionCertificate: 'گواهی نسخه خوانی',

@@ -9,6 +9,7 @@ interface Props {
   backColor?: string;
   color?: string;
   to?: string;
+  titleFontSize?: string;
 }
 
 const StatsWidget: React.FC<Props> = (props) => {
@@ -19,6 +20,7 @@ const StatsWidget: React.FC<Props> = (props) => {
     backColor,
     color,
     to,
+    titleFontSize,
   } = props;
 
   const history = useHistory();
@@ -37,12 +39,13 @@ const StatsWidget: React.FC<Props> = (props) => {
         }
       } }
     >
-      <Grid container>
-        <Grid item container className="statswidget-content" xs={ 8 }>
+      <Grid container className="statswidget-grid-container">
+        <Grid item container className="statswidget-content statswidget-grid-container" xs={ 8 }>
           <Grid item className="statswidget-value" xs={ 12 }>
             { value }
           </Grid>
-          <Grid item className="statswidget-title" xs={ 12 }>
+          <Grid item className="statswidget-title" xs={ 12 }
+            style={ { fontSize: titleFontSize } }>
             { title }
           </Grid>
         </Grid>

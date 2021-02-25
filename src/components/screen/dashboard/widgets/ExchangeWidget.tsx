@@ -32,6 +32,7 @@ function ExchangeWidget() {
         backColor={ ColorEnum.Green }
         color="white"
         to={ desktop }
+        titleFontSize="1em"
       />
     </div>
   )
