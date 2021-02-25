@@ -18,6 +18,8 @@ import BestPharmaciesList from './pharmacy/bestPharmaciesList';
 import './style.css';
 import ExchangeWidget from './widgets/ExchangeWidget';
 import SurveyWidget from './widgets/SurveyWidget';
+import PrescriptionWidget from './widgets/PrescriptionWidget';
+import EmpApplicationWidget from './widgets/EmpApplicationWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,16 +54,17 @@ const DashboardContent: React.FC<any> = () => {
       <Grid container spacing={ 3 }>
         {/* Widgets */ }
         <Grid item xs={ 12 } container spacing={ 3 }>
-          <Grid item xs={ 12 } sm={ 4 }>
+          <Grid item xs={ 12 } sm={ 3 }>
             <ExchangeWidget />
           </Grid>
-          <Grid item xs={ 12 } sm={ 4 }>
+          <Grid item xs={ 12 } sm={ 3 }>
             <SurveyWidget />
           </Grid>
-          <Grid item xs={ 12 } sm={ 4 }>
-            <>
-              {/* Widget */ }
-            </>
+          <Grid item xs={ 12 } sm={ 3 }>
+            <PrescriptionWidget />
+          </Grid>
+          <Grid item xs={ 12 } sm={ 3 }>
+            <EmpApplicationWidget />
           </Grid>
         </Grid>
         {/* Chart */ }
