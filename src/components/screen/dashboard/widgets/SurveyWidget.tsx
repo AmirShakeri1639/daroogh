@@ -33,7 +33,7 @@ function SurveyWidget() {
         icon={ <FontAwesomeIcon icon={ faPoll } size="4x" /> }
         backColor={ ColorEnum.Blue }
         color="white"
-        to={ desktop }
+        to={ '/' }
       />
     </div>
   )
