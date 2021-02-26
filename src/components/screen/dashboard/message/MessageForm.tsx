@@ -18,11 +18,7 @@ import { Message, Search } from '../../../../services/api';
 import { UserSearch } from '../../../../interfaces/user';
 import Modal from '../../../public/modal/Modal';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
-import {
-  errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
-} from '../../../../utils';
+import { errorHandler, errorSweetAlert, successSweetAlert } from '../../../../utils';
 import Button from '../../../public/button/Button';
 import { Autocomplete } from '@material-ui/lab';
 import { debounce } from 'lodash';
@@ -125,16 +121,10 @@ const MessageForm: React.FC = () => {
 
   const inputsIsValid = (): boolean => {
     const { message1, subject } = state;
-    return (
-      subject.trim().length > 1 &&
-      message1.trim().length > 1 &&
-      selectedUser !== ''
-    );
+    return subject.trim().length > 1 && message1.trim().length > 1 && selectedUser !== '';
   };
 
-  const formSubmitHandler = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<any> => {
+  const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
     try {
       if (!inputsIsValid()) {
@@ -175,9 +165,7 @@ const MessageForm: React.FC = () => {
       const options = result.map((item: UserSearch) => ({
         ...item,
         username: `${item.firstName} ${item.family}${
-          item.pharmacyName !== null
-            ? ` - ${t('pharmacy.pharmacy')} ${item.pharmacyName}`
-            : ''
+          item.pharmacyName !== null ? ` - ${t('pharmacy.pharmacy')} ${item.pharmacyName}` : ''
         } `,
       }));
       setUsersOptions(options);
@@ -194,11 +182,9 @@ const MessageForm: React.FC = () => {
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <Input
-              error={state.subject.length < 1 && showError}
+              error={state.subject.length <= 1 && showError}
               value={state.subject}
-              onChange={(e): void =>
-                dispatch({ type: 'subject', value: e.target.value })
-              }
+              onChange={(e): void => dispatch({ type: 'subject', value: e.target.value })}
               className="w-100"
               label="موضوع"
               type="text"
@@ -215,19 +201,11 @@ const MessageForm: React.FC = () => {
               onChange={(event, value, reason): void => {
                 setSelectedUser(value);
               }}
-              onInputChange={debounce(
-                (e, newValue) => searchUsers(newValue),
-                500
-              )}
+              onInputChange={debounce((e, newValue) => searchUsers(newValue), 500)}
               getOptionLabel={(option: any) => option.username ?? ''}
               openOnFocus
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  label={t('user.user')}
-                  variant="outlined"
-                />
+                <TextField {...params} size="small" label={t('user.user')} variant="outlined" />
               )}
             />
           </Grid>
@@ -235,9 +213,7 @@ const MessageForm: React.FC = () => {
             <Input
               className="w-100"
               value={state.url}
-              onChange={(e): void =>
-                dispatch({ type: 'url', value: e.target.value })
-              }
+              onChange={(e): void => dispatch({ type: 'url', value: e.target.value })}
               label={t('general.address')}
               type="text"
               dir="ltr"
@@ -247,9 +223,7 @@ const MessageForm: React.FC = () => {
           <Grid item xs={12}>
             <Input
               value={state.expireDate}
-              onChange={(e): void =>
-                dispatch({ type: 'expireDate', value: e.target.value })
-              }
+              onChange={(e): void => dispatch({ type: 'expireDate', value: e.target.value })}
               label={t('general.expireDate')}
               type="text"
               readOnly
@@ -264,22 +238,18 @@ const MessageForm: React.FC = () => {
               <Select
                 className="w-100"
                 error={state.type === '' && showError}
-                onChange={(e): void =>
-                  dispatch({ type: 'type', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'type', value: e.target.value })}
                 value={state.type}
                 labelId="user-type"
                 label={t('general.type')}
               >
-                {MessageTypeArray(messageTypeArrayValues).map(
-                  (item: any): any => {
-                    return (
-                      <MenuItem key={item.val} value={item.val}>
-                        {item.text}
-                      </MenuItem>
-                    );
-                  }
-                )}
+                {MessageTypeArray(messageTypeArrayValues).map((item: any): any => {
+                  return (
+                    <MenuItem key={item.val} value={item.val}>
+                      {item.text}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
           </Grid>
@@ -291,9 +261,7 @@ const MessageForm: React.FC = () => {
               label={t('message.message')}
               value={state.message1}
               rows={4}
-              onChange={(e): void =>
-                dispatch({ type: 'message1', value: e.target.value })
-              }
+              onChange={(e): void => dispatch({ type: 'message1', value: e.target.value })}
             />
             <br />
           </Grid>
