@@ -20,3 +20,4 @@ export { default as AutoComplete } from './auto-complete/AutoComplete';
 export { default as CircleLoaaing } from './loading/CircleLoading';
 export { default as ReactSelect } from './react-select/ReactSelect';
 export { default as Input } from './input/Input';
+export { default as StatsWidget } from './widget/StatsWidget';
