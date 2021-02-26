@@ -352,7 +352,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
           }
         />
         <Divider />
-        <CardContent style={{ marginBottom: 90 }}>
+        <CardContent style={{ marginBottom: 110 }}>
           <div>
             {accountingForPayment && accountingForPayment.length > 0 ? (
               <span>
