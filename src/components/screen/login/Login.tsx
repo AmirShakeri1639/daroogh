@@ -117,12 +117,15 @@ const Login: React.FC = (): JSX.Element => {
         if (process.env.NODE_ENV === 'production') {
           (async (): Promise<any> => {
             try {
+              console.info('Enviroment: ', process.env.NODE_ENV);
+              if (process.env.NODE_ENV === 'production') {
               window.najvaUserSubscribed = async function (
                 najva_user_token: string
               ): Promise<void> {
                 await setNotification(najva_user_token);
               };
-            } catch (e) {
+              console.log('Najva subscription fnished.');
+            }} catch (e) {
               errorHandler(e);
             }
           })();
