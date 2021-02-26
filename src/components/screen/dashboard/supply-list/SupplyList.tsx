@@ -27,10 +27,10 @@ import { useEffectOnce } from '../../../../hooks';
 import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
-// import { Autocomplete } from '@material-ui/lab';
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import { DrugType } from '../../../../enum/pharmacyDrug';
+import { ListOptions } from '../../../public/auto-complete/AutoComplete';
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -170,7 +170,7 @@ const SupplyList: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, new PharmacyDrugSupplyList());
   const [drugList, setDrugList] = useState<DrugInterface[]>([]);
   const [options, setOptions] = useState<any[]>([]);
-  const [selectedDrug, setSelectedDrug] = useState<any>('');
+  const [selectedDrug, setSelectedDrug] = useState<ListOptions | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
   const [isoDate, setIsoDate] = useState<string>('');
@@ -223,10 +223,10 @@ const SupplyList: React.FC = () => {
       try {
         const { offer1, offer2, amount, cnt } = state;
         // @ts-ignore
-        const { value: drugId, id } = selectedDrug;
+        const { value: drugId } = selectedDrug;
         if ((offer1 !== '' && offer2 !== '' && Number(cnt) > 0) || (drugId && Number(amount) > 0)) {
           const result = await getComissionAndRecommendation({
-            drugId: id,
+            drugId,
             price: state?.amount,
             offer1: state?.offer1,
             offer2: state?.offer2,
@@ -257,7 +257,7 @@ const SupplyList: React.FC = () => {
     dispatch({ type: 'reset' });
     setSelectedDate('');
     resetDateState();
-    setSelectedDrug('');
+    setSelectedDrug(null);
     setDaroogRecommendation('');
     setComissionPercent('');
     setDaysDiff('');
@@ -380,12 +380,19 @@ const SupplyList: React.FC = () => {
       const result = await searchDrug(title);
 
       const items = result.map((item: any) => ({
-        id: item.id,
-        drugName: `${item.name} (${item.genericName}) ${typeHandler(item.type)}`,
+        value: item.id,
+        label: `${item.name} (${item.genericName}) ${typeHandler(item.type)}`,
       }));
+
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
-      setOptions(items);
+
+      const optionsList = items.map((item: ListOptions) => ({
+        item,
+        el: <div>{item.label}</div>
+      }));
+
+      setOptions(optionsList);
     } catch (e) {
       errorHandler(e);
     }
@@ -419,8 +426,8 @@ const SupplyList: React.FC = () => {
     setIsOpenBackDrop(true);
     await searchDrugs(name);
     setSelectedDrug({
-      id: drugID,
-      drugName: name,
+      value: drugID,
+      label: name,
     });
     const shamsiDate = convertISOTime(expireDate);
     setSelectedDate(shamsiDate);
@@ -512,7 +519,7 @@ const SupplyList: React.FC = () => {
         state.offer2 = 0;
       }
       //@ts-ignore
-      state.drugID = selectedDrug.id;
+      state.drugID = selectedDrug?.value;
       await _savePharmacyDrug(state);
     } catch (e) {
       errorHandler(e);
@@ -544,39 +551,15 @@ const SupplyList: React.FC = () => {
         <div className={modalContainer}>
           <Grid container spacing={1} className={formContent}>
             <Grid item xs={12}>
-              {/* <Autocomplete
-                loading={isLoading}
-                id="drug-list"
-                noOptionsText={t('general.noData')}
-                loadingText={t('general.loading')}
-                options={options}
-                value={selectedDrug}
-                onChange={(event, value, reason): void => {
-                  setSelectedDrug(value);
-                }}
-                onInputChange={debounce(
-                  (e, newValue) => searchDrugs(newValue),
-                  500
-                )}
-                getOptionLabel={(option: any) => option.drugName ?? ''}
-                openOnFocus
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label={t('drug.name')}
-                    variant="outlined"
-                  />
-                )}
-              />
-               */}
               <AutoComplete
                 isLoading={isLoading}
-                onChange={(e): void => setSearchTerm(e.target.value)}
+                onChange={debounce((e) => searchDrugs(e.target.value), 500)}
                 loadingText={t('general.loading')}
                 className="w-100"
                 placeholder={t('drug.name')}
-                options={[{ value: '', label: '' }]}
+                options={options}
+                onItemSelected={(item) => setSelectedDrug(item)}
+                defaultSelectedItem={selectedDrug?.label}
               />
             </Grid>
 
