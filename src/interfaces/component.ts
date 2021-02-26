@@ -4,6 +4,7 @@ import { NewUserData } from './user';
 import { PharmacyDrugInterface } from './pharmacyDrug';
 import { DataTableColumns } from './DataTableColumns';
 import { IconProps } from '@material-ui/core';
+import { PrescriptionInterface } from './PrescriptionInterface';
 
 export interface SelectPropsInterface {
   value: string;
@@ -160,6 +161,10 @@ export interface SupplyListCardContainer {
 
 export interface FavoriteDrugInterface {
   data: DrugInterface;
+  formHandler: (item: number) => Promise<any>;
+}
+export interface PrescriptionDataInterface {
+  data: PrescriptionInterface;
   formHandler: (item: number) => Promise<any>;
 }
 

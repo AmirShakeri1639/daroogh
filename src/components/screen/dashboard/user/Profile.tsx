@@ -5,8 +5,7 @@ import {
   makeStyles, Paper, TextField, Typography
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { ActionInterface } from '../../../../interfaces';
-import { ProfileInterface } from '../../../../interfaces/profile';
+import { ActionInterface, ProfileInterface } from '../../../../interfaces';
 import { User } from '../../../../services/api';
 import { ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
@@ -87,7 +86,7 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
 }));
 
-const initialState: ProfileInterface = {
+const initialState: ProfileInterface | any = {
   id: 0,
   name: '',
   family: '',
@@ -99,6 +98,7 @@ const initialState: ProfileInterface = {
   active: false,
   pharmacyName: '',
   pictureFileKey: '',
+  isValidBirthDate: true,
 }
 
 function reducer(state = initialState, action: ActionInterface): any {

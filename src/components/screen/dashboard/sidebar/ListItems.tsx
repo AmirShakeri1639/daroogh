@@ -11,14 +11,10 @@ import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone';
 import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-  AddBox,
-  AddCircle,
   Dashboard as DashboardIcon,
   ExpandLess,
   EnhancedEncryption,
   ExpandMore,
-  Extension,
-  LocalPharmacy,
   Business,
   Apps as AppsIcon,
   Bookmark,
@@ -28,20 +24,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPills,
   faBars,
-  faBoxOpen,
-  faPlus,
   faUser,
   faFileMedical,
+  faUserMd,
+  faCog,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import InboxIcon from '@material-ui/icons/Inbox';
 import ReceiptIcon from '@material-ui/icons/Receipt';
-import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder';
 import Context from '../Context';
 import PermIdentityTwoToneIcon from '@material-ui/icons/PermIdentityTwoTone';
 import {
-  DashboardPages,
   GetValuesOfEnum,
   PharmacyRoleEnum,
   RolesEnum,
@@ -57,7 +51,6 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
-import { faUserTag, faUserMd } from '@fortawesome/free-solid-svg-icons';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -113,6 +106,8 @@ const {
   createMessage,
   messagesList,
   drugFavoriteList,
+  jobApplication,
+  prescription,
   drugCategoryfavoriteList,
   packsList,
   createPack,
@@ -120,6 +115,7 @@ const {
   exchangeManagementList,
   jobSearchList,
   prescriptionList,
+  settings,
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -147,6 +143,9 @@ const ListItems: React.FC = () => {
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(
     isOpenPageOfThisGroup('favorite')
   );
+  const [isopenpeopleSection, setIsopenpeopleSection] = useState(
+    isOpenPageOfThisGroup('peopleSection')
+  );
   const [isOpenExchangeManagement, setIsOpenExchangeManagement] = useState<
     boolean
   >(false);
@@ -164,7 +163,31 @@ const ListItems: React.FC = () => {
 
   const preventDefault = (event: React.SyntheticEvent): any =>
     event.preventDefault();
+  const publicMenu = (): JSX.Element => {
+    return (
+      <>
+        <h3 className={spacing3}>{t('general.peopleSection')}</h3>
 
+        <List component="div" className={linkWrapper}>
+          <Link to={prescription} className={notNested}>
+            <ListItemIcon style={{ color: '#4625B2' }}>
+              <FontAwesomeIcon icon={faFileMedical} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('peopleSection.prescription')} />
+          </Link>
+        </List>
+
+        <List component="div" className={linkWrapper}>
+          <Link to={jobApplication} className={notNested}>
+            <ListItemIcon style={{ color: '#4625B2' }}>
+              <FontAwesomeIcon icon={faBars} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('peopleSection.jobApplication')} />
+          </Link>
+        </List>
+      </>
+    );
+  };
   const adminMenu = (): JSX.Element => {
     return (
       <>
@@ -378,6 +401,14 @@ const ListItems: React.FC = () => {
               <ContactPhoneIcon />
             </ListItemIcon>
             <ListItemText primary={t('exchange.exchangeManagement')} />
+          </Link>
+        </List>
+        <List component="div" className={linkWrapper}>
+          <Link to={settings} className={notNested}>
+            <ListItemIcon style={{ color: '#4625B2' }}>
+              <FontAwesomeIcon icon={ faCog } size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('settings.settings')} />
           </Link>
         </List>
         {/* <ListItem
@@ -607,6 +638,7 @@ const ListItems: React.FC = () => {
               GetValuesOfEnum(PharmacyRoleEnum).includes(item)
             )) &&
             pharmacyMenu()}
+          {!(rolesArray?.indexOf(RolesEnum.PUBLIC) >= 0) && publicMenu()}
         </>
       )}
     </div>

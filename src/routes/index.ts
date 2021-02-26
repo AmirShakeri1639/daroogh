@@ -5,6 +5,7 @@ const exchange = 'exchange';
 const finance = 'finance';
 const member = 'members';
 const favorite = 'favorite';
+const peopleSection = 'peopleSection';
 const pharmacy = 'pharmacy';
 const role = 'role';
 const user = 'user';
@@ -30,6 +31,10 @@ export default {
   accountingInfo: `/${dashboard}/${finance}/accountingInfo`,
   membersList: `/${dashboard}/${member}/members-list`,
   drugFavoriteList: `/${dashboard}/${favorite}/drug`,
+
+  prescription: `/${dashboard}/${peopleSection}/prescription`,
+  jobApplication: `/${dashboard}/${peopleSection}/jobApplication`,
+  
   drugCategoryfavoriteList: `/${dashboard}/${favorite}/drug-category`,
 
   createPharmacy: `/${dashboard}/${pharmacy}/create`,
@@ -65,4 +70,5 @@ export default {
   fileUrl: `${api.baseUrl}/File/GetFile?key=`,
   
   profile: `/${dashboard}/${user}/profile`,
+  settings: `/${dashboard}/settings`,
 };

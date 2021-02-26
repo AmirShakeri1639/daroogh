@@ -1,0 +1,37 @@
+@import "general";
+
+$radius: 1em;
+
+.statswidget-container {
+  cursor       : pointer;
+  transition   : $base-transition;
+  padding      : .5em 2em 0em 1em;
+  max-width    : 25em;
+  border       : 1px solid #eee;
+  border-radius: $radius;
+  height       : 8em;
+  overflow     : hidden;
+}
+
+.statswidget-grid-container {
+  height: 100%;
+}
+
+.statswidget-title {
+  border-radius: $radius;
+  text-align   : right;
+  margin-top   : 0;
+  margin-bottom: 1em !important;
+  font-size    : 1.2em;
+}
+
+.statswidget-value {
+  font-weight: bolder;
+  font-size  : 3em;
+}
+
+.statswidget-icon {
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+}

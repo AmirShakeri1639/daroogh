@@ -1,5 +1,9 @@
 @import 'fonts';
 
+body {
+  background: #fafafa;
+}
+
 .txt-md {
   font-size: 1.1rem !important;
 }
@@ -83,4 +87,8 @@ input[type='number'] {
 
 .text-left {
   text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
 }

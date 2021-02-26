@@ -272,6 +272,11 @@ const PharmaciesList: React.FC = () => {
         searchable: true,
       },
       {
+        field: 'workTimeString',
+        title: t('pharmacy.workTime'),
+        type: 'string',
+      },
+      {
         field: 'x',
         title: t('pharmacy.location'),
         type: 'string',
