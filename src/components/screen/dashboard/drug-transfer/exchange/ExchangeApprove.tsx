@@ -24,6 +24,7 @@ import {
   AccountingInterface,
   BankGetwayesInterface,
   GetAccountingForPaymentInterace,
+  PaymentExchangeByBestankari,
 } from '../../../../../interfaces/AccountingInterface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TextLine from '../../../../public/text-line/TextLine';
@@ -39,6 +40,7 @@ import { Payment } from '../../../../../model/exchange';
 import routes from '../../../../../routes';
 import { useHistory } from 'react-router-dom';
 import Ribbon from '../../../../public/ribbon/Ribbon';
+import sweetAlert from '../../../../../utils/sweetAlert';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -83,10 +85,11 @@ const useClasses = makeStyles((theme) =>
 
 interface ExchangeApprovePI {
   isModal?: boolean;
+  exchangeId?: string;
 }
 
 const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
-  const { isModal = true } = props;
+  const { isModal = true, exchangeId = "" } = props;
   const {
     root,
     paper,
@@ -109,9 +112,11 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
   const [totalAmount, setTotoalAmount] = useState(0);
   const [debtAmountAllow, setDebtAmountAllow] = useState(0);
   const [paymentAmount, setPaymentAmount] = useState(0);
+  const [mandeh, setMandeh] = useState(0);
   const [trackingNumber, setTrackingNumber] = useState<string>('');
   const [redirectUrl, setRedirectUrl] = useState<string>('');
   const [payment, setPayment] = useState<Payment>(new Payment());
+  const [paymentExchangeByBestankari, setPaymentExchangeByBestankari] = useState<PaymentExchangeByBestankari | undefined>(undefined)
 
   const { showApproveModalForm, setShowApproveModalForm } = useContext<
     TransferDrugContextInterface
@@ -144,15 +149,25 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
   useEffect(() => {
     (async (): Promise<void> => {
-      const result = await getAccountingForPayment();
+      debugger;
+      const result = await getAccountingForPayment(exchangeId);
       if (result) {
         const response: GetAccountingForPaymentInterace = result.data;
+        setPaymentExchangeByBestankari(response.paymentExchangeByBestankari);
+        if (response.paymentExchangeByBestankari && response.paymentExchangeByBestankari.isSuccess) {
+          await sweetAlert({
+            type: 'success',
+            text: response.paymentExchangeByBestankari.message,
+          });
+          history.push(desktop);
+        }
         setDebtAmountAllow(response.debtAmountAllow);
         const res: AccountingInterface[] = response.accountingForPayment.sort(
           (a: any, b: any) => (a > b ? 1 : -1)
         );
         setAccountingForPayment(res);
         if (res && res.length > 0) {
+          setMandeh(res[0].mandeh);
           const amount = res[0].amount > 0 ? res[0].amount : 0;
           setPaymentAmount(amount);
         }
@@ -185,11 +200,17 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
   };
 
   const handleSubmit = async (): Promise<any> => {
+    debugger;
     const res = await getPayment(payment);
-    setPaymentAmount(res.data.form.amount);
-    setTrackingNumber(res.data.form.trackingNumber);
-    setRedirectUrl(res.data.form.redirectUrl);
-    refFrom.current.submit();
+    if (res.data.type === 1) {
+      // history.push(res.data.url)
+      window.location.href = res.data.url;
+    } else {
+      setPaymentAmount(res.data.form.amount);
+      setTrackingNumber(res.data.form.trackingNumber);
+      setRedirectUrl(res.data.form.redirectUrl);
+      refFrom.current.submit();
+    }
   };
 
   const PaymentPage = (): JSX.Element => {
@@ -286,26 +307,26 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
               }}
             ></span>
           ) : (
-            <Checkbox
-              disabled={item.amount <= 0}
-              checked={item.isChecked}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
-                item.isChecked = e.target.checked;
-                let amount = 0;
-                if (e.target.checked) {
-                  amount = totalAmount + item.amount;
-                  setTotoalAmount(amount);
-                  handleAccountingIds('add', item.id);
-                } else {
-                  amount = totalAmount - item.amount;
-                  setTotoalAmount(amount);
-                  handleAccountingIds('remove', item.id);
-                }
-                if (amount > paymentAmount) setPaymentAmount(paymentAmount);
-                else setPaymentAmount(amount);
-              }}
-            />
-          )}
+              <Checkbox
+                disabled={item.amount <= 0}
+                checked={item.isChecked}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
+                  item.isChecked = e.target.checked;
+                  let amount = 0;
+                  if (e.target.checked) {
+                    amount = totalAmount + item.amount;
+                    setTotoalAmount(amount);
+                    handleAccountingIds('add', item.id);
+                  } else {
+                    amount = totalAmount - item.amount;
+                    setTotoalAmount(amount);
+                    handleAccountingIds('remove', item.id);
+                  }
+                  if (amount > paymentAmount) setPaymentAmount(paymentAmount);
+                  else setPaymentAmount(amount);
+                }}
+              />
+            )}
         </div>
       </Card>
     );
@@ -337,7 +358,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
               <span>
                 با توجه به اینکه حداکثر بدهی در سیستم داروگ مبلغ
                 <span style={{ marginRight: 5, marginLeft: 5, color: 'red' }}>
-                  <b>{debtAmountAllow}</b>
+                  <b>{Utils.numberWithCommas(debtAmountAllow)}</b>
                 </span>
                 <span>
                   ریال می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و سپس
@@ -345,8 +366,8 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 </span>
               </span>
             ) : (
-              <span>هیچ داده ای وجود ندارد</span>
-            )}
+                <span>هیچ داده ای وجود ندارد</span>
+              )}
           </div>
           <hr />
           <Grid container spacing={1}>
@@ -376,20 +397,30 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                   ))}
                 </Select>
               </FormControl>
-              <ul style={{ display: 'inline-block', margin: 0 }}>
+              {/* <ul style={{ display: 'inline-block', margin: 0 }}>
                 {/* <li>
                   <b style={{ color: 'red' }}>
                     <span>مبلغ قابل پرداخت: </span>
                     <span>{paymentAmount}</span>
                   </b>
                 </li> */}
-                <li>
-                  <b>
-                    <span>مبلغ انتخابی: </span>
-                    <span>{totalAmount}</span>
-                  </b>
-                </li>
-              </ul>
+              {/* <li>
+                <b>
+                  <span>مبلغ انتخابی: </span>
+                  <span>{totalAmount}</span>
+                </b>
+              </li>
+              </ul>  */}
+            </Grid>
+            <Grid container style={{ backgroundColor: '#8a88efc7', margin: 5, padding: 5 }}>
+              <Grid item xs={6} xl={6} md={6}>
+                <span>مبلغ انتخابی: </span>
+                <span style={{ fontWeight: 'bold', color: 'green' }}>{Utils.numberWithCommas(totalAmount)}</span>
+              </Grid>
+              <Grid item xs={6} xl={6} md={6} style={{ textAlign: 'left' }}>
+                <span>مبلغ قابل پرداخت: </span>
+                <span style={{ fontWeight: 'bold', color: 'red' }}>{Utils.numberWithCommas(mandeh)}</span>
+              </Grid>
             </Grid>
             <Grid item xs={6} xl={6} md={6}>
               <PaymentPage />
@@ -406,19 +437,22 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
             </Grid>
           </Grid>
         </CardActions>
-      </Card>
+      </Card >
     );
   };
 
   return (
     <>
-      {isModal ? (
-        <Modal open={showApproveModalForm} toggle={toggleIsOpenModalForm}>
+      {((!exchangeId || exchangeId == "") &&
+        (!paymentExchangeByBestankari || !paymentExchangeByBestankari.isSuccess)) &&
+        isModal ? (
+          <Modal open={showApproveModalForm} toggle={toggleIsOpenModalForm}>
+            <Content />
+          </Modal>
+        ) : (
           <Content />
-        </Modal>
-      ) : (
-        <Content />
-      )}
+        )
+      }
     </>
   );
 };

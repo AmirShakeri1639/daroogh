@@ -18,9 +18,12 @@ class Exchange extends Api {
     return result.data;
   };
 
-  getDashboard = async (): Promise<any> => {
+  getDashboard = async (e: any): Promise<any> => {
     try {
-      const result = await this.postJsonData(this.urls.dashboard);
+      e *= 10;
+      const url = `${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`;
+      console.log('Dashboard Url => ', url);
+      const result = await this.postData(`${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`);
       return result.data;
     } catch (e) {
       errorHandler(e);

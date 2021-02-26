@@ -10,6 +10,7 @@ import DashboardContent from './components/screen/dashboard/DashboardContent';
 import { isAdmin } from './utils';
 import Appbar from './components/screen/dashboard/AppBar';
 import ReactGA from 'react-ga';
+import Desktop1 from './components/screen/dashboard/drug-transfer/desktop/Desktop1';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -24,7 +25,7 @@ const DrugTransfer = lazy(() =>
   import('./components/screen/dashboard/drug-transfer/Transfer')
 );
 const Desktop = lazy(() =>
-  import('./components/screen/dashboard/drug-transfer/desktop/Desktop')
+  import('./components/screen/dashboard/drug-transfer/desktop/Desktop1')
 );
 const Transfer = lazy(() =>
   import('./components/screen/dashboard/drug-transfer/Transfer')
@@ -220,7 +221,7 @@ const App = (): JSX.Element => {
               <Dashboard component={ <DashboardActivePage /> } />
             </PrivateRoute>
             <PrivateRoute path={ desktop }>
-              <Dashboard component={ <Desktop /> } />
+              <Dashboard component={ <Desktop1 /> } />
             </PrivateRoute>
             <PrivateRoute path={ transfer }>
               <Dashboard component={ <Transfer /> } />
