@@ -299,6 +299,8 @@ export class NewUserData {
   public birthDate: string = '';
   // public  pictureFileID: number = 0;
   public active: boolean = false;
+  public smsActive?: boolean = true;
+  public notifActive?: boolean = true;
   // public lastChangePassword: string = '';
   // public _date: string = '';
   // public _userid: number = 0;

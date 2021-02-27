@@ -1,8 +1,8 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import {
   Button,
-  Container, createStyles, Divider, Grid,
-  makeStyles, Paper, TextField, Typography
+  Container, createStyles, Divider, FormControlLabel, Grid,
+  makeStyles, Paper, Switch, TextField, Typography
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ActionInterface, ProfileInterface } from '../../../../interfaces';
@@ -99,6 +99,8 @@ const initialState: ProfileInterface | any = {
   pharmacyName: '',
   pictureFileKey: '',
   isValidBirthDate: true,
+  smsActive: true,
+  notifActive: true,
 }
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -170,6 +172,16 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         isValidBirthDate: value
       };
+    case 'smsActive':
+      return {
+        ...state,
+        smsActive: value
+      };
+    case 'notifActive':
+      return {
+        ...state,
+        notifActive: value
+      };
     case 'full':
       return {
         ...state,
@@ -229,7 +241,7 @@ const Profile: React.FC = () => {
   const isFormValid = (): boolean => {
     const {
       name, family, nationalCode, mobile,
-      userName, isValidBirthDate
+      userName, isValidBirthDate,
     } = state;
 
     return !(
@@ -250,10 +262,12 @@ const Profile: React.FC = () => {
         const {
           id, name, family, mobile, email, userName,
           active, nationalCode, birthDate, pharmacyID,
+          smsActive, notifActive,
         } = state;
         await _save({
           id, name, family, mobile, email, userName,
           active, nationalCode, birthDate, pharmacyID,
+          smsActive, notifActive,
         });
       } catch (e) {
         await errorSweetAlert(t('error.save'));
@@ -268,163 +282,195 @@ const Profile: React.FC = () => {
   const profileForm = (): JSX.Element => {
     return (
       <Container maxWidth="lg" className={ parent }>
-          <Paper className={ padding3 }>
-            <Typography component="h2">
-              <h2>{ t('user.profile') }</h2>
-            </Typography>
-            <Divider />
-            <Grid container>
-              <Grid item xs={ 12 } sm={ 4 } md={ 2 } className={ padding3 }>
-                <label className={ avatarContainer }>
-                  <input
-                    type='file'
-                    style={ { display: 'none' } }
-                    accept="image/jpeg"
-                    id='profilePicUpload'
-                    name='profilePicUpload'
-                    onChange={ (e: any): void => {
-                      e.preventDefault();
-                      if (e.target.files.length > 0) {
-                        changeProfilePic(state.id, e.target.files[0])
-                          .then((response) => {
-                            dispatch({ type: 'pictureFileKey', value: response });
-                          })
-                      }
-                    } }
-                  />
-                  <img
-                    src={ `${fileUrl}${state.pictureFileKey}` }
-                    className={ profileImage }
-                  />
-                  <div className={ profileImageCamera }>
-                    <FontAwesomeIcon icon={ faCamera } size="2x" />
-                  </div>
-                </label>
-              </Grid>
-              <Grid item xs={ 12 } sm={ 8 } md={ 10 }>
-                <form autoComplete="off" className={ rootFull } onSubmit={ submit }>
-                  <Grid container spacing={ 3 }>
-                    <Grid item xs={ 12 } sm={ 6 } >
-                      <TextField
-                        error={ state.name.length < 2 && showError }
-                        label={ t('general.name') }
-                        required
-                        variant="outlined"
-                        value={ state.name }
-                        className={ formItem }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'name', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={ 12 } sm={ 6 } >
-                      <TextField
-                        error={ state.family.length < 2 && showError }
-                        label={ t('general.family') }
-                        required
-                        variant="outlined"
-                        value={ state.family }
-                        className={ formItem }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'family', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={ 12 } sm={ 6 } >
-                      <TextField
-                        error={ state.mobile.trim().length < 10 && showError }
-                        label={ t('general.mobile') }
-                        type="number"
-                        required
-                        className={ formItem }
-                        variant="outlined"
-                        value={ state.mobile }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'mobile', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={ 12 } sm={ 6 } >
-                      <TextField
-                        error={
-                          state.email &&
-                          !emailRegex.test(state.email) &&
-                          showError
-                        }
-                        label={ t('general.email') }
-                        type="email"
-                        className={ formItem }
-                        variant="outlined"
-                        value={ state.email }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'email', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={ 12 } sm={ 6 } >
-                      <TextField
-                        error={ state.userName.length < 2 && showError }
-                        label={ t('login.username') }
-                        required
-                        variant="outlined"
-                        value={ state.userName }
-                        className={ formItem }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'userName', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                    <Grid item xs={ 12 } sm={ 6 }>
-                      <TextField
-                        error={ state.nationalCode.length < 10 && showError }
-                        label={ t('user.nationalCode') }
-                        required
-                        type="text"
-                        className={ formItem }
-                        variant="outlined"
-                        value={ state.nationalCode }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'nationalCode', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                    <Grid
-                      item xs={ 12 } sm={ 6 }
-                      style={ { display: 'flex', alignItems: 'center' } }
-                    >
-                      <ThreePartDatePicker
-                        fullDate={ state.birthDate }
-                        label={ t('user.birthDate') }
-                        onChange={ (value: string, isValid: boolean): void => {
-                          dispatch({ type: 'isValidBirthDate', value: isValid });
-                          dispatch({ type: 'birthDate', value: value });
-                        } }
-                      />
-                    </Grid>
-                    <div className={ spacing1 }>&nbsp;</div>
-                    <Divider />
-                    {/* //////// SUBMIT //////////// */ }
-                    <Grid item xs={ 12 } className={ spacing3 }>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        className={ `${addButton} ${longItem} ${centerItem}` }
-                      >
-                        { isLoadingNewUser ? (
-                          t('general.pleaseWait')
-                        ) : (
-                            <span>{ t('action.register') }</span>
-                          ) }
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </form>
-              </Grid>
+        <Paper className={ padding3 }>
+          <Typography component="h2">
+            <h2>{ t('user.profile') }</h2>
+          </Typography>
+          <Divider />
+          <Grid container>
+            <Grid item xs={ 12 } sm={ 4 } md={ 2 } className={ padding3 }>
+              <label className={ avatarContainer }>
+                <input
+                  type='file'
+                  style={ { display: 'none' } }
+                  accept="image/jpeg"
+                  id='profilePicUpload'
+                  name='profilePicUpload'
+                  onChange={ (e: any): void => {
+                    e.preventDefault();
+                    if (e.target.files.length > 0) {
+                      changeProfilePic(state.id, e.target.files[0])
+                        .then((response) => {
+                          dispatch({ type: 'pictureFileKey', value: response });
+                        })
+                    }
+                  } }
+                />
+                <img
+                  src={ `${fileUrl}${state.pictureFileKey}` }
+                  className={ profileImage }
+                />
+                <div className={ profileImageCamera }>
+                  <FontAwesomeIcon icon={ faCamera } size="2x" />
+                </div>
+              </label>
             </Grid>
-          </Paper>
-        </Container>
+            <Grid item xs={ 12 } sm={ 8 } md={ 10 }>
+              <form autoComplete="off" className={ rootFull } onSubmit={ submit }>
+                <Grid container spacing={ 3 }>
+                  <Grid item xs={ 12 } sm={ 6 } >
+                    <TextField
+                      error={ state.name.length < 2 && showError }
+                      label={ t('general.name') }
+                      required
+                      variant="outlined"
+                      value={ state.name }
+                      className={ formItem }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'name', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={ 12 } sm={ 6 } >
+                    <TextField
+                      error={ state.family.length < 2 && showError }
+                      label={ t('general.family') }
+                      required
+                      variant="outlined"
+                      value={ state.family }
+                      className={ formItem }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'family', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={ 12 } sm={ 6 } >
+                    <TextField
+                      error={ state.mobile.trim().length < 10 && showError }
+                      label={ t('general.mobile') }
+                      type="number"
+                      required
+                      className={ formItem }
+                      variant="outlined"
+                      value={ state.mobile }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'mobile', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={ 12 } sm={ 6 } >
+                    <TextField
+                      error={
+                        state.email &&
+                        !emailRegex.test(state.email) &&
+                        showError
+                      }
+                      label={ t('general.email') }
+                      type="email"
+                      className={ formItem }
+                      variant="outlined"
+                      value={ state.email }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'email', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={ 12 } sm={ 6 } >
+                    <TextField
+                      error={ state.userName.length < 2 && showError }
+                      label={ t('login.username') }
+                      required
+                      variant="outlined"
+                      value={ state.userName }
+                      className={ formItem }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'userName', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                  <Grid item xs={ 12 } sm={ 6 }>
+                    <TextField
+                      error={ state.nationalCode.length < 10 && showError }
+                      label={ t('user.nationalCode') }
+                      required
+                      type="text"
+                      className={ formItem }
+                      variant="outlined"
+                      value={ state.nationalCode }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'nationalCode', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                  <Grid
+                    item xs={ 12 } sm={ 12 }
+                    style={ { display: 'flex', alignItems: 'center' } }
+                  >
+                    <ThreePartDatePicker
+                      fullDate={ state.birthDate }
+                      label={ t('user.birthDate') }
+                      onChange={ (value: string, isValid: boolean): void => {
+                        dispatch({ type: 'isValidBirthDate', value: isValid });
+                        dispatch({ type: 'birthDate', value: value });
+                      } }
+                    />
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={ state.smsActive }
+                          onChange={ (e): void =>
+                            dispatch({
+                              type: 'smsActive',
+                              value: e.target.checked,
+                            })
+                          }
+                        />
+                      }
+                      label={ t('user.smsActive') }
+                    />
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={ state.notifActive }
+                          onChange={ (e): void =>
+                            dispatch({
+                              type: 'notifActive',
+                              value: e.target.checked,
+                            })
+                          }
+                        />
+                      }
+                      label={ t('user.notifActive') }
+                    />
+                  </Grid>
+                  <div className={ spacing1 }>&nbsp;</div>
+                  <Divider />
+                  {/* //////// SUBMIT //////////// */ }
+                  <Grid item xs={ 12 } className={ spacing3 }>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      className={ `${addButton} ${longItem} ${centerItem}` }
+                    >
+                      { isLoadingNewUser ? (
+                        t('general.pleaseWait')
+                      ) : (
+                          <span>{ t('action.register') }</span>
+                        ) }
+                    </Button>
+                  </Grid>
+                </Grid>
+              </form>
+            </Grid>
+          </Grid>
+        </Paper>
+      </Container>
     )
   }
 
