@@ -67,6 +67,13 @@ class EmploymentApplication extends Api {
     return result.data;
   };
 
+  notCanceledCount = async (): Promise<any> => {
+    const result = await this.postJsonData(
+      `${this.urls.notCanceled}`
+    );
+    return result.data.items.length;
+  }
+
   cancel = async (id: number | string): Promise<any> => {
     const result = await this.postJsonData(`${this.urls.cancel}${id}`);
     return result.data;
