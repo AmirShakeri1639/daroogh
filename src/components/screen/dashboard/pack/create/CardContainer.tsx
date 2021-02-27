@@ -42,7 +42,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
     offer1,
     offer2,
     amount,
-    drugID: { drugName, id, enName },
+    drugID: { value, label, d },
   } = item;
 
   const queryCache = useQueryCache();
@@ -77,7 +77,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
             </Grid> */}
             <Grid item xs={1}>
               <FontAwesomeIcon
-                onClick={(): void => itemRemoveHandler(id)}
+                onClick={(): void => itemRemoveHandler(value)}
                 icon={faTrashAlt}
                 size="lg"
                 className={`${redTrash} cursor-pointer`}
@@ -86,13 +86,13 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
           </Grid>
         </Grid>
         <Detail
-          drugName={drugName}
+          drugName={label}
           amount={Number(amount)}
           expireDate={expireDate}
           count={Number(cnt)}
           offer1={Number(offer1)}
           offer2={Number(offer2)}
-          enName={enName}
+          enName={""}
         />
       </Grid>
     </Paper>
