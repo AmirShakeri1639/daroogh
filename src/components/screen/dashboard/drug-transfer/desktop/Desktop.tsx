@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
-import { Grid } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../../classes';
@@ -158,7 +158,7 @@ const Desktop: React.FC = () => {
   };
 
   return (
-    <>
+    <Container>
       <Grid item xs={11}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -175,7 +175,7 @@ const Desktop: React.FC = () => {
         </Grid>
         {isLoading && <CircleLoading />}
       </Grid>
-    </>
+    </Container>
   );
 };
 
