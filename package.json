@@ -89,6 +89,7 @@
     "recharts": "^2.0.4",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
+    "source-map-explorer": "^2.5.2",
     "styled-components": "^5.2.1",
     "sweetalert2": "^10.9.0",
     "sweetalert2-react-content": "^3.2.1",
@@ -110,7 +111,8 @@
     "lint:fix": "eslint --fix './src/**/*.{jsx,js,ts,tsx}'",
     "lint:wfix": "eslint --fix ./src/**/*.{jsx,js,ts,tsx}",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
     "extends": [],
