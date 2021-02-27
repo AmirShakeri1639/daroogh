@@ -26,6 +26,14 @@ class Message extends Api {
     );
     return result.data;
   };
+
+  readMultiMessage = async (data: Array<number>): Promise<any> => {
+    const result = await this.postJsonData(
+      `/Message/ReadMulti`,
+      data,
+    );
+    return result.data;
+  }
 }
 
 export default Message;
