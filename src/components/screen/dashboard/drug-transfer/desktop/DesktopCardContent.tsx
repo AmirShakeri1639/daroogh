@@ -265,7 +265,6 @@ const DesktopCardContent = ({
   // let is3PercentOK: boolean = true;
 
   const setDifferenceCheckOutput = (): void => {
-    debugger;
     const diffCheck = differenceCheck({
       exchange: item,
       percent: percentAllowed(),

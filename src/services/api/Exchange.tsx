@@ -9,9 +9,9 @@ class Exchange extends Api {
     allExchange: '/Exchange/AllExchange',
     // state 3 = CONFIRMB_AND_WAITFORA
     // state 2 = WAITFORB (12 for B)
-    getForWidget: `/Exchange/Dashboard?$top=5&$orderby=id desc` //&$filter=` +
-      // `(contains(cast(state, 'Edm.String'), '3') and currentPharmacyIsA eq true) or ` +
-      // `(contains(cast(state, 'Edm.String'), '2') and currentPharmacyIsA eq false)`,
+    getForWidget: `/Exchange/Dashboard?$orderby=id desc&$filter=` +
+      `(contains(cast(state, 'Edm.String'), '3') and currentPharmacyIsA eq true) or ` +
+      `(contains(cast(state, 'Edm.String'), '2') and currentPharmacyIsA eq false)`,
   };
 
   getPharmacyInfoOfExchange = async (

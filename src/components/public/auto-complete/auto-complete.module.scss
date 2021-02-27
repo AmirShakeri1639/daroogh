@@ -1,0 +1,59 @@
+@import 'src/assets/scss/fonts';
+
+$borderRadius: 4px;
+
+.container {
+  position: relative;
+  border: 1px solid rgb(200, 200, 200);
+  border-radius: $borderRadius;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  .input {
+    border: none;
+    padding: 5px 0;
+    height: 37px;
+    font-family: Vazir;
+    &::placeholder {
+      color: rgb(200, 200, 200);
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+  svg {
+    color: rgb(143, 143, 143);
+    margin-right: 10px;
+  }
+}
+
+.div-list {
+  width: 100%;
+  position: absolute;
+  background-color: #fff;
+  border-radius: $borderRadius;
+  right: 0;
+  top: 40px;
+  padding: 5px;
+  border: 1px solid #d8d8d8;
+  z-index: 999;
+  // height: 30px;
+  max-height: 300px;
+  overflow-y: auto;
+  &.itself-space {
+    padding: 5px 10px;
+  }
+  ul {
+    margin-top: 0;
+    padding-right: 0;
+    list-style-type: none;
+    li {
+      cursor: pointer;
+      padding: 5px;
+      &:hover {
+        background-color: rgb(235, 235, 235);
+        transition: background-color 0.2s ease;
+      }
+    }
+  }
+}

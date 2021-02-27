@@ -217,7 +217,6 @@ export const differenceCheck = (
   params: DifferenceCheckInterface
 ): DifferenceCheckOutputInterface => {
   const { exchange, percent, cartA = [], cartB = [] } = params;
-  debugger;
   // let { totalPriceA = 0, totalPriceB = 0 } = params;
   let { totalPriceA = 0, totalPriceB = 0 } = exchange;
 
