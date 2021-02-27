@@ -49,7 +49,12 @@ const DrugsList = lazy(() => import('./components/screen/dashboard/drug/drugsLis
 
 const CategoryList = lazy(() => import('./components/screen/dashboard/category/CategoryList'));
 const FavoriteList = lazy(() => import('./components/screen/dashboard/favorite-list/Drug'));
-const Prescription = lazy(() => import('./components/screen/dashboard/peopleSection/Prescription'));
+const Prescription = lazy(() =>
+  import('./components/screen/dashboard/peopleSection/Prescription/Prescription')
+);
+const EmploymentApplication = lazy(() =>
+  import('./components/screen/dashboard/peopleSection/EmploymentApplication/EmploymentApplication')
+);
 
 const CreatePharmacy = lazy(() => import('./components/screen/dashboard/pharmacy/createPharmacy'));
 
@@ -81,14 +86,13 @@ const PrescriptionList = lazy(() =>
 
 const ProfileLazy = lazy(() => import('./components/screen/dashboard/user/Profile'));
 
-const SettingsForm = lazy(() =>
-  import('./components/screen/dashboard/settings/Settings')
-);
+const SettingsForm = lazy(() => import('./components/screen/dashboard/settings/Settings'));
 
 const {
   login,
   drugFavoriteList,
   prescription,
+  jobApplication,
   dashboard,
   transfer,
   desktop,
@@ -154,11 +158,12 @@ const App = (): JSX.Element => {
 
   const gaScript = document.createElement('script');
   gaScript.async = true;
-  gaScript.src = "https://www.googletagmanager.com/gtag/js?id=G-TKSLN0VE57";
+  gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-TKSLN0VE57';
   document.body.appendChild(gaScript);
   const gaScript2 = document.createElement('script');
-  gaScript2.text = " window.dataLayer = window.dataLayer || [];" +
-    "function gtag(){dataLayer.push(arguments);}" +
+  gaScript2.text =
+    ' window.dataLayer = window.dataLayer || [];' +
+    'function gtag(){dataLayer.push(arguments);}' +
     "gtag('js', new Date());" +
     "gtag('config', 'UA-31704707-1');";
   document.body.appendChild(gaScript2);
@@ -250,6 +255,9 @@ const App = (): JSX.Element => {
             <PrivateRoute path={prescription}>
               <Dashboard component={<Prescription />} />
             </PrivateRoute>
+            <PrivateRoute path={jobApplication}>
+              <Dashboard component={<EmploymentApplication />} />
+            </PrivateRoute>
             <PrivateRoute path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />
             </PrivateRoute>
@@ -275,8 +283,8 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={profile}>
               <Dashboard component={<ProfileLazy />} />
             </PrivateRoute>
-            <PrivateRoute exact path={ settings }>
-              <Dashboard component={ <SettingsForm /> } />
+            <PrivateRoute exact path={settings}>
+              <Dashboard component={<SettingsForm />} />
             </PrivateRoute>
           </Suspense>
         </Switch>

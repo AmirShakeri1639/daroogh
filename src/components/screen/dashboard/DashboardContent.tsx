@@ -51,7 +51,7 @@ const DashboardContent: React.FC<any> = () => {
       {/* <Map /> */}
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
+          <Paper  className={classes.paper}>
             <ExChangeChart></ExChangeChart>
           </Paper>
         </Grid>
