@@ -16,6 +16,7 @@ const pack = 'pack';
 const exchangemanagement = 'exchangemanagement';
 const jobSearch = 'job-search';
 const prescription = 'prescription';
+const job = 'job';
 
 export default {
   login: '/login',
@@ -71,4 +72,5 @@ export default {
   
   profile: `/${dashboard}/${user}/profile`,
   settings: `/${dashboard}/settings`,
+  jobsList: `/${dashboard}/${job}/list`,
 };

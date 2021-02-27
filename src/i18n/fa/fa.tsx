@@ -232,7 +232,7 @@ export default {
         prescription: 'نسخه',
         addPrescription: 'افزودن نسخه',
         listPrescription: 'لیست نسخه ها',
-        jobApplication: 'درخواست کار'
+        jobApplication: 'درخواست کار',
       },
       message: {
         message: 'پیام',
@@ -421,6 +421,16 @@ export default {
       },
       jobSearch: {
         jobSearch: 'کاریابی',
+      },
+      jobs: {
+        jobs: 'فرصت های شغلی',
+        hasReadingPrescriptionCertificate: 'توانایی نسخه خوانی',
+        livingInArea: 'سکونت در محل',
+        hasGuarantee: 'داشتن وثیقه',
+        suggestedWorkShift:'ساعات کار پیشنهادی',
+        foreignLanguagesSkill:'سطح زبان انگلیسی',
+        jobPosition:'موقعیت شغلی'
+        
       },
       prescription: {
         prescription: 'نسخه',

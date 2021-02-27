@@ -116,6 +116,7 @@ const {
   jobSearchList,
   prescriptionList,
   settings,
+  jobsList
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -334,6 +335,14 @@ const ListItems: React.FC = () => {
               <Business />
             </ListItemIcon>
             <ListItemText primary={t('pharmacy.pharmacies')} />
+          </Link>
+        </List>
+        <List component="div" className={linkWrapper}>
+          <Link to={jobsList} className={notNested}>
+            <ListItemIcon style={{ color: '#4625B2' }}>
+              <Business />
+            </ListItemIcon>
+            <ListItemText primary={t('jobs.jobs')} />
           </Link>
         </List>
         {/* <ListItem

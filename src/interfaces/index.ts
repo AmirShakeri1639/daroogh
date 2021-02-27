@@ -71,6 +71,7 @@ export type { SettingsInterface } from './SettingsInterface';
 export type { PrescriptionInterface, PrescriptionResponseInterface } from './PrescriptionInterface';
 export type { EmploymentApplicationInterface } from './EmploymentApplicationInterface';
 export type { ProfileInterface } from './profile';
+export type { JobInterface } from './JobInterface';
 
 export * from './component';
 export * from './general';
