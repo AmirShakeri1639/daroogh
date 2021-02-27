@@ -27,7 +27,8 @@ const initialState: AccountingInterface = {
   date: '2020-12-07T21:43:46.103Z',
   description: '',
   amount: 0,
-  exchangeID: null
+  exchangeID: null,
+  mandeh: 0
 };
 
 const AccountingList: React.FC = () => {
@@ -76,7 +77,7 @@ const AccountingList: React.FC = () => {
         type: 'string',
         render: (row: any): any => {
           return (
-            <>{ getJalaliDate(row.date) }</>
+            <>{getJalaliDate(row.date)}</>
           );
         },
       },
@@ -90,8 +91,8 @@ const AccountingList: React.FC = () => {
           return (
             <>
               { row.amount < 0 &&
-                Convertor.thousandsSeperatorFa(Math.abs(row.amount)) }
-              { row.amount >= 0 && '' }
+                Convertor.thousandsSeperatorFa(Math.abs(row.amount))}
+              { row.amount >= 0 && ''}
             </>
           );
         },
@@ -104,8 +105,8 @@ const AccountingList: React.FC = () => {
           return (
             <>
               { row.amount >= 0 &&
-                Convertor.thousandsSeperatorFa(row.amount) }
-              { row.amount < 0 && '' }
+                Convertor.thousandsSeperatorFa(row.amount)}
+              { row.amount < 0 && ''}
             </>
           );
         },
@@ -125,11 +126,11 @@ const AccountingList: React.FC = () => {
           return (
             <>
               { exchangeUrl.length > 0 &&
-                <div className={ linkWrapper }>
-                  <Link to={ exchangeUrl }>
-                    <FontAwesomeIcon icon={ faExchangeAlt } />
+                <div className={linkWrapper}>
+                  <Link to={exchangeUrl}>
+                    <FontAwesomeIcon icon={faExchangeAlt} />
                     &nbsp;
-                    { t('exchange.viewExchange') }
+                    {t('exchange.viewExchange')}
                   </Link>
                 </div>
               }
@@ -141,18 +142,18 @@ const AccountingList: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" className={ container }>
-      <Grid container spacing={ 0 }>
-        <Grid item xs={ 12 }>
-          <div>{ t('accounting.list') }</div>
+    <Container maxWidth="lg" className={container}>
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
+          <div>{t('accounting.list')}</div>
           <Paper>
             <DataTable
-              ref={ ref }
-              columns={ tableColumns() }
-              queryKey={ AccountingEnum.GET_ALL }
-              queryCallback={ all }
-              urlAddress={ UrlAddress.getAllAccounting }
-              initLoad={ false }
+              ref={ref}
+              columns={tableColumns()}
+              queryKey={AccountingEnum.GET_ALL}
+              queryCallback={all}
+              urlAddress={UrlAddress.getAllAccounting}
+              initLoad={false}
             />
           </Paper>
         </Grid>

@@ -3,7 +3,6 @@ import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
 import { Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
-import { useQueryCache } from 'react-query';
 import { useClasses } from '../../classes';
 import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
@@ -24,7 +23,6 @@ import routes from '../../../../../routes';
 const Desktop: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
-  const queryCache = useQueryCache();
   const { paper } = useClasses();
   const { transfer } = routes;
 
@@ -38,11 +36,12 @@ const Desktop: React.FC = () => {
   );
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
+  
 
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
   React.useEffect(() => {
     async function getExchanges(): Promise<any> {
-      const result = await getDashboard();
+      const result = await getDashboard(null);
       // load test data
       // const result = d;
       if (result != undefined) {

@@ -4,6 +4,13 @@ export interface GetAccountingForPaymentInterace {
   accountingForPayment: AccountingInterface[];
   bankGetwayes: BankGetwayesInterface[];
   debtAmountAllow: number;
+  paymentExchangeByBestankari: PaymentExchangeByBestankari;
+}
+
+export interface PaymentExchangeByBestankari {
+  isSuccess: boolean;
+  message: string;
+  data: {};
 }
 
 export interface AccountingInterface {
@@ -13,6 +20,7 @@ export interface AccountingInterface {
   amount: number;
   isChecked?: boolean;
   exchangeID: number | null;
+  mandeh: number;
 }
 
 export interface BankGetwayesInterface {
