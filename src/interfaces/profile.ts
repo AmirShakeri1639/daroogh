@@ -10,4 +10,6 @@ export interface ProfileInterface {
   active: boolean;
   pharmacyName: string;
   pictureFileKey: string;
+  smsActive: boolean;
+  notifActive: boolean;
 }

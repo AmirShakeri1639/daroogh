@@ -209,6 +209,8 @@ export default {
         accepted: 'پذیرفته شده',
         members: 'اعضا',
         profilePicChanged: 'تصویر پروفایل با موفقیت تغییر کرد.',
+        smsActive: 'دریافت پیامک فعال باشد',
+        notifActive: 'دریافت اعلان‌ها فعال باشد',
       },
       drug: {
         drug: 'دارو',

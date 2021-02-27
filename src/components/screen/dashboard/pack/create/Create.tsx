@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
 import { Category, Comission, Drug, Pack } from '../../../../../services/api';
-import { BackDrop, Button, DatePicker, MaterialContainer, Modal } from '../../../../public';
+import { AutoComplete, BackDrop, Button, DatePicker, MaterialContainer, Modal } from '../../../../public';
 import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
@@ -32,6 +32,7 @@ import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
 import routes from '../../../../../routes';
 import { SearchDrugInCategory } from '../../../../../interfaces/search';
 import { PackCreation } from 'model/pack';
+import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
 
 const { packsList } = routes;
 
@@ -243,13 +244,13 @@ const Create: React.FC = () => {
     (async (): Promise<any> => {
       try {
         // @ts-ignore
-        const { value: drugId, id } = selectedDrug;
+        const { value: drugId } = selectedDrug;
         if (
           (Number(offer1) > 0 && Number(offer2) > 0 && Number(number) > 0) ||
           (drugId && Number(amount) > 0)
         ) {
           const result = await getComissionAndRecommendation({
-            drugId: id,
+            drugId,
             price: amount,
             offer1: offer1,
             offer2: offer2,
@@ -284,8 +285,8 @@ const Create: React.FC = () => {
       return {
         ...omit(item, ['drug', 'packCategoryName', 'packID', 'packName']),
         drugID: {
-          id: item.drug.id,
-          drugName: item.drug.name,
+          value: item.drug.id,
+          label: item.drug.name,
         },
       };
     });
@@ -306,12 +307,11 @@ const Create: React.FC = () => {
         const result = await getPackDetail(packId);
         const {
           name,
-          category: { id: categoryId },
           pharmacyDrug,
         } = result;
 
         setPackTotalItems(pharmacyDrug.length);
-        setSelectedCategory(categoryId);
+        setSelectedCategory(result.category !== null ? result.category.id : '-1');
 
         setTemporaryDrugs(mapApiDrugsToStandardDrugs(pharmacyDrug));
 
@@ -343,6 +343,9 @@ const Create: React.FC = () => {
         pathname: packsList,
       });
     },
+    onError: () => {
+      setIsBackdropLoading(false);
+    }
   });
 
   useEffectOnce(() => {
@@ -358,7 +361,7 @@ const Create: React.FC = () => {
 
   const removeHandler = (drugId: number): void => {
     if (window.confirm(t('alert.remove'))) {
-      remove(temporaryDrugs, (item) => item.drugID.id === drugId);
+      remove(temporaryDrugs, (item) => item.drugID.value === drugId);
       setTemporaryDrugs([...temporaryDrugs]);
     }
   };
@@ -412,12 +415,18 @@ const Create: React.FC = () => {
       const result = await seerchDrugInCategory(data);
 
       const items = result.map((item: any) => ({
-        id: item.id,
-        drugName: `${item.name} (${item.genericName}) ${typeHandler(item.type)}`,
+        value: item.id,
+        label: `${item.name} (${item.genericName}) ${typeHandler(item.type)}`,
       }));
       // setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
-      setOptions(items);
+
+      const optionsList = items.map((item: ListOptions) => ({
+        item,
+        el: <div>{item.label}</div>
+      }));
+
+      setOptions(optionsList);
     } catch (e) {
       errorHandler(e);
     }
@@ -468,7 +477,7 @@ const Create: React.FC = () => {
 
       const data = temporaryDrugs.map((item) => ({
         ...omit(item, 'id'),
-        drugID: item.drugID.id,
+        drugID: item.drugID.value,
       }));
 
       const packData: PackCreation = {
@@ -493,7 +502,7 @@ const Create: React.FC = () => {
     return (
       amount !== '' &&
       number !== '' &&
-      selectedDrug.hasOwnProperty('id') &&
+      selectedDrug.hasOwnProperty('value') &&
       selectedYear !== '' &&
       selectedMonth !== '' &&
       selectedYear.length === 4
@@ -620,22 +629,14 @@ const Create: React.FC = () => {
         <div className={modalContainer}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <Autocomplete
-                loading={isLoading}
-                id="drug-list"
-                noOptionsText={t('general.noData')}
-                loadingText={t('general.loading')}
+              <AutoComplete
+                isLoading={isLoading}
                 options={options}
-                value={selectedDrug}
-                onChange={(event, value, reason): void => {
-                  setSelectedDrug(value);
-                }}
-                getOptionLabel={(option: any): string => option.drugName}
-                onInputChange={debounce((e, newValue) => searchDrugs(newValue), 500)}
-                openOnFocus
-                renderInput={(params) => (
-                  <TextField {...params} size="small" label={t('drug.name')} variant="outlined" />
-                )}
+                className="w-100"
+                placeholder={t('drug.name')}
+                loadingText={t('general.loading')}
+                onChange={debounce((e) => searchDrugs(e.target.value), 500)}
+                onItemSelected={(item) => setSelectedDrug(item)}
               />
             </Grid>
 
