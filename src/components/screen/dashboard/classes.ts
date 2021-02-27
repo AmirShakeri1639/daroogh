@@ -204,6 +204,7 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   cardRoot: {
     width: '100%',
+    maxWidth: '35em',
     minHeight: 110,
     borderRadius: 14,
     display: 'inline-block',
