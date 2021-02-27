@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
-import { Grid } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../../classes';
@@ -53,14 +53,14 @@ const Desktop1: React.FC = () => {
 
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
   const exchangesRef = React.useRef(exchanges);
-  const setExchangesRef = (data: ViewExchangeInterface[])  => {
+  const setExchangesRef = (data: ViewExchangeInterface[]) => {
     exchangesRef.current = data;
     setExchanges(data);
   }
 
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
-  const setPageRef = (data: number)  => {
+  const setPageRef = (data: number) => {
     pageRef.current = data;
     setPage(data);
   }
@@ -68,7 +68,7 @@ const Desktop1: React.FC = () => {
   const prevCount = usePrevious(page)
   const [loading, setLoading] = useState(false);
   const loadingRef = React.useRef(loading);
-  const setLoadingRef = (data: boolean)  => {
+  const setLoadingRef = (data: boolean) => {
     loadingRef.current = data;
     setLoading(data);
   }
@@ -78,7 +78,7 @@ const Desktop1: React.FC = () => {
 
   const [totalCount, setTotalCount] = useState<number>(0);
   const totalCountRef = React.useRef(totalCount);
-  const setTotalCountRef = (data: number)  => {
+  const setTotalCountRef = (data: number) => {
     totalCountRef.current = data;
     setTotalCount(data);
   }
@@ -266,17 +266,17 @@ const Desktop1: React.FC = () => {
         }
       }
 
-      elements = <>{listToShow.map((item, index) =>
-        <Grid item={true} xs={12} sm={6} md={4} xl={4} key={index}>
-          <div className={paper}>
+      elements = <>{ listToShow.map((item, index) =>
+        <Grid item={ true } xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
+          <div className={ paper }>
             <DesktopCardContent
-              item={item}
-              full={false}
-              onCardClick={cardClickHandler}
+              item={ item }
+              full={ false }
+              onCardClick={ cardClickHandler }
             />
           </div>
         </Grid>
-      )}</>
+      ) }</>
 
 
       return elements;
@@ -287,25 +287,27 @@ const Desktop1: React.FC = () => {
   };
 
   return (
-    <Grid item={true} xs={11}>
-      <Grid container spacing={1}>
-        <Grid item={true} xs={12}>
-          <DesktopToolbox
-            filterList={stateFilterList}
-            onFilterChanged={filterChanged}
-            onSortSelected={sortSelected}
-          />
+    <Container>
+      <Grid item={ true } xs={ 11 }>
+        <Grid container spacing={ 1 }>
+          <Grid item={ true } xs={ 12 }>
+            <DesktopToolbox
+              filterList={ stateFilterList }
+              onFilterChanged={ filterChanged }
+              onSortSelected={ sortSelected }
+            />
+          </Grid>
         </Grid>
-      </Grid>
 
-      <Grid container spacing={1}>
-        {<CardListGenerator />}
+        <Grid container spacing={ 1 }>
+          { <CardListGenerator /> }
+        </Grid>
+        {/* {loading && <CircleLoading />} */ }
+        <CircleBackdropLoading isOpen={ loadingRef.current } />
+        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */ }
+        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */ }
       </Grid>
-      {/* {loading && <CircleLoading />} */}
-      <CircleBackdropLoading isOpen={loadingRef.current} />
-      {/* {loading ? <div className="text-center">loading data ...</div> : ""} */}
-      {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */}
-    </Grid>
+    </Container>
   );
 };
 
