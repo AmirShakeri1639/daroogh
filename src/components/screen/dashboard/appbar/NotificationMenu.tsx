@@ -44,7 +44,7 @@ const useStyle = makeStyles((theme) =>
 );
 
 const { convertISOTime } = Convertor;
-const { readMessage } = new Message();
+const { readMultiMessage } = new Message();
 
 const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
   const { notifEl, setNotifEl } = useContext(Context);
@@ -55,17 +55,20 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
 
   const readMessages = async (): Promise<any> => {
     const messagesApiCalls = [];
+
     for (let i = 0; i < messages.length; i++) {
-      messagesApiCalls.push(readMessage(messages[i].id));
+      messagesApiCalls.push(messages[i].id);
     }
-    await Promise.all(messagesApiCalls);
+    await readMultiMessage(messagesApiCalls);
 
     queryCache.invalidateQueries(MessageQueryEnum.GET_USER_MESSAGES);
   };
 
   const handleClose = (): void => {
     setNotifEl(null);
-    readMessages();
+    if (messages.length > 0) {
+      readMessages();
+    }
   };
 
   const itemsGenerator = (): JSX.Element[] | JSX.Element => {

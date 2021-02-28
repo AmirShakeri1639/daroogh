@@ -18,6 +18,14 @@ class Prescription extends Api {
     );
     return result.data;
   };
+
+  getPrescriptionsCount = async (): Promise<any> => {
+    const result = await this.postJsonData(
+      `${this.urls.getList}`
+    );
+    return result.data.items.length;
+  };
+
   getPrescriptionOfUser = async (
     skip: number,
     top: number = 10
@@ -27,10 +35,12 @@ class Prescription extends Api {
     );
     return result.data;
   };
+  
   detail = async (id: number): Promise<any> => {
     const result = await this.postJsonData(`${this.urls.detail}/${id}`);
     return result.data;
   };
+  
   cancel = async (id: number): Promise<any> => {
     const result = await this.postJsonData(
       `${this.urls.cancel}?prescriptionID=${id}`
@@ -46,8 +56,8 @@ class Prescription extends Api {
     );
     return result.data;
   };
+
   send = async (data: PrescriptionSendInterface): Promise<any> => {
-    debugger;
     const result = await this.postFormData(
       `${this.urls.send}?duration=${data.duration}` +
         `&contryDivisionCode=${data.contryDivisionCode}`,

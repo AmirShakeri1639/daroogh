@@ -92,7 +92,7 @@ const DesktopCardContent = ({
                 (
                   (isNullOrEmpty(p.confirmed) || p.confirmed) &&
                   (
-                    isNullOrEmpty(p.cardColor) 
+                    isNullOrEmpty(p.cardColor)
                     || p.cardColor === ColorEnum.AddedByB
                     || p.cardColor === ColorEnum.Confirmed
                   )
@@ -108,11 +108,11 @@ const DesktopCardContent = ({
               (
                 (isNullOrEmpty(i.confirmed) || i.confirmed) &&
                 (
-                  isNullOrEmpty(i.cardColor) 
+                  isNullOrEmpty(i.cardColor)
                   || i.cardColor === ColorEnum.AddedByB
                   || i.cardColor === ColorEnum.Confirmed
                 )
-            )
+              )
                 ? i.currentCnt
                   ? i.currentCnt * i.amount
                   : i.cnt * i.amount
@@ -265,7 +265,6 @@ const DesktopCardContent = ({
   // let is3PercentOK: boolean = true;
 
   const setDifferenceCheckOutput = (): void => {
-    debugger;
     const diffCheck = differenceCheck({
       exchange: item,
       percent: percentAllowed(),
@@ -294,8 +293,8 @@ const DesktopCardContent = ({
     return (
       <Grid container spacing={ 1 } className={ cardContainer }>
         <Grid container className={ cardTop }>
-          <Grid container xs={ 6 } className={ rowRight }>
-            <Grid xs={ 12 } className={ rowRight }>
+          <Grid item container xs={ 6 } className={ rowRight }>
+            <Grid item xs={ 12 } className={ rowRight }>
               <FontAwesomeIcon
                 icon={ faSun }
                 size="lg"
@@ -308,7 +307,7 @@ const DesktopCardContent = ({
                   <></>
                 ) }
             </Grid>
-            <Grid xs={ 12 } className={ rowRight }>
+            <Grid item xs={ 12 } className={ rowRight }>
               <div>
                 { item.currentPharmacyIsA
                   ? `${item.pharmacyProvinceB}، ${item.pharmacyCityB}`
@@ -316,8 +315,8 @@ const DesktopCardContent = ({
               </div>
             </Grid>
           </Grid>
-          <Grid container xs={ 6 } className={ colLeft }>
-            <Grid xs={ 12 } className={ rowLeft }>
+          <Grid item container xs={ 6 } className={ colLeft }>
+            <Grid item xs={ 12 } className={ rowLeft }>
               { pharmacyWarranty !== 0 && (
                 <>
                   { t('general.warrantyTo') } { pharmacyWarranty } { t('general.toman') }
@@ -325,25 +324,27 @@ const DesktopCardContent = ({
                 </>
               ) }
             </Grid>
-            <Grid xs={ 12 } className={ rowLeft }
+            <Grid item xs={ 12 } className={ rowLeft }
               style={ { direction: 'ltr', color: ColorEnum.GOLD } }>
               { stars() }
             </Grid>
           </Grid>
         </Grid>
 
-        <Grid container xs={ 12 }>
+        <Grid item container xs={ 12 }>
           { !isNullOrEmpty(item?.sendDate) && (
             <Grid item xs={ 12 } className={ spacingVertical1 }>
               <TextLine
                 backColor={ ColorEnum.White }
                 rightText={
                   <>
-                    <FontAwesomeIcon
-                      icon={ faCalendarPlus }
-                      size="lg"
-                      className={ faIcons }
-                    />
+                    { !full &&
+                      <FontAwesomeIcon
+                        icon={ faCalendarPlus }
+                        size="lg"
+                        className={ faIcons }
+                      />
+                    }
                     {t('exchange.sendDate') }
                   </>
                 }
@@ -364,11 +365,13 @@ const DesktopCardContent = ({
                 backColor={ ColorEnum.White }
                 rightText={
                   <>
-                    <FontAwesomeIcon
-                      icon={ faCalendarTimes }
-                      size="lg"
-                      className={ faIcons }
-                    />
+                    { !full &&
+                      <FontAwesomeIcon
+                        icon={ faCalendarTimes }
+                        size="lg"
+                        className={ faIcons }
+                      />
+                    }
                     {expireDateText }
                   </>
                 }
@@ -383,11 +386,13 @@ const DesktopCardContent = ({
                 backColor={ ColorEnum.White }
                 rightText={
                   <>
-                    <FontAwesomeIcon
-                      icon={ faMoneyBillAlt }
-                      className={ faIcons }
-                      size="lg"
-                    />
+                    { !full &&
+                      <FontAwesomeIcon
+                        icon={ faMoneyBillAlt }
+                        className={ faIcons }
+                        size="lg"
+                      />
+                    }
                     {t('exchange.commission') }
                   </>
                 }
@@ -402,11 +407,13 @@ const DesktopCardContent = ({
                 backColor={ ColorEnum.White }
                 rightText={
                   <>
-                    <FontAwesomeIcon
-                      icon={ faCreditCard }
-                      size="lg"
-                      className={ faIcons }
-                    />
+                    {!full &&
+                      <FontAwesomeIcon
+                        icon={ faCreditCard }
+                        size="lg"
+                        className={ faIcons }
+                      />
+                    }
                     {t('exchange.paymentStatus') }
                   </>
                 }
@@ -421,11 +428,13 @@ const DesktopCardContent = ({
                 backColor={ ColorEnum.White }
                 rightText={
                   <>
-                    <FontAwesomeIcon
-                      icon={ faCreditCard }
-                      size="lg"
-                      className={ faIcons }
-                    />
+                    { !full &&
+                      <FontAwesomeIcon
+                        icon={ faCreditCard }
+                        size="lg"
+                        className={ faIcons }
+                      />
+                    }
                     { `${t('exchange.basketTotalPrice')} ` }
                     { item.currentPharmacyIsA && t('exchange.you') }
                     { !item.currentPharmacyIsA && t('exchange.otherSide') }
@@ -448,11 +457,13 @@ const DesktopCardContent = ({
                 backColor={ ColorEnum.White }
                 rightText={
                   <>
-                    <FontAwesomeIcon
-                      icon={ faCreditCard }
-                      size="lg"
-                      className={ faIcons }
-                    />
+                    { !full &&
+                      <FontAwesomeIcon
+                        icon={ faCreditCard }
+                        size="lg"
+                        className={ faIcons }
+                      />
+                    }
                     { `${t('exchange.basketTotalPrice')} ` }
                     { !item.currentPharmacyIsA && t('exchange.you') }
                     { item.currentPharmacyIsA && t('exchange.otherSide') }
@@ -477,11 +488,13 @@ const DesktopCardContent = ({
                   backColor={ ColorEnum.White }
                   rightText={
                     <>
-                      <FontAwesomeIcon
-                        icon={ faPercent }
-                        size="lg"
-                        className={ faIcons }
-                      />
+                      { !full &&
+                        <FontAwesomeIcon
+                          icon={ faPercent }
+                          size="lg"
+                          className={ faIcons }
+                        />
+                      }
                       { t('exchange.difference') }
                     </>
                   }
@@ -496,9 +509,9 @@ const DesktopCardContent = ({
                 (item.state === 12 && !item.lockSuggestion)
               ) && (
                   <Grid item xs={ 12 } className={ spacingVertical3 }>
-                    { differenceMessage.split('\n').map(i => {
+                    { differenceMessage.split('\n').map((i, k) => {
                       return (
-                        <>{ i }<br /></>
+                        <div key={ k }>{ i }<br key={ k } /></div>
                       )
                     }) }
                   </Grid>
@@ -514,20 +527,31 @@ const DesktopCardContent = ({
     let thisState = item.state > 10 ? item.state - 10 : item.state;
     thisState = thisState === 7 ? 0 : thisState;
 
+    const greenWidth = thisState * 10;
+    const redWidth = 100 - thisState * 10;
+
     return (
       <>
         <div
           style={ {
-            borderTop: `3px solid ${ColorEnum.Green}`,
-            width: `${thisState * 10}%`,
+            borderTop: `.75em solid ${ColorEnum.Green}`,
+            width: `${greenWidth}%`,
             display: 'inline-block',
+            borderRadius: '.5em',
+            borderTopLeftRadius: greenWidth === 100 ? '.5em' : '0',
+            borderBottomLeftRadius: greenWidth === 100 ? '.5em' : '0',
+            borderBottomRightRadius: '.6em',
           } }
         ></div>
         <div
           style={ {
-            borderTop: `3px solid ${ColorEnum.Red}`,
-            width: `${100 - thisState * 10}%`,
+            borderTop: `.75em solid ${ColorEnum.Red}`,
+            width: `${redWidth}%`,
             display: 'inline-block',
+            borderRadius: '.5em',
+            borderTopRightRadius: redWidth === 100 ? '.5em' : '0',
+            borderBottomRightRadius: redWidth === 100 ? '.5em' : '0',
+            borderBottomLeftRadius: '.6em',
           } }
         ></div>
       </>

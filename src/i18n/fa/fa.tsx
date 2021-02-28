@@ -104,6 +104,7 @@ export default {
         again: {
           0: 'مجدد',
         },
+        gift: 'هدیه'
       },
       pack: {
         pack: 'پک',
@@ -209,6 +210,8 @@ export default {
         accepted: 'پذیرفته شده',
         members: 'اعضا',
         profilePicChanged: 'تصویر پروفایل با موفقیت تغییر کرد.',
+        smsActive: 'دریافت پیامک فعال باشد',
+        notifActive: 'دریافت اعلان‌ها فعال باشد',
       },
       drug: {
         drug: 'دارو',
@@ -280,6 +283,8 @@ export default {
         continue: 'ادامه تبادل',
         exchangeManagement: 'مدیریت تبادل',
         viewExchange: 'مشاهده تبادل',
+        widget: 'ابزارک تبادل',
+        waitingForYourConfirmation: 'تبادل‌های در انتظار تایید شما',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
@@ -450,6 +455,7 @@ export default {
       },
       employment: {
         application: 'درخواست کاریابی',
+        applications: 'درخواست‌های کاریابی',
         workExperience: 'سابقه کار',
         resume: 'رزومه',
         readingPrescriptionCertificate: 'گواهی نسخه خوانی',
@@ -488,6 +494,10 @@ export default {
         notificationAPIkey: 'کلید سامانه ارسال اعلان‌ها',
         notificationSenderkey: 'کلید ارسال کننده اعلان‌ها',
         applicationUrl: 'Application URL',
+      },
+      survey: {
+        survey: 'نظرسنجی',
+        widget: 'ابزارک نظرسنجی',
       },
     },
   },
