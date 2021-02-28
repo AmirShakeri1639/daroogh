@@ -104,6 +104,7 @@ export default {
         again: {
           0: 'مجدد',
         },
+        gift: 'هدیه'
       },
       pack: {
         pack: 'پک',
