@@ -20,6 +20,8 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  Box,
+  Typography,
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
@@ -294,18 +296,18 @@ const ExCalculator: React.FC<Props> = (props) => {
             <Tab label={ pharmacyNameA ?? t('exchange.you') } />
             <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
           </Tabs>
-          {/* <SwipeableViews
-              enableMouseEvents
-              index={ currentTabIndex }
-              onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
-            > */}
-          <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-            { getOneSideData(true) }
-          </DaroogTabPanel>
-          <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-            { getOneSideData(false) }
-          </DaroogTabPanel>
-          {/* </SwipeableViews> */ }
+          <SwipeableViews
+            enableMouseEvents
+            index={ currentTabIndex }
+            onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
+          >
+            <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+              { getOneSideData(true) }
+            </DaroogTabPanel>
+            <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+              { getOneSideData(false) }
+            </DaroogTabPanel>
+          </SwipeableViews>
         </Grid>
         <Divider />
         {/* common data */ }
