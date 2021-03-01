@@ -1,8 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
   Grid,
-  Card,
-  CardContent,
   Divider,
   Tabs,
   Tab,
@@ -20,8 +18,6 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Box,
-  Typography,
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
@@ -35,7 +31,6 @@ import {
   getExpireDateTitle,
   getExpireDate,
   ViewExchangeInitialState,
-  differenceCheck,
   percentAllowed,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
@@ -56,20 +51,14 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
   const {
-    ltr,
-    rtl,
     spacing3,
     spacingVertical3,
-    faIcons,
     darkText,
   } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const {
-    activeStep,
-    is3PercentOk,
-    setIs3PercentOk,
     basketCount,
     uBasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
