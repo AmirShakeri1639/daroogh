@@ -81,7 +81,7 @@ export default {
         peopleSection: 'بخش مردمی',
         undefined: 'تعریف نشده',
         toman: 'تومان',
-        ok: 'خب',
+        ok: 'بستن',
         warning: 'هشدار',
         rial: 'ریال',
         unit: 'واحد',
