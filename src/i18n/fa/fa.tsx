@@ -81,7 +81,7 @@ export default {
         peopleSection: 'بخش مردمی',
         undefined: 'تعریف نشده',
         toman: 'تومان',
-        ok: 'خب',
+        ok: 'بستن',
         warning: 'هشدار',
         rial: 'ریال',
         unit: 'واحد',
@@ -104,6 +104,7 @@ export default {
         again: {
           0: 'مجدد',
         },
+        gift: 'هدیه'
       },
       pack: {
         pack: 'پک',
@@ -209,6 +210,8 @@ export default {
         accepted: 'پذیرفته شده',
         members: 'اعضا',
         profilePicChanged: 'تصویر پروفایل با موفقیت تغییر کرد.',
+        smsActive: 'دریافت پیامک فعال باشد',
+        notifActive: 'دریافت اعلان‌ها فعال باشد',
       },
       drug: {
         drug: 'دارو',
@@ -231,8 +234,10 @@ export default {
       peopleSection: {
         prescription: 'نسخه',
         addPrescription: 'افزودن نسخه',
+        addJobApplication: 'افزودن درخواست کار',
         listPrescription: 'لیست نسخه ها',
-        jobApplication: 'درخواست کار'
+        jobApplication: 'درخواست کار',
+        listJobApplication: 'لیست درخواست کار'
       },
       message: {
         message: 'پیام',

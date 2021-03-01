@@ -1,8 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Grid,
-  Card,
-  CardContent,
   Divider,
   Tabs,
   Tab,
@@ -23,24 +21,16 @@ import {
 } from '@material-ui/core';
 import SwipeableViews from 'react-swipeable-views';
 import { useTranslation } from 'react-i18next';
-import { AllPharmacyDrugInterface, ViewExchangeInterface } from '../../../../../interfaces';
+import { ViewExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { DaroogTabPanel, TextLine } from '../../../../public';
 import { Convertor, isNullOrEmpty } from '../../../../../utils';
 import { ColorEnum } from '../../../../../enum';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCalendarPlus,
-  faCalendarTimes,
-  faMoneyBillAlt,
-} from '@fortawesome/free-regular-svg-icons';
-import { faListOl, faPercent } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import {
   getExpireDateTitle,
   getExpireDate,
   ViewExchangeInitialState,
-  differenceCheck,
   percentAllowed,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
@@ -61,20 +51,14 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
   const {
-    ltr,
-    rtl,
     spacing3,
     spacingVertical3,
-    faIcons,
     darkText,
   } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const {
-    activeStep,
-    is3PercentOk,
-    setIs3PercentOk,
     basketCount,
     uBasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
@@ -249,11 +233,6 @@ const ExCalculator: React.FC<Props> = (props) => {
               backColor={ ColorEnum.White }
               rightText={
                 <>
-                  <FontAwesomeIcon
-                    icon={ faListOl }
-                    size="lg"
-                    className={ faIcons }
-                  />
                   {t('general.number') }
                 </>
               }
@@ -267,11 +246,6 @@ const ExCalculator: React.FC<Props> = (props) => {
               backColor={ ColorEnum.White }
               rightText={
                 <>
-                  <FontAwesomeIcon
-                    icon={ faListOl }
-                    size="lg"
-                    className={ faIcons }
-                  />
                   {t('exchange.totalPrice') }
                 </>
               }
@@ -285,11 +259,6 @@ const ExCalculator: React.FC<Props> = (props) => {
               backColor={ ColorEnum.White }
               rightText={
                 <>
-                  <FontAwesomeIcon
-                    icon={ faMoneyBillAlt }
-                    className={ faIcons }
-                    size="lg"
-                  />
                   {t('exchange.commission') }
                 </>
               }
@@ -316,18 +285,18 @@ const ExCalculator: React.FC<Props> = (props) => {
             <Tab label={ pharmacyNameA ?? t('exchange.you') } />
             <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
           </Tabs>
-          {/* <SwipeableViews
-              enableMouseEvents
-              index={ currentTabIndex }
-              onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
-            > */}
-          <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-            { getOneSideData(true) }
-          </DaroogTabPanel>
-          <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-            { getOneSideData(false) }
-          </DaroogTabPanel>
-          {/* </SwipeableViews> */ }
+          <SwipeableViews
+            enableMouseEvents
+            index={ currentTabIndex }
+            onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
+          >
+            <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+              { getOneSideData(true) }
+            </DaroogTabPanel>
+            <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+              { getOneSideData(false) }
+            </DaroogTabPanel>
+          </SwipeableViews>
         </Grid>
         <Divider />
         {/* common data */ }
@@ -338,11 +307,6 @@ const ExCalculator: React.FC<Props> = (props) => {
                 backColor={ ColorEnum.White }
                 rightText={
                   <>
-                    <FontAwesomeIcon
-                      icon={ faCalendarPlus }
-                      size="lg"
-                      className={ faIcons }
-                    />
                     {t('exchange.sendDate') }
                   </>
                 }
@@ -362,11 +326,6 @@ const ExCalculator: React.FC<Props> = (props) => {
                 backColor={ ColorEnum.White }
                 rightText={
                   <>
-                    <FontAwesomeIcon
-                      icon={ faCalendarTimes }
-                      size="lg"
-                      className={ faIcons }
-                    />
                     {expireDateText }
                   </>
                 }

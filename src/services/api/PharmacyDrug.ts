@@ -64,9 +64,10 @@ class PharmacyDrug extends Api {
     }
   };
 
-  getAccountingForPayment = async (): Promise<any> => {
+  getAccountingForPayment = async (exchangeId = ""): Promise<any> => {
     try {
-      const query = `${this.urls.getAccountingForPayment}`;
+      const query = `${this.urls.getAccountingForPayment}${exchangeId !== "" ? '?exchangeId=' + exchangeId : ''
+        }`;
       const result = await this.postJsonData(query);
       return result;
     } catch (error) {
@@ -77,7 +78,7 @@ class PharmacyDrug extends Api {
   addDrug1 = async (data: AddDrog1): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.addDrug1}?pharmacyDrugID=${data.pharmacyDrugID}&count=${data.count}&pharmacyKey=${data.pharmacyKey}`
+        `${this.urls.addDrug1}?pharmacyDrugID=${data.pharmacyDrugID}&count=${data.count}&pharmacyKey=${data.pharmacyKey} `
       );
       return result.data;
     } catch (e) {
@@ -171,7 +172,7 @@ class PharmacyDrug extends Api {
   };
 
   removePharmacyDrug = async (id: string | number): Promise<any> => {
-    const result = await this.postData(`/PharmacyDrug/Remove/${id}`);
+    const result = await this.postData(`/PharmacyDrug/Remove/${id} `);
     return result.data;
   };
 
@@ -214,14 +215,14 @@ class PharmacyDrug extends Api {
   };
 
   getPayment = async (data: Payment): Promise<any> => {
-    const result = await this.postJsonData(`${this.urls.payment}`, data);
+    const result = await this.postJsonData(`${this.urls.payment} `, data);
     return result.data;
   };
 
   pharmacyInfo = async (exchangeID: number): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.pharmacyInfo}?exchangeID=${exchangeID}`
+        `${this.urls.pharmacyInfo}?exchangeID=${exchangeID} `
       );
       return result;
     } catch (e) {
@@ -232,7 +233,7 @@ class PharmacyDrug extends Api {
   detailPharmacyInfo = async (id: number): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.detailPharmacyInfo}${id}`
+        `${this.urls.detailPharmacyInfo} ${id} `
       );
       return result;
     } catch (e) {
@@ -242,7 +243,7 @@ class PharmacyDrug extends Api {
 
   getQuestionGroupOfExchange = async (exchangeID: number): Promise<any> => {
     const result = await this.postJsonData(
-      `${this.urls.getQuestionGroupOfExchange}${exchangeID}`
+      `${this.urls.getQuestionGroupOfExchange} ${exchangeID} `
     );
     return result;
   };

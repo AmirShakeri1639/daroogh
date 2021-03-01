@@ -13,21 +13,21 @@ import {
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
-import { PharmacyDrugEnum } from '../../../../enum';
+import { PharmacyDrugEnum } from '../../../../../enum';
 import {
   Favorite,
   Drug as DrugApi,
   Search,
   CountryDivision,
   Prescription as presApi,
-} from '../../../../services/api';
-import { MaterialContainer, Modal } from '../../../public';
-import { errorHandler, successSweetAlert } from '../../../../utils';
+} from '../../../../../services/api';
+import { MaterialContainer, Modal } from '../../../../public';
+import { errorHandler, successSweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
-import { PrescriptionSendInterface } from '../../../../interfaces/PrescriptionInterface';
-import { ActionInterface } from '../../../../interfaces';
+import { PrescriptionSendInterface } from '../../../../../interfaces/PrescriptionInterface';
+import { ActionInterface } from '../../../../../interfaces';
 
 const { getPrescriptionOfUser, send, cancel } = new presApi();
 
@@ -55,7 +55,7 @@ const useStyle = makeStyles((theme) =>
     addButton: {
       display: 'flex',
 
-      height: 167,
+      height: 80,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
@@ -196,7 +196,7 @@ const Prescription: React.FC = () => {
       return data.items.map((item: any) => {
         if (item !== null) {
           return (
-            <Grid key={item.id} item xs={12} sm={6} md={4} xl={3}>
+            <Grid key={item.id} item xs={12} sm={12} md={6} xl={4}>
               <CardContainer data={item} formHandler={removeHandler} />
             </Grid>
           );
@@ -209,7 +209,7 @@ const Prescription: React.FC = () => {
     return null;
   };
 
-  const changeprovince = (e: any) => {
+  const changeprovince = (e: any): void => {
     const val = e.target.value as string;
     dispatch({ type: 'contryDivisionCode', value: e.target.value });
     setSelectedProvince(val);
@@ -232,7 +232,7 @@ const Prescription: React.FC = () => {
         <Grid item xs={12}>
           <h3>{t('peopleSection.listPrescription')}</h3>
         </Grid>
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
+        <Grid item xs={12} sm={12} md={12} xl={12} className={addButton}>
           <Button onClick={toggleIsOpenModal} variant="text">
             <FontAwesomeIcon icon={faPlus} />
             <span>{t('peopleSection.addPrescription')}</span>
@@ -247,7 +247,7 @@ const Prescription: React.FC = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{'نسخه'}</DialogTitle>
         <DialogContent>
           <div className={modalContainer}>
             <Grid container spacing={1}>
