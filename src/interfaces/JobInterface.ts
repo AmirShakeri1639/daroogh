@@ -3,7 +3,6 @@ import { StateType, WorkShiftType, EducationLevel, JobPositionType, SkillLevel }
 
 export interface JobInterface {
   id: number;
-  pharmacyID: number;
   maritalStatus: MaritalStatusType;
   gender: GenderType;
   hasReadingPrescriptionCertificate: StateType;
@@ -19,19 +18,5 @@ export interface JobInterface {
   maxAge: number;
   livingInArea: number;
   descriptions?: string;
-  sendDate: string;
-  cancelDate?: string;
-  _date: string;
-  _userid: 0;
-  hasReadingPrescriptionCertificateStr?: string;
-  livingInAreaStr?: string;
-  hasGuaranteeStr?: string;
-  genderStr?: string;
-  suggestedWorkShiftStr?: string;
-  maritalStatusStr?: string;
-  pharmaceuticalSoftwareSkillStr?: string;
-  computerSkillStr?: string;
-  foreignLanguagesSkillStr?: string;
-  jobPositionStr?: string;
-  educationStr?: string;
+ 
 }

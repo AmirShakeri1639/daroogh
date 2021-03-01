@@ -102,9 +102,9 @@ export default {
         descriptions: 'توضیح',
         subject: 'موضوع',
         again: {
-          0: 'مجدد',
+          '': 'مجدد',
         },
-        gift: 'هدیه'
+        gift: 'هدیه',
       },
       pack: {
         pack: 'پک',
@@ -172,7 +172,8 @@ export default {
         username: 'نام کاربری',
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
-        failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        failed:
+          'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
@@ -278,7 +279,8 @@ export default {
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
-        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
+        threePercentWarning:
+          'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
         continue: 'ادامه تبادل',
         exchangeManagement: 'مدیریت تبادل',
@@ -359,7 +361,7 @@ export default {
         FOROOKHTEHSHODEH: 'فروخته شده',
       },
       ExchangeStateEnum: {
-        // 0
+        // ''
         UNKNOWN: 'نامشخص',
         // 1
         NOSEND: 'ارسال نشده',
@@ -379,7 +381,7 @@ export default {
         CONFIRMA_AND_B_PAYMENTA: 'تبادل کامل شده',
         // 9
         CONFIRMA_AND_B_PAYMENTB: 'در انتظار پرداخت (طرف اول هستید)',
-        // 10
+        // 1''
         CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
         // 11
         NOSEND_FORB: 'ارسال نشده',
@@ -399,7 +401,7 @@ export default {
         CONFIRMA_AND_B_PAYMENTA_FORB: 'در انتظار پرداخت (طرف دوم هستید)',
         // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
         CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
-        // 20
+        // 2''
         CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
       },
       CancellerEnum: {
@@ -432,10 +434,16 @@ export default {
         hasReadingPrescriptionCertificate: 'توانایی نسخه خوانی',
         livingInArea: 'سکونت در محل',
         hasGuarantee: 'داشتن وثیقه',
-        suggestedWorkShift:'ساعات کار پیشنهادی',
-        foreignLanguagesSkill:'سطح زبان انگلیسی',
-        jobPosition:'موقعیت شغلی'
-        
+        suggestedWorkShift: 'ساعات کار پیشنهادی',
+        foreignLanguagesSkill: 'سطح زبان انگلیسی',
+        jobPosition: 'موقعیت شغلی',
+        list: 'لیست فرصت های شغلی',
+        minWorkExperienceYear: 'حداقل سابقه کار',
+        minGradeOfReadingPrescriptionCertificate: 'نمره گواهی نسخه خوانی',
+        pharmaceuticalSoftwareSkill: 'توانایی کار با نرم افزار',
+        computerSkill: 'توانایی کار با کامپیوتر',
+        education :'تحصیلات',
+        maxAge: 'حداکثر سن'
       },
       prescription: {
         prescription: 'نسخه',
@@ -480,7 +488,8 @@ export default {
         ticketExireDuration: 'مدت اعتبار رمزیکبار مصرف به دقیقه',
 
         exchange: 'تبادل',
-        diffrenceAllowPercentageInExchange: 'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
+        diffrenceAllowPercentageInExchange:
+          'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
         exchangeDeadline: 'مهلت تائید یک تبادل به ساعت',
         debtAmountAllow: 'مبلغ مجاز بدهکاری',
         debtTimeAllow: 'مدت مجازی بدهکاری به ساعت',
@@ -498,6 +507,55 @@ export default {
       survey: {
         survey: 'نظرسنجی',
         widget: 'ابزارک نظرسنجی',
+      },
+      MaritalStatusType: {
+        Married: 'متاهل',
+        Single: 'مجرد',
+      },
+      GenderType: {
+        Male: 'مرد',
+        Female: 'زن',
+      },
+      StateType: {
+        NoMatter: 'مهم نیست',
+        Have: 'داشته باشد',
+        NoHave: 'نداشته باشد',
+      },
+      WorkShiftType: {
+        Morning: 'صبح',
+        Evening: 'عصر',
+        MorningEvening: 'صبح و عصر',
+        Night: 'شب',
+        Free: 'تایم آزاد',
+      },
+      SkillLevel: {
+        Novice: 'ابتدایی',
+        Intermediate: 'متوسط',
+        Expert: 'حرفه‌ای',
+      },
+
+      JobPositionType: {
+        MasoolFani: 'مسئول فنی',
+        GhaemMagham: 'قائم مقام',
+        OperatorNoskhe: 'اپراتور نسخه',
+        NoskhePich: 'نسخه پیچ',
+        Hesabdar: 'حسابدار',
+        ForooshandeArayeshi: 'فروشنده آرایشی بهداشتی',
+        Anbardar: 'انباردار',
+        NirooSade: 'نیروی ساده',
+        Karamooz: 'کارآموز',
+        ForooshandeMokamel: 'فروشنده مکمل',
+        Other: 'سایر',
+      },
+
+      EducationLevel: {
+        NoEducation: 'بی‌سواد',
+        HighSchool: 'سیکل',
+        DiplomaDegree: 'دیپلم',
+        TechnicianDegree: 'فوق دیپلم',
+        BachelorDegree: 'لیسانس',
+        MasterDegree: 'فوق لیسانس',
+        DoctoralDegree: 'دکترا',
       },
     },
   },

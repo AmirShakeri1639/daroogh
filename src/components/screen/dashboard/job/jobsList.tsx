@@ -1,6 +1,7 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQueryCache } from 'react-query';
 import Job from '../../../../services/api/Job';
+import FormContainer from '../../../public/form-container/FormContainer';
 import {
   Container,
   Grid,
@@ -36,13 +37,19 @@ import {
   PharmacyInterface,
   ConfirmParams,
   LabelValue,
+  JobInterface,
   DataTableCustomActionInterface,
 } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { PharmacyEnum } from '../../../../enum/query';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
-import { ColorEnum, WorkTimeEnum } from '../../../../enum';
+import {
+  ColorEnum,
+  WorkTimeEnum,
+  MaritalStatusType,
+  GenderType,
+} from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -61,116 +68,114 @@ import AddTransactionModal from '../accounting/AddTransactionModal';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { Map } from '../../../public';
 import { CountryDivisionSelect } from '../../../public/country-division/CountryDivisionSelect';
+import {
+  StateType,
+  WorkShiftType,
+  SkillLevel,
+  JobPositionType,
+  EducationLevel,
+} from 'enum/Job';
 
-const initialState: PharmacyInterface = {
+const initialState: JobInterface = {
   id: 0,
-  name: '',
-  description: '',
-  active: false,
-  hix: '',
-  gli: '',
-  workTime: WorkTimeEnum.FULL_TIME,
-  address: '',
-  mobile: '',
-  telphon: '',
-  webSite: '',
-  email: '',
-  postalCode: '',
-  countryDivisionID: DefaultCountryDivisionID,
-  x: '',
-  y: '',
+  maritalStatus: MaritalStatusType.Single,
+  gender: GenderType.Male,
+  hasReadingPrescriptionCertificate: StateType.NoMatter,
+  minGradeOfReadingPrescriptionCertificate: 0.0,
+  minWorkExperienceYear: 0,
+  suggestedWorkShift: WorkShiftType.Free,
+  pharmaceuticalSoftwareSkill: SkillLevel.Novice,
+  computerSkill: SkillLevel.Novice,
+  foreignLanguagesSkill: SkillLevel.Novice,
+  hasGuarantee: false,
+  jobPosition: JobPositionType.Other,
+  education: EducationLevel.NoEducation,
+  maxAge: 0,
+  livingInArea: StateType.NoMatter,
+  descriptions: '',
 };
 
-// function reducer(state = initialState, action: ActionInterface): any {
-//   const { value } = action;
+function reducer(state = initialState, action: ActionInterface): any {
+  const { value } = action;
 
-//   switch (action.type) {
-//     case 'id':
-//       return {
-//         ...state,
-//         id: value,
-//       };
-//     case 'name':
-//       return {
-//         ...state,
-//         name: value,
-//       };
-//     case 'hix':
-//       return {
-//         ...state,
-//         hix: value,
-//       };
-//     case 'gli':
-//       return {
-//         ...state,
-//         gli: value,
-//       };
-//     case 'workTime':
-//       return {
-//         ...state,
-//         workTime: value,
-//       };
-//     case 'description':
-//       return {
-//         ...state,
-//         description: value,
-//       };
-//     case 'active':
-//       return {
-//         ...state,
-//         active: value,
-//       };
-//     case 'address':
-//       return {
-//         ...state,
-//         address: value,
-//       };
-//     case 'mobile':
-//       return {
-//         ...state,
-//         mobile: value,
-//       };
-//     case 'telphon':
-//       return {
-//         ...state,
-//         telphon: value,
-//       };
-//     case 'webSite':
-//       return {
-//         ...state,
-//         webSite: value,
-//       };
-//     case 'email':
-//       return {
-//         ...state,
-//         email: value,
-//       };
-//     case 'postalCode':
-//       return {
-//         ...state,
-//         postalCode: value,
-//       };
-//     case 'countryDivisionID':
-//       return {
-//         ...state,
-//         countryDivisionID: value,
-//       };
-//     case 'x':
-//       return {
-//         ...state,
-//         x: value,
-//       };
-//     case 'y':
-//       return {
-//         ...state,
-//         y: value,
-//       };
-//     case 'reset':
-//       return initialState;
-//     default:
-//       console.error('Action type not defined');
-//   }
-// }
+  switch (action.type) {
+    case 'id':
+      return {
+        ...state,
+        id: value,
+      };
+    case 'maritalStatus':
+      return {
+        ...state,
+        maritalStatus: value,
+      };
+    case 'gender':
+      return {
+        ...state,
+        gender: value,
+      };
+    case 'hasReadingPrescriptionCertificate':
+      return {
+        ...state,
+        hasReadingPrescriptionCertificate: value,
+      };
+    case 'minGradeOfReadingPrescriptionCertificate':
+      return {
+        ...state,
+        minGradeOfReadingPrescriptionCertificate: value,
+      };
+    case 'minWorkExperienceYear':
+      return {
+        ...state,
+        minWorkExperienceYear: value,
+      };
+    case 'suggestedWorkShift':
+      return {
+        ...state,
+        suggestedWorkShift: value,
+      };
+    case 'pharmaceuticalSoftwareSkill':
+      return {
+        ...state,
+        pharmaceuticalSoftwareSkill: value,
+      };
+    case 'hasGuarantee':
+      return {
+        ...state,
+        hasGuarantee: value,
+      };
+    case 'jobPosition':
+      return {
+        ...state,
+        jobPosition: value,
+      };
+    case 'education':
+      return {
+        ...state,
+        education: value,
+      };
+    case 'maxAge':
+      return {
+        ...state,
+        maxAge: value,
+      };
+    case 'livingInArea':
+      return {
+        ...state,
+        livingInArea: value,
+      };
+    case 'descriptions':
+      return {
+        ...state,
+        descriptions: value,
+      };
+
+    case 'reset':
+      return initialState;
+    default:
+      console.error('Action type not defined');
+  }
+}
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -182,6 +187,11 @@ const useStyle = makeStyles((theme) =>
     buttonContainer: {
       marginBottom: theme.spacing(2),
     },
+    label: {
+      display: 'flex',
+      alignItems: 'center',
+      margin: theme.spacing(0, 1),
+    },
   })
 );
 
@@ -189,13 +199,21 @@ const JobsList: React.FC = () => {
   const ref = useDataTableRef();
   const { t } = useTranslation();
   const history = useHistory();
-  //const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
   const [isOpenModalOfUser, setIsOpenModalOfUser] = useState();
 
-  const { container, root, formContainer, box, addButton, cancelButton, dropdown } = useClasses();
+  const {
+    container,
+    root,
+    formContainer,
+    box,
+    addButton,
+    cancelButton,
+    dropdown,
+  } = useClasses();
 
-  const { createUserBtn, buttonContainer } = useStyle();
+  const { createUserBtn, buttonContainer,label } = useStyle();
 
   const queryCache = useQueryCache();
 
@@ -292,8 +310,12 @@ const JobsList: React.FC = () => {
         width: '150px',
         render: (row: any): any => {
           return (
-            <span style={{ color: row.active ? ColorEnum.Green : ColorEnum.Red }}>
-              <FontAwesomeIcon icon={row.active ? faCheck : faTimes} />
+            <span
+              style={{
+                color: row.cancelDate ? ColorEnum.Red : ColorEnum.Green,
+              }}
+            >
+              <FontAwesomeIcon icon={row.cancelDate ? faTimes : faCheck} />
             </span>
           );
         },
@@ -312,7 +334,10 @@ const JobsList: React.FC = () => {
     //   }
   };
 
-  const toggleConfirmHandler = async (e: any, row: PharmacyInterface): Promise<any> => {
+  const toggleConfirmHandler = async (
+    e: any,
+    row: PharmacyInterface
+  ): Promise<any> => {
     //   try {
     //     const confirmParams: ConfirmParams = {
     //       id: row.id,
@@ -325,339 +350,451 @@ const JobsList: React.FC = () => {
     //   }
   };
 
-  const saveHandler = (item: PharmacyInterface): void => {
-    //  toggleIsOpenSaveModalForm();
-    //  const {
-    //     id,
-    //     name,
-    //     hix,
-    //     gli,
-    //     workTime,
-    //     address,
-    //     mobile,
-    //     telphon,
-    //     webSite,
-    //     email,
-    //     postalCode,
-    //     description,
-    //     active,
-    //     countryDivisionID,
-    //     x,
-    //     y,
-    //  } = item;
-    //   dispatch({ type: 'id', value: id });
-    //   dispatch({ type: 'name', value: name });
-    //   dispatch({ type: 'hix', value: hix });
-    //   dispatch({ type: 'gli', value: gli });
-    //   dispatch({ type: 'workTime', value: workTime });
-    //   dispatch({ type: 'address', value: address });
-    //   dispatch({ type: 'mobile', value: mobile });
-    //   dispatch({ type: 'telphon', value: telphon });
-    //   dispatch({ type: 'webSite', value: webSite });
-    //   dispatch({ type: 'email', value: email });
-    //   dispatch({ type: 'postalCode', value: postalCode });
-    //   dispatch({ type: 'description', value: description });
-    //   dispatch({ type: 'active', value: active });
-    //   dispatch({ type: 'countryDivisionID', value: countryDivisionID });
-    //   dispatch({ type: 'x', value: x });
-    //   dispatch({ type: 'y', value: y });
+  const saveHandler = (item: JobInterface): void => {
+    toggleIsOpenSaveModalForm();
+    const {
+      id,
+      maritalStatus,
+      gender,
+      hasReadingPrescriptionCertificate,
+      minGradeOfReadingPrescriptionCertificate,
+      minWorkExperienceYear,
+      suggestedWorkShift,
+      pharmaceuticalSoftwareSkill,
+      computerSkill,
+      foreignLanguagesSkill,
+      hasGuarantee,
+      jobPosition,
+      education,
+      maxAge,
+      livingInArea,
+      descriptions,
+    } = item;
+    dispatch({ type: 'id', value: id });
+    dispatch({ type: 'maritalStatus', value: maritalStatus });
+    dispatch({
+      type: 'hasReadingPrescriptionCertificate',
+      value: hasReadingPrescriptionCertificate,
+    });
+    dispatch({
+      type: 'minGradeOfReadingPrescriptionCertificate',
+      value: minGradeOfReadingPrescriptionCertificate,
+    });
+    dispatch({ type: 'minWorkExperienceYear', value: minWorkExperienceYear });
+    dispatch({ type: 'suggestedWorkShift', value: suggestedWorkShift });
+    dispatch({
+      type: 'pharmaceuticalSoftwareSkill',
+      value: pharmaceuticalSoftwareSkill,
+    });
+    dispatch({ type: 'computerSkill', value: computerSkill });
+    dispatch({ type: 'foreignLanguagesSkill', value: foreignLanguagesSkill });
+    dispatch({ type: 'hasGuarantee', value: hasGuarantee });
+    dispatch({ type: 'jobPosition', value: jobPosition });
+    dispatch({ type: 'descriptions', value: descriptions });
+    dispatch({ type: 'education', value: education });
+    dispatch({ type: 'maxAge', value: maxAge });
+    dispatch({ type: 'livingInArea', value: livingInArea });
   };
 
   // const isFormValid = (): boolean => {
   //   return state.name && state.name.trim().length > 0;
   // };
 
-  // const submitSave = async (
-  //   el: React.FormEvent<HTMLFormElement>
-  // ): Promise<any> => {
-  //   el.preventDefault();
+  const submitSave = async (
+    el: React.FormEvent<HTMLFormElement>
+  ): Promise<any> => {
+    el.preventDefault();
 
-  //   const {
-  //     id,
-  //     name,
-  //     hix,
-  //     gli,
-  //     workTime,
-  //     address,
-  //     mobile,
-  //     telphon,
-  //     webSite,
-  //     email,
-  //     postalCode,
-  //     description,
-  //     active,
-  //     countryDivisionID,
-  //     x,
-  //     y,
-  //   } = state;
+    const {
+      id,
+      maritalStatus,
+      gender,
+      hasReadingPrescriptionCertificate,
+      minGradeOfReadingPrescriptionCertificate,
+      minWorkExperienceYear,
+      suggestedWorkShift,
+      pharmaceuticalSoftwareSkill,
+      computerSkill,
+      foreignLanguagesSkill,
+      hasGuarantee,
+      jobPosition,
+      education,
+      maxAge,
+      livingInArea,
+      descriptions,
+    } = state;
 
-  //   if (isFormValid()) {
-  //     try {
-  //       await _save({
-  //         id,
-  //         name,
-  //         hix,
-  //         gli,
-  //         workTime,
-  //         address,
-  //         mobile,
-  //         telphon,
-  //         webSite,
-  //         email,
-  //         postalCode,
-  //         description,
-  //         active,
-  //         countryDivisionID,
-  //         x,
-  //         y,
-  //       });
-  //       toggleIsOpenSaveModalForm();
-  //       dispatch({ type: 'reset' });
-  //       ref.current?.loadItems();
-  //     } catch (e) {
-  //       errorHandler(e);
-  //     }
-  //   } else {
-  //     await warningSweetAlert(t('alert.fillFormCarefully'));
-  //   }
-  // };
+    //   if (isFormValid()) {
+    try {
+      await _save({
+        id,
+        maritalStatus,
+        gender,
+        hasReadingPrescriptionCertificate,
+        minGradeOfReadingPrescriptionCertificate,
+        minWorkExperienceYear,
+        suggestedWorkShift,
+        pharmaceuticalSoftwareSkill,
+        computerSkill,
+        foreignLanguagesSkill,
+        hasGuarantee,
+        jobPosition,
+        education,
+        maxAge,
+        livingInArea,
+        descriptions,
+      });
+      toggleIsOpenSaveModalForm();
+      dispatch({ type: 'reset' });
+      ref.current?.loadItems();
+    } catch (e) {
+      errorHandler(e);
+    }
+    //   } else {
+    //     await warningSweetAlert(t('alert.fillFormCarefully'));
+    //   }
+  };
 
-  // const [workTimeList, setworkTimeList] = useState(new Array<LabelValue>());
+  const [MaritalStatusList, setMaritalStatusList] = useState(
+    new Array<LabelValue>()
+  );
 
-  // React.useEffect(() => {
-  //   const wtList: LabelValue[] = [];
-  //   for (const wt in WorkTimeEnum) {
-  //     if (parseInt(wt) >= 0)
-  //       wtList.push({
-  //         label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),
-  //         value: wt,
-  //       });
-  //   }
-  //   setworkTimeList(wtList);
-  // }, []);
+  React.useEffect(() => {
+    const elList: LabelValue[] = [];
+    for (const el in MaritalStatusType) {
+      if (parseInt(el) >= 0)
+        elList.push({
+          label: t(`MaritalStatusType.${MaritalStatusType[el]}`),
+          value: el,
+        });
+    }
+    setMaritalStatusList(elList);
+  }, []);
+
+  const [GenderTypeList, setGenderTypeList] = useState(new Array<LabelValue>());
+
+  React.useEffect(() => {
+    const elList: LabelValue[] = [];
+    for (const el in GenderType) {
+      if (parseInt(el) >= 0)
+        elList.push({
+          label: t(`GenderType.${GenderType[el]}`),
+          value: el,
+        });
+    }
+    setGenderTypeList(elList);
+  }, []);
+
+  const [StateTypeList, setStateTypeList] = useState(new Array<LabelValue>());
+
+  React.useEffect(() => {
+    const elList: LabelValue[] = [];
+    for (const el in StateType) {
+      if (parseInt(el) >= 0)
+        elList.push({
+          label: t(`StateType.${StateType[el]}`),
+          value: el,
+        });
+    }
+    setStateTypeList(elList);
+  }, []);
+
+  const [WorkShiftTypeList, setWorkShiftTypeList] = useState(
+    new Array<LabelValue>()
+  );
+
+  React.useEffect(() => {
+    const elList: LabelValue[] = [];
+    for (const el in WorkShiftType) {
+      if (parseInt(el) >= 0)
+        elList.push({
+          label: t(`WorkShiftType.${WorkShiftType[el]}`),
+          value: el,
+        });
+    }
+    setWorkShiftTypeList(elList);
+  }, []);
+
+  const [SkillLevelList, setSkillLevelList] = useState(new Array<LabelValue>());
+
+  React.useEffect(() => {
+    const elList: LabelValue[] = [];
+    for (const el in SkillLevel) {
+      if (parseInt(el) >= 0)
+        elList.push({
+          label: t(`SkillLevel.${SkillLevel[el]}`),
+          value: el,
+        });
+    }
+    setSkillLevelList(elList);
+  }, []);
+  const [JobPositionTypeList, setJobPositionTypeList] = useState(
+    new Array<LabelValue>()
+  );
+
+  React.useEffect(() => {
+    const elList: LabelValue[] = [];
+    for (const el in JobPositionType) {
+      if (parseInt(el) >= 0)
+        elList.push({
+          label: t(`JobPositionType.${JobPositionType[el]}`),
+          value: el,
+        });
+    }
+    setJobPositionTypeList(elList);
+  }, []);
+
+  const [EducationLevelList, setEducationLevel] = useState(
+    new Array<LabelValue>()
+  );
+
+  React.useEffect(() => {
+    const elList: LabelValue[] = [];
+    for (const el in EducationLevel) {
+      if (parseInt(el) >= 0)
+        elList.push({
+          label: t(`EducationLevel.${EducationLevel[el]}`),
+          value: el,
+        });
+    }
+    setEducationLevel(elList);
+  }, []);
 
   const editModal = (): JSX.Element => {
     return (
-      <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}></Modal>
-      //       <Card className={root}>
-      //         <CardHeader
-      //           title={state?.id === 0 ? t('action.create') : t('action.edit')}
-      //           action={
-      //             <IconButton onClick={toggleIsOpenSaveModalForm}>
-      //               <CloseIcon />
-      //             </IconButton>
-      //           }
-      //         />
-      //         <Divider />
-      //         <CardContent>
-      //           <form
-      //             autoComplete="off"
-      //             className={formContainer}
-      //             onSubmit={submitSave}
-      //           >
-      //             <Grid container spacing={1}>
-      //               <Grid item xs={12}>
-      //                 <Box
-      //                   display="flex"
-      //                   justifyContent="space-between"
-      //                   className={box}
-      //                 >
-      //                   <TextField
-      //                     required
-      //                     variant="outlined"
-      //                     label={t('pharmacy.name')}
-      //                     value={state?.name}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'name', value: e.target.value })
-      //                     }
-      //                   />
-      //                   <TextField
-      //                     variant="outlined"
-      //                     label={t('pharmacy.hix')}
-      //                     value={state?.hix}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'hix', value: e.target.value })
-      //                     }
-      //                   />
-      //                   <TextField
-      //                     variant="outlined"
-      //                     label={t('pharmacy.gli')}
-      //                     value={state?.gli}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'gli', value: e.target.value })
-      //                     }
-      //                   />
-      //                 </Box>
-      //               </Grid>
-      //               <Grid item xs={12}>
-      //                 <Box
-      //                   display="flex"
-      //                   justifyContent="space-between"
-      //                   className={box}
-      //                 >
-      //                   <DaroogDropdown
-      //                     defaultValue={state?.workTime}
-      //                     data={workTimeList}
-      //                     className={dropdown}
-      //                     label={t('pharmacy.workTime')}
-      //                     onChangeHandler={(v): void => {
-      //                       return dispatch({ type: 'workTime', value: v });
-      //                     }}
-      //                   />
-      //                   <TextField
-      //                     variant="outlined"
-      //                     required
-      //                     label={t('general.address')}
-      //                     value={state?.address}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'address', value: e.target.value })
-      //                     }
-      //                   />
-      //                   <TextField
-      //                     variant="outlined"
-      //                     required
-      //                     label={t('general.mobile')}
-      //                     value={state?.mobile}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'mobile', value: e.target.value })
-      //                     }
-      //                   />
-      //                 </Box>
-      //               </Grid>
-      //               <Grid item xs={12}>
-      //                 <Box
-      //                   display="flex"
-      //                   justifyContent="space-between"
-      //                   className={box}
-      //                 >
-      //                   <TextField
-      //                     variant="outlined"
-      //                     required
-      //                     label={t('general.phone')}
-      //                     value={state?.telphon}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'telphon', value: e.target.value })
-      //                     }
-      //                   />
-      //                   <TextField
-      //                     variant="outlined"
-      //                     label={t('general.website')}
-      //                     value={state?.webSite}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'webSite', value: e.target.value })
-      //                     }
-      //                   />
-      //                   <TextField
-      //                     variant="outlined"
-      //                     label={t('general.email')}
-      //                     value={state?.email}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'email', value: e.target.value })
-      //                     }
-      //                   />
-      //                 </Box>
-      //               </Grid>
-      //               <Grid item xs={12}>
-      //                 <Box
-      //                   display="flex"
-      //                   justifyContent="space-between"
-      //                   className={box}
-      //                 >
-      //                   <TextField
-      //                     variant="outlined"
-      //                     label={t('general.postalCode')}
-      //                     value={state?.postalCode}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'postalCode', value: e.target.value })
-      //                     }
-      //                   />
-      //                   <TextField
-      //                     variant="outlined"
-      //                     label={t('general.description')}
-      //                     value={state?.description}
-      //                     onChange={(e): void =>
-      //                       dispatch({ type: 'description', value: e.target.value })
-      //                     }
-      //                   />
-      //                 </Box>
-      //               </Grid>
-      //               <Grid item xs={4}>
-      //                 <div className="row">
-      //                   <FormControlLabel
-      //                     control={
-      //                       <Switch
-      //                         checked={state?.active}
-      //                         onChange={(e): void =>
-      //                           dispatch({
-      //                             type: 'active',
-      //                             value: e.target.checked,
-      //                           })
-      //                         }
-      //                       />
-      //                     }
-      //                     label={t('general.active')}
-      //                   />
-      //                 </div>
-      //               </Grid>
-      //               <Grid item xs={8}>
-      //                 <CountryDivisionSelect
-      //                   countryDivisionID={state.countryDivisionID}
-      //                   label={t('general.location')}
-      //                   onSelectedHandler={(id): void => {
-      //                     dispatch({ type: 'countryDivisionID', value: id });
-      //                   }}
-      //                 />
-      //               </Grid>
-      //               <Grid item xs={12}>
-      //                 <div style={{ overflow: 'hidden' }}>
-      //                   <Map
-      //                     draggable={true}
-      //                     maxHeight="200px"
-      //                     defaultLatLng={[state.x, state.y]}
-      //                     onClick={(e: any): void => {
-      //                       dispatch({ type: 'x', value: e.lngLat.lng });
-      //                       dispatch({ type: 'y', value: e.lngLat.lat });
-      //                     }}
-      //                   />
-      //                 </div>
-      //               </Grid>
-      //               <Divider />
-      //               <Grid item xs={12}>
-      //                 <CardActions>
-      //                   <Button
-      //                     type="submit"
-      //                     color="primary"
-      //                     variant="contained"
-      //                     className={addButton}
-      //                   >
-      //                     {isLoadingSave
-      //                       ? t('general.pleaseWait')
-      //                       : t('general.save')}
-      //                   </Button>
-      //                   <Button
-      //                     type="submit"
-      //                     color="secondary"
-      //                     variant="contained"
-      //                     className={cancelButton}
-      //                     onClick={(): void => {
-      //                       dispatch({ type: 'reset' });
-      //                       toggleIsOpenSaveModalForm();
-      //                     }}
-      //                   >
-      //                     {t('general.cancel')}
-      //                   </Button>
-      //                 </CardActions>
-      //               </Grid>
-      //             </Grid>
-      //           </form>
-      //         </CardContent>
-      //       </Card>
-      //   </Modal>
+      <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
+        <Card className={root}>
+          <CardHeader
+            title={state?.id === 0 ? t('action.create') : t('action.edit')}
+            action={
+              <IconButton onClick={toggleIsOpenSaveModalForm}>
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <Divider />
+          <CardContent>
+            <form
+              autoComplete="off"
+              className={formContainer}
+              onSubmit={submitSave}
+            >
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
+                    <DaroogDropdown
+                      defaultValue={state?.maritalStatus}
+                      data={MaritalStatusList}
+                      className={dropdown}
+                      label={t('general.maritalStatus')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'maritalStatus', value: v });
+                      }}
+                    />
+                     <DaroogDropdown
+                      defaultValue={state?.gender}
+                      data={GenderTypeList}
+                      className={dropdown}
+                      label={t('general.gender')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'gender', value: v });
+                      }}
+                    />
+                   <DaroogDropdown
+                      defaultValue={state?.hasReadingPrescriptionCertificate}
+                      data={StateTypeList}
+                      className={dropdown}
+                      label={t('jobs.hasReadingPrescriptionCertificate')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'hasReadingPrescriptionCertificate', value: v });
+                      }}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
+                   
+                    <TextField
+                      variant="outlined"
+                      required
+                      label={t('jobs.minGradeOfReadingPrescriptionCertificate')}
+                      value={state?.minGradeOfReadingPrescriptionCertificate}
+                      onChange={(e): void =>
+                        dispatch({ type: 'minGradeOfReadingPrescriptionCertificate', value: e.target.value })
+                      }
+                    />
+                   <TextField
+                      variant="outlined"
+                      required
+                      label={t('jobs.minWorkExperienceYear')}
+                      value={state?.minWorkExperienceYear}
+                      onChange={(e): void =>
+                        dispatch({ type: 'minWorkExperienceYear', value: e.target.value })
+                      }
+                    />
+                     <DaroogDropdown
+                      defaultValue={state?.suggestedWorkShift}
+                      data={WorkShiftTypeList}
+                      className={dropdown}
+                      label={t('jobs.suggestedWorkShift')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'suggestedWorkShift', value: v });
+                      }}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
+                    <DaroogDropdown
+                      defaultValue={state?.pharmaceuticalSoftwareSkill}
+                      data={SkillLevelList}
+                      className={dropdown}
+                      label={t('jobs.pharmaceuticalSoftwareSkill')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'pharmaceuticalSoftwareSkill', value: v });
+                      }}
+                    />
+                     <DaroogDropdown
+                      defaultValue={state?.computerSkill}
+                      data={SkillLevelList}
+                      className={dropdown}
+                      label={t('jobs.computerSkill')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'computerSkill', value: v });
+                      }}
+                    />
+                     <DaroogDropdown
+                      defaultValue={state?.foreignLanguagesSkill}
+                      data={SkillLevelList}
+                      className={dropdown}
+                      label={t('jobs.foreignLanguagesSkill')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'foreignLanguagesSkill', value: v });
+                      }}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
+                    <label htmlFor="add" className={`${label} cursor-pointer`}>
+              <input
+                id="hasGuarantee"
+                type="checkbox"
+                checked={state?.hasGuarantee}
+                onChange={(e): void => dispatch({ type: 'hasGuarantee', value: e.target.checked })}
+              />
+              <span>{t('jobs.hasGuarantee')}</span>
+            </label>
+                  <DaroogDropdown
+                      defaultValue={state?.jobPosition}
+                      data={JobPositionTypeList}
+                      className={dropdown}
+                      label={t('jobs.jobPosition')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'jobPosition', value: v });
+                      }}
+                    />
+                    <DaroogDropdown
+                      defaultValue={state?.education}
+                      data={EducationLevelList}
+                      className={dropdown}
+                      label={t('jobs.education')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'education', value: v });
+                      }}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    className={box}
+                  >
+                   
+                    <TextField
+                      variant="outlined"
+                      required
+                      label={t('jobs.maxAge')}
+                      value={state?.maxAge}
+                      onChange={(e): void =>
+                        dispatch({ type: 'maxAge', value: e.target.value })
+                      }
+                    />
+                  <DaroogDropdown
+                      defaultValue={state?.livingInArea}
+                      data={StateTypeList}
+                      className={dropdown}
+                      label={t('jobs.livingInArea')}
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'livingInArea', value: v });
+                      }}
+                    />
+                    <TextField
+                    variant="outlined"
+                    label={t('general.descriptions')}
+                    value={state?.descriptions}
+                    onChange={(e): void =>
+                      dispatch({ type: 'descriptions', value: e.target.value })
+                    }
+                  />
+                  </Box>
+                </Grid>
+                
+                
+                <Divider />
+                <Grid item xs={12}>
+                  <CardActions>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      variant="contained"
+                      className={addButton}
+                    >
+                      {isLoadingSave
+                        ? t('general.pleaseWait')
+                        : t('general.save')}
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="secondary"
+                      variant="contained"
+                      className={cancelButton}
+                      onClick={(): void => {
+                        dispatch({ type: 'reset' });
+                        toggleIsOpenSaveModalForm();
+                      }}
+                    >
+                      {t('general.cancel')}
+                    </Button>
+                  </CardActions>
+                </Grid>
+              </Grid>
+            </form>
+          </CardContent>
+        </Card>
+      </Modal>
     );
   };
 
   const { impersonate } = new User();
-  const impersonateHandler = (event: any, rowData: any): void => {
+  /*const impersonateHandler = (event: any, rowData: any): void => {
     async function getNewToken(id: number | string): Promise<any> {
       const result = await impersonate(id);
       const impersonation = new Impersonation();
@@ -665,12 +802,15 @@ const JobsList: React.FC = () => {
       history.push(routes.dashboard);
     }
     getNewToken(rowData.id);
-  };
+  };*/
 
   const [showAddTransaction, setShowAddTransaction] = useState(false);
-  const toggleShowAddTransaction = (): void => setShowAddTransaction(!showAddTransaction);
+  const toggleShowAddTransaction = (): void =>
+    setShowAddTransaction(!showAddTransaction);
   const [pharmacyIdForTransaction, setPharmacyIdForTransaction] = useState(0);
-  const [pharmacyNameForTransaction, setPharmacyNameForTransaction] = useState('');
+  const [pharmacyNameForTransaction, setPharmacyNameForTransaction] = useState(
+    ''
+  );
   const addTransactionHandler = (event: any, rowData: any): void => {
     setPharmacyIdForTransaction(rowData.id);
     setPharmacyNameForTransaction(rowData.name);
@@ -687,40 +827,41 @@ const JobsList: React.FC = () => {
       position: 'row',
       action: toggleConfirmHandler,
     },
-    {
+    /*{
       icon: (): any => <FontAwesomeIcon icon={faUserCog} color={ColorEnum.DarkCyan} />,
       tooltip: t('action.impersonateThisPharmacy'),
       color: 'secondary',
       action: impersonateHandler,
-    },
-    {
+    },*/
+    /*{
       icon: (): any => <FontAwesomeIcon icon={faFileInvoiceDollar} color={ColorEnum.Green} />,
       tooltip: t('accounting.addTransaction'),
       action: addTransactionHandler,
-    },
+    },*/
   ];
 
   // @ts-ignore
   return (
-    <Container maxWidth="lg" className={container}>
+    <FormContainer title={t('jobs.list')}>
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          <div>{t('pharmacy.list')}</div>
-          <Paper>
-            <DataTable
-              tableRef={ref}
-              columns={tableColumns()}
-              addAction={(): void => saveHandler(initialState)}
-              editAction={(e: any, row: any): void => saveHandler(row)}
-              removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
-              customActions={actions}
-              queryKey={PharmacyEnum.GET_ALL}
-              queryCallback={all}
-              urlAddress={UrlAddress.getAllJobs}
-              initLoad={false}
-            />
-            {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && <CircleLoading />}
-          </Paper>
+          <DataTable
+            tableRef={ref}
+            columns={tableColumns()}
+            addAction={(): void => saveHandler(initialState)}
+            editAction={(e: any, row: any): void => saveHandler(row)}
+            removeAction={async (e: any, row: any): Promise<void> =>
+              await removeHandler(row)
+            }
+            customActions={actions}
+            queryKey={PharmacyEnum.GET_ALL}
+            queryCallback={all}
+            urlAddress={UrlAddress.getAllJobs}
+            initLoad={false}
+          />
+          {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && (
+            <CircleLoading />
+          )}
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
@@ -734,7 +875,7 @@ const JobsList: React.FC = () => {
           )}
         </Grid>
       </Grid>
-    </Container>
+    </FormContainer>
   );
 };
 
