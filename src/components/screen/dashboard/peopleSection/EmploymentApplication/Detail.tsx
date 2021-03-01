@@ -1,23 +1,14 @@
 import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPills,
-  faBoxes,
-  faMoneyBillWave,
-  faCalendarTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import { DrugInterface } from '../../../../interfaces';
-import { TextLine } from '../../../public';
+import { faBoxes } from '@fortawesome/free-solid-svg-icons';
+import { EmploymentApplicationInterface } from '../../../../../interfaces';
+import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
-import {
-  PrescriptionInputInterface,
-  PrescriptionInterface,
-  PrescriptionSendInterface,
-} from '../../../../interfaces/PrescriptionInterface';
 import moment from 'jalali-moment';
 
 import noImage from './noImage.jpg';
+import { EmpAppInterface } from 'interfaces/EmploymentApplicationInterface';
 const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
@@ -43,12 +34,12 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const Detail: React.FC<PrescriptionInputInterface> = (props) => {
-  const { id, sendDate, contryDivisionName, comment, fileKey } = props;
+const Detail: React.FC<EmpAppInterface> = (props) => {
+  const { id, sendDate, suggestedJobPositionStr, resumeFileKey } = props;
   const { paper, container, textCenter, icon } = useStyle();
 
   const { t } = useTranslation();
-  const addDefaultSrc = (ev: any) => {
+  const addDefaultSrc = (ev: any): void => {
     ev.target.src = noImage;
     ev.target.onerror = null;
   };
@@ -56,7 +47,7 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
     <Grid item xs={12}>
       <Paper className={paper}>
         <Grid container spacing={1}>
-          <Grid item xs={9}>
+          <Grid item xs={12}>
             <div className={container}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
@@ -79,25 +70,8 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
-                        rightText={'اسامی داروها'}
-                        leftText={
-                          (comment &&
-                            (comment.length > 30 ? comment.substring(0, 30) + '...' : comment)) ||
-                          t('general.undefined')
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={0} alignItems="flex-end">
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon icon={faBoxes} size="sm" className={icon} />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={'محدوده جغرافیائی'}
-                        leftText={contryDivisionName || t('general.undefined')}
+                        rightText={'سمت پیشنهادی'}
+                        leftText={suggestedJobPositionStr || t('general.undefined')}
                       />
                     </Grid>
                   </Grid>
@@ -120,19 +94,23 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
                     </Grid>
                   </Grid>
                 </Grid>
+                <Grid
+                  item
+                  alignItems="center"
+                  justify="center"
+                  alignContent="center"
+                  style={{ textAlign: 'center' }}
+                  xs={12}
+                >
+                  <a
+                    download=""
+                    href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
+                  >
+                    دانلود تصویر رزمه
+                  </a>
+                </Grid>
               </Grid>
             </div>
-          </Grid>
-          <Grid item style={{ textAlign: 'center' }} xs={3}>
-            تصویر نسخه
-            <a download="" href={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}>
-              {' '}
-              <img
-                onError={addDefaultSrc}
-                style={{ height: '86px', width: '100px', margin: '5px' }}
-                src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
-              />
-            </a>
           </Grid>
         </Grid>
       </Paper>
