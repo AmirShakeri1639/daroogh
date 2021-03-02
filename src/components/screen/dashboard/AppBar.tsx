@@ -120,6 +120,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+    cursor: 'pointer',
   },
   drawerPaper: {
     position: 'relative',
@@ -198,7 +199,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
   const { push } = useHistory();
 
   const { t } = useTranslation();
-  const { transfer } = routes;
+  const { transfer, dashboard } = routes;
 
   const { data: userMessages, isLoading: isLoadingUserMessages } = useQuery(
     MessageQueryEnum.GET_USER_MESSAGES,
@@ -239,54 +240,60 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
   };
 
   return (
-    <AppBar elevation={0} position="absolute" className={appBar}>
-      <Toolbar className={isTrial ? trialToolbar : toolbar}>
-        {isTrial && (
-          <div style={{ zIndex: 0, overflow: 'hidden' }}>
-            <Ribbon text="نسخه آزمایشی" isExchange={false} isToolbar={true} />
+    <AppBar elevation={ 0 } position="absolute" className={ appBar }>
+      <Toolbar className={ isTrial ? trialToolbar : toolbar }>
+        { isTrial && (
+          <div style={ { zIndex: 0, overflow: 'hidden' } }>
+            <Ribbon text="نسخه آزمایشی" isExchange={ false } isToolbar={ true } />
           </div>
-        )}
-        {showButtons && (
+        ) }
+        { showButtons && (
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(menuButton, isOpenDrawer && menuButtonHidden)}
+            onClick={ handleDrawerOpen }
+            className={ clsx(menuButton, isOpenDrawer && menuButtonHidden) }
           >
-            <FontAwesomeIcon icon={faBars} />
+            <FontAwesomeIcon icon={ faBars } />
           </IconButton>
-        )}
+        ) }
 
-        <Typography component="h1" variant="h6" color="inherit" noWrap className={title}>
+        <Typography
+          component="h1"
+          variant="h6"
+          color="inherit"
+          noWrap
+          className={ title }
+          onClick={ (e: any): void => { push(dashboard) } }>
           <Hidden smDown>
-            {/* {t('general.dashboard')} */}
-            <span>داروگ</span>
-            <span style={{ fontSize: 14, marginRight: 5 }}>(سامانه تبادل دارو)</span>
+            {/* {t('general.dashboard')} */ }
+            <span>{ t('general.daroog') }</span>
+            <span style={ { fontSize: 14, marginRight: 5 } }>({ t('general.systemTitle') })</span>
           </Hidden>
         </Typography>
 
         <Tooltip
-          style={{
+          style={ {
             background: '#95D061',
             borderRadius: '30px',
             padding: '0px 4px 0px 24px',
-          }}
+          } }
           title="ایجاد تبادل"
         >
           <div>
             <span>
               <IconButton
                 edge="end"
-                style={{ color: ColorEnum.White }}
-                onClick={newTransferHandler}
+                style={ { color: ColorEnum.White } }
+                onClick={ newTransferHandler }
               >
-                <FontAwesomeIcon size="xs" icon={faPlus} />
+                <FontAwesomeIcon size="xs" icon={ faPlus } />
                 <Hidden smDown>
-                  <span style={{ fontSize: 14, paddingRight: 6 }}>
-                    {t('exchange.create', {
+                  <span style={ { fontSize: 14, paddingRight: 6 } }>
+                    { t('exchange.create', {
                       var: _transfer.isStarted ? t('general.again.0') : '',
-                    })}
+                    }) }
                   </span>
                 </Hidden>
               </IconButton>
@@ -298,32 +305,32 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
         <Tooltip title="کیف پول">
           <IconButton
             edge="end"
-            onClick={(e: any): void => setcreditAnchorEl(e.currentTarget)}
-            style={{
+            onClick={ (e: any): void => setcreditAnchorEl(e.currentTarget) }
+            style={ {
               color: `${!debtValueState ? 'white' : debtValueState >= 0 ? '#f95e5e' : '#72fd72'}`,
-            }}
+            } }
           >
             <CreditCardIcon />
-            {debtValueState && (
+            { debtValueState && (
               <Hidden smDown>
-                <span style={{ fontSize: 14 }}>
-                  {' '}
-                  <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b>
-                  <span style={{ fontSize: 10, marginRight: 2 }}>ریال</span>
+                <span style={ { fontSize: 14 } }>
+                  { ' ' }
+                  <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
+                  <span style={ { fontSize: 10, marginRight: 2 } }>ریال</span>
                 </span>
               </Hidden>
-            )}
+            ) }
           </IconButton>
         </Tooltip>
 
-        {showButtons && (
+        { showButtons && (
           <>
-            <IconButton edge="end" color="inherit" onClick={handleNotificationIconButton}>
+            <IconButton edge="end" color="inherit" onClick={ handleNotificationIconButton }>
               <Badge
-                badgeContent={userMessages !== undefined ? userMessages.items.length : 0}
+                badgeContent={ userMessages !== undefined ? userMessages.items.length : 0 }
                 color="secondary"
               >
-                <FontAwesomeIcon icon={faBell} />
+                <FontAwesomeIcon icon={ faBell } />
               </Badge>
             </IconButton>
 
@@ -332,17 +339,17 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
               aria-label="account of current user"
               aria-controls="user-menu"
               aria-haspopup="true"
-              onClick={handleUserIconButton}
+              onClick={ handleUserIconButton }
               color="inherit"
             >
-              <FontAwesomeIcon icon={faUserCircle} />
+              <FontAwesomeIcon icon={ faUserCircle } />
             </IconButton>
           </>
-        )}
+        ) }
 
         <UserMenu />
 
-        <NotificationMenu messages={isLoadingUserMessages ? [] : userMessages?.items} />
+        <NotificationMenu messages={ isLoadingUserMessages ? [] : userMessages?.items } />
       </Toolbar>
     </AppBar>
   );
