@@ -11,7 +11,6 @@ import { isAdmin } from './utils';
 import Appbar from './components/screen/dashboard/AppBar';
 import ReactGA from 'react-ga';
 import { createBrowserHistory } from 'history';
-import Desktop1 from 'components/screen/dashboard/drug-transfer/desktop/Desktop1';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -21,7 +20,7 @@ const RegisterPharmacyWithUser = lazy(() =>
 );
 
 const DrugTransfer = lazy(() => import('./components/screen/dashboard/drug-transfer/Transfer'));
-const Desktop = lazy(() => import('./components/screen/dashboard/drug-transfer/desktop/Desktop1'));
+const Desktop1 = lazy(() => import('./components/screen/dashboard/drug-transfer/desktop/Desktop1'));
 const Transfer = lazy(() => import('./components/screen/dashboard/drug-transfer/Transfer'));
 const SupplyList = lazy(() => import('./components/screen/dashboard/supply-list/SupplyList'));
 

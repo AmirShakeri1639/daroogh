@@ -7,7 +7,9 @@ interface Props {
   value: number | string;
   icon?: any;
   backColor?: string;
+  // Forecolor of widget text
   color?: string;
+  // click on widget pushes this url to history (redirects user to the url)
   to?: string;
   titleFontSize?: string;
 }

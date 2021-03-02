@@ -2,8 +2,9 @@ export default {
   fa: {
     translation: {
       general: {
+        daroogLatin: 'Daroog',
         emal: 'اعمال',
-        systemTitle: 'سامانه تبادل دارو',
+        systemTitle: 'سامانه الکترونیکی داروخانه',
         systemFullTitle: 'سامانه تبادلات دارویی داروگ',
         daroog: 'داروگ',
         tabadol: 'تبادل',
@@ -81,7 +82,7 @@ export default {
         peopleSection: 'بخش مردمی',
         undefined: 'تعریف نشده',
         toman: 'تومان',
-        ok: 'خب',
+        ok: 'بستن',
         warning: 'هشدار',
         rial: 'ریال',
         unit: 'واحد',
@@ -104,6 +105,9 @@ export default {
         again: {
           0: 'مجدد',
         },
+        gift: 'هدیه',
+        defaultCurrency: 'تومان',
+        noContent: 'محتوایی وجود ندارد',
       },
       pack: {
         pack: 'پک',
@@ -171,7 +175,8 @@ export default {
         username: 'نام کاربری',
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
-        failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        failed:
+          'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
@@ -288,7 +293,7 @@ export default {
         'new-category': 'ایجاد دسته بندی',
       },
       exchange: {
-        create: 'ایجاد {{var}} تبادل',
+        create: 'شروع {{var}} تبادل',
         exchange: 'تبادل',
         desktop: 'کارتابل',
         expirationDate: 'تاریخ انقضای تبادل',
@@ -312,13 +317,14 @@ export default {
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
-        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
+        threePercentWarning:
+          'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
         continue: 'ادامه تبادل',
         exchangeManagement: 'مدیریت تبادل',
         viewExchange: 'مشاهده تبادل',
         widget: 'ابزارک تبادل',
-        waitingForYourConfirmation: 'تبادل‌های در انتظار تایید شما',
+        waitingForYourConfirmation: 'تبادل‌های در انتظار',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',
@@ -504,7 +510,8 @@ export default {
         ticketExireDuration: 'مدت اعتبار رمزیکبار مصرف به دقیقه',
 
         exchange: 'تبادل',
-        diffrenceAllowPercentageInExchange: 'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
+        diffrenceAllowPercentageInExchange:
+          'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
         exchangeDeadline: 'مهلت تائید یک تبادل به ساعت',
         debtAmountAllow: 'مبلغ مجاز بدهکاری',
         debtTimeAllow: 'مدت مجازی بدهکاری به ساعت',

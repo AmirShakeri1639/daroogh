@@ -1,8 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
   Grid,
-  Card,
-  CardContent,
   Divider,
   Tabs,
   Tab,
@@ -33,7 +31,6 @@ import {
   getExpireDateTitle,
   getExpireDate,
   ViewExchangeInitialState,
-  differenceCheck,
   percentAllowed,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
@@ -54,20 +51,14 @@ const ExCalculator: React.FC<Props> = (props) => {
 
   const { t } = useTranslation();
   const {
-    ltr,
-    rtl,
     spacing3,
     spacingVertical3,
-    faIcons,
     darkText,
   } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const {
-    activeStep,
-    is3PercentOk,
-    setIs3PercentOk,
     basketCount,
     uBasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
@@ -294,18 +285,18 @@ const ExCalculator: React.FC<Props> = (props) => {
             <Tab label={ pharmacyNameA ?? t('exchange.you') } />
             <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
           </Tabs>
-          {/* <SwipeableViews
-              enableMouseEvents
-              index={ currentTabIndex }
-              onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
-            > */}
-          <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-            { getOneSideData(true) }
-          </DaroogTabPanel>
-          <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-            { getOneSideData(false) }
-          </DaroogTabPanel>
-          {/* </SwipeableViews> */ }
+          <SwipeableViews
+            enableMouseEvents
+            index={ currentTabIndex }
+            onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
+          >
+            <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+              { getOneSideData(true) }
+            </DaroogTabPanel>
+            <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+              { getOneSideData(false) }
+            </DaroogTabPanel>
+          </SwipeableViews>
         </Grid>
         <Divider />
         {/* common data */ }
