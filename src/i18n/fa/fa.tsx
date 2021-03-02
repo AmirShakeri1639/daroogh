@@ -2,8 +2,9 @@ export default {
   fa: {
     translation: {
       general: {
+        daroogLatin: 'Daroog',
         emal: 'اعمال',
-        systemTitle: 'سامانه تبادل دارو',
+        systemTitle: 'سامانه الکترونیکی داروخانه',
         systemFullTitle: 'سامانه تبادلات دارویی داروگ',
         daroog: 'داروگ',
         tabadol: 'تبادل',
@@ -104,7 +105,8 @@ export default {
         again: {
           0: 'مجدد',
         },
-        gift: 'هدیه'
+        gift: 'هدیه',
+        defaultCurrency: 'تومان',
       },
       pack: {
         pack: 'پک',
@@ -256,7 +258,7 @@ export default {
         'new-category': 'ایجاد دسته بندی',
       },
       exchange: {
-        create: 'ایجاد {{var}} تبادل',
+        create: 'شروع {{var}} تبادل',
         exchange: 'تبادل',
         desktop: 'کارتابل',
         expirationDate: 'تاریخ انقضای تبادل',
@@ -286,7 +288,7 @@ export default {
         exchangeManagement: 'مدیریت تبادل',
         viewExchange: 'مشاهده تبادل',
         widget: 'ابزارک تبادل',
-        waitingForYourConfirmation: 'تبادل‌های در انتظار تایید شما',
+        waitingForYourConfirmation: 'تبادل‌های در انتظار',
       },
       favorite: {
         addToDrugList: 'اضافه کردن به لیست دارو',

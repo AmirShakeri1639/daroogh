@@ -26,7 +26,7 @@ import { useQuery } from 'react-query';
 import { connect, ConnectedProps } from 'react-redux';
 import { sweetAlert } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle, faBell, faPlus, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle, faBell, faPlusSquare, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const drawerWidth = 240;
 const { getUserMessages } = new Message();
@@ -268,6 +268,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
           onClick={ (e: any): void => { push(dashboard) } }>
           <Hidden smDown>
             {/* {t('general.dashboard')} */ }
+            <span>{ t('general.daroogLatin') } - </span>
             <span>{ t('general.daroog') }</span>
             <span style={ { fontSize: 14, marginRight: 5 } }>({ t('general.systemTitle') })</span>
           </Hidden>
@@ -279,7 +280,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
             borderRadius: '30px',
             padding: '0px 4px 0px 24px',
           } }
-          title="ایجاد تبادل"
+          title={ String(t('exchange.create')) }
         >
           <div>
             <span>
@@ -288,7 +289,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
                 style={ { color: ColorEnum.White } }
                 onClick={ newTransferHandler }
               >
-                <FontAwesomeIcon size="xs" icon={ faPlus } />
+                <FontAwesomeIcon size="xs" icon={ faPlusSquare } />
                 <Hidden smDown>
                   <span style={ { fontSize: 14, paddingRight: 6 } }>
                     { t('exchange.create', {
@@ -315,8 +316,8 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
               <Hidden smDown>
                 <span style={ { fontSize: 14 } }>
                   { ' ' }
-                  <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
-                  <span style={ { fontSize: 10, marginRight: 2 } }>ریال</span>
+                  <b>{ Utils.numberWithCommas(Math.abs(debtValueState / 10)) }</b>
+                  <span style={ { fontSize: 10, marginRight: 2 } }>{ t('general.defaultCurrency') }</span>
                 </span>
               </Hidden>
             ) }

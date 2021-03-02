@@ -33,7 +33,6 @@ function ExchangeWidget() {
         backColor={ ColorEnum.Green }
         color="white"
         to={ toUrl }
-        titleFontSize="1em"
       />
     </div>
   )
