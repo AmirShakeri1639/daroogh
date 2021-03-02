@@ -116,6 +116,7 @@ const {
   jobSearchList,
   prescriptionList,
   settings,
+  jobsList
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -336,6 +337,7 @@ const ListItems: React.FC = () => {
             <ListItemText primary={t('pharmacy.pharmacies')} />
           </Link>
         </List>
+        
         {/* <ListItem
           button
           onClick={(): void => setIsOpenPharmacyMenu((val) => !val)}
@@ -602,6 +604,14 @@ const ListItems: React.FC = () => {
               <FontAwesomeIcon icon={faFileMedical} size="lg" />
             </ListItemIcon>
             <ListItemText primary={t('prescription.peoplePrescription')} />
+          </Link>
+        </List>
+        <List component="div" className={linkWrapper}>
+          <Link to={jobsList} className={notNested}>
+            <ListItemIcon style={{ color: '#4625B2' }}>
+              <Business />
+            </ListItemIcon>
+            <ListItemText primary={t('jobs.jobs')} />
           </Link>
         </List>
         {/* <ListItem
