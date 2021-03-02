@@ -33,7 +33,7 @@ export default {
   drugFavoriteList: `/${dashboard}/${favorite}/drug`,
 
   prescription: `/${dashboard}/${peopleSection}/prescription`,
-  jobApplication: `/${dashboard}/${peopleSection}/jobApplication`,
+  jobApplication: `/${dashboard}/${peopleSection}/employmentApplication`,
   
   drugCategoryfavoriteList: `/${dashboard}/${favorite}/drug-category`,
 

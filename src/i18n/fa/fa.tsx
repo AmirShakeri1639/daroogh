@@ -81,7 +81,7 @@ export default {
         peopleSection: 'بخش مردمی',
         undefined: 'تعریف نشده',
         toman: 'تومان',
-        ok: 'خب',
+        ok: 'بستن',
         warning: 'هشدار',
         rial: 'ریال',
         unit: 'واحد',
@@ -236,8 +236,10 @@ export default {
       peopleSection: {
         prescription: 'نسخه',
         addPrescription: 'افزودن نسخه',
+        addJobApplication: 'افزودن درخواست کار',
         listPrescription: 'لیست نسخه ها',
         jobApplication: 'درخواست کار',
+        listJobApplication: 'لیست درخواست کار',
       },
       message: {
         message: 'پیام',
