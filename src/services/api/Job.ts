@@ -4,10 +4,10 @@ import { JobInterface } from '../../interfaces';
 
 class Job extends Api {
   readonly urls = {
-    all: '/api/Job/CurrentPharmacyJobs',
-    save: '/api/Job/Save',
-    get: '/api/Job/Detail',
-    cancel: '/api/Job/Cancel',
+    all: '/Job/CurrentPharmacyJobs',
+    save: '/Job/Save',
+    get: '/Job/Detail',
+    cancel: '/Job/Cancel/',
   };
 
   save = async (data: JobInterface): Promise<any> => {
@@ -41,13 +41,13 @@ class Job extends Api {
   //     }
   //   }
 
-    remove = async (id: number | string): Promise<any> => {
-      // try {
-      //   const result = await this.postJsonData(`${this.urls.remove}${id}`);
-      //   return result.data;
-      // } catch (e) {
-      //   errorHandler(e)
-      // }
+    cancel = async (id: number | string): Promise<any> => {
+       try {
+         const result = await this.postJsonData(`${this.urls.cancel}${id}`);
+         return result.data;
+       } catch (e) {
+         errorHandler(e)
+       }
     }
 
     confirm = async (id: number | string): Promise<any> => {

@@ -42,7 +42,7 @@ import {
 } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
-import { PharmacyEnum } from '../../../../enum/query';
+import { JobsEnum } from '../../../../enum/query';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import {
   ColorEnum,
@@ -139,6 +139,16 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         pharmaceuticalSoftwareSkill: value,
       };
+    case 'computerSkill':
+      return {
+        ...state,
+        computerSkill: value,
+      };
+    case 'foreignLanguagesSkill':
+      return {
+        ...state,
+        foreignLanguagesSkill: value,
+      };
     case 'hasGuarantee':
       return {
         ...state,
@@ -173,7 +183,7 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'reset':
       return initialState;
     default:
-      console.error('Action type not defined');
+      console.error(action.type + ' not defined');
   }
 }
 
@@ -213,37 +223,31 @@ const JobsList: React.FC = () => {
     dropdown,
   } = useClasses();
 
-  const { createUserBtn, buttonContainer,label } = useStyle();
+  const { createUserBtn, buttonContainer, label } = useStyle();
 
   const queryCache = useQueryCache();
 
   //const { save, all, remove, confirm } = new Pharmacy();
-  const { save, all, remove, confirm } = new Job();
+  const { save, all, cancel } = new Job();
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
-  const [_remove, { isLoading: isLoadingRemove }] = useMutation(remove, {
-    //   onSuccess: async () => {
-    //     ref.current?.loadItems();
-    //     await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
-    //     await successSweetAlert(t('alert.successfulDelete'));
-    //   },
+  const [_cancel, { isLoading: isLoadingRemove }] = useMutation(cancel, {
+       onSuccess: async () => {
+         ref.current?.loadItems();
+         await queryCache.invalidateQueries(JobsEnum.GET_ALL);
+         await successSweetAlert(t('alert.successfulDelete'));
+       },
   });
 
-  const [_confirm, { isLoading: isLoadingConfirm }] = useMutation(confirm, {
-    //   onSuccess: async ({ message }) => {
-    //     ref.current?.onQueryChange();
-    //     await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
-    //     await successSweetAlert(message);
-    //   },
-  });
+  
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
-    //   onSuccess: async () => {
-    //     await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
-    //     await successSweetAlert(t('alert.successfulSave'));
-    //     ref.current?.onQueryChange();
-    //     dispatch({ type: 'reset' });
-    //   },
+       onSuccess: async () => {
+         await queryCache.invalidateQueries(JobsEnum.GET_ALL);
+         await successSweetAlert(t('alert.successfulSave'));
+         ref.current?.onQueryChange();
+         dispatch({ type: 'reset' });
+       },
   });
 
   const tableColumns = (): DataTableColumns[] => {
@@ -323,15 +327,15 @@ const JobsList: React.FC = () => {
     ];
   };
 
-  const removeHandler = async (row: PharmacyInterface): Promise<any> => {
-    //   try {
-    //     if (window.confirm(t('alert.remove'))) {
-    //       await _remove(row.id);
-    //       ref.current?.loadItems();
-    //     }
-    //   } catch (e) {
-    //     errorHandler(e);
-    //   }
+  const removeHandler = async (row: JobInterface): Promise<any> => {
+       try {
+         if (window.confirm(t('alert.cancelConfirm'))) {
+           await _cancel(row.id);
+           ref.current?.loadItems();
+         }
+       } catch (e) {
+         errorHandler(e);
+       }
   };
 
   const toggleConfirmHandler = async (
@@ -372,6 +376,7 @@ const JobsList: React.FC = () => {
     } = item;
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'maritalStatus', value: maritalStatus });
+    dispatch({ type: 'gender', value: gender });
     dispatch({
       type: 'hasReadingPrescriptionCertificate',
       value: hasReadingPrescriptionCertificate,
@@ -595,7 +600,7 @@ const JobsList: React.FC = () => {
                         return dispatch({ type: 'maritalStatus', value: v });
                       }}
                     />
-                     <DaroogDropdown
+                    <DaroogDropdown
                       defaultValue={state?.gender}
                       data={GenderTypeList}
                       className={dropdown}
@@ -604,7 +609,7 @@ const JobsList: React.FC = () => {
                         return dispatch({ type: 'gender', value: v });
                       }}
                     />
-                   <DaroogDropdown
+                    <DaroogDropdown
                       defaultValue={state?.hasReadingPrescriptionCertificate}
                       data={StateTypeList}
                       className={dropdown}
@@ -621,7 +626,7 @@ const JobsList: React.FC = () => {
                     justifyContent="space-between"
                     className={box}
                   >
-                   
+
                     <TextField
                       variant="outlined"
                       required
@@ -631,7 +636,7 @@ const JobsList: React.FC = () => {
                         dispatch({ type: 'minGradeOfReadingPrescriptionCertificate', value: e.target.value })
                       }
                     />
-                   <TextField
+                    <TextField
                       variant="outlined"
                       required
                       label={t('jobs.minWorkExperienceYear')}
@@ -640,7 +645,7 @@ const JobsList: React.FC = () => {
                         dispatch({ type: 'minWorkExperienceYear', value: e.target.value })
                       }
                     />
-                     <DaroogDropdown
+                    <DaroogDropdown
                       defaultValue={state?.suggestedWorkShift}
                       data={WorkShiftTypeList}
                       className={dropdown}
@@ -666,7 +671,7 @@ const JobsList: React.FC = () => {
                         return dispatch({ type: 'pharmaceuticalSoftwareSkill', value: v });
                       }}
                     />
-                     <DaroogDropdown
+                    <DaroogDropdown
                       defaultValue={state?.computerSkill}
                       data={SkillLevelList}
                       className={dropdown}
@@ -675,7 +680,7 @@ const JobsList: React.FC = () => {
                         return dispatch({ type: 'computerSkill', value: v });
                       }}
                     />
-                     <DaroogDropdown
+                    <DaroogDropdown
                       defaultValue={state?.foreignLanguagesSkill}
                       data={SkillLevelList}
                       className={dropdown}
@@ -693,15 +698,15 @@ const JobsList: React.FC = () => {
                     className={box}
                   >
                     <label htmlFor="add" className={`${label} cursor-pointer`}>
-              <input
-                id="hasGuarantee"
-                type="checkbox"
-                checked={state?.hasGuarantee}
-                onChange={(e): void => dispatch({ type: 'hasGuarantee', value: e.target.checked })}
-              />
-              <span>{t('jobs.hasGuarantee')}</span>
-            </label>
-                  <DaroogDropdown
+                      <input
+                        id="hasGuarantee"
+                        type="checkbox"
+                        checked={state?.hasGuarantee}
+                        onChange={(e): void => dispatch({ type: 'hasGuarantee', value: e.target.checked })}
+                      />
+                      <span>{t('jobs.hasGuarantee')}</span>
+                    </label>
+                    <DaroogDropdown
                       defaultValue={state?.jobPosition}
                       data={JobPositionTypeList}
                       className={dropdown}
@@ -727,7 +732,7 @@ const JobsList: React.FC = () => {
                     justifyContent="space-between"
                     className={box}
                   >
-                   
+
                     <TextField
                       variant="outlined"
                       required
@@ -737,7 +742,7 @@ const JobsList: React.FC = () => {
                         dispatch({ type: 'maxAge', value: e.target.value })
                       }
                     />
-                  <DaroogDropdown
+                    <DaroogDropdown
                       defaultValue={state?.livingInArea}
                       data={StateTypeList}
                       className={dropdown}
@@ -747,17 +752,17 @@ const JobsList: React.FC = () => {
                       }}
                     />
                     <TextField
-                    variant="outlined"
-                    label={t('general.descriptions')}
-                    value={state?.descriptions}
-                    onChange={(e): void =>
-                      dispatch({ type: 'descriptions', value: e.target.value })
-                    }
-                  />
+                      variant="outlined"
+                      label={t('general.descriptions')}
+                      value={state?.descriptions}
+                      onChange={(e): void =>
+                        dispatch({ type: 'descriptions', value: e.target.value })
+                      }
+                    />
                   </Box>
                 </Grid>
-                
-                
+
+
                 <Divider />
                 <Grid item xs={12}>
                   <CardActions>
@@ -804,21 +809,10 @@ const JobsList: React.FC = () => {
     getNewToken(rowData.id);
   };*/
 
-  const [showAddTransaction, setShowAddTransaction] = useState(false);
-  const toggleShowAddTransaction = (): void =>
-    setShowAddTransaction(!showAddTransaction);
-  const [pharmacyIdForTransaction, setPharmacyIdForTransaction] = useState(0);
-  const [pharmacyNameForTransaction, setPharmacyNameForTransaction] = useState(
-    ''
-  );
-  const addTransactionHandler = (event: any, rowData: any): void => {
-    setPharmacyIdForTransaction(rowData.id);
-    setPharmacyNameForTransaction(rowData.name);
-    toggleShowAddTransaction();
-  };
+  
 
   const actions: DataTableCustomActionInterface[] = [
-    {
+    /*{
       icon: 'check',
       tooltip: t('action.changeStatus'),
       iconProps: {
@@ -826,7 +820,7 @@ const JobsList: React.FC = () => {
       },
       position: 'row',
       action: toggleConfirmHandler,
-    },
+    },*/
     /*{
       icon: (): any => <FontAwesomeIcon icon={faUserCog} color={ColorEnum.DarkCyan} />,
       tooltip: t('action.impersonateThisPharmacy'),
@@ -854,27 +848,18 @@ const JobsList: React.FC = () => {
               await removeHandler(row)
             }
             customActions={actions}
-            queryKey={PharmacyEnum.GET_ALL}
+            queryKey={JobsEnum.GET_ALL}
             queryCallback={all}
             urlAddress={UrlAddress.getAllJobs}
             initLoad={false}
           />
-          {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && (
+          {(isLoadingRemove  || isLoadingSave) && (
             <CircleLoading />
           )}
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
-      <Grid container spacing={1}>
-        <Grid item xs={1}>
-          {showAddTransaction && (
-            <AddTransactionModal
-              pharmacyId={pharmacyIdForTransaction}
-              pharmacyName={pharmacyNameForTransaction}
-            />
-          )}
-        </Grid>
-      </Grid>
+      
     </FormContainer>
   );
 };

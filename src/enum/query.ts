@@ -27,6 +27,11 @@ export enum PharmacyEnum {
   GET_MEMBERS = 'members',
 }
 
+export enum JobsEnum {
+  GET_ALL = 'all',
+
+}
+
 export enum AccountingEnum {
   GET_ALL = 'all',
 }
