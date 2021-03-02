@@ -14,7 +14,11 @@ import {
 import { Modal } from '../../../../public';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCalendarTimes,
+  faEdit,
+  faTrashAlt,
+} from '@fortawesome/free-regular-svg-icons';
 import { ColorEnum, TextMessage } from '../../../../../enum';
 import { BackDrop, TextLine } from '../../../../public';
 import { useClasses } from '../../classes';
@@ -70,7 +74,13 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
   const { root, redTrash, modalContainer, buttonContainer } = useStyle();
   const { data, formHandler } = props;
 
-  const { sendDate, suggestedJobPositionStr, id, resumeFileKey, cancelDate } = data;
+  const {
+    sendDate,
+    suggestedJobPositionStr,
+    id,
+    resumeFileKey,
+    cancelDate,
+  } = data;
 
   const removeHandler = async (_id: number): Promise<any> => {
     if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
@@ -87,7 +97,11 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
               backColor={ColorEnum.White}
               rightText={
                 <>
-                  <FontAwesomeIcon icon={faCalendarTimes} size="lg" className={faIcons} />
+                  <FontAwesomeIcon
+                    icon={faCalendarTimes}
+                    size="lg"
+                    className={faIcons}
+                  />
                   {t('peopleSection.cancelDateText')}
                 </>
               }
@@ -102,14 +116,6 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
             <Grid justify="flex-end" container spacing={1}>
               <Grid item xs={1}>
                 <FontAwesomeIcon
-                  onClick={toggleIsOpenModal}
-                  icon={faEdit}
-                  size="lg"
-                  className={`${redTrash} cursor-pointer`}
-                />
-              </Grid>
-              <Grid item xs={1}>
-                <FontAwesomeIcon
                   onClick={(): Promise<any> => removeHandler(id)}
                   icon={faTrashAlt}
                   size="lg"
@@ -119,13 +125,15 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
             </Grid>
           </Grid>
         )}
-        <Detail
-          resumeFileKey={resumeFileKey}
-          id={id}
-          sendDate={sendDate}
-          cancelDate={cancelDate}
-          suggestedJobPositionStr={suggestedJobPositionStr}
-        />
+          <Detail
+            resumeFileKey={resumeFileKey}
+            onClick={toggleIsOpenModal}
+            id={id}
+            sendDate={sendDate}
+            cancelDate={cancelDate}
+            suggestedJobPositionStr={suggestedJobPositionStr}
+          />
+
       </Grid>
       <Dialog
         open={isOpenModal}
@@ -133,7 +141,9 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{t('peopleSection.detail')}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {t('peopleSection.detail')}
+        </DialogTitle>
         <DialogContent>
           <div className={modalContainer}>
             <Grid container spacing={1}>
@@ -144,28 +154,47 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
               )}
               <Grid item xs={12} sm={12}>
                 {dataApi && (
-                  <Box bgcolor="primary.main" color="primary.contrastText" m={2} p={2}>
+                  <Box
+                    bgcolor="primary.main"
+                    color="primary.contrastText"
+                    m={2}
+                    p={2}
+                  >
                     <Grid container spacing={1}>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.gender')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.gender')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <Paper className={paper}>{dataApi.genderStr}</Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.maritalStatus')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.maritalStatus')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.maritalStatusStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.maritalStatusStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.readingPrescriptionCertificate')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.readingPrescriptionCertificate')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.readingPrescriptionCertificateStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.readingPrescriptionCertificateStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.gradeOfReadingPrescriptionCertificate')}</Paper>
+                        <Paper className={paper}>
+                          {t(
+                            'peopleSection.gradeOfReadingPrescriptionCertificate'
+                          )}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <Paper className={paper}>
@@ -173,85 +202,133 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                         </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.workExperienceYear')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.workExperienceYear')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.workExperienceYear}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.workExperienceYear}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.suggestedWorkShift')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.suggestedWorkShift')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.suggestedWorkShiftStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.suggestedWorkShiftStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.pharmaceuticalSoftwareSkill')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.pharmaceuticalSoftwareSkill')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.pharmaceuticalSoftwareSkillStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.pharmaceuticalSoftwareSkillStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.computerSkill')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.computerSkill')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.computerSkillStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.computerSkillStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.foreignLanguagesSkill')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.foreignLanguagesSkill')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.foreignLanguagesSkillStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.foreignLanguagesSkillStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.suggestedJobPosition')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.suggestedJobPosition')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.suggestedJobPositionStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.suggestedJobPositionStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.education')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.education')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <Paper className={paper}>{dataApi.educationStr}</Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.hasGuarantee')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.hasGuarantee')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.hasGuaranteeStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.hasGuaranteeStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.countryDivisionCode')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.countryDivisionCode')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.countryDivisionCodeStr}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.countryDivisionStr}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.previousWorkplace')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.previousWorkplace')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.previousWorkplace}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.previousWorkplace}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.previousWorkplacePhone')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.previousWorkplacePhone')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{dataApi.previousWorkplacePhone}</Paper>
+                        <Paper className={paper}>
+                          {dataApi.previousWorkplacePhone}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.landlinePhone')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.landlinePhone')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <Paper className={paper}>{dataApi.landlinePhone}</Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.address')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.address')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <Paper className={paper}>{dataApi.address}</Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                        <Paper className={paper}>{t('peopleSection.descriptions')}</Paper>
+                        <Paper className={paper}>
+                          {t('peopleSection.descriptions')}
+                        </Paper>
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <Paper className={paper}>{dataApi.descriptions}</Paper>
@@ -265,7 +342,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={toggleIsOpenModal} color="primary">
-          {t('peopleSection.descriptions')}
+            {t('peopleSection.descriptions')}
           </Button>
         </DialogActions>
       </Dialog>

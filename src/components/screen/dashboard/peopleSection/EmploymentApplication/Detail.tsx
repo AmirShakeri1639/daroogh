@@ -35,7 +35,13 @@ const useStyle = makeStyles((theme) =>
 );
 
 const Detail: React.FC<EmpAppInterface> = (props) => {
-  const { id, sendDate, suggestedJobPositionStr, resumeFileKey } = props;
+  const {
+    id,
+    sendDate,
+    suggestedJobPositionStr,
+    resumeFileKey,
+    onClick,
+  } = props;
   const { paper, container, textCenter, icon } = useStyle();
 
   const { t } = useTranslation();
@@ -44,7 +50,7 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
     ev.target.onerror = null;
   };
   return (
-    <Grid item xs={12}>
+    <Grid onClick={onClick} item xs={12}>
       <Paper className={paper}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
@@ -53,7 +59,11 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
                 <Grid item xs={12}>
                   <Grid container spacing={0} alignItems="flex-end">
                     <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon icon={faBoxes} size="sm" className={icon} />
+                      <FontAwesomeIcon
+                        icon={faBoxes}
+                        size="sm"
+                        className={icon}
+                      />
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
@@ -66,12 +76,18 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
                 <Grid item xs={12}>
                   <Grid container spacing={0} alignItems="flex-end">
                     <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon icon={faBoxes} size="sm" className={icon} />
+                      <FontAwesomeIcon
+                        icon={faBoxes}
+                        size="sm"
+                        className={icon}
+                      />
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
                         rightText={t('peopleSection.suggestedJobPosition')}
-                        leftText={suggestedJobPositionStr || t('general.undefined')}
+                        leftText={
+                          suggestedJobPositionStr || t('general.undefined')
+                        }
                       />
                     </Grid>
                   </Grid>
@@ -80,7 +96,11 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
                 <Grid item xs={12}>
                   <Grid alignItems="flex-end" container spacing={0}>
                     <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon icon={faBoxes} size="sm" className={icon} />
+                      <FontAwesomeIcon
+                        icon={faBoxes}
+                        size="sm"
+                        className={icon}
+                      />
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
@@ -103,8 +123,14 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
                   xs={12}
                 >
                   <a
+                    onClick={(e: any): any => {
+                      e.stopPropagation();
+                    }}
                     download=""
-                    href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
+                    href={
+                      'https://api.daroog.org/api/File/GetFile?key=' +
+                      resumeFileKey
+                    }
                   >
                     {t('peopleSection.resumeDownload')}
                   </a>
