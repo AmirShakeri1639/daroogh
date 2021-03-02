@@ -608,7 +608,7 @@ const SupplyList: React.FC = () => {
                 className="w-100"
                 placeholder={t('drug.name')}
                 options={options}
-                onItemSelected={(item) => setSelectedDrug(item)}
+                onItemSelected={(item): void => setSelectedDrug(item[0])}
                 defaultSelectedItem={selectedDrug?.label}
               />
             </Grid>
