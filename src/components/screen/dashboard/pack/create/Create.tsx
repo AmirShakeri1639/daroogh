@@ -685,7 +685,7 @@ const Create: React.FC = () => {
                 placeholder={t('drug.name')}
                 loadingText={t('general.loading')}
                 onChange={debounce((e) => searchDrugs(e.target.value), 500)}
-                onItemSelected={(item) => setSelectedDrug(item)}
+                onItemSelected={(item): void => setSelectedDrug(item[0])}
               />
             </Grid>
 
@@ -747,10 +747,11 @@ const Create: React.FC = () => {
                     </Grid>
                     <Grid item xs={8}>
                       <Input
-                        value={offer1}
+                        value={offer2}
                         label={t('general.number')}
+                        // className={offerInput}
                         onChange={(e): void => {
-                          setOffer1(e.target.value);
+                          setOffer2(e.target.value);
                         }}
                       />
                     </Grid>
@@ -759,11 +760,10 @@ const Create: React.FC = () => {
                 <span>تا</span>
                 <Grid item xs={12} sm={3}>
                   <Input
-                    value={offer2}
+                    value={offer1}
                     label={t('general.number')}
-                    // className={offerInput}
                     onChange={(e): void => {
-                      setOffer2(e.target.value);
+                      setOffer1(e.target.value);
                     }}
                   />
                 </Grid>
