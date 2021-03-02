@@ -18,5 +18,6 @@ export interface JobInterface {
   maxAge: number;
   livingInArea: number;
   descriptions?: string;
+  cancelDate? :string;
  
 }

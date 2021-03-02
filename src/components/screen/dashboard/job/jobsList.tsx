@@ -232,22 +232,22 @@ const JobsList: React.FC = () => {
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
   const [_cancel, { isLoading: isLoadingRemove }] = useMutation(cancel, {
-       onSuccess: async () => {
-         ref.current?.loadItems();
-         await queryCache.invalidateQueries(JobsEnum.GET_ALL);
-         await successSweetAlert(t('alert.successfulDelete'));
-       },
+    onSuccess: async () => {
+      ref.current?.onQueryChange();
+      await queryCache.invalidateQueries(JobsEnum.GET_ALL);
+      await successSweetAlert(t('alert.successfulDelete'));
+    },
   });
 
-  
+
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
-       onSuccess: async () => {
-         await queryCache.invalidateQueries(JobsEnum.GET_ALL);
-         await successSweetAlert(t('alert.successfulSave'));
-         ref.current?.onQueryChange();
-         dispatch({ type: 'reset' });
-       },
+    onSuccess: async () => {
+      await queryCache.invalidateQueries(JobsEnum.GET_ALL);
+      await successSweetAlert(t('alert.successfulSave'));
+      ref.current?.onQueryChange();
+      dispatch({ type: 'reset' });
+    },
   });
 
   const tableColumns = (): DataTableColumns[] => {
@@ -262,7 +262,7 @@ const JobsList: React.FC = () => {
         field: 'hasReadingPrescriptionCertificateStr',
         title: t('jobs.hasReadingPrescriptionCertificate'),
         type: 'string',
-        searchable: true,
+     
       },
       {
         field: 'livingInAreaStr',
@@ -278,13 +278,13 @@ const JobsList: React.FC = () => {
         field: 'genderStr',
         title: t('general.gender'),
         type: 'string',
-        searchable: true,
+   
       },
       {
         field: 'suggestedWorkShiftStr',
         title: t('jobs.suggestedWorkShift'),
         type: 'string',
-        searchable: true,
+       
       },
       {
         field: 'maritalStatusStr',
@@ -328,30 +328,29 @@ const JobsList: React.FC = () => {
   };
 
   const removeHandler = async (row: JobInterface): Promise<any> => {
-       try {
-         if (window.confirm(t('alert.cancelConfirm'))) {
-           await _cancel(row.id);
-           ref.current?.loadItems();
-         }
-       } catch (e) {
-         errorHandler(e);
-       }
+    try {
+      if (window.confirm(t('alert.cancelConfirm'))) {
+        await _cancel(row.id);
+        ref.current?.onQueryChange();
+      }
+    } catch (e) {
+      errorHandler(e);
+    }
   };
 
   const toggleConfirmHandler = async (
     e: any,
-    row: PharmacyInterface
+    row: JobInterface
   ): Promise<any> => {
-    //   try {
-    //     const confirmParams: ConfirmParams = {
-    //       id: row.id,
-    //       status: !row.active,
-    //     };
-    //     await _confirm(confirmParams);
-    //     ref.current?.loadItems();
-    //   } catch (e) {
-    //     errorHandler(e);
-    //   }
+    if (window.confirm(t('alert.cancelConfirm'))) {
+    try {
+
+      await _cancel(row.id);
+      ref.current?.onQueryChange();
+    } catch (e) {
+      errorHandler(e);
+    }
+  }
   };
 
   const saveHandler = (item: JobInterface): void => {
@@ -451,7 +450,7 @@ const JobsList: React.FC = () => {
       });
       toggleIsOpenSaveModalForm();
       dispatch({ type: 'reset' });
-      ref.current?.loadItems();
+      ref.current?.onQueryChange();
     } catch (e) {
       errorHandler(e);
     }
@@ -809,18 +808,18 @@ const JobsList: React.FC = () => {
     getNewToken(rowData.id);
   };*/
 
-  
+
 
   const actions: DataTableCustomActionInterface[] = [
-    /*{
-      icon: 'check',
+    {
+      icon: 'close',
       tooltip: t('action.changeStatus'),
       iconProps: {
         color: 'error',
       },
       position: 'row',
       action: toggleConfirmHandler,
-    },*/
+    },
     /*{
       icon: (): any => <FontAwesomeIcon icon={faUserCog} color={ColorEnum.DarkCyan} />,
       tooltip: t('action.impersonateThisPharmacy'),
@@ -844,22 +843,20 @@ const JobsList: React.FC = () => {
             columns={tableColumns()}
             addAction={(): void => saveHandler(initialState)}
             editAction={(e: any, row: any): void => saveHandler(row)}
-            removeAction={async (e: any, row: any): Promise<void> =>
-              await removeHandler(row)
-            }
+            
             customActions={actions}
             queryKey={JobsEnum.GET_ALL}
             queryCallback={all}
             urlAddress={UrlAddress.getAllJobs}
             initLoad={false}
           />
-          {(isLoadingRemove  || isLoadingSave) && (
+          {(isLoadingRemove || isLoadingSave) && (
             <CircleLoading />
           )}
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
-      
+
     </FormContainer>
   );
 };

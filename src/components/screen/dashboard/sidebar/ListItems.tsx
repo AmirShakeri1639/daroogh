@@ -28,6 +28,7 @@ import {
   faFileMedical,
   faUserMd,
   faCog,
+  faHandshake
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -337,7 +338,7 @@ const ListItems: React.FC = () => {
             <ListItemText primary={t('pharmacy.pharmacies')} />
           </Link>
         </List>
-        
+
         {/* <ListItem
           button
           onClick={(): void => setIsOpenPharmacyMenu((val) => !val)}
@@ -408,7 +409,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           <Link to={settings} className={notNested}>
             <ListItemIcon style={{ color: '#4625B2' }}>
-              <FontAwesomeIcon icon={ faCog } size="lg" />
+              <FontAwesomeIcon icon={faCog} size="lg" />
             </ListItemIcon>
             <ListItemText primary={t('settings.settings')} />
           </Link>
@@ -609,7 +610,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           <Link to={jobsList} className={notNested}>
             <ListItemIcon style={{ color: '#4625B2' }}>
-              <Business />
+              <FontAwesomeIcon icon={faHandshake} size="lg" />
             </ListItemIcon>
             <ListItemText primary={t('jobs.jobs')} />
           </Link>
