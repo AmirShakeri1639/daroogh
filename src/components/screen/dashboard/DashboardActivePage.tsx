@@ -20,7 +20,7 @@ import CategoryList from './category/CategoryList';
 import Exchange from './drug-transfer/exchange/Exchange';
 import AccountingList from './accounting/accountingList';
 import TransferDrug from './drug-transfer/Transfer';
-import Desktop from './drug-transfer/desktop/Desktop';
+import Desktop1 from './drug-transfer/desktop/Desktop1';
 import SupplyList from './supply-list/SupplyList';
 import Membership from './pharmacy/Membership';
 import Map from '../../public/map/Map';
@@ -146,7 +146,7 @@ const DashboardActivePage: React.FC = () => {
         el = <TransferDrug />;
         break;
       case DashboardPages.EXCHANGE_LIST:
-        el = <Desktop />;
+        el = <Desktop1 />;
         break;
       case DashboardPages.ACCOUNTING_LIST:
         el = <AccountingList />;

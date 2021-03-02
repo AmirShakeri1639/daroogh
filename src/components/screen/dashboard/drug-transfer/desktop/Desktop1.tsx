@@ -15,10 +15,11 @@ import {
 } from '../../../../../utils/ExchangeTools';
 import { isNullOrEmpty, EncrDecrService } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import routes from '../../../../../routes';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 import { useQuery } from 'react-query';
+import queryString from 'query-string';
 // load test data
 // import d from './testdata.json';
 
@@ -35,9 +36,21 @@ const Desktop1: React.FC = () => {
 
 
 
-  const [filter, setFilter] = useState<ExchangeStateEnum>(
-    ExchangeStateEnum.UNKNOWN
-  );
+  const location = useLocation();
+  const params = queryString.parse(location.search);  
+  const [filter, setFilter] = useState<ExchangeStateEnum[]>(():any => {
+    if (params.state && params.state.length > 0) {
+      return (
+        String(params.state).split(',').map(i => +i)
+      )
+    } else {
+      return [ExchangeStateEnum.UNKNOWN];
+    }
+  });
+  console.log('filter)', filter)
+  
+  
+
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
 
@@ -220,9 +233,9 @@ const Desktop1: React.FC = () => {
 
   const filterChanged = (v: number): void => {
     if (v === 0) {
-      setFilter(ExchangeStateEnum.UNKNOWN);
+      setFilter([ExchangeStateEnum.UNKNOWN]);
     } else {
-      setFilter(v);
+      setFilter([v]);
     }
   };
 
@@ -242,16 +255,16 @@ const Desktop1: React.FC = () => {
     if (exchanges && exchanges.length > 0) {
       // filter
       const listToShow =
-        filter == ExchangeStateEnum.UNKNOWN
+        filter.includes(ExchangeStateEnum.UNKNOWN)
           ? [...exchanges]
           : exchanges.filter(
             (ex) =>
-              ex.state === filter ||
+              filter.includes(ex.state) ||
               (isExchangeCompleted(
                 ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
                 ex.currentPharmacyIsA
               ) &&
-                filter == ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL)
+                filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
           );
 
       // sort

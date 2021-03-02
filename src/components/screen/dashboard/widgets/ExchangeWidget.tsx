@@ -11,6 +11,7 @@ function ExchangeWidget() {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
   const { desktop } = routes;
+  const toUrl = `${desktop}?state=2,3`
 
   useEffect(() => {
     const { getForWidget } = new Exchange();
@@ -31,7 +32,7 @@ function ExchangeWidget() {
         icon={ <FontAwesomeIcon icon={ faHandshake } size="4x" /> }
         backColor={ ColorEnum.Green }
         color="white"
-        to={ desktop }
+        to={ toUrl }
         titleFontSize="1em"
       />
     </div>
