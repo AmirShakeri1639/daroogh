@@ -88,6 +88,8 @@ const ProfileLazy = lazy(() => import('./components/screen/dashboard/user/Profil
 
 const SettingsForm = lazy(() => import('./components/screen/dashboard/settings/Settings'));
 
+const JobsList = lazy(() => import('./components/screen/dashboard/job/jobsList'));
+
 const {
   login,
   drugFavoriteList,
@@ -123,6 +125,7 @@ const {
   forgetPassword,
   profile,
   settings,
+  jobsList
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -285,6 +288,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute exact path={settings}>
               <Dashboard component={<SettingsForm />} />
+            </PrivateRoute>
+            <PrivateRoute path={jobsList}>
+              <Dashboard component={<JobsList />} />
             </PrivateRoute>
           </Suspense>
         </Switch>
