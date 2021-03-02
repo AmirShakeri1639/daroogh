@@ -27,7 +27,10 @@ import { errorHandler, successSweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
-import { ActionInterface, EmploymentApplicationInterface } from '../../../../../interfaces';
+import {
+  ActionInterface,
+  EmploymentApplicationInterface,
+} from '../../../../../interfaces';
 import {
   computerSkills,
   educations,
@@ -358,69 +361,82 @@ const EmploymentApplication: React.FC = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{'درخواست کار'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {' '}
+          {t('peopleSection.jobApplication')}
+        </DialogTitle>
         <DialogContent>
           <div className={modalContainer}>
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="نام"
+                  label={t('peopleSection.name')}
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="outlined"
                   value={state.name}
-                  onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'name', value: e.target.value })
+                  }
                 />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="نام خانوادگی"
+                  label={t('peopleSection.family')}
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="outlined"
                   value={state.family}
-                  onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'family', value: e.target.value })
+                  }
                 />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="تاریخ تولد"
+                  label={t('peopleSection.birthDate')}
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="outlined"
                   value={state.birthDate}
-                  onChange={(e): void => dispatch({ type: 'birthDate', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'birthDate', value: e.target.value })
+                  }
                 />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="ایمیل"
+                  label={t('peopleSection.email')}
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="outlined"
                   value={state.email}
-                  onChange={(e): void => dispatch({ type: 'email', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'email', value: e.target.value })
+                  }
                 />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
                   select
-                  label="جنسیت"
+                  label={t('peopleSection.gender')}
                   SelectProps={{
                     native: true,
                   }}
                   variant="outlined"
                   value={state.gender}
-                  onChange={(e): void => dispatch({ type: 'gender', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'gender', value: e.target.value })
+                  }
                 >
                   {genders.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -433,13 +449,15 @@ const EmploymentApplication: React.FC = () => {
                 <TextField
                   fullWidth
                   select
-                  label="وضعیت تاهل"
+                  label={t('peopleSection.maritalStatus')}
                   SelectProps={{
                     native: true,
                   }}
                   variant="outlined"
                   value={state.maritalStatus}
-                  onChange={(e): void => dispatch({ type: 'maritalStatus', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'maritalStatus', value: e.target.value })
+                  }
                 >
                   {maritalStatuses.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -461,13 +479,15 @@ const EmploymentApplication: React.FC = () => {
                       value={state.hasReadingPrescriptionCertificate}
                     />
                   }
-                  label="گواهی نسخه خوانی"
+                  label={t('peopleSection.readingPrescriptionCertificate')}
                 />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="نمره مدرک نسخه خوانی"
+                  label={t(
+                    'peopleSection.gradeOfReadingPrescriptionCertificate'
+                  )}
                   type="number"
                   InputLabelProps={{
                     shrink: true,
@@ -485,7 +505,7 @@ const EmploymentApplication: React.FC = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="سابقه کار"
+                  label={t('peopleSection.workExperienceYear')}
                   type="number"
                   InputLabelProps={{
                     shrink: true,
@@ -504,14 +524,17 @@ const EmploymentApplication: React.FC = () => {
                 <TextField
                   fullWidth
                   select
-                  label="	شیفت پیشنهادی"
+                  label={t('peopleSection.suggestedWorkShift')}
                   SelectProps={{
                     native: true,
                   }}
                   variant="outlined"
                   value={state.suggestedWorkShift}
                   onChange={(e): void =>
-                    dispatch({ type: 'suggestedWorkShift', value: e.target.value })
+                    dispatch({
+                      type: 'suggestedWorkShift',
+                      value: e.target.value,
+                    })
                   }
                 >
                   {suggestedWorkShifts.map((option) => (
@@ -525,14 +548,17 @@ const EmploymentApplication: React.FC = () => {
                 <TextField
                   fullWidth
                   select
-                  label="تسلط به نرم افزارهای دارویی"
+                  label={t('peopleSection.pharmaceuticalSoftwareSkill')}
                   SelectProps={{
                     native: true,
                   }}
                   variant="outlined"
                   value={state.pharmaceuticalSoftwareSkill}
                   onChange={(e): void =>
-                    dispatch({ type: 'pharmaceuticalSoftwareSkill', value: e.target.value })
+                    dispatch({
+                      type: 'pharmaceuticalSoftwareSkill',
+                      value: e.target.value,
+                    })
                   }
                 >
                   {pharmaceuticalSoftwareSkills.map((option) => (
@@ -546,13 +572,15 @@ const EmploymentApplication: React.FC = () => {
                 <TextField
                   fullWidth
                   select
-                  label="میزان تسلط به کامپیوتر"
+                  label={t('peopleSection.computerSkill')}
                   SelectProps={{
                     native: true,
                   }}
                   variant="outlined"
                   value={state.computerSkill}
-                  onChange={(e): void => dispatch({ type: 'computerSkill', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'computerSkill', value: e.target.value })
+                  }
                 >
                   {computerSkills.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -565,14 +593,17 @@ const EmploymentApplication: React.FC = () => {
                 <TextField
                   fullWidth
                   select
-                  label="آشنایی با زبان خارجی"
+                  label={t('peopleSection.foreignLanguagesSkill')}
                   SelectProps={{
                     native: true,
                   }}
                   variant="outlined"
                   value={state.foreignLanguagesSkill}
                   onChange={(e): void =>
-                    dispatch({ type: 'foreignLanguagesSkill', value: e.target.value })
+                    dispatch({
+                      type: 'foreignLanguagesSkill',
+                      value: e.target.value,
+                    })
                   }
                 >
                   {foreignLanguagesSkills.map((option) => (
@@ -586,14 +617,17 @@ const EmploymentApplication: React.FC = () => {
                 <TextField
                   fullWidth
                   select
-                  label="سمت پیشنهادی"
+                  label={t('peopleSection.suggestedJobPosition')}
                   SelectProps={{
                     native: true,
                   }}
                   variant="outlined"
                   value={state.suggestedJobPosition}
                   onChange={(e): void =>
-                    dispatch({ type: 'suggestedJobPosition', value: e.target.value })
+                    dispatch({
+                      type: 'suggestedJobPosition',
+                      value: e.target.value,
+                    })
                   }
                 >
                   {suggestedJobPositions.map((option) => (
@@ -607,13 +641,15 @@ const EmploymentApplication: React.FC = () => {
                 <TextField
                   fullWidth
                   select
-                  label="میزان تحصیلات"
+                  label={t('peopleSection.education')}
                   SelectProps={{
                     native: true,
                   }}
                   variant="outlined"
                   value={state.education}
-                  onChange={(e): void => dispatch({ type: 'education', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'education', value: e.target.value })
+                  }
                 >
                   {educations.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -636,14 +672,14 @@ const EmploymentApplication: React.FC = () => {
                       value={state.hasGuarantee}
                     />
                   }
-                  label="وثیقه"
+                  label={t('peopleSection.hasGuarantee')}
                 />
               </Grid>
               <Grid item xs={6}>
                 <TextField
                   fullWidth
                   select
-                  label="استان"
+                  label={t('peopleSection.ostan')}
                   onChange={changeprovince}
                   SelectProps={{
                     native: true,
@@ -662,7 +698,7 @@ const EmploymentApplication: React.FC = () => {
                 <TextField
                   fullWidth
                   select
-                  label="شهر"
+                  label={t('peopleSection.ostan')}
                   SelectProps={{
                     native: true,
                   }}
@@ -678,14 +714,17 @@ const EmploymentApplication: React.FC = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="محل کار قبلی"
+                  label={t('peopleSection.previousWorkplace')}
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="outlined"
                   value={state.previousWorkplace}
                   onChange={(e): void =>
-                    dispatch({ type: 'previousWorkplace', value: e.target.value })
+                    dispatch({
+                      type: 'previousWorkplace',
+                      value: e.target.value,
+                    })
                   }
                 />
               </Grid>
@@ -693,14 +732,17 @@ const EmploymentApplication: React.FC = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="شماره تماس محل کار قبلی"
+                  label={t('peopleSection.previousWorkplacePhone')}
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="outlined"
                   value={state.previousWorkplacePhone}
                   onChange={(e): void =>
-                    dispatch({ type: 'previousWorkplacePhone', value: e.target.value })
+                    dispatch({
+                      type: 'previousWorkplacePhone',
+                      value: e.target.value,
+                    })
                   }
                 />
               </Grid>
@@ -708,13 +750,15 @@ const EmploymentApplication: React.FC = () => {
               <Grid item xs={6}>
                 <TextField
                   fullWidth
-                  label="تلفن ثابت"
+                  label={t('peopleSection.landlinePhone')}
                   InputLabelProps={{
                     shrink: true,
                   }}
                   variant="outlined"
                   value={state.landlinePhone}
-                  onChange={(e): void => dispatch({ type: 'landlinePhone', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'landlinePhone', value: e.target.value })
+                  }
                 />
               </Grid>
 
@@ -726,12 +770,13 @@ const EmploymentApplication: React.FC = () => {
                   multiple
                   type="file"
                   onChange={(e): void => {
-                    if (e.target.files) dispatch({ type: 'file', value: e.target.files[0] });
+                    if (e.target.files)
+                      dispatch({ type: 'file', value: e.target.files[0] });
                   }}
                 />
                 <label htmlFor="contained-button-file">
                   <Button variant="contained" color="primary" component="span">
-                    فایل رزومه
+                    {t('peopleSection.resumeFile')}
                   </Button>
                 </label>
               </Grid>
@@ -739,7 +784,7 @@ const EmploymentApplication: React.FC = () => {
               <Grid item xs={12}>
                 <TextField
                   id="outlined-full-width"
-                  label="آدرس"
+                  label={t('peopleSection.address')}
                   style={{ margin: 8 }}
                   fullWidth
                   margin="normal"
@@ -748,14 +793,16 @@ const EmploymentApplication: React.FC = () => {
                   }}
                   variant="outlined"
                   value={state.address}
-                  onChange={(e): void => dispatch({ type: 'address', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'address', value: e.target.value })
+                  }
                 />
               </Grid>
 
               <Grid item xs={12}>
                 <TextField
                   id="outlined-full-width"
-                  label="توضیحات"
+                  label={t('peopleSection.descriptions')}
                   style={{ margin: 8 }}
                   fullWidth
                   margin="normal"
@@ -764,7 +811,9 @@ const EmploymentApplication: React.FC = () => {
                   }}
                   variant="outlined"
                   value={state.descriptions}
-                  onChange={(e): void => dispatch({ type: 'descriptions', value: e.target.value })}
+                  onChange={(e): void =>
+                    dispatch({ type: 'descriptions', value: e.target.value })
+                  }
                 />
               </Grid>
 
@@ -772,8 +821,14 @@ const EmploymentApplication: React.FC = () => {
                 <Button color="default" onClick={toggleIsOpenModal}>
                   {t('general.cancel')}
                 </Button>
-                <Button color="primary" onClick={formHandler} disabled={isLoadingSaveData}>
-                  {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
+                <Button
+                  color="primary"
+                  onClick={formHandler}
+                  disabled={isLoadingSaveData}
+                >
+                  {isLoadingSaveData
+                    ? t('general.pleaseWait')
+                    : t('general.add')}
                 </Button>
               </Grid>
             </Grid>
@@ -781,7 +836,7 @@ const EmploymentApplication: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={toggleIsOpenModal} color="primary">
-            بستن
+            {t('peopleSection.close')}
           </Button>
         </DialogActions>
       </Dialog>

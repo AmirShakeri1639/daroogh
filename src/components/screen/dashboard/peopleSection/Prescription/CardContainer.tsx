@@ -8,7 +8,7 @@ import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-s
 import { ColorEnum, TextMessage } from '../../../../../enum';
 import { BackDrop, TextLine } from '../../../../public';
 import { useClasses } from '../../classes';
-import moment from 'moment';
+import moment from 'jalali-moment';
 import { useQuery } from 'react-query';
 import { Prescription as presApi } from '../../../../../services/api';
 

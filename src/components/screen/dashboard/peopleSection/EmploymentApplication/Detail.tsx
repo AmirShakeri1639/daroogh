@@ -57,7 +57,7 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
-                        rightText={'شماره پیگیری'}
+                        rightText={t('peopleSection.id')}
                         leftText={id || t('general.undefined')}
                       />
                     </Grid>
@@ -70,7 +70,7 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
-                        rightText={'سمت پیشنهادی'}
+                        rightText={t('peopleSection.suggestedJobPosition')}
                         leftText={suggestedJobPositionStr || t('general.undefined')}
                       />
                     </Grid>
@@ -84,7 +84,7 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
-                        rightText={'تاریخ ارسال'}
+                        rightText={t('peopleSection.sendDate')}
                         leftText={
                           moment(sendDate, 'YYYY/MM/DD')
                             .locale('fa')
@@ -106,7 +106,7 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
                     download=""
                     href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
                   >
-                    دانلود تصویر رزمه
+                    {t('peopleSection.resumeDownload')}
                   </a>
                 </Grid>
               </Grid>
