@@ -95,6 +95,16 @@ export enum TransactionTypeEnum {
   Debtor,
 }
 
+export enum MaritalStatusType {
+  Married = 0,
+  Single = 1,
+}
+
+export enum GenderType {
+  Male = 0,
+  Female = 1,
+}
+
 export const GetValuesOfEnum = (e: any): any => {
   const keys = Object.keys(e);
   return keys.map((k: string) => e[k as keyof typeof e]);

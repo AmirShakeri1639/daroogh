@@ -2,12 +2,29 @@
 
 $borderRadius: 4px;
 
-.container {
+.wrapper {
+  display: flex;
+  width: 100%;
   position: relative;
   border: 1px solid rgb(200, 200, 200);
   border-radius: $borderRadius;
+  background-color: #fff;
+}
+
+.button-wrapper {
+  margin-left: 5px;
   display: flex;
   align-items: center;
+  svg {
+    color: rgb(143, 143, 143);
+    margin-right: 10px;
+  }
+}
+
+.input-container {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
   padding: 0 10px;
   .input {
     border: none;
@@ -21,10 +38,6 @@ $borderRadius: 4px;
       outline: none;
     }
   }
-  svg {
-    color: rgb(143, 143, 143);
-    margin-right: 10px;
-  }
 }
 
 .div-list {
@@ -33,12 +46,12 @@ $borderRadius: 4px;
   background-color: #fff;
   border-radius: $borderRadius;
   right: 0;
-  top: 40px;
+  top: calc(100% + 3px);
   padding: 5px;
   border: 1px solid #d8d8d8;
   z-index: 999;
   // height: 30px;
-  max-height: 300px;
+  max-height: 200px;
   overflow-y: auto;
   &.itself-space {
     padding: 5px 10px;
@@ -56,4 +69,8 @@ $borderRadius: 4px;
       }
     }
   }
+}
+
+.active-item {
+  background-color: #e8e8e8;
 }
