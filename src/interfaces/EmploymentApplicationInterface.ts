@@ -1,4 +1,5 @@
 export interface EmpAppInterface {
+  onClick(): void;
   id: number;
   sendDate: string;
   cancelDate: string;

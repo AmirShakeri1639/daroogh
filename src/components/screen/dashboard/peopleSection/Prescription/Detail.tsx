@@ -1,5 +1,12 @@
-import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
-import React from 'react';
+import {
+  Box,
+  Button,
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+} from '@material-ui/core';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPills,
@@ -8,7 +15,7 @@ import {
   faCalendarTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { DrugInterface } from '../../../../../interfaces';
-import { TextLine } from '../../../../public';
+import { TextLine, Modal } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import {
   PrescriptionInputInterface,
@@ -22,6 +29,12 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
       backgroundColor: '#E4E4E4',
+    },
+    modalContainer: {
+      backgroundColor: '#fff',
+      borderRadius: 5,
+      padding: theme.spacing(2, 3),
+      width: 'auto',
     },
     container: {
       padding: 5,
@@ -45,24 +58,35 @@ const useStyle = makeStyles((theme) =>
 
 const Detail: React.FC<PrescriptionInputInterface> = (props) => {
   const { id, sendDate, contryDivisionName, comment, fileKey } = props;
-  const { paper, container, textCenter, icon } = useStyle();
+  const { paper, container, textCenter, icon, modalContainer } = useStyle();
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [selectedsomment, setSelectedComment] = useState<string>('');
 
   const { t } = useTranslation();
-  const addDefaultSrc = (ev: any) => {
+  const addDefaultSrc = (ev: any): void => {
     ev.target.src = noImage;
     ev.target.onerror = null;
+  };
+
+  const toggleIsOpenModal = (com: string): void => {
+    setSelectedComment(com);
+    setIsOpenModal((v) => !v);
   };
   return (
     <Grid item xs={12}>
       <Paper className={paper}>
         <Grid container spacing={1}>
-          <Grid item xs={9}>
+          <Grid item xs={8}>
             <div className={container}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
                   <Grid container spacing={0} alignItems="flex-end">
                     <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon icon={faBoxes} size="sm" className={icon} />
+                      <FontAwesomeIcon
+                        icon={faBoxes}
+                        size="sm"
+                        className={icon}
+                      />
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
@@ -75,14 +99,25 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
                 <Grid item xs={12}>
                   <Grid container spacing={0} alignItems="flex-end">
                     <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon icon={faBoxes} size="sm" className={icon} />
+                      <FontAwesomeIcon
+                        icon={faBoxes}
+                        size="sm"
+                        className={icon}
+                      />
                     </Grid>
-                    <Grid item xs={11}>
+                    <Grid
+                      className="cursor-pointer"
+                      onClick={(): void => toggleIsOpenModal(comment)}
+                      item
+                      xs={11}
+                    >
                       <TextLine
                         rightText={'اسامی داروها'}
                         leftText={
                           (comment &&
-                            (comment.length > 30 ? comment.substring(0, 30) + '...' : comment)) ||
+                            (comment.length > 10
+                              ? comment.substring(0, 10) + '...'
+                              : comment)) ||
                           t('general.undefined')
                         }
                       />
@@ -92,7 +127,11 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
                 <Grid item xs={12}>
                   <Grid container spacing={0} alignItems="flex-end">
                     <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon icon={faBoxes} size="sm" className={icon} />
+                      <FontAwesomeIcon
+                        icon={faBoxes}
+                        size="sm"
+                        className={icon}
+                      />
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
@@ -106,7 +145,11 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
                 <Grid item xs={12}>
                   <Grid alignItems="flex-end" container spacing={0}>
                     <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon icon={faBoxes} size="sm" className={icon} />
+                      <FontAwesomeIcon
+                        icon={faBoxes}
+                        size="sm"
+                        className={icon}
+                      />
                     </Grid>
                     <Grid item xs={11}>
                       <TextLine
@@ -123,18 +166,35 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
               </Grid>
             </div>
           </Grid>
-          <Grid item style={{ textAlign: 'center' }} xs={3}>
-            تصویر نسخه
-            <a download="" href={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}>
-              {' '}
-              <img
-                onError={addDefaultSrc}
-                style={{ height: '86px', width: '100px', margin: '5px' }}
-                src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
-              />
-            </a>
+          <Grid item style={{ textAlign: 'center' }} xs={4}>
+            <Grid xs={12} item>
+              تصویر نسخه
+            </Grid>
+            <Grid xs={12} item>
+              <a
+                download=""
+                href={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+              >
+                {' '}
+                <img
+                  onError={addDefaultSrc}
+                  style={{ height: '86px', width: '100px', margin: '5px' }}
+                  src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+                />
+              </a>
+            </Grid>
           </Grid>
         </Grid>
+
+        <Modal open={isOpenModal} toggle={(): void => toggleIsOpenModal('')}>
+          <div className={modalContainer}>
+            <Grid container spacing={1}>
+              <Grid item xs={12} sm={12}>
+                {selectedsomment}
+              </Grid>
+            </Grid>
+          </div>
+        </Modal>
       </Paper>
     </Grid>
   );
