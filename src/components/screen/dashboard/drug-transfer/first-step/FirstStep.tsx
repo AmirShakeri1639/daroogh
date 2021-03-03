@@ -7,6 +7,7 @@ import {
   AccordionDetails,
   Divider,
   Typography,
+  Hidden,
 } from '@material-ui/core';
 import { debounce } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -132,6 +133,7 @@ const useStyle = makeStyles((theme) =>
         padding: 5,
       },
     },
+    
   })
 );
 
@@ -365,6 +367,19 @@ const FirstStep: React.FC = () => {
     <>
       <Grid item xs={12}>
         <Grid container spacing={2}>
+          <Hidden xsDown>
+            <Grid item xs={12}>
+              <span className="txt-md ">
+                برای جستجو در لیست های عرضه شده توسط همکارانتان میتوانید نام
+                دارو٬ دسته دارویی یا نام ژنریک را وارد کنید. همچنین میتوانید چند
+                دارو را جستجو کنید و لیست هایی که بیشترین مطابقت با خواسته شما
+                را داشته باشد به شما پیشنهاد داده میشود برای جستجوی دقیق تر
+                میتوانید از گزینه جستجوی پیشرفته استفاده نمایید
+              </span>
+              <Divider />
+            </Grid>
+          </Hidden>
+
           <Grid item xs={12}>
             <div className={searchContainer}>
               <Button onClick={(): void => setIsOpenDrawer(true)}>
@@ -381,7 +396,7 @@ const FirstStep: React.FC = () => {
                 className="w-100"
                 loadingText={t('general.loading')}
                 options={searchOptions}
-                placeholder={t('drug.drug')}
+                placeholder='جستجو (نام دارو٬ دسته دارویی٬ نام ژنریک) '
                 multiple={isMultipleSelection}
                 onItemSelected={(arrayList): void => {
                   if (arrayList.length > 0) {
