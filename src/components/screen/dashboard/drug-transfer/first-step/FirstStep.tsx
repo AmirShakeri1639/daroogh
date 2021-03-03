@@ -305,7 +305,7 @@ const FirstStep: React.FC = () => {
         items = searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
           return (
             <>
-              <Grid item xs={12} sm={6} lg={4}>
+              <Grid item xs={12} sm={6} lg={6}>
                 <CardContainer data={d} />
               </Grid>
             </>
@@ -316,7 +316,7 @@ const FirstStep: React.FC = () => {
       items = data.map((d: PharmacyDrugInterface) => {
         return (
           <>
-            <Grid item xs={12} sm={6} lg={4}>
+            <Grid item xs={12} sm={6} lg={6}>
               <CardContainer data={d} />
             </Grid>
           </>
@@ -330,14 +330,13 @@ const FirstStep: React.FC = () => {
   return (
     <>
       <Grid item xs={12}>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <div className={searchContainer}>
               <Button onClick={(): void => setIsOpenDrawer(true)}>
                 <FilterListIcon fontSize="small" />
                 {t('general.filter')}
               </Button>
-
               <ReactSelect
                 value={searchedDrugs}
                 onChange={(e): void => {
