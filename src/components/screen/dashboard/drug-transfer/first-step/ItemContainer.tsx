@@ -1,18 +1,18 @@
 import React from 'react';
 import { ItemContainerPropsInterface } from '../../../../../interfaces';
-import { Box, createStyles, Grid } from '@material-ui/core';
+import { Box, createStyles, Divider, Grid, Hidden } from '@material-ui/core';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import { makeStyles } from '@material-ui/core/styles';
 import Convertor from '../../../../../utils/Convertor';
 
+
 const useStyle = makeStyles((theme) =>
   createStyles({
     box: {
-      padding: theme.spacing(1, 2),
-      backgroundColor: '#fff',
-      marginBottom: theme.spacing(1),
-      borderRadius: 10,
+      backgroundColor: '#fcfdfc',
       width: '100%',
+      padding: '4px 0px',
+      margin: '2px 0px'
     },
     gridItem: {
       display: 'flex',
@@ -31,34 +31,35 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const { convertISOTime } = Convertor;
+const { convertISOTime,thousandsSeperator } = Convertor;
 
 const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
-  const { offer1, offer2, drugGenericName } = props;
+  const { offer1, offer2, drugGenericName ,price,expireDate } = props;
 
   const { box, gridItem, detailContainer } = useStyle();
 
   return (
     <Box component="div" className={box}>
-      <Grid container spacing={1}>
-        <Grid item xs={6} className={gridItem}>
-          <span className="txt-xs text-nowrap">{drugGenericName}</span>
+      <Grid container spacing={0}>
+        <Grid item xs={8}  md={7} lg={7}  className={detailContainer}>
+          <span className="txt-xs text-nowrap text-muted">{drugGenericName}</span>
         </Grid>
 
-        <Grid item xs={6}>
-          <Grid container spacing={1} direction="column" alignItems="flex-end">
-            {/*<div className={detailContainer}>*/}
-            {/*  <EventNoteIcon fontSize="small" />*/}
-            {/*  <span className="txt-xs">{convertISOTime(expireDate)}</span>*/}
-            {/*</div>*/}
-            <div className={detailContainer}>
-              <SwapHorizIcon fontSize="small" />
-              <span className="txt-xs">{`${offer1} به ${offer2}`}</span>
-            </div>
-            {/*<div className={detailContainer}>*/}
-            {/*  <PaymentIcon fontSize="small" />*/}
-            {/*  <span className="txt-xs" dir="ltr">{`${thousandsSeperatorFa(amount)}`}</span>*/}
-            {/*</div>*/}
+        <Grid item xs={4} md={5} lg={5} >
+          <Grid container spacing={1} alignItems="flex-end">
+
+            <Hidden xsDown>
+              <Grid item xs={4} className={detailContainer}>
+                <span className="txt-xs text-nowrap text-muted text-center">{`${offer1} به ${offer2}`}</span>
+              </Grid>
+            </Hidden>
+
+            <Grid item xs={6} md={4} lg={4} className={detailContainer}>
+              <span className="txt-xs text-nowrap text-muted">{convertISOTime(expireDate) }</span>
+            </Grid>
+            <Grid item xs={6} md={4} lg={4} className={detailContainer}>
+              <span className="txt-xs text-nowrap text-muted">{thousandsSeperator(price) }</span>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

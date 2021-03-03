@@ -1,21 +1,22 @@
 import React from 'react';
-import { Box, createStyles, Divider, Grid } from '@material-ui/core';
+import { Box, createStyles, Divider, Grid, Hidden } from '@material-ui/core';
 import { CardHeaderInterface } from '../../../../../interfaces';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar as solidStar,
   faStarHalfAlt,
+  faMapMarkerAlt,
+  faCalculator,
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@material-ui/icons/Person';
+import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     box: {
-      backgroundColor: '#fff',
-      borderRadius: 10,
       padding: theme.spacing(2, 1),
       position: 'relative',
     },
@@ -38,8 +39,8 @@ const useStyle = makeStyles((theme) =>
       display: 'flex',
       alignItems: 'center',
       '& span:nth-child(1)': {
-        width: 15,
-        height: 15,
+        width: 12,
+        height: 12,
         borderRadius: '50%',
         marginRight: 5,
         display: 'inline-block',
@@ -56,8 +57,9 @@ const useStyle = makeStyles((theme) =>
           background: '#E5E4E2',
         },
         '& svg': {
-          width: 12,
-          height: 12,
+          width: 10,
+          height: 10,
+          color: 'white',
           marginLeft: 1,
           marginBottom: 1,
         },
@@ -68,6 +70,22 @@ const useStyle = makeStyles((theme) =>
     },
     starIcon: {
       color: '#ffc65d',
+    },
+
+    headerBack: {
+      background: '#fefff2',
+      margin: theme.spacing(2, 0),
+    },
+    logoType: {
+      width: '60px',
+      height: '60px',
+      maxWidth: '100%',
+      maxHeight: '100%',
+      verticalAlign: 'middle',
+    },
+    pharmacyName: {
+      fontSize: '15px',
+      color: '#0d810d',
     },
   })
 );
@@ -81,6 +99,9 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
     userLevelContainer,
     textLeft,
     starIcon,
+    headerBack,
+    logoType,
+    pharmacyName,
   } = useStyle();
 
   const { t } = useTranslation();
@@ -150,42 +171,44 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
   };
 
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={12}>
-        <Grid container spacing={1}>
-          <Grid xs={6} item>
-            {handleUserType(userType)}
-          </Grid>
-
-          <Grid xs={6} item className={textLeft}>
-            {guaranty > 0 && (
-              <span className="txt-xs">{`${guaranty} تومان`}</span>
-            )}
-          </Grid>
+    <Grid container className={headerBack} spacing={1}>
+      <Hidden xsDown >
+      <Grid container xs={2} alignItems="center" justify="center">
+        <img className={logoType} src="pharmacy.png" />
+      </Grid>
+      </Hidden>
+     
+      <Grid item xs={7} lg={6} md={6}>
+        <Grid item xs={12}>
+          <span>
+            <FontAwesomeIcon
+              icon={faMapMarkerAlt}
+              size="1x"
+              style={{ marginLeft: '6px' }}
+            />
+          </span>
+          <Hidden xsDown ><span className="txt-xs ">محل داروخانه: </span></Hidden>
+          <span className={` ${pharmacyName} `}>{`${province} ${city}`}</span>
         </Grid>
-
-        <Grid container spacing={0}>
-          <Grid xs={6} item>
-            <span className="txt-xs">{`${province} ${city}`}</span>
-          </Grid>
-
-          <Grid xs={6} item className={textLeft}>
-            <span className="txt-xs" dir="ltr">
-              {stars(Number(star))}
-            </span>
-          </Grid>
+        <Grid item xs={12}>
+          {handleUserType(userType)}
+        </Grid>
+        <Grid item xs={12}>
+          <span>
+            <FontAwesomeIcon
+              icon={faCalculator}
+              size="1x"
+              style={{ marginLeft: '6px' }}
+            />
+          </span>
+          <span className="txt-xs ">تعداد اقلام عرضه شده: </span>
+          <span className={` ${pharmacyName} `}>{itemsCount} </span>
+        </Grid>
+        <Grid item xs={12}>
+          {stars(Number(star))}
         </Grid>
       </Grid>
-
-      <Grid item xs={12}>
-        <Box component="div" className={box}>
-          <div className={`txt-xs ${divPosition} right`}>
-            تعداد اقلام عرضه شده
-          </div>
-          <Divider />
-          <div className={`txt-xs ${divPosition} left`}>{itemsCount}</div>
-        </Box>
-      </Grid>
+      <Grid item xs={5} lg={4} md={4}></Grid>
     </Grid>
   );
 };
