@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
-import { createStyles, Paper, Grid } from '@material-ui/core';
+import { createStyles, Paper, Grid, Box, Divider,Button, Hidden } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import CardHeader from './CardHeader';
 import { CardContainerRelatedPharmacyDrugsInterface } from '../../../../../interfaces';
 import ItemContainer from './ItemContainer';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
-import Button from '../../../../public/button/Button';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -16,26 +15,59 @@ import routes from '../../../../../routes';
 const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
-      backgroundColor: '#ECECEC',
+      backgroundColor: '#fff',
       borderRadius: 10,
-      padding: theme.spacing(2),
+      width:"100%",
+      padding: theme.spacing(1),
       position: 'relative',
-      height: 350,
     },
     span: {
       color: '#707070',
       margin: theme.spacing(1, 0),
+      
     },
     buttonContainer: {
       width: '100%',
       marginTop: theme.spacing(1),
-      '& button': {
-        width: '100%',
-      },
+      
     },
     itemContainer: {
-      height: 187,
+      backgroundColor: '#fcfdfc',
+
     },
+    box: {
+      padding: theme.spacing(1, 2),
+      backgroundColor: '#fcfdfc',
+      marginBottom: theme.spacing(1),
+      width: '100%',
+    },
+    gridItem: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    detailContainer: {
+      display: 'flex',
+      alignItems: 'center',
+      '& > svg': {
+        color: '#9f9ea0',
+      },
+      '& span': {
+        marginLeft: '5px',
+      },
+    },
+    buttonContinueExchange:{
+       color:'#fff',
+       backgroundColor:'#54bc54 !important',
+       width:'100%',
+       fontSize:'12px',
+              
+    },
+    buttonExchange:{
+      color:'#fff',
+      backgroundColor:'#269b26 !important',
+      width:'100%',
+      fontSize:'12px',
+    }
   })
 );
 
@@ -67,7 +99,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     notSendExchangeID,
   } = data;
 
-  const { paper, span, buttonContainer, itemContainer } = useStyle();
+  const { paper, span, buttonContainer, itemContainer ,box,detailContainer,buttonContinueExchange,buttonExchange} = useStyle();
 
   const { t } = useTranslation();
 
@@ -92,7 +124,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
 
   return (
     <Paper className={paper}>
-      <Grid container spacing={1}>
+      <Grid container spacing={0}>
         <CardHeader
           city={pharmacyCity}
           province={pharmacyProvince}
@@ -101,7 +133,29 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
           itemsCount={itemsCount}
           userType={userType}
         />
-        <div className={`${span} w-100 txt-xs`}>نمونه اقلام</div>
+        <Box component="div" className={box}>
+          <Grid container spacing={0}>
+            <Grid item xs={8}  md={7} lg={7} className={detailContainer}>
+              <span className="txt-xs text-nowrap">نام دارو</span>
+            </Grid>
+
+            <Grid item xs={4} md={5} lg={5}>
+              <Grid container spacing={1} alignItems="flex-end">
+              <Hidden xsDown>
+                <Grid item xs={4} className={detailContainer}>
+                  <span className="txt-xs text-nowrap">هدیه</span>
+                </Grid>
+                </Hidden>
+                <Grid item xs={6} md={4} lg={4} className={detailContainer}>
+                  <span className="txt-xs text-nowrap">انقضا</span>
+                </Grid>
+                <Grid item xs={6} md={4} lg={4} className={detailContainer}>
+                  <span className="txt-xs text-nowrap"> قیمت</span>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Divider/>
         <div className={`${itemContainer} w-100`}>
           {betterItems.map((item: any) => (
             <ItemContainer
@@ -109,24 +163,32 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
               cnt={item.cnt}
               offer2={item.offer2}
               offer1={item.offer1}
+              price = {item.price}
               expireDate={item.expireDate}
             />
           ))}
         </div>
+        </Box>
+
       </Grid>
-      <Grid item xs={12}>
-        <div className={buttonContainer}>
-          <Button
+      <Grid container xs={12}>
+
+
+        <Grid item xs = {9}>
+          
+          </Grid>
+         
+        <Grid item xs = {3}>
+        <Button
             type="button"
-            variant="outlined"
-            color={notSendExchangeID !== null ? 'pink' : 'blue'}
+            className={notSendExchangeID !==null ? buttonExchange:buttonContinueExchange}
             onClick={transferStartHandler}
           >
             {notSendExchangeID !== null
               ? t('exchange.continue')
               : t('general.tabadol')}
           </Button>
-        </div>
+        </Grid>
       </Grid>
     </Paper>
   );
