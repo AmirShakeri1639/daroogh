@@ -134,6 +134,7 @@ const ActionButtons = (): JSX.Element => {
     exchangeStateCode,
     setShowApproveModalForm,
     viewExhcnage,
+    setViewExchange,
     exchangeId,
     showApproveModalForm,
     is3PercentOk,
@@ -177,7 +178,8 @@ const ActionButtons = (): JSX.Element => {
     pharmacyInfo,
     send,
     getQuestionGroupOfExchange,
-    saveSurvey
+    saveSurvey,
+    getViewExchange
   } = new PharmacyDrug();
 
   const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
@@ -231,6 +233,7 @@ const ActionButtons = (): JSX.Element => {
     { isLoading: isLoadingConfirmOrNotExchange },
   ] = useMutation(confirmOrNotExchange, {
     onSuccess: async (res) => {
+      debugger;
       if (res) {
         await sweetAlert({
           type: 'success',
@@ -324,14 +327,22 @@ const ActionButtons = (): JSX.Element => {
     inputmodel.exchangeID = exchangeId;
     inputmodel.isConfirm = isConfirm;
     try {
-      await _confirmOrNotExchange(inputmodel);
+      let res = await _confirmOrNotExchange(inputmodel);
       if (viewExhcnage && viewExhcnage.state === 3) {
+        setShowApproveModalForm(true);
+      }
+      toggleIsOpenCancelExchangeModalForm(modalType);
+      if (isConfirm && res) {
+        const viewExResult = await getViewExchange(exchangeId);
+        const result: ViewExchangeInterface | undefined = viewExResult.data;
+        if (result) setViewExchange(result);
         setShowApproveModalForm(true);
       }
     } catch (e) {
       errorHandler(e);
+      toggleIsOpenCancelExchangeModalForm(modalType);
     }
-    toggleIsOpenCancelExchangeModalForm(modalType);
+
   };
 
   const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
@@ -681,7 +692,7 @@ const ActionButtons = (): JSX.Element => {
               steps={getQuestions.question.length}
               position="static"
               variant="text"
-              style={{backgroundColor: '#f1f1f1'}}
+              style={{ backgroundColor: '#f1f1f1' }}
               activeStep={activeQuestionStep}
               nextButton={
                 <MatButton
