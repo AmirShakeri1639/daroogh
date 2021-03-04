@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
-import { Grid } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../../classes';
@@ -15,10 +15,11 @@ import {
 } from '../../../../../utils/ExchangeTools';
 import { isNullOrEmpty, EncrDecrService } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import routes from '../../../../../routes';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 import { useQuery } from 'react-query';
+import queryString from 'query-string';
 // load test data
 // import d from './testdata.json';
 
@@ -35,9 +36,21 @@ const Desktop1: React.FC = () => {
 
 
 
-  const [filter, setFilter] = useState<ExchangeStateEnum>(
-    ExchangeStateEnum.UNKNOWN
-  );
+  const location = useLocation();
+  const params = queryString.parse(location.search);  
+  const [filter, setFilter] = useState<ExchangeStateEnum[]>(():any => {
+    if (params.state && params.state.length > 0) {
+      return (
+        String(params.state).split(',').map(i => +i)
+      )
+    } else {
+      return [ExchangeStateEnum.UNKNOWN];
+    }
+  });
+  console.log('filter)', filter)
+  
+  
+
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
 
@@ -53,14 +66,14 @@ const Desktop1: React.FC = () => {
 
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
   const exchangesRef = React.useRef(exchanges);
-  const setExchangesRef = (data: ViewExchangeInterface[])  => {
+  const setExchangesRef = (data: ViewExchangeInterface[]) => {
     exchangesRef.current = data;
     setExchanges(data);
   }
 
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
-  const setPageRef = (data: number)  => {
+  const setPageRef = (data: number) => {
     pageRef.current = data;
     setPage(data);
   }
@@ -68,7 +81,7 @@ const Desktop1: React.FC = () => {
   const prevCount = usePrevious(page)
   const [loading, setLoading] = useState(false);
   const loadingRef = React.useRef(loading);
-  const setLoadingRef = (data: boolean)  => {
+  const setLoadingRef = (data: boolean) => {
     loadingRef.current = data;
     setLoading(data);
   }
@@ -78,7 +91,7 @@ const Desktop1: React.FC = () => {
 
   const [totalCount, setTotalCount] = useState<number>(0);
   const totalCountRef = React.useRef(totalCount);
-  const setTotalCountRef = (data: number)  => {
+  const setTotalCountRef = (data: number) => {
     totalCountRef.current = data;
     setTotalCount(data);
   }
@@ -220,9 +233,9 @@ const Desktop1: React.FC = () => {
 
   const filterChanged = (v: number): void => {
     if (v === 0) {
-      setFilter(ExchangeStateEnum.UNKNOWN);
+      setFilter([ExchangeStateEnum.UNKNOWN]);
     } else {
-      setFilter(v);
+      setFilter([v]);
     }
   };
 
@@ -242,16 +255,16 @@ const Desktop1: React.FC = () => {
     if (exchanges && exchanges.length > 0) {
       // filter
       const listToShow =
-        filter == ExchangeStateEnum.UNKNOWN
+        filter.includes(ExchangeStateEnum.UNKNOWN)
           ? [...exchanges]
           : exchanges.filter(
             (ex) =>
-              ex.state === filter ||
+              filter.includes(ex.state) ||
               (isExchangeCompleted(
                 ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
                 ex.currentPharmacyIsA
               ) &&
-                filter == ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL)
+                filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
           );
 
       // sort
@@ -266,17 +279,17 @@ const Desktop1: React.FC = () => {
         }
       }
 
-      elements = <>{listToShow.map((item, index) =>
-        <Grid item={true} xs={12} sm={6} md={4} xl={4} key={index}>
-          <div className={paper}>
+      elements = <>{ listToShow.map((item, index) =>
+        <Grid item={ true } xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
+          <div className={ paper }>
             <DesktopCardContent
-              item={item}
-              full={false}
-              onCardClick={cardClickHandler}
+              item={ item }
+              full={ false }
+              onCardClick={ cardClickHandler }
             />
           </div>
         </Grid>
-      )}</>
+      ) }</>
 
 
       return elements;
@@ -287,25 +300,27 @@ const Desktop1: React.FC = () => {
   };
 
   return (
-    <Grid item={true} xs={11}>
-      <Grid container spacing={1}>
-        <Grid item={true} xs={12}>
-          <DesktopToolbox
-            filterList={stateFilterList}
-            onFilterChanged={filterChanged}
-            onSortSelected={sortSelected}
-          />
+    <Container>
+      <Grid item={ true } xs={ 11 }>
+        <Grid container spacing={ 1 }>
+          <Grid item={ true } xs={ 12 }>
+            <DesktopToolbox
+              filterList={ stateFilterList }
+              onFilterChanged={ filterChanged }
+              onSortSelected={ sortSelected }
+            />
+          </Grid>
         </Grid>
-      </Grid>
 
-      <Grid container spacing={1}>
-        {<CardListGenerator />}
+        <Grid container spacing={ 1 }>
+          { <CardListGenerator /> }
+        </Grid>
+        {/* {loading && <CircleLoading />} */ }
+        <CircleBackdropLoading isOpen={ loadingRef.current } />
+        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */ }
+        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */ }
       </Grid>
-      {/* {loading && <CircleLoading />} */}
-      <CircleBackdropLoading isOpen={loadingRef.current} />
-      {/* {loading ? <div className="text-center">loading data ...</div> : ""} */}
-      {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */}
-    </Grid>
+    </Container>
   );
 };
 

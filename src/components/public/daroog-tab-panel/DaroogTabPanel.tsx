@@ -16,6 +16,7 @@ export const DaroogTabPanel: React.FC<DaroogTabPanelProps> = (props) => {
       hidden={value !== index}
       id={`scrollable-prevent-tabpanel-${index}`}
       aria-labelledby={`scrollable-prevent-tab-${index}`}
+      style={{ direction: 'rtl' }}
       {...other}
     >
       {value == index && (

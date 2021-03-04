@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { makeStyles, Paper, createStyles, Grid, Button, Box, Divider } from '@material-ui/core';
-import { MaterialContainer, Modal } from '../../../public';
+import { MaterialContainer, Modal } from '../../../../public';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FavoriteDrugInterface, PrescriptionDataInterface } from '../../../../interfaces';
+import { FavoriteDrugInterface, PrescriptionDataInterface } from '../../../../../interfaces';
 import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { ColorEnum, TextMessage } from '../../../../enum';
-import { BackDrop, TextLine } from '../../../public';
-import { useClasses } from '../classes';
-import moment from 'moment';
+import { ColorEnum, TextMessage } from '../../../../../enum';
+import { BackDrop, TextLine } from '../../../../public';
+import { useClasses } from '../../classes';
+import moment from 'jalali-moment';
 import { useQuery } from 'react-query';
-import { Prescription as presApi } from '../../../../services/api';
+import { Prescription as presApi } from '../../../../../services/api';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -107,7 +107,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
           </Grid>
         )}
         {!cancelDate && (
-          <Grid item xs={12}>
+          <Grid item xs={12} className={spacingVertical1}>
             <Grid justify="flex-end" container spacing={1}>
               <Grid item xs={1}>
                 <FontAwesomeIcon

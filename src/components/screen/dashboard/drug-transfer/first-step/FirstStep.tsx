@@ -7,6 +7,7 @@ import {
   AccordionDetails,
   Divider,
   Typography,
+  Hidden,
 } from '@material-ui/core';
 import { debounce } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -14,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import { Exchange, PharmacyDrug } from 'services/api';
 import { PharmacyDrugEnum } from 'enum/query';
-import CircleLoading from 'components/public/loading/CircleLoading';
+import { CircleLoading, EmptyContent } from 'components/public';
 import CardContainer from './CardContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { PharmacyDrugInterface } from 'interfaces/pharmacyDrug';
@@ -27,6 +28,7 @@ import {
   Button,
   Input,
   ReactSelect,
+  AutoComplete,
 } from 'components/public';
 import CloseIcon from '@material-ui/icons/Close';
 import { errorHandler, sanitizeReactSelect } from 'utils';
@@ -36,10 +38,10 @@ import { AdvancedSearchInterface } from 'interfaces/search';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from 'redux/actions';
 import { useLocalStorage } from 'hooks';
+import { ListOptions } from 'components/public/auto-complete/AutoComplete';
 
 const { getRelatedPharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
-const { getDashboard } = new Exchange();
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -131,23 +133,35 @@ const useStyle = makeStyles((theme) =>
         padding: 5,
       },
     },
+    
   })
 );
+
+const isMultipleSelection = true;
 
 const FirstStep: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const [isCheckedJustOffer, setIsCheckedJustOffer] = useState<boolean>(false);
   const [selectedCounty, setSelectedCounty] = useState<string>('-2');
   const [selectedProvince, setSelectedProvince] = useState<string>('-2');
-  const [searchOptions, setSearchOptions] = useState<object[] | undefined>(undefined);
-  const [searchedDrugs, setSearchedDrugs] = useState<SelectOption[]>([]);
+  const [searchOptions, setSearchOptions] = useState<object[] | undefined>(
+    undefined
+  );
+  const [searchedDrugs, setSearchedDrugs] = useState<ListOptions[]>([]);
   const [searchedDrugsReesult, setSearchedDrugsReesult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [searchedCategory, setSearchedCategory] = useState<SelectOption | undefined>(undefined);
-  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(undefined);
+  const [searchedCategory, setSearchedCategory] = useState<
+    SelectOption | undefined
+  >(undefined);
+  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(
+    undefined
+  );
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
-  const [remainingExpireDays, setRemainingExpireDays] = useState<number | null>(null);
+  const [remainingExpireDays, setRemainingExpireDays] = useState<number | null>(
+    null
+  );
   const [isInSearchMode, setIsInSearchMode] = useState<boolean>(false);
+  const [isLoadingSearch, setIsLoadingSearch] = useState(false);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -156,7 +170,9 @@ const FirstStep: React.FC = () => {
 
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
-  const setDataOfSearch = (item: AdvancedSearchInterface): AdvancedSearchInterface => {
+  const setDataOfSearch = (
+    item: AdvancedSearchInterface
+  ): AdvancedSearchInterface => {
     const drugsIdsArray = searchedDrugs.map((d) => ({ drugID: d.value }));
 
     if (drugsIdsArray.length > 0) {
@@ -219,20 +235,40 @@ const FirstStep: React.FC = () => {
     }
   }, [searchedDrugs]);
 
-  const drugSearch = async (title: string): Promise<any> => {
+  const getDrugName = (item: any): string => {
+    return `${item.name}${
+      item.genericName !== null ? ` (${item.genericName}) ` : ''
+    }${item.type !== null ? ` - ${item.type}` : ''}`;
+  };
+
+  const drugSearch = async (title: string): Promise<void> => {
     try {
       if (title.length < 2) {
         return;
       }
+
+      setIsLoadingSearch(true);
       const result = await searchDrug(title);
-      const mappedItems = result.map((item: any) => ({
-        ...item,
-        genericName: `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
-          item.companyName !== null ? `-${item.companyName}` : ''
-        }${item.type !== null ? ` - ${item.type}` : ''}`,
+      const mappedItems = result.map((_item: any) => ({
+        item: {
+          value: _item.id,
+          label: getDrugName(_item),
+        },
+        el: (
+          <div>
+            <div>{getDrugName(_item)}</div>
+            <div className="text-muted txt-sm">{`${
+              _item.enName !== null ? `-${_item.enName}` : ''
+            }${
+              _item.companyName !== null ? ` - ${_item.companyName}` : ''
+            }`}</div>
+          </div>
+        ),
       }));
-      const options = sanitizeReactSelect(mappedItems, 'id', 'genericName');
-      setSearchOptions([...options]);
+      setIsLoadingSearch(false);
+
+      // const options = sanitizeReactSelect(mappedItems, 'id', 'genericName');
+      setSearchOptions(mappedItems);
     } catch (e) {
       errorHandler(e);
     }
@@ -287,7 +323,7 @@ const FirstStep: React.FC = () => {
       if (searchedDrugsReesult === null || searchedDrugsReesult.length === 0) {
         return (
           <div className={`${noContent} w-100`}>
-            <p>اطلاعاتی موجود نیست</p>
+            <EmptyContent />
             <Button
               variant="outlined"
               color="blue"
@@ -305,7 +341,7 @@ const FirstStep: React.FC = () => {
         items = searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
           return (
             <>
-              <Grid item xs={12} sm={6} lg={4}>
+              <Grid item xs={12} sm={6} lg={6}>
                 <CardContainer data={d} />
               </Grid>
             </>
@@ -316,7 +352,7 @@ const FirstStep: React.FC = () => {
       items = data.map((d: PharmacyDrugInterface) => {
         return (
           <>
-            <Grid item xs={12} sm={6} lg={4}>
+            <Grid item xs={12} sm={6} lg={6}>
               <CardContainer data={d} />
             </Grid>
           </>
@@ -330,7 +366,20 @@ const FirstStep: React.FC = () => {
   return (
     <>
       <Grid item xs={12}>
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
+          <Hidden xsDown>
+            <Grid item xs={12}>
+              <span className="txt-md ">
+                برای جستجو در لیست های عرضه شده توسط همکارانتان میتوانید نام
+                دارو٬ دسته دارویی یا نام ژنریک را وارد کنید. همچنین میتوانید چند
+                دارو را جستجو کنید و لیست هایی که بیشترین مطابقت با خواسته شما
+                را داشته باشد به شما پیشنهاد داده میشود برای جستجوی دقیق تر
+                میتوانید از گزینه جستجوی پیشرفته استفاده نمایید
+              </span>
+              <Divider />
+            </Grid>
+          </Hidden>
+
           <Grid item xs={12}>
             <div className={searchContainer}>
               <Button onClick={(): void => setIsOpenDrawer(true)}>
@@ -338,20 +387,25 @@ const FirstStep: React.FC = () => {
                 {t('general.filter')}
               </Button>
 
-              <ReactSelect
-                value={searchedDrugs}
-                onChange={(e): void => {
-                  if (Array.isArray(e)) {
+              <AutoComplete
+                isLoading={isLoadingSearch}
+                onChange={debounce(
+                  (e): Promise<void> => drugSearch(e.target.value),
+                  500
+                )}
+                className="w-100"
+                loadingText={t('general.loading')}
+                options={searchOptions}
+                placeholder='جستجو (نام دارو٬ دسته دارویی٬ نام ژنریک) '
+                multiple={isMultipleSelection}
+                onItemSelected={(arrayList): void => {
+                  if (arrayList.length > 0) {
                     setIsInSearchMode(true);
                   } else {
                     setIsInSearchMode(false);
                   }
-                  setSearchedDrugs(e === null ? [] : e);
+                  setSearchedDrugs(arrayList);
                 }}
-                noOptionsMessage={t('general.noData')}
-                isMulti
-                onInputChange={debounce(drugSearch, 250)}
-                options={searchOptions}
               />
             </div>
           </Grid>
@@ -364,7 +418,10 @@ const FirstStep: React.FC = () => {
         <div className={drawerContainer}>
           <div id="titleContainer">
             <h6 className="txt-md">فیلترهای جستجو</h6>
-            <CloseIcon onClick={(): void => setIsOpenDrawer(false)} className="cursor-pointer" />
+            <CloseIcon
+              onClick={(): void => setIsOpenDrawer(false)}
+              className="cursor-pointer"
+            />
           </div>
 
           <Divider />
@@ -395,7 +452,11 @@ const FirstStep: React.FC = () => {
 
             <div className={switchContainer}>
               <span>{t('general.justOffer')}</span>
-              <Switch id="just-offer" checked={isCheckedJustOffer} onChange={toggleCheckbox} />
+              <Switch
+                id="just-offer"
+                checked={isCheckedJustOffer}
+                onChange={toggleCheckbox}
+              />
             </div>
 
             <Divider className={divider} />
@@ -411,7 +472,9 @@ const FirstStep: React.FC = () => {
                 value={remainingExpireDays || ''}
                 className={monthInput}
                 error={Number(remainingExpireDays) < minimumDrugExpireDay}
-                onChange={(e): any => setRemainingExpireDays(Number(e.target.value))}
+                onChange={(e): any =>
+                  setRemainingExpireDays(Number(e.target.value))
+                }
               />
             </div>
 
@@ -470,7 +533,12 @@ const FirstStep: React.FC = () => {
 
           <Grid container spacing={0}>
             <Grid item xs={12} className={buttonWrapper}>
-              <Button onClick={advancedSearchItems} variant="outlined" type="button" color="pink">
+              <Button
+                onClick={advancedSearchItems}
+                variant="outlined"
+                type="button"
+                color="pink"
+              >
                 {t('general.emal')} {t('general.filter')}
               </Button>
             </Grid>
