@@ -119,6 +119,7 @@ export interface ItemContainerPropsInterface {
   offer2: number | string;
   offer1: string | number;
   expireDate: string;
+  price: string;
 }
 
 export interface MaterialDrawerPropsInterface {
