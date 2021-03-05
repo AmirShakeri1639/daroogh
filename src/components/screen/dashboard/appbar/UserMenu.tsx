@@ -1,46 +1,75 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Menu, MenuItem, ListItemIcon } from '@material-ui/core';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useTranslation } from 'react-i18next';
 import Context from '../Context';
 import { logoutUser } from '../../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-regular-svg-icons';
+import {
+  faUserMd,
+  faSignOutAlt,
+  faUserAlt,
+  faLock,
+} from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import routes from '../../../../routes';
+
+const { profile, changeUserPassword, jobSearchList } = routes;
 
 const UserMenu: React.FC = () => {
   const { anchorEl, setAnchorEl } = useContext(Context);
   const { t } = useTranslation();
   const handleClose = (): void => setAnchorEl(null);
 
-  const { profile } = routes;
+  const menuItems = [
+    {
+      path: profile,
+      icon: faUserAlt,
+      text: t('user.profile'),
+    },
+    {
+      path: changeUserPassword,
+      icon: faLock,
+      text: t('user.changeUserPassword'),
+    },
+    {
+      path: jobSearchList,
+      icon: faUserMd,
+      text: t('jobSearch.jobSearch'),
+    },
+  ];
 
   const logout = (): void => {
     logoutUser();
   };
 
+  const renderItems = useMemo((): JSX.Element[] => {
+    return menuItems.map((item) => (
+      <MenuItem className="txt-sm">
+        <Link to={item.path} style={{ textDecoration: 'none' }}>
+          <ListItemIcon>
+            <FontAwesomeIcon icon={item.icon} size="lg" />
+          </ListItemIcon>
+          {item.text}
+        </Link>
+      </MenuItem>
+    ));
+  }, []);
+
   return (
     <Menu
       id="user-menu"
-      anchorEl={ anchorEl }
+      anchorEl={anchorEl}
       keepMounted
-      open={ Boolean(anchorEl) }
-      onClose={ handleClose }
+      open={Boolean(anchorEl)}
+      onClose={handleClose}
     >
-      <MenuItem className="txt-sm">
-        <Link to={ profile } style={{ textDecoration: 'none' }}>
-          <ListItemIcon>
-            <FontAwesomeIcon icon={ faUser } />
-          </ListItemIcon>
-          { t('user.profile') }
-        </Link>
-      </MenuItem>
-      <MenuItem onClick={ logout } className="txt-sm">
+      {renderItems}
+
+      <MenuItem onClick={logout} className="txt-sm">
         <ListItemIcon>
-          <ExitToAppIcon fontSize="small" />
+          <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
         </ListItemIcon>
-        { t('login.sign-out') }
+        {t('login.sign-out')}
       </MenuItem>
     </Menu>
   );

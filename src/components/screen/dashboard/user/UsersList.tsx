@@ -179,9 +179,11 @@ const UsersList: React.FC = () => {
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
+  const [isOpenUserModal, setIsOpenUserModal] = useState(false);
 
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
+  const toggleIsOpenUserModal = (): void => setIsOpenUserModal((v) => !v);
 
   const { getAllUsers, removeUser, disableUser, saveNewUser } = new User();
 
@@ -396,6 +398,13 @@ const UsersList: React.FC = () => {
     },
   ];
 
+  const addUserHander = (): void => {
+    if (isOpenUserModal) {
+      queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+    }
+    toggleIsOpenUserModal();
+  };
+
   return (
     <FormContainer title={t('user.users-list')}>
       <DataTable
@@ -403,6 +412,7 @@ const UsersList: React.FC = () => {
         extraMethods={{ editUser: enableUserHandler }}
         columns={tableColumns()}
         editAction={editUserHandler}
+        addAction={addUserHander}
         editUser={enableUserHandler}
         removeAction={removeUserHandler}
         queryKey={UserQueryEnum.GET_ALL_USERS}
@@ -469,6 +479,10 @@ const UsersList: React.FC = () => {
             toggleIsOpenDatePicker();
           }}
         />
+      </Modal>
+
+      <Modal open={isOpenUserModal} toggle={toggleIsOpenUserModal}>
+        <UserForm onSubmit={addUserHander} onCancel={addUserHander} />
       </Modal>
     </FormContainer>
   );

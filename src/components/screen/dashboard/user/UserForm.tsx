@@ -212,7 +212,9 @@ const UserForm: React.FC<UserDataProps> = (props) => {
     };
 
     await _saveNewUser(data);
-    if (onSubmit) onSubmit();
+    if (onSubmit) {
+      onSubmit();
+    }
   };
 
   const isVisibleField = (field: string): boolean => {
