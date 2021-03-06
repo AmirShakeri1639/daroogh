@@ -18,6 +18,7 @@ import {
   Business,
   Apps as AppsIcon,
   Bookmark,
+  GroupTwoTone as GroupTwoToneIcon,
 } from '@material-ui/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -113,6 +114,7 @@ const ListItems: React.FC = () => {
     isOpenPageOfThisGroup('exchange')
   );
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
+  const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(
     isOpenPageOfThisGroup('favorite')
   );
@@ -197,23 +199,22 @@ const ListItems: React.FC = () => {
         </Collapse> */}
 
         {/* //// User */}
-        <List component="div" className={linkWrapper}>
-          <Link to={usersList} className={notNested}>
-            <ListItemIcon style={{ color: '#4625B2' }}>
-              <PermIdentityTwoToneIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('user.user')} />
-          </Link>
-        </List>
-        {/* <Collapse in={isOpenUserMenu} timeout="auto" unmountOnExit>
-          <List component="div" className={linkWrapper}>
+        <ListItem button onClick={(): void => setIsOpenUserMenu((v) => !v)}>
+          <ListItemIcon style={{ color: '#4625B2' }}>
+            <PermIdentityTwoToneIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('user.user')} />
+          {isOpenUserMenu ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isOpenUserMenu} timeout="auto" unmountOnExit>
+          {/* <List component="div" className={linkWrapper}>
             <Link to={createUser} className={nested}>
               <ListItemIcon style={{ color: '#4625B2' }}>
                 <PersonAddTwoToneIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.create-user')} />
             </Link>
-          </List>
+          </List> */}
           <List component="div" className={linkWrapper}>
             <Link to={usersList} className={nested}>
               <ListItemIcon style={{ color: '#4625B2' }}>
@@ -222,14 +223,14 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('user.users-list')} />
             </Link>
           </List>
-          <List component="div" className={linkWrapper}>
+          {/* <List component="div" className={linkWrapper}>
             <Link to={changeUserPassword} className={nested}>
               <ListItemIcon style={{ color: '#4625B2' }}>
                 <LockIcon />
               </ListItemIcon>
               <ListItemText primary={t('user.changeUserPassword')} />
             </Link>
-          </List>
+          </List> */}
           <List component="div" className={linkWrapper}>
             <Link to={jobSearchList} className={nested}>
               <ListItemIcon style={{ color: '#4625B2' }}>
@@ -238,7 +239,7 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('jobSearch.jobSearch')} />
             </Link>
           </List>
-        </Collapse> */}
+        </Collapse>
 
         {/* //// Drug */}
         <List component="div" className={linkWrapper}>

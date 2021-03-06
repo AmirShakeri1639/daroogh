@@ -31,11 +31,6 @@ const UserMenu: React.FC = () => {
       icon: faLock,
       text: t('user.changeUserPassword'),
     },
-    {
-      path: jobSearchList,
-      icon: faUserMd,
-      text: t('jobSearch.jobSearch'),
-    },
   ];
 
   const logout = (): void => {
