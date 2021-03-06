@@ -502,7 +502,7 @@ const SupplyList: React.FC = () => {
     if (filteredItems.length > 0) {
       items = filteredItems.map((item: AllPharmacyDrugInterface) => {
         return (
-          <Grid item spacing={3} xs={12} sm={6} md={4} xl={3} key={item.id}>
+          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
             <CardContainer
               editHandler={(): Promise<any> => editHandler(item)}
               drug={item}
@@ -514,7 +514,7 @@ const SupplyList: React.FC = () => {
       if (isFetched) {
         items = data.items.map((item: AllPharmacyDrugInterface) => {
           return (
-            <Grid spacing={3} item xs={12} sm={6} md={4} xl={3} key={item.id}>
+            <Grid spacing={3} item xs={12} sm={12} md={4} xl={4} key={item.id}>
               <CardContainer
                 editHandler={(): Promise<any> => editHandler(item)}
                 drug={item}
@@ -600,7 +600,7 @@ const SupplyList: React.FC = () => {
 
         <Grid container spacing={3} className={contentContainer}>
           <Hidden xsDown>
-            <Grid item xs={12} sm={6} md={4} xl={3}>
+            <Grid item xs={12} sm={12} md={4} xl={4}>
               <Paper className={blankCard} onClick={toggleIsOpenModalOfNewList}>
                 <FontAwesomeIcon icon={faPlus} size="2x" />
                 <span>{t('pharmacy.addToTransferList')}</span>
@@ -611,7 +611,7 @@ const SupplyList: React.FC = () => {
           {displayHandler()}
           <Hidden smUp>
             <Fab onClick={toggleIsOpenModalOfNewList} className={fab} aria-label="add">
-              <FontAwesomeIcon icon={faPlus} color="white" />
+              <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
             </Fab>
           </Hidden>
         </Grid>
