@@ -132,7 +132,6 @@ const Pack: React.FC = () => {
           </Grid>
         </Hidden>
         {contentHandler()}
-
         <Hidden smUp>
           <Fab onClick={createPackLink} className={fab} aria-label="add">
             <FontAwesomeIcon size="2x" icon={faPlus} color="white" />

@@ -623,7 +623,7 @@ const Create: React.FC = () => {
         <Grid item xs={12}>
           <FieldSetLegend legend={t('pack.create')}>
             <Grid container spacing={1}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <FormControl
@@ -714,7 +714,7 @@ const Create: React.FC = () => {
           <Grid item xs={12} sm={12} md={4} xl={4} className={addButton}>
             <Button variant="text" onClick={toggleIsOpenModal}>
               <FontAwesomeIcon icon={faPlus} />
-              <span>{t('pack.create')}</span>
+              <span>{t('pack.add')}</span>
             </Button>
           </Grid>
         </Hidden>
