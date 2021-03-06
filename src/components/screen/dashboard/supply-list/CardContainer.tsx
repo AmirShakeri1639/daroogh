@@ -25,8 +25,8 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1),
-      borderRadius: 10,
+      padding: theme.spacing(1, 1, 1,1),
+      borderRadius: 5,
     },
     redTrash: {
       color: '#ff0000',
@@ -98,12 +98,12 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
       <Grid item xs={12}>
         <Grid justify="flex-end" container spacing={0}>
           <Grid item xs={2}>
-            <Button onClick={openEditModal} style={{ color: 'green' }}>
+            <Button onClick={openEditModal} style={{ color: 'green', fontSize:"14px" }}>
               ویرایش
             </Button>
           </Grid>
           <Grid item xs={2}>
-            <Button onClick={removeHandler} style={{ color: 'red' }}>
+            <Button onClick={removeHandler} style={{ color: 'red' , fontSize:"14px" }}>
               حذف
             </Button>
           </Grid>

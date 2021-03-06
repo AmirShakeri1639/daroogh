@@ -62,28 +62,41 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                   <Grid container xs={1}>
                     <img src="drug.png" style={{ height: '25px' }} />
                   </Grid>
-                  <Grid container xs={11} style={{ alignItems: 'center' , paddingRight:'8px' }}>
+                  <Grid
+                    container
+                    xs={11}
+                    style={{ alignItems: 'center', paddingRight: '8px' }}
+                  >
                     <span>{drugName}</span>
                     <div className="text-muted txt-sm">{enName || ''}</div>
                   </Grid>
                 </Grid>
 
-                <Grid container style={{padding:'8px'}} >
+                <Grid container style={{ padding: '8px' }}>
                   <Grid item xs={6}>
-                    <TextWithTitle title={t('general.price')} body={thousandsSeperator(amount)} suffix="تومان"/>
+                    <TextWithTitle
+                      title={t('general.price')}
+                      body={thousandsSeperator(amount)}
+                      suffix="تومان"
+                    />
 
-                   
-                    <TextWithTitle title={t('general.expireDate')} body={convertISOTime(expireDate)}/>
-
-                
+                    <TextWithTitle
+                      title={t('general.expireDate')}
+                      body={convertISOTime(expireDate)}
+                    />
                   </Grid>
 
                   <Grid item xs={6}>
-                  <TextWithTitle title={t('general.inventory')} body={thousandsSeperator(count)} suffix="عدد"/>
+                    <TextWithTitle
+                      title={t('general.inventory')}
+                      body={thousandsSeperator(count)}
+                      suffix="عدد"
+                    />
 
-                  <TextWithTitle title={t('general.offer')} body={`${offer1} ${t('general.to')} ${offer2}`}/>
-
-                  
+                    <TextWithTitle
+                      title={t('general.offer')}
+                      body={`${offer1} ${t('general.to')} ${offer2}`}
+                    />
                   </Grid>
                 </Grid>
               </Grid>

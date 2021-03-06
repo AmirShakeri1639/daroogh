@@ -599,7 +599,7 @@ const SupplyList: React.FC = () => {
         </Grid>
 
         <Grid container spacing={3} className={contentContainer}>
-          <Hidden smDown>
+          <Hidden xsDown>
             <Grid item xs={12} sm={6} md={4} xl={3}>
               <Paper className={blankCard} onClick={toggleIsOpenModalOfNewList}>
                 <FontAwesomeIcon icon={faPlus} size="2x" />

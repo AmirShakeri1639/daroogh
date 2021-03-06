@@ -7,6 +7,8 @@ import {
   makeStyles,
   createStyles,
   FormControl,
+  Hidden,
+  Fab,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
@@ -73,7 +75,7 @@ const useStyle = makeStyles((theme) =>
     },
     addButton: {
       display: 'flex',
-      height: 152,
+      height: 172,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
@@ -120,6 +122,15 @@ const useStyle = makeStyles((theme) =>
     },
     countContainer: {
       height: '100%',
+    },
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
     },
   })
 );
@@ -175,6 +186,7 @@ const Create: React.FC = () => {
     cancelButton,
     fieldset,
     countContainer,
+    fab
   } = useStyle();
 
   const resetValues = (): void => {
@@ -665,12 +677,24 @@ const Create: React.FC = () => {
           </FieldSetLegend>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
-          <Button variant="text" onClick={toggleIsOpenModal}>
+        <Hidden xsDown>
+          <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
+            <Button variant="text" onClick={toggleIsOpenModal}>
+              <FontAwesomeIcon icon={faPlus} />
+              <span>{t('pack.create')}</span>
+            </Button>
+          </Grid>
+        </Hidden>
+        <Hidden smUp>
+          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+            <FontAwesomeIcon icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
+
+          {/* <Button variant="text" onClick={toggleIsOpenModal}>
             <FontAwesomeIcon icon={faPlus} />
             <span>{t('pack.addDrug')}</span>
-          </Button>
-        </Grid>
+          </Button> */}
         {contentHandler()}
       </Grid>
 

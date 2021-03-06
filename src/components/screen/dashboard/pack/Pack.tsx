@@ -1,5 +1,12 @@
 import React from 'react';
-import { Container, createStyles, Grid, makeStyles } from '@material-ui/core';
+import {
+  Container,
+  createStyles,
+  Fab,
+  Grid,
+  Hidden,
+  makeStyles,
+} from '@material-ui/core';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,7 +24,7 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
       display: 'flex',
-      height: 135,
+      height: 180,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
@@ -34,11 +41,20 @@ const useStyle = makeStyles((theme) =>
         },
       },
     },
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
+    },
   })
 );
 
 const Pack: React.FC = () => {
-  const { addButton } = useStyle();
+  const { addButton, fab } = useStyle();
 
   const { t } = useTranslation();
 
@@ -46,17 +62,23 @@ const Pack: React.FC = () => {
 
   const queryCache = useQueryCache();
 
-  const { isLoading, data } = useQuery(PackEnum.GET_PHARMACY_PACKS, getPharmacyPacks);
+  const { isLoading, data } = useQuery(
+    PackEnum.GET_PHARMACY_PACKS,
+    getPharmacyPacks
+  );
 
-  const [_removePack, { isLoading: isLoadingRemovePack }] = useMutation(removePack, {
-    onSuccess: () => {
-      queryCache.invalidateQueries(PackEnum.GET_PHARMACY_PACKS);
-      successSweetAlert(t('alert.successfulRemoveTextMessage'));
-    },
-    onError: () => {
-      errorSweetAlert(t('alert.failedRemove'));
-    },
-  });
+  const [_removePack, { isLoading: isLoadingRemovePack }] = useMutation(
+    removePack,
+    {
+      onSuccess: () => {
+        queryCache.invalidateQueries(PackEnum.GET_PHARMACY_PACKS);
+        successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      },
+      onError: () => {
+        errorSweetAlert(t('alert.failedRemove'));
+      },
+    }
+  );
 
   const createPackLink = (): void => {
     push({
@@ -79,7 +101,7 @@ const Pack: React.FC = () => {
           totalPrice += item.amount;
         });
         return (
-          <Grid item xs={12} sm={6} md={4} xl={3} key={id}>
+          <Grid spacing={3} item xs={12} sm={6} md={4} xl={3} key={id}>
             <CardContainer
               totalPrice={totalPrice}
               drugsCounter={pharmacyDrug.length}
@@ -101,15 +123,21 @@ const Pack: React.FC = () => {
         <Grid item xs={12}>
           <h3>لیست پک ها</h3>
         </Grid>
-
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
-          <Button variant="text" onClick={createPackLink}>
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('pack.create')}</span>
-          </Button>
-        </Grid>
-
+        <Hidden xsDown>
+          <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
+            <Button variant="text" onClick={createPackLink}>
+              <FontAwesomeIcon icon={faPlus} />
+              <span>{t('pack.create')}</span>
+            </Button>
+          </Grid>
+        </Hidden>
         {contentHandler()}
+
+        <Hidden smUp>
+          <Fab onClick={createPackLink} className={fab} aria-label="add">
+            <FontAwesomeIcon icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
       </Grid>
 
       <BackDrop isOpen={isLoadingRemovePack} />
