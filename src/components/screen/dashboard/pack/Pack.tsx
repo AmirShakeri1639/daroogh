@@ -24,11 +24,11 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
       display: 'flex',
-      height: 180,
+      height: 190,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
-      borderRadius: 10,
+      borderRadius: 5,
       flexDirection: 'column',
       '& button': {
         height: 'inherit',
@@ -101,7 +101,7 @@ const Pack: React.FC = () => {
           totalPrice += item.amount;
         });
         return (
-          <Grid spacing={3} item xs={12} sm={6} md={4} xl={3} key={id}>
+          <Grid spacing={3} item xs={12} sm={12} md={4} xl={4} key={id}>
             <CardContainer
               totalPrice={totalPrice}
               drugsCounter={pharmacyDrug.length}
@@ -119,12 +119,12 @@ const Pack: React.FC = () => {
 
   return (
     <Container>
-      <Grid container spacing={1}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <h3>لیست پک ها</h3>
         </Grid>
         <Hidden xsDown>
-          <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
+          <Grid item xs={12} sm={12} md={4} xl={3} className={addButton}>
             <Button variant="text" onClick={createPackLink}>
               <FontAwesomeIcon icon={faPlus} />
               <span>{t('pack.create')}</span>
@@ -135,7 +135,7 @@ const Pack: React.FC = () => {
 
         <Hidden smUp>
           <Fab onClick={createPackLink} className={fab} aria-label="add">
-            <FontAwesomeIcon icon={faPlus} color="white" />
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
           </Fab>
         </Hidden>
       </Grid>
