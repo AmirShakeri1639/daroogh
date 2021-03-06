@@ -9,6 +9,7 @@ import {
   FormControl,
   Hidden,
   Fab,
+  Button,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
@@ -20,7 +21,6 @@ import { Category, Comission, Drug, Pack } from '../../../../../services/api';
 import {
   AutoComplete,
   BackDrop,
-  Button,
   DatePicker,
   MaterialContainer,
   Modal,
@@ -83,18 +83,13 @@ const useStyle = makeStyles((theme) =>
       borderRadius: 10,
       flexDirection: 'column',
       '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 8,
-        },
+       
       },
     },
     cancelButton: {
       marginRight: 10,
+      color: '#fff',
+      backgroundColor:'#5ABC55'
     },
     modalContainer: {
       backgroundColor: '#fff',
@@ -110,8 +105,10 @@ const useStyle = makeStyles((theme) =>
       marginTop: 15,
     },
     submitBtn: {
-      height: 30,
-      width: 100,
+      height: 40,
+      width: 150,
+      color: '#fff',
+      backgroundColor:'#5ABC55'
     },
     label: {
       display: 'flex',
@@ -142,6 +139,14 @@ const useStyle = makeStyles((theme) =>
       position: 'fixed',
       backgroundColor: 'blue ',
     },
+    formContainer:{
+      padding: theme.spacing(2),
+      borderLeft: '3px solid blue',
+      height: '120px',
+      backgroundColor: '#f4f3f7',
+      paddingTop: '8px',
+      margin: theme.spacing(3),
+    }
   })
 );
 
@@ -198,6 +203,7 @@ const Create: React.FC = () => {
     countContainer,
     fab,
     fab2,
+    formContainer
   } = useStyle();
 
   const resetValues = (): void => {
@@ -619,9 +625,12 @@ const Create: React.FC = () => {
 
   return (
     <MaterialContainer>
+      <Grid item xs={12} spacing={3} style={{margin:' 24px 24px 0px 0px'}}>
+        <span>ابتدا یک دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید و در نهایت ثبت نمایید. اقلامی که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر قابل تغییر توسط طرف مقابل عرضه میشود </span>
+      </Grid>
       <Grid container spacing={3} alignItems="center">
-        <Grid item xs={12}>
-          <FieldSetLegend legend={t('pack.create')}>
+        <Grid item xs={12} className={formContainer}>
+          
             <Grid container spacing={1}>
               <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Grid container spacing={1}>
@@ -671,7 +680,6 @@ const Create: React.FC = () => {
                   <Hidden xsDown>
                     <Grid item xs={3}>
                       <Button
-                        color="blue"
                         type="button"
                         onClick={formHandler}
                         className={submitBtn}
@@ -707,7 +715,6 @@ const Create: React.FC = () => {
                 </Grid>
               </Grid>
             </Grid>
-          </FieldSetLegend>
         </Grid>
 
         <Hidden xsDown>
@@ -920,7 +927,6 @@ const Create: React.FC = () => {
             className={buttonContainer}
           >
             <Button
-              color="pink"
               type="button"
               onClick={toggleIsOpenModal}
               className={cancelButton}
@@ -938,7 +944,7 @@ const Create: React.FC = () => {
               <span>ثبت داروی جدید</span>
             </label>
 
-            <Button color="blue" type="button" onClick={addTemporaryHandler}>
+            <Button className={submitBtn} type="button" onClick={addTemporaryHandler}>
               {t('general.add')}
             </Button>
           </Grid>
