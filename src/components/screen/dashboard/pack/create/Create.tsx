@@ -7,10 +7,12 @@ import {
   makeStyles,
   createStyles,
   FormControl,
+  Hidden,
+  Fab,
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
@@ -45,6 +47,7 @@ import routes from '../../../../../routes';
 import { SearchDrugInCategory } from '../../../../../interfaces/search';
 import { PackCreation } from 'model/pack';
 import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const { packsList } = routes;
 
@@ -73,7 +76,7 @@ const useStyle = makeStyles((theme) =>
     },
     addButton: {
       display: 'flex',
-      height: 152,
+      height: 172,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
@@ -120,6 +123,24 @@ const useStyle = makeStyles((theme) =>
     },
     countContainer: {
       height: '100%',
+    },
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 140,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
+    },
+    fab2: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: 'blue ',
     },
   })
 );
@@ -175,6 +196,8 @@ const Create: React.FC = () => {
     cancelButton,
     fieldset,
     countContainer,
+    fab,
+    fab2,
   } = useStyle();
 
   const resetValues = (): void => {
@@ -399,7 +422,7 @@ const Create: React.FC = () => {
     if (temporaryDrugs.length > 0) {
       return temporaryDrugs.map((item) => {
         return (
-          <Grid item xs={12} sm={6} md={4} xl={3}>
+          <Grid item xs={12} sm={12} md={4} xl={4}>
             <CardContainer item={item} removeHandler={removeHandler} />
           </Grid>
         );
@@ -596,11 +619,11 @@ const Create: React.FC = () => {
 
   return (
     <MaterialContainer>
-      <Grid container spacing={1} alignItems="center">
+      <Grid container spacing={3} alignItems="center">
         <Grid item xs={12}>
           <FieldSetLegend legend={t('pack.create')}>
             <Grid container spacing={1}>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <FormControl
@@ -634,43 +657,77 @@ const Create: React.FC = () => {
                 <Grid container spacing={1} alignItems="center">
                   <Grid item xs={9}>
                     <Grid container spacing={1}>
-                      <Grid item xs={4} className="text-right">
-                        <span>تعداد کل اقلام: {packTotalItems}</span>
+                      <Grid item spacing={1} xs={12} sm={12} md={6} lg={6}>
+                          <TextWithTitle title="تعداد کل اقلام" body={packTotalItems} suffix="قلم" />
                       </Grid>
+                      <Grid item spacing={1} xs={12} sm={12} md={6} lg={6}>
+                          <TextWithTitle title="مجموع قیمت اقلام" body={thousandsSeperatorFa(packTotalPrice)} suffix="تومان" />
 
-                      <Grid item xs={8} className="text-right">
-                        <span>
-                          مجموع قیمت اقلام:{' '}
-                          {thousandsSeperatorFa(packTotalPrice)}
-                        </span>
                       </Grid>
+                    
                     </Grid>
                   </Grid>
 
-                  <Grid item xs={3}>
-                    <Button
-                      color="blue"
-                      type="button"
+                  <Hidden xsDown>
+                    <Grid item xs={3}>
+                      <Button
+                        color="blue"
+                        type="button"
+                        onClick={formHandler}
+                        className={submitBtn}
+                      >
+                        {isLoadingSave
+                          ? t('general.pleaseWait')
+                          : t('general.submit')}
+                      </Button>
+                    </Grid>
+                  </Hidden>
+
+                  <Hidden smUp>
+                    <Fab
                       onClick={formHandler}
-                      className={submitBtn}
+                      className={fab2}
+                      aria-label="add"
                     >
-                      {isLoadingSave
-                        ? t('general.pleaseWait')
-                        : t('general.submit')}
-                    </Button>
-                  </Grid>
+                      {isLoadingSave ? (
+                        <FontAwesomeIcon
+                          size="2x"
+                          icon={faSpinner}
+                          color="white"
+                        />
+                      ) : (
+                        <FontAwesomeIcon
+                          size="2x"
+                          icon={faSave}
+                          color="white"
+                        />
+                      )}
+                    </Fab>
+                  </Hidden>
                 </Grid>
               </Grid>
             </Grid>
           </FieldSetLegend>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
-          <Button variant="text" onClick={toggleIsOpenModal}>
+        <Hidden xsDown>
+          <Grid item xs={12} sm={12} md={4} xl={4} className={addButton}>
+            <Button variant="text" onClick={toggleIsOpenModal}>
+              <FontAwesomeIcon icon={faPlus} />
+              <span>{t('pack.add')}</span>
+            </Button>
+          </Grid>
+        </Hidden>
+        <Hidden smUp>
+          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
+
+        {/* <Button variant="text" onClick={toggleIsOpenModal}>
             <FontAwesomeIcon icon={faPlus} />
             <span>{t('pack.addDrug')}</span>
-          </Button>
-        </Grid>
+          </Button> */}
         {contentHandler()}
       </Grid>
 
