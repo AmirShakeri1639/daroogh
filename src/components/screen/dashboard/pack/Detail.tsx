@@ -9,20 +9,25 @@ import {
 import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
-      backgroundColor: '#E4E4E4',
+      backgroundColor: '#fff',
     },
     container: {
       padding: 5,
-      borderRadius: 15,
+      borderRadius: 0,
       '& .drug-name': {
         marginLeft: 10,
       },
       '& .drug-container': {
         padding: '0 6px',
+        borderLeft: '3px solid #f80501',
+        height: '40px',
+        backgroundColor: '#FEFFF2',
+        paddingTop: '8px',
         marginBottom: theme.spacing(1),
       },
     },
@@ -49,50 +54,39 @@ const Detail: React.FC<DetailProps> = (props) => {
 
   return (
     <Grid item xs={12}>
-      <Paper className={paper}>
+      <Paper className={paper} elevation={0}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            <div className={container}>
+          <div className={container}>
               <Grid container spacing={0}>
-                <Grid item xs={12} className="drug-container">
-                  <FontAwesomeIcon icon={faPills} />
-                  <span className="drug-name">{name}</span>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={1}>
-                    <Grid item xs={1} className={textLeft}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('general.number')}
-                        leftText={thousandsSeperator(drugsCounter)}
-                      />
-                    </Grid>
+                <Grid container xs={12} className="drug-container">
+                  <Grid container xs={1}>
+                    <img src="pack.png" style={{ height: '25px' }} />
+                  </Grid>
+                  <Grid
+                    container
+                    xs={11}
+                    style={{ alignItems: 'center', paddingRight: '8px' }}
+                  >
+                    <span>{name}</span>
                   </Grid>
                 </Grid>
 
-                <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={1}>
-                    <Grid item xs={1} className={textLeft}>
-                      <FontAwesomeIcon
-                        icon={faMoneyBillWave}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('general.price')}
-                        leftText={thousandsSeperator(totalPrice)}
-                      />
-                    </Grid>
+                <Grid container style={{ padding: '8px' }}>
+                  <Grid item xs={6}>
+                    <TextWithTitle
+                      title={t('exchange.basketTotalPrice')}
+                      body={thousandsSeperator(totalPrice)}
+                      suffix="تومان"
+                    />
+
+                    <TextWithTitle
+                      title={t('general.number')}
+                      body={thousandsSeperator(drugsCounter)}
+                    />
                   </Grid>
+
+                
                 </Grid>
               </Grid>
             </div>
