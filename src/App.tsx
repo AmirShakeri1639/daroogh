@@ -88,6 +88,7 @@ const PrescriptionList = lazy(() =>
 const ProfileLazy = lazy(() => import('./components/screen/dashboard/user/Profile'));
 
 const SettingsForm = lazy(() => import('./components/screen/dashboard/settings/Settings'));
+const SettingsAiForm = lazy(() => import('./components/screen/dashboard/settingsAi/SettingsAi'));
 
 const JobsList = lazy(() => import('./components/screen/dashboard/job/jobsList'));
 
@@ -126,6 +127,7 @@ const {
   forgetPassword,
   profile,
   settings,
+  settingsAi,
   jobsList
 } = routes;
 
@@ -291,6 +293,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute exact path={settings}>
               <Dashboard component={<SettingsForm />} />
+            </PrivateRoute>
+            <PrivateRoute exact path={settingsAi}>
+              <Dashboard component={<SettingsAiForm />} />
             </PrivateRoute>
             <PrivateRoute path={jobsList}>
               <Dashboard component={<JobsList />} />
