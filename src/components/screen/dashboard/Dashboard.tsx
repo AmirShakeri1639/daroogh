@@ -10,7 +10,7 @@ import Context from './Context';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
 import {
-  errorHandler, JwtData, logoutUser, successSweetAlert, sweetAlert
+  errorHandler, JwtData, logoutUser,
 } from '../../../utils';
 import { ColorEnum } from '../../../enum';
 import { Alert } from '@material-ui/lab';
@@ -216,30 +216,6 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-
-  const showWhatsNew = async (versionNo: string | number) => {
-    const whatsNewFile =
-      await (await fetch(window.location.origin + '/whatsnew.json')).json();
-    const whatsNewData =
-      whatsNewFile[versionNo]
-        ? whatsNewFile[versionNo].map(
-          (i: any) => { return (`<li>${i}</li>`) }
-        ).join('') : '';
-    sweetAlert({
-      type: 'info',
-      html: `بروزرسانی به نسخه ${versionNo} انجام شد!` +
-        (whatsNewData.length > 0
-          ? `<br /><div style="text-align: right">` +
-          '<h3>تازه‌ها</h3>' +
-          `<ul>${whatsNewData}</ul></div>`
-          : '')
-    })
-  }
-
-  if (localStorage.getItem('whatsNewExists') === 'true') {
-    showWhatsNew(localStorage.getItem('version') || '0.1.0');
-    localStorage.removeItem('whatsNewExists');
-  }
 
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {

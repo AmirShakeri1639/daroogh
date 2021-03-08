@@ -1,17 +1,14 @@
 import React from 'react';
 import {
   AppBar,
-  Box,
   Container,
   Grid,
   makeStyles,
   Paper,
   Tab,
   Tabs,
-  Typography,
   useTheme,
 } from '@material-ui/core';
-import SwipeableViews from 'react-swipeable-views';
 import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
@@ -20,7 +17,7 @@ import ExchangeWidget from './widgets/ExchangeWidget';
 import SurveyWidget from './widgets/SurveyWidget';
 import PrescriptionWidget from './widgets/PrescriptionWidget';
 import EmpApplicationWidget from './widgets/EmpApplicationWidget';
-import { TabPanel } from '@material-ui/lab';
+import { sweetAlert } from 'utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +47,30 @@ const DashboardContent: React.FC<any> = () => {
   const handleChangeIndex = (index: any): void => {
     setValue(index);
   };
+
+  const showWhatsNew = async (versionNo: string | number) => {
+    const whatsNewFile =
+      await (await fetch(window.location.origin + '/whatsnew.json')).json();
+    const whatsNewData =
+      whatsNewFile[versionNo]
+        ? whatsNewFile[versionNo].map(
+          (i: any) => { return (`<li>${i}</li>`) }
+        ).join('') : '';
+    sweetAlert({
+      type: 'info',
+      html: `بروزرسانی به نسخه ${versionNo} انجام شد!` +
+        (whatsNewData.length > 0
+          ? `<br /><div style="text-align: right">` +
+          '<h3>تازه‌ها</h3>' +
+          `<ul>${whatsNewData}</ul></div>`
+          : '')
+    })
+  }
+
+  if (localStorage.getItem('whatsNewExists') === 'true') {
+    showWhatsNew(localStorage.getItem('version') || '0.1.0');
+    localStorage.removeItem('whatsNewExists');
+  }
 
   return (
     <Container maxWidth="lg" className={classes.container}>
