@@ -72,5 +72,6 @@ export default {
   
   profile: `/${dashboard}/${user}/profile`,
   settings: `/${dashboard}/settings`,
+  settingsAi: `/${dashboard}/settingsAi`,
   jobsList: `/${dashboard}/${job}/list`,
 };
