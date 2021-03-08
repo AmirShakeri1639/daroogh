@@ -819,7 +819,7 @@ const Create: React.FC = () => {
                 <Grid container alignItems="center" spacing={2}>
                   <Grid item xs={12}>
                     <span>هدیه</span>
-                    <span className="text-success">
+                    <span className="text-succes txt-xs">
                       (داروسازان می توانند هدیه ای در قبال محصول خود به داروساز
                       مقابل بدهند)
                     </span>
