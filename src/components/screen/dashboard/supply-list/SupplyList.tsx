@@ -8,6 +8,15 @@ import {
   Container,
   Hidden,
   Fab,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  useMediaQuery,
+  useTheme,
+  Divider,
+  Button,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { Modal, BackDrop, AutoComplete } from '../../../public';
@@ -26,7 +35,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
-import Button from '../../../public/button/Button';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useEffectOnce } from '../../../../hooks';
 import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
@@ -139,7 +147,16 @@ const useStyle = makeStyles((theme) =>
       margin: theme.spacing(1),
     },
     cancelButton: {
-      marginRight: 10,
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
     },
     drugTitle: {
       marginBottom: theme.spacing(1),
@@ -207,7 +224,9 @@ const SupplyList: React.FC = () => {
   const [isWrongDate, setIsWrongDate] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
+  const theme = useTheme();
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const queryCache = useQueryCache();
 
@@ -219,6 +238,7 @@ const SupplyList: React.FC = () => {
     fieldset,
     buttonContainer,
     cancelButton,
+    submitBtn,
     formContent,
     label,
     fab,
@@ -615,82 +635,89 @@ const SupplyList: React.FC = () => {
         </Grid>
       </Container>
 
-      <Modal open={isOpenModalOfNewList} toggle={toggleIsOpenModalOfNewList}>
-        <div className={modalContainer}>
-          <Grid container spacing={1} className={formContent}>
-            <Grid item xs={12}>
-              <AutoComplete
-                isLoading={isLoading}
-                onChange={debounce((e) => searchDrugs(e.target.value), 500)}
-                loadingText={t('general.loading')}
-                className="w-100"
-                placeholder={t('drug.name')}
-                options={options}
-                onItemSelected={(item): void => setSelectedDrug(item[0])}
-                defaultSelectedItem={selectedDrug?.label}
-              />
-            </Grid>
+      <Dialog
+        fullScreen={fullScreen}
+        open={isOpenModalOfNewList}
+        onClose={toggleIsOpenModalOfNewList}
+      >
+        <DialogTitle className="text-sm">{'افزودن به لیست عرضه'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <AutoComplete
+                  isLoading={isLoading}
+                  onChange={debounce((e) => searchDrugs(e.target.value), 500)}
+                  loadingText={t('general.loading')}
+                  className="w-100"
+                  placeholder={t('drug.name')}
+                  options={options}
+                  onItemSelected={(item): void => setSelectedDrug(item[0])}
+                  defaultSelectedItem={selectedDrug?.label}
+                />
+              </Grid>
 
-            <Grid item xs={12}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <label>{t('general.number')}</label>
-                </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.number')}</label>
+                  </Grid>
 
-                <Grid item xs={12}>
-                  <Input
-                    numberFormat
-                    className="w-100"
-                    label={`${t('general.number')} ${t('drug.drug')}`}
-                    onChange={debounce(
-                      (e) => dispatch({ type: 'cnt', value: e }),
-                      500
-                    )}
-                    value={state?.cnt}
-                  />
+                  <Grid item xs={12}>
+                    <Input
+                      numberFormat
+                      className="w-100"
+                      label={`${t('general.number')} ${t('drug.drug')}`}
+                      onChange={debounce(
+                        (e) => dispatch({ type: 'cnt', value: e }),
+                        500
+                      )}
+                      value={state?.cnt}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
 
-            <Grid item xs={12}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <label htmlFor="">{`${t('general.price')} (${t(
-                    'general.rial'
-                  )})`}</label>
-                </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label htmlFor="">{`${t('general.price')} (${t(
+                      'general.rial'
+                    )})`}</label>
+                  </Grid>
 
-                <Grid item xs={12}>
-                  <Input
-                    numberFormat
-                    value={state?.amount}
-                    className="w-100"
-                    label={t('general.price')}
-                    onChange={debounce(
-                      (e) => dispatch({ type: 'amount', value: e }),
-                      500
-                    )}
-                  />
+                  <Grid item xs={12}>
+                    <Input
+                      numberFormat
+                      value={state?.amount}
+                      className="w-100"
+                      label={t('general.price')}
+                      onChange={debounce(
+                        (e) => dispatch({ type: 'amount', value: e }),
+                        500
+                      )}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
 
-            <Grid item xs={12}>
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item xs={12}>
-                  <span>آفر</span>
-                  <span className="text-muted">
-                    (داروسازان می توانند هدیه ای در قبال محصول خود به داروساز
-                    مقابل بدهند)
-                  </span>
-                </Grid>
-
-                <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
+                <Grid container alignItems="center" spacing={1}>
+                  <Grid item xs={12}>
+                    <span>هدیه</span>
+                    <span className="text-succes txt-xs">
+                      (داروسازان می توانند هدیه ای در قبال محصول خود به داروساز
+                      مقابل بدهند)
+                    </span>
+                  </Grid>
                   <Grid
                     container
-                    spacing={1}
+                    direction="row"
                     alignItems="center"
-                    justify="space-between"
+                    spacing={0}
+                    style={{ textAlign: 'center' }}
+                    xs={12}
+                    md={6}
                   >
                     <Grid item xs={2}>
                       <span>به ازای</span>
@@ -741,74 +768,73 @@ const SupplyList: React.FC = () => {
                   </Grid>
                 </Grid>
               </Grid>
-            </Grid>
 
-            <Grid item xs={12}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <span style={{ marginBottom: 8 }}>
-                    {t('general.expireDate')}
-                  </span>{' '}
-                  <span className="text-danger txt-xs">
-                    (وارد کردن روز اجباری نیست)
-                  </span>
-                </Grid>
-              </Grid>
-              <Grid container spacing={1}>
-                <Grid item xs={3}>
-                  <Input
-                    label={t('general.day')}
-                    value={selectedDay}
-                    onChange={(e): void => setSelectedDay(e.target.value)}
-                    error={Number(selectedDay) > 31}
-                  />
-                </Grid>
-                {/* <span style={{ alignSelf: 'center' }}>/</span> */}
-                <Grid item xs={3}>
-                  <Input
-                    value={selectedMonth}
-                    label={t('general.month')}
-                    required
-                    error={Number(selectedMonth) > 12}
-                    onChange={(e): void => setSelectedMonth(e.target.value)}
-                  />
-                </Grid>
-                {/* <span style={{ alignSelf: 'center' }}>/</span> */}
-                <Grid item xs={3}>
-                  <Input
-                    value={selectedYear}
-                    required
-                    label={t('general.year')}
-                    onChange={(e): void => setSelectedYear(e.target.value)}
-                  />
-                </Grid>
-
-                <Grid item xs={3} className={expireDate}>
-                  {daysDiff !== '' && <span>{daysDiff} روز</span>}
-                </Grid>
-              </Grid>
               <Grid item xs={12}>
-                {isWrongDate && (
-                  <p className="text-danger txt-xs">{t('date.afterToday')}</p>
-                )}
-                {!hasMinimumDate && (
-                  <p className="text-danger txt-xs">
-                    {t('date.minimumDate', {
-                      day: drugExpireDay,
-                    })}
-                  </p>
-                )}
-              </Grid>
-              {/* <Input
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <span style={{ marginBottom: 8 }}>
+                      {t('general.expireDate')}
+                    </span>{' '}
+                    <span className="text-danger txt-xs">
+                      (وارد کردن روز اجباری نیست)
+                    </span>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={1}>
+                  <Grid item xs={3}>
+                    <Input
+                      label={t('general.day')}
+                      value={selectedDay}
+                      onChange={(e): void => setSelectedDay(e.target.value)}
+                      error={Number(selectedDay) > 31}
+                    />
+                  </Grid>
+                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
+                  <Grid item xs={3}>
+                    <Input
+                      value={selectedMonth}
+                      label={t('general.month')}
+                      required
+                      error={Number(selectedMonth) > 12}
+                      onChange={(e): void => setSelectedMonth(e.target.value)}
+                    />
+                  </Grid>
+                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
+                  <Grid item xs={3}>
+                    <Input
+                      value={selectedYear}
+                      required
+                      label={t('general.year')}
+                      onChange={(e): void => setSelectedYear(e.target.value)}
+                    />
+                  </Grid>
+
+                  <Grid item xs={3} className={expireDate}>
+                    {daysDiff !== '' && <span>{daysDiff} روز</span>}
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  {isWrongDate && (
+                    <p className="text-danger txt-xs">{t('date.afterToday')}</p>
+                  )}
+                  {!hasMinimumDate && (
+                    <p className="text-danger txt-xs">
+                      {t('date.minimumDate', {
+                        day: drugExpireDay,
+                      })}
+                    </p>
+                  )}
+                </Grid>
+                {/* <Input
                 readOnly
                 onClick={toggleIsOpenDatePicker}
                 value={selectedDate}
                 className="w-100 cursor-pointer"
                 label={t('general.expireDate')}
               /> */}
-            </Grid>
+              </Grid>
 
-            {/* <Grid item xs={12}>
+              {/* <Grid item xs={12}>
               <Input
                 className="w-100"
                 label={t('general.barcode')}
@@ -819,56 +845,67 @@ const SupplyList: React.FC = () => {
               />
             </Grid> */}
 
-            {comissionPercent !== '' && (
-              <Grid item xs={12}>
-                {`پورسانت: ${comissionPercent}%`}
+              {comissionPercent !== '' && (
+                <Grid item xs={12}>
+                  {`پورسانت: ${comissionPercent}%`}
+                </Grid>
+              )}
+
+              {daroogRecommendation !== '' && (
+                <Grid item xs={12}>
+                  <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
+                    <span>{daroogRecommendation}</span>
+                  </FieldSetLegend>
+                </Grid>
+              )}
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid item xs={12}>
+              <label htmlFor="add" className={`${label} cursor-pointer`}>
+                <input
+                  id="add"
+                  type="checkbox"
+                  checked={isCheckedNewItem}
+                  onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
+                />
+                <span>
+                  صفحه بعد از اضافه کردن داروی جدید برای افزودن داروی جدید بسته
+                  نشود
+                </span>
+              </label>
+            </Grid>
+
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={8} />
+              <Grid item xs={2} sm={2}>
+                <Button
+                  type="button"
+                  onClick={toggleIsOpenModalOfNewList}
+                  className={cancelButton}
+                >
+                  {t('general.close')}
+                </Button>
               </Grid>
-            )}
-
-            {daroogRecommendation !== '' && (
-              <Grid item xs={12}>
-                <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
-                  <span>{daroogRecommendation}</span>
-                </FieldSetLegend>
+              <Grid item xs={3} sm={2}>
+                <Button
+                  className={submitBtn}
+                  type="button"
+                  disabled={isLoadingSave}
+                  onClick={formHandler}
+                >
+                  {isLoadingSave
+                    ? t('general.pleaseWait')
+                    : t('general.submit')}
+                </Button>
               </Grid>
-            )}
+            </Grid>
           </Grid>
-
-          <Grid
-            container
-            justify="flex-end"
-            spacing={0}
-            className={buttonContainer}
-          >
-            <Button
-              color="pink"
-              type="button"
-              onClick={toggleIsOpenModalOfNewList}
-              className={cancelButton}
-            >
-              {t('general.cancel')}
-            </Button>
-            <label htmlFor="add" className={`${label} cursor-pointer`}>
-              <input
-                id="add"
-                type="checkbox"
-                checked={isCheckedNewItem}
-                onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
-              />
-              <span>ثبت داروی جدید</span>
-            </label>
-            <Button
-              color="blue"
-              type="button"
-              disabled={isLoadingSave}
-              onClick={formHandler}
-            >
-              {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
-            </Button>
-          </Grid>
-        </div>
-      </Modal>
-
+        </DialogActions>
+      </Dialog>
       <BackDrop isOpen={isOpenBackDrop} />
     </>
   );
