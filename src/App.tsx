@@ -11,6 +11,7 @@ import { isAdmin } from './utils';
 import Appbar from './components/screen/dashboard/AppBar';
 import ReactGA from 'react-ga';
 import { createBrowserHistory } from 'history';
+import { checkVersion } from 'utils';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -173,6 +174,8 @@ const App = (): JSX.Element => {
     "gtag('config', 'UA-31704707-1');";
   document.body.appendChild(gaScript2);
 
+  checkVersion();
+  
   return (
     <>
       <Router>

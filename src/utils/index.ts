@@ -1,3 +1,4 @@
+
 export { default as errorHandler } from './errorHandler';
 export { default as Validation } from './validation';
 export { default as history } from './history';
@@ -17,3 +18,4 @@ export { isNullOrEmpty } from './isNullOrEmpty';
 export { EncrDecrService } from './EncrDecrService';
 export { default as Impersonation } from './Impersonation';
 export { isAdmin } from './roles';
+export { default as checkVersion } from './checkVersion';
