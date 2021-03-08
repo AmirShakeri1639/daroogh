@@ -6,7 +6,12 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { PharmacyDrugEnum } from '../../../../enum';
 import { debounce, remove } from 'lodash';
 import { Favorite, Drug as DrugApi, Search } from '../../../../services/api';
-import { MaterialContainer, Modal, Button } from '../../../public';
+import {
+  MaterialContainer,
+  Modal,
+  Button,
+  AutoComplete,
+} from '../../../public';
 import { errorHandler, successSweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -43,7 +48,7 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#fff',
       borderRadius: 5,
       padding: theme.spacing(2, 3),
-      width: 500,
+      maxWidth: 500,
     },
     buttonContainer: {
       textAlign: 'right',
@@ -100,10 +105,16 @@ const Drug: React.FC = () => {
 
       const result = await searchDrug(title);
       const items = result.map((i: any) => ({
-        id: i.id,
-        name: `${i.name} (${i.genericName})`,
+        value: i.id,
+        label: `${i.name} (${i.genericName})`,
       }));
-      setDrugSearchOptions(items);
+
+      const options = items.map((item: any) => ({
+        el: <div>{item.label}</div>,
+        item,
+      }));
+
+      setDrugSearchOptions(options);
     } catch (e) {
       errorHandler(e);
     }
@@ -182,32 +193,24 @@ const Drug: React.FC = () => {
         {contentGenerator()}
       </Grid>
 
-      <Modal open={isOpenModal} toggle={toggleIsOpenModal}>
+      <Modal
+        style={{ overflow: 'visible' }}
+        open={isOpenModal}
+        toggle={toggleIsOpenModal}
+      >
         <div className={modalContainer}>
           <Grid container spacing={1}>
             <Grid item xs={12}>
-              <Autocomplete
-                id="drug-list"
-                noOptionsText={t('general.noData')}
+              <AutoComplete
+                isLoading={isLoading}
+                onChange={debounce((e) => drugSearch(e.target.value), 500)}
                 loadingText={t('general.loading')}
-                openText="openText"
+                className="w-100"
+                placeholder={t('drug.name')}
                 options={drugSearchOptions}
-                onChange={(event, value, reason): void => {
-                  setDrugName(value.id);
-                }}
-                getOptionLabel={(option: any) => option.name ?? ''}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label={t('drug.name')}
-                    variant="outlined"
-                    onChange={debounce(
-                      (e: any) => drugSearch(e.target.value),
-                      500
-                    )}
-                  />
-                )}
+                onItemSelected={(item): void =>
+                  setDrugName(String(item[0].value))
+                }
               />
             </Grid>
 

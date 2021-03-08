@@ -5,18 +5,12 @@ import {
   makeStyles,
   Paper,
   MenuItem,
-  TextField,
   Container,
   Hidden,
   Fab,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import {
-  MaterialContainer,
-  Modal,
-  BackDrop,
-  AutoComplete,
-} from '../../../public';
+import { Modal, BackDrop, AutoComplete } from '../../../public';
 import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -151,7 +145,7 @@ const useStyle = makeStyles((theme) =>
       marginBottom: theme.spacing(1),
     },
     formContent: {
-      height: 450,
+      height: 485,
       overflow: 'hidden',
       overflowY: 'auto',
       display: 'flex',
@@ -610,7 +604,11 @@ const SupplyList: React.FC = () => {
 
           {displayHandler()}
           <Hidden smUp>
-            <Fab onClick={toggleIsOpenModalOfNewList} className={fab} aria-label="add">
+            <Fab
+              onClick={toggleIsOpenModalOfNewList}
+              className={fab}
+              aria-label="add"
+            >
               <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
             </Fab>
           </Hidden>
@@ -678,7 +676,7 @@ const SupplyList: React.FC = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Grid container alignItems="center" spacing={2}>
+              <Grid container alignItems="center" spacing={1}>
                 <Grid item xs={12}>
                   <span>آفر</span>
                   <span className="text-muted">
@@ -686,15 +684,46 @@ const SupplyList: React.FC = () => {
                     مقابل بدهند)
                   </span>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid item xs={4}>
+
+                <Grid item xs={12} md={6}>
+                  <Grid
+                    container
+                    spacing={1}
+                    alignItems="center"
+                    justify="space-between"
+                  >
+                    <Grid item xs={2}>
                       <span>به ازای</span>
                     </Grid>
-                    <Grid item xs={8}>
+                    <Grid item xs={10} className="w-100">
+                      <Input
+                        value={state?.offer2}
+                        label={t('general.number')}
+                        onChange={debounce(
+                          (e) =>
+                            dispatch({
+                              type: 'offer2',
+                              value: e,
+                            }),
+                          500
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Grid
+                    container
+                    spacing={0}
+                    alignItems="center"
+                    justify="space-between"
+                  >
+                    <Grid item xs={1}>
+                      <span>تا</span>
+                    </Grid>
+                    <Grid item xs={9}>
                       <Input
                         value={state?.offer1}
-                        numberFormat
                         label={t('general.number')}
                         onChange={debounce(
                           (e) =>
@@ -706,26 +735,10 @@ const SupplyList: React.FC = () => {
                         )}
                       />
                     </Grid>
+                    <Grid item xs={2}>
+                      <div className="text-left">{t('general.gift')}</div>
+                    </Grid>
                   </Grid>
-                </Grid>
-                <span>تا</span>
-                <Grid item xs={12} sm={3}>
-                  <Input
-                    value={state?.offer2}
-                    label={t('general.number')}
-                    numberFormat
-                    onChange={debounce(
-                      (e) =>
-                        dispatch({
-                          type: 'offer2',
-                          value: e,
-                        }),
-                      500
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={2}>
-                  {t('general.gift')}
                 </Grid>
               </Grid>
             </Grid>
