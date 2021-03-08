@@ -95,8 +95,8 @@ const useStyle = makeStyles((theme) =>
     cancelButton: {
       color: '#fff',
       backgroundColor: '#5ABC55',
-      fontSize:10,
-      float:'right'
+      fontSize: 10,
+      float: 'right',
     },
     modalContainer: {
       backgroundColor: '#fff',
@@ -117,9 +117,8 @@ const useStyle = makeStyles((theme) =>
     submitBtn: {
       color: '#fff',
       backgroundColor: '#5ABC55',
-      fontSize:10,
-      float:'right'
-
+      fontSize: 10,
+      float: 'right',
     },
     label: {
       display: 'flex',
@@ -820,40 +819,45 @@ const Create: React.FC = () => {
                 <Grid container alignItems="center" spacing={2}>
                   <Grid item xs={12}>
                     <span>هدیه</span>
-                    <span className="text-muted">
+                    <span className="text-success">
                       (داروسازان می توانند هدیه ای در قبال محصول خود به داروساز
                       مقابل بدهند)
                     </span>
                   </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <Grid container spacing={1} alignItems="center">
-                      <Grid item xs={4}>
-                        <span>به ازای</span>
-                      </Grid>
-                      <Grid item xs={8}>
-                        <Input
-                          value={offer2}
-                          label={t('general.number')}
-                          // className={offerInput}
-                          onChange={(e): void => {
-                            setOffer2(e.target.value);
-                          }}
-                        />
-                      </Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    spacing={0}
+                    style={{ textAlign: 'center' }}
+                    xs={12}
+                  >
+                    <Grid item xs={2}>
+                      <span>به ازای</span>
                     </Grid>
-                  </Grid>
-                  <span>تا</span>
-                  <Grid item xs={12} sm={3}>
-                    <Input
-                      value={offer1}
-                      label={t('general.number')}
-                      onChange={(e): void => {
-                        setOffer1(e.target.value);
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={2}>
-                    {t('general.gift')}
+                    <Grid item xs={2}>
+                      <Input
+                        value={offer2}
+                        // className={offerInput}
+                        onChange={(e): void => {
+                          setOffer2(e.target.value);
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={1}>
+                      <span>تا</span>
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Input
+                        value={offer1}
+                        onChange={(e): void => {
+                          setOffer1(e.target.value);
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={2}>
+                      {t('general.gift')}
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -942,11 +946,10 @@ const Create: React.FC = () => {
             )}
           </DialogContentText>
         </DialogContent>
-              <Divider/>
+        <Divider />
         <DialogActions>
-      
-          <Grid container style={{marginTop:4 , marginBottom:4 }} xs={12}>
-          <Grid item xs={12}>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid item xs={12}>
               <label htmlFor="add" className={`${label} cursor-pointer`}>
                 <input
                   id="add"
@@ -954,12 +957,15 @@ const Create: React.FC = () => {
                   checked={isCheckedNewItem}
                   onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
                 />
-                <span>صفحه بعد از اضافه کردن داروی جدید برای افزودن داروی جدید بسته نشود</span>
+                <span>
+                  صفحه بعد از اضافه کردن داروی جدید برای افزودن داروی جدید بسته
+                  نشود
+                </span>
               </label>
             </Grid>
-            
+
             <Grid container xs={12}>
-              <Grid item xs={7} sm={8 } />
+              <Grid item xs={7} sm={8} />
               <Grid item xs={2} sm={2}>
                 <Button
                   type="button"
@@ -979,7 +985,6 @@ const Create: React.FC = () => {
                 </Button>
               </Grid>
             </Grid>
-           
           </Grid>
         </DialogActions>
       </Dialog>
