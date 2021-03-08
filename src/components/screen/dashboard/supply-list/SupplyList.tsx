@@ -9,6 +9,15 @@ import {
   Container,
   Hidden,
   Fab,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  useMediaQuery,
+  useTheme,
+  Divider,
+  Button
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import {
@@ -32,7 +41,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
-import Button from '../../../public/button/Button';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useEffectOnce } from '../../../../hooks';
 import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
@@ -145,7 +153,17 @@ const useStyle = makeStyles((theme) =>
       margin: theme.spacing(1),
     },
     cancelButton: {
-      marginRight: 10,
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize:10,
+      float:'right'
+        },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize:10,
+      float:'right'
+
     },
     drugTitle: {
       marginBottom: theme.spacing(1),
@@ -213,7 +231,9 @@ const SupplyList: React.FC = () => {
   const [isWrongDate, setIsWrongDate] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
+  const theme = useTheme();
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const queryCache = useQueryCache();
 
@@ -225,6 +245,7 @@ const SupplyList: React.FC = () => {
     fieldset,
     buttonContainer,
     cancelButton,
+    submitBtn,
     formContent,
     label,
     fab,
@@ -617,8 +638,14 @@ const SupplyList: React.FC = () => {
         </Grid>
       </Container>
 
-      <Modal open={isOpenModalOfNewList} toggle={toggleIsOpenModalOfNewList}>
-        <div className={modalContainer}>
+      <Dialog
+        fullScreen={fullScreen}
+        open={isOpenModalOfNewList} 
+        onClose={toggleIsOpenModalOfNewList}
+      >
+      <DialogTitle className="text-sm">{'افزودن به لیست عرضه'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
           <Grid container spacing={1} className={formContent}>
             <Grid item xs={12}>
               <AutoComplete
@@ -680,7 +707,7 @@ const SupplyList: React.FC = () => {
             <Grid item xs={12}>
               <Grid container alignItems="center" spacing={2}>
                 <Grid item xs={12}>
-                  <span>آفر</span>
+                  <span>هدیه</span>
                   <span className="text-muted">
                     (داروسازان می توانند هدیه ای در قبال محصول خود به داروساز
                     مقابل بدهند)
@@ -820,42 +847,52 @@ const SupplyList: React.FC = () => {
               </Grid>
             )}
           </Grid>
-
-          <Grid
-            container
-            justify="flex-end"
-            spacing={0}
-            className={buttonContainer}
-          >
-            <Button
-              color="pink"
-              type="button"
-              onClick={toggleIsOpenModalOfNewList}
-              className={cancelButton}
-            >
-              {t('general.cancel')}
-            </Button>
-            <label htmlFor="add" className={`${label} cursor-pointer`}>
-              <input
-                id="add"
-                type="checkbox"
-                checked={isCheckedNewItem}
-                onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
-              />
-              <span>ثبت داروی جدید</span>
-            </label>
-            <Button
-              color="blue"
-              type="button"
-              disabled={isLoadingSave}
-              onClick={formHandler}
-            >
-              {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
-            </Button>
+          </DialogContentText>
+          </DialogContent>
+              <Divider/>
+        <DialogActions>
+        <Grid container style={{marginTop:4 , marginBottom:4 }} xs={12}>
+          <Grid item xs={12}>
+              <label htmlFor="add" className={`${label} cursor-pointer`}>
+                <input
+                  id="add"
+                  type="checkbox"
+                  checked={isCheckedNewItem}
+                  onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
+                />
+                <span>صفحه بعد از اضافه کردن داروی جدید برای افزودن داروی جدید بسته نشود</span>
+              </label>
+            </Grid>
+            
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={8 } />
+              <Grid item xs={2} sm={2}>
+                <Button
+                  type="button"
+                  onClick={toggleIsOpenModalOfNewList}
+                  className={cancelButton}
+    
+                >
+                  {t('general.close')}
+                </Button>
+              </Grid>
+              <Grid item xs={3} sm={2}>
+                <Button
+                  className={submitBtn}
+                  type="button"
+                  disabled={isLoadingSave}
+                  onClick={formHandler}
+                >
+                  {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
+    
+                </Button>
+              </Grid>
+            </Grid>
+           
           </Grid>
-        </div>
-      </Modal>
-
+        </DialogActions>
+       
+         </Dialog>
       <BackDrop isOpen={isOpenBackDrop} />
     </>
   );
