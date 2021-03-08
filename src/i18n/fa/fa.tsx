@@ -114,6 +114,7 @@ export default {
         title: 'عنوان پک',
         list: 'لیست پک ها',
         create: 'ایجاد پک',
+        add: 'افزودن دارو به این پک',
         category: 'دسته بندی پک',
         addDrug: 'اضافه کردن دارو',
         submitMyPacks: 'ثبت پک های من',

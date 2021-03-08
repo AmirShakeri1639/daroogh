@@ -43,6 +43,7 @@ $borderRadius: 4px;
 .div-list {
   width: 100%;
   position: absolute;
+  white-space: break-spaces;
   background-color: #fff;
   border-radius: $borderRadius;
   right: 0;

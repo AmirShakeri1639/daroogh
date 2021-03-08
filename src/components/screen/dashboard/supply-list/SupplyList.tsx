@@ -7,6 +7,8 @@ import {
   MenuItem,
   TextField,
   Container,
+  Hidden,
+  Fab,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import {
@@ -154,6 +156,15 @@ const useStyle = makeStyles((theme) =>
       overflowY: 'auto',
       display: 'flex',
     },
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
+    },
   })
 );
 
@@ -216,6 +227,7 @@ const SupplyList: React.FC = () => {
     cancelButton,
     formContent,
     label,
+    fab,
   } = useStyle();
 
   useEffectOnce(() => {
@@ -490,7 +502,7 @@ const SupplyList: React.FC = () => {
     if (filteredItems.length > 0) {
       items = filteredItems.map((item: AllPharmacyDrugInterface) => {
         return (
-          <Grid item xs={12} sm={6} md={4} xl={3} key={item.id}>
+          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
             <CardContainer
               editHandler={(): Promise<any> => editHandler(item)}
               drug={item}
@@ -502,7 +514,7 @@ const SupplyList: React.FC = () => {
       if (isFetched) {
         items = data.items.map((item: AllPharmacyDrugInterface) => {
           return (
-            <Grid item xs={12} sm={6} md={4} xl={3} key={item.id}>
+            <Grid spacing={3} item xs={12} sm={12} md={4} xl={4} key={item.id}>
               <CardContainer
                 editHandler={(): Promise<any> => editHandler(item)}
                 drug={item}
@@ -586,14 +598,22 @@ const SupplyList: React.FC = () => {
           </Grid>
         </Grid>
 
-        <Grid container spacing={1} className={contentContainer}>
-          <Grid item xs={12} sm={6} md={4} xl={3}>
-            <Paper className={blankCard} onClick={toggleIsOpenModalOfNewList}>
-              <FontAwesomeIcon icon={faPlus} size="2x" />
-              <span>{t('pharmacy.addToTransferList')}</span>
-            </Paper>
-          </Grid>
+        <Grid container spacing={3} className={contentContainer}>
+          <Hidden xsDown>
+            <Grid item xs={12} sm={12} md={4} xl={4}>
+              <Paper className={blankCard} onClick={toggleIsOpenModalOfNewList}>
+                <FontAwesomeIcon icon={faPlus} size="2x" />
+                <span>{t('pharmacy.addToTransferList')}</span>
+              </Paper>
+            </Grid>
+          </Hidden>
+
           {displayHandler()}
+          <Hidden smUp>
+            <Fab onClick={toggleIsOpenModalOfNewList} className={fab} aria-label="add">
+              <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+            </Fab>
+          </Hidden>
         </Grid>
       </Container>
 
