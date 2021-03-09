@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import {
+  Button,
   Card,
   CardContent,
   Container,
@@ -21,6 +22,7 @@ import {
   faStarHalfAlt,
   faMedal,
   faPercent,
+  faVoteYea,
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +44,9 @@ import {
   differenceCheck,
   percentAllowed
 } from '../../../../../utils/ExchangeTools';
-import { ViewExchangeInterface, AllPharmacyDrugInterface } from '../../../../../interfaces';
+import {
+  ViewExchangeInterface, AllPharmacyDrugInterface
+} from '../../../../../interfaces';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 
 interface Props {
@@ -52,6 +56,7 @@ interface Props {
   | void
   | any;
   full?: boolean;
+  showActions?: boolean;
   cartA?: AllPharmacyDrugInterface[];
   cartB?: AllPharmacyDrugInterface[];
 }
@@ -61,6 +66,7 @@ const DesktopCardContent = ({
   item = ViewExchangeInitialState,
   onCardClick,
   full = true,
+  showActions = false,
   cartA = [],
   cartB = []
 }: Props): JSX.Element => {
@@ -558,6 +564,26 @@ const DesktopCardContent = ({
     );
   };
 
+  const CardActions = (): JSX.Element => {
+    return (
+      <div style={ { textAlign: 'left', marginBottom: '-.5em' } }>
+        { item.needSurvey &&
+          <Button
+            title={ t('survey.participate') }
+            style={{ width: '2em', minWidth: '2em' }}
+            variant="text"
+            color="primary"
+            onClick={ (): void => {
+              // go to the survey
+            } }
+          >
+            <FontAwesomeIcon icon={ faVoteYea } />
+          </Button>
+        }
+      </div>
+    )
+  };
+
   return (
     <Card className={ `${cardRoot}` }>
       <CardContent>
@@ -586,6 +612,7 @@ const DesktopCardContent = ({
               <>
                 <ExchangeInfo />
                 <CardProgressbar />
+                { showActions && <CardActions /> }
               </>
             ) }
           </>

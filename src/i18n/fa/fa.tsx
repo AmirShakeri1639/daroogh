@@ -587,6 +587,7 @@ export default {
       survey: {
         survey: 'نظرسنجی',
         widget: 'ابزارک نظرسنجی',
+        participate: 'شرکت در نظرسنجی',
       },
       jobs: {
         jobs: 'فرصت های شغلی',
