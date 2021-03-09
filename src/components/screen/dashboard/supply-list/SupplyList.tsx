@@ -872,7 +872,7 @@ const SupplyList: React.FC = () => {
                   onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
                 />
                 <span>
-                  صفحه بعد از اضافه کردن داروی جدید برای افزودن داروی جدید بسته
+                  صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته
                   نشود
                 </span>
               </label>
