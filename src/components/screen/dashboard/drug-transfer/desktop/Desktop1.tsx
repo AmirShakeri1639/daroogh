@@ -280,14 +280,12 @@ const Desktop1: React.FC = () => {
       }
 
       elements = <>{ listToShow.map((item, index) =>
-        <Grid item={ true } xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
-          <div className={ paper }>
+        <Grid spacing={0} item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
             <DesktopCardContent
               item={ item }
               full={ false }
               onCardClick={ cardClickHandler }
-            />
-          </div>
+              ></DesktopCardContent>
         </Grid>
       ) }</>
 
@@ -301,8 +299,8 @@ const Desktop1: React.FC = () => {
 
   return (
     <Container>
-      <Grid item={ true } xs={ 11 }>
-        <Grid container spacing={ 1 }>
+      <Grid item={ true } xs={ 12 }>
+        <Grid container spacing={ 2 }>
           <Grid item={ true } xs={ 12 }>
             <DesktopToolbox
               filterList={ stateFilterList }
@@ -312,7 +310,7 @@ const Desktop1: React.FC = () => {
           </Grid>
         </Grid>
 
-        <Grid container spacing={ 1 }>
+        <Grid container spacing={ 3 }>
           { <CardListGenerator /> }
         </Grid>
         {/* {loading && <CircleLoading />} */ }
