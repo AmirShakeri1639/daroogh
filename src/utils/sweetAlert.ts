@@ -1,8 +1,9 @@
 import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import withReactContent, { ReactElementOr } from 'sweetalert2-react-content';
 
 interface SweetAlertProps {
-  text: any;
+  text?: any;
+  html?: ReactElementOr<'html'>;
   type?: 'info' | 'warning' | 'success' | 'error';
   showCancelButton?: boolean;
   focusConfirm?: boolean;
@@ -19,6 +20,7 @@ const SweetAlert = async (props: SweetAlertProps): Promise<any> => {
   const {
     text,
     type,
+    html,
     showCancelButton,
     confirmButtonText,
     cancelButtonText,
@@ -28,8 +30,22 @@ const SweetAlert = async (props: SweetAlertProps): Promise<any> => {
     focusConfirm,
   } = props;
 
-  const res = await MySwal.fire({
+  const res =
+  text ?
+  await MySwal.fire({
     text,
+    icon: type,
+    confirmButtonText: confirmButtonText ?? 'باشه',
+    cancelButtonText: cancelButtonText ?? 'انصراف',
+    showCloseButton: false,
+    showCancelButton: showCancelButton,
+    cancelButtonColor: cancelButtonColor ?? '#aaa',
+    confirmButtonColor: confirmButtonColor ?? '#3085d6',
+    focusCancel: !!focusCancel,
+    focusConfirm: !!!focusConfirm,
+  }) :
+  await MySwal.fire({
+    html,
     icon: type,
     confirmButtonText: confirmButtonText ?? 'باشه',
     cancelButtonText: cancelButtonText ?? 'انصراف',

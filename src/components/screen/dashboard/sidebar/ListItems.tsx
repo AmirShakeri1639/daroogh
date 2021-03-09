@@ -101,7 +101,8 @@ const {
   jobSearchList,
   prescriptionList,
   settings,
-  jobsList,
+  settingsAi,
+  jobsList
 } = routes;
 
 const isOpenPageOfThisGroup = (item: string): boolean => {
@@ -387,6 +388,14 @@ const ListItems: React.FC = () => {
               <FontAwesomeIcon icon={faCog} size="lg" />
             </ListItemIcon>
             <ListItemText primary={t('settings.settings')} />
+          </Link>
+        </List>
+        <List component="div" className={linkWrapper}>
+          <Link to={settingsAi} className={notNested}>
+            <ListItemIcon style={{ color: '#4625B2' }}>
+              <FontAwesomeIcon icon={faCog} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('settingsAi.settingsAi')} />
           </Link>
         </List>
         {/* <ListItem

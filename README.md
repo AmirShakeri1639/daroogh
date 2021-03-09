@@ -11,7 +11,7 @@ In the project directory, you can run:
 ### `npm run lint:fix`
 
 Use this one to fix the linter errors.  
-On Windows, use `npm run lint:wfix` instead.  
+> On Windows, use `npm run lint:wfix` instead.  
 
 ### `npm start`
 
