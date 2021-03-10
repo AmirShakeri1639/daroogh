@@ -459,7 +459,7 @@ const DesktopCardContent = ({
                 (item.state === 12 && !item.lockSuggestion)) && (
                 <>
                   <Grid item xs={12} className={spacingVertical3}>
-                    <div className={scaleContainer}>
+                    <div className={scaleContainer} style={{marginTop : `${diffPercent/3}px`}}>
                       <div className={scaleRoot} style={{transform: `rotate(${diffSign * diffPercent/5}deg)`}} >
                         <span className="right">
                           {
