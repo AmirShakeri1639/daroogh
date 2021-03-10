@@ -48,7 +48,7 @@ type CountdownHandle = {
 const useStyles = makeStyles((theme) => ({
   table: {
     '& tbody>.MuiTableRow-root:hover': {
-      background: '#ffb3b3',
+      background: '#bbdefb !important',
     },
     '& tbody .MuiIconButton-root': {
       width: 30,
