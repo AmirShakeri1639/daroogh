@@ -587,6 +587,7 @@ const DesktopCardContent = ({
                 backgroundColor: '#FEFFF2',
                 paddingTop: '8px',
                 marginBottom: '8px',
+                cursor: 'pointer',
                 width: '100%',
               }}
               onClick={(): void => {
