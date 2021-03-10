@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'rgba(0, 0, 0, 0.14)',
     },
     '& tbody>.MuiTableRow-root:nth-child(even)': {
-      background: '#ffe6e6',
+      background: '#f9f9f9',
     },
     '& tbody>.MuiTableRow-root>.MuiTableCell-paddingNone:first-child': {
       width: 15,
@@ -408,7 +408,8 @@ const DataTable: React.ForwardRefRenderFunction<
           showTitle: false,
           headerStyle: {
             fontWeight: 800,
-            backgroundColor: 'rgb(215, 204, 255)',
+            backgroundColor: '#0078d4',
+            color: 'white'
           },
           columnsButton: true,
           maxBodyHeight: 400,
