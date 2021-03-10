@@ -9,8 +9,8 @@ import { ChevronRight as ChevronRightIcon } from '@material-ui/icons';
 import Context from './Context';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
-import { 
-  errorHandler, JwtData, logoutUser 
+import {
+  errorHandler, JwtData, logoutUser,
 } from '../../../utils';
 import { ColorEnum } from '../../../enum';
 import { Alert } from '@material-ui/lab';
