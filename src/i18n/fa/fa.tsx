@@ -269,7 +269,7 @@ export default {
         close: 'بستن',
         id: 'شماره پیگیری',
         sendDate: 'تاریخ ارسال',
-        resumeDownload: 'دانلود تصویر رزمه',
+        resumeDownload: 'دانلود تصویر رزومه',
         name: 'نام',
         family: 'نام خانوادگی',
         birthDate: 'تاریخ تولد',
