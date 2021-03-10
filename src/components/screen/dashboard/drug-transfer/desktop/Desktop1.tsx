@@ -284,6 +284,7 @@ const Desktop1: React.FC = () => {
             <DesktopCardContent
               item={ item }
               full={ false }
+              showActions={ true }
               onCardClick={ cardClickHandler }
               ></DesktopCardContent>
         </Grid>
