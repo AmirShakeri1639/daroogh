@@ -9,6 +9,7 @@ import moment from 'jalali-moment';
 
 import noImage from './noImage.jpg';
 import { EmpAppInterface } from 'interfaces/EmploymentApplicationInterface';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
@@ -16,7 +17,7 @@ const useStyle = makeStyles((theme) =>
     },
     container: {
       padding: 5,
-      borderRadius: 15,
+      borderRadius: 5,
       '& .drug-name': {
         marginLeft: 10,
       },
@@ -50,96 +51,43 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
     ev.target.onerror = null;
   };
   return (
-    <Grid onClick={onClick} item xs={12}>
-      <Paper className={paper}>
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <div className={container}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <Grid container spacing={0} alignItems="flex-end">
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('peopleSection.id')}
-                        leftText={id || t('general.undefined')}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={0} alignItems="flex-end">
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('peopleSection.suggestedJobPosition')}
-                        leftText={
-                          suggestedJobPositionStr || t('general.undefined')
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
+    <Grid onClick={onClick} container style={{padding:16}} spacing={1} xs={12}>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={t('peopleSection.suggestedJobPosition')}
+                body={id || t('general.undefined')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={t('peopleSection.id')}
+                body={suggestedJobPositionStr || t('general.undefined')}
+              />
+            </Grid>
 
-                <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={0}>
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('peopleSection.sendDate')}
-                        leftText={
-                          moment(sendDate, 'YYYY/MM/DD')
-                            .locale('fa')
-                            .format('YYYY/MM/DD') || t('general.undefined')
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid
-                  item
-                  alignItems="center"
-                  justify="center"
-                  alignContent="center"
-                  style={{ textAlign: 'center' }}
-                  xs={12}
-                >
-                  <a
-                    onClick={(e: any): any => {
-                      e.stopPropagation();
-                    }}
-                    download=""
-                    href={
-                      'https://api.daroog.org/api/File/GetFile?key=' +
-                      resumeFileKey
-                    }
-                  >
-                    {t('peopleSection.resumeDownload')}
-                  </a>
-                </Grid>
-              </Grid>
-            </div>
-          </Grid>
-        </Grid>
-      </Paper>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={t('peopleSection.sendDate')}
+                body={
+                  moment(sendDate, 'YYYY/MM/DD')
+                    .locale('fa')
+                    .format('YYYY/MM/DD') || t('general.undefined')
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <a
+                onClick={(e: any): any => {
+                  e.stopPropagation();
+                }}
+                download=""
+                href={
+                  'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey
+                }
+              >
+                {t('peopleSection.resumeDownload')}
+              </a>       
+      </Grid>
     </Grid>
   );
 };
