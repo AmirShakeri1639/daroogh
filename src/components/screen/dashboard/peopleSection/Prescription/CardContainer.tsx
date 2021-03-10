@@ -111,9 +111,14 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
       await formHandler(_id);
     }
   };
+  const hasAnswer = !cancelDate &&
+    data &&
+    data.prescriptionResponse &&
+    data.prescriptionResponse.length != 0
 
   return (
-    <Paper className={root} elevation={1}>
+    <Paper style={{ border:`1px solid ${hasAnswer?'rgb(0 150 1)':'#fff'}`}}
+     className={root} elevation={1}>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Detail
@@ -147,9 +152,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
               </Grid>
             )}
           {!cancelDate &&
-            data &&
-            data.prescriptionResponse &&
-            data.prescriptionResponse.length != 0 && (
+            hasAnswer && (
               <Grid item xs={12}>
                 <Grid justify="flex-end" container spacing={0}>
                   <Grid item xs={4}>
@@ -182,7 +185,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
         onClose={toggleIsOpenModal}
       >
         <DialogTitle>
-          <span style={{ fontSize: 12 }}> پاسخ ها</span>
+          <span style={{ fontSize: 12 }}>پاسخ ها</span>
         </DialogTitle>
         <DialogContent style={{ backgroundColor: '#FAFAFA', width:'100%' }}>
           <Grid container xs={12} spacing={1}>

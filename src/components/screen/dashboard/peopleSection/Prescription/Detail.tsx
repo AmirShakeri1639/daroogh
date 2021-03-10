@@ -28,7 +28,6 @@ import noImage from './noImage.jpg';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 const useStyle = makeStyles((theme) =>
   createStyles({
-  
     modalContainer: {
       backgroundColor: '#fff',
       borderRadius: 5,
@@ -73,78 +72,81 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
   };
   return (
     <Grid item xs={12}>
-        <Grid container spacing={2}>
+      <Grid container spacing={2}>
         <Grid item style={{ textAlign: 'center' }} xs={4}>
-            <Grid xs={12} item>
-              تصویر نسخه
-            </Grid>
-            <Grid xs={12} item>
-              <a
-                download=""
-                href={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
-              >
-                {' '}
-                <img
-                  onError={addDefaultSrc}
-                  style={{ height: '86px', width: '100px', margin: '5px' }}
-                  src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
-                />
-              </a>
-            </Grid>
+          <Grid xs={12} item>
+            تصویر نسخه
           </Grid>
-          <Grid item xs={8}>
-              <Grid container spacing={1} style={{paddingRight:8 , borderRight:'1px solid #f80501'}}>
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={'شماره پیگیری'}
-                    body={id || t('general.undefined')}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={'اسامی داروها'}
-                    body={
-                      <div onClick={(): void => toggleIsOpenModal(comment)}>
-                        {(comment &&
-                          (comment.length > 15
-                            ? comment.substring(0, 15) + '...'
-                            : comment)) ||
-                          t('general.undefined')}
-                      </div>
-                    }
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={'محدوده جغرافیائی'}
-                    body={contryDivisionName || t('general.undefined')}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={'تاریخ ارسال'}
-                    body={
-                      moment(sendDate, 'YYYY/MM/DD')
-                        .locale('fa')
-                        .format('YYYY/MM/DD') || t('general.undefined')
-                    }
-                  />
-                </Grid>
-              </Grid>
+          <Grid xs={12} item>
+            <a
+              download=""
+              href={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+            >
+              {' '}
+              <img
+                onError={addDefaultSrc}
+                style={{ height: '86px', width: '100px', margin: '5px' }}
+                src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+              />
+            </a>
           </Grid>
-          
         </Grid>
-
-        <Modal open={isOpenModal} toggle={(): void => toggleIsOpenModal('')}>
-          <div className={modalContainer}>
-            <Grid container spacing={1}>
-              <Grid item xs={12} sm={12}>
-                {selectedsomment}
-              </Grid>
+        <Grid item xs={8}>
+          <Grid
+            container
+            spacing={1}
+            style={{ paddingRight: 8, borderRight: '1px solid #f80501' }}
+          >
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'شماره پیگیری'}
+                body={id || t('general.undefined')}
+              />
             </Grid>
-          </div>
-        </Modal>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'اسامی داروها'}
+                body={
+                  <div onClick={(): void => toggleIsOpenModal(comment)}>
+                    {(comment &&
+                      (comment.length > 15
+                        ? comment.substring(0, 15) + '...'
+                        : comment)) ||
+                      t('general.undefined')}
+                  </div>
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'محدوده جغرافیائی'}
+                body={contryDivisionName || t('general.undefined')}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'تاریخ ارسال'}
+                body={
+                  moment(sendDate, 'YYYY/MM/DD')
+                    .locale('fa')
+                    .format('YYYY/MM/DD') || t('general.undefined')
+                }
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+
+      <Modal open={isOpenModal} toggle={(): void => toggleIsOpenModal('')}>
+        <div className={modalContainer}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={12}>
+              {selectedsomment}
+            </Grid>
+          </Grid>
+        </div>
+      </Modal>
     </Grid>
   );
 };
