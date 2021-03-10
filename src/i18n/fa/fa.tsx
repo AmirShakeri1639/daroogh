@@ -269,7 +269,7 @@ export default {
         close: 'بستن',
         id: 'شماره پیگیری',
         sendDate: 'تاریخ ارسال',
-        resumeDownload: 'دانلود تصویر رزمه',
+        resumeDownload: 'دانلود تصویر رزومه',
         name: 'نام',
         family: 'نام خانوادگی',
         birthDate: 'تاریخ تولد',
@@ -458,7 +458,7 @@ export default {
         areYouSure: 'آیا از ثبت این تراکنش مطمئن هستید؟',
         creditor: 'بستانکار',
         debtor: 'بدهکار',
-        enterAmountInRial: 'مبلغ را به ریال وارد کنید.',
+        enterAmount: 'مبلغ را وارد کنید.',
       },
       countryDivision: {
         province: 'استان',
@@ -587,6 +587,7 @@ export default {
       survey: {
         survey: 'نظرسنجی',
         widget: 'ابزارک نظرسنجی',
+        participate: 'شرکت در نظرسنجی',
       },
       jobs: {
         jobs: 'فرصت های شغلی',

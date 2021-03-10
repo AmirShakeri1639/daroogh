@@ -8,10 +8,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Fab,
   FormControlLabel,
   Grid,
+  Hidden,
   makeStyles,
   TextField,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
@@ -54,11 +58,11 @@ const useStyle = makeStyles((theme) =>
     addButton: {
       display: 'flex',
 
-      height: 80,
+      height: 190,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
-      borderRadius: 10,
+      borderRadius: 5,
       flexDirection: 'column',
       '& button': {
         height: 'inherit',
@@ -71,11 +75,14 @@ const useStyle = makeStyles((theme) =>
         },
       },
     },
-    modalContainer: {
-      backgroundColor: '#fff',
-      borderRadius: 5,
-      padding: theme.spacing(2, 3),
-      width: 500,
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
     },
     buttonContainer: {
       textAlign: 'right',
@@ -245,7 +252,7 @@ const EmploymentApplication: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { addButton, modalContainer, buttonContainer, input } = useStyle();
+  const { addButton, input, fab, buttonContainer } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -308,11 +315,7 @@ const EmploymentApplication: React.FC = () => {
     if (!isLoading && data !== undefined && isFetched) {
       return data.items.map((item: any) => {
         if (item !== null) {
-          return (
-            <Grid key={item.id} item xs={12} sm={6} md={4} xl={3}>
-              <CardContainer data={item} formHandler={removeHandler} />
-            </Grid>
-          );
+          return <CardContainer data={item} formHandler={removeHandler} />;
         }
 
         return null;
@@ -321,7 +324,9 @@ const EmploymentApplication: React.FC = () => {
 
     return null;
   };
+  const theme = useTheme();
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const changeprovince = (e: any): void => {
     debugger;
     const val = e.target.value as string;
@@ -342,20 +347,32 @@ const EmploymentApplication: React.FC = () => {
 
   return (
     <MaterialContainer>
-      <Grid container spacing={1}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <h3>{t('peopleSection.listJobApplication')}</h3>
         </Grid>
-        <Grid item xs={12} sm={12} md={12} xl={12} className={addButton}>
-          <Button onClick={toggleIsOpenModal} variant="text">
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('peopleSection.addJobApplication')}</span>
-          </Button>
+        <Hidden xsDown>
+          <Grid item xs={12} sm={6} md={4} xl={4} className={addButton}>
+            <Button onClick={toggleIsOpenModal} variant="text">
+              <FontAwesomeIcon icon={faPlus} />
+              <span>{t('peopleSection.addJobApplication')}</span>
+            </Button>
+          </Grid>
+        </Hidden>
+
+        <Grid item xs={12} sm={6} md={4} xl={4}>
+          {contentGenerator()}
         </Grid>
 
-        {contentGenerator()}
+        <Hidden smUp>
+          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
       </Grid>
       <Dialog
+        fullScreen={fullScreen}
+        fullWidth={true}
         open={isOpenModal}
         onClose={toggleIsOpenModal}
         aria-labelledby="alert-dialog-title"
@@ -366,478 +383,468 @@ const EmploymentApplication: React.FC = () => {
           {t('peopleSection.jobApplication')}
         </DialogTitle>
         <DialogContent>
-          <div className={modalContainer}>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t('peopleSection.name')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.name}
-                  onChange={(e): void =>
-                    dispatch({ type: 'name', value: e.target.value })
-                  }
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t('peopleSection.family')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.family}
-                  onChange={(e): void =>
-                    dispatch({ type: 'family', value: e.target.value })
-                  }
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t('peopleSection.birthDate')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.birthDate}
-                  onChange={(e): void =>
-                    dispatch({ type: 'birthDate', value: e.target.value })
-                  }
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t('peopleSection.email')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.email}
-                  onChange={(e): void =>
-                    dispatch({ type: 'email', value: e.target.value })
-                  }
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.gender')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.gender}
-                  onChange={(e): void =>
-                    dispatch({ type: 'gender', value: e.target.value })
-                  }
-                >
-                  {genders.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.maritalStatus')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.maritalStatus}
-                  onChange={(e): void =>
-                    dispatch({ type: 'maritalStatus', value: e.target.value })
-                  }
-                >
-                  {maritalStatuses.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      onChange={(e): void =>
-                        dispatch({
-                          type: 'hasReadingPrescriptionCertificate',
-                          value: e.target.value,
-                        })
-                      }
-                      value={state.hasReadingPrescriptionCertificate}
-                    />
-                  }
-                  label={t('peopleSection.readingPrescriptionCertificate')}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t(
-                    'peopleSection.gradeOfReadingPrescriptionCertificate'
-                  )}
-                  type="number"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.gradeOfReadingPrescriptionCertificate}
-                  onChange={(e): void =>
-                    dispatch({
-                      type: 'gradeOfReadingPrescriptionCertificate',
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t('peopleSection.workExperienceYear')}
-                  type="number"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.workExperienceYear}
-                  onChange={(e): void =>
-                    dispatch({
-                      type: 'workExperienceYear',
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.suggestedWorkShift')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.suggestedWorkShift}
-                  onChange={(e): void =>
-                    dispatch({
-                      type: 'suggestedWorkShift',
-                      value: e.target.value,
-                    })
-                  }
-                >
-                  {suggestedWorkShifts.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.pharmaceuticalSoftwareSkill')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.pharmaceuticalSoftwareSkill}
-                  onChange={(e): void =>
-                    dispatch({
-                      type: 'pharmaceuticalSoftwareSkill',
-                      value: e.target.value,
-                    })
-                  }
-                >
-                  {pharmaceuticalSoftwareSkills.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.computerSkill')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.computerSkill}
-                  onChange={(e): void =>
-                    dispatch({ type: 'computerSkill', value: e.target.value })
-                  }
-                >
-                  {computerSkills.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.foreignLanguagesSkill')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.foreignLanguagesSkill}
-                  onChange={(e): void =>
-                    dispatch({
-                      type: 'foreignLanguagesSkill',
-                      value: e.target.value,
-                    })
-                  }
-                >
-                  {foreignLanguagesSkills.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.suggestedJobPosition')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.suggestedJobPosition}
-                  onChange={(e): void =>
-                    dispatch({
-                      type: 'suggestedJobPosition',
-                      value: e.target.value,
-                    })
-                  }
-                >
-                  {suggestedJobPositions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.education')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.education}
-                  onChange={(e): void =>
-                    dispatch({ type: 'education', value: e.target.value })
-                  }
-                >
-                  {educations.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="hasGuarantee"
-                      onChange={(e): void =>
-                        dispatch({
-                          type: 'hasGuarantee',
-                          value: e.target.value,
-                        })
-                      }
-                      value={state.hasGuarantee}
-                    />
-                  }
-                  label={t('peopleSection.hasGuarantee')}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.ostan')}
-                  onChange={changeprovince}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.countryDivisionCode}
-                >
-                  {provinceList.map((option) => (
-                    <option key={option.code} value={option.code}>
-                      {option.name}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  select
-                  label={t('peopleSection.ostan')}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                >
-                  {cityList.map((option) => (
-                    <option key={option.code} value={option.code}>
-                      {option.name}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t('peopleSection.previousWorkplace')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.previousWorkplace}
-                  onChange={(e): void =>
-                    dispatch({
-                      type: 'previousWorkplace',
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </Grid>
-
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t('peopleSection.previousWorkplacePhone')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.previousWorkplacePhone}
-                  onChange={(e): void =>
-                    dispatch({
-                      type: 'previousWorkplacePhone',
-                      value: e.target.value,
-                    })
-                  }
-                />
-              </Grid>
-
-              <Grid item xs={6}>
-                <TextField
-                  fullWidth
-                  label={t('peopleSection.landlinePhone')}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.landlinePhone}
-                  onChange={(e): void =>
-                    dispatch({ type: 'landlinePhone', value: e.target.value })
-                  }
-                />
-              </Grid>
-
-              <Grid alignContent="center" item xs={6}>
-                <input
-                  accept="image/*"
-                  className={input}
-                  id="contained-button-file"
-                  multiple
-                  type="file"
-                  onChange={(e): void => {
-                    if (e.target.files)
-                      dispatch({ type: 'file', value: e.target.files[0] });
-                  }}
-                />
-                <label htmlFor="contained-button-file">
-                  <Button variant="contained" color="primary" component="span">
-                    {t('peopleSection.resumeFile')}
-                  </Button>
-                </label>
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  id="outlined-full-width"
-                  label={t('peopleSection.address')}
-                  style={{ margin: 8 }}
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.address}
-                  onChange={(e): void =>
-                    dispatch({ type: 'address', value: e.target.value })
-                  }
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  id="outlined-full-width"
-                  label={t('peopleSection.descriptions')}
-                  style={{ margin: 8 }}
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.descriptions}
-                  onChange={(e): void =>
-                    dispatch({ type: 'descriptions', value: e.target.value })
-                  }
-                />
-              </Grid>
-
-              <Grid item xs={12} className={buttonContainer}>
-                <Button color="default" onClick={toggleIsOpenModal}>
-                  {t('general.cancel')}
-                </Button>
-                <Button
-                  color="primary"
-                  onClick={formHandler}
-                  disabled={isLoadingSaveData}
-                >
-                  {isLoadingSaveData
-                    ? t('general.pleaseWait')
-                    : t('general.add')}
-                </Button>
-              </Grid>
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.name')}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.name}
+                onChange={(e): void =>
+                  dispatch({ type: 'name', value: e.target.value })
+                }
+              />
             </Grid>
-          </div>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.family')}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.family}
+                onChange={(e): void =>
+                  dispatch({ type: 'family', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.birthDate')}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.birthDate}
+                onChange={(e): void =>
+                  dispatch({ type: 'birthDate', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.email')}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.email}
+                onChange={(e): void =>
+                  dispatch({ type: 'email', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.gender')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.gender}
+                onChange={(e): void =>
+                  dispatch({ type: 'gender', value: e.target.value })
+                }
+              >
+                {genders.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.maritalStatus')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.maritalStatus}
+                onChange={(e): void =>
+                  dispatch({ type: 'maritalStatus', value: e.target.value })
+                }
+              >
+                {maritalStatuses.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    onChange={(e): void =>
+                      dispatch({
+                        type: 'hasReadingPrescriptionCertificate',
+                        value: e.target.value,
+                      })
+                    }
+                    value={state.hasReadingPrescriptionCertificate}
+                  />
+                }
+                label={t('peopleSection.readingPrescriptionCertificate')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.gradeOfReadingPrescriptionCertificate')}
+                type="number"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.gradeOfReadingPrescriptionCertificate}
+                onChange={(e): void =>
+                  dispatch({
+                    type: 'gradeOfReadingPrescriptionCertificate',
+                    value: e.target.value,
+                  })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.workExperienceYear')}
+                type="number"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.workExperienceYear}
+                onChange={(e): void =>
+                  dispatch({
+                    type: 'workExperienceYear',
+                    value: e.target.value,
+                  })
+                }
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.suggestedWorkShift')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.suggestedWorkShift}
+                onChange={(e): void =>
+                  dispatch({
+                    type: 'suggestedWorkShift',
+                    value: e.target.value,
+                  })
+                }
+              >
+                {suggestedWorkShifts.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.pharmaceuticalSoftwareSkill')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.pharmaceuticalSoftwareSkill}
+                onChange={(e): void =>
+                  dispatch({
+                    type: 'pharmaceuticalSoftwareSkill',
+                    value: e.target.value,
+                  })
+                }
+              >
+                {pharmaceuticalSoftwareSkills.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.computerSkill')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.computerSkill}
+                onChange={(e): void =>
+                  dispatch({ type: 'computerSkill', value: e.target.value })
+                }
+              >
+                {computerSkills.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.foreignLanguagesSkill')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.foreignLanguagesSkill}
+                onChange={(e): void =>
+                  dispatch({
+                    type: 'foreignLanguagesSkill',
+                    value: e.target.value,
+                  })
+                }
+              >
+                {foreignLanguagesSkills.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.suggestedJobPosition')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.suggestedJobPosition}
+                onChange={(e): void =>
+                  dispatch({
+                    type: 'suggestedJobPosition',
+                    value: e.target.value,
+                  })
+                }
+              >
+                {suggestedJobPositions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.education')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.education}
+                onChange={(e): void =>
+                  dispatch({ type: 'education', value: e.target.value })
+                }
+              >
+                {educations.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="hasGuarantee"
+                    onChange={(e): void =>
+                      dispatch({
+                        type: 'hasGuarantee',
+                        value: e.target.value,
+                      })
+                    }
+                    value={state.hasGuarantee}
+                  />
+                }
+                label={t('peopleSection.hasGuarantee')}
+              />
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.ostan')}
+                onChange={changeprovince}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.countryDivisionCode}
+              >
+                {provinceList.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.name}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                select
+                label={t('peopleSection.ostan')}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+              >
+                {cityList.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.name}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.previousWorkplace')}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.previousWorkplace}
+                onChange={(e): void =>
+                  dispatch({
+                    type: 'previousWorkplace',
+                    value: e.target.value,
+                  })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.previousWorkplacePhone')}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.previousWorkplacePhone}
+                onChange={(e): void =>
+                  dispatch({
+                    type: 'previousWorkplacePhone',
+                    value: e.target.value,
+                  })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12} sm={12} md={6} lg={6}>
+              <TextField
+                fullWidth
+                label={t('peopleSection.landlinePhone')}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.landlinePhone}
+                onChange={(e): void =>
+                  dispatch({ type: 'landlinePhone', value: e.target.value })
+                }
+              />
+            </Grid>
+
+            <Grid alignContent="center" item xs={12} sm={12} md={6} lg={6}>
+              <input
+                accept="image/*"
+                className={input}
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={(e): void => {
+                  if (e.target.files)
+                    dispatch({ type: 'file', value: e.target.files[0] });
+                }}
+              />
+              <label htmlFor="contained-button-file">
+                <Button variant="contained" color="primary" component="span">
+                  {t('peopleSection.resumeFile')}
+                </Button>
+              </label>
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-full-width"
+                label={t('peopleSection.address')}
+                style={{ margin: 8 }}
+                fullWidth
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.address}
+                onChange={(e): void =>
+                  dispatch({ type: 'address', value: e.target.value })
+                }
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-full-width"
+                label={t('peopleSection.descriptions')}
+                style={{ margin: 8 }}
+                fullWidth
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.descriptions}
+                onChange={(e): void =>
+                  dispatch({ type: 'descriptions', value: e.target.value })
+                }
+              />
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={toggleIsOpenModal} color="primary">
-            {t('peopleSection.close')}
-          </Button>
+          <Grid item xs={12} className={buttonContainer}>
+            <Button color="default" onClick={toggleIsOpenModal}>
+              {t('general.cancel')}
+            </Button>
+            <Button
+              color="primary"
+              onClick={formHandler}
+              disabled={isLoadingSaveData}
+            >
+              {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
+            </Button>
+          </Grid>
         </DialogActions>
       </Dialog>
     </MaterialContainer>

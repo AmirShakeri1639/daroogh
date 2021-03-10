@@ -7,9 +7,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Fab,
   Grid,
+  Hidden,
   makeStyles,
-  TextField,
+  TextField,  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
@@ -55,11 +58,12 @@ const useStyle = makeStyles((theme) =>
     addButton: {
       display: 'flex',
 
-      height: 80,
+      height: 180,
       alignItems: 'center',
       justifyContent: 'center',
       border: '2px dashed #cecece',
-      borderRadius: 10,
+      borderRadius: 5,
+      marginTop:10,
       flexDirection: 'column',
       '& button': {
         height: 'inherit',
@@ -75,7 +79,7 @@ const useStyle = makeStyles((theme) =>
     modalContainer: {
       backgroundColor: '#fff',
       borderRadius: 5,
-      padding: theme.spacing(2, 3),
+      padding: theme.spacing(2, 2),
       width: 500,
     },
     buttonContainer: {
@@ -83,6 +87,15 @@ const useStyle = makeStyles((theme) =>
       '& button:nth-child(1)': {
         marginRight: theme.spacing(1),
       },
+    },
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
     },
   })
 );
@@ -132,7 +145,7 @@ const Prescription: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { addButton, modalContainer, buttonContainer, input } = useStyle();
+  const { addButton, modalContainer, buttonContainer, input,fab } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -196,7 +209,7 @@ const Prescription: React.FC = () => {
       return data.items.map((item: any) => {
         if (item !== null) {
           return (
-            <Grid key={item.id} item xs={12} sm={12} md={6} xl={4}>
+            <Grid key={item.id} item xs={12} sm={12} md={4} xl={4}>
               <CardContainer data={item} formHandler={removeHandler} />
             </Grid>
           );
@@ -225,31 +238,49 @@ const Prescription: React.FC = () => {
       }
     })();
   };
+  const theme = useTheme();
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <MaterialContainer>
-      <Grid container spacing={1}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <h3>{t('peopleSection.listPrescription')}</h3>
         </Grid>
-        <Grid item xs={12} sm={12} md={12} xl={12} className={addButton}>
+        <Hidden xsDown>
+
+        <Grid item xs={12} sm={12} md={4} xl={4} className={addButton}>
           <Button onClick={toggleIsOpenModal} variant="text">
             <FontAwesomeIcon icon={faPlus} />
             <span>{t('peopleSection.addPrescription')}</span>
           </Button>
         </Grid>
+        </Hidden>
+        <Hidden smUp>
+            <Fab
+              onClick={toggleIsOpenModal}
+              className={fab}
+              aria-label="add"
+            >
+              <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+            </Fab>
+          </Hidden>
+
 
         {contentGenerator()}
+
+        
       </Grid>
       <Dialog
+      fullScreen={fullScreen}
+      fullWidth={true}
         open={isOpenModal}
         onClose={toggleIsOpenModal}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{'نسخه'}</DialogTitle>
-        <DialogContent>
-          <div className={modalContainer}>
+        <DialogContent  style={{ backgroundColor: '#FAFAFA', width:'100%' }}>
             <Grid container spacing={1}>
               <Grid item xs={12}>
                 <TextField
@@ -345,7 +376,11 @@ const Prescription: React.FC = () => {
                 </label>
               </Grid>
 
-              <Grid item xs={12} className={buttonContainer}>
+              
+            </Grid>
+        </DialogContent>
+        <DialogActions>
+        <Grid item xs={12} className={buttonContainer}>
                 <Button color="default" onClick={toggleIsOpenModal}>
                   {t('general.cancel')}
                 </Button>
@@ -353,13 +388,6 @@ const Prescription: React.FC = () => {
                   {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
                 </Button>
               </Grid>
-            </Grid>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={toggleIsOpenModal} color="primary">
-            بستن
-          </Button>
         </DialogActions>
       </Dialog>
     </MaterialContainer>

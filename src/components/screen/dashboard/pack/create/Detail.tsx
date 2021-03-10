@@ -77,7 +77,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                   <TextWithTitle
                     title={t('general.price')}
                     body={thousandsSeperator(amount)}
-                    suffix="تومان"
+                    suffix={ t('general.defaultCurrency') }
                   />
 
                   <TextWithTitle

@@ -25,11 +25,9 @@ import {
 import moment from 'jalali-moment';
 
 import noImage from './noImage.jpg';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 const useStyle = makeStyles((theme) =>
   createStyles({
-    paper: {
-      backgroundColor: '#E4E4E4',
-    },
     modalContainer: {
       backgroundColor: '#fff',
       borderRadius: 5,
@@ -38,7 +36,7 @@ const useStyle = makeStyles((theme) =>
     },
     container: {
       padding: 5,
-      borderRadius: 15,
+      borderRadius: 5,
       '& .drug-name': {
         marginLeft: 10,
       },
@@ -58,7 +56,7 @@ const useStyle = makeStyles((theme) =>
 
 const Detail: React.FC<PrescriptionInputInterface> = (props) => {
   const { id, sendDate, contryDivisionName, comment, fileKey } = props;
-  const { paper, container, textCenter, icon, modalContainer } = useStyle();
+  const { container, textCenter, icon, modalContainer } = useStyle();
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [selectedsomment, setSelectedComment] = useState<string>('');
 
@@ -74,128 +72,81 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
   };
   return (
     <Grid item xs={12}>
-      <Paper className={paper}>
-        <Grid container spacing={1}>
-          <Grid item xs={8}>
-            <div className={container}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
-                  <Grid container spacing={0} alignItems="flex-end">
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={'شماره پیگیری'}
-                        leftText={id || t('general.undefined')}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={0} alignItems="flex-end">
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid
-                      className="cursor-pointer"
-                      onClick={(): void => toggleIsOpenModal(comment)}
-                      item
-                      xs={11}
-                    >
-                      <TextLine
-                        rightText={'اسامی داروها'}
-                        leftText={
-                          (comment &&
-                            (comment.length > 10
-                              ? comment.substring(0, 10) + '...'
-                              : comment)) ||
-                          t('general.undefined')
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid container spacing={0} alignItems="flex-end">
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={'محدوده جغرافیائی'}
-                        leftText={contryDivisionName || t('general.undefined')}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={0}>
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={'تاریخ ارسال'}
-                        leftText={
-                          moment(sendDate, 'YYYY/MM/DD')
-                            .locale('fa')
-                            .format('YYYY/MM/DD') || t('general.undefined')
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </div>
+      <Grid container spacing={2}>
+        <Grid item style={{ textAlign: 'center' }} xs={4}>
+          <Grid xs={12} item>
+            تصویر نسخه
           </Grid>
-          <Grid item style={{ textAlign: 'center' }} xs={4}>
-            <Grid xs={12} item>
-              تصویر نسخه
+          <Grid xs={12} item>
+            <a
+              download=""
+              href={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+            >
+              {' '}
+              <img
+                onError={addDefaultSrc}
+                style={{ height: '86px', width: '100px', margin: '5px' }}
+                src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+              />
+            </a>
+          </Grid>
+        </Grid>
+        <Grid item xs={8}>
+          <Grid
+            container
+            spacing={1}
+            style={{ paddingRight: 8, borderRight: '1px solid #f80501' }}
+          >
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'شماره پیگیری'}
+                body={id || t('general.undefined')}
+              />
             </Grid>
-            <Grid xs={12} item>
-              <a
-                download=""
-                href={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
-              >
-                {' '}
-                <img
-                  onError={addDefaultSrc}
-                  style={{ height: '86px', width: '100px', margin: '5px' }}
-                  src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
-                />
-              </a>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'اسامی داروها'}
+                body={
+                  <div onClick={(): void => toggleIsOpenModal(comment)}>
+                    {(comment &&
+                      (comment.length > 15
+                        ? comment.substring(0, 15) + '...'
+                        : comment)) ||
+                      t('general.undefined')}
+                  </div>
+                }
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'محدوده جغرافیائی'}
+                body={contryDivisionName || t('general.undefined')}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'تاریخ ارسال'}
+                body={
+                  moment(sendDate, 'YYYY/MM/DD')
+                    .locale('fa')
+                    .format('YYYY/MM/DD') || t('general.undefined')
+                }
+              />
             </Grid>
           </Grid>
         </Grid>
+      </Grid>
 
-        <Modal open={isOpenModal} toggle={(): void => toggleIsOpenModal('')}>
-          <div className={modalContainer}>
-            <Grid container spacing={1}>
-              <Grid item xs={12} sm={12}>
-                {selectedsomment}
-              </Grid>
+      <Modal open={isOpenModal} toggle={(): void => toggleIsOpenModal('')}>
+        <div className={modalContainer}>
+          <Grid container spacing={1}>
+            <Grid item xs={12} sm={12}>
+              {selectedsomment}
             </Grid>
-          </div>
-        </Modal>
-      </Paper>
+          </Grid>
+        </div>
+      </Modal>
     </Grid>
   );
 };

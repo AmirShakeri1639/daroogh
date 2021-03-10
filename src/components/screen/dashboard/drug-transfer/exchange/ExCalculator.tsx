@@ -192,7 +192,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                       { t('general.number') }
                     </TableCell>
                     <TableCell align="center" className={ darkText }>
-                      { t('general.price') } { t('general.unit') } ({ t('general.rial') })
+                      { t('general.price') } { t('general.unit') } ({ t('general.defaultCurrency') })
                     </TableCell>
                   </TableRow>
                 </TableHead>
