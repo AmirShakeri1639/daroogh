@@ -424,7 +424,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               <span style={ { fontSize: 14 } }>
                 { ' ' }
                 <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
-                <span style={ { fontSize: 10, marginRight: 2 } }>ریال</span>
+                <span style={ { fontSize: 10, marginRight: 2 } }>
+                  { t('general.defaultCurrency') }
+                </span>
                 { debtValueState > 0 && ' بدهکار' }
               </span>
             </div>

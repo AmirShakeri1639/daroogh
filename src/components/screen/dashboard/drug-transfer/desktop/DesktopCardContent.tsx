@@ -76,6 +76,7 @@ const DesktopCardContent = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { l } = Convertor;
+  const currency = t('general.defaultCurrency');
 
   const {
     viewExhcnage,
@@ -332,7 +333,7 @@ const DesktopCardContent = ({
               {pharmacyWarranty !== 0 && (
                 <>
                   {t('general.warrantyTo')} {pharmacyWarranty}{' '}
-                  {t('general.toman')}
+                  {t('general.defaultCurrency')}
                   <FontAwesomeIcon icon={faMedal} size="lg" />
                 </>
               )}
@@ -377,7 +378,7 @@ const DesktopCardContent = ({
               <TextWithTitle
                 title={t('exchange.commission')}
                 body={totalPourcentage}
-                suffix={t('general.toman')}
+                suffix={t('general.defaultCurrency')}
               />
             </Grid>
           )}
@@ -415,7 +416,7 @@ const DesktopCardContent = ({
                     }
                   </>
                 }
-                suffix={t('general.toman')}
+                suffix={t('general.defaultCurrency')}
               />
             </Grid>
           )}
@@ -443,7 +444,7 @@ const DesktopCardContent = ({
                     }
                   </>
                 }
-                suffix={t('general.toman')}
+                suffix={t('general.defaultCurrency')}
               />
             </Grid>
           )}
@@ -454,7 +455,7 @@ const DesktopCardContent = ({
                 <TextWithTitle
                   title={t('exchange.difference')}
                   body={`${Convertor.thousandsSeperatorFa(difference)} 
-                 تومان (${l(diffPercent)}%)`}
+                  ${ currency } (${l(diffPercent)}%)`}
                 />
               </Grid>
 

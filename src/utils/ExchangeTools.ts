@@ -7,6 +7,7 @@ import {
   ViewExchangeInterface,
 } from '../interfaces';
 import { Convertor } from './';
+import i18n from 'i18n';
 
 export const isExchangeCompleteddOrCancelled = (state: number): boolean => {
   return (
@@ -219,6 +220,7 @@ export const differenceCheck = (
   const { exchange, percent, cartA = [], cartB = [] } = params;
   // let { totalPriceA = 0, totalPriceB = 0 } = params;
   let { totalPriceA = 0, totalPriceB = 0 } = exchange;
+  const currency = i18n.t('general.defaultCurrency');
 
   // if (totalPriceA !== 0 ) {
   if (cartA.length > 0) {
@@ -320,7 +322,7 @@ export const differenceCheck = (
     message = `اگر قصد دارید از سبد خود پیشنهادی ارائه دهید \
       حدود ${l(
       totalPriceB
-    )} ریال از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
+    )} ${ currency } از سبد خود انتخاب کنید تا اختلاف سبدها به حد مجاز برسد.\
       در غیر این صورت داروخانه مقابل از سبد شما انتخاب خواهد کرد.`;
   } else {
     // TODO: if diffA or diffB === 0 hide message
@@ -332,44 +334,44 @@ export const differenceCheck = (
       message = '';
       if (exchange.currentPharmacyIsA) {
         if (diffA > 0) {
-          message += `لطفا حدود ${diffAabs} ریال به سبد خود اضافه کنید `;
+          message += `لطفا حدود ${diffAabs} ${ currency } به سبد خود اضافه کنید `;
           message +=
             diffB < 0
-              ? `یا حدود ${diffBabs} ریال از سبد طرف مقابل کم کنید `
-              : `یا حدود ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `;
+              ? `یا حدود ${diffBabs} ${ currency } از سبد طرف مقابل کم کنید `
+              : `یا حدود ${diffBabs} ${ currency } به سبد طرف مقابل اضافه کنید `;
         } else {
           message +=
             diffB > 0
-              ? `لطفا حدود ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
-              : `لطفا حدود ${diffBabs} ریال از سبد طرف مقابل کم کنید `;
-          message += `یا حدود ${diffAabs} ریال از سبد خود کم کنید `;
+              ? `لطفا حدود ${diffBabs} ${ currency } به سبد طرف مقابل اضافه کنید `
+              : `لطفا حدود ${diffBabs} ${ currency } از سبد طرف مقابل کم کنید `;
+          message += `یا حدود ${diffAabs} ${ currency } از سبد خود کم کنید `;
         }
         // message = diffA > 0
-        //   ? `لطفا حدود ${diffAabs} ریال به سبد خود اضافه کنید `
-        //   : `لطفا حدود ${diffAabs} ریال از سبد خود کم کنید `
+        //   ? `لطفا حدود ${diffAabs} ${ currency } به سبد خود اضافه کنید `
+        //   : `لطفا حدود ${diffAabs} ${ currency } از سبد خود کم کنید `
         // message += diffB > 0
-        //   ? `یا حدود ${diffBabs} ریال به سبد طرف مقابل اضافه کنید `
-        //   : `یا حدود ${diffBabs} ریال از سبد طرف مقابل کم کنید `
+        //   ? `یا حدود ${diffBabs} ${ currency } به سبد طرف مقابل اضافه کنید `
+        //   : `یا حدود ${diffBabs} ${ currency } از سبد طرف مقابل کم کنید `
       } else {
         if (diffB > 0) {
-          message += `لطفا حدود ${diffBabs} ریال به سبد خود اضافه کنید `;
+          message += `لطفا حدود ${diffBabs} ${ currency } به سبد خود اضافه کنید `;
           message +=
             diffA < 0
-              ? `یا حدود ${diffAabs} ریال از سبد طرف مقابل کم کنید `
-              : `یا حدود ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `;
+              ? `یا حدود ${diffAabs} ${ currency } از سبد طرف مقابل کم کنید `
+              : `یا حدود ${diffAabs} ${ currency } به سبد طرف مقابل اضافه کنید `;
         } else {
           message +=
             diffA > 0
-              ? `لطفا حدود ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
-              : `لطفا حدود ${diffAabs} ریال از سبد طرف مقابل کم کنید `;
-          message += `یا حدود ${diffBabs} ریال از سبد خود کم کنید `;
+              ? `لطفا حدود ${diffAabs} ${ currency } به سبد طرف مقابل اضافه کنید `
+              : `لطفا حدود ${diffAabs} ${ currency } از سبد طرف مقابل کم کنید `;
+          message += `یا حدود ${diffBabs} ${ currency } از سبد خود کم کنید `;
         }
         // message = diffB > 0
-        //   ? `لطفا حدود ${diffBabs} ریال به سبد خود اضافه کنید `
-        //   : `لطفا حدود ${diffBabs} ریال از سبد خود کم کنید `
+        //   ? `لطفا حدود ${diffBabs} ${ currency } به سبد خود اضافه کنید `
+        //   : `لطفا حدود ${diffBabs} ${ currency } از سبد خود کم کنید `
         // message += diffA > 0
-        //   ? `یا حدود ${diffAabs} ریال به سبد طرف مقابل اضافه کنید `
-        //   : `یا حدود ${diffAabs} ریال از سبد طرف مقابل کم کنید `
+        //   ? `یا حدود ${diffAabs} ${ currency } به سبد طرف مقابل اضافه کنید `
+        //   : `یا حدود ${diffAabs} ${ currency } از سبد طرف مقابل کم کنید `
       }
       message += ' تا اختلاف قیمت سبدها به حد مجاز برسد.';
     }

@@ -688,7 +688,7 @@ const SupplyList: React.FC = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <label htmlFor="">{`${t('general.price')} (${t(
-                      'general.rial'
+                      'general.defaultCurrency'
                     )})`}</label>
                   </Grid>
 

@@ -458,7 +458,7 @@ export default {
         areYouSure: 'آیا از ثبت این تراکنش مطمئن هستید؟',
         creditor: 'بستانکار',
         debtor: 'بدهکار',
-        enterAmountInRial: 'مبلغ را به ریال وارد کنید.',
+        enterAmount: 'مبلغ را وارد کنید.',
       },
       countryDivision: {
         province: 'استان',
