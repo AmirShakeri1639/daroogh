@@ -10,6 +10,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
 } from '@material-ui/core';
 import { Modal } from '../../../../public';
 import Detail from './Detail';
@@ -27,6 +28,7 @@ import { useQuery } from 'react-query';
 import { EmploymentApplication as presApi } from '../../../../../services/api';
 import { EmpApplicationDataInterface } from 'interfaces/EmploymentApplicationInterface';
 import { useTranslation } from 'react-i18next';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -89,42 +91,19 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
   };
 
   return (
-    <Paper className={root} elevation={1}>
-      <Grid container spacing={1}>
+    <Paper elevation={1}>
+      <Grid container xs={12} spacing={3}>
         {cancelDate && (
-          <Grid item xs={12} className={spacingVertical1}>
-            <TextLine
-              backColor={ColorEnum.White}
-              rightText={
-                <>
-                  <FontAwesomeIcon
-                    icon={faCalendarTimes}
-                    size="lg"
-                    className={faIcons}
-                  />
-                  {t('peopleSection.cancelDateText')}
-                </>
-              }
-              leftText={moment(cancelDate, 'YYYY/MM/DD')
+          <Grid item xs={12}>
+            <TextWithTitle
+              title={t('peopleSection.cancelDateText')}
+              body={moment(cancelDate, 'YYYY/MM/DD')
                 .locale('fa')
                 .format('YYYY/MM/DD')}
             />
           </Grid>
         )}
-        {!cancelDate && (
-          <Grid item xs={12} className={spacingVertical1}>
-            <Grid justify="flex-end" container spacing={1}>
-              <Grid item xs={1}>
-                <FontAwesomeIcon
-                  onClick={(): Promise<any> => removeHandler(id)}
-                  icon={faTrashAlt}
-                  size="lg"
-                  className={`${redTrash} cursor-pointer`}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-        )}
+        <Grid item xs={12}>
           <Detail
             resumeFileKey={resumeFileKey}
             onClick={toggleIsOpenModal}
@@ -133,7 +112,21 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
             cancelDate={cancelDate}
             suggestedJobPositionStr={suggestedJobPositionStr}
           />
+          <Grid item xs={12} style={{ padding: 2 }}>
+            <Divider />
+          </Grid>
 
+          {!cancelDate && (
+            <Grid  justify="flex-end" container xs={12}>
+              <Button
+                onClick={(): Promise<any> => removeHandler(id)}
+                style={{ color: 'green', fontSize: '14px' }}
+              >
+                حذف
+              </Button>
+            </Grid>
+          )}
+        </Grid>
       </Grid>
       <Dialog
         open={isOpenModal}

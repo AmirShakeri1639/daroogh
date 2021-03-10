@@ -11,7 +11,8 @@ import {
   FormControlLabel,
   Grid,
   makeStyles,
-  TextField,
+  TextField,useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
@@ -70,19 +71,7 @@ const useStyle = makeStyles((theme) =>
           marginLeft: 8,
         },
       },
-    },
-    modalContainer: {
-      backgroundColor: '#fff',
-      borderRadius: 5,
-      padding: theme.spacing(2, 3),
-      width: 500,
-    },
-    buttonContainer: {
-      textAlign: 'right',
-      '& button:nth-child(1)': {
-        marginRight: theme.spacing(1),
-      },
-    },
+    }
   })
 );
 
@@ -245,7 +234,7 @@ const EmploymentApplication: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { addButton, modalContainer, buttonContainer, input } = useStyle();
+  const { addButton, input } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -309,9 +298,7 @@ const EmploymentApplication: React.FC = () => {
       return data.items.map((item: any) => {
         if (item !== null) {
           return (
-            <Grid key={item.id} item xs={12} sm={6} md={4} xl={3}>
               <CardContainer data={item} formHandler={removeHandler} />
-            </Grid>
           );
         }
 
@@ -321,7 +308,9 @@ const EmploymentApplication: React.FC = () => {
 
     return null;
   };
+  const theme = useTheme();
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const changeprovince = (e: any): void => {
     debugger;
     const val = e.target.value as string;
@@ -342,20 +331,24 @@ const EmploymentApplication: React.FC = () => {
 
   return (
     <MaterialContainer>
-      <Grid container spacing={1}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <h3>{t('peopleSection.listJobApplication')}</h3>
         </Grid>
-        <Grid item xs={12} sm={12} md={12} xl={12} className={addButton}>
+        <Grid item xs={12} sm={6} md={4} xl={4} className={addButton}>
           <Button onClick={toggleIsOpenModal} variant="text">
             <FontAwesomeIcon icon={faPlus} />
             <span>{t('peopleSection.addJobApplication')}</span>
           </Button>
         </Grid>
+        <Grid item xs={12} sm={6} md={4} xl={4}>
 
         {contentGenerator()}
+        </Grid>
       </Grid>
       <Dialog
+      fullScreen={fullScreen}
+      fullWidth={true}
         open={isOpenModal}
         onClose={toggleIsOpenModal}
         aria-labelledby="alert-dialog-title"
@@ -366,9 +359,8 @@ const EmploymentApplication: React.FC = () => {
           {t('peopleSection.jobApplication')}
         </DialogTitle>
         <DialogContent>
-          <div className={modalContainer}>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t('peopleSection.name')}
@@ -382,7 +374,7 @@ const EmploymentApplication: React.FC = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t('peopleSection.family')}
@@ -396,7 +388,7 @@ const EmploymentApplication: React.FC = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t('peopleSection.birthDate')}
@@ -410,7 +402,7 @@ const EmploymentApplication: React.FC = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t('peopleSection.email')}
@@ -424,7 +416,7 @@ const EmploymentApplication: React.FC = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -445,7 +437,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -466,7 +458,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -482,7 +474,7 @@ const EmploymentApplication: React.FC = () => {
                   label={t('peopleSection.readingPrescriptionCertificate')}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t(
@@ -502,7 +494,7 @@ const EmploymentApplication: React.FC = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t('peopleSection.workExperienceYear')}
@@ -520,7 +512,7 @@ const EmploymentApplication: React.FC = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -544,7 +536,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -568,7 +560,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -589,7 +581,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -613,7 +605,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -637,7 +629,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -658,7 +650,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -675,7 +667,7 @@ const EmploymentApplication: React.FC = () => {
                   label={t('peopleSection.hasGuarantee')}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -694,7 +686,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   select
@@ -711,7 +703,7 @@ const EmploymentApplication: React.FC = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t('peopleSection.previousWorkplace')}
@@ -729,7 +721,7 @@ const EmploymentApplication: React.FC = () => {
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t('peopleSection.previousWorkplacePhone')}
@@ -747,7 +739,7 @@ const EmploymentApplication: React.FC = () => {
                 />
               </Grid>
 
-              <Grid item xs={6}>
+              <Grid item xs={12} sm={12} md={6} lg={6}>
                 <TextField
                   fullWidth
                   label={t('peopleSection.landlinePhone')}
@@ -762,7 +754,7 @@ const EmploymentApplication: React.FC = () => {
                 />
               </Grid>
 
-              <Grid alignContent="center" item xs={6}>
+              <Grid alignContent="center" item xs={12} sm={12} md={6} lg={6}>
                 <input
                   accept="image/*"
                   className={input}
@@ -817,7 +809,11 @@ const EmploymentApplication: React.FC = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} className={buttonContainer}>
+          
+            </Grid>
+        </DialogContent>
+        <DialogActions>
+        <Grid item xs={12} >
                 <Button color="default" onClick={toggleIsOpenModal}>
                   {t('general.cancel')}
                 </Button>
@@ -831,13 +827,7 @@ const EmploymentApplication: React.FC = () => {
                     : t('general.add')}
                 </Button>
               </Grid>
-            </Grid>
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={toggleIsOpenModal} color="primary">
-            {t('peopleSection.close')}
-          </Button>
+          
         </DialogActions>
       </Dialog>
     </MaterialContainer>
