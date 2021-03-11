@@ -1,6 +1,5 @@
 import {
   Grid,
-  TextField,
   Select,
   MenuItem,
   InputLabel,
@@ -19,7 +18,6 @@ import {
   useTheme,
   Divider,
 } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
 import { faPlus, faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -746,10 +744,6 @@ const Create: React.FC = () => {
           </Fab>
         </Hidden>
 
-        {/* <Button variant="text" onClick={toggleIsOpenModal}>
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('pack.addDrug')}</span>
-          </Button> */}
         {contentHandler()}
       </Grid>
       <Dialog
@@ -816,7 +810,7 @@ const Create: React.FC = () => {
               </Grid>
 
               <Grid item xs={12}>
-                <Grid container alignItems="center" spacing={2}>
+                <Grid container alignItems="center" spacing={1}>
                   <Grid item xs={12}>
                     <span>هدیه</span>
                     <span className="text-succes txt-xs">
@@ -835,10 +829,10 @@ const Create: React.FC = () => {
                     <Grid item xs={2}>
                       <span>به ازای</span>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={10} className="w-100">
                       <Input
                         value={offer2}
-                        // className={offerInput}
+                        label={t('general.number')}
                         onChange={(e): void => {
                           setOffer2(e.target.value);
                         }}
@@ -857,6 +851,30 @@ const Create: React.FC = () => {
                     </Grid>
                     <Grid item xs={2}>
                       {t('general.gift')}
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Grid
+                    container
+                    spacing={0}
+                    alignItems="center"
+                    justify="space-between"
+                  >
+                    <Grid item xs={1}>
+                      <span>تا</span>
+                    </Grid>
+                    <Grid item xs={9}>
+                      <Input
+                        value={offer1}
+                        label={t('general.number')}
+                        onChange={(e): void => {
+                          setOffer1(e.target.value);
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={2}>
+                      <div className="text-left">{t('general.gift')}</div>
                     </Grid>
                   </Grid>
                 </Grid>
