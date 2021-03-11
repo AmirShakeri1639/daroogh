@@ -17,7 +17,11 @@ import ExchangeWidget from './widgets/ExchangeWidget';
 import SurveyWidget from './widgets/SurveyWidget';
 import PrescriptionWidget from './widgets/PrescriptionWidget';
 import EmpApplicationWidget from './widgets/EmpApplicationWidget';
-import { sweetAlert } from 'utils';
+import { 
+  checkVersion, 
+  clearMyCache, 
+  showWhatsNew,
+} from 'utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,60 +52,46 @@ const DashboardContent: React.FC<any> = () => {
     setValue(index);
   };
 
-  const showWhatsNew = async (versionNo: string | number) => {
-    const whatsNewFile =
-      await (await fetch(window.location.origin + '/whatsnew.json')).json();
-    const whatsNewData =
-      whatsNewFile[versionNo]
-        ? whatsNewFile[versionNo].map(
-          (i: any) => { return (`<li>${i}</li>`) }
-        ).join('') : '';
-    sweetAlert({
-      type: 'info',
-      html: `بروزرسانی به نسخه ${versionNo} انجام شد!` +
-        (whatsNewData.length > 0
-          ? `<br /><div style="text-align: right">` +
-          '<h3>تازه‌ها</h3>' +
-          `<ul>${whatsNewData}</ul></div>`
-          : '')
-    })
-  }
-
-  if (localStorage.getItem('whatsNewExists') === 'true') {
-    showWhatsNew(localStorage.getItem('version') || '0.1.0');
-    localStorage.removeItem('whatsNewExists');
+  if (checkVersion()) {
+    clearMyCache();
+  } else {
+    const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
+    if (whatsNewExistsFromStorage === 'true') {
+      localStorage.removeItem('whatsNewExists');
+      showWhatsNew(localStorage.getItem('version') || '0.1.0');
+    }
   }
 
   return (
-    <Container maxWidth="lg" className={classes.container}>
-      <Grid container spacing={3}>
-        {/* Widgets */}
-        <Grid item xs={12} container spacing={3}>
-          <Grid item xs={12} sm={3}>
+    <Container maxWidth="lg" className={ classes.container }>
+      <Grid container spacing={ 3 }>
+        {/* Widgets */ }
+        <Grid item xs={ 12 } container spacing={ 3 }>
+          <Grid item xs={ 12 } sm={ 3 }>
             <ExchangeWidget />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={ 12 } sm={ 3 }>
             <SurveyWidget />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={ 12 } sm={ 3 }>
             <PrescriptionWidget />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={ 12 } sm={ 3 }>
             <EmpApplicationWidget />
           </Grid>
         </Grid>
-        {/* Chart */}
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
+        {/* Chart */ }
+        <Grid item xs={ 12 }>
+          <Paper className={ classes.paper }>
             <ExChangeChart></ExChangeChart>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
+        <Grid item xs={ 12 }>
+          <Paper className={ classes.paper }>
             <AppBar position="static" color="default">
               <Tabs
-                value={value}
-                onChange={handleChange}
+                value={ value }
+                onChange={ handleChange }
                 indicatorColor="primary"
                 textColor="primary"
                 variant="fullWidth"
@@ -111,18 +101,18 @@ const DashboardContent: React.FC<any> = () => {
                 <Tab label="داروخانه های برتر شبانه روزی" />
               </Tabs>
             </AppBar>
-            <div style={{ marginTop: '5px' }}>
-              {value === 0 ? (
-                <BestPharmaciesList for24Hour={false}></BestPharmaciesList>
+            <div style={ { marginTop: '5px' } }>
+              { value === 0 ? (
+                <BestPharmaciesList for24Hour={ false }></BestPharmaciesList>
               ) : (
-                <BestPharmaciesList for24Hour={true}></BestPharmaciesList>
-              )}
+                <BestPharmaciesList for24Hour={ true }></BestPharmaciesList>
+              ) }
             </div>
           </Paper>
         </Grid>
 
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
+        <Grid item xs={ 12 }>
+          <Paper className={ classes.paper }>
             <div id="map">
               <MapCluster></MapCluster>
             </div>

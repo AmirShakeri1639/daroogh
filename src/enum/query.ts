@@ -11,6 +11,7 @@ export enum CategoryQueryEnum {
 export enum MessageQueryEnum {
   GET_ALL_MESSAGES = 'getAllMessages',
   GET_USER_MESSAGES = 'getUserMessages',
+  GET_PHARMACY_MESSAGE = 'getPharmacyMessage',
 }
 
 export enum DrugEnum {

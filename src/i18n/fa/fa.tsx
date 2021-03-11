@@ -654,6 +654,11 @@ export default {
         MasterDegree: 'فوق لیسانس',
         DoctoralDegree: 'دکترا',
       },
+
+      fda: {
+        fda: 'سازمان غذا و دارو',
+        exchanges: 'تبادل‌ها',
+      }
     },
   },
 };

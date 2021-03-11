@@ -11,86 +11,158 @@ import { isAdmin } from './utils';
 import Appbar from './components/screen/dashboard/AppBar';
 import ReactGA from 'react-ga';
 import { createBrowserHistory } from 'history';
-import { checkVersion } from 'utils';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
-const ForgetPassword = lazy(() => import('./components/screen/forget-password/ForgetPassword'));
-const RegisterPharmacyWithUser = lazy(() =>
-  import('./components/screen/public/RegisterPharmacyWithUser')
+const ForgetPassword = lazy(
+  () => import('./components/screen/forget-password/ForgetPassword')
+);
+const RegisterPharmacyWithUser = lazy(
+  () => import('./components/screen/public/RegisterPharmacyWithUser')
 );
 
-const DrugTransfer = lazy(() => import('./components/screen/dashboard/drug-transfer/Transfer'));
-const Desktop1 = lazy(() => import('./components/screen/dashboard/drug-transfer/desktop/Desktop1'));
-const Transfer = lazy(() => import('./components/screen/dashboard/drug-transfer/Transfer'));
-const SupplyList = lazy(() => import('./components/screen/dashboard/supply-list/SupplyList'));
-
-const Transactions = lazy(() => import('./components/screen/dashboard/accounting/accountingList'));
-
-const AccountingInfo = lazy(() =>
-  import('./components/screen/dashboard/accounting/AccountingInfo')
+const DrugTransfer = lazy(
+  () => import('./components/screen/dashboard/drug-transfer/Transfer')
+);
+const Desktop1 = lazy(
+  () => import('./components/screen/dashboard/drug-transfer/desktop/Desktop1')
+);
+const Transfer = lazy(
+  () => import('./components/screen/dashboard/drug-transfer/Transfer')
+);
+const SupplyList = lazy(
+  () => import('./components/screen/dashboard/supply-list/SupplyList')
 );
 
-const MembershipRequests = lazy(() => import('./components/screen/dashboard/pharmacy/Membership'));
-const MemberRole = lazy(() => import('./components/screen/dashboard/pharmacy/MemberRole'));
-
-const DashboardActivePage = lazy(() => import('./components/screen/dashboard/DashboardActivePage'));
-
-const CreateRole = lazy(() => import('./components/screen/dashboard/roles/CreateRole'));
-
-const CreateUser = lazy(() => import('./components/screen/dashboard/user/CreateUser'));
-
-const UsersList = lazy(() => import('./components/screen/dashboard/user/UsersList'));
-
-const ChangeUserPassword = lazy(() => import('./components/screen/dashboard/user/ChangePassword'));
-
-const CreateDrug = lazy(() => import('./components/screen/dashboard/drug/CreateDrug'));
-
-const DrugsList = lazy(() => import('./components/screen/dashboard/drug/drugsList'));
-
-const CategoryList = lazy(() => import('./components/screen/dashboard/category/CategoryList'));
-const FavoriteList = lazy(() => import('./components/screen/dashboard/favorite-list/Drug'));
-const Prescription = lazy(() =>
-  import('./components/screen/dashboard/peopleSection/Prescription/Prescription')
-);
-const EmploymentApplication = lazy(() =>
-  import('./components/screen/dashboard/peopleSection/EmploymentApplication/EmploymentApplication')
+const Transactions = lazy(
+  () => import('./components/screen/dashboard/accounting/accountingList')
 );
 
-const CreatePharmacy = lazy(() => import('./components/screen/dashboard/pharmacy/createPharmacy'));
-
-const PharmaciesList = lazy(() => import('./components/screen/dashboard/pharmacy/pharmaciesList'));
-
-const CreateMessage = lazy(() => import('./components/screen/dashboard/message/CreateMessage'));
-
-const MessagesList = lazy(() => import('./components/screen/dashboard/message/MessagesList'));
-
-const DrugFavoriteCategory = lazy(() =>
-  import('./components/screen/dashboard/favorite-list/category/Category')
+const AccountingInfo = lazy(
+  () => import('./components/screen/dashboard/accounting/AccountingInfo')
 );
 
-const CreatePack = lazy(() => import('./components/screen/dashboard/pack/create/Create'));
+const MembershipRequests = lazy(
+  () => import('./components/screen/dashboard/pharmacy/Membership')
+);
+const MemberRole = lazy(
+  () => import('./components/screen/dashboard/pharmacy/MemberRole')
+);
+
+const DashboardActivePage = lazy(
+  () => import('./components/screen/dashboard/DashboardActivePage')
+);
+
+const CreateRole = lazy(
+  () => import('./components/screen/dashboard/roles/CreateRole')
+);
+
+const CreateUser = lazy(
+  () => import('./components/screen/dashboard/user/CreateUser')
+);
+
+const UsersList = lazy(
+  () => import('./components/screen/dashboard/user/UsersList')
+);
+
+const ChangeUserPassword = lazy(
+  () => import('./components/screen/dashboard/user/ChangePassword')
+);
+
+const CreateDrug = lazy(
+  () => import('./components/screen/dashboard/drug/CreateDrug')
+);
+
+const DrugsList = lazy(
+  () => import('./components/screen/dashboard/drug/drugsList')
+);
+
+const CategoryList = lazy(
+  () => import('./components/screen/dashboard/category/CategoryList')
+);
+const FavoriteList = lazy(
+  () => import('./components/screen/dashboard/favorite-list/Drug')
+);
+const Prescription = lazy(
+  () =>
+    import(
+      './components/screen/dashboard/peopleSection/Prescription/Prescription'
+    )
+);
+const EmploymentApplication = lazy(
+  () =>
+    import(
+      './components/screen/dashboard/peopleSection/EmploymentApplication/EmploymentApplication'
+    )
+);
+
+const CreatePharmacy = lazy(
+  () => import('./components/screen/dashboard/pharmacy/createPharmacy')
+);
+
+const PharmaciesList = lazy(
+  () => import('./components/screen/dashboard/pharmacy/pharmaciesList')
+);
+
+const CreateMessage = lazy(
+  () => import('./components/screen/dashboard/message/CreateMessage')
+);
+
+const MessagesList = lazy(
+  () => import('./components/screen/dashboard/message/MessagesList')
+);
+
+const DrugFavoriteCategory = lazy(
+  () => import('./components/screen/dashboard/favorite-list/category/Category')
+);
+
+const CreatePack = lazy(
+  () => import('./components/screen/dashboard/pack/create/Create')
+);
 
 const PackList = lazy(() => import('./components/screen/dashboard/pack/Pack'));
 
-const ExchangeManagement = lazy(() =>
-  import('./components/screen/dashboard/exchange-management/ExchangeManagement')
+const ExchangeManagement = lazy(
+  () =>
+    import(
+      './components/screen/dashboard/exchange-management/ExchangeManagement'
+    )
 );
 
-const PharmacyUsersList = lazy(() => import('./components/screen/dashboard/pharmacy/UsersList'));
-
-const JobSearchList = lazy(() => import('./components/screen/dashboard/job-search/jobSearchList'));
-
-const PrescriptionList = lazy(() =>
-  import('./components/screen/dashboard/prescription/prescriptionList')
+const FDA_exchangeList = lazy(
+  () => import('./components/screen/dashboard/fda/exchanges')
 );
 
-const ProfileLazy = lazy(() => import('./components/screen/dashboard/user/Profile'));
+const PharmacyUsersList = lazy(
+  () => import('./components/screen/dashboard/pharmacy/UsersList')
+);
 
-const SettingsForm = lazy(() => import('./components/screen/dashboard/settings/Settings'));
-const SettingsAiForm = lazy(() => import('./components/screen/dashboard/settingsAi/SettingsAi'));
+const JobSearchList = lazy(
+  () => import('./components/screen/dashboard/job-search/jobSearchList')
+);
 
-const JobsList = lazy(() => import('./components/screen/dashboard/job/jobsList'));
+const PrescriptionList = lazy(
+  () => import('./components/screen/dashboard/prescription/prescriptionList')
+);
+
+const ProfileLazy = lazy(
+  () => import('./components/screen/dashboard/user/Profile')
+);
+
+const SettingsForm = lazy(
+  () => import('./components/screen/dashboard/settings/Settings')
+);
+const SettingsAiForm = lazy(
+  () => import('./components/screen/dashboard/settingsAi/SettingsAi')
+);
+
+const JobsList = lazy(
+  () => import('./components/screen/dashboard/job/jobsList')
+);
+
+const PharmacyMessage = lazy(
+  () => import('./components/screen/dashboard/pharmacy/message/Message')
+);
 
 const {
   login,
@@ -128,7 +200,9 @@ const {
   profile,
   settings,
   settingsAi,
-  jobsList
+  jobsList,
+  pharmacyMessage,
+  fda_exchangeList,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -174,8 +248,6 @@ const App = (): JSX.Element => {
     "gtag('config', 'UA-31704707-1');";
   document.body.appendChild(gaScript2);
 
-  checkVersion();
-  
   return (
     <>
       <Router>
@@ -299,6 +371,13 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute path={jobsList}>
               <Dashboard component={<JobsList />} />
+            </PrivateRoute>
+            <PrivateRoute path={pharmacyMessage}>
+              <Dashboard component={<PharmacyMessage />} />
+            </PrivateRoute>
+
+            <PrivateRoute exact path={ fda_exchangeList }>
+              <Dashboard component={ <FDA_exchangeList /> } />
             </PrivateRoute>
           </Suspense>
         </Switch>
