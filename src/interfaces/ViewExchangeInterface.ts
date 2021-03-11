@@ -37,6 +37,7 @@ export interface ViewExchangeInterface {
   cancelDate: any;
   description: string;
   lockSuggestion: boolean;
+  needSurvey?: boolean;
   allowShowPharmacyInfo: boolean;
   cartA: CardInfo[];
   cartB: CardInfo[];

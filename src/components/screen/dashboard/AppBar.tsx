@@ -316,8 +316,10 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
               <Hidden smDown>
                 <span style={ { fontSize: 14 } }>
                   { ' ' }
-                  <b>{ Utils.numberWithCommas(Math.abs(debtValueState / 10)) }</b>
-                  <span style={ { fontSize: 10, marginRight: 2 } }>{ t('general.defaultCurrency') }</span>
+                  <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
+                  <span style={ { fontSize: 10, marginRight: 2 } }>
+                    { t('general.defaultCurrency') }
+                  </span>
                 </span>
               </Hidden>
             ) }

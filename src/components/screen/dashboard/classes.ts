@@ -174,12 +174,12 @@ export const useClasses = makeStyles((theme) => createStyles({
     zIndex: 999,
   },
   cardContent: {
-    borderRadius: 15,
+    borderRadius: 5,
     width: '100%',
     padding: 0,
   },
   cardContainer: {
-    padding: 5,
+   
     minHeight: 170,
     alignItems: 'center',
     fontSize: 11,
@@ -205,16 +205,13 @@ export const useClasses = makeStyles((theme) => createStyles({
   cardRoot: {
     width: '100%',
     minHeight: 110,
-    borderRadius: 14,
+    borderRadius: 5,
     display: 'inline-block',
     position: 'relative',
-    margin: theme.spacing(1),
     boxShadow: '0 0 5px #cecece',
   },
   cardTitle: {
     padding: '.65em',
-    borderRadius: '.5em',
-    margin: '.3em 0',
     fontSize: '1.2em',
   },
   title: {
@@ -224,7 +221,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     marginBottom: 12,
   },
   titleCode: {
-    color: '#444',
+    
     position: 'absolute',
     top: '2em',
     right: '1.5em',
@@ -236,7 +233,6 @@ export const useClasses = makeStyles((theme) => createStyles({
     // borderTopLeftRadius: '0',
   },
   cardTop: {
-    margin: '0 .5em',
   },
   pointer: {
     cursor: 'Pointer',
@@ -278,4 +274,52 @@ export const useClasses = makeStyles((theme) => createStyles({
     maxWidth: '300px',
     maxHeight: '300px',
   },
+  scaleRoot: {
+    width: "100%",
+    height: 16,
+    position: "relative",
+    top: "45%",
+    "& span": {
+      position: "absolute",
+      display: "inline-block",
+      backgroundColor: "#F4CA09",
+      border: "1px #4223AD solid",
+      borderRadius: "3px"
+    },
+    "& span.right": {
+      bottom: "2px",
+      left: 0,
+      padding: "4px",
+      width: "80px",
+      textAlign: "center"
+    },
+    "& span.left": {
+      bottom: "2px",
+      right: 0,
+      padding: "4px",
+      width: "80px",
+      textAlign: "center"
+    },
+    "& span.center": {
+      fontSize: "12px",
+      right: "43%",
+      border: "1px solid",
+      width: "40px",
+      height: "40px",
+      borderRadius: "50%",
+      textAlign: "center",
+      color: "white",
+      background: "red",
+      position: "absolute",
+      lineHeight: "40px",
+      bottom: "-6px"
+    }
+  },
+
+  scaleContainer: {
+    width: "100%",
+    height: "90px",
+    borderRadius: "2px"
+  
+  }
 }));
