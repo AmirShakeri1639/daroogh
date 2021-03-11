@@ -17,9 +17,9 @@ import ExchangeWidget from './widgets/ExchangeWidget';
 import SurveyWidget from './widgets/SurveyWidget';
 import PrescriptionWidget from './widgets/PrescriptionWidget';
 import EmpApplicationWidget from './widgets/EmpApplicationWidget';
-import { 
-  checkVersion, 
-  clearMyCache, 
+import {
+  checkVersion,
+  clearMyCache,
   showWhatsNew,
 } from 'utils';
 
@@ -52,15 +52,17 @@ const DashboardContent: React.FC<any> = () => {
     setValue(index);
   };
 
-  if (checkVersion()) {
-    clearMyCache();
-  } else {
-    const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
-    if (whatsNewExistsFromStorage === 'true') {
-      localStorage.removeItem('whatsNewExists');
-      showWhatsNew(localStorage.getItem('version') || '0.1.0');
+  React.useEffect(() => {
+    if (checkVersion()) {
+      clearMyCache();
+    } else {
+      const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
+      if (whatsNewExistsFromStorage === 'true') {
+        localStorage.removeItem('whatsNewExists');
+        showWhatsNew(localStorage.getItem('version') || '0.1.0');
+      }
     }
-  }
+  }, []);
 
   return (
     <Container maxWidth="lg" className={ classes.container }>
