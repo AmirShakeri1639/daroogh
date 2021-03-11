@@ -129,6 +129,10 @@ const ExchangeManagement = lazy(
     )
 );
 
+const FDA_exchangeList = lazy(
+  () => import('./components/screen/dashboard/fda/exchanges')
+);
+
 const PharmacyUsersList = lazy(
   () => import('./components/screen/dashboard/pharmacy/UsersList')
 );
@@ -198,6 +202,7 @@ const {
   settingsAi,
   jobsList,
   pharmacyMessage,
+  fda_exchangeList,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -369,6 +374,10 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute path={pharmacyMessage}>
               <Dashboard component={<PharmacyMessage />} />
+            </PrivateRoute>
+
+            <PrivateRoute exact path={ fda_exchangeList }>
+              <Dashboard component={ <FDA_exchangeList /> } />
             </PrivateRoute>
           </Suspense>
         </Switch>
