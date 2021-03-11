@@ -18,4 +18,8 @@ export { isNullOrEmpty } from './isNullOrEmpty';
 export { EncrDecrService } from './EncrDecrService';
 export { default as Impersonation } from './Impersonation';
 export { isAdmin } from './roles';
-export { default as checkVersion } from './checkVersion';
+export { 
+  default as checkVersion, 
+  clearMyCache,
+  showWhatsNew,
+} from './checkVersion';

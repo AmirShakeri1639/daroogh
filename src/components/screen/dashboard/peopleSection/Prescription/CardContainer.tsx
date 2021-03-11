@@ -1,23 +1,45 @@
 import React, { useState } from 'react';
-import { makeStyles, Paper, createStyles, Grid, Button, Box, Divider } from '@material-ui/core';
+import {
+  makeStyles,
+  Paper,
+  createStyles,
+  Grid,
+  Button,
+  Box,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  useMediaQuery,
+  useTheme,
+  DialogActions,
+} from '@material-ui/core';
 import { MaterialContainer, Modal } from '../../../../public';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FavoriteDrugInterface, PrescriptionDataInterface } from '../../../../../interfaces';
-import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+  FavoriteDrugInterface,
+  PrescriptionDataInterface,
+} from '../../../../../interfaces';
+import {
+  faCalendarTimes,
+  faEdit,
+  faTrashAlt,
+} from '@fortawesome/free-regular-svg-icons';
 import { ColorEnum, TextMessage } from '../../../../../enum';
 import { BackDrop, TextLine } from '../../../../public';
 import { useClasses } from '../../classes';
 import moment from 'jalali-moment';
 import { useQuery } from 'react-query';
 import { Prescription as presApi } from '../../../../../services/api';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 2),
-      borderRadius: 10,
+      padding: theme.spacing(1, 1, 1),
+      borderRadius: 5,
     },
     redTrash: {
       color: '#ff0000',
@@ -68,6 +90,9 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
     spacingVertical3,
     paper,
   } = useClasses();
+  const theme = useTheme();
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { root, redTrash, modalContainer, buttonContainer } = useStyle();
   const { data, formHandler } = props;
 
@@ -86,114 +111,115 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
       await formHandler(_id);
     }
   };
+  const hasAnswer = !cancelDate &&
+    data &&
+    data.prescriptionResponse &&
+    data.prescriptionResponse.length != 0
 
   return (
-    <Paper className={root} elevation={1}>
+    <Paper style={{ border:`1px solid ${hasAnswer?'rgb(0 150 1)':'#fff'}`}}
+     className={root} elevation={1}>
       <Grid container spacing={1}>
-        {cancelDate && (
-          <Grid item xs={12} className={spacingVertical1}>
-            <TextLine
-              backColor={ColorEnum.White}
-              rightText={
-                <>
-                  <FontAwesomeIcon icon={faCalendarTimes} size="lg" className={faIcons} />
-                  {'کنسل شده در تاریخ : '}
-                </>
-              }
-              leftText={moment(cancelDate, 'YYYY/MM/DD')
-                .locale('fa')
-                .format('YYYY/MM/DD')}
-            />
-          </Grid>
-        )}
-        {!cancelDate && (
-          <Grid item xs={12} className={spacingVertical1}>
-            <Grid justify="flex-end" container spacing={1}>
-              <Grid item xs={1}>
-                <FontAwesomeIcon
-                  onClick={toggleIsOpenModal}
-                  icon={faEdit}
-                  size="lg"
-                  className={`${redTrash} cursor-pointer`}
-                />
-              </Grid>
-              <Grid item xs={1}>
-                <FontAwesomeIcon
-                  onClick={(): Promise<any> => removeHandler(id)}
-                  icon={faTrashAlt}
-                  size="lg"
-                  className={`${redTrash} cursor-pointer`}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-        )}
-        <Detail
-          fileKey={fileKey}
-          id={id}
-          contryDivisionCode={contryDivisionCode}
-          sendDate={sendDate}
-          contryDivisionName={contryDivisionName}
-          comment={comment}
-        />
-      </Grid>
-      <Modal open={isOpenModal} toggle={toggleIsOpenModal}>
-        <div className={modalContainer}>
-          <Grid container spacing={1}>
-            {(!dataApi ||
-              !dataApi.prescriptionResponse ||
-              !dataApi.prescriptionResponse.length) && (
-              <Grid item xs={12} sm={12}>
-                <Paper className={paper}>پاسخی وجود ندارد</Paper>
+        <Grid item xs={12}>
+          <Detail
+            fileKey={fileKey}
+            id={id}
+            contryDivisionCode={contryDivisionCode}
+            sendDate={sendDate}
+            contryDivisionName={contryDivisionName}
+            comment={comment}
+          />
+        </Grid>
+        <Grid item xs={12} spacing={0} style={{ padding: 2 }}>
+          <Divider />
+        </Grid>
+        <Grid container>
+          {!cancelDate &&
+            (!data ||
+              !data.prescriptionResponse ||
+              !data.prescriptionResponse.length) && (
+              <Grid item xs={12}>
+                <Grid justify="flex-end" container spacing={0}>
+                  <Grid item xs={2}>
+                    <Button
+                      onClick={(): Promise<any> => removeHandler(id)}
+                      style={{ color: 'red', fontSize: '14px' }}
+                    >
+                      حذف
+                    </Button>
+                  </Grid>
+                </Grid>
               </Grid>
             )}
-            <Grid item xs={12} sm={12}>
-              {dataApi &&
-                dataApi.prescriptionResponse.map((rec: any) => (
-                  <Box bgcolor="primary.main" color="primary.contrastText" m={2} p={2}>
-                    <Grid container spacing={1}>
-                      <Grid item xs={12} sm={3}>
-                        <Paper className={paper}>نام داروخانه</Paper>
-                      </Grid>
-                      <Grid item xs={12} sm={9}>
-                        <Paper className={paper}>{rec.pharmacy.name}</Paper>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <Paper className={paper}>نشانی</Paper>
-                      </Grid>
-                      <Grid item xs={12} sm={9}>
-                        <Paper className={paper}>{rec.pharmacy.address}</Paper>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <Paper className={paper}>تلفن</Paper>
-                      </Grid>
-                      <Grid item xs={12} sm={9}>
-                        <Paper className={paper}>{rec.pharmacy.telphon}</Paper>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <Paper className={paper}>تاریخ پاسخ</Paper>
-                      </Grid>
-                      <Grid item xs={12} sm={9}>
-                        <Paper className={paper}>
-                          {moment(rec.responseDate, 'YYYY/MM/DD')
-                            .locale('fa')
-                            .format('YYYY/MM/DD')}
-                        </Paper>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                ))}
+          {!cancelDate &&
+            hasAnswer && (
+              <Grid item xs={12}>
+                <Grid justify="flex-end" container spacing={0}>
+                  <Grid item xs={4}>
+                    <Button
+                      onClick={toggleIsOpenModal}
+                      style={{ color: 'green', fontSize: '14px' }}
+                    >
+                      مشاهده {data.prescriptionResponse.length} پاسخ
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+            )}
+          {cancelDate && (
+            <Grid item xs={12} className={spacingVertical1}>
+              <TextWithTitle
+                title={'کنسل شده در تاریخ : '}
+                body={moment(cancelDate, 'YYYY/MM/DD')
+                  .locale('fa')
+                  .format('YYYY/MM/DD')}
+              />
+            </Grid>
+          )}
+        </Grid>
+      </Grid>
+      <Dialog
+        fullScreen={fullScreen}
+        fullWidth={true}
+        open={isOpenModal}
+        onClose={toggleIsOpenModal}
+      >
+        <DialogTitle>
+          <span style={{ fontSize: 12 }}>پاسخ ها</span>
+        </DialogTitle>
+        <DialogContent style={{ backgroundColor: '#FAFAFA', width:'100%' }}>
+          <Grid container xs={12} spacing={1}>
+            {dataApi &&
+              dataApi.prescriptionResponse.map((rec: any) => (
+                <Grid item xs={12}>
+                  <Paper style={{ padding: theme.spacing(2) , borderRight:'2px solid #f80501'}}>
+                    <TextWithTitle
+                      title="نام داروخانه"
+                      body={rec.pharmacy.name}
+                    />
+                    <TextWithTitle title="نشانی" body={rec.pharmacy.address} />
 
-              <Grid item xs={12} className={buttonContainer}>
-                <Button color="default" onClick={toggleIsOpenModal}>
+                    <TextWithTitle title="تلفن" body={rec.pharmacy.telphon} />
+
+                    <TextWithTitle
+                      title="تاریخ پاسخ"
+                      body={moment(rec.responseDate, 'YYYY/MM/DD')
+                        .locale('fa')
+                        .format('YYYY/MM/DD')}
+                    />
+                    <TextWithTitle title="توضیحات" body={rec.pharmacyComment} />
+                  </Paper>
+                </Grid>
+              ))}
+          </Grid>
+        </DialogContent>
+        <DialogActions >
+        <Button color="default" onClick={toggleIsOpenModal}>
                   {'بستن'}
                 </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-        </div>
-      </Modal>
-
+        </DialogActions>
+      </Dialog>
+      
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );
