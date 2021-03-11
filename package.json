@@ -1,6 +1,6 @@
 {
   "name": "daroog-webfront",
-  "version": "0.9.58",
+  "version": "0.9.59",
   "private": true,
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",

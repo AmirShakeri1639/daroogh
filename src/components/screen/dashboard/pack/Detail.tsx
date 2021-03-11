@@ -77,7 +77,7 @@ const Detail: React.FC<DetailProps> = (props) => {
                     <TextWithTitle
                       title={t('exchange.basketTotalPrice')}
                       body={thousandsSeperator(totalPrice)}
-                      suffix="تومان"
+                      suffix={ t('general.defaultCurrency') }
                     />
 
                     <TextWithTitle
