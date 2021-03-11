@@ -1,14 +1,11 @@
+import React from 'react';
 import {
   Container,
   createStyles,
   Grid,
   makeStyles,
-  Paper,
 } from '@material-ui/core';
-import React, { useEffect } from 'react';
-import { CardContainer } from '../../../../public';
 import ToolBox from '../Toolbox';
-import ExCardContent from './ExCardContent';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -24,7 +21,7 @@ const useClasses = makeStyles((theme) =>
 );
 
 const Exchange: React.FC = () => {
-  const { root, paper } = useClasses();
+  const { paper } = useClasses();
   const data: any[] = [
     {
       drugName: 'استامینوفن',

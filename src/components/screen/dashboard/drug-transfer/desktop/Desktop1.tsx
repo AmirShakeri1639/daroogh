@@ -13,8 +13,7 @@ import {
   hasLabelValue,
   isStateCommon,
 } from '../../../../../utils/ExchangeTools';
-import { isNullOrEmpty, EncrDecrService } from '../../../../../utils';
-import CircleLoading from '../../../../public/loading/CircleLoading';
+import { isNullOrEmpty } from '../../../../../utils';
 import { useHistory, useLocation } from 'react-router-dom';
 import routes from '../../../../../routes';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
@@ -37,8 +36,8 @@ const Desktop1: React.FC = () => {
 
 
   const location = useLocation();
-  const params = queryString.parse(location.search);  
-  const [filter, setFilter] = useState<ExchangeStateEnum[]>(():any => {
+  const params = queryString.parse(location.search);
+  const [filter, setFilter] = useState<ExchangeStateEnum[]>((): any => {
     if (params.state && params.state.length > 0) {
       return (
         String(params.state).split(',').map(i => +i)
@@ -48,8 +47,8 @@ const Desktop1: React.FC = () => {
     }
   });
   console.log('filter)', filter)
-  
-  
+
+
 
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
@@ -219,11 +218,10 @@ const Desktop1: React.FC = () => {
     }
   }
 
-  const encDecService = new EncrDecrService();
-
-  const cardClickHandler = (id: number): void => {
-    const encryptedId = encDecService.encrypt(id);
-    history.push(`${transfer}?eid=${encodeURIComponent(encryptedId)}`);
+  const cardClickHandler = (
+    id: number, state: any, exNumber: string | undefined
+  ): void => {
+    history.push(`${transfer}?eid=${exNumber}`);
   };
 
   const sortSelected = (field: string, sortType: SortTypeEnum): void => {
@@ -280,13 +278,13 @@ const Desktop1: React.FC = () => {
       }
 
       elements = <>{ listToShow.map((item, index) =>
-        <Grid spacing={0} item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
-            <DesktopCardContent
-              item={ item }
-              full={ false }
-              showActions={ true }
-              onCardClick={ cardClickHandler }
-              ></DesktopCardContent>
+        <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
+          <DesktopCardContent
+            item={ item }
+            full={ false }
+            showActions={ true }
+            onCardClick={ cardClickHandler }
+          ></DesktopCardContent>
         </Grid>
       ) }</>
 

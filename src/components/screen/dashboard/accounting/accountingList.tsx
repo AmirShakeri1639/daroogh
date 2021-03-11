@@ -4,7 +4,6 @@ import { Accounting } from '../../../../services/api';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../classes';
 import {
-  ActionInterface,
   AccountingInterface,
   TableColumnInterface,
 } from '../../../../interfaces';
@@ -14,7 +13,7 @@ import { AccountingEnum } from '../../../../enum/query';
 import { Container, createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { getJalaliDate } from '../../../../utils/jalali';
-import { Convertor, EncrDecrService } from '../../../../utils';
+import { Convertor } from '../../../../utils';
 import routes from '../../../../routes';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -119,9 +118,7 @@ const AccountingList: React.FC = () => {
           let exchangeUrl = '';
           if (row.exchangeID) {
             const { transfer } = routes;
-            const encDecService = new EncrDecrService();
-            const encryptedId = encDecService.encrypt(row.exchangeID);
-            exchangeUrl = `${transfer}?eid=${encodeURIComponent(encryptedId)}`;
+            exchangeUrl = `${transfer}?eid=${row.currentPharmacyIsA ? row.numberA : row.numberB}`;
           }
           return (
             <>
