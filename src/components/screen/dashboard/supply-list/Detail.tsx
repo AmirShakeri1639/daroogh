@@ -1,13 +1,5 @@
 import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPills,
-  faBoxes,
-  faMoneyBillWave,
-  faCalendarTimes,
-  faExchangeAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import React, { memo } from 'react';
 import { DetailSupplyInterface } from '../../../../interfaces';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
@@ -44,7 +36,7 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const Detail: React.FC<DetailSupplyInterface> = (props) => {
+const Detail: React.FC<DetailSupplyInterface> = memo((props) => {
   const { drugName, count, offer1, offer2, expireDate, amount, enName } = props;
   const { paper, container, textLeft, icon } = useStyle();
 
@@ -77,7 +69,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                     <TextWithTitle
                       title={t('general.price')}
                       body={thousandsSeperator(amount)}
-                      suffix={ t('general.defaultCurrency') }
+                      suffix={t('general.defaultCurrency')}
                     />
 
                     <TextWithTitle
@@ -106,6 +98,6 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
       </Paper>
     </Grid>
   );
-};
+});
 
 export default Detail;
