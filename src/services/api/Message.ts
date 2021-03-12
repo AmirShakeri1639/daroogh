@@ -16,7 +16,7 @@ class Message extends Api {
     return result.data;
   };
 
-  getUserMessages = async (justUnreaddMessages = false): Promise<any> => {
+  getUserMessages = async (justUnreaddMessages = false, skip = 0, top = 10): Promise<any> => {
     let queryString = '';
     if (justUnreaddMessages) {
       queryString = '$filter=readDate eq null';
