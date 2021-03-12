@@ -211,7 +211,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
 
   const { data: userMessages, isLoading: isLoadingUserMessages } = useQuery(
     MessageQueryEnum.GET_USER_MESSAGES,
-    () => getUserMessages(true),
+    () => getUserMessages(true, 0, 99),
     {
       enabled: showButtons,
     }
