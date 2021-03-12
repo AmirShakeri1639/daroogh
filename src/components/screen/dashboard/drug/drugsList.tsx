@@ -1,6 +1,7 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQueryCache } from 'react-query';
 import Drug from '../../../../services/api/Drug';
+import Input from '../../../public/input/Input';
 import {
   Container,
   Grid,
@@ -16,6 +17,15 @@ import {
   Button,
   FormControlLabel,
   CardActions,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  createStyles,
+  makeStyles,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -119,6 +129,34 @@ function reducer(state = initialState, action: ActionInterface): any {
   }
 }
 
+const useStyle = makeStyles((theme) =>
+  createStyles({
+    label: {
+      display: 'flex',
+      alignItems: 'center',
+      margin: theme.spacing(1, 0),
+    },
+    formContent: {
+      overflow: 'hidden',
+      overflowY: 'auto',
+      display: 'flex',
+    },
+    cancelButton: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    
+  })
+);
+
 const DrugsList: React.FC = () => {
   const ref = useDataTableRef();
   const { t } = useTranslation();
@@ -131,11 +169,13 @@ const DrugsList: React.FC = () => {
     formContainer,
     box,
     addButton,
-    cancelButton,
+    
     dropdown,
   } = useClasses();
   const queryCache = useQueryCache();
-
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const {  formContent,  submitBtn ,cancelButton, label} = useStyle();
   const { save, all, remove, types } = new Drug();
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
@@ -371,99 +411,130 @@ const DrugsList: React.FC = () => {
 
   const editModal = (): JSX.Element => {
     return (
-      <Modal open={ isOpenEditModal } toggle={ toggleIsOpenSaveModalForm }>
-        <Card className={ root }>
-          <CardHeader
-            title={ state.id === 0 ? t('action.create') : t('action.edit') }
-            action={
-              <IconButton onClick={ toggleIsOpenSaveModalForm }>
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <form
-              autoComplete="off"
-              className={ formContainer }
-              onSubmit={ submitSave }
-            >
-              <Grid container spacing={ 1 }>
-                <Grid item xs={ 12 }>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    className={ box }
-                  >
-                    <TextField
-                      required
-                      variant="outlined"
-                      label={ t('drug.name') }
+      <Dialog open={ isOpenEditModal }  fullScreen={fullScreen}
+      onClose={toggleIsOpenSaveModalForm}>
+        <DialogTitle className="text-sm">
+        { state.id === 0 ? t('action.create') : t('action.edit') }
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+          <Grid container spacing={1} className={formContent}>
+          <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.name')}</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"   
+                    
                       value={ state.name }
                       onChange={ (e): void =>
                         dispatch({ type: 'name', value: e.target.value })
                       }
                     />
-                    <div className="row">
+                      </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.category')}</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
                       <DaroogDropdown
                         defaultValue={ state.categoryID }
                         data={ categories }
-                        className={ dropdown }
-                        label={ t('drug.category') }
+                        className="w-100"
+                        
                         onChangeHandler={ (v): void => {
                           return dispatch({ type: 'categoryID', value: v });
                         } }
                       />
-                    </div>
-                    <TextField
-                      variant="outlined"
+                       </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.genericName')}</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    
+                    <Input
+                      className="w-100"   
                       label={ t('drug.genericName') }
                       value={ state.genericName }
                       onChange={ (e): void =>
                         dispatch({ type: 'genericName', value: e.target.value })
                       }
                     />
-                  </Box>
+                   </Grid>
                 </Grid>
-                <Grid item xs={ 12 }>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    className={ box }
-                  >
-                    <TextField
-                      variant="outlined"
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>
+                      {t('drug.companyName')}
+                    </label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Input
+                       className="w-100"   
                       label={ t('drug.companyName') }
                       value={ state.companyName }
                       onChange={ (e): void =>
                         dispatch({ type: 'companyName', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
+                      </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.barcode')}</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Input
+                     className="w-100"
                       label={ t('drug.barcode') }
                       value={ state.barcode }
                       onChange={ (e): void =>
                         dispatch({ type: 'barcode', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
+                      </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.description')}</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Input
+                       className="w-100"   
                       label={ t('general.description') }
                       value={ state.description }
                       onChange={ (e): void =>
                         dispatch({ type: 'description', value: e.target.value })
                       }
                     />
-                  </Box>
+                 </Grid>
                 </Grid>
-                <Grid item xs={ 12 }>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    className={ box }
-                  >
-                    <div className="row">
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                 
+
+                  <Grid item xs={12}>
                       <FormControlLabel
                         control={
                           <Switch
@@ -478,43 +549,57 @@ const DrugsList: React.FC = () => {
                         }
                         label={ t('general.active') }
                       />
-                    </div>
-                    <TextField
-                      variant="outlined"
+                     </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.enName')}</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"   
                       label={ t('drug.enName') }
                       value={ state.enName }
                       onChange={ (e): void =>
                         dispatch({ type: 'enName', value: e.target.value })
                       }
                     />
+                     </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.type')}</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
                     <DaroogDropdown
                       defaultValue={ state.type }
                       data={ drugTypes }
-                      className={ dropdown }
+                      className="w-100"
                       label={ t('general.type') }
                       onChangeHandler={ (v): void => {
                         return dispatch({ type: 'type', value: v });
                       } }
                     />
-                  </Box>
-                </Grid>
-                <Divider />
-                <Grid item xs={ 12 }>
-                  <CardActions>
-                    <Button
+                 </Grid>
+              </Grid>
+            </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={8} />
+              <Grid item xs={2} sm={2}>
+              <Button
                       type="submit"
-                      color="primary"
-                      variant="contained"
-                      className={ addButton }
-                    >
-                      { isLoadingSave
-                        ? t('general.pleaseWait')
-                        : t('general.save') }
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      variant="contained"
                       className={ cancelButton }
                       onClick={ (): void => {
                         dispatch({ type: 'reset' });
@@ -523,13 +608,24 @@ const DrugsList: React.FC = () => {
                     >
                       { t('general.cancel') }
                     </Button>
-                  </CardActions>
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </Card>
-      </Modal>
+                    </Grid>
+              <Grid item xs={3} sm={2}>
+              <Button
+                      type="submit"
+                      color="primary"
+                     
+                      className={ submitBtn }
+                    >
+                      { isLoadingSave
+                        ? t('general.pleaseWait')
+                        : t('general.save') }
+                    </Button>
+                   
+                    </Grid>
+            </Grid>
+          </Grid>
+        </DialogActions>
+      </Dialog>
     );
   };
 
