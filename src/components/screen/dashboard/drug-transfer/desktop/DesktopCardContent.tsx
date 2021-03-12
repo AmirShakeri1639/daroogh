@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import {
   Button,
   Card,
@@ -13,16 +13,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSun,
   faStar,
-  faMoneyBillAlt,
-  faCalendarPlus,
-  faCalendarTimes,
-  faCreditCard,
 } from '@fortawesome/free-regular-svg-icons';
 import {
   faStar as solidStar,
   faStarHalfAlt,
   faMedal,
-  faPercent,
   faVoteYea,
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
@@ -34,7 +29,6 @@ import {
   UserColors,
   UserGrades,
 } from '../../../../../enum';
-import { TextLine } from '../../../../public';
 import { Convertor, isNullOrEmpty } from '../../../../../utils';
 import {
   getExpireDate,
@@ -51,12 +45,15 @@ import {
 } from '../../../../../interfaces';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
-import CardHeader from '../first-step/CardHeader';
 
 interface Props {
   item?: ViewExchangeInterface;
   onCardClick?:
-    | ((id: number | undefined, state: number | undefined) => void)
+    | ((
+        id: number | undefined, 
+        state: number | undefined,
+        exNumber: string | undefined
+      ) => void)
     | void
     | any;
   full?: boolean;
@@ -253,15 +250,12 @@ const DesktopCardContent = ({
     cardContent,
     cardContainer,
     faIcons,
-    spacingVertical1,
     rowRight,
     rowLeft,
     colLeft,
     cardRoot,
     cardTitle,
-    titleCode,
     cardTop,
-    pointer,
     spacingVertical3,
     scaleRoot,
     scaleContainer,
@@ -619,7 +613,8 @@ const DesktopCardContent = ({
                 if (onCardClick) {
                   onCardClick(
                     item.id,
-                    item.state > 10 ? item.state - 10 : item.state
+                    item.state > 10 ? item.state - 10 : item.state,
+                    item.currentPharmacyIsA ? item.numberA : item.numberB
                   );
                 }
               }}

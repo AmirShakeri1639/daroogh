@@ -1,5 +1,5 @@
+import React, { useState } from 'react';
 import {
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -11,38 +11,23 @@ import {
   IconButton,
   Link,
   makeStyles,
-  MenuItem,
   Paper,
-  Select,
-  TextField,
   Tooltip,
 } from '@material-ui/core';
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ExchangeEnum } from '../../../../enum/query';
 import { UrlAddress } from '../../../../enum/UrlAddress';
-import useDataTableRef from '../../../../hooks/useDataTableRef';
-import { DataTableCustomActionInterface } from '../../../../interfaces/component';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
-import { Exchange, PharmacyDrug, User } from '../../../../services/api';
+import { Exchange, PharmacyDrug } from '../../../../services/api';
 import DataTable from '../../../public/datatable/DataTable';
 import Modal from '../../../public/modal/Modal';
 import CloseIcon from '@material-ui/icons/Close';
-import { Cancel } from '../../../../model/exchange';
 import { useMutation } from 'react-query';
 import {
-  EncrDecrService,
   errorHandler,
-  Impersonation,
   sweetAlert,
 } from '../../../../utils';
 import { PharmacyInfo } from '../../../../interfaces/PharmacyInfo';
 import { Map } from '../../../public';
-import FilterInput from '../../../public/datatable/FilterInput';
-import routes from '../../../../routes';
-import { useHistory } from 'react-router-dom';
-import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
-import ExCalculator from '../drug-transfer/exchange/ExCalculator';
 import DetailExchange from '../exchange-management/DetailExchange';
 import Utils from '../../../public/utility/Utils';
 
@@ -65,11 +50,9 @@ const useClasses = makeStyles((theme) =>
 
 const Exchanges: React.FC = () => {
   const { container, pharmacyInfoStyle } = useClasses();
-  const ref = useDataTableRef();
-  const { t } = useTranslation();
   const { cancelExchange, detailPharmacyInfo } = new PharmacyDrug();
 
-  const [_cancelExchange, { isLoading: isLoadingCancel }] = useMutation(
+  const [_cancelExchange] = useMutation(
     cancelExchange,
     {
       onSuccess: async (res) => {

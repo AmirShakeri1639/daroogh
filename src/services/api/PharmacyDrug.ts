@@ -54,7 +54,7 @@ class PharmacyDrug extends Api {
     }
   };
 
-  getViewExchange = async (exchangeID: number): Promise<any> => {
+  getViewExchange = async (exchangeID: number | string | undefined): Promise<any> => {
     try {
       const query = `${this.urls.viewExchange}?exchangeID=${exchangeID}`;
       const result = await this.postJsonData(query);

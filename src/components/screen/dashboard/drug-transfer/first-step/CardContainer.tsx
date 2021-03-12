@@ -16,7 +16,6 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { EncrDecrService } from '../../../../../utils';
 import { setTransferStart } from '../../../../../redux/actions';
 import routes from '../../../../../routes';
 
@@ -89,8 +88,6 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
   const { push } = useHistory();
   const dispatch = useDispatch();
 
-  const encDecService = new EncrDecrService();
-
   const { data } = props;
   const {
     pharmacyCity,
@@ -105,8 +102,6 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
 
   const {
     paper,
-    span,
-    buttonContainer,
     itemContainer,
     box,
     detailContainer,
@@ -116,12 +111,11 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
 
   const { t } = useTranslation();
 
-  const cardClickHandler = (id: number): void => {
-    const encryptedId = encDecService.encrypt(id);
-    push(`${transfer}?eid=${encodeURIComponent(encryptedId)}`);
+  const cardClickHandler = (id: string): void => {
+    push(`${transfer}?eid=${id}`);
   };
 
-  const transferStart = (notSendExchangeID: number | null): void => {
+  const transferStart = (notSendExchangeID: string | null): void => {
     if (notSendExchangeID === null) {
       setSelectedPharmacyForTransfer(data.pharmacyKey);
       setActiveStep(activeStep + 1);
