@@ -22,7 +22,6 @@ import queryString from 'query-string';
 // load test data
 // import d from './testdata.json';
 
-
 const Desktop1: React.FC = () => {
   const { getDashboard } = new Exchange();
   const { t } = useTranslation();
@@ -33,22 +32,18 @@ const Desktop1: React.FC = () => {
   // const [isLoading, setIsLoading] = useState(true);
   const [stateFilterList, setStateFilterList] = useState<LabelValue[]>([]);
 
-
-
   const location = useLocation();
   const params = queryString.parse(location.search);
   const [filter, setFilter] = useState<ExchangeStateEnum[]>((): any => {
     if (params.state && params.state.length > 0) {
-      return (
-        String(params.state).split(',').map(i => +i)
-      )
+      return String(params.state)
+        .split(',')
+        .map((i) => +i);
     } else {
       return [ExchangeStateEnum.UNKNOWN];
     }
   });
-  console.log('filter)', filter)
-
-
+  console.log('filter)', filter);
 
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
@@ -61,30 +56,27 @@ const Desktop1: React.FC = () => {
     return ref.current;
   }
 
-
-
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
   const exchangesRef = React.useRef(exchanges);
   const setExchangesRef = (data: ViewExchangeInterface[]) => {
     exchangesRef.current = data;
     setExchanges(data);
-  }
+  };
 
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
   const setPageRef = (data: number) => {
     pageRef.current = data;
     setPage(data);
-  }
+  };
 
-  const prevCount = usePrevious(page)
+  const prevCount = usePrevious(page);
   const [loading, setLoading] = useState(false);
   const loadingRef = React.useRef(loading);
   const setLoadingRef = (data: boolean) => {
     loadingRef.current = data;
     setLoading(data);
-  }
-
+  };
 
   const [noData, setNoData] = useState(false);
 
@@ -93,13 +85,12 @@ const Desktop1: React.FC = () => {
   const setTotalCountRef = (data: number) => {
     totalCountRef.current = data;
     setTotalCount(data);
-  }
-
+  };
 
   const { isLoading, refetch } = useQuery(
     ['key'],
     () => {
-      return getDashboard(pageRef.current)
+      return getDashboard(pageRef.current);
     },
     {
       onSuccess: (result) => {
@@ -110,7 +101,8 @@ const Desktop1: React.FC = () => {
           let hasCompleted: boolean = false;
           const items = newList.map((item: any) => {
             hasCompleted = false;
-            if (!item.currentPharmacyIsA &&
+            if (
+              !item.currentPharmacyIsA &&
               item.state <= 10 &&
               !isStateCommon(item.state)
             )
@@ -146,12 +138,31 @@ const Desktop1: React.FC = () => {
     }
   );
 
+  const handleScroll = (e: any): any => {
+    const el = e.target;
+    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+      if (
+        totalCountRef.current === 0 ||
+        exchangesRef.current.length < totalCountRef.current
+      ) {
+        const currentpage = pageRef.current + 1;
+        console.log('window-Page => ', currentpage);
+        console.log('totalCount => ', totalCountRef.current);
+        console.log('exchangesRef => ', exchangesRef.current.length);
+        setPageRef(currentpage);
+        setLoadingRef(true);
+        refetch();
+      }
+    }
+  };
 
   React.useEffect(() => {
     // const res = (async (): Promise<any> => await getExchanges())
     // res();
-    window.addEventListener('scroll', (e) => handleScroll(e), { capture: true });
-    return () => window.removeEventListener("scroll", (e) => handleScroll(e));
+    window.addEventListener('scroll', (e) => handleScroll(e), {
+      capture: true,
+    });
+    return () => window.removeEventListener('scroll', (e) => handleScroll(e));
   }, []);
 
   // React.useEffect(() => {
@@ -160,22 +171,6 @@ const Desktop1: React.FC = () => {
   //   // res();
   //   refetch();
   // }, [page])
-
-  const handleScroll = (e: any): any => {
-    const el = e.target;
-    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (totalCountRef.current === 0 || exchangesRef.current.length < totalCountRef.current) {
-        let currentpage = pageRef.current + 1;
-        console.log("window-Page => ", currentpage);
-        console.log("totalCount => ", totalCountRef.current);
-        console.log("exchangesRef => ", exchangesRef.current.length);
-        setPageRef(currentpage);
-        setLoadingRef(true);
-        refetch();
-      }
-    }
-  }
-
 
   async function getExchanges(): Promise<any> {
     const result = await getDashboard(page);
@@ -186,7 +181,8 @@ const Desktop1: React.FC = () => {
       let hasCompleted: boolean = false;
       const items = newList.map((item: any) => {
         hasCompleted = false;
-        if (!item.currentPharmacyIsA &&
+        if (
+          !item.currentPharmacyIsA &&
           item.state <= 10 &&
           !isStateCommon(item.state)
         )
@@ -219,7 +215,9 @@ const Desktop1: React.FC = () => {
   }
 
   const cardClickHandler = (
-    id: number, state: any, exNumber: string | undefined
+    id: number,
+    state: any,
+    exNumber: string | undefined
   ): void => {
     history.push(`${transfer}?eid=${exNumber}`);
   };
@@ -252,10 +250,9 @@ const Desktop1: React.FC = () => {
     let elements: JSX.Element = <></>;
     if (exchanges && exchanges.length > 0) {
       // filter
-      const listToShow =
-        filter.includes(ExchangeStateEnum.UNKNOWN)
-          ? [...exchanges]
-          : exchanges.filter(
+      const listToShow = filter.includes(ExchangeStateEnum.UNKNOWN)
+        ? [...exchanges]
+        : exchanges.filter(
             (ex) =>
               filter.includes(ex.state) ||
               (isExchangeCompleted(
@@ -277,45 +274,47 @@ const Desktop1: React.FC = () => {
         }
       }
 
-      elements = <>{ listToShow.map((item, index) =>
-        <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
-          <DesktopCardContent
-            item={ item }
-            full={ false }
-            showActions={ true }
-            onCardClick={ cardClickHandler }
-          ></DesktopCardContent>
-        </Grid>
-      ) }</>
-
+      elements = (
+        <>
+          {listToShow.map((item, index) => (
+            <Grid spacing={0} item xs={12} sm={6} md={4} xl={4} key={index}>
+              <DesktopCardContent
+                item={item}
+                full={false}
+                showActions={true}
+                onCardClick={cardClickHandler}
+              ></DesktopCardContent>
+            </Grid>
+          ))}
+        </>
+      );
 
       return elements;
     }
 
     return elements;
-
   };
 
   return (
     <Container>
-      <Grid item={ true } xs={ 12 }>
-        <Grid container spacing={ 2 }>
-          <Grid item={ true } xs={ 12 }>
+      <Grid item={true} xs={12}>
+        <Grid container spacing={2}>
+          <Grid item={true} xs={12}>
             <DesktopToolbox
-              filterList={ stateFilterList }
-              onFilterChanged={ filterChanged }
-              onSortSelected={ sortSelected }
+              filterList={stateFilterList}
+              onFilterChanged={filterChanged}
+              onSortSelected={sortSelected}
             />
           </Grid>
         </Grid>
 
-        <Grid container spacing={ 3 }>
-          { <CardListGenerator /> }
+        <Grid container spacing={3}>
+          {<CardListGenerator />}
         </Grid>
-        {/* {loading && <CircleLoading />} */ }
-        <CircleBackdropLoading isOpen={ loadingRef.current } />
-        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */ }
-        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */ }
+        {/* {loading && <CircleLoading />} */}
+        <CircleBackdropLoading isOpen={loadingRef.current} />
+        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */}
+        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */}
       </Grid>
     </Container>
   );
