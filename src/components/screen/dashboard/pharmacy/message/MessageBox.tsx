@@ -36,9 +36,9 @@ const MessageBox: React.FC<MessageBoxProps> = memo(({ message }) => {
     <section className={boxContainer}>
       <div className={topContainer}>
         <strong>{subject}</strong>
-        <span dir="rtl" className="text-muted">{`${t(
-          'date.sendDate'
-        )}: ${convertISOTime(sendDate)}`}</span>
+        <span className="text-muted">
+          {t('date.sendDate')}:<span dir="rtl">{convertISOTime(sendDate)}</span>
+        </span>
       </div>
       <div>
         <p>{message1}</p>
