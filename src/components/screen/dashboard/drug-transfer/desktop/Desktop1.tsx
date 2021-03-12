@@ -146,9 +146,6 @@ const Desktop1: React.FC = () => {
         exchangesRef.current.length < totalCountRef.current
       ) {
         const currentpage = pageRef.current + 1;
-        console.log('window-Page => ', currentpage);
-        console.log('totalCount => ', totalCountRef.current);
-        console.log('exchangesRef => ', exchangesRef.current.length);
         setPageRef(currentpage);
         setLoadingRef(true);
         refetch();

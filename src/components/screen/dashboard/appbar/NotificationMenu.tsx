@@ -14,9 +14,10 @@ import { Convertor } from '../../../../utils';
 import { useQueryCache } from 'react-query';
 import { Message as MessageApi } from '../../../../services/api';
 import { MessageQueryEnum } from '../../../../enum';
-import { has } from 'lodash';
+import { has, isEmpty, isUndefined } from 'lodash';
 import { useHistory } from 'react-router';
 import { Message } from 'interfaces';
+import routes from 'routes';
 
 interface NotificationMenuProps {
   messages: any[];
@@ -46,12 +47,14 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
+const { transfer } = routes;
+
 const { convertISOTime } = Convertor;
 const { readMultiMessage } = new MessageApi();
 
 const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
   const { notifEl, setNotifEl } = useContext(Context);
-
+  console.log(messages);
   const { subject, menu, menuItem, message: _message, date } = useStyle();
 
   const queryCache = useQueryCache();
@@ -76,8 +79,16 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
   };
 
   const menuClickHandler = (message: Message): void => {
-    if (has(message, 'url') && message.url !== '') {
-      push({ pathname: message.url });
+    const isExchangeUrl = message.url?.includes('eid');
+    if (
+      has(message, 'url') &&
+      !isEmpty(message.url) &&
+      !isUndefined(message.url)
+    ) {
+      if (isExchangeUrl) {
+        const [eid] = message.url.match(/eid=\w+/g) ?? [];
+        push(`${transfer}?${eid}`);
+      }
     }
   };
 

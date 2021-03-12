@@ -4,7 +4,7 @@ import {
   MaterialContainer,
 } from 'components/public';
 import { MessageQueryEnum } from 'enum';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { Message } from 'services/api';
 import { MessageBox } from './MessageBox';
@@ -13,23 +13,51 @@ import { Message as MessageModel } from 'interfaces';
 const { getUserMessages } = new Message();
 
 const PharmacyMessage: React.FC = () => {
+  useEffect(() => {
+    const el = document.getElementById('container') as HTMLDivElement;
+
+    window.addEventListener(
+      'scroll',
+      (e) => {
+        console.log(el.offsetHeight);
+        console.log('el.scrollHeight', el.scrollHeight);
+        console.log('el.scrollTop', el.scrollTop);
+        console.log('el.clientHeight', el.clientHeight);
+      },
+      { capture: true }
+    );
+
+    return (): void => {
+      window.removeEventListener('scroll', () => {
+        console.log(el.offsetHeight);
+        console.log('el.scrollHeight', el.scrollHeight);
+        console.log('el.scrollTop', el.scrollTop);
+        console.log('el.clientHeight', el.clientHeight);
+      });
+    };
+  }, []);
+
   const { isLoading, data } = useQuery(
     MessageQueryEnum.GET_PHARMACY_MESSAGE,
-    getUserMessages
+    () => getUserMessages(false, 0, 10)
   );
 
   return (
     <MaterialContainer>
-      <h2 className="text-muted">پیام های کاربر</h2>
-      {data !== undefined && data.items.length > 0 ? (
-        React.Children.toArray(
-          data.items.map((item: MessageModel) => <MessageBox message={item} />)
-        )
-      ) : isLoading ? (
-        <CircleLoading />
-      ) : (
-        <EmptyContent />
-      )}
+      <div id="container">
+        <h2 className="text-muted">پیام های کاربر</h2>
+        {data !== undefined && data.items.length > 0 ? (
+          React.Children.toArray(
+            data.items.map((item: MessageModel) => (
+              <MessageBox message={item} />
+            ))
+          )
+        ) : isLoading ? (
+          <CircleLoading />
+        ) : (
+          <EmptyContent />
+        )}
+      </div>
     </MaterialContainer>
   );
 };
