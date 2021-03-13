@@ -327,7 +327,8 @@ export default {
         waitingForYourConfirmation: 'تبادل‌های در انتظار',
       },
       favorite: {
-        addToDrugList: 'اضافه کردن به لیست دارو',
+        addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
+        addToCategoryList: 'اضافه کردن دسته بندی به لیست علاقه مندی'
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',

@@ -318,8 +318,7 @@ export const useClasses = makeStyles((theme) => createStyles({
 
   scaleContainer: {
     width: "100%",
-    height: "90px",
-    borderRadius: "2px"
+    
   
   }
 }));

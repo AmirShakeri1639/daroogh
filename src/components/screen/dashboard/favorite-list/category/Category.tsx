@@ -1,12 +1,15 @@
 import {
   Checkbox,
   createStyles,
+  Fab,
   Grid,
+  Hidden,
   Input,
   InputLabel,
   ListItemText,
   makeStyles,
   MenuItem,
+  Paper,
   Select,
 } from '@material-ui/core';
 import React, { useState } from 'react';
@@ -35,22 +38,16 @@ const { getAllCategories } = new CategoryApi();
 const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
+      minHeight: 110,
       display: 'flex',
-      height: 86,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 10,
       flexDirection: 'column',
-      '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 8,
-        },
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
       },
     },
     buttonContainer: {
@@ -64,6 +61,15 @@ const useStyle = makeStyles((theme) =>
       borderRadius: 5,
       padding: theme.spacing(2, 3),
       width: 500,
+    },
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
     },
   })
 );
@@ -87,7 +93,7 @@ const Category: React.FC = () => {
   const [inSubmit, setInSubmit] = useState<boolean>(false);
   const [isOpenBackdrop, setIsOpenBackdrop] = useState<boolean>(false);
 
-  const { addButton, modalContainer, buttonContainer } = useStyle();
+  const { addButton, modalContainer, buttonContainer, fab } = useStyle();
 
   const { t } = useTranslation();
 
@@ -167,7 +173,7 @@ const Category: React.FC = () => {
           const { category } = item;
           if (category !== null) {
             return (
-              <Grid key={category.id} item xs={12} sm={6} md={4} xl={3}>
+              <Grid key={category.id} item xs={12} sm={6} md={4} xl={4}>
                 <CardContainer data={category} formHandler={formHandler} />
               </Grid>
             );
@@ -215,19 +221,26 @@ const Category: React.FC = () => {
 
   return (
     <MaterialContainer>
-      <Grid container spacing={1}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
-          <h3>لیست دسته بندی های دارویی موردعلاقه</h3>
+          <span>لیست دسته بندی های دارویی موردعلاقه</span>
         </Grid>
-
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
-          <Button onClick={toggleIsOpenModal} variant="text">
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('favorite.addToDrugList')}</span>
-          </Button>
-        </Grid>
+        <Hidden xsDown>
+          <Grid item xs={12} sm={6} md={4} xl={4}>
+            <Paper className={addButton} onClick={toggleIsOpenModal}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
+              <span>{t('favorite.addToCategoryList')}</span>
+            </Paper>
+          </Grid>
+        </Hidden>
 
         {contentGenerator()}
+
+        <Hidden smUp>
+          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
       </Grid>
 
       <Modal open={isOpenModal} toggle={toggleIsOpenModal}>

@@ -13,6 +13,7 @@ import {
   Grid,
   Hidden,
   makeStyles,
+  Paper,
   TextField,
   useMediaQuery,
   useTheme,
@@ -56,23 +57,16 @@ const useStyle = makeStyles((theme) =>
       display: 'none',
     },
     addButton: {
+      minHeight: 175,
       display: 'flex',
-
-      height: 190,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 5,
       flexDirection: 'column',
-      '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 8,
-        },
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
       },
     },
     fab: {
@@ -352,11 +346,11 @@ const EmploymentApplication: React.FC = () => {
           <h3>{t('peopleSection.listJobApplication')}</h3>
         </Grid>
         <Hidden xsDown>
-          <Grid item xs={12} sm={6} md={4} xl={4} className={addButton}>
-            <Button onClick={toggleIsOpenModal} variant="text">
-              <FontAwesomeIcon icon={faPlus} />
+          <Grid item xs={12} sm={6} md={4} xl={4}>
+            <Paper className={addButton} onClick={toggleIsOpenModal}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
               <span>{t('peopleSection.addJobApplication')}</span>
-            </Button>
+            </Paper>
           </Grid>
         </Hidden>
 

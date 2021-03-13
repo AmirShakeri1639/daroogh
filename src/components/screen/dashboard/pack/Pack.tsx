@@ -6,6 +6,7 @@ import {
   Grid,
   Hidden,
   makeStyles,
+  Paper,
 } from '@material-ui/core';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -23,22 +24,16 @@ const { getPharmacyPacks, removePack } = new PackApi();
 const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
+      minHeight: 150,
       display: 'flex',
-      height: 190,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 5,
       flexDirection: 'column',
-      '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 8,
-        },
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
       },
     },
     fab: {
@@ -124,11 +119,11 @@ const Pack: React.FC = () => {
           <h3>لیست پک ها</h3>
         </Grid>
         <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={3} className={addButton}>
-            <Button variant="text" onClick={createPackLink}>
-              <FontAwesomeIcon icon={faPlus} />
-              <span>{t('pack.create')}</span>
-            </Button>
+          <Grid item xs={12} sm={12} md={4} xl={3}>
+            <Paper className={addButton} onClick={createPackLink}>
+            <FontAwesomeIcon icon={faPlus} size="2x" />
+                <span>{t('pack.create')}</span>
+            </Paper>
           </Grid>
         </Hidden>
         {contentHandler()}

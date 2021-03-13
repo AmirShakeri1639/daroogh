@@ -17,11 +17,7 @@ import ExchangeWidget from './widgets/ExchangeWidget';
 import SurveyWidget from './widgets/SurveyWidget';
 import PrescriptionWidget from './widgets/PrescriptionWidget';
 import EmpApplicationWidget from './widgets/EmpApplicationWidget';
-import {
-  checkVersion,
-  clearMyCache,
-  showWhatsNew,
-} from 'utils';
+import { checkVersion, clearMyCache, showWhatsNew } from 'utils';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,58 +61,70 @@ const DashboardContent: React.FC<any> = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg" className={ classes.container }>
-      <Grid container spacing={ 3 }>
-        {/* Widgets */ }
-        <Grid item xs={ 12 } container spacing={ 3 }>
-          <Grid item xs={ 12 } sm={ 3 }>
+    <Container maxWidth="lg" className={classes.container}>
+      <Grid container spacing={3}>
+        {/* Widgets */}
+        <Grid item xs={12} container spacing={3}>
+          <Grid item xs={12} sm={6} md={3} xl={3}>
             <ExchangeWidget />
           </Grid>
-          <Grid item xs={ 12 } sm={ 3 }>
+          <Grid item xs={12} sm={6} md={3} xl={3}>
             <SurveyWidget />
           </Grid>
-          <Grid item xs={ 12 } sm={ 3 }>
+          <Grid item xs={12} sm={6} md={3} xl={3}>
             <PrescriptionWidget />
           </Grid>
-          <Grid item xs={ 12 } sm={ 3 }>
+          <Grid item xs={12} sm={6} md={3} xl={3}>
             <EmpApplicationWidget />
           </Grid>
         </Grid>
-        {/* Chart */ }
-        <Grid item xs={ 12 }>
-          <Paper className={ classes.paper }>
-            <ExChangeChart></ExChangeChart>
-          </Paper>
-        </Grid>
-        <Grid item xs={ 12 }>
-          <Paper className={ classes.paper }>
-            <AppBar position="static" color="default">
-              <Tabs
-                value={ value }
-                onChange={ handleChange }
-                indicatorColor="primary"
-                textColor="primary"
-                variant="fullWidth"
-                aria-label="full width tabs example"
-              >
-                <Tab label="داروخانه های برتر روزانه " />
-                <Tab label="داروخانه های برتر شبانه روزی" />
-              </Tabs>
-            </AppBar>
-            <div style={ { marginTop: '5px' } }>
-              { value === 0 ? (
-                <BestPharmaciesList for24Hour={ false }></BestPharmaciesList>
-              ) : (
-                <BestPharmaciesList for24Hour={ true }></BestPharmaciesList>
-              ) }
+        {/* Chart */}
+
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={6}
+          xl={6}
+          style={{ height: 500, overflow: 'disabled' }}
+        >
+          <Paper
+            className={classes.paper}
+            style={{ height: 500, overflow: 'disabled' }}
+          >
+            <span>هیت مپ تبادلات در کشور</span>
+            <div id="map">
+              <MapCluster />
             </div>
           </Paper>
         </Grid>
 
-        <Grid item xs={ 12 }>
-          <Paper className={ classes.paper }>
-            <div id="map">
-              <MapCluster></MapCluster>
+        <Grid item xs={12} sm={12} md={6} xl={6}>
+          <Paper className={classes.paper} style={{ height: 500 }}>
+            <span>نمودار وضعیت تبادلات در کشور</span>
+
+            <ExChangeChart />
+          </Paper>
+        </Grid>
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="fullWidth"
+              aria-label="full width tabs example"
+            >
+              <Tab label="داروخانه های برتر روزانه " />
+              <Tab label="داروخانه های برتر شبانه روزی" />
+            </Tabs>
+            <div style={{ marginTop: '5px' }}>
+              {value === 0 ? (
+                <BestPharmaciesList for24Hour={false}></BestPharmaciesList>
+              ) : (
+                <BestPharmaciesList for24Hour={true}></BestPharmaciesList>
+              )}
             </div>
           </Paper>
         </Grid>
