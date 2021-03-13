@@ -9,6 +9,7 @@ import {
   ListItemText,
   makeStyles,
   MenuItem,
+  Paper,
   Select,
 } from '@material-ui/core';
 import React, { useState } from 'react';
@@ -37,22 +38,16 @@ const { getAllCategories } = new CategoryApi();
 const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
+      minHeight: 110,
       display: 'flex',
-      height: 120,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 5,
       flexDirection: 'column',
-      '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 16,
-        },
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
       },
     },
     buttonContainer: {
@@ -98,7 +93,7 @@ const Category: React.FC = () => {
   const [inSubmit, setInSubmit] = useState<boolean>(false);
   const [isOpenBackdrop, setIsOpenBackdrop] = useState<boolean>(false);
 
-  const { addButton, modalContainer, buttonContainer , fab } = useStyle();
+  const { addButton, modalContainer, buttonContainer, fab } = useStyle();
 
   const { t } = useTranslation();
 
@@ -231,27 +226,21 @@ const Category: React.FC = () => {
           <span>لیست دسته بندی های دارویی موردعلاقه</span>
         </Grid>
         <Hidden xsDown>
-        <Grid item xs={12} sm={6} md={4} xl={4} className={addButton}>
-          <Button onClick={toggleIsOpenModal} variant="text">
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('favorite.addToDrugList')}</span>
-          </Button>
-        </Grid>
+          <Grid item xs={12} sm={6} md={4} xl={4}>
+            <Paper className={addButton} onClick={toggleIsOpenModal}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
+              <span>{t('favorite.addToCategoryList')}</span>
+            </Paper>
+          </Grid>
         </Hidden>
 
         {contentGenerator()}
 
         <Hidden smUp>
-            <Fab
-              onClick={toggleIsOpenModal}
-              className={fab}
-              aria-label="add"
-            >
-              <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-            </Fab>
-          </Hidden>
-
-
+          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
       </Grid>
 
       <Modal open={isOpenModal} toggle={toggleIsOpenModal}>

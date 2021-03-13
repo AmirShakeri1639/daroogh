@@ -5,6 +5,7 @@ import {
   Grid,
   Hidden,
   makeStyles,
+  Paper,
   TextField,
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -33,22 +34,16 @@ const { searchCategory } = new Search();
 const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
+      minHeight: 150,
       display: 'flex',
-      height: 205,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 5,
       flexDirection: 'column',
-      '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 8,
-        },
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
       },
     },
     modalContainer: {
@@ -85,7 +80,7 @@ const DrugTab: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { addButton, modalContainer, buttonContainer ,fab} = useStyle();
+  const { addButton, modalContainer, buttonContainer, fab } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -200,25 +195,20 @@ const DrugTab: React.FC = () => {
           <span>لیست علاقه مندی ها</span>
         </Grid>
         <Hidden xsDown>
-        <Grid item xs={12} sm={6} md={4} xl={4} className={addButton}>
-          <Button onClick={toggleIsOpenModal} variant="text">
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('favorite.addToDrugList')}</span>
-          </Button>
-        </Grid>
+          <Grid item xs={12} sm={6} md={4} xl={4}>
+            <Paper className={addButton} onClick={toggleIsOpenModal}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
+              <span>{t('favorite.addToDrugList')}</span>
+            </Paper>
+          </Grid>
         </Hidden>
 
         {contentGenerator()}
         <Hidden smUp>
-            <Fab
-              onClick={toggleIsOpenModal}
-              className={fab}
-              aria-label="add"
-            >
-              <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-            </Fab>
-          </Hidden>
-
+          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
       </Grid>
 
       <Modal

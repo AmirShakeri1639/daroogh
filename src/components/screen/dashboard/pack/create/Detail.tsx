@@ -22,7 +22,7 @@ const useStyle = makeStyles((theme) =>
     },
     container: {
       padding: 5,
-      borderRadius: 15,
+      borderRadius: 5,
       '& .drug-name': {
         marginLeft: 10,
       },

@@ -17,6 +17,7 @@ import {
   useMediaQuery,
   useTheme,
   Divider,
+  Paper
 } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import { faPlus, faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -81,14 +82,17 @@ const useStyle = makeStyles((theme) =>
       },
     },
     addButton: {
+      minHeight: 175,
       display: 'flex',
-      height: 172,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 10,
       flexDirection: 'column',
-      '& button': {},
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
+      },
     },
     cancelButton: {
       color: '#fff',
@@ -692,7 +696,7 @@ const Create: React.FC = () => {
                       <TextWithTitle
                         title="مجموع قیمت اقلام"
                         body={thousandsSeperatorFa(packTotalPrice)}
-                        suffix={ t('general.defaultCurrency') }
+                        suffix={t('general.defaultCurrency')}
                       />
                     </Grid>
                   </Grid>
@@ -731,11 +735,11 @@ const Create: React.FC = () => {
         </Grid>
 
         <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={4} className={addButton}>
-            <Button variant="text" onClick={toggleIsOpenModal}>
-              <FontAwesomeIcon icon={faPlus} />
+          <Grid item xs={12} sm={12} md={4} xl={4}>
+            <Paper className={addButton} onClick={toggleIsOpenModal}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
               <span>{t('pack.add')}</span>
-            </Button>
+            </Paper>
           </Grid>
         </Hidden>
         <Hidden smUp>
@@ -976,8 +980,7 @@ const Create: React.FC = () => {
                   onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
                 />
                 <span>
-                  صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته
-                  نشود
+                  صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته نشود
                 </span>
               </label>
             </Grid>
