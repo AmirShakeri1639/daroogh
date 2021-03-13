@@ -1,236 +1,96 @@
-import React, { useState } from 'react';
-import { createStyles, Grid, makeStyles, TextField } from '@material-ui/core';
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Autocomplete } from '@material-ui/lab';
-import { useMutation, useQuery, useQueryCache } from 'react-query';
-import { PharmacyDrugEnum } from '../../../../enum';
-import { debounce, remove } from 'lodash';
-import { Favorite, Drug as DrugApi, Search } from '../../../../services/api';
-import {
-  MaterialContainer,
-  Modal,
-  Button,
-  AutoComplete,
-} from '../../../public';
-import { errorHandler, successSweetAlert } from '../../../../utils';
-import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CardContainer from './CardContainer';
+import React from 'react';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import DrugTab from './DrugTab';
+import Category from './category/Category';
+import { MaterialContainer } from 'components/public';
+import { Divider, Grid } from '@material-ui/core';
 
-const { getFavoriteList, saveFavoriteList } = new Favorite();
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+}
 
-const { searchDrug } = new DrugApi();
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
 
-const { searchCategory } = new Search();
-
-const useStyle = makeStyles((theme) =>
-  createStyles({
-    addButton: {
-      display: 'flex',
-      height: 167,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 10,
-      flexDirection: 'column',
-      '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 8,
-        },
-      },
-    },
-    modalContainer: {
-      backgroundColor: '#fff',
-      borderRadius: 5,
-      padding: theme.spacing(2, 3),
-      maxWidth: 500,
-    },
-    buttonContainer: {
-      textAlign: 'right',
-      '& button:nth-child(1)': {
-        marginRight: theme.spacing(1),
-      },
-    },
-  })
-);
-
-const Drug: React.FC = () => {
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [drugSearchOptions, setDrugSearchOptions] = useState<any[]>([]);
-  const [categoryDrugSearchOptions, setCategoryDrugSearchOptions] = useState<
-    any[]
-  >([]);
-  const [drugName, setDrugName] = useState<string>('');
-
-  const { t } = useTranslation();
-
-  const { addButton, modalContainer, buttonContainer } = useStyle();
-
-  const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
-
-  const queryCache = useQueryCache();
-
-  const { isLoading, data, isFetched } = useQuery(
-    PharmacyDrugEnum.GET_FAVORITE_LIST,
-    getFavoriteList
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={0}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
   );
+}
 
-  const [_saveFavoriteList, { isLoading: isLoadingSaveData }] = useMutation(
-    saveFavoriteList,
-    {
-      onSuccess: async (data) => {
-        const { message } = data;
-        queryCache.invalidateQueries(PharmacyDrugEnum.GET_FAVORITE_LIST);
-        if (isOpenModal) {
-          toggleIsOpenModal();
-        }
-
-        setDrugName('');
-
-        await successSweetAlert(message);
-      },
-    }
-  );
-
-  const drugSearch = async (title: string): Promise<any> => {
-    try {
-      if (title.length < 2) {
-        return;
-      }
-
-      const result = await searchDrug(title);
-      const items = result.map((i: any) => ({
-        value: i.id,
-        label: `${i.name} (${i.genericName})`,
-      }));
-
-      const options = items.map((item: any) => ({
-        el: <div>{item.label}</div>,
-        item,
-      }));
-
-      setDrugSearchOptions(options);
-    } catch (e) {
-      errorHandler(e);
-    }
+function a11yProps(index: any) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
   };
+}
 
-  const categoryDrugSearch = async (category: string): Promise<any> => {
-    try {
-      if (category.length < 2) {
-        return;
-      }
-      const result = await searchCategory(category, 100);
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: '#FAFAFA',
+  },
+}));
 
-  const formHandler = async (drugId: number = -1): Promise<any> => {
-    try {
-      const drugIds = data.items
-        .map((item: any) => item.drug?.id)
-        .filter((item: any) => item !== null && item !== undefined);
+export default function Drug() {
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
 
-      const categoriesId = data.items
-        .map((item: any) => item.category?.id)
-        .filter((item: any) => item !== null && item !== undefined);
-
-      if (drugId !== -1) {
-        remove(drugIds, (num) => num === drugId);
-      }
-      if (drugName !== '') {
-        drugIds.push(Number(drugName));
-      }
-
-      await _saveFavoriteList({
-        pharmacyID: 0,
-        categories: categoriesId,
-        drugs: drugIds,
-      });
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
-
-  const contentGenerator = (): JSX.Element[] | null => {
-    if (!isLoading && data !== undefined && isFetched) {
-      return data.items.map((item: any) => {
-        const { drug } = item;
-        if (drug !== null) {
-          return (
-            <Grid key={drug.id} item xs={12} sm={6} md={4} xl={3}>
-              <CardContainer data={drug} formHandler={formHandler} />
-            </Grid>
-          );
-        }
-
-        return null;
-      });
-    }
-
-    return null;
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue);
   };
 
   return (
     <MaterialContainer>
-      <Grid container spacing={1}>
+      <Grid container xs={12} className={classes.root}>
+        <Grid item xs={12} style={{padding:16}}>
+          <span>
+            میتوانید داروها یا دسته بندی های دارویی مورد علاقه خود را انتخاب نمایید. این انتخاب به هوش مصنوعی داروگ کمک میکند تا بهترین لیست ها را برای شما منطبق با علایقتان یافته و تبادل را برای شما مطلوب تر و آسان تر نماید
+          </span>
+        </Grid>
+        <Grid item xs={12} style={{ padding: '4px' }}>
+        <Divider />
+        </Grid>
         <Grid item xs={12}>
-          <h3>لیست علاقه مندی ها</h3>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
-          <Button onClick={toggleIsOpenModal} variant="text">
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('favorite.addToDrugList')}</span>
-          </Button>
-        </Grid>
 
-        {contentGenerator()}
+        <Tabs
+          centered
+          value={value}
+          onChange={handleChange}
+          aria-label="simple tabs example"
+        >
+          <Tab style={{ width: '50%' }} label="دارو" {...a11yProps(0)} />
+          <Tab
+            style={{ width: '50%' }}
+            label="دسته دارویی"
+            {...a11yProps(1)}
+          />
+        </Tabs>
+        <TabPanel value={value} index={0}>
+          <DrugTab />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Category />
+        </TabPanel>
+        </Grid>
       </Grid>
-
-      <Modal
-        style={{ overflow: 'visible' }}
-        open={isOpenModal}
-        toggle={toggleIsOpenModal}
-      >
-        <div className={modalContainer}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <AutoComplete
-                isLoading={isLoading}
-                onChange={debounce((e) => drugSearch(e.target.value), 500)}
-                loadingText={t('general.loading')}
-                className="w-100"
-                placeholder={t('drug.name')}
-                options={drugSearchOptions}
-                onItemSelected={(item): void =>
-                  setDrugName(String(item[0].value))
-                }
-              />
-            </Grid>
-
-            <Grid item xs={12} className={buttonContainer}>
-              <Button color="pink" onClick={toggleIsOpenModal}>
-                {t('general.cancel')}
-              </Button>
-              <Button
-                color="blue"
-                onClick={formHandler}
-                disabled={isLoadingSaveData}
-              >
-                {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
-              </Button>
-            </Grid>
-          </Grid>
-        </div>
-      </Modal>
     </MaterialContainer>
   );
-};
-
-export default Drug;
+}

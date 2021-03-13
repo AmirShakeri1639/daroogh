@@ -288,7 +288,13 @@ const DesktopCardContent = ({
 
     ({ difference, diffPercent, message: differenceMessage } = diffCheck);
     diffPercent = isNaN(diffPercent) ? 0 : diffPercent;
-    diffSign =  item.currentPharmacyIsA ? ((totalPriceA > totalPriceB)? -1 : 1 ) : ((totalPriceA > totalPriceB)? 1 : -1 ) ;
+    diffSign = item.currentPharmacyIsA
+      ? totalPriceA > totalPriceB
+        ? -1
+        : 1
+      : totalPriceA > totalPriceB
+      ? 1
+      : -1;
   };
 
   // useEffect(() => {
@@ -452,14 +458,26 @@ const DesktopCardContent = ({
                   ${ currency } (${l(diffPercent)}%)`}
                 />
               </Grid>
-
+              <Grid item xs={12} style={{ padding: 2 }}>
+                <Divider />
+              </Grid>
               {(item.state === 1 ||
                 item.state === 2 ||
                 (item.state === 12 && !item.lockSuggestion)) && (
                 <>
                   <Grid item xs={12} className={spacingVertical3}>
-                    <div className={scaleContainer}>
-                      <div className={scaleRoot} style={{transform: `rotate(${diffSign * diffPercent/5}deg)`}} >
+                    <div
+                      className={scaleContainer}
+                      style={{ marginTop: `${diffPercent / 3}px` }}
+                    >
+                      <div
+                        className={scaleRoot}
+                        style={{
+                          transform: `rotate(${
+                            (diffSign * diffPercent) / 5
+                          }deg)`,
+                        }}
+                      >
                         <span className="right">
                           {
                             //@ts-ignore
@@ -472,7 +490,14 @@ const DesktopCardContent = ({
                               Convertor.thousandsSeperatorFa(totalPriceA)
                           }
                         </span>
-                        <span className="center" style={{background:`${is3PercentOk? 'green':'red'}`}}>{l(diffPercent)}%</span>
+                        <span
+                          className="center"
+                          style={{
+                            background: `${is3PercentOk ? 'green' : 'red'}`,
+                          }}
+                        >
+                          {l(diffPercent)}%
+                        </span>
                         <hr />
                         <span className="left">
                           {
@@ -491,17 +516,16 @@ const DesktopCardContent = ({
                   </Grid>
                   {differenceMessage && (
                     <Grid item xs={12} className={spacingVertical3}>
-                    {differenceMessage.split('\n').map((i, k) => {
-                      return (
-                        <div key={k}>
-                          {i}
-                          <br key={k} />
-                        </div>
-                      );
-                    })}
-                  </Grid>
+                      {differenceMessage.split('\n').map((i, k) => {
+                        return (
+                          <div key={k}>
+                            {i}
+                            <br key={k} />
+                          </div>
+                        );
+                      })}
+                    </Grid>
                   )}
-                  
                 </>
               )}
             </>

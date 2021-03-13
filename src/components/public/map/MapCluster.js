@@ -14,17 +14,19 @@ import 'leaflet/dist/leaflet.css';
 const { getExchangeCount } = new Reports();
 
 const MapCluster = () => {
-  const position = [35.6892, 51.389];
+  const position = [32.167342, 53.460555];
   const { data } = useQuery('getExchangeCount', getExchangeCount);
   const mapRef = useRef(null);
 
   return (
     <MapContainer
       center={position}
-      style={{ height: '100%', width: '100%' }}
-      zoom={6}
+      style={{ height: 445, width: '100%', overflow: 'disabled' }}
+      zoom={5}
       scrollWheelZoom={false}
       preferCanvas={false}
+      zoomControl={false}
+      dragging={false}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {data &&
