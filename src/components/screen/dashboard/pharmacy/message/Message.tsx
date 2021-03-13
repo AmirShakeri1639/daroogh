@@ -45,7 +45,7 @@ const PharmacyMessage: React.FC = () => {
   return (
     <MaterialContainer>
       <div id="container">
-        <h2 className="text-muted">پیام های کاربر</h2>
+        <h3>پیام های کاربر</h3>
         {data !== undefined && data.items.length > 0 ? (
           React.Children.toArray(
             data.items.map((item: MessageModel) => (
