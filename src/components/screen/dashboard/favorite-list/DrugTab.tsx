@@ -192,7 +192,7 @@ const DrugTab: React.FC = () => {
     <MaterialContainer>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <span>لیست علاقه مندی ها</span>
+          <span>لیست داروهای مورد علاقه</span>
         </Grid>
         <Hidden xsDown>
           <Grid item xs={12} sm={6} md={4} xl={4}>
