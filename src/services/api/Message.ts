@@ -19,10 +19,10 @@ class Message extends Api {
   getUserMessages = async (justUnreaddMessages = false, skip = 0, top = 10): Promise<any> => {
     let queryString = '';
     if (justUnreaddMessages) {
-      queryString = '$filter=readDate eq null';
+      queryString = '&$filter=readDate eq null';
     }
     const result = await this.postData(
-      `/Message/CurrentUserMessages?${queryString}`
+      `/Message/CurrentUserMessages?$skip=${skip}&$top=${top}&$orderby=id desc${queryString}`
     );
     return result.data;
   };
