@@ -1,5 +1,13 @@
 import React from 'react';
-import { Container, createStyles, Grid, makeStyles } from '@material-ui/core';
+import {
+  Container,
+  createStyles,
+  Fab,
+  Grid,
+  Hidden,
+  makeStyles,
+  Paper,
+} from '@material-ui/core';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,29 +24,32 @@ const { getPharmacyPacks, removePack } = new PackApi();
 const useStyle = makeStyles((theme) =>
   createStyles({
     addButton: {
+      minHeight: 150,
       display: 'flex',
-      height: 135,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 10,
       flexDirection: 'column',
-      '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 8,
-        },
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
       },
+    },
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
     },
   })
 );
 
 const Pack: React.FC = () => {
-  const { addButton } = useStyle();
+  const { addButton, fab } = useStyle();
 
   const { t } = useTranslation();
 
@@ -46,17 +57,23 @@ const Pack: React.FC = () => {
 
   const queryCache = useQueryCache();
 
-  const { isLoading, data } = useQuery(PackEnum.GET_PHARMACY_PACKS, getPharmacyPacks);
+  const { isLoading, data } = useQuery(
+    PackEnum.GET_PHARMACY_PACKS,
+    getPharmacyPacks
+  );
 
-  const [_removePack, { isLoading: isLoadingRemovePack }] = useMutation(removePack, {
-    onSuccess: () => {
-      queryCache.invalidateQueries(PackEnum.GET_PHARMACY_PACKS);
-      successSweetAlert(t('alert.successfulRemoveTextMessage'));
-    },
-    onError: () => {
-      errorSweetAlert(t('alert.failedRemove'));
-    },
-  });
+  const [_removePack, { isLoading: isLoadingRemovePack }] = useMutation(
+    removePack,
+    {
+      onSuccess: () => {
+        queryCache.invalidateQueries(PackEnum.GET_PHARMACY_PACKS);
+        successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      },
+      onError: () => {
+        errorSweetAlert(t('alert.failedRemove'));
+      },
+    }
+  );
 
   const createPackLink = (): void => {
     push({
@@ -79,7 +96,7 @@ const Pack: React.FC = () => {
           totalPrice += item.amount;
         });
         return (
-          <Grid item xs={12} sm={6} md={4} xl={3} key={id}>
+          <Grid spacing={3} item xs={12} sm={12} md={4} xl={4} key={id}>
             <CardContainer
               totalPrice={totalPrice}
               drugsCounter={pharmacyDrug.length}
@@ -97,19 +114,24 @@ const Pack: React.FC = () => {
 
   return (
     <Container>
-      <Grid container spacing={1}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <h3>لیست پک ها</h3>
         </Grid>
-
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
-          <Button variant="text" onClick={createPackLink}>
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('pack.create')}</span>
-          </Button>
-        </Grid>
-
+        <Hidden xsDown>
+          <Grid item xs={12} sm={12} md={4} xl={3}>
+            <Paper className={addButton} onClick={createPackLink}>
+            <FontAwesomeIcon icon={faPlus} size="2x" />
+                <span>{t('pack.create')}</span>
+            </Paper>
+          </Grid>
+        </Hidden>
         {contentHandler()}
+        <Hidden smUp>
+          <Fab onClick={createPackLink} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
       </Grid>
 
       <BackDrop isOpen={isLoadingRemovePack} />

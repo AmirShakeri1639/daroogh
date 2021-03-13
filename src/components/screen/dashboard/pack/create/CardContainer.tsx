@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { makeStyles, Paper, createStyles, Grid } from '@material-ui/core';
+import {
+  makeStyles,
+  Paper,
+  createStyles,
+  Grid,
+  Button,
+  Divider,
+} from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SupplyListCardContainer } from '../../../../../interfaces';
@@ -18,7 +25,7 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 2),
+      padding: theme.spacing(1, 1, 1),
       borderRadius: 10,
     },
     redTrash: {
@@ -65,26 +72,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
   return (
     <Paper className={root} elevation={1}>
       <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Grid justify="flex-end" container spacing={1}>
-            {/* <Grid item xs={1}>
-              <FontAwesomeIcon
-                icon={faEdit}
-                size="lg"
-                className="cursor-pointer"
-                onClick={openEditModal}
-              />
-            </Grid> */}
-            <Grid item xs={1}>
-              <FontAwesomeIcon
-                onClick={(): void => itemRemoveHandler(value)}
-                icon={faTrashAlt}
-                size="lg"
-                className={`${redTrash} cursor-pointer`}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
+     
         <Detail
           drugName={label}
           amount={Number(amount)}
@@ -92,8 +80,25 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
           count={Number(cnt)}
           offer1={Number(offer1)}
           offer2={Number(offer2)}
-          enName={""}
+          enName={''}
         />
+      </Grid>
+      <Grid item xs={12} style={{ padding: '4px' }}>
+        {' '}
+        <Divider />
+      </Grid>
+
+      <Grid item xs={12}>
+        <Grid justify="flex-end" container spacing={0}>
+          <Grid item xs={2}>
+            <Button
+              onClick={(): void => itemRemoveHandler(value)}
+              style={{ color: 'red', fontSize: '14px' }}
+            >
+              حذف
+            </Button>
+          </Grid>
+        </Grid>
       </Grid>
     </Paper>
   );

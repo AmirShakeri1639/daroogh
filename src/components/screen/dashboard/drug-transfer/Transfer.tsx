@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Button,
   createStyles,
   makeStyles,
-  Divider,
   CircularProgress,
 } from '@material-ui/core';
 import './transfer.scss';
@@ -21,7 +19,6 @@ import PharmacyDrug from '../../../../services/api/PharmacyDrug';
 import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
-import { EncrDecrService } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { calcTotalPrices } from '../../../../utils/ExchangeTools';
 import fa from '../../../../i18n/fa/fa';
@@ -85,7 +82,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   );
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
   const [is3PercentOk, setIs3PercentOk] = React.useState(true);
-  const [eid, setEid] = useState<number>(0);
+  const [eid, setEid] = useState<number | string | undefined>(0);
   const [lockedAction, setLockedAction] = React.useState(true);
 
   const { viewExchangeId, exchangeState } = props;
@@ -94,15 +91,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const params = queryString.parse(location.search);
 
   useEffect(() => {
-    const encryptedId =
-      params.eid == null
-        ? undefined
-        : decodeURIComponent(params.eid.toString());
-    if (encryptedId !== undefined) {
-      const encDecService = new EncrDecrService();
-      const decryptedId = encDecService.decrypt(encryptedId);
-      setEid(+decryptedId);
-    }
+    const xId = params.eid == null
+      ? undefined : params.eid.toString();
+    setEid(xId);
   }, [params]);
 
   const getColor = (res: any, item: any): string => {
@@ -120,13 +111,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
   useEffect(() => {
     (async (): Promise<void> => {
-      // let eid: any = undefined;
-      // const encryptedId = params.eid == null ? undefined : params.eid;
-      // eid = encryptedId;
-      if (eid !== 0) {
+      if (eid !== undefined && eid !== 0) {
         setByCartable(true);
         const result = await getViewExchange(eid);
-        let res: ViewExchangeInterface | undefined = result.data;
+        let res: ViewExchangeInterface | undefined = result?.data;
         if (res) {
           const basketA: AllPharmacyDrugInterface[] = [];
           const basketB: AllPharmacyDrugInterface[] = [];
@@ -334,7 +322,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             }
           }
         }
-        setExchangeId(eid);
+        if (res) {
+          setExchangeId(res.id);
+        }
         setByCartable(false);
         setActiveStep(1);
       }

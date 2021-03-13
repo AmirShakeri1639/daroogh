@@ -55,9 +55,7 @@ const ExChangeChart: React.FC = () => {
       </text>
     );
   };
-  return (
-
-    
+  return ( 
     <ResponsiveContainer width="100%" height={400}>
       <PieChart >
         <Pie
@@ -78,7 +76,7 @@ const ExChangeChart: React.FC = () => {
             ))}
         </Pie>
         <Tooltip />
-        <Legend layout="vertical" align="right" verticalAlign="middle" iconType="circle" wrapperStyle={{ fontSize: '99%' }} />
+        <Legend layout="vertical" align="right" verticalAlign="top" iconType="plainline" wrapperStyle={{ fontSize: '80%' }} />
         {data &&
           data.length &&
           data.map((entry: any, index: number) => (

@@ -41,6 +41,7 @@ import routes from '../../../../../routes';
 import { useHistory } from 'react-router-dom';
 import Ribbon from '../../../../public/ribbon/Ribbon';
 import sweetAlert from '../../../../../utils/sweetAlert';
+import { useTranslation } from 'react-i18next';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -90,6 +91,7 @@ interface ExchangeApprovePI {
 
 const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
   const { isModal = true } = props;
+  const { t } = useTranslation();
   const {
     root,
     paper,
@@ -369,7 +371,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                   <b>{Utils.numberWithCommas(debtAmountAllow)}</b>
                 </span>
                 <span>
-                  ریال می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و سپس
+                  { t('general.defaultCurrency') } می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و سپس
                   پرداخت نمایید
                 </span>
               </span>

@@ -31,7 +31,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import { Cancel } from '../../../../model/exchange';
 import { useMutation } from 'react-query';
 import {
-  EncrDecrService,
   errorHandler,
   Impersonation,
   sweetAlert,
@@ -233,14 +232,12 @@ const ExchangeManagement: React.FC = () => {
   const { impersonate } = new User();
   const getNewToken = async (
     pharmacyId: number | string,
-    exchangeId: number
+    exNumber: string // numberA or numberB
   ): Promise<any> => {
     const result = await impersonate(pharmacyId);
     const impersonation = new Impersonation();
     impersonation.changeToken(result.data.token, result.data.pharmacyName);
-    const encDecService = new EncrDecrService();
-    const encryptedId = encDecService.encrypt(exchangeId);
-    history.push(`${routes.transfer}?eid=${encodeURIComponent(encryptedId)}`);
+    history.push(`${routes.transfer}?eid=${exNumber}`);
   };
 
   const getColumns = (): DataTableColumns[] => {
@@ -359,7 +356,7 @@ const ExchangeManagement: React.FC = () => {
                 href="#"
                 onClick={async (e: any): Promise<any> => {
                   e.preventDefault();
-                  await getNewToken(row.pharmacyIdA, row.id);
+                  await getNewToken(row.pharmacyIdA, row.numberA);
                 }}
               >
                 {row.numberA}
@@ -384,7 +381,7 @@ const ExchangeManagement: React.FC = () => {
                 style={{ color: '#c50000' }}
                 onClick={async (e: any): Promise<any> => {
                   e.preventDefault();
-                  await getNewToken(row.pharmacyIdB, row.id);
+                  await getNewToken(row.pharmacyIdB, row.numberB);
                 }}
               >
                 {row.numberB}

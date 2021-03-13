@@ -17,6 +17,11 @@ const exchangemanagement = 'exchangemanagement';
 const jobSearch = 'job-search';
 const prescription = 'prescription';
 const job = 'job';
+const fda = `/${dashboard}/fda`;
+
+const pharmacyRoutes = {
+  pharmacyMessage: `/${dashboard}/pharmacy/messages`
+};
 
 export default {
   login: '/login',
@@ -72,5 +77,11 @@ export default {
   
   profile: `/${dashboard}/${user}/profile`,
   settings: `/${dashboard}/settings`,
+  settingsAi: `/${dashboard}/settingsAi`,
   jobsList: `/${dashboard}/${job}/list`,
+
+  ...pharmacyRoutes,
+
+  fda_exchangeList: `${fda}/exchange-list`,
+  
 };

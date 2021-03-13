@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { DaroogDropdown } from '../daroog-dropdown/DaroogDropdown';
 import { useClasses } from '../../screen/dashboard/classes';
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid , makeStyles, createStyles} from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { CountryDivision } from '../../../services/api';
 import { CountryDivisionInterface, LabelValue } from '../../../interfaces';
@@ -30,7 +30,12 @@ interface Props {
   onSelectedHandler: (value: number | string) => void;
   error?: boolean;
 }
-
+const useStyles = makeStyles((theme) => createStyles({
+  container: {
+    marginTop: theme.spacing(1),
+    padding: theme.spacing(0,0)
+  }
+}));
 export const CountryDivisionSelect: React.FC<Props> = (props) => {
   const {
     countryDivisionID,
@@ -40,11 +45,12 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
   const [province, setProvince] = useState<CountryDivisionInterface>(
     initialProvince
   );
+  const { container } = useStyles();
   const [city, setCity] = useState<CountryDivisionInterface>(initialCity);
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
-  const { container } = useClasses();
+  
 
   const {
     getAllProvinces, getAllCities, getProvince
@@ -158,6 +164,7 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
             onChangeHandler={ (id): void => {
               provinceSelectedHandler(id);
             } }
+            className="w-100"
             data={ allProvinces }
             label={ t('countryDivision.province') }
           />
@@ -169,6 +176,7 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
             onChangeHandler={ (id): void => {
               citySelectedHandler(id);
             } }
+            className="w-100"
             data={ allCities }
             label={ t('countryDivision.city') }
           />

@@ -18,11 +18,20 @@ import {
   Switch,
   createStyles,
   makeStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
 import Modal from '../../../public/modal/Modal';
 import CircleLoading from '../../../public/loading/CircleLoading';
+import Input from '../../../public/input/Input';
+
 import {
   errorHandler,
   isNullOrEmpty,
@@ -182,6 +191,28 @@ const useStyle = makeStyles((theme) =>
     buttonContainer: {
       marginBottom: theme.spacing(2),
     },
+    label: {
+      display: 'flex',
+      alignItems: 'center',
+      margin: theme.spacing(1, 0),
+    },
+    formContent: {
+      overflow: 'hidden',
+      overflowY: 'auto',
+      display: 'flex',
+    },
+    cancelButton: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
   })
 );
 
@@ -199,11 +230,14 @@ const PharmaciesList: React.FC = () => {
     formContainer,
     box,
     addButton,
-    cancelButton,
+    
     dropdown,
   } = useClasses();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { createUserBtn, buttonContainer } = useStyle();
+  const { createUserBtn, buttonContainer, label
+    , formContent, cancelButton, submitBtn } = useStyle();
 
   const queryCache = useQueryCache();
 
@@ -456,83 +490,113 @@ const PharmaciesList: React.FC = () => {
 
   const editModal = (): JSX.Element => {
     return (
-      <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
-        <Card className={root}>
-          <CardHeader
-            title={state?.id === 0 ? t('action.create') : t('action.edit')}
-            action={
-              <IconButton onClick={toggleIsOpenSaveModalForm}>
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <form
-              autoComplete="off"
-              className={formContainer}
-              onSubmit={submitSave}
-            >
+      <Dialog
+      open={isOpenEditModal}
+      fullScreen={fullScreen}
+      onClose={toggleIsOpenSaveModalForm}
+    >
+      <DialogTitle className="text-sm">
+        {state?.id === 0 ? t('action.create') : t('action.edit')}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          <Grid container spacing={1} className={formContent}>
+            <Grid item xs={12}>
               <Grid container spacing={1}>
                 <Grid item xs={12}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    className={box}
-                  >
-                    <TextField
+                  <label>{t('pharmacy.name')}</label>
+                </Grid>
+                <Grid item xs={12}>
+                    <Input
                       required
-                      variant="outlined"
-                      label={t('pharmacy.name')}
+                      className="w-100"                   
                       value={state?.name}
                       onChange={(e): void =>
                         dispatch({ type: 'name', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
-                      label={t('pharmacy.hix')}
+                      </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('pharmacy.hix')}</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
                       value={state?.hix}
                       onChange={(e): void =>
                         dispatch({ type: 'hix', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
-                      label={t('pharmacy.gli')}
+                       </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('pharmacy.gli')}</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Input
+                     className="w-100" 
+                     
                       value={state?.gli}
                       onChange={(e): void =>
                         dispatch({ type: 'gli', value: e.target.value })
                       }
                     />
-                  </Box>
+                   </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('pharmacy.workTime')}</label>
                 </Grid>
                 <Grid item xs={12}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    className={box}
-                  >
                     <DaroogDropdown
                       defaultValue={state?.workTime}
                       data={workTimeList}
-                      className={dropdown}
-                      label={t('pharmacy.workTime')}
+                      className="w-100"
+                      
                       onChangeHandler={(v): void => {
                         return dispatch({ type: 'workTime', value: v });
                       }}
                     />
-                    <TextField
-                      variant="outlined"
+                      </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.address')}</label>
+                </Grid>
+                <Grid item xs={12}>
+                    <Input
+                     
                       required
-                      label={t('general.address')}
+                      className="w-100"
                       value={state?.address}
                       onChange={(e): void =>
                         dispatch({ type: 'address', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
+                      </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.mobile')}</label>
+                </Grid>
+                <Grid item xs={12}>
+                    <Input
+                     
                       required
                       label={t('general.mobile')}
                       value={state?.mobile}
@@ -540,16 +604,17 @@ const PharmaciesList: React.FC = () => {
                         dispatch({ type: 'mobile', value: e.target.value })
                       }
                     />
-                  </Box>
+                   </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.phone')}</label>
                 </Grid>
                 <Grid item xs={12}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    className={box}
-                  >
-                    <TextField
-                      variant="outlined"
+                    <Input
+                      className="w-100"
                       required
                       label={t('general.phone')}
                       value={state?.telphon}
@@ -557,50 +622,81 @@ const PharmaciesList: React.FC = () => {
                         dispatch({ type: 'telphon', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
-                      label={t('general.website')}
-                      value={state?.webSite}
+                      </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.website')}</label>
+                </Grid>
+                <Grid item xs={12}>
+                    <Input
+                       className="w-100" 
+                                           value={state?.webSite}
                       onChange={(e): void =>
                         dispatch({ type: 'webSite', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
-                      label={t('general.email')}
+                       </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.email')}</label>
+                </Grid>
+                <Grid item xs={12}></Grid>
+                    <Input
+                       className="w-100" 
+                     
                       value={state?.email}
                       onChange={(e): void =>
                         dispatch({ type: 'email', value: e.target.value })
                       }
                     />
-                  </Box>
+                    </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.postalCode')}</label>
                 </Grid>
                 <Grid item xs={12}>
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    className={box}
-                  >
-                    <TextField
-                      variant="outlined"
-                      label={t('general.postalCode')}
+                    <Input
+                      
+                      className="w-100" 
                       value={state?.postalCode}
                       onChange={(e): void =>
                         dispatch({ type: 'postalCode', value: e.target.value })
                       }
                     />
-                    <TextField
-                      variant="outlined"
-                      label={t('general.description')}
-                      value={state?.description}
+                       </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.description')}</label>
+                </Grid>
+                <Grid item xs={12}>
+                    <Input
+                       className="w-100" 
+                                           value={state?.description}
                       onChange={(e): void =>
                         dispatch({ type: 'description', value: e.target.value })
                       }
                     />
-                  </Box>
+                   </Grid>
+              </Grid>
+            </Grid>
+                 <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.active')}</label>
                 </Grid>
-                <Grid item xs={4}>
-                  <div className="row">
+                <Grid item xs={12}>
                     <FormControlLabel
                       control={
                         <Switch
@@ -613,20 +709,32 @@ const PharmaciesList: React.FC = () => {
                           }
                         />
                       }
-                      label={t('general.active')}
+                      label=''
                     />
-                  </div>
+                      </Grid>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.location')}</label>
                 </Grid>
-                <Grid item xs={8}>
+
+                <Grid item xs={12}>
                   <CountryDivisionSelect
                     countryDivisionID={state.countryDivisionID}
-                    label={t('general.location')}
+                   
                     onSelectedHandler={(id): void => {
                       dispatch({ type: 'countryDivisionID', value: id });
                     }}
                   />
-                </Grid>
+                  </Grid>
+              </Grid>
+            </Grid>
+                   <br/>
+
                 <Grid item xs={12}>
+                
                   <div style={{ overflow: 'hidden' }}>
                     <Map
                       draggable={true}
@@ -638,24 +746,19 @@ const PharmaciesList: React.FC = () => {
                       }}
                     />
                   </div>
+                  
                 </Grid>
+                </DialogContentText>
+        </DialogContent>
                 <Divider />
-                <Grid item xs={12}>
-                  <CardActions>
-                    <Button
+                <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={8} />
+              <Grid item xs={2} sm={2}>
+              <Button
                       type="submit"
-                      color="primary"
-                      variant="contained"
-                      className={addButton}
-                    >
-                      {isLoadingSave
-                        ? t('general.pleaseWait')
-                        : t('general.save')}
-                    </Button>
-                    <Button
-                      type="submit"
-                      color="secondary"
-                      variant="contained"
+                     
                       className={cancelButton}
                       onClick={(): void => {
                         dispatch({ type: 'reset' });
@@ -664,13 +767,23 @@ const PharmaciesList: React.FC = () => {
                     >
                       {t('general.cancel')}
                     </Button>
-                  </CardActions>
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </Card>
-      </Modal>
+                   
+                    </Grid>
+              <Grid item xs={3} sm={2}>
+              <Button
+                      type="submit"
+                     
+                      className={submitBtn}
+                    >
+                      {isLoadingSave
+                        ? t('general.pleaseWait')
+                        : t('general.save')}
+                    </Button>
+                    </Grid>
+            </Grid>
+          </Grid>
+        </DialogActions>
+      </Dialog>
     );
   };
 

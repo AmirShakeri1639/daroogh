@@ -1,9 +1,14 @@
-import React, { useState, useContext } from 'react';
-import { makeStyles, Paper, createStyles, Grid } from '@material-ui/core';
+import React, { useState, memo } from 'react';
+import {
+  makeStyles,
+  Paper,
+  createStyles,
+  Grid,
+  Button,
+  Divider,
+} from '@material-ui/core';
 import Detail from './Detail';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SupplyListCardContainer } from '../../../../interfaces';
-import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { useMutation, useQueryCache } from 'react-query';
 import { PharmacyDrug } from '../../../../services/api';
 import { successSweetAlert, errorSweetAlert } from '../../../../utils';
@@ -18,8 +23,8 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 2),
-      borderRadius: 10,
+      padding: theme.spacing(1, 1, 1, 1),
+      borderRadius: 5,
     },
     redTrash: {
       color: '#ff0000',
@@ -27,7 +32,7 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
+const CardContainer: React.FC<SupplyListCardContainer> = memo((props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const { root, redTrash } = useStyle();
   const { drug, editHandler } = props;
@@ -72,28 +77,7 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
 
   return (
     <Paper className={root} elevation={1}>
-      <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Grid justify="flex-end" container spacing={1}>
-            <Grid item xs={1}>
-              <FontAwesomeIcon
-                icon={faEdit}
-                size="lg"
-                className="cursor-pointer"
-                onClick={openEditModal}
-              />
-            </Grid>
-            <Grid item xs={1}>
-              <FontAwesomeIcon
-                onClick={removeHandler}
-                icon={faTrashAlt}
-                size="lg"
-                className={`${redTrash} cursor-pointer`}
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-
+      <Grid container xs={12} spacing={1}>
         <Detail
           drugName={name}
           amount={amount}
@@ -104,10 +88,34 @@ const CardContainer: React.FC<SupplyListCardContainer> = (props) => {
           enName={enName}
         />
       </Grid>
+      <Grid item xs={12} style={{ padding: '4px' }}>
+        {' '}
+        <Divider />
+      </Grid>
 
+      <Grid item xs={12}>
+        <Grid justify="flex-end" container spacing={0}>
+          <Grid item xs={2}>
+            <Button
+              onClick={openEditModal}
+              style={{ color: 'green', fontSize: '14px' }}
+            >
+              ویرایش
+            </Button>
+          </Grid>
+          <Grid item xs={2}>
+            <Button
+              onClick={removeHandler}
+              style={{ color: 'red', fontSize: '14px' }}
+            >
+              حذف
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );
-};
+});
 
 export default CardContainer;

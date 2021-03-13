@@ -10,6 +10,12 @@ interface Props {
 
 const StyledChip = styled(Chip)`
   margin: 2px 0 2px 2px;
+  height: fit-content;
+  span {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    white-space: break-spaces !important;
+  }
 `;
 
 const SelectedItems: React.FC<Props> = ({ items, removeHandler }) => {

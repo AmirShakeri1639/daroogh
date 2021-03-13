@@ -1,24 +1,16 @@
 import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPills,
-  faBoxes,
-  faMoneyBillWave,
-  faCalendarTimes,
-  faExchangeAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import React, { memo } from 'react';
 import { DetailSupplyInterface } from '../../../../interfaces';
-import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const { convertISOTime } = Convertor;
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
-      backgroundColor: '#E4E4E4',
+      backgroundColor: '#fff',
     },
     container: {
       padding: 5,
@@ -28,6 +20,10 @@ const useStyle = makeStyles((theme) =>
       },
       '& .drug-container': {
         padding: '0 6px',
+        borderLeft: '3px solid #f80501',
+        height: '40px',
+        backgroundColor: '#FEFFF2',
+        paddingTop: '8px',
         marginBottom: theme.spacing(1),
       },
     },
@@ -40,7 +36,7 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const Detail: React.FC<DetailSupplyInterface> = (props) => {
+const Detail: React.FC<DetailSupplyInterface> = memo((props) => {
   const { drugName, count, offer1, offer2, expireDate, amount, enName } = props;
   const { paper, container, textLeft, icon } = useStyle();
 
@@ -49,86 +45,50 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
 
   return (
     <Grid item xs={12}>
-      <Paper className={paper}>
+      <Paper className={paper} elevation={0}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <div className={container}>
               <Grid container spacing={0}>
-                <Grid item xs={12} className="drug-container">
-                  <FontAwesomeIcon icon={faPills} />
-                  <span className="drug-name">{drugName}</span>
-                  <div className="text-muted txt-sm">{enName || ''}</div>
-                </Grid>
-
-                <Grid item xs={6}>
-                  <Grid alignItems="flex-end" container spacing={1}>
-                    <Grid item xs={2} className={textLeft}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={10}>
-                      <TextLine
-                        rightText={t('general.inventory')}
-                        leftText={thousandsSeperator(count)}
-                      />
-                    </Grid>
+                <Grid container xs={12} className="drug-container">
+                  <Grid container xs={1}>
+                    <img src="drug.png" style={{ height: '25px' }} />
+                  </Grid>
+                  <Grid
+                    container
+                    xs={11}
+                    style={{ alignItems: 'center', paddingRight: '8px' }}
+                  >
+                    <span>{drugName}</span>
+                    <div className="text-muted txt-sm">{enName || ''}</div>
                   </Grid>
                 </Grid>
 
-                <Grid item xs={6}>
-                  <Grid alignItems="flex-end" container spacing={1}>
-                    <Grid item xs={2} className={textLeft}>
-                      <FontAwesomeIcon
-                        icon={faMoneyBillWave}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={10}>
-                      <TextLine
-                        rightText={t('general.price')}
-                        leftText={thousandsSeperator(amount)}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
+                <Grid container style={{ padding: '8px' }}>
+                  <Grid item xs={6}>
+                    <TextWithTitle
+                      title={t('general.price')}
+                      body={thousandsSeperator(amount)}
+                      suffix={t('general.defaultCurrency')}
+                    />
 
-                <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={1}>
-                    <Grid item xs={1} className={textLeft}>
-                      <FontAwesomeIcon
-                        icon={faCalendarTimes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('general.expireDate')}
-                        leftText={convertISOTime(expireDate)}
-                      />
-                    </Grid>
+                    <TextWithTitle
+                      title={t('general.expireDate')}
+                      body={convertISOTime(expireDate)}
+                    />
                   </Grid>
-                </Grid>
 
-                <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={1}>
-                    <Grid item xs={1} className={textLeft}>
-                      <FontAwesomeIcon
-                        icon={faExchangeAlt}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('general.offer')}
-                        leftText={`${offer1} ${t('general.to')} ${offer2}`}
-                      />
-                    </Grid>
+                  <Grid item xs={6}>
+                    <TextWithTitle
+                      title={t('general.inventory')}
+                      body={thousandsSeperator(count)}
+                      suffix="عدد"
+                    />
+
+                    <TextWithTitle
+                      title={t('general.offer')}
+                      body={`${offer1} ${t('general.to')} ${offer2}`}
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -138,6 +98,6 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
       </Paper>
     </Grid>
   );
-};
+});
 
 export default Detail;

@@ -17,11 +17,21 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+ 
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import Input from '../../../public/input/Input';
+import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import DataTable from '../../../public/datatable/DataTable';
 import Modal from '../../../public/modal/Modal';
-import { ActionInterface } from '../../../../interfaces';
+import { ActionInterface, LabelValue } from '../../../../interfaces';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import Category from '../../../../services/api/Category';
 import { useMutation, useQueryCache } from 'react-query';
@@ -62,10 +72,6 @@ const useClasses = makeStyles((theme) =>
     gridEditForm: {
       margin: theme.spacing(2, 0, 2),
     },
-    cancelButton: {
-      background: theme.palette.pinkLinearGradient.main,
-      marginLeft: theme.spacing(2),
-    },
     checkIcon: {
       color: theme.palette.success.main,
     },
@@ -99,6 +105,28 @@ const useClasses = makeStyles((theme) =>
       '& > .MuiCardContent-root': {
         padding: 0,
       },
+    },
+    label: {
+      display: 'flex',
+      alignItems: 'center',
+      margin: theme.spacing(1, 0),
+    },
+    formContent: {
+      overflow: 'hidden',
+      overflowY: 'auto',
+      display: 'flex',
+    },
+    cancelButton: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
     },
   })
 );
@@ -184,6 +212,8 @@ const CategoryList: React.FC = () => {
 
   const { saveCategory, removeCategory, getAllCategories } = new Category();
   const queryCache = useQueryCache();
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { t } = useTranslation();
 
@@ -292,86 +322,88 @@ const CategoryList: React.FC = () => {
     root,
     formContainer,
     addButton,
-    cancelButton,
+    label, formContent, cancelButton, submitBtn,
     formControl,
   } = useClasses();
+  const [TypeList, setTypeList] = useState(
+    new Array<LabelValue>()
+  );
 
+  React.useEffect(() => {
+    const elList: LabelValue[] = [];
+    
+        elList.push({
+          label: "پزشکی",
+          value: 1,
+        }, {
+          label: "آرایشی بهداشتی",
+          value: 2,
+        });
+    
+    setTypeList(elList);
+  }, []);
   const editModal = (): JSX.Element => {
     return (
-      <Modal open={isOpenEditModal} toggle={toggleIsOpenSaveModalForm}>
-        <Card className={root}>
-          <CardHeader
-            style={{ marginTop: -10 }}
-            title={(state.id === 0 ? 'ایجاد' : 'ویرایش') + ' دسته بندی'}
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={toggleIsOpenSaveModalForm}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <form
-              autoComplete="off"
-              onSubmit={submitSaveCategory}
-              className={formContainer}
-            >
-              <Grid container spacing={1}>
-                <Grid item xs={12} sm={8}>
-                  <TextField
-                    label="نام"
+      <Dialog
+        open={isOpenEditModal}
+        fullScreen={fullScreen}
+        onClose={toggleIsOpenSaveModalForm}
+      >
+        <DialogTitle className="text-sm">
+          {state?.id === 0 ? t('action.create') : t('action.edit')}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نام</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                  <Input
                     required
-                    size="small"
-                    variant="outlined"
-                    value={state.name}
+                    className="w-100"
+                   value={state.name}
                     onChange={(e): void =>
                       dispatch({ type: 'name', value: e.target.value })
                     }
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <FormControl
-                    variant="outlined"
-                    size="small"
-                    className={formControl}
-                  >
-                    <InputLabel>نوع</InputLabel>
-                    <Select
-                      onChange={(e): void =>
-                        dispatch({ type: 'type', value: e.target.value })
-                      }
-                      value={state.type}
-                    >
-                      <MenuItem value={1}>پزشکی</MenuItem>
-                      <MenuItem value={2}>آرایشی بهداشتی</MenuItem>
-                    </Select>
-                  </FormControl>
                 </Grid>
-                <Divider />
-                <Grid item xs={12}>
-                  <CardActions>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نوع</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                  <DaroogDropdown
+                      defaultValue={state.type}
+                      data={TypeList}
+                      className="w-100"                      
+                      onChangeHandler={(v): void => {
+                        return dispatch({ type: 'type', value: v });
+                      }}
+                    />
+                    
+                    </Grid>
+              </Grid>
+            </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={7} />
+              <Grid item xs={2} sm={2}>
+                   
                     <Button
                       type="submit"
-                      variant="contained"
-                      color="primary"
-                      className={addButton}
-                    >
-                      {loadingEditCategory || isLoadingNewCategory
-                        ? t('general.pleaseWait')
-                        : state.id > 0
-                        ? t('category.edit-category')
-                        : t('category.new-category')}
-                    </Button>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      className={cancelButton}
+                       className={cancelButton}
                       onClick={(): void => {
                         dispatch({ type: 'reset' });
                         toggleIsOpenSaveModalForm();
@@ -379,13 +411,25 @@ const CategoryList: React.FC = () => {
                     >
                       {t('general.cancel')}
                     </Button>
-                  </CardActions>
-                </Grid>
-              </Grid>
-            </form>
-          </CardContent>
-        </Card>
-      </Modal>
+                    </Grid>
+                   
+
+              <Grid item xs={4} sm={3}>
+              <Button
+                      type="submit"
+                       className={submitBtn}
+                    >
+                      {loadingEditCategory || isLoadingNewCategory
+                        ? t('general.pleaseWait')
+                        : state.id > 0
+                        ? t('general.submit')
+                        : t('category.new-category')}
+                    </Button>
+                    </Grid>
+            </Grid>
+          </Grid>
+        </DialogActions>
+      </Dialog>
     );
   };
   return (

@@ -15,11 +15,11 @@ import { useTranslation } from 'react-i18next';
 import DataTable from '../../../public/datatable/DataTable';
 import { MessageQueryEnum } from '../../../../enum/query';
 import { Convertor } from '../../../../utils';
-import { useMutation } from 'react-query';
+import { useMutation, useQueryCache } from 'react-query';
 import { Message } from '../../../../services/api';
 import { UrlAddress } from '../../../../enum/UrlAddress';
-
-const { convertISOTime } = Convertor;
+import { Modal } from 'components/public';
+import MessageForm from './MessageForm';
 
 const MessagesList: React.FC = () => {
   const [name, setName] = useState<string>('');
@@ -32,12 +32,17 @@ const MessagesList: React.FC = () => {
   const [isOpenModalOfMessage, setIsOpenModalOfMessage] = useState<boolean>(
     false
   );
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const { getAllMessages, readMessage } = new Message();
   const [_readMessage] = useMutation(readMessage);
   const { t } = useTranslation();
 
+  const queryCache = useQueryCache();
+
   const { convertISOTime } = Convertor;
+
+  const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
@@ -93,6 +98,13 @@ const MessagesList: React.FC = () => {
     await _readMessage(id);
   };
 
+  const addNewMessage = (): void => {
+    if (isOpenModal) {
+      queryCache.invalidateQueries(MessageQueryEnum.GET_ALL_MESSAGES);
+    }
+    toggleIsOpenModal();
+  };
+
   return (
     <FormContainer title={t('message.messagesList')}>
       <Grid container spacing={1}>
@@ -102,6 +114,7 @@ const MessagesList: React.FC = () => {
               queryKey={MessageQueryEnum.GET_ALL_MESSAGES}
               queryCallback={getAllMessages}
               urlAddress={UrlAddress.getAllMessage}
+              addAction={addNewMessage}
               columns={tableColumns()}
               onRowClick={(event: any, rowData: any): Promise<void> =>
                 onRowClickHandler(rowData)
@@ -110,6 +123,10 @@ const MessagesList: React.FC = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      <Modal open={isOpenModal} toggle={toggleIsOpenModal}>
+        <MessageForm onSubmit={addNewMessage} />
+      </Modal>
 
       <Dialog
         open={isOpenModalOfMessage}

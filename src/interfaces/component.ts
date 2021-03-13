@@ -187,6 +187,12 @@ export interface TextLinePropsInterface {
   textAlign?: string;
 }
 
+export interface TextWithTitlePropsInterface {
+  title: string | React.ReactNode;
+  body: string | React.ReactNode;
+  suffix?: string | React.ReactNode;
+}
+
 export interface BackDropPropsInterface {
   isOpen: boolean;
   onClick?: () => void;

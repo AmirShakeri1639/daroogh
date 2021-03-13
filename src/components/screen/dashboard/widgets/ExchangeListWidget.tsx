@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Exchange } from '../../../../services/api';
 import { Link } from 'react-router-dom';
 import routes from '../../../../routes';
-import { EncrDecrService } from '../../../../utils';
 import CircleLoading from '../../../public/loading/CircleLoading';
 
 const ExchangeListWidget: React.FC = () => {
@@ -25,8 +24,6 @@ const ExchangeListWidget: React.FC = () => {
     getData();
   }, []);
   
-  const encDecService = new EncrDecrService();
-
   return (
     <Paper className="widget-container">
       <Grid container>
@@ -38,11 +35,10 @@ const ExchangeListWidget: React.FC = () => {
             { isLoading && <CircleLoading /> }
             { listData && listData?.length > 0 &&
               listData?.map((i: any): any => {
-                const encryptedId = encDecService.encrypt(i.id);
-                const transferUrl = `${transfer}?eid=${encodeURIComponent(encryptedId)}`;
+                const transferUrl = `${transfer}?eid=${i.currentPharmacyIsA ? i.numberA : i.numberB}`;
                 return (
                   <Link to={transferUrl}>
-                  { i?.currentPharmacyIsA ? i?.numberA : i?.numberB }<br/>
+                    { i?.currentPharmacyIsA ? i?.numberA : i?.numberB }<br/>
                   </Link>
                 )
               })

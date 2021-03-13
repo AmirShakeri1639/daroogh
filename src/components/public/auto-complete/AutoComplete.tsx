@@ -49,38 +49,67 @@ const AutoComplete: React.FC<Props> = ({
       }
     };
 
-    window.addEventListener('keydown', escapeHandler);
+    document.addEventListener('keydown', escapeHandler);
     return (): void => {
-      window.removeEventListener('keydown', escapeHandler);
+      document.removeEventListener('keydown', escapeHandler);
     };
   }, []);
+
+  useEffect(() => {
+    const wrapperEl = document.getElementById('wrapper') as HTMLDivElement;
+    const dropdownEl =
+      (document.getElementById('div-list') as HTMLDivElement) ?? null;
+
+    const handler = (e: MouseEvent): void => {
+      const isClickIsideEl = wrapperEl.contains(e.target as any);
+      if (dropdownEl !== null) {
+        const isClickIsidedDropDown = dropdownEl?.contains(e.target as any);
+        if (!isClickIsideEl && !isClickIsidedDropDown) {
+          setShowOptionsList(false);
+        }
+      }
+    };
+
+    document.addEventListener('click', handler);
+
+    return (): void => {
+      document.removeEventListener('click', handler);
+    };
+  }, [showOptionsList]);
 
   const isInArray = (item: number): boolean => {
     return valuesArray.map((item) => item.value).indexOf(item) !== -1;
   };
 
   const optionItems = useCallback(() => {
-    return options?.map((option) => {
-      return (
-        <li
-          key={option.item.value}
-          value={option.item.value}
-          className={isInArray(option.item.value) ? style['active-item'] : ''}
-          onClick={(): void => {
-            if (multiple && indexOf(valuesArray, option.item) === -1) {
-              setValuesArray((v) => [...v, option.item]);
-              onItemSelected([...valuesArray, option.item]);
-            } else if (!multiple) {
-              onItemSelected([option.item]);
-              setInputValue(option.item.label);
-              setShowOptionsList(false);
-            }
-          }}
-        >
-          {option.el}
-        </li>
-      );
-    });
+    if (options) {
+      return options
+        .filter((_item: any) => indexOf(valuesArray, _item.item) === -1)
+        .map((option: any) => {
+          return (
+            <li
+              key={option.item.value}
+              value={option.item.value}
+              className={
+                isInArray(option.item.value) ? style['active-item'] : ''
+              }
+              onClick={(): void => {
+                if (multiple && indexOf(valuesArray, option.item) === -1) {
+                  setValuesArray((v) => [...v, option.item]);
+                  onItemSelected([...valuesArray, option.item]);
+                  setInputValue('');
+                } else if (!multiple) {
+                  onItemSelected([option.item]);
+                  setInputValue(option.item.label);
+                  setShowOptionsList(false);
+                }
+              }}
+            >
+              {option.el}
+            </li>
+          );
+        });
+    }
   }, [options, valuesArray]);
 
   const { t } = useTranslation();
@@ -100,7 +129,7 @@ const AutoComplete: React.FC<Props> = ({
   };
 
   return (
-    <div className={style['wrapper']}>
+    <div id="wrapper" className={style['wrapper']}>
       <div
         className={`${style['input-container']} ${
           options?.length === 0 || !showOptionsList ? style['itself-space'] : ''
@@ -147,7 +176,7 @@ const AutoComplete: React.FC<Props> = ({
       </div>
 
       {showOptionsList && (
-        <div className={style['div-list']}>
+        <div className={style['div-list']} id="div-list">
           {isLoading ? (
             <span className="text-muted">{loadingText}</span>
           ) : !isUndefined(options) && options.length > 0 ? (
