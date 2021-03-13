@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   AppBar,
   Box,
@@ -15,12 +15,20 @@ import SwipeableViews from 'react-swipeable-views';
 import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
-import './style.css';
+
 import ExchangeWidget from './widgets/ExchangeWidget';
 import SurveyWidget from './widgets/SurveyWidget';
 import PrescriptionWidget from './widgets/PrescriptionWidget';
 import EmpApplicationWidget from './widgets/EmpApplicationWidget';
 import { TabPanel } from '@material-ui/lab';
+// @ts-ignore
+// import { Steps, Hints } from 'intro.js-react';
+
+import 'intro.js/introjs.css';
+// import 'intro.js/themes/introjs-modern.css';
+import 'intro.js/introjs-rtl.css';
+import introJs from 'intro.js';
+import './style.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,6 +50,16 @@ const DashboardContent: React.FC<any> = () => {
   const theme = useTheme();
 
   const [value, setValue] = React.useState(0);
+  useEffect(() => {
+    // introJs()
+    //   .setOptions({
+    //     nextLabel: 'بعدی',
+    //     prevLabel: 'قبلی',
+    //     doneLabel: 'پایان',
+    //     hintButtonLabel: 'فهمیدم',
+    //   })
+    //   .start();
+  }, []);
 
   const handleChange = (event: any, newValue: any): void => {
     setValue(newValue);
@@ -57,47 +75,95 @@ const DashboardContent: React.FC<any> = () => {
         {/* Widgets */}
         <Grid item xs={12} container spacing={3}>
           <Grid item xs={12} sm={3}>
-            <ExchangeWidget />
+            <div
+              id="id1"
+              data-scrollTo="tooltip"
+              data-position="top"
+              data-title="خوش آمدید"
+              data-intro="مرحله اول"
+            >
+              <ExchangeWidget />
+            </div>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <SurveyWidget />
+            <div
+              id="id2"
+              data-scrollTo="tooltip"
+              data-position="top"
+              data-title="خوش آمدید"
+              data-intro="مرحله اول"
+            >
+              <SurveyWidget />
+            </div>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <PrescriptionWidget />
+            <div
+              id="id3"
+              data-scrollTo="tooltip"
+              data-position="top"
+              data-title="خوش آمدید"
+              data-intro="مرحله اول"
+            >
+              <PrescriptionWidget />
+            </div>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <EmpApplicationWidget />
+            <div
+              id="id4"
+              data-scrollTo="tooltip"
+              data-position="top"
+              data-title="خوش آمدید"
+              data-intro="مرحله اول"
+            >
+              <EmpApplicationWidget />
+            </div>
           </Grid>
         </Grid>
         {/* Chart */}
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <ExChangeChart></ExChangeChart>
-          </Paper>
+          <div
+            id="id5"
+            data-scrollTo="tooltip"
+            data-position="top"
+            data-title="خوش آمدید"
+            data-intro="مرحله پنج"
+          >
+            <Paper className={classes.paper}>
+              <ExChangeChart></ExChangeChart>
+            </Paper>
+          </div>
         </Grid>
         <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <AppBar position="static" color="default">
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="fullWidth"
-                aria-label="full width tabs example"
-              >
-                <Tab label="داروخانه های برتر روزانه " />
-                <Tab label="داروخانه های برتر شبانه روزی" />
-              </Tabs>
-            </AppBar>
-            <div style={{ marginTop: '5px' }}>
-              {value === 0 ? (
-                <BestPharmaciesList for24Hour={false}></BestPharmaciesList>
-              ) : (
-                <BestPharmaciesList for24Hour={true}></BestPharmaciesList>
-              )}
-            </div>
-          </Paper>
+          <div
+            id="id6"
+            data-scrollTo="tooltip"
+            data-position="top"
+            data-title="خوش آمدید"
+            data-intro="مرحله شش"
+          >
+            <Paper className={classes.paper}>
+              <AppBar position="static" color="default">
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  variant="fullWidth"
+                  aria-label="full width tabs example"
+                >
+                  <Tab label="داروخانه های برتر روزانه " />
+                  <Tab label="داروخانه های برتر شبانه روزی" />
+                </Tabs>
+              </AppBar>
+              <div style={{ marginTop: '5px' }}>
+                {value === 0 ? (
+                  <BestPharmaciesList for24Hour={false}></BestPharmaciesList>
+                ) : (
+                  <BestPharmaciesList for24Hour={true}></BestPharmaciesList>
+                )}
+              </div>
+            </Paper>
+          </div>
         </Grid>
 
         <Grid item xs={12}>
