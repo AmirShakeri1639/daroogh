@@ -1,122 +1,160 @@
 import {
-  Container,
+  AppBar,
+  Box,
   createStyles,
   Grid,
   makeStyles,
-  Paper,
+  Tab,
+  Tabs,
+  Typography,
 } from '@material-ui/core';
-import React, { useEffect } from 'react';
-import { CardContainer } from '../../../../public';
-import ToolBox from '../Toolbox';
-import ExCardContent from './ExCardContent';
+import React, { useContext } from 'react';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import Basket from './Basket';
+import Tab1 from './Tab1';
+import Tab2 from './Tab2';
+
+
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3} style={{ paddingRight: 0, paddingLeft: 0, marginLeft: -5 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+function a11yProps(index: any) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
 
 const useClasses = makeStyles((theme) =>
   createStyles({
     root: {
       flexGrow: 1,
+      backgroundColor: theme.palette.background.paper,
     },
-    paper: {
-      padding: theme.spacing(1),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
+    stickyTab: {
+      position: 'sticky',
+      marginLeft: '1px !important',
+      top: 70,
+      zIndex: 999,
+      backgroundColor: '#f3f3f3',
+      boxShadow: '0px 0px 3px 3px silver',
     },
   })
 );
 
 const Exchange: React.FC = () => {
-  const { root, paper } = useClasses();
-  const data: any[] = [
-    {
-      drugName: 'استامینوفن',
-      inventory: 100,
-      price: 10000,
-      expireDate: '2020/12/01',
-      offer: '1 به 3',
-      isPack: false,
-      packName: '',
-      totalPrice: 0,
-    },
-    {
-      drugName: 'سرماخوردگی',
-      inventory: 100,
-      price: 55000,
-      expireDate: '2020/08/01',
-      offer: '1 به 3',
-      isPack: true,
-      packInfo: { packName: 'قلب و عروق', totalPrice: 500000 },
-      collapsableContent: 'این بسته شامل',
-    },
-    {
-      drugName: 'کلداکس',
-      inventory: 100,
-      price: 50000,
-      expireDate: '2020/08/01',
-      offer: '1 به 3',
-      isPack: false,
-      packName: '',
-      totalPrice: 0,
-    },
-    {
-      drugName: '',
-      inventory: 0,
-      price: 0,
-      expireDate: '',
-      offer: '',
-      isPack: true,
-      packInfo: { packName: 'قلب و عروق', totalPrice: 500000 },
-      collapsableContent: 'این بسته شامل',
-    },
-    {
-      drugName: 'استامینوفن',
-      inventory: 100,
-      price: 10000,
-      expireDate: '2020/12/01',
-      offer: '1 به 3',
-      isPack: false,
-      packName: '',
-      totalPrice: 0,
-    },
-    {
-      drugName: 'کلداکس',
-      inventory: 100,
-      price: 50000,
-      expireDate: '2020/08/01',
-      offer: '1 به 3',
-      isPack: false,
-      packName: '',
-      totalPrice: 0,
-    },
-  ];
+  const { root, stickyTab } = useClasses();
+  const [value, setValue] = React.useState(0);
+
+  const {
+    basketCount,
+    setBasketCount,
+    uBasketCount,
+    setUbasketCount,
+    activeStep,
+    viewExhcnage,
+    exchangeId,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    setValue(newValue);
+  };
 
   return (
-    <Container maxWidth="lg">
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={12}>
-          <ToolBox />
-        </Grid>
-        {data.map((item: any, index: number) => (
-          <Grid item xs={12} sm={4} key={index}>
-            <div className={paper}>
-              {/* <CardContainer
-                basicDetail={
-                  <ExCardContent
-                    drugName={item.drugName}
-                    inventory={item.inventory}
-                    price={item.price}
-                    expireDate={item.expireDate}
-                    offer={item.offer}
-                    isPack={item.isPack}
-                    packInfo={item.packInfo}
-                  />
-                }
-                isPack={item.isPack}
-                collapsableContent={item.collapsableContent}
-              /> */}
-            </div>
-          </Grid>
-        ))}
+    <Grid container item spacing={1} xs={12} className={root}>
+      <span style={{ backgroundColor: 'rgb(234 234 234)', padding: 5, marginBottom: 2 }}>
+        ابتدا از تب انتخاب از داروخانه مقابل دارو یا پک های عرضه شده را بررسی و
+        برای تبادل انتخاب نمایید. سپس می توانید در تب پیشنهاد دارو از لیست عرضه
+        خود در صورت تمایل لیستی را انتخاب و برای این تبادل پیشنهاد نمایید.به
+        پیام هایی که در کادر سمت چپ نمایش داده می شود دقت فرمایید تا کنترل کامل
+        بر روند تبادل داشته باشید
+      </span>
+      <Grid item xs={12} sm={8} md={8}>
+        <AppBar position="static" color="default" style={{ paddingLeft: 5 }} className={stickyTab}>
+          <Tabs value={value} onChange={handleChange}>
+            <Tab
+              label={
+                <Basket
+                  label="انتخاب دارو از داروخانه مقابل"
+                  count={
+                    Array.from(
+                      basketCount.filter(
+                        (thing, i, arr) =>
+                          thing.packID &&
+                          arr.findIndex((t) => t.packID === thing.packID) === i
+                      )
+                    ).length +
+                    Array.from(
+                      basketCount.filter(
+                        (thing, i, arr) =>
+                          !thing.packID &&
+                          arr.findIndex((t) => t.drug.id === thing.drug.id) ===
+                            i
+                      )
+                    ).length
+                  }
+                />
+              }
+              {...a11yProps(0)}
+            />
+            <Tab
+              label={
+                <Basket
+                  label="انتخاب دارو از لیست عرضه شما"
+                  count={
+                    Array.from(
+                      uBasketCount.filter(
+                        (thing, i, arr) =>
+                          thing.packID &&
+                          arr.findIndex((t) => t.packID === thing.packID) === i
+                      )
+                    ).length +
+                    Array.from(
+                      uBasketCount.filter(
+                        (thing, i, arr) =>
+                          !thing.packID &&
+                          arr.findIndex((t) => t.drug.id === thing.drug.id) ===
+                            i
+                      )
+                    ).length
+                  }
+                />
+              }
+              {...a11yProps(1)}
+            />
+          </Tabs>
+        </AppBar>
+        <TabPanel value={value} index={0}>
+          <Tab1 />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Tab2 />
+        </TabPanel>
       </Grid>
-    </Container>
+    </Grid>
   );
 };
 

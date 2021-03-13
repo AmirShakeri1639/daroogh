@@ -3,7 +3,7 @@ import {default as mom} from 'jalali-moment';
 
 export default class Utils {
   static numberWithCommas = (x: any): string => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   static getDifferenceInDays = (date1: any, date2: any): number => {

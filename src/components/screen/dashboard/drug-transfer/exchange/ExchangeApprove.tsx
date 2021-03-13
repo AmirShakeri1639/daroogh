@@ -85,11 +85,11 @@ const useClasses = makeStyles((theme) =>
 
 interface ExchangeApprovePI {
   isModal?: boolean;
-  exchangeId?: string;
+  // exchangeId?: string;
 }
 
 const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
-  const { isModal = true, exchangeId = "" } = props;
+  const { isModal = true } = props;
   const {
     root,
     paper,
@@ -116,11 +116,16 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
   const [trackingNumber, setTrackingNumber] = useState<string>('');
   const [redirectUrl, setRedirectUrl] = useState<string>('');
   const [payment, setPayment] = useState<Payment>(new Payment());
-  const [paymentExchangeByBestankari, setPaymentExchangeByBestankari] = useState<PaymentExchangeByBestankari | undefined>(undefined)
+  const [
+    paymentExchangeByBestankari,
+    setPaymentExchangeByBestankari,
+  ] = useState<PaymentExchangeByBestankari | undefined>(undefined);
 
-  const { showApproveModalForm, setShowApproveModalForm } = useContext<
-    TransferDrugContextInterface
-  >(DrugTransferContext);
+  const {
+    showApproveModalForm,
+    setShowApproveModalForm,
+    exchangeId,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const toggleIsOpenModalForm = (): void =>
     setShowApproveModalForm(!showApproveModalForm);
@@ -154,7 +159,10 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
       if (result) {
         const response: GetAccountingForPaymentInterace = result.data;
         setPaymentExchangeByBestankari(response.paymentExchangeByBestankari);
-        if (response.paymentExchangeByBestankari && response.paymentExchangeByBestankari.isSuccess) {
+        if (
+          response.paymentExchangeByBestankari &&
+          !response.paymentExchangeByBestankari.isSuccess
+        ) {
           await sweetAlert({
             type: 'success',
             text: response.paymentExchangeByBestankari.message,
@@ -307,26 +315,26 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
               }}
             ></span>
           ) : (
-              <Checkbox
-                disabled={item.amount <= 0}
-                checked={item.isChecked}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
-                  item.isChecked = e.target.checked;
-                  let amount = 0;
-                  if (e.target.checked) {
-                    amount = totalAmount + item.amount;
-                    setTotoalAmount(amount);
-                    handleAccountingIds('add', item.id);
-                  } else {
-                    amount = totalAmount - item.amount;
-                    setTotoalAmount(amount);
-                    handleAccountingIds('remove', item.id);
-                  }
-                  if (amount > paymentAmount) setPaymentAmount(paymentAmount);
-                  else setPaymentAmount(amount);
-                }}
-              />
-            )}
+            <Checkbox
+              disabled={item.amount <= 0}
+              checked={item.isChecked}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
+                item.isChecked = e.target.checked;
+                let amount = 0;
+                if (e.target.checked) {
+                  amount = totalAmount + item.amount;
+                  setTotoalAmount(amount);
+                  handleAccountingIds('add', item.id);
+                } else {
+                  amount = totalAmount - item.amount;
+                  setTotoalAmount(amount);
+                  handleAccountingIds('remove', item.id);
+                }
+                if (amount > paymentAmount) setPaymentAmount(paymentAmount);
+                else setPaymentAmount(amount);
+              }}
+            />
+          )}
         </div>
       </Card>
     );
@@ -366,8 +374,8 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 </span>
               </span>
             ) : (
-                <span>هیچ داده ای وجود ندارد</span>
-              )}
+              <span>هیچ داده ای وجود ندارد</span>
+            )}
           </div>
           <hr />
           <Grid container spacing={1}>
@@ -412,14 +420,21 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
               </li>
               </ul>  */}
             </Grid>
-            <Grid container style={{ backgroundColor: '#8a88efc7', margin: 5, padding: 5 }}>
+            <Grid
+              container
+              style={{ backgroundColor: '#8a88efc7', margin: 5, padding: 5 }}
+            >
               <Grid item xs={6} xl={6} md={6}>
                 <span>مبلغ انتخابی: </span>
-                <span style={{ fontWeight: 'bold', color: 'green' }}>{Utils.numberWithCommas(totalAmount)}</span>
+                <span style={{ fontWeight: 'bold', color: 'green' }}>
+                  {Utils.numberWithCommas(totalAmount)}
+                </span>
               </Grid>
               <Grid item xs={6} xl={6} md={6} style={{ textAlign: 'left' }}>
                 <span>مبلغ قابل پرداخت: </span>
-                <span style={{ fontWeight: 'bold', color: 'red' }}>{Utils.numberWithCommas(mandeh)}</span>
+                <span style={{ fontWeight: 'bold', color: 'red' }}>
+                  {Utils.numberWithCommas(mandeh)}
+                </span>
               </Grid>
             </Grid>
             <Grid item xs={6} xl={6} md={6}>
@@ -437,22 +452,21 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
             </Grid>
           </Grid>
         </CardActions>
-      </Card >
+      </Card>
     );
   };
 
   return (
     <>
-      {((!exchangeId || exchangeId == "") &&
-        (!paymentExchangeByBestankari || !paymentExchangeByBestankari.isSuccess)) &&
-        isModal ? (
-          <Modal open={showApproveModalForm} toggle={toggleIsOpenModalForm}>
-            <Content />
-          </Modal>
-        ) : (
+      {paymentExchangeByBestankari && !paymentExchangeByBestankari.isSuccess ? (
+        <></>
+      ) : isModal && paymentExchangeByBestankari ? (
+        <Modal open={showApproveModalForm} toggle={toggleIsOpenModalForm}>
           <Content />
-        )
-      }
+        </Modal>
+      ) : (
+        <Content />
+      )}
     </>
   );
 };

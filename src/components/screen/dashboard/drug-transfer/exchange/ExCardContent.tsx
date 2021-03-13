@@ -196,6 +196,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const getExpireDate = (date: any): string => {
+    if (!date) return '';
     const faDate = moment(date, 'YYYY/MM/DD')
       .locale('fa')
       .format('YYYY/MM/DD');
@@ -268,12 +269,15 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
           <ul className={ulCardName}>
             <li style={{ fontWeight: 'bold', fontSize: 14 }}>
               <FontAwesomeIcon icon={faPills} size="1x" />
-              <span style={{ marginRight: 10 }}>{pharmacyDrug?.drug.name}</span>
+              <span style={{ marginRight: 10 }}>
+                {pharmacyDrug?.drug?.name}
+              </span>
             </li>
             <li>
               <span style={{ fontSize: 13 }}>
-                {pharmacyDrug?.drug.genericName}
-                {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
+                {pharmacyDrug?.drug?.genericName}
+                {pharmacyDrug?.drug?.enName &&
+                  `(${pharmacyDrug?.drug?.enName})`}
               </span>
             </li>
           </ul>

@@ -59,6 +59,10 @@ import { Rating } from '@material-ui/lab';
 import { SaveSurvey } from '../../../../../model/SaveSurvey';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
+//https://sweetalert2.github.io/
+// import Swal from 'sweetalert2'
+// import withReactContent from 'sweetalert2-react-content'
+// const MySwal = withReactContent(Swal);
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -154,9 +158,16 @@ const ActionButtons = (): JSX.Element => {
   const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(
     false
   );
-  const toggleIsOpenCancelExchangeModalForm = (type: string): void => {
+  const toggleIsOpenCancelExchangeModalForm = async (
+    type: string
+  ): Promise<void> => {
     setModalType(type);
-    setIsOpenCancelExchangeModal((v) => !v);
+    if (type !== 'approve') {
+      await handleConfirmOrNotExchange(false);
+      await handleGetQuestionGroupOfExchange();
+    } else {
+      setIsOpenCancelExchangeModal((v) => !v);
+    }
   };
 
   const [isRemoveExchangeModal, setIsRemoveExchangeModal] = useState(false);
@@ -179,7 +190,7 @@ const ActionButtons = (): JSX.Element => {
     send,
     getQuestionGroupOfExchange,
     saveSurvey,
-    getViewExchange
+    getViewExchange,
   } = new PharmacyDrug();
 
   const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
@@ -288,12 +299,20 @@ const ActionButtons = (): JSX.Element => {
     inputmodel.exchangeID = exchangeId;
     inputmodel.comment = comment;
     try {
-      await _cancelExchange(inputmodel);
-      await handleGetQuestionGroupOfExchange();
+
+      var res = await sweetAlert({
+        confirmButtonText: 'بله',
+        cancelButtonText: 'خیر',
+        showCancelButton: true,
+        type: 'info',
+        text: 'آیا اطمینان دارید؟',
+      });
+      if (res) await _cancelExchange(inputmodel);
+      // await handleGetQuestionGroupOfExchange();
     } catch (e) {
       errorHandler(e);
     }
-    toggleIsOpenCancelExchangeModalForm(modalType);
+    // toggleIsOpenCancelExchangeModalForm(modalType);
   };
 
   const handleRemoveExchange = async (): Promise<any> => {
@@ -309,7 +328,7 @@ const ActionButtons = (): JSX.Element => {
     const res = await pharmacyInfo(exchangeId);
     const response: PharmacyInfo = res.data;
     setPharmacyInfoState(response);
-  }
+  };
 
   const handlePharmacyInfo = async (): Promise<any> => {
     try {
@@ -331,7 +350,7 @@ const ActionButtons = (): JSX.Element => {
       if (viewExhcnage && viewExhcnage.state === 3) {
         setShowApproveModalForm(true);
       }
-      toggleIsOpenCancelExchangeModalForm(modalType);
+      if (isConfirm) toggleIsOpenCancelExchangeModalForm(modalType);
       if (isConfirm && res) {
         const viewExResult = await getViewExchange(exchangeId);
         const result: ViewExchangeInterface | undefined = viewExResult.data;
@@ -342,7 +361,6 @@ const ActionButtons = (): JSX.Element => {
       errorHandler(e);
       toggleIsOpenCancelExchangeModalForm(modalType);
     }
-
   };
 
   const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
@@ -478,10 +496,10 @@ const ActionButtons = (): JSX.Element => {
                         ]}
                       />
                     ) : (
-                        <span style={{ color: 'red' }}>
-                          مختصات جغرافیایی این داروخانه ثبت نشده است
-                        </span>
-                      )}
+                      <span style={{ color: 'red' }}>
+                        مختصات جغرافیایی این داروخانه ثبت نشده است
+                      </span>
+                    )}
                   </CardContent>
                 </Card>
               </Grid>
@@ -629,39 +647,45 @@ const ActionButtons = (): JSX.Element => {
         );
         break;
       case 5:
-        element = (<TextField
-          label="توضیحات"
-          required
-          style={{ width: '100%' }}
-          multiline={true}
-          rows={5}
-          size="small"
-          variant="outlined"
-          value={surveyInput.surveyAnswer.find(
-            (x) => x.questionID === question.id
-          )?.descriptiveAnswer}
-          onChange={(e): void => {
-            const i = input.surveyAnswer.findIndex(
-              (x) => x.questionID === question.id
-            );
-            if (i !== -1) {
-              input.surveyAnswer.splice(i, 1);
+        element = (
+          <TextField
+            label="توضیحات"
+            required
+            style={{ width: '100%' }}
+            multiline={true}
+            rows={5}
+            size="small"
+            variant="outlined"
+            value={
+              surveyInput.surveyAnswer.find((x) => x.questionID === question.id)
+                ?.descriptiveAnswer
             }
-            input.surveyAnswer.push({
-              questionID: question.id,
-              descriptiveAnswer: e.target.value,
-            });
-            setSurveyInput({ ...input });
-          }
-          }
-        />)
+            onChange={(e): void => {
+              const i = input.surveyAnswer.findIndex(
+                (x) => x.questionID === question.id
+              );
+              if (i !== -1) {
+                input.surveyAnswer.splice(i, 1);
+              }
+              input.surveyAnswer.push({
+                questionID: question.id,
+                descriptiveAnswer: e.target.value,
+              });
+              setSurveyInput({ ...input });
+            }}
+          />
+        );
       default:
         break;
     }
-    return <div style={{ height: 320, maxHeight: 320, width: 550, maxWidth: 550 }}>{element}</div>;
+    return (
+      <div style={{ height: 320, maxHeight: 320, width: 550, maxWidth: 550 }}>
+        {element}
+      </div>
+    );
   };
 
-  const survayModal = (): JSX.Element =>
+  const survayModal = (): JSX.Element => (
     <Dialog
       fullScreen={fullScreen}
       open={openSurvayModal}
@@ -669,10 +693,12 @@ const ActionButtons = (): JSX.Element => {
         setOpenSurvayModal(false);
       }}
     >
-      <DialogTitle style={{ borderBottom: '1px silver solid', textAlign: 'center' }}>
+      <DialogTitle
+        style={{ borderBottom: '1px silver solid', textAlign: 'center' }}
+      >
         {'ثبت نظر (نظرسنجی)'}
       </DialogTitle>
-      <DialogContent >
+      <DialogContent>
         {getQuestions && (
           <>
             <Paper square elevation={0} className={questionHeader}>
@@ -681,50 +707,51 @@ const ActionButtons = (): JSX.Element => {
               </Typography>
             </Paper>
             {syrveyQuestion(getQuestions.question[activeQuestionStep])}
-
           </>
         )}
       </DialogContent>
       <DialogActions>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-            {getQuestions && (<MobileStepper
-              steps={getQuestions.question.length}
-              position="static"
-              variant="text"
-              style={{ backgroundColor: '#f1f1f1' }}
-              activeStep={activeQuestionStep}
-              nextButton={
-                <MatButton
-                  size="small"
-                  onClick={handleNextQuestion}
-                  disabled={
-                    activeQuestionStep === getQuestions.question.length - 1
-                  }
-                >
-                  بعدی
+            {getQuestions && (
+              <MobileStepper
+                steps={getQuestions.question.length}
+                position="static"
+                variant="text"
+                style={{ backgroundColor: '#f1f1f1' }}
+                activeStep={activeQuestionStep}
+                nextButton={
+                  <MatButton
+                    size="small"
+                    onClick={handleNextQuestion}
+                    disabled={
+                      activeQuestionStep === getQuestions.question.length - 1
+                    }
+                  >
+                    بعدی
                     {theme.direction === 'rtl' ? (
-                    <KeyboardArrowLeft />
-                  ) : (
+                      <KeyboardArrowLeft />
+                    ) : (
                       <KeyboardArrowRight />
                     )}
-                </MatButton>
-              }
-              backButton={
-                <MatButton
-                  size="small"
-                  onClick={handleBackQuestion}
-                  disabled={activeQuestionStep === 0}
-                >
-                  {theme.direction === 'rtl' ? (
-                    <KeyboardArrowRight />
-                  ) : (
+                  </MatButton>
+                }
+                backButton={
+                  <MatButton
+                    size="small"
+                    onClick={handleBackQuestion}
+                    disabled={activeQuestionStep === 0}
+                  >
+                    {theme.direction === 'rtl' ? (
+                      <KeyboardArrowRight />
+                    ) : (
                       <KeyboardArrowLeft />
                     )}
                     قبلی
                   </MatButton>
-              }
-            />)}
+                }
+              />
+            )}
           </Grid>
         </Grid>
       </DialogActions>
@@ -739,7 +766,7 @@ const ActionButtons = (): JSX.Element => {
               }}
             >
               انصراف
-              </MatButton>
+            </MatButton>
           </Grid>
           <Grid item xs={6} style={{ textAlign: 'end' }}>
             <MatButton
@@ -750,11 +777,12 @@ const ActionButtons = (): JSX.Element => {
               }}
             >
               ذخیره
-              </MatButton>
+            </MatButton>
           </Grid>
         </Grid>
       </DialogActions>
     </Dialog>
+  );
 
   const exchangeModalApproveCancel = (type: string): JSX.Element => {
     return (
@@ -785,17 +813,17 @@ const ActionButtons = (): JSX.Element => {
                   <span>آیا از انجام تبادل اطمینان دارید؟</span>
                 </div>
               ) : (
-                  <div>
-                    <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
-                    <TextField
-                      style={{ width: '100%', marginTop: 10, fontSize: 10 }}
-                      label="توضیحات"
-                      multiline
-                      rows={5}
-                      variant="outlined"
-                    />
-                  </div>
-                )}
+                <div>
+                  <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
+                  <TextField
+                    style={{ width: '100%', marginTop: 10, fontSize: 10 }}
+                    label="توضیحات"
+                    multiline
+                    rows={5}
+                    variant="outlined"
+                  />
+                </div>
+              )}
             </Grid>
           </CardContent>
           <CardActions>
@@ -811,18 +839,18 @@ const ActionButtons = (): JSX.Element => {
                 تایید
               </MatButton>
             ) : (
-                <MatButton
-                  onClick={async (): Promise<any> => {
-                    await handleConfirmOrNotExchange(false);
-                    await handleGetQuestionGroupOfExchange()
-                  }}
-                  variant="contained"
-                  color="primary"
-                  autoFocus
-                >
-                  لغو تبادل
-                </MatButton>
-              )}
+              <MatButton
+                onClick={async (): Promise<any> => {
+                  await handleConfirmOrNotExchange(false);
+                  await handleGetQuestionGroupOfExchange();
+                }}
+                variant="contained"
+                color="primary"
+                autoFocus
+              >
+                لغو تبادل
+              </MatButton>
+            )}
           </CardActions>
         </Card>
       </Modal>
@@ -845,7 +873,7 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               color="red"
-              onClick={(): any => toggleIsOpenCancelExchangeModalForm('cancel')}
+              onClick={async (): Promise<any> => await handleCancelExchange()}
             >
               لغو درخواست
             </Button>
