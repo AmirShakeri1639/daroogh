@@ -7,9 +7,14 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Fab,
   Grid,
+  Hidden,
   makeStyles,
+  Paper,
   TextField,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
@@ -53,29 +58,22 @@ const useStyle = makeStyles((theme) =>
       display: 'none',
     },
     addButton: {
+      minHeight: 180,
       display: 'flex',
-
-      height: 80,
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '2px dashed #cecece',
-      borderRadius: 10,
       flexDirection: 'column',
-      '& button': {
-        height: 'inherit',
-        width: '100%',
-        display: 'flex',
-        color: '#707070',
-        background: 'transparent',
-        '& span:nth-child(2)': {
-          marginLeft: 8,
-        },
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
       },
     },
     modalContainer: {
       backgroundColor: '#fff',
       borderRadius: 5,
-      padding: theme.spacing(2, 3),
+      padding: theme.spacing(2, 2),
       width: 500,
     },
     buttonContainer: {
@@ -83,6 +81,15 @@ const useStyle = makeStyles((theme) =>
       '& button:nth-child(1)': {
         marginRight: theme.spacing(1),
       },
+    },
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
     },
   })
 );
@@ -132,7 +139,7 @@ const Prescription: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { addButton, modalContainer, buttonContainer, input } = useStyle();
+  const { addButton, modalContainer, buttonContainer, input, fab } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -196,7 +203,7 @@ const Prescription: React.FC = () => {
       return data.items.map((item: any) => {
         if (item !== null) {
           return (
-            <Grid key={item.id} item xs={12} sm={12} md={6} xl={4}>
+            <Grid key={item.id} item xs={12} sm={12} md={4} xl={4}>
               <CardContainer data={item} formHandler={removeHandler} />
             </Grid>
           );
@@ -225,141 +232,155 @@ const Prescription: React.FC = () => {
       }
     })();
   };
+  const theme = useTheme();
 
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <MaterialContainer>
-      <Grid container spacing={1}>
+      <Grid container spacing={3}>
         <Grid item xs={12}>
           <h3>{t('peopleSection.listPrescription')}</h3>
         </Grid>
-        <Grid item xs={12} sm={12} md={12} xl={12} className={addButton}>
-          <Button onClick={toggleIsOpenModal} variant="text">
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('peopleSection.addPrescription')}</span>
-          </Button>
-        </Grid>
+        <Hidden xsDown>
+          <Grid item xs={12} sm={12} md={4} xl={4}>
+            <Paper className={addButton} onClick={toggleIsOpenModal}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
+              <span>{t('peopleSection.addPrescription')}</span>
+            </Paper>
+          </Grid>
+        </Hidden>
+        <Hidden smUp>
+          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
 
         {contentGenerator()}
       </Grid>
       <Dialog
+        fullScreen={fullScreen}
+        fullWidth={true}
         open={isOpenModal}
         onClose={toggleIsOpenModal}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{'نسخه'}</DialogTitle>
-        <DialogContent>
-          <div className={modalContainer}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <TextField
-                  id="outlined-full-width"
-                  label="اسامی داروها یا توضیحات"
-                  style={{ margin: 8 }}
-                  fullWidth
-                  margin="normal"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  value={state.comment}
-                  onChange={(e): void => dispatch({ type: 'comment', value: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="outlined-select-currency-native"
-                  select
-                  fullWidth
-                  style={{ margin: 8 }}
-                  label="مدت اعتبار"
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.duration}
-                  onChange={(e): void => dispatch({ type: 'duration', value: e.target.value })}
-                >
-                  {durations.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="outlined-select-currency-native"
-                  select
-                  fullWidth
-                  style={{ margin: 8 }}
-                  label="استان"
-                  onChange={changeprovince}
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                  value={state.contryDivisionCode}
-                >
-                  {provinceList.map((option) => (
-                    <option key={option.code} value={option.code}>
-                      {option.name}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  id="outlined-select-currency-native"
-                  select
-                  fullWidth
-                  style={{ margin: 8 }}
-                  label="شهر"
-                  SelectProps={{
-                    native: true,
-                  }}
-                  variant="outlined"
-                >
-                  {cityList.map((option) => (
-                    <option key={option.code} value={option.code}>
-                      {option.name}
-                    </option>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid alignContent="center" item xs={12}>
-                <input
-                  accept="image/*"
-                  className={input}
-                  id="contained-button-file"
-                  multiple
-                  type="file"
-                  onChange={(e): void => {
-                    if (e.target.files) dispatch({ type: 'file', value: e.target.files[0] });
-                  }}
-                />
-                <label htmlFor="contained-button-file">
-                  <Button variant="contained" color="primary" component="span">
-                    تصویر نسخه
-                  </Button>
-                </label>
-              </Grid>
-
-              <Grid item xs={12} className={buttonContainer}>
-                <Button color="default" onClick={toggleIsOpenModal}>
-                  {t('general.cancel')}
-                </Button>
-                <Button color="primary" onClick={formHandler} disabled={isLoadingSaveData}>
-                  {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
-                </Button>
-              </Grid>
+        <DialogContent style={{ backgroundColor: '#FAFAFA', width: '100%' }}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-full-width"
+                label="اسامی داروها یا توضیحات"
+                style={{ margin: 8 }}
+                fullWidth
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                value={state.comment}
+                onChange={(e): void =>
+                  dispatch({ type: 'comment', value: e.target.value })
+                }
+              />
             </Grid>
-          </div>
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency-native"
+                select
+                fullWidth
+                style={{ margin: 8 }}
+                label="مدت اعتبار"
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.duration}
+                onChange={(e): void =>
+                  dispatch({ type: 'duration', value: e.target.value })
+                }
+              >
+                {durations.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency-native"
+                select
+                fullWidth
+                style={{ margin: 8 }}
+                label="استان"
+                onChange={changeprovince}
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+                value={state.contryDivisionCode}
+              >
+                {provinceList.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.name}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id="outlined-select-currency-native"
+                select
+                fullWidth
+                style={{ margin: 8 }}
+                label="شهر"
+                SelectProps={{
+                  native: true,
+                }}
+                variant="outlined"
+              >
+                {cityList.map((option) => (
+                  <option key={option.code} value={option.code}>
+                    {option.name}
+                  </option>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid alignContent="center" item xs={12}>
+              <input
+                accept="image/*"
+                className={input}
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={(e): void => {
+                  if (e.target.files)
+                    dispatch({ type: 'file', value: e.target.files[0] });
+                }}
+              />
+              <label htmlFor="contained-button-file">
+                <Button variant="contained" color="primary" component="span">
+                  تصویر نسخه
+                </Button>
+              </label>
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={toggleIsOpenModal} color="primary">
-            بستن
-          </Button>
+          <Grid item xs={12} className={buttonContainer}>
+            <Button color="default" onClick={toggleIsOpenModal}>
+              {t('general.cancel')}
+            </Button>
+            <Button
+              color="primary"
+              onClick={formHandler}
+              disabled={isLoadingSaveData}
+            >
+              {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
+            </Button>
+          </Grid>
         </DialogActions>
       </Dialog>
     </MaterialContainer>

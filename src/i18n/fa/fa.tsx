@@ -269,7 +269,7 @@ export default {
         close: 'بستن',
         id: 'شماره پیگیری',
         sendDate: 'تاریخ ارسال',
-        resumeDownload: 'دانلود تصویر رزمه',
+        resumeDownload: 'دانلود تصویر رزومه',
         name: 'نام',
         family: 'نام خانوادگی',
         birthDate: 'تاریخ تولد',
@@ -327,7 +327,8 @@ export default {
         waitingForYourConfirmation: 'تبادل‌های در انتظار',
       },
       favorite: {
-        addToDrugList: 'اضافه کردن به لیست دارو',
+        addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
+        addToCategoryList: 'اضافه کردن دسته بندی به لیست علاقه مندی'
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -458,7 +459,7 @@ export default {
         areYouSure: 'آیا از ثبت این تراکنش مطمئن هستید؟',
         creditor: 'بستانکار',
         debtor: 'بدهکار',
-        enterAmountInRial: 'مبلغ را به ریال وارد کنید.',
+        enterAmount: 'مبلغ را وارد کنید.',
       },
       countryDivision: {
         province: 'استان',
@@ -587,6 +588,7 @@ export default {
       survey: {
         survey: 'نظرسنجی',
         widget: 'ابزارک نظرسنجی',
+        participate: 'شرکت در نظرسنجی',
       },
       jobs: {
         jobs: 'فرصت های شغلی',
@@ -653,6 +655,11 @@ export default {
         MasterDegree: 'فوق لیسانس',
         DoctoralDegree: 'دکترا',
       },
+
+      fda: {
+        fda: 'سازمان غذا و دارو',
+        exchanges: 'تبادل‌ها',
+      }
     },
   },
 };

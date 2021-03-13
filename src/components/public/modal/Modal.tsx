@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import ReactModal from 'react-modal';
 import './style.css';
 
@@ -7,10 +7,11 @@ export interface ModalPropsInterface {
   toggle: () => void;
   className?: any;
   zIndex?: number;
+  style?: CSSProperties;
 }
 
 const Modal: React.FC<ModalPropsInterface> = (props) => {
-  const { open, toggle, children, className = '', zIndex } = props;
+  const { open, toggle, children, className = '', zIndex, style = {} } = props;
 
   const modalStyle = {
     content: {
@@ -21,9 +22,9 @@ const Modal: React.FC<ModalPropsInterface> = (props) => {
       marginRight: '-45%',
       transform: 'translate(-50%, -50%)',
       overFlow: 'scroll',
-
       padding: '0',
       borderRadius: '.9rem',
+      ...style,
     },
     overlay: {
       zIndex: zIndex ?? 1050,

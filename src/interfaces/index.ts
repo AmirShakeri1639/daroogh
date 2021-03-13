@@ -77,3 +77,4 @@ export type { JobInterface } from './JobInterface';
 export * from './component';
 export * from './general';
 export * from './comission';
+export * from './user';

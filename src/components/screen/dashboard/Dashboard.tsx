@@ -9,8 +9,8 @@ import { ChevronRight as ChevronRightIcon } from '@material-ui/icons';
 import Context from './Context';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
-import { 
-  errorHandler, JwtData, logoutUser 
+import {
+  errorHandler, JwtData, logoutUser,
 } from '../../../utils';
 import { ColorEnum } from '../../../enum';
 import { Alert } from '@material-ui/lab';
@@ -424,7 +424,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               <span style={ { fontSize: 14 } }>
                 { ' ' }
                 <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
-                <span style={ { fontSize: 10, marginRight: 2 } }>ریال</span>
+                <span style={ { fontSize: 10, marginRight: 2 } }>
+                  { t('general.defaultCurrency') }
+                </span>
                 { debtValueState > 0 && ' بدهکار' }
               </span>
             </div>

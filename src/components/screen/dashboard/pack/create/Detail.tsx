@@ -22,7 +22,7 @@ const useStyle = makeStyles((theme) =>
     },
     container: {
       padding: 5,
-      borderRadius: 15,
+      borderRadius: 5,
       '& .drug-name': {
         marginLeft: 10,
       },
@@ -77,7 +77,7 @@ const Detail: React.FC<DetailSupplyInterface> = (props) => {
                   <TextWithTitle
                     title={t('general.price')}
                     body={thousandsSeperator(amount)}
-                    suffix="تومان"
+                    suffix={ t('general.defaultCurrency') }
                   />
 
                   <TextWithTitle

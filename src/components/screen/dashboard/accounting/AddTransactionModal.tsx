@@ -157,13 +157,13 @@ const AddTransactionModal: React.FC<Props> = ({
                   label={t('accounting.amount')}
                   required
                   error={state.amount == 0 && showError}
-                  helperText={t('accounting.enterAmountInRial')}
+                  helperText={t('accounting.enterAmount')}
                   variant="outlined"
                   InputProps={{
                     inputComponent: NumberFormatCustom as any,
                     endAdornment: (
                       <InputAdornment position="start">
-                        {t('general.rial')}
+                        {t('general.defaultCurrency')}
                       </InputAdornment>
                     ),
                   }}

@@ -13,7 +13,7 @@ import {
   hasLabelValue,
   isStateCommon,
 } from '../../../../../utils/ExchangeTools';
-import { isNullOrEmpty, EncrDecrService } from '../../../../../utils';
+import { isNullOrEmpty } from '../../../../../utils';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../../../routes';
@@ -80,11 +80,10 @@ const Desktop: React.FC = () => {
     getExchanges();
   }, []);
 
-  const encDecService = new EncrDecrService();
-
-  const cardClickHandler = (id: number): void => {
-    const encryptedId = encDecService.encrypt(id);
-    history.push(`${transfer}?eid=${encodeURIComponent(encryptedId)}`);
+  const cardClickHandler = (
+    id: number, state: any, exNumber: string | undefined
+  ): void => {
+    history.push(`${transfer}?eid=${exNumber}`);
   };
 
   const sortSelected = (field: string, sortType: SortTypeEnum): void => {

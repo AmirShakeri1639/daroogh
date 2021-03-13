@@ -31,7 +31,7 @@ export const DaroogDropdown: React.FC<Props> = (props) => {
   }, [defaultValue]);
 
   return (
-    <FormControl>
+    <FormControl className={className}>
       <InputLabel className="daroog-dropdown-label">{label}</InputLabel>
       <Select
         error={ error }

@@ -12,8 +12,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentDots } from '@fortawesome/free-solid-svg-icons';
 import { Convertor } from '../../../../utils';
 import { useQueryCache } from 'react-query';
-import { Message } from '../../../../services/api';
+import { Message as MessageApi } from '../../../../services/api';
 import { MessageQueryEnum } from '../../../../enum';
+import { has, isEmpty, isUndefined } from 'lodash';
+import { useHistory } from 'react-router';
+import { Message } from 'interfaces';
+import routes from 'routes';
 
 interface NotificationMenuProps {
   messages: any[];
@@ -43,15 +47,18 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
+const { transfer } = routes;
+
 const { convertISOTime } = Convertor;
-const { readMultiMessage } = new Message();
+const { readMultiMessage } = new MessageApi();
 
 const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
   const { notifEl, setNotifEl } = useContext(Context);
-
+  console.log(messages);
   const { subject, menu, menuItem, message: _message, date } = useStyle();
 
   const queryCache = useQueryCache();
+  const { push } = useHistory();
 
   const readMessages = async (): Promise<any> => {
     const messagesApiCalls = [];
@@ -71,12 +78,29 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
     }
   };
 
+  const menuClickHandler = (message: Message): void => {
+    const isExchangeUrl = message.url?.includes('eid');
+    if (
+      has(message, 'url') &&
+      !isEmpty(message.url) &&
+      !isUndefined(message.url)
+    ) {
+      if (isExchangeUrl) {
+        const [eid] = message.url.match(/eid=\w+/g) ?? [];
+        push(`${transfer}?${eid}`);
+      }
+    }
+  };
+
   const itemsGenerator = (): JSX.Element[] | JSX.Element => {
     if (messages !== undefined && messages.length > 0) {
       return messages.map((message, index) => {
         return (
           <Fragment key={message.id}>
-            <MenuItem className={`${menu} txt-sm`} onClick={(): null => null}>
+            <MenuItem
+              className={`${menu} txt-sm`}
+              onClick={(): void => menuClickHandler(message)}
+            >
               <ListItemIcon className={menuItem}>
                 <div>
                   <FontAwesomeIcon icon={faCommentDots} size="lg" />

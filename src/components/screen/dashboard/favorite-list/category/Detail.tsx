@@ -4,11 +4,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { DrugCategoryInterface } from '../../../../../interfaces/DrugInterface';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
-      backgroundColor: '#E4E4E4',
+      backgroundColor: '#fff',
     },
     container: {
       padding: 5,
@@ -18,123 +19,54 @@ const useStyle = makeStyles((theme) =>
       },
       '& .drug-container': {
         padding: '0 6px',
+        borderLeft: '3px solid #f80501',
+        height: '40px',
+        backgroundColor: '#FEFFF2',
+        paddingTop: '8px',
         marginBottom: theme.spacing(1),
       },
     },
-    textCenter: {
-      textAlign: 'center',
+    textLeft: {
+      textAlign: 'right',
     },
     icon: {
       color: '#313235',
     },
+
   })
 );
 
 const Detail: React.FC<DrugCategoryInterface> = (props) => {
   const { name } = props;
-  const { paper, container, textCenter, icon } = useStyle();
+  const { paper, container } = useStyle();
 
   const { t } = useTranslation();
 
   return (
-    <Grid item xs={12}>
-      <Paper className={paper}>
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <div className={container}>
-              <Grid container spacing={0}>
-                <Grid item xs={12}>
-                  <Grid container spacing={0} alignItems="flex-end">
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faLayerGroup}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      {`${t('drug.category')}: ${name}`}
-                    </Grid>
-                  </Grid>
+    <Grid item xs={12} spacing={0}>
+    <Paper className={paper} elevation={0}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <div className={container}>
+            <Grid container spacing={0}>
+              <Grid container xs={12} className="drug-container">
+                <Grid container xs={1}>
+                  <img src="drug.png" style={{ height: '25px' }} />
                 </Grid>
-
-                {/* <Grid item xs={12}>
-                  <Grid container spacing={0} alignItems="flex-end">
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('drug.category')}
-                        leftText={name || t('general.undefined')}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid> */}
-
-                {/* <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={0}>
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faBoxes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('drug.latinName')}
-                        leftText={enName || t('general.undefined')}
-                      />
-                    </Grid>
-                  </Grid>
+                <Grid
+                  container
+                  xs={11}
+                  style={{ alignItems: 'center', paddingRight: '8px' }}
+                >
+                  <TextWithTitle title={t('drug.category')} body={name}/>
                 </Grid>
-
-                <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={0}>
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faMoneyBillWave}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('drug.companyName')}
-                        leftText={companyName || t('general.undefined')}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Grid alignItems="flex-end" container spacing={0}>
-                    <Grid item xs={1} className={textCenter}>
-                      <FontAwesomeIcon
-                        icon={faCalendarTimes}
-                        size="sm"
-                        className={icon}
-                      />
-                    </Grid>
-                    <Grid item xs={11}>
-                      <TextLine
-                        rightText={t('drug.genericName')}
-                        leftText={genericName || t('general.undefined')}
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid> */}
               </Grid>
-            </div>
-          </Grid>
+            </Grid>
+          </div>
         </Grid>
-      </Paper>
-    </Grid>
+      </Grid>
+    </Paper>
+  </Grid>
   );
 };
 
