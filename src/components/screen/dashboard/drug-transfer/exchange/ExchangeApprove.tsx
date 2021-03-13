@@ -163,7 +163,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
         setPaymentExchangeByBestankari(response.paymentExchangeByBestankari);
         if (
           response.paymentExchangeByBestankari &&
-          !response.paymentExchangeByBestankari.isSuccess
+          response.paymentExchangeByBestankari.isSuccess
         ) {
           await sweetAlert({
             type: 'success',
@@ -460,7 +460,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
   return (
     <>
-      {paymentExchangeByBestankari && !paymentExchangeByBestankari.isSuccess ? (
+      {paymentExchangeByBestankari && paymentExchangeByBestankari.isSuccess ? (
         <></>
       ) : isModal && paymentExchangeByBestankari ? (
         <Modal open={showApproveModalForm} toggle={toggleIsOpenModalForm}>
