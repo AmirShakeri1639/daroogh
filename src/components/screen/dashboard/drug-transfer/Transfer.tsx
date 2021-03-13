@@ -401,7 +401,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               </div>
             ) : (
               <>
-                {/* {activeStep > 0 && (
+                {activeStep > 0 && (
                     <>
                       <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
                         <ProgressBar />
@@ -412,10 +412,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                   {activeStep === 0 && <FirstStep />}
                   {activeStep === 1 && <SecondStep />}
                   {activeStep === 2 && <ThirdStep />}
-                  {activeStep === 3 && <FourthStep />} */}
+                  {activeStep === 3 && <FourthStep />}
 
                  
-                {activeStep === 0 ? <FirstStep /> : <Exchange />}
+                {/* {activeStep === 0 ? <FirstStep /> : <Exchange />} */}
               </>
             )}
           </Grid>

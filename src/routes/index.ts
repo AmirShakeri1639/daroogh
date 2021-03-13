@@ -31,6 +31,7 @@ export default {
   dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,
   transfer: `/${dashboard}/${exchange}/transfer`,
+  survey: `/${dashboard}/${exchange}/survey`,
   supplyList: `/${dashboard}/${exchange}/supply-list`,
 
   transactions: `/${dashboard}/${finance}/transactions`,

@@ -120,7 +120,7 @@ const style = makeStyles((theme) =>
 
 const ActionButtons = (): JSX.Element => {
   const { t } = useTranslation();
-  const { desktop } = routes;
+  const { desktop, survey } = routes;
   const history = useHistory();
   const {
     cancelButton,
@@ -164,7 +164,7 @@ const ActionButtons = (): JSX.Element => {
     setModalType(type);
     if (type !== 'approve') {
       await handleConfirmOrNotExchange(false);
-      await handleGetQuestionGroupOfExchange();
+      handleGetQuestionGroupOfExchange();
     } else {
       setIsOpenCancelExchangeModal((v) => !v);
     }
@@ -282,16 +282,18 @@ const ActionButtons = (): JSX.Element => {
     setOpenSurvayModal(false);
   };
 
-  const handleGetQuestionGroupOfExchange = async (): Promise<any> => {
-    try {
-      const res = await getQuestionGroupOfExchange(exchangeId); // for Test = 10180
-      const response: GetQuestionGroupOfExchangeInterface = res.data.data;
-      setQuestions(response);
-      serQuestionGroupId(response.question[0].questionGroupID);
-      setOpenSurvayModal(true);
-    } catch (error) {
-      errorHandler(error);
-    }
+  const handleGetQuestionGroupOfExchange = (): void => {
+    // try {
+    //   const res = await getQuestionGroupOfExchange(exchangeId); // for Test = 10180
+    //   const response: GetQuestionGroupOfExchangeInterface = res.data.data;
+    //   setQuestions(response);
+    //   serQuestionGroupId(response.question[0].questionGroupID);
+    //   setOpenSurvayModal(true);
+    // } catch (error) {
+    //   errorHandler(error);
+    // }
+    console.log('path', `${survey}?exchangeId=${exchangeId}`)
+    // history.push(`${survey}?exchangeId=${exchangeId}`);
   };
 
   const handleCancelExchange = async (): Promise<any> => {
@@ -299,7 +301,6 @@ const ActionButtons = (): JSX.Element => {
     inputmodel.exchangeID = exchangeId;
     inputmodel.comment = comment;
     try {
-
       var res = await sweetAlert({
         confirmButtonText: 'بله',
         cancelButtonText: 'خیر',
@@ -842,7 +843,7 @@ const ActionButtons = (): JSX.Element => {
               <MatButton
                 onClick={async (): Promise<any> => {
                   await handleConfirmOrNotExchange(false);
-                  await handleGetQuestionGroupOfExchange();
+                  handleGetQuestionGroupOfExchange();
                 }}
                 variant="contained"
                 color="primary"
@@ -1120,3 +1121,15 @@ const ActionButtons = (): JSX.Element => {
 };
 
 export default ActionButtons;
+function // try {
+//   const res = await getQuestionGroupOfExchange(exchangeId); // for Test = 10180
+//   const response: GetQuestionGroupOfExchangeInterface = res.data.data;
+//   setQuestions(response);
+//   serQuestionGroupId(response.question[0].questionGroupID);
+//   setOpenSurvayModal(true);
+// } catch (error) {
+//   errorHandler(error);
+// }
+push(arg0: string) {
+  throw new Error('Function not implemented.');
+}

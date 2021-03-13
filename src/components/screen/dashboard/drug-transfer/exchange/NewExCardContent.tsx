@@ -291,6 +291,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   const [message, setMessage] = useState<string>('');
 
   const [isLoading, setIsLoading] = React.useState(false);
+  const [totalAmount, setTotalAmount] = React.useState('');
 
   const snackBarHandleClick = (): any => {
     setOpen(true);
@@ -769,7 +770,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const counterHandle = (e: string): void => {
-    if (pharmacyDrug)
+    if (pharmacyDrug) {
       switch (e) {
         case '+':
           if (pharmacyDrug.cnt > pharmacyDrug.currentCnt) {
@@ -790,6 +791,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
         default:
           break;
       }
+      handleTotalAmount();
+    }
   };
 
   const counterButtonFunc = (): JSX.Element => {
@@ -812,6 +815,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           defaultValue={pharmacyDrug.currentCnt}
           onChange={(e): void => {
             pharmacyDrug.currentCnt = +e.target.value;
+            handleTotalAmount();
           }}
         >
           {pharmacyDrug.currentCnt}
@@ -835,10 +839,10 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     );
   };
 
-  const totalAmount = (): string => {
+  const handleTotalAmount = () => {
     let val = 0;
     if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
-    return Utils.numberWithCommas(val);
+    setTotalAmount(Utils.numberWithCommas(val));
   };
 
   const GreenCheckbox = withStyles({
@@ -923,7 +927,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                   <span
                     style={{ fontSize: 17, fontWeight: 'bold', color: 'green' }}
                   >
-                    {totalAmount()}
+                    {handleTotalAmount()}
+                    {totalAmount}
                     <span style={{ fontSize: 12, marginRight: 5 }}>تومان</span>
                   </span>
                 </li>
