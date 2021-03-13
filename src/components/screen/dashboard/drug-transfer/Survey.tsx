@@ -100,8 +100,8 @@ const Survey: React.FC = () => {
     setActiveQuestionStep((prevActiveStep) => prevActiveStep - 1);
   };
   const [getQuestions, setQuestions] = useState<
-    GetQuestionGroupOfExchangeInterface
-  >();
+    GetQuestionGroupOfExchangeInterface | undefined
+  >(undefined);
 
   const [questionGroupId, serQuestionGroupId] = useState<number>(0);
 
@@ -119,7 +119,7 @@ const Survey: React.FC = () => {
     (async (): Promise<void> => {
       await handleGetQuestionGroupOfExchange(xId);
     })();
-  }, [params]);
+  }, []);
 
   const { saveSurvey, getQuestionGroupOfExchange } = new PharmacyDrug();
 
@@ -282,6 +282,7 @@ const Survey: React.FC = () => {
     <Dialog
       fullScreen={fullScreen}
       open={openSurvayModal}
+      closeAfterTransition={true}
       onClose={() => {
         setOpenSurvayModal(false);
       }}
@@ -356,6 +357,7 @@ const Survey: React.FC = () => {
               color="secondary"
               onClick={() => {
                 setOpenSurvayModal(false);
+                // history.push(desktop);
               }}
             >
               انصراف
@@ -377,7 +379,7 @@ const Survey: React.FC = () => {
     </Dialog>
   );
 
-  return <>{survayModal()}</>;
+  return <>{openSurvayModal && getQuestions ? survayModal() : <></>}</>;
 };
 
 export default Survey;

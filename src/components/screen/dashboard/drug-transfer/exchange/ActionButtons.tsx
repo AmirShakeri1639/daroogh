@@ -293,7 +293,7 @@ const ActionButtons = (): JSX.Element => {
     //   errorHandler(error);
     // }
     console.log('path', `${survey}?exchangeId=${exchangeId}`)
-    // history.push(`${survey}?exchangeId=${exchangeId}`);
+    history.push(`${survey}?exchangeId=${exchangeId}`);
   };
 
   const handleCancelExchange = async (): Promise<any> => {
@@ -1109,7 +1109,7 @@ const ActionButtons = (): JSX.Element => {
       {showApproveModalForm && <ExchangeApprove />}
       {isShowPharmacyInfoModal && <ShowPharmacyInfo />}
       {openApproveModal && <ShowApproveModal />}
-      {openSurvayModal && survayModal()}
+      {/* {openSurvayModal && survayModal()} */}
     </>
   );
 
