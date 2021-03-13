@@ -178,7 +178,7 @@ const Category: React.FC = () => {
           const { category } = item;
           if (category !== null) {
             return (
-              <Grid key={category.id} item xs={12} sm={6} md={4} xl={3}>
+              <Grid key={category.id} item xs={12} sm={6} md={4} xl={4}>
                 <CardContainer data={category} formHandler={formHandler} />
               </Grid>
             );
@@ -231,7 +231,7 @@ const Category: React.FC = () => {
           <span>لیست دسته بندی های دارویی موردعلاقه</span>
         </Grid>
         <Hidden xsDown>
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
+        <Grid item xs={12} sm={6} md={4} xl={4} className={addButton}>
           <Button onClick={toggleIsOpenModal} variant="text">
             <FontAwesomeIcon icon={faPlus} />
             <span>{t('favorite.addToDrugList')}</span>

@@ -180,7 +180,7 @@ const DrugTab: React.FC = () => {
         const { drug } = item;
         if (drug !== null) {
           return (
-            <Grid key={drug.id} item xs={12} sm={6} md={4} xl={3}>
+            <Grid key={drug.id} item xs={12} sm={6} md={4} xl={4}>
               <CardContainer data={drug} formHandler={formHandler} />
             </Grid>
           );
@@ -200,7 +200,7 @@ const DrugTab: React.FC = () => {
           <span>لیست علاقه مندی ها</span>
         </Grid>
         <Hidden xsDown>
-        <Grid item xs={12} sm={6} md={4} xl={3} className={addButton}>
+        <Grid item xs={12} sm={6} md={4} xl={4} className={addButton}>
           <Button onClick={toggleIsOpenModal} variant="text">
             <FontAwesomeIcon icon={faPlus} />
             <span>{t('favorite.addToDrugList')}</span>
