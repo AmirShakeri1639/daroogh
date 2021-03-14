@@ -118,6 +118,7 @@ export default {
         category: 'دسته بندی پک',
         addDrug: 'اضافه کردن دارو',
         submitMyPacks: 'ثبت پک های من',
+        submitPacks:'ثبت پک '
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -197,7 +198,7 @@ export default {
         'create-new-role': 'ایجاد نقش جدید',
         'edit-role': 'ویرایش نقش',
         'cancel-edit-eole': 'انصراف ویرایش نقش',
-        'users-list': 'لیست کاربران',
+        'users-list': 'لیست کارمندان',
         'create-user': 'ایجاد کاربر',
         'disable-user': 'غیرفعال کردن حساب کاربر',
         'enable-user': 'فعال کردن حساب کاربر',
@@ -314,6 +315,7 @@ export default {
         totalPrice: 'مجموع قیمت',
         basketTotalPrice: 'مجموع قیمت سبد',
         myProducts: 'محصولات من',
+        products:'محصولات',
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
@@ -659,7 +661,7 @@ export default {
 
       fda: {
         fda: 'سازمان غذا و دارو',
-        exchanges: 'تبادل‌ها',
+        exchanges: 'تبادلات',
       }
     },
   },
