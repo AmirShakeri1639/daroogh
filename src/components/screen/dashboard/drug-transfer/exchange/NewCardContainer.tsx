@@ -283,7 +283,7 @@ const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
           <>
             {expanded ? (
               <span style={{ fontSize: 10, color: 'blue' }}>
-                مخفی کردن اقلام این پک
+                بستن
               </span>
             ) : (
               <span style={{ fontSize: 10, color: 'green' }}>

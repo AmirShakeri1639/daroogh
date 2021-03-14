@@ -8,8 +8,7 @@ import { makeStyles, Typography } from "@material-ui/core";
 const StyledBadge = withStyles((theme: Theme) =>
   createStyles({
     badge: {
-      right: -3,
-      top: 13,
+      right: -10,
       border: `2px solid ${theme.palette.background.paper}`,
       padding: "0 4px"
     }
@@ -18,7 +17,7 @@ const StyledBadge = withStyles((theme: Theme) =>
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
-    height: "90%",
+    height: "100%",
     display: "flex",
     alignitems: "center",
     justifyContent: "center",
@@ -27,11 +26,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     float: "left",
     margin: "auto",
     paddingLeft: "4px",
-    display: "inline-block"
+    display: "inline-block",
+    color:'#1d0d50'
   },
   icons: {
     marginTop: 0,
-    color: 'red',
+    color: 'green',
   },
 }));
 
@@ -50,8 +50,7 @@ const Basket: React.FC<Props> = (props) => {
         {label}
       </Typography>
       <IconButton className={classes.division} aria-label="cart">
-        <StyledBadge badgeContent={count} color="secondary">
-          <ShoppingBasketIcon className={classes.icons} />
+        <StyledBadge badgeContent={count} color="primary">
         </StyledBadge>
       </IconButton>
 

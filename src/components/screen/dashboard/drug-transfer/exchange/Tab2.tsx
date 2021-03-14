@@ -43,8 +43,6 @@ const style = makeStyles((theme) =>
       marginLeft: '1px !important',
       top: 140,
       zIndex: 999,
-      backgroundColor: '#f3f3f3',
-      boxShadow: '0px 0px 3px 3px silver',
     },
     stickyRecommendation: {
       position: 'sticky',
@@ -317,8 +315,8 @@ const Tab2: React.FC = () => {
       <Grid item xs={12}>
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={12}>
-            <Grid container item spacing={1} xs={12} className={stickyToolbox}>
-              <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
+            <Grid container className={stickyToolbox}>
+              <Grid item xs={12} style={{ padding: 0 }}>
                 <SearchInAList />
               </Grid>
             </Grid>
@@ -327,7 +325,8 @@ const Tab2: React.FC = () => {
                 !viewExhcnage.lockSuggestion &&
                 (viewExhcnage.state === 1 ||
                   viewExhcnage.state === 2 ||
-                  viewExhcnage.state === 12))) && (
+                  viewExhcnage.state === 12))) &&  (
+
                 <Grid
                   item
                   xs={12}
@@ -338,6 +337,7 @@ const Tab2: React.FC = () => {
                     control={
                       <Switch
                         checked={isSelected}
+                      
                         onChange={handleChange}
                         name="checkedB"
                         color="primary"
