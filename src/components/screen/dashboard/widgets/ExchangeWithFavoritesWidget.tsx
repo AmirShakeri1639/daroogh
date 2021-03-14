@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Exchange } from 'services/api';
+import { PharmacyDrug } from 'services/api';
 import { StatsWidget } from '../../../public';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandshake } from '@fortawesome/free-solid-svg-icons';
@@ -10,16 +10,16 @@ import routes from 'routes';
 function ExchangeWithFavoritesWidget() {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
-  const { desktop } = routes;
-  const toUrl = `${desktop}`
+  const { transferWithFavorites } = routes;
+  const toUrl = `${transferWithFavorites}`
 
   useEffect(() => {
     // TODO: change API to just count exchanges with favorites
-    const { getForWidget } = new Exchange();
+    const { getFavoritePharmacyDrugCount } = new PharmacyDrug();
     async function getCount(): Promise<any> {
-      const result = await getForWidget();
-      setCount(result.items.length);
-      return result.items.length;
+      const result = await getFavoritePharmacyDrugCount();
+      setCount(result);
+      return result;
     }
 
     getCount();
