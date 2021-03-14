@@ -30,6 +30,9 @@ const Desktop1 = lazy(
 const Transfer = lazy(
   () => import('./components/screen/dashboard/drug-transfer/Transfer')
 );
+const Survey = lazy(
+  () => import('./components/screen/dashboard/drug-transfer/Survey')
+);
 const SupplyList = lazy(
   () => import('./components/screen/dashboard/supply-list/SupplyList')
 );
@@ -203,6 +206,7 @@ const {
   jobsList,
   pharmacyMessage,
   fda_exchangeList,
+  survey
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -274,6 +278,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute path={transfer}>
               <Dashboard component={<Transfer />} />
+            </PrivateRoute>
+            <PrivateRoute path={survey}>
+              <Dashboard component={<Survey />} />
             </PrivateRoute>
             <PrivateRoute path={supplyList}>
               <Dashboard component={<SupplyList />} />
