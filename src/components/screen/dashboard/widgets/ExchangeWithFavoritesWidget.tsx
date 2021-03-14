@@ -3,20 +3,21 @@ import { useTranslation } from 'react-i18next'
 import { Exchange } from 'services/api';
 import { StatsWidget } from '../../../public';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPoll } from '@fortawesome/free-solid-svg-icons';
-import { ColorEnum, NeedSurvey } from 'enum';
+import { faHandshake } from '@fortawesome/free-solid-svg-icons';
+import { ColorEnum } from 'enum';
 import routes from 'routes';
 
-function SurveyWidget() {
+function ExchangeWithFavoritesWidget() {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
   const { desktop } = routes;
-  const toUrl = `${desktop}?state=${NeedSurvey}`
+  const toUrl = `${desktop}`
 
   useEffect(() => {
-    const { needSurvey } = new Exchange();
+    // TODO: change API to just count exchanges with favorites
+    const { getForWidget } = new Exchange();
     async function getCount(): Promise<any> {
-      const result = await needSurvey();
+      const result = await getForWidget();
       setCount(result.items.length);
       return result.items.length;
     }
@@ -27,15 +28,16 @@ function SurveyWidget() {
   return (
     <div>
       <StatsWidget
-        title={ t('survey.survey') }
+        title={ t('exchange.exchangesWithFavorites') }
         value={ count }
-        icon={ <FontAwesomeIcon icon={ faPoll } size="4x" /> }
-        backColor={ ColorEnum.Blue }
+        icon={ <FontAwesomeIcon icon={ faHandshake } size="4x" /> }
+        backColor={ ColorEnum.Maroon }
         color="white"
+        titleFontSize="1em"
         to={ toUrl }
       />
     </div>
   )
 }
 
-export default SurveyWidget
+export default ExchangeWithFavoritesWidget

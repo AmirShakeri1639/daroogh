@@ -6,6 +6,7 @@ class Exchange extends Api {
   readonly urls = {
     pharmacyInfo: '/Exchange/GetExchangePharmacyInfo?exchangeID=',
     dashboard: '/Exchange/Dashboard',
+    needSurvey: '/Exchange/Dashboard?$filter=needSurvey eq true',
     allExchange: '/Exchange/AllExchange',
     // state 3 = CONFIRMB_AND_WAITFORA
     // state 2 = WAITFORB (12 for B)
@@ -37,6 +38,11 @@ class Exchange extends Api {
 
   getForWidget = async (): Promise<any> => {
     const result = await this.postJsonData(this.urls.getForWidget);
+    return result.data;
+  }
+
+  needSurvey = async (): Promise<any> => {
+    const result = await this.postJsonData(this.urls.needSurvey);
     return result.data;
   }
 
