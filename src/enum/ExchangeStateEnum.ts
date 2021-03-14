@@ -51,3 +51,5 @@ export enum CancellerEnum {
   BYSUPPORUSER = 3,
   PHARMACYA_AFTERSEND = 4
 }
+
+export const NeedSurvey = 1000;

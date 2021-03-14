@@ -17,7 +17,7 @@ const useLocalStorage = (item: string, value?: Value): string | null => {
     } else if (localStorage.getItem(item) !== null) {
       setStorageValue(localStorage.getItem(item));
     } else {
-      alert(`Value of '${item}' is not exist in local storage`);
+      console.error(`Value of '${item}' is not exist in local storage`);
     }
   }, [item, value]);
 
