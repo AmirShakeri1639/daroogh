@@ -36,12 +36,12 @@ class Prescription extends Api {
     );
     return result.data;
   };
-  
+
   detail = async (id: number): Promise<any> => {
     const result = await this.postJsonData(`${this.urls.detail}/${id}`);
     return result.data;
   };
-  
+
   cancel = async (id: number): Promise<any> => {
     const result = await this.postJsonData(
       `${this.urls.cancel}?prescriptionID=${id}`
@@ -53,7 +53,7 @@ class Prescription extends Api {
     const { prescriptionID, isAccept, pharmacyComment } = data;
     const result = await this.postJsonData(
       `${this.urls.save}?prescriptionID=${prescriptionID}` +
-        `&isAccept=${isAccept}&pharmacyComment=${pharmacyComment}`
+      `&isAccept=${isAccept}&pharmacyComment=${pharmacyComment}`
     );
     return result.data;
   };
@@ -61,7 +61,7 @@ class Prescription extends Api {
   send = async (data: PrescriptionSendInterface): Promise<any> => {
     const result = await this.postFormData(
       `${this.urls.send}?duration=${data.duration}` +
-        `&contryDivisionCode=${data.contryDivisionCode}`,
+      `&contryDivisionCode=${data.contryDivisionCode}`,
       { file: data.file, comment: data.comment }
     );
     return result.data;
