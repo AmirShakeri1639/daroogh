@@ -2,6 +2,7 @@ import {
   AppBar,
   Box,
   createStyles,
+  Divider,
   Grid,
   makeStyles,
   Tab,
@@ -52,15 +53,12 @@ const useClasses = makeStyles((theme) =>
   createStyles({
     root: {
       flexGrow: 1,
-      backgroundColor: theme.palette.background.paper,
     },
     stickyTab: {
       position: 'sticky',
       marginLeft: '1px !important',
       top: 70,
       zIndex: 999,
-      backgroundColor: '#f3f3f3',
-      boxShadow: '0px 0px 3px 3px silver',
     },
   })
 );
@@ -85,15 +83,18 @@ const Exchange: React.FC = () => {
 
   return (
     <Grid container item spacing={1} xs={12} className={root}>
-      <span style={{ backgroundColor: 'rgb(234 234 234)', padding: 5, marginBottom: 2 }}>
+      <span style={{ padding: 5, marginBottom: 2 }}>
         ابتدا از تب انتخاب از داروخانه مقابل دارو یا پک های عرضه شده را بررسی و
         برای تبادل انتخاب نمایید. سپس می توانید در تب پیشنهاد دارو از لیست عرضه
         خود در صورت تمایل لیستی را انتخاب و برای این تبادل پیشنهاد نمایید.به
         پیام هایی که در کادر سمت چپ نمایش داده می شود دقت فرمایید تا کنترل کامل
         بر روند تبادل داشته باشید
       </span>
+      <Grid item xs={12} style={{padding:2}}>
+            <Divider/>
+
+      </Grid>
       <Grid item xs={12} sm={8} md={8}>
-        <AppBar position="static" color="default" style={{ paddingLeft: 5 }} className={stickyTab}>
           <Tabs value={value} onChange={handleChange}>
             <Tab
               label={
@@ -146,7 +147,7 @@ const Exchange: React.FC = () => {
               {...a11yProps(1)}
             />
           </Tabs>
-        </AppBar>
+          <Divider/>
         <TabPanel value={value} index={0}>
           <Tab1 />
         </TabPanel>

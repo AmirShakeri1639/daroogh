@@ -48,6 +48,7 @@ import sweetAlert from 'utils/sweetAlert';
 import MuiAlert from '@material-ui/lab/Alert';
 import errorHandler from 'utils/errorHandler';
 import { AddDrog1, AddDrog2, AddPack1, AddPack2 } from 'model/exchange';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -174,10 +175,10 @@ const useClasses = makeStyles((theme) =>
       minWidth: 30,
       fontSize: 11,
       fontWeight: 'bold',
-      backgroundColor: '#3f51b5',
-      color: '#ffffff',
+      backgroundColor: '#fff',
+      color: '#1d0d50',
       '&:hover': {
-        backgroundColor: '#8787f5',
+        backgroundColor: '#ccc',
       },
     },
     counterButtonRight: {
@@ -631,30 +632,15 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
             <Grid item xs={9}>
               <ul className={ulCardName} style={{ paddingRight: 10 }}>
                 <li>
-                  <span style={{ fontSize: 17, fontWeight: 'bold' }}>
-                    پک {pharmacyDrug?.packName}
-                  </span>
+                  <TextWithTitle title="دسته بندی" body={pharmacyDrug?.packCategoryName} />
+                  
                 </li>
                 <li>
-                  <span style={{ fontSize: 13 }}>دسته بندی: </span>
-                  <span style={{ fontSize: 13, fontWeight: 'bold' }}>
-                    {pharmacyDrug?.packCategoryName}
-                  </span>
+                <TextWithTitle title="تعداد داروهای عرضه شده در این پک" body={pharmacyDrug?.cnt} suffix="عدد" />
+
+                 
                 </li>
-                <li>
-                  <span style={{ fontSize: 11 }}>
-                    تعداد داروهای عرضه شده در این پک:{' '}
-                  </span>
-                  <span style={{ fontSize: 13, fontWeight: 'bold' }}>
-                    {pharmacyDrug?.cnt} عدد
-                  </span>
-                </li>
-                <li>
-                  <span style={{ fontSize: 13 }}>تاریخ انقضا: </span>
-                  <span style={{ fontSize: 13, fontWeight: 'bold' }}>
-                    {getExpireDate(pharmacyDrug?.expireDate)}
-                  </span>
-                </li>
+               
                 <li>
                   <span style={{ fontSize: 9.5, color: 'red' }}>
                     همه اقلام یک پک با هم و با تعداد مشخص شده قابل انتخاب هستند
@@ -697,9 +683,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD')
-      .locale('fa')
-      .format('YYYY/MM/DD');
+    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
     const fromDate = new Date(eDate);
     const today = new Date();
@@ -776,7 +760,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           if (pharmacyDrug.cnt > pharmacyDrug.currentCnt) {
             setDrugInfo({
               ...pharmacyDrug,
-              currentCnt: pharmacyDrug.currentCnt += 1,
+              currentCnt: (pharmacyDrug.currentCnt += 1),
             });
           }
           break;
@@ -784,7 +768,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           if (pharmacyDrug.currentCnt > 1) {
             setDrugInfo({
               ...pharmacyDrug,
-              currentCnt: pharmacyDrug.currentCnt -= 1,
+              currentCnt: (pharmacyDrug.currentCnt -= 1),
             });
           }
           break;
@@ -833,8 +817,9 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
       <>
         <span style={{ fontSize: 13 }}>تعداد اقلام انتخاب شده: </span>
         <span style={{ fontSize: 17, fontWeight: 'bold', color: 'green' }}>
-          {pharmacyDrug?.currentCnt} عدد
+          {pharmacyDrug?.currentCnt}
         </span>
+        <span style={{ fontSize: 11, marginRight: 5 }}>عدد</span>
       </>
     );
   };
@@ -882,23 +867,24 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                   </span>
                 </li>
                 <li>
-                  <span style={{ fontSize: 13 }}>
+                  <span style={{ fontSize: 12 }}>
                     {pharmacyDrug?.drug.genericName}
                     {pharmacyDrug?.drug.enName &&
                       `(${pharmacyDrug?.drug.enName})`}
                   </span>
                 </li>
                 <li>
-                  <span style={{ fontSize: 13 }}>موجودی عرضه شده: </span>
-                  <span style={{ fontSize: 13, fontWeight: 'bold' }}>
-                    {pharmacyDrug?.cnt} عدد
-                  </span>
+                  <TextWithTitle
+                    title="موجودی عرضه شده"
+                    body={pharmacyDrug?.cnt}
+                    suffix="عدد"
+                  />
                 </li>
                 <li>
-                  <span style={{ fontSize: 13 }}>تاریخ انقضا: </span>
-                  <span style={{ fontSize: 13, fontWeight: 'bold' }}>
-                    {getExpireDate(pharmacyDrug?.expireDate)}
-                  </span>
+                  <TextWithTitle
+                    title="تاریخ انقضا"
+                    body={getExpireDate(pharmacyDrug?.expireDate)}
+                  />
                 </li>
               </ul>
             </Grid>
@@ -915,21 +901,25 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                   >
                     {Utils.numberWithCommas(pharmacyDrug?.amount)}
                   </span>
-                  <span
-                    style={{ fontSize: 12, marginRight: 5, color: 'green' }}
-                  >
-                    تومان
+                  <span style={{ fontSize: 11, marginRight: 5 }}>
+                    {t('general.defaultCurrency')}
                   </span>
                 </li>
                 <li>{counterButtonFunc()}</li>
                 <li>
                   <span style={{ fontSize: 13 }}>جمع اقلام انتخاب شده: </span>
                   <span
-                    style={{ fontSize: 17, fontWeight: 'bold', color: 'green' }}
+                    style={{
+                      fontSize: 17,
+                      fontWeight: 'bold',
+                      color: '1d0d50',
+                    }}
                   >
                     {handleTotalAmount()}
                     {totalAmount}
-                    <span style={{ fontSize: 12, marginRight: 5 }}>تومان</span>
+                  </span>
+                  <span style={{ fontSize: 11, marginRight: 5 }}>
+                    {t('general.defaultCurrency')}
                   </span>
                 </li>
               </ul>
