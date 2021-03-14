@@ -31,6 +31,7 @@ export default {
   dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,
   transfer: `/${dashboard}/${exchange}/transfer`,
+  transferWithFavorites: `/${dashboard}/${exchange}/transfer?faves=true`,
   survey: `/${dashboard}/${exchange}/survey`,
   supplyList: `/${dashboard}/${exchange}/supply-list`,
 
