@@ -325,7 +325,7 @@ export default {
         viewExchange: 'مشاهده تبادل',
         widget: 'ابزارک تبادل',
         waitingForYourConfirmation: 'تبادل‌های در انتظار',
-        exchangesWithFavorites: 'تبادل‌های شامل علاقمندی',
+        exchangesWithFavorites: 'سبدهای شامل علاقمندی',
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
