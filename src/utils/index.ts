@@ -10,7 +10,10 @@ export {
   successSweetAlert,
   warningSweetAlert,
 } from './sweetAlert';
-export { default as jalali } from './jalali';
+export { 
+  default as jalali ,
+  today,
+} from './jalali';
 export { default as Convertor } from './Convertor';
 export { default as sanitizeReactSelect } from './sanitizeReactSelect';
 export { default as JwtData } from './JwtData';

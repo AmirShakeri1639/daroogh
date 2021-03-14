@@ -2,13 +2,13 @@
 import jalaali from 'jalaali-js';
 import moment from 'jalali-moment';
 
-export const today = (): string => {
+export const today = (separator: string = '/'): string => {
   const today = new Date();
   const day = String(today.getDate()).padStart(2, '0');
   const month = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
   const year = today.getFullYear();
 
-  return `${year}/${month}/${day}`;
+  return `${year}${separator}${month}${separator}${day}`;
 }
 
 export const todayJalali = (): string => {
