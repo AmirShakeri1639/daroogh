@@ -21,7 +21,8 @@ class Prescription extends Api {
 
   getPrescriptionsCount = async (): Promise<any> => {
     const result = await this.postJsonData(
-      `${this.urls.getList}`
+      `${this.urls.getList}?$filter=cancelDate eq null ` +
+      `and expireDate gt now() `
     );
     return result.data.items.length;
   };

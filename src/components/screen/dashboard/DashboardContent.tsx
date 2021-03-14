@@ -59,7 +59,7 @@ const DashboardContent: React.FC<any> = () => {
         showWhatsNew(localStorage.getItem('version') || '0.1.0');
       }
     }
-  }, []);
+  }, [localStorage.getItem('version')]);
 
   return (
     <Container maxWidth="lg" className={classes.container}>
