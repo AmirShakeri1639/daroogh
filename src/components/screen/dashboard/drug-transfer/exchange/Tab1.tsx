@@ -35,14 +35,12 @@ const style = makeStyles((theme) =>
       color: theme.palette.text.secondary,
     },
     stickyToolbox: {
-      position: 'sticky',
       marginTop: -15,
       marginBottom: 15,
       marginLeft: '1px !important',
       top: 140,
       zIndex: 999,
-      backgroundColor: '#f3f3f3',
-      boxShadow: '0px 0px 3px 3px silver',
+  
     },
     stickyRecommendation: {
       position: 'sticky',
@@ -316,8 +314,8 @@ const Tab1: React.FC = () => {
       <Grid item xs={12}>
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={12}>
-            <Grid container item spacing={1} xs={12} className={stickyToolbox}>
-              <Grid item xs={12} sm={7} md={7} style={{ padding: 0 }}>
+            <Grid container className={stickyToolbox}>
+              <Grid item xs={12} style={{ padding: 0 }}>
                 <SearchInAList />
               </Grid>
             </Grid>
