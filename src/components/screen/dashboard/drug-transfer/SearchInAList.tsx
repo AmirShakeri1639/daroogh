@@ -42,7 +42,7 @@ const SearchInAList: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" className={container}>
+    <Container maxWidth="lg" className={container} style={{margin: 5}}>
       <DaroogSearchBar onValueChange={(v: string): void => searchHandler(v)} />
     </Container>
   );

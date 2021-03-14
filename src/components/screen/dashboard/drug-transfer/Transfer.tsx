@@ -24,6 +24,7 @@ import { calcTotalPrices } from '../../../../utils/ExchangeTools';
 import fa from '../../../../i18n/fa/fa';
 import CircularProgressWithLabel from '../../../public/loading/CircularProgressWithLabel';
 import { ColorEnum } from '../../../../enum';
+import Exchange from './exchange/Exchange';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -101,8 +102,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
         ? item.addedByB
           ? ColorEnum.AddedByB
           : item.confirmed !== undefined && item.confirmed === false
-            ? ColorEnum.NotConfirmed
-            : ColorEnum.Confirmed
+          ? ColorEnum.NotConfirmed
+          : ColorEnum.Confirmed
         : ColorEnum.Confirmed;
 
     return color;
@@ -399,8 +400,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 <CircularProgress size={20} />
               </div>
             ) : (
-                <>
-                  {activeStep > 0 && (
+              <>
+                {activeStep > 0 && (
                     <>
                       <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
                         <ProgressBar />
@@ -412,8 +413,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                   {activeStep === 1 && <SecondStep />}
                   {activeStep === 2 && <ThirdStep />}
                   {activeStep === 3 && <FourthStep />}
-                </>
-              )}
+
+                 
+                {/* {activeStep === 0 ? <FirstStep /> : <Exchange />} */}
+              </>
+            )}
           </Grid>
         </MaterialContainer>
       </div>

@@ -3,10 +3,9 @@ import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
 import { Container, Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
-import { useClasses } from '../../classes';
 import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
-import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
+import { ExchangeStateEnum, NeedSurvey, SortTypeEnum } from '../../../../../enum';
 import {
   getExpireDate,
   isExchangeCompleted,
@@ -26,24 +25,29 @@ const Desktop1: React.FC = () => {
   const { getDashboard } = new Exchange();
   const { t } = useTranslation();
   const history = useHistory();
-  const { paper } = useClasses();
   const { transfer } = routes;
+  const needSurveyItem = {
+    label: t('survey.participate'),
+    value: NeedSurvey
+  };
 
   // const [isLoading, setIsLoading] = useState(true);
   const [stateFilterList, setStateFilterList] = useState<LabelValue[]>([]);
 
   const location = useLocation();
   const params = queryString.parse(location.search);
-  const [filter, setFilter] = useState<ExchangeStateEnum[]>((): any => {
+  const [filter, setFilter] = useState<any[]>((): any => {
+    let result = [];
     if (params.state && params.state.length > 0) {
-      return String(params.state)
+      result = String(params.state)
         .split(',')
         .map((i) => +i);
     } else {
-      return [ExchangeStateEnum.UNKNOWN];
+      result = [ExchangeStateEnum.UNKNOWN];
     }
+    result.push(NeedSurvey);
+    return result;
   });
-  console.log('filter)', filter);
 
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
@@ -127,6 +131,7 @@ const Desktop1: React.FC = () => {
           // setExchanges(items);
           setExchangesRef(items);
           // setIsLoading(false);
+          statesList.push(needSurveyItem);
           setStateFilterList(statesList);
           setLoadingRef(false);
           setNoData(false);
@@ -202,6 +207,7 @@ const Desktop1: React.FC = () => {
         });
       }
       setExchanges(items);
+      statesList.push(needSurveyItem);
       setStateFilterList(statesList);
       setLoading(false);
       setNoData(false);
@@ -250,14 +256,15 @@ const Desktop1: React.FC = () => {
       const listToShow = filter.includes(ExchangeStateEnum.UNKNOWN)
         ? [...exchanges]
         : exchanges.filter(
-            (ex) =>
-              filter.includes(ex.state) ||
-              (isExchangeCompleted(
-                ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
-                ex.currentPharmacyIsA
-              ) &&
-                filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
-          );
+          (ex) =>
+            filter.includes(ex.state) ||
+            (filter.includes(NeedSurvey) && ex.needSurvey) ||
+            (isExchangeCompleted(
+              ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
+              ex.currentPharmacyIsA
+            ) &&
+              filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
+        );
 
       // sort
       if (sortField !== '') {
@@ -274,15 +281,15 @@ const Desktop1: React.FC = () => {
       elements = (
         <>
           {listToShow.map((item, index) => (
-            <Grid spacing={0} item xs={12} sm={6} md={4} xl={4} key={index}>
+            <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
               <DesktopCardContent
-                item={item}
-                full={false}
-                showActions={true}
-                onCardClick={cardClickHandler}
+                item={ item }
+                full={ false }
+                showActions={ true }
+                onCardClick={ cardClickHandler }
               ></DesktopCardContent>
             </Grid>
-          ))}
+          )) }
         </>
       );
 
@@ -294,24 +301,24 @@ const Desktop1: React.FC = () => {
 
   return (
     <Container>
-      <Grid item={true} xs={12}>
-        <Grid container spacing={2}>
-          <Grid item={true} xs={12}>
+      <Grid item={ true } xs={ 12 }>
+        <Grid container spacing={ 2 }>
+          <Grid item={ true } xs={ 12 }>
             <DesktopToolbox
-              filterList={stateFilterList}
-              onFilterChanged={filterChanged}
-              onSortSelected={sortSelected}
+              filterList={ stateFilterList }
+              onFilterChanged={ filterChanged }
+              onSortSelected={ sortSelected }
             />
           </Grid>
         </Grid>
 
-        <Grid container spacing={3}>
-          {<CardListGenerator />}
+        <Grid container spacing={ 3 }>
+          { <CardListGenerator /> }
         </Grid>
-        {/* {loading && <CircleLoading />} */}
-        <CircleBackdropLoading isOpen={loadingRef.current} />
-        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */}
-        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */}
+        {/* {loading && <CircleLoading />} */ }
+        <CircleBackdropLoading isOpen={ loadingRef.current } />
+        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */ }
+        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */ }
       </Grid>
     </Container>
   );

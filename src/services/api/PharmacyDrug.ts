@@ -64,9 +64,9 @@ class PharmacyDrug extends Api {
     }
   };
 
-  getAccountingForPayment = async (exchangeId = ""): Promise<any> => {
+  getAccountingForPayment = async (exchangeId: number): Promise<any> => {
     try {
-      const query = `${this.urls.getAccountingForPayment}${exchangeId !== "" ? '?exchangeId=' + exchangeId : ''
+      const query = `${this.urls.getAccountingForPayment}${exchangeId > 0 ? '?exchangeId=' + exchangeId : ''
         }`;
       const result = await this.postJsonData(query);
       return result;

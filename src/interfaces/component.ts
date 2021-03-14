@@ -91,6 +91,7 @@ export interface ExCardContentProps {
   pharmacyDrug?: AllPharmacyDrugInterface;
   formType: number;
   packInfo?: AllPharmacyDrugInterface[];
+  isPack?: boolean;
 }
 
 export interface CardPropsInterface {

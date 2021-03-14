@@ -158,7 +158,7 @@ const ProgressBar: React.FC = () => {
 
   return (
     <Grid container spacing={0}>
-      <Hidden smDown>
+      {/* <Hidden smDown> */}
         <Grid item xs>
           <Stepper
             activeStep={activeStep || 0}
@@ -168,9 +168,9 @@ const ProgressBar: React.FC = () => {
             {stepHandler()}
           </Stepper>
         </Grid>
-      </Hidden>
+      {/* </Hidden> */}
 
-      <Hidden mdUp>
+      {/* <Hidden mdUp>
         <Grid xs item>
           <Grid
             xs={12}
@@ -196,7 +196,7 @@ const ProgressBar: React.FC = () => {
             nextButton={mobileNextButton()}
           />
         </Grid>
-      </Hidden>
+      </Hidden> */}
     </Grid>
   );
 };
