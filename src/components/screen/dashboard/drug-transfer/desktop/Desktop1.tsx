@@ -5,7 +5,7 @@ import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
 import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
-import { ExchangeStateEnum, SortTypeEnum } from '../../../../../enum';
+import { ExchangeStateEnum, NeedSurvey, SortTypeEnum } from '../../../../../enum';
 import {
   getExpireDate,
   isExchangeCompleted,
@@ -26,7 +26,6 @@ const Desktop1: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const { transfer } = routes;
-  const NeedSurvey = 1000;
   const needSurveyItem = {
     label: t('survey.participate'),
     value: NeedSurvey
