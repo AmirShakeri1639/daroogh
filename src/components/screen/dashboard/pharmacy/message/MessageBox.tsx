@@ -1,27 +1,10 @@
 import React, { memo } from 'react';
 import { Message } from 'interfaces';
-import { createStyles } from '@material-ui/styles';
-import { Grid, Hidden, makeStyles, Paper } from '@material-ui/core';
+import { Grid, Hidden, Paper } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from 'utils';
 import { MaterialContainer } from 'components/public';
 import styled from 'styled-components';
-
-const useClasses = makeStyles((theme) =>
-  createStyles({
-    boxContainer: {
-      padding: theme.spacing(1),
-      borderRadius: theme.spacing(1),
-      backgroundColor: '#fff',
-      boxShadow: '0 0 15px 12px #eee',
-      marginBottom: theme.spacing(2),
-    },
-    topContainer: {
-      display: 'flex',
-      justifyContent: 'space-between',
-    },
-  })
-);
 
 const StyledMaterialContainer = styled(MaterialContainer)`
   display: 'flex';
@@ -36,7 +19,7 @@ const { convertISOTime } = Convertor;
 
 const MessageBox: React.FC<MessageBoxProps> = memo(({ message }) => {
   const { message1, sendDate, subject } = message;
-  const { boxContainer, topContainer } = useClasses();
+
   const { t } = useTranslation();
 
   return (
@@ -78,24 +61,14 @@ const MessageBox: React.FC<MessageBoxProps> = memo(({ message }) => {
             </Grid>
             <Grid item xs={12} justify="flex-end" style={{ textAlign: 'left' }}>
               <span className="text-muted txt-xs">
-                {t('date.sendDate')}:{convertISOTime(sendDate)}
+                {t('date.sendDate')}:
+                <span dir="rtl">{convertISOTime(sendDate)}</span>
               </span>
             </Grid>
           </Grid>
         </Paper>
       </Grid>
     </StyledMaterialContainer>
-    // <section className={boxContainer}>
-    //   <div className={topContainer}>
-    //     <strong>{subject}</strong>
-    //     <span className="text-muted">
-    //       {t('date.sendDate')}:<span dir="rtl">{convertISOTime(sendDate)}</span>
-    //     </span>
-    //   </div>
-    //   <div>
-    //     <p>{message1}</p>
-    //   </div>
-    // </section>
   );
 });
 
