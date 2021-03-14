@@ -10,15 +10,23 @@ import {
   Grid,
   Button,
   TextField,
+  Input as SelectInput, 
   FormControl,
   InputLabel,
   Select,
-  Input,
   Checkbox,
   ListItemText,
   MenuItem,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
+import Input from '../../../public/input/Input';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -76,9 +84,22 @@ const useClasses = makeStyles((theme) =>
     gridEditForm: {
       margin: theme.spacing(2, 0, 2),
     },
+    formContent: {
+      overflow: 'hidden',
+      overflowY: 'auto',
+      display: 'flex',
+    },
     cancelButton: {
-      background: theme.palette.pinkLinearGradient.main,
-      marginLeft: theme.spacing(2),
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
     },
     checkIcon: {
       color: theme.palette.success.main,
@@ -204,11 +225,14 @@ const UsersList: React.FC = () => {
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
-  const [isOpenModalOfCreateUser, setIsOpenModalOfCreateUser] = useState<
-    boolean
-  >(false);
+  const [
+    isOpenModalOfCreateUser,
+    setIsOpenModalOfCreateUser,
+  ] = useState<boolean>(false);
   const [showError, setShowError] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const toggleIsOpenModalOfUser = (): void =>
     setIsOpenModalOfCreateUser((v) => !v);
@@ -291,7 +315,10 @@ const UsersList: React.FC = () => {
     buttonContainer,
     formContainer,
     addButton,
+    
+    formContent,
     cancelButton,
+    submitBtn,
   } = useClasses();
 
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -562,181 +589,211 @@ const UsersList: React.FC = () => {
         </Button>
       </Grid>
 
-      <Modal open={isOpenRoleModal} toggle={toggleIsOpenRoleModal}>
-        <Card className={root}>
-          <CardHeader
-            title={t('user.edit-role')}
-            action={
-              <IconButton onClick={toggleIsOpenRoleModal}>
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-
-          <Divider />
-
-          <CardContent>
+      <Dialog
+        open={isOpenRoleModal}
+        
+        onClose={toggleIsOpenRoleModal}
+      >
+        <DialogTitle className="text-sm">
+        {t('user.edit-role')}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  
+                  <Grid item xs={12}>
             <RoleForm
               userId={idOfSelectedUser}
               toggleForm={toggleIsOpenRoleModal}
               roleType={RoleType.PHARMACY}
             />
-          </CardContent>
-        </Card>
-      </Modal>
+              </Grid>
+              </Grid>
+            </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+             </Dialog>
 
-      <Modal open={isOpenSaveModal} toggle={toggleIsOpenSaveModalForm}>
-        <Card className={root}>
-          <CardHeader
-            title={state?.id === 0 ? t('action.create') : t('action.edit')}
-            action={
-              <IconButton onClick={toggleIsOpenSaveModalForm}>
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            {/* <UserForm
-              userData={state}
-              noShowInput={['password']}
-              onCancel={toggleIsOpenSaveModalForm}
-              onSubmit={(): void => {
-                queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-                toggleIsOpenSaveModalForm();
-              }}
-            /> */}
-          </CardContent>
-        </Card>
-      </Modal>
-
-      <ModalContent
+      <Dialog
         open={isOpenModalOfCreateUser}
-        toggle={toggleIsOpenModalOfUser}
-        confirmHandler={formHandler}
-        disabled={isLoadingNewUser}
+        fullScreen={fullScreen}
+        onClose={toggleIsOpenModalOfUser}
       >
-        <form
-          autoComplete="off"
-          onSubmit={formHandler}
-          className={formContainer}
-        >
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
+        <DialogTitle className="text-sm">
+          {state?.id === 0 ? t('action.create') : t('action.edit')}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نام کاربر</label>
+                  </Grid>
+                  <Grid item xs={12}>
+               
+              <Input
                 error={state.name.trim().length < 2 && showError}
                 label="نام کاربر"
-                size="small"
                 className="w-100"
-                variant="outlined"
                 value={state.name}
                 onChange={(e): void =>
                   dispatch({ type: 'name', value: e.target.value })
                 }
               />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
+             </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نام خانوادگی کاربر</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+              <Input
                 className="w-100"
                 error={state.family.trim().length < 2 && showError}
-                label="نام خانوادگی کاربر"
-                size="small"
-                variant="outlined"
+                
+                
                 value={state.family}
                 onChange={(e): void =>
                   dispatch({ type: 'family', value: e.target.value })
                 }
               />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
+             </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>موبایل</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+              <Input
                 className="w-100"
                 error={state.mobile.trim().length < 11 && showError}
-                label="موبایل"
+                
                 type="number"
-                size="small"
-                variant="outlined"
+               
                 value={state.mobile}
                 onChange={(e): void =>
                   dispatch({ type: 'mobile', value: e.target.value })
                 }
               />
-            </Grid>
+             </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>ایمیل</label>
+                  </Grid>
 
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
+                  <Grid item xs={12}>
+              <Input
                 error={
                   state?.email?.length > 0 &&
                   !emailRegex.test(state.email) &&
                   showError
                 }
-                label="ایمیل"
+                
                 className="w-100"
                 type="email"
-                size="small"
-                variant="outlined"
+                
+               
                 value={state.email}
                 onChange={(e): void =>
                   dispatch({ type: 'email', value: e.target.value })
                 }
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
+                >
+
+                </Input>
+                </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نام کاربری</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+              <Input
                 error={state?.userName?.length < 1 && showError}
-                label="نام کاربری"
-                size="small"
+                
                 className="w-100"
-                variant="outlined"
-                autoComplete="off"
+               
                 value={state.userName}
                 onChange={(e): void =>
                   dispatch({ type: 'userName', value: e.target.value })
                 }
               />
-            </Grid>
+             </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>کد ملی</label>
+                  </Grid>
 
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
+                  <Grid item xs={12}>
+              <Input
                 error={
                   state?.nationalCode !== '' &&
                   state?.nationalCode?.length < 10 &&
                   showError
                 }
-                label="کد ملی"
+               
                 className="w-100"
                 type="text"
-                size="small"
-                variant="outlined"
+              
                 value={state.nationalCode}
                 onChange={(e): void =>
                   dispatch({ type: 'nationalCode', value: e.target.value })
                 }
               />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
-                label="تاریخ تولد"
-                inputProps={{
-                  readOnly: true,
-                }}
+             </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>تاریخ تولد</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+              <Input
+                readOnly = {true}
+               
                 className="w-100"
                 type="text"
-                size="small"
-                variant="outlined"
+                
                 value={state?.birthDate}
                 onClick={toggleIsOpenDatePicker}
               />
-            </Grid>
+             </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نقش های کاربر:</label>
+                  </Grid>
 
-            <Grid item xs={12} sm={6} xl={3}>
-              <FormControl size="small" className="w-100" variant="outlined">
-                <InputLabel id="user-roles-list">نقش های کاربر:</InputLabel>
+                  <Grid item xs={12}>
+                  <FormControl size="small" className="w-100" variant="outlined">
+              
                 <Select
                   labelId="user-roles-list"
                   id="roles-list"
                   multiple
-                  input={<Input />}
+                  input={<SelectInput />}
                   label="نقش های کاربر:"
                   MenuProps={MenuProps}
                   value={selectedRoles}
@@ -752,15 +809,49 @@ const UsersList: React.FC = () => {
                   {rolesListGenerator()}
                 </Select>
               </FormControl>
+              </Grid>
+              </Grid>
+            </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={8} />
+              <Grid item xs={2} sm={2}>
+              <Button
+                  type="button"
+                  className={cancelButton}
+                  onClick={(): void => {
+                    dispatch({ type: 'reset' });
+                    toggleIsOpenModalOfUser();
+                  }}
+                >
+                  {t('general.close')}
+                </Button>
+              </Grid>
+              <Grid item xs={3} sm={2}>
+                
+                <Button
+                  type="submit"
+                  disabled={isLoadingNewUser}
+                  className={submitBtn}
+                  onClick={formHandler}
+                >
+                  {isLoadingNewUser ? t('general.pleaseWait') : t('general.submit')}
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-        </form>
-      </ModalContent>
+        </DialogActions>
+      </Dialog>
 
       <Modal
         open={isOpenDatePicker}
         toggle={toggleIsOpenDatePicker}
-        zIndex={1060}
+        zIndex={2000}
       >
         <DateTimePicker
           selectedDateHandler={(e): void => {
