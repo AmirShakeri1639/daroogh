@@ -18,6 +18,7 @@ import SurveyWidget from './widgets/SurveyWidget';
 import PrescriptionWidget from './widgets/PrescriptionWidget';
 import EmpApplicationWidget from './widgets/EmpApplicationWidget';
 import { checkVersion, clearMyCache, showWhatsNew } from 'utils';
+import ExchangeWithFavoritesWidget from './widgets/ExchangeWithFavoritesWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -76,6 +77,9 @@ const DashboardContent: React.FC<any> = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={3} xl={3}>
             <EmpApplicationWidget />
+          </Grid>
+          <Grid item xs={12} sm={6} md={3} xl={3}>
+            <ExchangeWithFavoritesWidget />
           </Grid>
         </Grid>
         {/* Chart */}
