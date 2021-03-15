@@ -1,4 +1,4 @@
-import { createStyles, Divider, Grid, makeStyles } from '@material-ui/core';
+import { createStyles, Divider, Grid, makeStyles, useMediaQuery, useTheme } from '@material-ui/core';
 import React from 'react';
 import { borderRadius } from 'react-select/src/theme';
 
@@ -11,11 +11,17 @@ const useStyle = makeStyles((theme) =>
     container: {
       height: 40,
     },
+    containerReverse: {
+      height: 40,
+      flexDirection : 'row-reverse'
+      
+    },
     stepContainer: {
       background: '#fff',
       height: 40,
       display: 'flex',
       alignItems: 'center',
+      
     },
     dateContainer: {
       //   borderRight: '3px solid #3A2F8B',
@@ -58,6 +64,10 @@ interface Props {
 }
 
 const ExchangeTreeCard: React.FC<Props> = (props) => {
+  const theme = useTheme();
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const {
     root,
     container,
@@ -65,6 +75,7 @@ const ExchangeTreeCard: React.FC<Props> = (props) => {
     dateContainer,
     titleContainer,
     dateContainerLeft,
+    containerReverse
   } = useStyle();
   const { date, title, isYou } = props;
   return (
@@ -72,17 +83,17 @@ const ExchangeTreeCard: React.FC<Props> = (props) => {
       container
       spacing={0}
       className={root}
-      style={{ opacity: `${date ? '1' : '0.3'}` }}
+      
     >
       {isYou && (
           <>
-        <Grid container xs={12} className={container}>
-          <Grid container xs={10} className={stepContainer}>
+        <Grid container xs={12} className={containerReverse} style={{ opacity: `${date ? '1' : '0.3'}` }}>
+          <Grid container xs={12} md={6} className={stepContainer}>
             <Grid item xs={4} className={dateContainer}>
               <span>{date}</span>
             </Grid>
             <Grid item xs={8} className={titleContainer}>
-              {title}
+              <span style={{fontSize:12}}>{title}</span>
             </Grid>
           </Grid>
         </Grid>
@@ -93,10 +104,11 @@ const ExchangeTreeCard: React.FC<Props> = (props) => {
       )}
       {!isYou && (
           <>
-        <Grid container xs={12} direction="row-reverse" className={container}>
+        <Grid container xs={12}  className={container} style={{ opacity: `${date ? '1' : '0.3'}` }}>
           <Grid
             container
-            xs={10}
+            xs={12}
+            md={6}
             direction="row-reverse"
             className={stepContainer}
           >
@@ -114,7 +126,7 @@ const ExchangeTreeCard: React.FC<Props> = (props) => {
               direction="row-reverse"
               className={titleContainer}
             >
-              {title}
+              <span style={{fontSize:12}}>{title}</span>
             </Grid>
           </Grid>
         </Grid>
