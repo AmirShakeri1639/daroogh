@@ -78,7 +78,7 @@ export default {
         all: 'همه',
         add: 'اضافه کردن',
         favorite: 'علاقه مندی',
-        yourFavorite: 'علاقه مندی شما',
+        yourFavorite: 'محصولات پرمصرف شما',
         peopleSection: 'بخش مردمی',
         undefined: 'تعریف نشده',
         toman: 'تومان',
