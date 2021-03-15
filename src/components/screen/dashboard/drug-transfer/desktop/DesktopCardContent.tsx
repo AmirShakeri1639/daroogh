@@ -681,6 +681,11 @@ const DesktopCardContent = ({
         <DialogContent>
           <ExchangeTree exchangeId={item.id} />
         </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowExchangeTree(false)} color="primary">
+            بستن
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );
