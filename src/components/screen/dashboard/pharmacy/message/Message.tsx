@@ -20,7 +20,7 @@ const PharmacyMessage: React.FC = () => {
 
   const func = (e: any): void => {
     const el = e.target;
-    const pixelsBeforeEnd = 125;
+    const pixelsBeforeEnd = 200;
     if (el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight) {
       setCurrentPage((v) => v + 1);
       cache.invalidateQueries(MessageQueryEnum.GET_PHARMACY_MESSAGE);

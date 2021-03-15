@@ -36,7 +36,8 @@ class PharmacyDrug extends Api {
     pharmacyInfo: '/Exchange/GetExchangePharmacyInfo',
     getQuestionGroupOfExchange: '/QuestionGroups/GetQuestionGroupOfExchange/',
     detailPharmacyInfo: 'Pharmacy/Detail/',
-    saveSurvey: 'Survey/Save/'
+    saveSurvey: 'Survey/Save/',
+    getFavoritePharmacyDrugCount: '/PharmacyDrug/GetFavoritePharmacyDrugCount',
   };
 
   getAllPharmacyDrug = async (
@@ -258,6 +259,11 @@ class PharmacyDrug extends Api {
       errorHandler(e);
     }
   };
+
+  getFavoritePharmacyDrugCount = async (): Promise<any> => {
+    const result = await this.postJsonData(this.urls.getFavoritePharmacyDrugCount);
+    return result.data;
+  }
 }
 
 export default PharmacyDrug;
