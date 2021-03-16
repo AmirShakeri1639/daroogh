@@ -665,7 +665,6 @@ const DesktopCardContent = ({
           width: '6px',
           height: '100%',
           float: 'right',
-          background: '#ccc',
         }}
       >
         <CardProgressbar />
