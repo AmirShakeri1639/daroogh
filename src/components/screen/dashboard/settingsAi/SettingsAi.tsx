@@ -4,12 +4,9 @@ import {
   Container,
   createStyles,
   Divider,
-  FormControlLabel,
   Grid,
   makeStyles,
   Paper,
-  Switch,
-  TextField,
   Typography,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
@@ -19,9 +16,9 @@ import {
   errorHandler,
   errorSweetAlert,
   successSweetAlert,
-  warningSweetAlert,
 } from '../../../../utils';
 import { useMutation } from 'react-query';
+import TextFieldDaroogh from 'components/public/TextField/TextFieldDaroogh';
 
 export const useClasses = makeStyles((theme) =>
   createStyles({
@@ -397,13 +394,21 @@ const SettingsAiForm: React.FC = () => {
           <h2>{t('settingsAi.settingsAi')}</h2>
         </Typography>
         <Divider />
-        <form autoComplete="off" className={rootFull} onSubmit={submit}>
+        <form
+          autoComplete="off"
+          id="myform"
+          className={rootFull}
+          onSubmit={submit}
+        >
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <h3>{t('settingsAi.section1')}</h3>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="وزن هر قلم دارو از دید داروخانه نسبت به آیتم‌های کلی دیگر برای محاسبه امتیاز کلی لیست عرضه در سیستم توصیه‌گر"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyDrugScore.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugScore')}
                 required
@@ -412,12 +417,18 @@ const SettingsAiForm: React.FC = () => {
                 value={state.pharmacyDrugScore}
                 className={formItem}
                 onChange={(e): void =>
-                  dispatch({ type: 'pharmacyDrugScore', value: e.target.value })
+                  dispatch({
+                    type: 'pharmacyDrugScore',
+                    value: e.target.value,
+                  })
                 }
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز به ازای هر داروی موجود در لیست علاقمندی"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyDrugIsFavorite.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugIsFavorite')}
                 required
@@ -434,7 +445,8 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="وزن هر قلم دارو از دید داروخانه نسبت به آیتم‌های کلی دیگر برای محاسبه امتیاز کلی لیست عرضه در سیستم توصیه‌گر"
                 error={state.pharmacyDrugIsFavorite.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugIsFavorite')}
                 required
@@ -451,7 +463,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز به ازای دارویی که در دسته دارویی مورد علاقه هست"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyDrugIsCategoryFavorite.length < 1 && showError
                 }
@@ -470,7 +485,26 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help={
+                  <p>
+                    امتیاز برای داروهایی که سرچ کرده
+                    <ul>
+                      <li>
+                        {' '}
+                        ضریب 0.1 این مقدار برای داروهایی که در دسته دارویی سرچ
+                        بودند
+                      </li>
+                      <li>
+                        {' '}
+                        ضریب 0.05 این مقدار برای سرچ داروهای آفر دار یا حداقل
+                        مهلت تاریخ انقضا در فیلتر سرچ پیشرفته استفاده می‌شود
+                      </li>
+                    </ul>
+                  </p>
+                }
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyDrugSearchCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugSearchCount')}
                 required
@@ -487,7 +521,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد دفعاتی که این دارو را در سبد خرید خود (در پروسه تبادل) اضافه کرده اعم از تبادلات کنسل شده (که داروخانه فعلی کنسل‌کننده نبوده) و چه تبادلات موفق"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyDrugAddToBasketCount.length < 1 && showError
                 }
@@ -506,7 +543,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد دفعاتی که لیست داروخانه‌های دیگر با این داروی شاخص (در بالای لیست) را باز کرده"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyDrugOpenListCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugOpenListCount')}
                 required
@@ -523,7 +563,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز به ازای داروی با نام جنریک مشابه با لیست علاقمندی"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyDrugIsSimilarFavorite.length < 1 && showError
                 }
@@ -542,7 +585,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز به ازای داروی که در گذشته در تبادل دریافت کرده"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyDrugExchangeBasketCount.length < 1 && showError
                 }
@@ -561,7 +607,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز به ازای دارویی که از سبد پیشنهادی خودش حذف کرده"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyDrugRemoveFromExchangeBasketCount.length < 1 &&
                   showError
@@ -583,7 +632,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز به ازای دارویی که در سبد خریدش بوده و تبادل را کنسل کرده (به دلیل عدم علاقه به داروهای سبد تبادل)"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyDrugCanceledExchangeBasketCount.length < 1 &&
                   showError
@@ -609,7 +661,10 @@ const SettingsAiForm: React.FC = () => {
               <h3>{t('settingsAi.section2')}</h3>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="وزن هر قلم نسبت به آیتم‌های کلی دیگر برای محاسبه امتیاز کلی لیست عرضه در سیستم توصیه‌گر"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.drugScore.length < 1 && showError}
                 label={t('settingsAi.drugScore')}
                 required
@@ -623,7 +678,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز برای ضریب تعداد (درصد) داروخانه ارائه دهنده دارو در لیست عرضه"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.drugAdditionalCount.length < 1 && showError}
                 label={t('settingsAi.drugAdditionalCount')}
                 required
@@ -640,7 +698,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز برای تعداد داروخانه متقاضی این دارو"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.drugFavoriteCount.length < 1 && showError}
                 label={t('settingsAi.drugFavoriteCount')}
                 required
@@ -649,12 +710,18 @@ const SettingsAiForm: React.FC = () => {
                 value={state.drugFavoriteCount}
                 className={formItem}
                 onChange={(e): void =>
-                  dispatch({ type: 'drugFavoriteCount', value: e.target.value })
+                  dispatch({
+                    type: 'drugFavoriteCount',
+                    value: e.target.value,
+                  })
                 }
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز برای تعداد دفعات جستجوی این دارو توسط کل داروخانه‌ها"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.drugSearchCount.length < 1 && showError}
                 label={t('settingsAi.drugSearchCount')}
                 required
@@ -668,7 +735,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز برای تعداد دفعاتی که این دارو در سبد تبادلات شرکت داشته"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.drugExchangeCount.length < 1 && showError}
                 label={t('settingsAi.drugExchangeCount')}
                 required
@@ -677,7 +747,10 @@ const SettingsAiForm: React.FC = () => {
                 value={state.drugExchangeCount}
                 className={formItem}
                 onChange={(e): void =>
-                  dispatch({ type: 'drugExchangeCount', value: e.target.value })
+                  dispatch({
+                    type: 'drugExchangeCount',
+                    value: e.target.value,
+                  })
                 }
               />
             </Grid>
@@ -688,7 +761,10 @@ const SettingsAiForm: React.FC = () => {
               <h3>{t('settingsAi.section3')}</h3>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="وزن نسبت به آیتم‌های کلی دیگر برای محاسبه امتیاز کلی لیست عرضه در سیستم توصیه‌گر"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyPharmacyScore.length < 1 && showError}
                 label={t('settingsAi.pharmacyPharmacyScore')}
                 required
@@ -705,7 +781,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای متوسط امتیاز داروخانه‌ها بهم بعد از تبادل"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyPharmacyAvgScore.length < 1 && showError}
                 label={t('settingsAi.pharmacyPharmacyAvgScore')}
                 required
@@ -722,7 +801,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد تبادل موفق"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyPharmacyExchangeCount.length < 1 && showError
                 }
@@ -741,7 +823,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد تبادل کنسل شده"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyPharmacyCanceledExchangeCount.length < 1 &&
                   showError
@@ -761,7 +846,12 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد دفعاتی که لیست داروخانه را باز کرده
+ دریافت امتیاز کامل منوط به باز نگه داشتن حداقل 5 ثانیه و اسکرول به اندازه مشاهده نصف لیست هست
+                "
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyPharmacyOpenListCount.length < 1 && showError
                 }
@@ -780,7 +870,27 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help={
+                  <p>
+                    ضریب برای داروخانه در داخل استان
+                    <ul>
+                      <li>
+                        {' '}
+                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر
+                        هم‌استانی انجام شده (به کل جستجوهای آن داروخانه) به این
+                        ضریب افزوده می‌شود
+                      </li>
+                      <li>
+                        {' '}
+                        به اندازه نصف تعداد تبادلاتی که به دلیل فاصله زیاد کنسل
+                        کرده، به این ضریب افزوده می‌شود
+                      </li>
+                    </ul>
+                  </p>
+                }
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyPharmacyIsSameProvince.length < 1 && showError
                 }
@@ -799,7 +909,27 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help={
+                  <p>
+                    ضریب برای داروخانه در شهر خودش
+                    <ul>
+                      <li>
+                        {' '}
+                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر
+                        هم‌شهری انجام شده (به کل جستجوهای آن داروخانه) به این
+                        ضریب افزوده می‌شود
+                      </li>
+                      <li>
+                        {' '}
+                        به اندازه تعداد تبادلاتی که به دلیل فاصله زیاد کنسل
+                        کرده، به این ضریب افزوده می‌شود
+                      </li>
+                    </ul>
+                  </p>
+                }
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyPharmacyIsSameCity.length < 1 && showError}
                 label={t('settingsAi.pharmacyPharmacyIsSameCity')}
                 required
@@ -816,7 +946,29 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help={
+                  <p>
+                    ضریب برای داروخانه‌های مجاور
+                    <ul>
+                      <li>
+                        {' '}
+                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر
+                        فاصله در محدوده مجاور انجام شده (به کل جستجوهای آن
+                        داروخانه) به این ضریب افزوده می‌شود
+                      </li>
+                      <li>
+                        {' '}
+                        به اندازه دو برابر تعداد تبادلاتی که به دلیل فاصله زیاد
+                        کنسل کرده، به این ضریب افزوده می‌شود دقت شود که
+                        داروخانه‌های که همجوار باشند از امتیازات هم‌استانی و
+                        هم‌شهری نیز بهره‌مند هستند.
+                      </li>
+                    </ul>
+                  </p>
+                }
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyPharmacyIsCloseDistance.length < 1 && showError
                 }
@@ -835,7 +987,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="معیار حداکثر فاصله (بر حسب متر) دو داروخانه که همجوار درنظر گرفته شوند"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyPharmacyNeighboringDistanceMeters.length < 1 &&
                   showError
@@ -863,7 +1018,10 @@ const SettingsAiForm: React.FC = () => {
               <h3>{t('settingsAi.section4')}</h3>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="وزن نسبت به آیتم‌های کلی دیگر برای محاسبه امتیاز کلی لیست عرضه در سیستم توصیه‌گر"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyScore.length < 1 && showError}
                 label={t('settingsAi.pharmacyScore')}
                 required
@@ -877,7 +1035,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای متوسط امتیاز کسب شده این داروخانه در نظرسنجی تبادلات "
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyAvgScore.length < 1 && showError}
                 label={t('settingsAi.pharmacyAvgScore')}
                 required
@@ -886,12 +1047,18 @@ const SettingsAiForm: React.FC = () => {
                 value={state.pharmacyAvgScore}
                 className={formItem}
                 onChange={(e): void =>
-                  dispatch({ type: 'pharmacyAvgScore', value: e.target.value })
+                  dispatch({
+                    type: 'pharmacyAvgScore',
+                    value: e.target.value,
+                  })
                 }
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد تبادلات موفق"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyExchangeCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyExchangeCount')}
                 required
@@ -908,7 +1075,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب تعداد تبادل کنسل شده توسط این داروخانه"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyCanceledExchangeCount.length < 1 && showError
                 }
@@ -927,7 +1097,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب به ازای هر یک میلیون تومان ارزش تبادلات"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacySumOfExchangePrice.length < 1 && showError}
                 label={t('settingsAi.pharmacySumOfExchangePrice')}
                 required
@@ -944,7 +1117,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب تعداد داروی مورد علاقه (تعداد لیست علاقمندی‌ها)"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyFavoriteCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyFavoriteCount')}
                 required
@@ -961,7 +1137,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد دفعاتی که لیست این داروخانه باز شده"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyOpenListCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyOpenListCount')}
                 required
@@ -978,7 +1157,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب به ازای هر هزارتومان گارانتی در سیستم"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyWarrantyAmount.length < 1 && showError}
                 label={t('settingsAi.pharmacyWarrantyAmount')}
                 required
@@ -995,7 +1177,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد نسخه مردمی پاسخ داده شده"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyPeopleResponseCount.length < 1 && showError
                 }
@@ -1014,7 +1199,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد درخواست استخدامی درج شده در سیستم داروگ"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacyEmployeeRequestCount.length < 1 && showError
                 }
@@ -1033,7 +1221,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد نظرسنجی که شرکت کرده"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyFillSurveyCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyFillSurveyCount')}
                 required
@@ -1050,7 +1241,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای هر واحد فعالیت در سیستم مثل لاگین"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyActionCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyActionCount')}
                 required
@@ -1067,7 +1261,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای درصد اطلاعات اختیاری که در پروفایل خودش تکمیل کرده"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyFillProfileInfo.length < 1 && showError}
                 label={t('settingsAi.pharmacyFillProfileInfo')}
                 required
@@ -1084,7 +1281,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب جریمه برای تعداد روز تاخیر غیرمجاز در پرداخت پورسانت"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyPaymentDaleyCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyPaymentDaleyCount')}
                 required
@@ -1101,7 +1301,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="ضریب برای تعداد انتخاب داروهای با تاریخ انقضای نزدیک یا بدون آفر (قیمت نامناسب) در سبد تبادل"
+                data-hintposition="top-left"
+                data-position="left"
                 error={
                   state.pharmacySelectedForceDrugsInExchange.length < 1 &&
                   showError
@@ -1121,7 +1324,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="معیار فورس محسوب شدن یک دارو در لیست عرضه برحسب تعداد روز باقیمانده تا انقضای دارو"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyForceDrugDaysCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyForceDrugDaysCount')}
                 required
@@ -1144,7 +1350,10 @@ const SettingsAiForm: React.FC = () => {
               <h3>{t('settingsAi.section5')}</h3>
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز برای ضریب میانگین آفر به داروهای لیست عرضه"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyOfferRatio.length < 1 && showError}
                 label={t('settingsAi.pharmacyOfferRatio')}
                 required
@@ -1161,7 +1370,10 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز (مثبت یا منفی) برای درصد اختلاف قیمت با میانگین قیمت اعلام شده توسط داروخانه‌ها"
+                data-hintposition="top-left"
+                data-position="left"
                 error={state.pharmacyPriceDifAvg.length < 1 && showError}
                 label={t('settingsAi.pharmacyPriceDifAvg')}
                 required
@@ -1178,7 +1390,9 @@ const SettingsAiForm: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField
+              <TextFieldDaroogh
+                help="امتیاز برای میانه تعداد روز باقیمانده (مهلت زمانی) تا انقضا داروهای لیست مازاد Median( Max(0; 365-ExpRemainDays)/365.0 )"
+                data-position="left"
                 error={state.pharmacyExpRemainDays.length < 1 && showError}
                 label={t('settingsAi.pharmacyExpRemainDays')}
                 required

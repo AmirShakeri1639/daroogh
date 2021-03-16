@@ -1,5 +1,4 @@
 import {
-  AppBar,
   Box,
   createStyles,
   Divider,
@@ -7,14 +6,16 @@ import {
   makeStyles,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from '@material-ui/core';
 import React, { useContext } from 'react';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import DesktopCardContent from '../desktop/DesktopCardContent';
+import ActionButtons from './ActionButtons';
 import Basket from './Basket';
 import Tab1 from './Tab1';
 import Tab2 from './Tab2';
-
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,25 +57,41 @@ const useClasses = makeStyles((theme) =>
     },
     stickyTab: {
       position: 'sticky',
-      marginLeft: '1px !important',
+      // marginLeft: '1px !important',
       top: 70,
       zIndex: 999,
+    },
+    stickyRecommendation: {
+      position: 'sticky',
+      margin: 0,
+      padding: 10,
+      paddingTop: 0,
+      top: 70,
+      zIndex: 999,
+    },
+    desktopCardContent: {
+      marginTop: 0,
+      [theme.breakpoints.up('md')]: {
+        marginTop: -87,
+      },
     },
   })
 );
 
 const Exchange: React.FC = () => {
-  const { root, stickyTab } = useClasses();
+  const {
+    root,
+    stickyTab,
+    stickyRecommendation,
+  } = useClasses();
   const [value, setValue] = React.useState(0);
 
   const {
     basketCount,
-    setBasketCount,
     uBasketCount,
-    setUbasketCount,
-    activeStep,
     viewExhcnage,
-    exchangeId,
+    exchangeStateCode,
+    messageOfExchangeState,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -90,70 +107,84 @@ const Exchange: React.FC = () => {
         پیام هایی که در کادر سمت چپ نمایش داده می شود دقت فرمایید تا کنترل کامل
         بر روند تبادل داشته باشید
       </span>
-      <Grid item xs={12} style={{padding:2}}>
-            <Divider/>
-
+      <Grid item xs={12} style={{ padding: 2 }}>
+        <Divider />
       </Grid>
-      <Grid item xs={12} sm={8} md={8}>
-          <Tabs value={value} onChange={handleChange}>
-            <Tab
-              label={
-                <Basket
-                  label="انتخاب دارو از داروخانه مقابل"
-                  count={
-                    Array.from(
-                      basketCount.filter(
-                        (thing, i, arr) =>
-                          thing.packID &&
-                          arr.findIndex((t) => t.packID === thing.packID) === i
-                      )
-                    ).length +
-                    Array.from(
-                      basketCount.filter(
-                        (thing, i, arr) =>
-                          !thing.packID &&
-                          arr.findIndex((t) => t.drug.id === thing.drug.id) ===
-                            i
-                      )
-                    ).length
-                  }
-                />
-              }
-              {...a11yProps(0)}
-            />
-            <Tab
-              label={
-                <Basket
-                  label="انتخاب دارو از لیست عرضه شما"
-                  count={
-                    Array.from(
-                      uBasketCount.filter(
-                        (thing, i, arr) =>
-                          thing.packID &&
-                          arr.findIndex((t) => t.packID === thing.packID) === i
-                      )
-                    ).length +
-                    Array.from(
-                      uBasketCount.filter(
-                        (thing, i, arr) =>
-                          !thing.packID &&
-                          arr.findIndex((t) => t.drug.id === thing.drug.id) ===
-                            i
-                      )
-                    ).length
-                  }
-                />
-              }
-              {...a11yProps(1)}
-            />
-          </Tabs>
-          <Divider/>
+      <Grid item xs={12} sm={8} md={8} >
+        <Tabs value={value} onChange={handleChange} className={stickyTab}>
+          <Tab
+            label={
+              <Basket
+                label="انتخاب دارو از داروخانه مقابل"
+                count={
+                  Array.from(
+                    basketCount.filter(
+                      (thing, i, arr) =>
+                        thing.packID &&
+                        arr.findIndex((t) => t.packID === thing.packID) === i
+                    )
+                  ).length +
+                  Array.from(
+                    basketCount.filter(
+                      (thing, i, arr) =>
+                        !thing.packID &&
+                        arr.findIndex((t) => t.drug.id === thing.drug.id) === i
+                    )
+                  ).length
+                }
+              />
+            }
+            {...a11yProps(0)}
+          />
+          <Tab
+            label={
+              <Basket
+                label="انتخاب دارو از لیست عرضه شما"
+                count={
+                  Array.from(
+                    uBasketCount.filter(
+                      (thing, i, arr) =>
+                        thing.packID &&
+                        arr.findIndex((t) => t.packID === thing.packID) === i
+                    )
+                  ).length +
+                  Array.from(
+                    uBasketCount.filter(
+                      (thing, i, arr) =>
+                        !thing.packID &&
+                        arr.findIndex((t) => t.drug.id === thing.drug.id) === i
+                    )
+                  ).length
+                }
+              />
+            }
+            {...a11yProps(1)}
+          />
+        </Tabs>
+        <Divider />
         <TabPanel value={value} index={0}>
           <Tab1 />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <Tab2 />
         </TabPanel>
+      </Grid>
+      <Grid item xs={12} sm={4} md={4}>
+        <Grid container className={stickyRecommendation}>
+          <DesktopCardContent item={viewExhcnage} />
+          {exchangeStateCode !== 1 && (
+            <TextField
+              style={{ width: '100%', marginTop: 15 }}
+              multiline
+              defaultValue={messageOfExchangeState}
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          )}
+          <ActionButtons />
+        </Grid>
       </Grid>
     </Grid>
   );

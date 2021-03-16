@@ -41,7 +41,7 @@ const style = makeStyles((theme) =>
       marginTop: -15,
       marginBottom: 15,
       marginLeft: '1px !important',
-      top: 140,
+      top: 128,
       zIndex: 999,
     },
     stickyRecommendation: {
@@ -103,6 +103,23 @@ const Tab2: React.FC = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { cancelExchange } = new PharmacyDrug();
   const dispatch = useDispatch();
+
+  const comparer = (otherArray: any): any => {
+    return (current: any): any => {
+      if (current.packID)
+        return (
+          otherArray.filter((other: any) => {
+            return other.packID == current.packID;
+          }).length == 0
+        );
+      else
+        return (
+          otherArray.filter((other: any) => {
+            return other.id == current.id;
+          }).length == 0
+        );
+    };
+  };
 
   useEffect(() => {
     return (): void => {
@@ -195,11 +212,52 @@ const Tab2: React.FC = () => {
     });
   }, [uBasketCount]);
 
+  const basketCardListGenerator = (): any => {
+    if (uBasketCount && uBasketCount.length > 0) {
+      return uBasketCount.map(
+        (item: AllPharmacyDrugInterface, index: number) => {
+          item.order = index + 1;
+          item.buttonName = 'حذف از تبادل';
+          if (item.cardColor === 'white') item.cardColor = '#33ff33';
+
+          return (
+            <Grid item xs={12} sm={12} xl={12} key={index}>
+              <div className={paper}>
+                {item.packID ? (
+                  <NewCardContainer
+                    basicDetail={
+                      <NewExCardContent formType={1} pharmacyDrug={item} />
+                    }
+                    isPack={true}
+                    pharmacyDrug={item}
+                    collapsableContent={
+                      <NewExCardContent formType={3} packInfo={item.packDetails} />
+                    }
+                  />
+                ) : (
+                  <NewCardContainer
+                    basicDetail={
+                      <NewExCardContent formType={2} pharmacyDrug={item} />
+                    }
+                    isPack={false}
+                    pharmacyDrug={item}
+                  />
+                )}
+              </div>
+            </Grid>
+          );
+        }
+      );
+    }
+
+    return null;
+  };
+
   const cardListGenerator = (): JSX.Element[] | null => {
     if (uAllPharmacyDrug.length > 0) {
       return (
         uAllPharmacyDrug
-          // .filter(comparer(basketCount))
+          .filter(comparer(uBasketCount))
           // .sort((a, b) => (a.order > b.order ? 1 : -1))
           .map((item: AllPharmacyDrugInterface, index: number) => {
             // Object.assign(item, {
@@ -350,7 +408,7 @@ const Tab2: React.FC = () => {
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
               <>
-                {/* {basketCardListGenerator()} */}
+                {basketCardListGenerator()}
                 {cardListGenerator()}
               </>
             </Grid>

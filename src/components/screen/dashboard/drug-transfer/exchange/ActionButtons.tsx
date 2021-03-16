@@ -1121,15 +1121,3 @@ const ActionButtons = (): JSX.Element => {
 };
 
 export default ActionButtons;
-function // try {
-//   const res = await getQuestionGroupOfExchange(exchangeId); // for Test = 10180
-//   const response: GetQuestionGroupOfExchangeInterface = res.data.data;
-//   setQuestions(response);
-//   serQuestionGroupId(response.question[0].questionGroupID);
-//   setOpenSurvayModal(true);
-// } catch (error) {
-//   errorHandler(error);
-// }
-push(arg0: string) {
-  throw new Error('Function not implemented.');
-}
