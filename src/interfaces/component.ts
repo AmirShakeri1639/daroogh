@@ -165,6 +165,12 @@ export interface FavoriteDrugInterface {
   data: DrugInterface;
   formHandler: (item: number) => Promise<any>;
 }
+
+
+export interface UserInterface {
+  data: NewUserData;
+  formHandler: (item: number| undefined) => Promise<any>;
+}
 export interface PrescriptionDataInterface {
   data: PrescriptionInterface;
   formHandler: (item: number) => Promise<any>;
