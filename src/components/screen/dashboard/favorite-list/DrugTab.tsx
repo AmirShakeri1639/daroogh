@@ -7,12 +7,20 @@ import {
   makeStyles,
   Paper,
   TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  useMediaQuery,
+  useTheme,
+  Divider
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Autocomplete } from '@material-ui/lab';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { PharmacyDrugEnum } from '../../../../enum';
-import { debounce, remove } from 'lodash';
+import { debounce, remove, unset } from 'lodash';
 import { Favorite, Drug as DrugApi, Search } from '../../../../services/api';
 import {
   MaterialContainer,
@@ -49,8 +57,10 @@ const useStyle = makeStyles((theme) =>
     modalContainer: {
       backgroundColor: '#fff',
       borderRadius: 5,
-      padding: theme.spacing(2, 3),
-      maxWidth: 500,
+      width: "400px",
+      overflow: 'hidden',
+      maxWidth: 500
+
     },
     buttonContainer: {
       textAlign: 'right',
@@ -67,6 +77,23 @@ const useStyle = makeStyles((theme) =>
       position: 'fixed',
       backgroundColor: '#54bc54 ',
     },
+    formContent: {
+      overflow: 'hidden',
+
+      display: 'flex',
+    },
+    cancelButton: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
   })
 );
 
@@ -77,10 +104,11 @@ const DrugTab: React.FC = () => {
     any[]
   >([]);
   const [drugName, setDrugName] = useState<string>('');
-
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
 
-  const { addButton, modalContainer, buttonContainer, fab } = useStyle();
+  const { addButton, modalContainer, buttonContainer, fab, formContent, cancelButton, submitBtn } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -211,42 +239,69 @@ const DrugTab: React.FC = () => {
         </Hidden>
       </Grid>
 
-      <Modal
-        style={{ overflow: 'visible' }}
+      <Dialog
         open={isOpenModal}
-        toggle={toggleIsOpenModal}
-      >
-        <div className={modalContainer}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <AutoComplete
-                isLoading={isLoading}
-                onChange={debounce((e) => drugSearch(e.target.value), 500)}
-                loadingText={t('general.loading')}
-                className="w-100"
-                placeholder={t('drug.name')}
-                options={drugSearchOptions}
-                onItemSelected={(item): void =>
-                  setDrugName(String(item[0].value))
-                }
-              />
-            </Grid>
+        fullScreen={fullScreen}
+        onClose={toggleIsOpenModal}
 
-            <Grid item xs={12} className={buttonContainer}>
-              <Button color="pink" onClick={toggleIsOpenModal}>
-                {t('general.cancel')}
-              </Button>
-              <Button
-                color="blue"
-                onClick={formHandler}
-                disabled={isLoadingSaveData}
-              >
-                {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
-              </Button>
+      >
+
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+
+                  <Grid item xs={12}>
+                    <AutoComplete
+                      isLoading={isLoading}
+                      onChange={debounce((e) => drugSearch(e.target.value), 500)}
+                      loadingText={t('general.loading')}
+                      className="w-100"
+                      placeholder={t('drug.name')}
+                      options={drugSearchOptions}
+                      onItemSelected={(item): void =>
+                        setDrugName(String(item[0].value))
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={6} sm={6} />
+              <Grid item xs={2} sm={2}>
+                <Button
+                  type="button"
+                  className={cancelButton}
+                  onClick={toggleIsOpenModal}
+                >
+                  {t('general.close')}
+                </Button>
+              </Grid>
+              <Grid item xs={1} sm={2} />
+              <Grid item xs={3} sm={2}>
+
+                <Button
+                  type="submit"
+                  onClick={formHandler}
+                  disabled={isLoadingSaveData}
+                  className={submitBtn}
+
+                >
+                  {isLoadingSaveData ? t('general.pleaseWait') : t('general.submit')}
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-        </div>
-      </Modal>
+        </DialogActions>
+
+      </Dialog>
     </MaterialContainer>
   );
 };
