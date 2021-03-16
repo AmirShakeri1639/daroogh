@@ -551,30 +551,19 @@ const DesktopCardContent = ({
     const redWidth = 100 - thisState * 10;
 
     return (
-      <>
-        <div
-          style={{
-            borderTop: `.75em solid ${ColorEnum.Green}`,
-            width: `${greenWidth}%`,
-            display: 'inline-block',
-            borderRadius: '.5em',
-            borderTopLeftRadius: greenWidth === 100 ? '.5em' : '0',
-            borderBottomLeftRadius: greenWidth === 100 ? '.5em' : '0',
-            borderBottomRightRadius: '.6em',
-          }}
-        ></div>
-        <div
-          style={{
-            borderTop: `.75em solid ${ColorEnum.Red}`,
-            width: `${redWidth}%`,
-            display: 'inline-block',
-            borderRadius: '.5em',
-            borderTopRightRadius: redWidth === 100 ? '.5em' : '0',
-            borderBottomRightRadius: redWidth === 100 ? '.5em' : '0',
-            borderBottomLeftRadius: '.6em',
-          }}
-        ></div>
-      </>
+      <Grid container style={{ height: '100%',width : 4 }}>
+        <Grid
+          item
+          xs={12}
+          style={{ height: `${redWidth - 3}%`, width : 3, background: '#D9D9D7' , borderRadius:'3px 3px 0px 0px'}}
+        ></Grid>
+        <Grid item xs={12} style={{height:6 , width : 4 , background:'#1d0d50' , borderRadius:'50%'}}/>
+        <Grid
+          item
+          xs={12}
+          style={{ height: `${greenWidth - 3}%`, width : 3, background: '#E2802E', borderRadius:'0px 03px 3px 3px' }}
+        ></Grid>
+      </Grid>
     );
   };
   const [showExchangeTree, setShowExchangeTree] = useState(false);
@@ -614,60 +603,73 @@ const DesktopCardContent = ({
 
   return (
     <>
-      <Card className={`${cardRoot}`}>
-        <CardContent>
-          <Grid container alignItems="center" spacing={1}>
-            <Grid item xs={10}>
-              <Typography
-                variant="h5"
-                component="h5"
-                className={`${cardTitle}`}
-                style={{
-                  padding: '0 6px',
-                  borderRight: `20px solid ${getExchangeTitleColor()}`,
-                  height: '40px',
-                  backgroundColor: '#FEFFF2',
-                  paddingTop: '8px',
-                  marginBottom: '8px',
-                  cursor: 'pointer',
-                  width: '100%',
-                }}
-                onClick={(): void => {
-                  if (onCardClick) {
-                    onCardClick(
-                      item.id,
-                      item.state > 10 ? item.state - 10 : item.state,
-                      item.currentPharmacyIsA ? item.numberA : item.numberB
-                    );
-                  }
-                }}
-              >
-                {getExchangeTitle()}
-              </Typography>
-            </Grid>
-            <Grid container xs={2}>
-              <Grid item xs={12}>
-                <span className="txt-xs">کد تبادل</span>
+      <div>
+        <Card className={`${cardRoot}`}>
+          <CardContent>
+            <Grid container alignItems="center" spacing={1}>
+              <Grid item xs={10}>
+                <Typography
+                  variant="h5"
+                  component="h5"
+                  className={`${cardTitle}`}
+                  style={{
+                    padding: '0 6px',
+                    // borderRight: `5px solid ${getExchangeTitleColor()}`,
+                    height: '40px',
+                    backgroundColor: '#FEFFF2',
+                    paddingTop: '8px',
+                    marginBottom: '8px',
+                    cursor: 'pointer',
+                    width: '100%',
+                  }}
+                  onClick={(): void => {
+                    if (onCardClick) {
+                      onCardClick(
+                        item.id,
+                        item.state > 10 ? item.state - 10 : item.state,
+                        item.currentPharmacyIsA ? item.numberA : item.numberB
+                      );
+                    }
+                  }}
+                >
+                  {getExchangeTitle()}
+                </Typography>
               </Grid>
-              <Grid item xs={12}>
-                {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
+              <Grid container xs={2}>
+                <Grid item xs={12}>
+                  <span className="txt-xs">کد تبادل</span>
+                </Grid>
+                <Grid item xs={12}>
+                  {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Divider />
-          <Container className={cardContent}>
-            <>
-              {item && (
-                <>
-                  <ExchangeInfo />
-                  <CardProgressbar />
-                  {showActions && <CardActions />}
-                </>
-              )}
-            </>
-          </Container>
-        </CardContent>
-      </Card>
+            <Divider />
+            <Container className={cardContent}>
+              <>
+                {item && (
+                  <>
+                    <ExchangeInfo />
+                    <Divider />
+                    {showActions && <CardActions />}
+                  </>
+                )}
+              </>
+            </Container>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div
+        style={{
+          width: '6px',
+          height: '100%',
+          float: 'right',
+          background: '#ccc',
+        }}
+      >
+        <CardProgressbar />
+      </div>
 
       <Dialog
         open={showExchangeTree}

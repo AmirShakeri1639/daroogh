@@ -204,7 +204,8 @@ export const useClasses = makeStyles((theme) => createStyles({
     justifyContent: 'flex-end',
   },
   cardRoot: {
-    width: '100%',
+    width: '98%',
+    float:'left',
     minHeight: 110,
     borderRadius: 5,
     display: 'inline-block',
