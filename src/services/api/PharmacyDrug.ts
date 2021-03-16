@@ -36,7 +36,8 @@ class PharmacyDrug extends Api {
     pharmacyInfo: '/Exchange/GetExchangePharmacyInfo',
     getQuestionGroupOfExchange: '/QuestionGroups/GetQuestionGroupOfExchange/',
     detailPharmacyInfo: 'Pharmacy/Detail/',
-    saveSurvey: 'Survey/Save/'
+    saveSurvey: 'Survey/Save/',
+    getFavoritePharmacyDrugCount: '/PharmacyDrug/GetFavoritePharmacyDrugCount',
   };
 
   getAllPharmacyDrug = async (
@@ -64,9 +65,9 @@ class PharmacyDrug extends Api {
     }
   };
 
-  getAccountingForPayment = async (exchangeId = ""): Promise<any> => {
+  getAccountingForPayment = async (exchangeId: number): Promise<any> => {
     try {
-      const query = `${this.urls.getAccountingForPayment}${exchangeId !== "" ? '?exchangeId=' + exchangeId : ''
+      const query = `${this.urls.getAccountingForPayment}${exchangeId > 0 ? '?exchangeId=' + exchangeId : ''
         }`;
       const result = await this.postJsonData(query);
       return result;
@@ -258,6 +259,11 @@ class PharmacyDrug extends Api {
       errorHandler(e);
     }
   };
+
+  getFavoritePharmacyDrugCount = async (): Promise<any> => {
+    const result = await this.postJsonData(this.urls.getFavoritePharmacyDrugCount);
+    return result.data;
+  }
 }
 
 export default PharmacyDrug;

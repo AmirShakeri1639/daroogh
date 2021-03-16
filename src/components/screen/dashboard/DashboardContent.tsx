@@ -27,6 +27,7 @@ import 'intro.js/introjs-rtl.css';
 import introJs from 'intro.js';
 import './style.css';
 import { checkVersion, clearMyCache, showWhatsNew } from 'utils';
+import ExchangeWithFavoritesWidget from './widgets/ExchangeWithFavoritesWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,49 +68,52 @@ const DashboardContent: React.FC<any> = () => {
     setValue(index);
   };
 
-  React.useEffect(() => {
-    if (checkVersion()) {
-      clearMyCache();
-    } else {
-      const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
-      if (whatsNewExistsFromStorage === 'true') {
-        localStorage.removeItem('whatsNewExists');
-        showWhatsNew(localStorage.getItem('version') || '0.1.0');
-      }
+  // React.useEffect(() => {
+  if (checkVersion()) {
+    clearMyCache();
+  } else {
+    const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
+    if (whatsNewExistsFromStorage === 'true') {
+      localStorage.removeItem('whatsNewExists');
+      showWhatsNew(localStorage.getItem('version') || '0.1.0');
     }
-  }, []);
+  }
+  // }, [localStorage.getItem('version')]);
 
   return (
-    <Container maxWidth="lg" className={classes.container}>
-      <Grid container spacing={3}>
-        {/* Widgets */}
-        <Grid item xs={12} container spacing={3}>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
+    <Container maxWidth="lg" className={ classes.container }>
+      <Grid container spacing={ 3 }>
+        {/* Widgets */ }
+        <Grid item xs={ 12 } container spacing={ 3 }>
+          <Grid item xs={ 12 } sm={ 6 } md={ 3 } xl={ 3 }>
             <ExchangeWidget />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } md={ 3 } xl={ 3 }>
             <SurveyWidget />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } md={ 3 } xl={ 3 }>
             <PrescriptionWidget />
           </Grid>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } md={ 3 } xl={ 3 }>
             <EmpApplicationWidget />
           </Grid>
+          <Grid item xs={ 12 } sm={ 6 } md={ 3 } xl={ 3 }>
+            <ExchangeWithFavoritesWidget />
+          </Grid>
         </Grid>
-        {/* Chart */}
+        {/* Chart */ }
 
         <Grid
           item
-          xs={12}
-          sm={12}
-          md={6}
-          xl={6}
-          style={{ height: 500, overflow: 'disabled' }}
+          xs={ 12 }
+          sm={ 12 }
+          md={ 6 }
+          xl={ 6 }
+          style={ { height: 500, overflow: 'disabled' } }
         >
           <Paper
-            className={classes.paper}
-            style={{ height: 500, overflow: 'disabled' }}
+            className={ classes.paper }
+            style={ { height: 500, overflow: 'disabled' } }
           >
             <span>هیت مپ تبادلات در کشور</span>
             <div id="map">
@@ -118,18 +122,18 @@ const DashboardContent: React.FC<any> = () => {
           </Paper>
         </Grid>
 
-        <Grid item xs={12} sm={12} md={6} xl={6}>
-          <Paper className={classes.paper} style={{ height: 500 }}>
+        <Grid item xs={ 12 } sm={ 12 } md={ 6 } xl={ 6 }>
+          <Paper className={ classes.paper } style={ { height: 500 } }>
             <span>نمودار وضعیت تبادلات در کشور</span>
 
             <ExChangeChart />
           </Paper>
         </Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
+        <Grid item xs={ 12 }>
+          <Paper className={ classes.paper }>
             <Tabs
-              value={value}
-              onChange={handleChange}
+              value={ value }
+              onChange={ handleChange }
               indicatorColor="primary"
               textColor="primary"
               variant="fullWidth"
@@ -138,12 +142,12 @@ const DashboardContent: React.FC<any> = () => {
               <Tab label="داروخانه های برتر روزانه " />
               <Tab label="داروخانه های برتر شبانه روزی" />
             </Tabs>
-            <div style={{ marginTop: '5px' }}>
-              {value === 0 ? (
-                <BestPharmaciesList for24Hour={false}></BestPharmaciesList>
+            <div style={ { marginTop: '5px' } }>
+              { value === 0 ? (
+                <BestPharmaciesList for24Hour={ false }></BestPharmaciesList>
               ) : (
-                <BestPharmaciesList for24Hour={true}></BestPharmaciesList>
-              )}
+                <BestPharmaciesList for24Hour={ true }></BestPharmaciesList>
+              ) }
             </div>
           </Paper>
         </Grid>

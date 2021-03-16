@@ -115,7 +115,11 @@ export * from './pharmacy';
 export * from './role';
 export * from './search';
 
-export { ExchangeStateEnum, CancellerEnum } from './ExchangeStateEnum';
+export { 
+  ExchangeStateEnum, 
+  CancellerEnum,
+  NeedSurvey, 
+} from './ExchangeStateEnum';
 export { ColorEnum } from './colors';
 export { CardColors } from './colors';
 export { UserColors } from './colors';

@@ -26,7 +26,7 @@ export enum ColorEnum {
   BRONZE = '#cd7f32',
   PLATINUM = '#a0b2c6',
   AddedByB = '#00cc00',
-  Confirmed = '#33ff33',
+  Confirmed = '#dff4ff',//'#33ff33',
   NotConfirmed = '#009900',
 }
 
