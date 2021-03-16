@@ -88,7 +88,7 @@ const ExchangeTreeCard: React.FC<Props> = (props) => {
       {isYou && (
           <>
         <Grid container xs={12} className={containerReverse} style={{ opacity: `${date ? '1' : '0.3'}` }}>
-          <Grid container xs={12} md={6} className={stepContainer}>
+          <Grid container xs={12} className={stepContainer}>
             <Grid item xs={4} className={dateContainer}>
               <span>{date}</span>
             </Grid>
@@ -108,7 +108,7 @@ const ExchangeTreeCard: React.FC<Props> = (props) => {
           <Grid
             container
             xs={12}
-            md={6}
+          
             direction="row-reverse"
             className={stepContainer}
           >

@@ -16,6 +16,12 @@ const ExchangeTree: React.FC<Props> = (props) => {
   const [dataList, setDataList] = useState<ViewExchangeInterface>();
   const isYou = dataList?.currentPharmacyIsA ? true : false;
   let side: boolean = false;
+  let isAutoConfirmed: boolean =
+    dataList?.viewDateA == null &&
+    dataList?.confirmA &&
+    dataList?.confirmA === true
+      ? true
+      : false;
 
   function nameSuffix(whome: string): string {
     if (isYou && whome === 'A') {
@@ -32,6 +38,17 @@ const ExchangeTree: React.FC<Props> = (props) => {
       return 'طرف مقابل';
     } else return '';
   }
+
+  // function activeStep:number {
+  //   if(dataList?.sendDate) return 0;
+  //   if(dataList?.viewDateB) return 1;
+  //   if(dataList?.cancelDate) return 2;
+  //   if(dataList?.confirmDateB) return 3;
+  //   if(dataList?.viewDateA) return 4;
+  //   if(dataList?.confirmA) return 5;
+
+  //   return 0;
+  // }
 
   useEffect(() => {
     async function getData() {
@@ -56,7 +73,11 @@ const ExchangeTree: React.FC<Props> = (props) => {
         isYou={side}
       />
       <ExchangeTreeCard
-        title={`${t('exchange.exchangeViewedWith')} ${nameSuffix('B')}`}
+        title={`${
+          dataList?.viewDateB == null
+            ? t('exchange.exchangeViewWith')
+            : t('exchange.exchangeViewedWith')
+        } ${nameSuffix('B')}`}
         date={
           dataList?.viewDateB == null
             ? null
@@ -66,7 +87,6 @@ const ExchangeTree: React.FC<Props> = (props) => {
         }
         isYou={side}
       />
-
       {dataList?.cancelDate && (
         <ExchangeTreeCard
           title={`${t('exchange.exchangeCanceledWith')} ${nameSuffix('A')}`}
@@ -80,11 +100,12 @@ const ExchangeTree: React.FC<Props> = (props) => {
           isYou={side}
         />
       )}
-
       <ExchangeTreeCard
         title={`${
-          dataList?.confirmB
+          dataList?.confirmB && dataList?.confirmB === true
             ? t('exchange.exchangeConfirmedWith')
+            : dataList?.confirmB == null
+            ? t('exchange.exchangeConfirmWith')
             : t('exchange.exchangeDeniedWith')
         } ${nameSuffix('B')}`}
         date={
@@ -96,25 +117,37 @@ const ExchangeTree: React.FC<Props> = (props) => {
         }
         isYou={side}
       />
-
-      <ExchangeTreeCard
-        title={`${t('exchange.exchangeViewedWith')} ${nameSuffix('A')}`}
-        date={
-          dataList?.viewDateA == null
-            ? null
-            : moment(dataList?.viewDateA, 'YYYY/MM/DD')
-                .locale('fa')
-                .format('YYYY/MM/DD')
-        }
-        isYou={side}
-      />
-
+      {!isAutoConfirmed && (
+        <ExchangeTreeCard
+          title={`${
+            dataList?.viewDateA == null
+              ? t('exchange.exchangeViewWith')
+              : t('exchange.exchangeViewedWith')
+          } ${nameSuffix('A')}`}
+          date={
+            dataList?.viewDateA == null
+              ? null
+              : moment(dataList?.viewDateA, 'YYYY/MM/DD')
+                  .locale('fa')
+                  .format('YYYY/MM/DD')
+          }
+          isYou={side}
+        />
+      )}
       <ExchangeTreeCard
         title={`${
-          dataList?.confirmA
-            ? t('exchange.exchangeConfirmedWith')
-            : t('exchange.exchangeDeniedWith')
-        } ${nameSuffix('A')}`}
+          isAutoConfirmed
+            ? `${t(
+                'exchange.exchangeViewWithAutomaticConfermedAlert'
+              )} ${nameSuffix('B')} ٬توسط سیستم ${t(
+                'exchange.exchangeConfirmed'
+              )}`
+            : dataList?.confirmA && dataList?.confirmA === true
+            ? `${t('exchange.exchangeConfirmedWith')} ${nameSuffix('A')}`
+            : dataList?.confirmA == null
+            ? `${t('exchange.exchangeConfirmWith')} ${nameSuffix('A')}`
+            : `${t('exchange.exchangeDeniedWith')} ${nameSuffix('A')}`
+        } `}
         date={
           dataList?.confirmDateA == null
             ? null
@@ -122,7 +155,7 @@ const ExchangeTree: React.FC<Props> = (props) => {
                 .locale('fa')
                 .format('YYYY/MM/DD')
         }
-        isYou={side}
+        isYou={isAutoConfirmed ? !side : side}
       />
     </>
   );
