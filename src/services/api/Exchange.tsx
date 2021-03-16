@@ -10,9 +10,22 @@ class Exchange extends Api {
     allExchange: '/Exchange/AllExchange',
     // state 3 = CONFIRMB_AND_WAITFORA
     // state 2 = WAITFORB (12 for B)
-    getForWidget: `/Exchange/Dashboard?$orderby=id desc&$filter=` +
+    getForWidget:
+      `/Exchange/Dashboard?$orderby=id desc&$filter=` +
       `(contains(cast(state, 'Edm.String'), '3') and currentPharmacyIsA eq true) or ` +
       `(contains(cast(state, 'Edm.String'), '2') and currentPharmacyIsA eq false)`,
+    oneExchange: 'Exchange/ViewExchange?exchangeID=',
+  };
+
+  getExchangeTree = async (exchangeId: number | string): Promise<any> => {
+    try {
+      const result = await this.postJsonData(
+        `${this.urls.oneExchange}${exchangeId}`
+      );
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
   };
 
   getPharmacyInfoOfExchange = async (
@@ -29,7 +42,9 @@ class Exchange extends Api {
       e *= 10;
       const url = `${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`;
       console.log('Dashboard Url => ', url);
-      const result = await this.postData(`${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`);
+      const result = await this.postData(
+        `${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`
+      );
       return result.data;
     } catch (e) {
       errorHandler(e);
@@ -39,12 +54,12 @@ class Exchange extends Api {
   getForWidget = async (): Promise<any> => {
     const result = await this.postJsonData(this.urls.getForWidget);
     return result.data;
-  }
+  };
 
   needSurvey = async (): Promise<any> => {
     const result = await this.postJsonData(this.urls.needSurvey);
     return result.data;
-  }
+  };
 
   getAllExchange = async (
     skip: number = 0,
