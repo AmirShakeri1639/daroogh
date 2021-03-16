@@ -277,7 +277,7 @@ const SecondStep: React.FC = () => {
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
-          if (item.cardColor === 'white') item.cardColor = '#33ff33';
+          if (item.cardColor === 'white') item.cardColor = '#dff4ff';
 
           return (
             <Grid item xs={12} sm={6} xl={4} key={index}>

@@ -218,7 +218,7 @@ const Tab2: React.FC = () => {
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
-          if (item.cardColor === 'white') item.cardColor = '#33ff33';
+          if (item.cardColor === 'white') item.cardColor = '#dff4ff';
 
           return (
             <Grid item xs={12} sm={12} xl={12} key={index}>
@@ -226,18 +226,29 @@ const Tab2: React.FC = () => {
                 {item.packID ? (
                   <NewCardContainer
                     basicDetail={
-                      <NewExCardContent formType={1} pharmacyDrug={item} />
+                      <NewExCardContent
+                        formType={1}
+                        pharmacyDrug={item}
+                        isPack={true}
+                      />
                     }
                     isPack={true}
                     pharmacyDrug={item}
                     collapsableContent={
-                      <NewExCardContent formType={3} packInfo={item.packDetails} />
+                      <NewExCardContent
+                        formType={3}
+                        packInfo={item.packDetails}
+                      />
                     }
                   />
                 ) : (
                   <NewCardContainer
                     basicDetail={
-                      <NewExCardContent formType={2} pharmacyDrug={item} />
+                      <NewExCardContent
+                        formType={2}
+                        pharmacyDrug={item}
+                        isPack={false}
+                      />
                     }
                     isPack={false}
                     pharmacyDrug={item}
@@ -280,7 +291,6 @@ const Tab2: React.FC = () => {
               });
             }
 
-            debugger;
             return (
               <Grid item xs={12} sm={12} xl={12} key={index}>
                 <div className={paper}>
@@ -383,28 +393,26 @@ const Tab2: React.FC = () => {
                 !viewExhcnage.lockSuggestion &&
                 (viewExhcnage.state === 1 ||
                   viewExhcnage.state === 2 ||
-                  viewExhcnage.state === 12))) &&  (
-
-                <Grid
-                  item
-                  xs={12}
-                  md={12}
-                  style={{ marginTop: -7, marginRight: 5, paddingBottom: 10 }}
-                >
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={isSelected}
-                      
-                        onChange={handleChange}
-                        name="checkedB"
-                        color="primary"
-                      />
-                    }
-                    label="انتخاب دارو از سبد عرضه خود"
-                  />
-                </Grid>
-              )}
+                  viewExhcnage.state === 12))) && (
+              <Grid
+                item
+                xs={12}
+                md={12}
+                style={{ marginTop: -7, marginRight: 5, paddingBottom: 10 }}
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={isSelected}
+                      onChange={handleChange}
+                      name="checkedB"
+                      color="primary"
+                    />
+                  }
+                  label="انتخاب دارو از سبد عرضه خود"
+                />
+              </Grid>
+            )}
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
               <>
