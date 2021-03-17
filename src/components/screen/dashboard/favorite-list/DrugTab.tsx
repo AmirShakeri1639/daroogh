@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   createStyles,
   Fab,
@@ -14,10 +14,9 @@ import {
   DialogContentText,
   useMediaQuery,
   useTheme,
-  Divider
+  Divider,
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Autocomplete } from '@material-ui/lab';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { PharmacyDrugEnum } from '../../../../enum';
 import { debounce, remove, unset } from 'lodash';
@@ -57,10 +56,9 @@ const useStyle = makeStyles((theme) =>
     modalContainer: {
       backgroundColor: '#fff',
       borderRadius: 5,
-      width: "400px",
+      width: '400px',
       overflow: 'hidden',
-      maxWidth: 500
-
+      maxWidth: 500,
     },
     buttonContainer: {
       textAlign: 'right',
@@ -108,7 +106,15 @@ const DrugTab: React.FC = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
 
-  const { addButton, modalContainer, buttonContainer, fab, formContent, cancelButton, submitBtn } = useStyle();
+  const {
+    addButton,
+    modalContainer,
+    buttonContainer,
+    fab,
+    formContent,
+    cancelButton,
+    submitBtn,
+  } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -243,19 +249,20 @@ const DrugTab: React.FC = () => {
         open={isOpenModal}
         fullScreen={fullScreen}
         onClose={toggleIsOpenModal}
-
       >
-
         <DialogContent>
           <DialogContentText>
             <Grid container spacing={1} className={formContent}>
               <Grid item xs={12}>
                 <Grid container spacing={1}>
-
                   <Grid item xs={12}>
                     <AutoComplete
+                      ref={useRef()}
                       isLoading={isLoading}
-                      onChange={debounce((e) => drugSearch(e.target.value), 500)}
+                      onChange={debounce(
+                        (e) => drugSearch(e.target.value),
+                        500
+                      )}
                       loadingText={t('general.loading')}
                       className="w-100"
                       placeholder={t('drug.name')}
@@ -286,21 +293,20 @@ const DrugTab: React.FC = () => {
               </Grid>
               <Grid item xs={1} sm={2} />
               <Grid item xs={3} sm={2}>
-
                 <Button
                   type="submit"
                   onClick={formHandler}
                   disabled={isLoadingSaveData}
                   className={submitBtn}
-
                 >
-                  {isLoadingSaveData ? t('general.pleaseWait') : t('general.submit')}
+                  {isLoadingSaveData
+                    ? t('general.pleaseWait')
+                    : t('general.submit')}
                 </Button>
               </Grid>
             </Grid>
           </Grid>
         </DialogActions>
-
       </Dialog>
     </MaterialContainer>
   );
