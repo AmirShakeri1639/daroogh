@@ -90,11 +90,11 @@ const Login: React.FC = (): JSX.Element => {
   const location = useLocation();
 
   useEffect(() => {
-    document.body.classList.add("body-login");
+    document.body.classList.add('body-login');
     return function cleanup() {
-      document.body.classList.remove("body-login");
-    }
-  }, [])
+      document.body.classList.remove('body-login');
+    };
+  }, []);
 
   const { t } = useTranslation();
   const { push } = useHistory();
@@ -131,7 +131,7 @@ const Login: React.FC = (): JSX.Element => {
                 ): Promise<void> {
                   await setNotification(najva_user_token);
                 };
-                console.log('Najva subscription fnished.');
+                console.log('Najva subscription finished.');
               }
             } catch (e) {
               errorHandler(e);
@@ -190,33 +190,37 @@ const Login: React.FC = (): JSX.Element => {
         <Typography component="h1" variant="h5">
           ورود
         </Typography> */}
-        <form className={ classes.form } noValidate onSubmit={ formSubmitHandler }>
-          <Grid container spacing={ 3 }>
-            <Grid item xs={ 12 }>
+        <form className={classes.form} noValidate onSubmit={formSubmitHandler}>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
               <TextField
-                error={ state.username.trim().length === 0 && showError }
+                error={state.username.trim().length === 0 && showError}
                 variant="outlined"
                 margin="normal"
                 required
-                xs={ 12 }
+                xs={12}
                 fullWidth
                 className="text-field"
                 id="email"
-                label={ t('login.username') }
+                label={t('login.username')}
                 name="email"
                 autoComplete="email"
-                onChange={ usernameHandler }
-                InputProps={ {
+                onChange={usernameHandler}
+                InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <FontAwesomeIcon icon={ faUser } size="lg" color="#3607a5" />
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        size="lg"
+                        color="#3607a5"
+                      />
                     </InputAdornment>
                   ),
-                } }
+                }}
               />
               <TextField
-                xs={ 12 }
-                error={ state.password.trim().length === 0 && showError }
+                xs={12}
+                error={state.password.trim().length === 0 && showError}
                 variant="outlined"
                 margin="normal"
                 required
@@ -224,62 +228,62 @@ const Login: React.FC = (): JSX.Element => {
                 className="text-field"
                 name="password"
                 label="کلمه عبور"
-                type={ state.isVisiblePassword ? 'text' : 'password' }
+                type={state.isVisiblePassword ? 'text' : 'password'}
                 id="password"
-                onChange={ passwordHandler }
+                onChange={passwordHandler}
                 autoComplete="current-password"
-                InputProps={ {
+                InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <FontAwesomeIcon icon={ faKey } size="lg" color="#3607a5" />
+                      <FontAwesomeIcon icon={faKey} size="lg" color="#3607a5" />
                     </InputAdornment>
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={ handleClickShowPassword }
-                        onMouseDown={ handleMouseDownPassword }
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
                         edge="end"
                       >
-                        { state.isVisiblePassword ? (
+                        {state.isVisiblePassword ? (
                           <Visibility />
                         ) : (
                           <VisibilityOff />
-                        ) }
+                        )}
                       </IconButton>
                     </InputAdornment>
                   ),
-                } }
+                }}
               />
             </Grid>
-            <Grid item xs={ 12 } className="no-padding">
+            <Grid item xs={12} className="no-padding">
               <Button
                 type="submit"
                 className="button"
                 variant="contained"
-                disabled={ isLoading }
+                disabled={isLoading}
               >
-                <Typography variant="button">{ t('login.login') }</Typography>
-                { isLoading ? (
-                  <CircleLoading size={ 16 } color="inherit" />
+                <Typography variant="button">{t('login.login')}</Typography>
+                {isLoading ? (
+                  <CircleLoading size={16} color="inherit" />
                 ) : (
-                  <LockOpenIcon fontSize="inherit" className={ classes.margin } />
-                ) }
+                  <LockOpenIcon fontSize="inherit" className={classes.margin} />
+                )}
               </Button>
             </Grid>
-            <Grid item xs={ 12 } className="no-padding">
+            <Grid item xs={12} className="no-padding">
               <Link className="link" to="/forget-password">
                 رمز عبور را فراموش کردم
               </Link>
             </Grid>
-            <Grid item xs={ 12 }>
+            <Grid item xs={12}>
               <Link
                 className="link MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
                 to="/register-pharmacy-with-user"
               >
                 <Typography variant="button">
-                  { t('login.registerPharmacyWithUser') }
+                  {t('login.registerPharmacyWithUser')}
                 </Typography>
               </Link>
             </Grid>

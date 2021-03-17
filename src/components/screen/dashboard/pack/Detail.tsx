@@ -57,7 +57,7 @@ const Detail: React.FC<DetailProps> = (props) => {
       <Paper className={paper} elevation={0}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
-          <div className={container}>
+            <div className={container}>
               <Grid container spacing={0}>
                 <Grid container xs={12} className="drug-container">
                   <Grid container xs={1}>
@@ -77,7 +77,7 @@ const Detail: React.FC<DetailProps> = (props) => {
                     <TextWithTitle
                       title={t('exchange.basketTotalPrice')}
                       body={thousandsSeperator(totalPrice)}
-                      suffix={ t('general.defaultCurrency') }
+                      suffix={t('general.defaultCurrency')}
                     />
 
                     <TextWithTitle
@@ -85,8 +85,6 @@ const Detail: React.FC<DetailProps> = (props) => {
                       body={thousandsSeperator(drugsCounter)}
                     />
                   </Grid>
-
-                
                 </Grid>
               </Grid>
             </div>
