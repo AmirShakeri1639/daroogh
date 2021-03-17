@@ -55,9 +55,14 @@ class Api {
   protected axiosInstance: AxiosInstance = axiosInstance;
   protected axiosSource = CancelToken.source();
 
-  private authorizedUserRequest(): AxiosInstance {
-    const user = localStorage.getItem('user') || '{}';
-    const { token } = JSON.parse(user);
+  private authorizedUserRequest(customToken: any = null): AxiosInstance {
+    let token: any;
+    if (customToken !== null) {
+      token = customToken;
+    } else {
+      const user = localStorage.getItem('user') || '{}';
+      token = JSON.parse(user).token;
+    }
     const defaultsAxiosHeaders: DefaultAxiosConfigInterface = {};
 
     if (token !== undefined) {
@@ -69,8 +74,8 @@ class Api {
     return this.axiosInstance;
   }
 
-  protected async postJsonData(url: string, data: any = null): Promise<any> {
-    return await this.authorizedUserRequest().post(url, data, {
+  protected async postJsonData(url: string, data: any = null, token: any = null): Promise<any> {
+    return await this.authorizedUserRequest(token).post(url, data, {
       cancelToken: this.axiosSource.token,
     });
   }
