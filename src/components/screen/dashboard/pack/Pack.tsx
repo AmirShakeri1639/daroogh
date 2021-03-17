@@ -93,7 +93,7 @@ const Pack: React.FC = () => {
         const { id, name, pharmacyDrug, category } = item;
         let totalPrice = 0;
         pharmacyDrug.forEach((item: any) => {
-          totalPrice += item.amount;
+          totalPrice += item.amount * item.cnt;
         });
         return (
           <Grid spacing={3} item xs={12} sm={12} md={4} xl={4} key={id}>
@@ -121,8 +121,8 @@ const Pack: React.FC = () => {
         <Hidden xsDown>
           <Grid item xs={12} sm={12} md={4} xl={3}>
             <Paper className={addButton} onClick={createPackLink}>
-            <FontAwesomeIcon icon={faPlus} size="2x" />
-                <span>{t('pack.create')}</span>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
+              <span>{t('pack.create')}</span>
             </Paper>
           </Grid>
         </Hidden>

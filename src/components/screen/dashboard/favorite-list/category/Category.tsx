@@ -11,6 +11,14 @@ import {
   MenuItem,
   Paper,
   Select,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  useMediaQuery,
+  useTheme,
+  Divider
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -71,6 +79,24 @@ const useStyle = makeStyles((theme) =>
       position: 'fixed',
       backgroundColor: '#54bc54 ',
     },
+    formContent: {
+      overflow: 'hidden',
+
+      display: 'flex',
+    },
+    cancelButton: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    
   })
 );
 
@@ -93,10 +119,12 @@ const Category: React.FC = () => {
   const [inSubmit, setInSubmit] = useState<boolean>(false);
   const [isOpenBackdrop, setIsOpenBackdrop] = useState<boolean>(false);
 
-  const { addButton, modalContainer, buttonContainer, fab } = useStyle();
+  const { addButton, modalContainer, buttonContainer, fab ,formContent, cancelButton, submitBtn} = useStyle();
 
   const { t } = useTranslation();
-
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
   const queryCache = useQueryCache();
@@ -243,11 +271,22 @@ const Category: React.FC = () => {
         </Hidden>
       </Grid>
 
-      <Modal open={isOpenModal} toggle={toggleIsOpenModal}>
-        <div className={modalContainer}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <InputLabel id="category-list">{t('drug.category')}</InputLabel>
+      <Dialog
+        open={isOpenModal}
+        fullScreen={fullScreen}
+        onClose={toggleIsOpenModal}
+
+      >
+ <DialogTitle className="text-sm">
+ {t('drug.category')}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+
+                  <Grid item xs={12}>
               <Select
                 multiple
                 labelId="cateogry-list"
@@ -272,18 +311,43 @@ const Category: React.FC = () => {
                 {listGenerator()}
               </Select>
             </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={8} />
+              <Grid item xs={2} sm={2}>
+                <Button
+                  type="button"
+                  className={cancelButton}
+                  onClick={toggleIsOpenModal}
+                >
+                  {t('general.close')}
+                </Button>
+              </Grid>
+             
+              <Grid item xs={3} sm={2}>
 
-            <Grid item xs={12} className={buttonContainer}>
-              <Button color="pink" onClick={toggleIsOpenModal}>
-                {t('general.cancel')}
-              </Button>
-              <Button color="blue" onClick={formHandler} disabled={inSubmit}>
-                {inSubmit ? t('general.pleaseWait') : t('general.add')}
-              </Button>
+                <Button
+                  type="submit"
+                  onClick={formHandler}
+                  disabled={inSubmit}
+                  className={submitBtn}
+
+                >
+                  {inSubmit ? t('general.pleaseWait') : t('general.submit')}
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-        </div>
-      </Modal>
+        </DialogActions>
+
+      </Dialog>
     </MaterialContainer>
   );
 };

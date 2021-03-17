@@ -54,7 +54,7 @@ const { readMultiMessage } = new MessageApi();
 
 const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
   const { notifEl, setNotifEl } = useContext(Context);
-  console.log(messages);
+
   const { subject, menu, menuItem, message: _message, date } = useStyle();
 
   const queryCache = useQueryCache();
