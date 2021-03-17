@@ -577,7 +577,7 @@ const UsersList: React.FC = () => {
         //if (user !== null) {
         return (
           <Grid key={item.id} item xs={12}>
-            <CardContainer data={item} editRoleHandler={formHandler} />
+            <CardContainer data={item} editRoleHandler={editRoleHandler} />
           </Grid>
         );
         //}

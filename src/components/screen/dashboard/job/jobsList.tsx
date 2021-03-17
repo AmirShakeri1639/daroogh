@@ -2,7 +2,7 @@ import React, { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import Job from '../../../../services/api/Job';
 import FormContainer from '../../../public/form-container/FormContainer';
-import CardContainer from './CardContainer'
+import CardContainer from './CardContainer';
 import {
   Container,
   Grid,
@@ -206,7 +206,7 @@ const useStyle = makeStyles((theme) =>
     },
     buttonContainer: {
       marginBottom: theme.spacing(2),
-      paddingLeft: theme.spacing(2)
+      paddingLeft: theme.spacing(2),
     },
     label: {
       display: 'flex',
@@ -230,7 +230,6 @@ const useStyle = makeStyles((theme) =>
       fontSize: 10,
       float: 'right',
     },
-
   })
 );
 
@@ -254,8 +253,14 @@ const JobsList: React.FC = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const { createUserBtn, buttonContainer, label
-    , formContent, cancelButton, submitBtn } = useStyle();
+  const {
+    createUserBtn,
+    buttonContainer,
+    label,
+    formContent,
+    cancelButton,
+    submitBtn,
+  } = useStyle();
 
   const queryCache = useQueryCache();
 
@@ -365,9 +370,7 @@ const JobsList: React.FC = () => {
     }
   };
 
-  const toggleConfirmHandler = async (
-    row: JobInterface
-  ): Promise<any> => {
+  const toggleConfirmHandler = async (row: JobInterface): Promise<any> => {
     if (window.confirm(t('alert.cancelConfirm'))) {
       try {
         await _cancel(row.id);
@@ -429,9 +432,7 @@ const JobsList: React.FC = () => {
   //   return state.name && state.name.trim().length > 0;
   // };
 
-  const submitSave = async (
-    el: React.FormEvent<HTMLFormElement>
-  ): Promise<any> => {
+  const submitSave = async (el: any): Promise<any> => {
     el.preventDefault();
 
     const {
@@ -588,14 +589,26 @@ const JobsList: React.FC = () => {
     }
     setEducationLevel(elList);
   }, []);
-  const { isLoading, data, isFetched, refetch } = useQuery(
+  const [list, setList] = useState<any>([]);
+  const listRef = React.useRef(list);
+  const setListRef = (data:any) => {
+    listRef.current = listRef.current.concat(data);
+    setList(data);
+  };
+  const { isLoading, data, isFetched } = useQuery(
     JobsEnum.GET_ALL,
 
     () => all(pageRef.current, 3),
     {
       onSuccess: (result) => {
+        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoData(true);
+        } else {
+          console.log(result.items);
+
+          setListRef(result.items          
+          );
         }
       },
     }
@@ -607,26 +620,32 @@ const JobsList: React.FC = () => {
     pageRef.current = data;
     setPage(data);
   };
+ 
   const handleScroll = (e: any): any => {
     //if (fullScreen) {
-      console.log("scroll")
-      const el = e.target;
-      if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-        if (!noData) {
-          const currentpage = pageRef.current + 1;
-          setPageRef(currentpage);
-          console.log(pageRef.current)
-          const result = getList();
-          
 
-        }
-      //}
+   
+    const el = e.target;
+    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+      if (!noData) {
+        const currentpage = pageRef.current + 1;
+        setPageRef(currentpage);
+        console.log(pageRef.current);
+        getList();
+      }
     }
   };
   async function getList(): Promise<any> {
-    const result =await all(pageRef.current, 3);
-    
+    const result = await all(pageRef.current, 3);
+    console.log(result.items);
+    if (result == undefined || result.items.length == 0) {
+      setNoData(true);
+    } else {
+      setListRef(result.items);
+      return result;
+    }
   }
+  
   React.useEffect(() => {
     // const res = (async (): Promise<any> => await getExchanges())
     // res();
@@ -765,7 +784,10 @@ const JobsList: React.FC = () => {
                       data={WorkShiftTypeList}
                       className="w-100"
                       onChangeHandler={(v): void => {
-                        return dispatch({ type: 'suggestedWorkShift', value: v });
+                        return dispatch({
+                          type: 'suggestedWorkShift',
+                          value: v,
+                        });
                       }}
                     />
                   </Grid>
@@ -935,7 +957,10 @@ const JobsList: React.FC = () => {
                       label={t('general.descriptions')}
                       value={state?.descriptions}
                       onChange={(e): void =>
-                        dispatch({ type: 'descriptions', value: e.target.value })
+                        dispatch({
+                          type: 'descriptions',
+                          value: e.target.value,
+                        })
                       }
                     />
                   </Grid>
@@ -962,13 +987,17 @@ const JobsList: React.FC = () => {
                 </Button>
               </Grid>
               <Grid item xs={3} sm={2}>
-
                 <Button
                   type="submit"
                   disabled={isLoadingSave}
                   className={submitBtn}
+                  onClick={(e): void => {
+                    submitSave(e);
+                  }}
                 >
-                  {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
+                  {isLoadingSave
+                    ? t('general.pleaseWait')
+                    : t('general.submit')}
                 </Button>
               </Grid>
             </Grid>
@@ -1011,26 +1040,29 @@ const JobsList: React.FC = () => {
       action: addTransactionHandler,
     },*/
   ];
-
-  const contentGenerator = (): JSX.Element[] | null => {
-
-    if (!isLoading && data !== undefined && isFetched) {
-      console.log(data)
-      return data.items.map((item: any) => {
+ 
+  const contentGenerator = (): JSX.Element[] => {
+    if (!isLoading && list !== undefined && isFetched) {
+      console.log(data);
+      console.log(list);
+      
+      return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
         return (
           <Grid key={item.id} item xs={12}>
-            <CardContainer data={item} saveHandler={saveHandler} toggleConfirmHandler={toggleConfirmHandler} />
+            <CardContainer
+              data={item}
+              saveHandler={saveHandler}
+              toggleConfirmHandler={toggleConfirmHandler}
+            />
           </Grid>
         );
         //}
-
-        return null;
       });
     }
 
-    return null;
+    return [];
   };
 
   // @ts-ignore
@@ -1061,11 +1093,10 @@ const JobsList: React.FC = () => {
               onClick={(): void => saveHandler(initialState)}
             >
               ایجاد فرصت شغلی
-        </Button>
+            </Button>
           </Grid>
           {fullScreen && contentGenerator()}
-          {fullScreen && <CircleBackdropLoading
-            isOpen={isLoading} />}
+          {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
