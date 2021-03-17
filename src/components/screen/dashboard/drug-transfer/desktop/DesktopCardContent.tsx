@@ -1,4 +1,6 @@
 import React, { useContext, useState } from 'react';
+import MobileDiffViwer from './MobileDiffViwer';
+
 import {
   Button,
   Card,
@@ -310,8 +312,8 @@ const DesktopCardContent = ({
   const ExchangeInfo = (): JSX.Element => {
     return (
       <Grid container spacing={0} className={cardContainer}>
-        <Grid container className={cardTop}>
-          <Grid item container xs={6} className={rowRight}>
+        {/* <Grid container className={cardTop}> */}
+        {/* <Grid item container xs={6} className={rowRight}>
             <Grid item xs={12} className={rowRight}>
               <FontAwesomeIcon
                 icon={faSun}
@@ -332,8 +334,8 @@ const DesktopCardContent = ({
                   : `${item.pharmacyProvinceA}، ${item.pharmacyCityA}`}
               </div>
             </Grid>
-          </Grid>
-          <Grid item container xs={6} className={colLeft}>
+          </Grid> */}
+        {/* <Grid item container xs={6} className={colLeft}>
             <Grid item xs={12} className={rowLeft}>
               {pharmacyWarranty !== 0 && (
                 <>
@@ -351,13 +353,13 @@ const DesktopCardContent = ({
             >
               {stars()}
             </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12} style={{ padding: '2px' }}>
+          </Grid> */}
+        {/* </Grid> */}
+        {/* <Grid item xs={12} style={{ padding: '2px' }}>
           <Divider />
-        </Grid>
+        </Grid> */}
         <Grid item container xs={12}>
-          {!isNullOrEmpty(item?.sendDate) && (
+          {/* {!isNullOrEmpty(item?.sendDate) && (
             <Grid item xs={12}>
               <TextWithTitle
                 title={t('exchange.sendDate')}
@@ -370,9 +372,9 @@ const DesktopCardContent = ({
                 }
               />
             </Grid>
-          )}
+          )} */}
 
-          {!isNullOrEmpty(expireDate) && (
+          {/* {!isNullOrEmpty(expireDate) && (
             <Grid item xs={12}>
               <TextWithTitle title={expireDateText} body={expireDate} />
             </Grid>
@@ -452,7 +454,7 @@ const DesktopCardContent = ({
                 suffix={t('general.defaultCurrency')}
               />
             </Grid>
-          )}
+          )} */}
 
           {full && (
             <>
@@ -471,7 +473,7 @@ const DesktopCardContent = ({
                 (item.state === 12 && !item.lockSuggestion)) && (
                 <>
                   <Grid item xs={12}>
-                    <div
+                    {/* <div
                       className={scaleContainer}
                       style={{ marginTop: `${diffPercent / 3}px` }}
                     >
@@ -517,7 +519,20 @@ const DesktopCardContent = ({
                           }
                         </span>
                       </div>
-                    </div>
+                    </div> */}
+                    <MobileDiffViwer
+                      percentage={diffPercent}
+                      otherAmount={`${
+                        item.currentPharmacyIsA
+                          ? totalPriceB
+                          : totalPriceA
+                      }`}
+                      yourAmount={`${
+                        item.currentPharmacyIsA
+                          ? totalPriceA
+                          : totalPriceB
+                      }`}
+                    />
                   </Grid>
                   {differenceMessage && (
                     <Grid item xs={12} className={spacingVertical3}>
@@ -551,17 +566,36 @@ const DesktopCardContent = ({
     const redWidth = 100 - thisState * 10;
 
     return (
-      <Grid container style={{ height: '100%',width : 4 }}>
+      <Grid container style={{ height: '100%', width: 4 }}>
         <Grid
           item
           xs={12}
-          style={{ height: `${redWidth - 3}%`, width : 3, background: '#D9D9D7' , borderRadius:'3px 3px 0px 0px'}}
+          style={{
+            height: `${redWidth - 3}%`,
+            width: 3,
+            background: '#D9D9D7',
+            borderRadius: '3px 3px 0px 0px',
+          }}
         ></Grid>
-        <Grid item xs={12} style={{height:6 , width : 4 , background:'#1d0d50' , borderRadius:'50%'}}/>
         <Grid
           item
           xs={12}
-          style={{ height: `${greenWidth - 3}%`, width : 3, background: '#E2802E', borderRadius:'0px 03px 3px 3px' }}
+          style={{
+            height: 6,
+            width: 4,
+            background: '#1d0d50',
+            borderRadius: '50%',
+          }}
+        />
+        <Grid
+          item
+          xs={12}
+          style={{
+            height: `${greenWidth - 3}%`,
+            width: 3,
+            background: '#E2802E',
+            borderRadius: '0px 03px 3px 3px',
+          }}
         ></Grid>
       </Grid>
     );
@@ -606,7 +640,7 @@ const DesktopCardContent = ({
       <div>
         <Card className={`${cardRoot}`}>
           <CardContent>
-            <Grid container alignItems="center" spacing={1}>
+            {/* <Grid container alignItems="center" spacing={1}>
               <Grid item xs={10}>
                 <Typography
                   variant="h5"
@@ -644,7 +678,7 @@ const DesktopCardContent = ({
                 </Grid>
               </Grid>
             </Grid>
-            <Divider />
+            <Divider /> */}
             <Container className={cardContent}>
               <>
                 {item && (

@@ -320,7 +320,10 @@ export const useClasses = makeStyles((theme) => createStyles({
 
   scaleContainer: {
     width: "100%",
-    
+    minHeight: '135px',
+    display: 'flex',
+    alignItems: 'center',
+    alignContent: 'center'
   
   }
 }));
