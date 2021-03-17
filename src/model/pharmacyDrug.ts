@@ -1,5 +1,5 @@
 export class PharmacyDrugSupplyList {
-  public id: number = 0;
+  public id?: number = 0;
   public expireDate: string = '';
   public amount: number | string = '';
   public cnt: number | string = '';
