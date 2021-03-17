@@ -9,9 +9,9 @@ class Settings extends Api {
     save: '/Setting/Save',
   }
 
-  getPublic = async (): Promise<any> => {
+  getPublic = async (token: any = null): Promise<any> => {
     try {
-      const result = await this.postJsonData(this.urls.getPublic);
+      const result = await this.postJsonData(this.urls.getPublic, null, token);
       return result.data;
     } catch (e) {
       errorHandler(e);
