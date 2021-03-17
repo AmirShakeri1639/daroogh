@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import React, { useState, useReducer, useEffect, useRef } from 'react';
 import {
   createStyles,
   Grid,
@@ -646,6 +646,7 @@ const SupplyList: React.FC = () => {
             <Grid container spacing={1} className={formContent}>
               <Grid item xs={12}>
                 <AutoComplete
+                  ref={useRef()}
                   isLoading={isLoading}
                   onChange={debounce((e) => searchDrugs(e.target.value), 500)}
                   loadingText={t('general.loading')}
@@ -738,7 +739,7 @@ const SupplyList: React.FC = () => {
                     </Grid>
                   </Grid>
                 </Grid>
-                <br/>
+                <br />
                 <Grid item xs={12} md={6}>
                   <Grid
                     container
@@ -874,8 +875,7 @@ const SupplyList: React.FC = () => {
                   onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
                 />
                 <span>
-                  صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته
-                  نشود
+                  صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته نشود
                 </span>
               </label>
             </Grid>

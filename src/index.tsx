@@ -9,6 +9,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import CircleLoading from './components/public/loading/CircleLoading';
 import store from './redux/store';
+import { SnackbarProvider } from 'notistack';
 import './i18n';
 import './assets/scss/main.scss';
 import './scrollbar.css';
@@ -30,7 +31,9 @@ ReactDOM.render(
       <ReactQueryCacheProvider queryCache={queryCache}>
         <RTL>
           <MuiThemeProvider theme={theme}>
-            <App />
+            <SnackbarProvider maxSnack={2}>
+              <App />
+            </SnackbarProvider>
           </MuiThemeProvider>
         </RTL>
       </ReactQueryCacheProvider>

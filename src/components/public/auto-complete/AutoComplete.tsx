@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  forwardRef,
+  Ref,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTimes,
@@ -27,168 +34,179 @@ interface Props {
   multiple?: boolean;
 }
 
-const AutoComplete: React.FC<Props> = ({
-  onChange,
-  placeholder,
-  className,
-  loadingText,
-  isLoading,
-  options,
-  onItemSelected,
-  defaultSelectedItem,
-  multiple,
-}) => {
-  const [inputValue, setInputValue] = useState<string>('');
-  const [showOptionsList, setShowOptionsList] = useState(false);
-  const [valuesArray, setValuesArray] = useState<ListOptions[]>([]);
+const AutoComplete: React.FC<Props & { ref: Ref<any> }> = forwardRef(
+  (
+    {
+      onChange,
+      placeholder,
+      className,
+      loadingText,
+      isLoading,
+      options,
+      onItemSelected,
+      defaultSelectedItem,
+      multiple,
+    },
+    ref
+  ) => {
+    const [inputValue, setInputValue] = useState<string>('');
+    const [showOptionsList, setShowOptionsList] = useState(false);
+    const [valuesArray, setValuesArray] = useState<ListOptions[]>([]);
 
-  useEffect(() => {
-    const escapeHandler = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape') {
-        setShowOptionsList(false);
-      }
-    };
-
-    document.addEventListener('keydown', escapeHandler);
-    return (): void => {
-      document.removeEventListener('keydown', escapeHandler);
-    };
-  }, []);
-
-  useEffect(() => {
-    const wrapperEl = document.getElementById('wrapper') as HTMLDivElement;
-    const dropdownEl =
-      (document.getElementById('div-list') as HTMLDivElement) ?? null;
-
-    const handler = (e: MouseEvent): void => {
-      const isClickIsideEl = wrapperEl.contains(e.target as any);
-      if (dropdownEl !== null) {
-        const isClickIsidedDropDown = dropdownEl?.contains(e.target as any);
-        if (!isClickIsideEl && !isClickIsidedDropDown) {
+    useEffect(() => {
+      const escapeHandler = (e: KeyboardEvent): void => {
+        if (e.key === 'Escape') {
           setShowOptionsList(false);
         }
-      }
+      };
+
+      document.addEventListener('keydown', escapeHandler);
+      return (): void => {
+        document.removeEventListener('keydown', escapeHandler);
+      };
+    }, []);
+
+    useEffect(() => {
+      const wrapperEl = document.getElementById('wrapper') as HTMLDivElement;
+      const dropdownEl =
+        (document.getElementById('div-list') as HTMLDivElement) ?? null;
+
+      const handler = (e: MouseEvent): void => {
+        const isClickIsideEl = wrapperEl.contains(e.target as any);
+        if (dropdownEl !== null) {
+          const isClickIsidedDropDown = dropdownEl?.contains(e.target as any);
+          if (!isClickIsideEl && !isClickIsidedDropDown) {
+            setShowOptionsList(false);
+          }
+        }
+      };
+
+      document.addEventListener('click', handler);
+
+      return (): void => {
+        document.removeEventListener('click', handler);
+      };
+    }, [showOptionsList]);
+
+    useImperativeHandle(ref, () => ({
+      setInputValue: setInputValue,
+    }));
+
+    const isInArray = (item: number): boolean => {
+      return valuesArray.map((item) => item.value).indexOf(item) !== -1;
     };
 
-    document.addEventListener('click', handler);
-
-    return (): void => {
-      document.removeEventListener('click', handler);
-    };
-  }, [showOptionsList]);
-
-  const isInArray = (item: number): boolean => {
-    return valuesArray.map((item) => item.value).indexOf(item) !== -1;
-  };
-
-  const optionItems = useCallback(() => {
-    if (options) {
-      return options
-        .filter((_item: any) => indexOf(valuesArray, _item.item) === -1)
-        .map((option: any) => {
-          return (
-            <li
-              key={option.item.value}
-              value={option.item.value}
-              className={
-                isInArray(option.item.value) ? style['active-item'] : ''
-              }
-              onClick={(): void => {
-                if (multiple && indexOf(valuesArray, option.item) === -1) {
-                  setValuesArray((v) => [...v, option.item]);
-                  onItemSelected([...valuesArray, option.item]);
-                  setInputValue('');
-                } else if (!multiple) {
-                  onItemSelected([option.item]);
-                  setInputValue(option.item.label);
-                  setShowOptionsList(false);
+    const optionItems = useCallback(() => {
+      if (options) {
+        return options
+          .filter((_item: any) => indexOf(valuesArray, _item.item) === -1)
+          .map((option: any) => {
+            return (
+              <li
+                key={option.item.value}
+                value={option.item.value}
+                className={
+                  isInArray(option.item.value) ? style['active-item'] : ''
                 }
-              }}
-            >
-              {option.el}
-            </li>
-          );
-        });
-    }
-  }, [options, valuesArray]);
+                onClick={(): void => {
+                  if (multiple && indexOf(valuesArray, option.item) === -1) {
+                    setValuesArray((v) => [...v, option.item]);
+                    onItemSelected([...valuesArray, option.item]);
+                    setInputValue('');
+                  } else if (!multiple) {
+                    onItemSelected([option.item]);
+                    setInputValue(option.item.label);
+                    setShowOptionsList(false);
+                  }
+                }}
+              >
+                {option.el}
+              </li>
+            );
+          });
+      }
+    }, [options, valuesArray]);
 
-  const { t } = useTranslation();
+    const { t } = useTranslation();
 
-  const _onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const val = e.target.value;
-    setInputValue(val);
-    onChange(e);
-  };
+    const _onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+      const val = e.target.value;
+      setInputValue(val);
+      onChange(e);
+    };
 
-  const arrayItemRemoveHandler = (item: ListOptions): void => {
-    const filteredItems = valuesArray.filter(
-      (_item) => _item.value !== item.value
-    );
-    setValuesArray([...filteredItems]);
-    onItemSelected([...filteredItems]);
-  };
+    const arrayItemRemoveHandler = (item: ListOptions): void => {
+      const filteredItems = valuesArray.filter(
+        (_item) => _item.value !== item.value
+      );
+      setValuesArray([...filteredItems]);
+      onItemSelected([...filteredItems]);
+    };
 
-  return (
-    <div id="wrapper" className={style['wrapper']}>
-      <div
-        className={`${style['input-container']} ${
-          options?.length === 0 || !showOptionsList ? style['itself-space'] : ''
-        }`}
-        onFocus={(): void => setShowOptionsList(true)}
-      >
-        <SelectedItems
-          items={valuesArray}
-          removeHandler={arrayItemRemoveHandler}
-        />
+    return (
+      <div id="wrapper" className={style['wrapper']}>
+        <div
+          className={`${style['input-container']} ${
+            options?.length === 0 || !showOptionsList
+              ? style['itself-space']
+              : ''
+          }`}
+          onFocus={(): void => setShowOptionsList(true)}
+        >
+          <SelectedItems
+            items={valuesArray}
+            removeHandler={arrayItemRemoveHandler}
+          />
 
-        <input
-          type="text"
-          onChange={_onChange}
-          placeholder={placeholder ?? ''}
-          value={!!inputValue ? inputValue : defaultSelectedItem}
-          className={`${style['input']} ${className ?? ''}`}
-        />
-      </div>
-      <div className={style['button-wrapper']}>
-        <FontAwesomeIcon
-          icon={showOptionsList ? faCaretUp : faCaretDown}
-          className="cursor-pointer"
-          onClick={(): void => {
-            if (!showOptionsList) {
-              setShowOptionsList(true);
-            } else {
-              setShowOptionsList(false);
-            }
-          }}
-        />
-
-        {(inputValue.length > 0 || valuesArray.length > 0) && (
+          <input
+            type="text"
+            onChange={_onChange}
+            placeholder={placeholder ?? ''}
+            value={!!inputValue ? inputValue : defaultSelectedItem}
+            className={`${style['input']} ${className ?? ''}`}
+          />
+        </div>
+        <div className={style['button-wrapper']}>
           <FontAwesomeIcon
-            icon={faTimes}
+            icon={showOptionsList ? faCaretUp : faCaretDown}
             className="cursor-pointer"
             onClick={(): void => {
-              setValuesArray([]);
-              setInputValue('');
-              setShowOptionsList(false);
+              if (!showOptionsList) {
+                setShowOptionsList(true);
+              } else {
+                setShowOptionsList(false);
+              }
             }}
           />
-        )}
-      </div>
 
-      {showOptionsList && (
-        <div className={style['div-list']} id="div-list">
-          {isLoading ? (
-            <span className="text-muted">{loadingText}</span>
-          ) : !isUndefined(options) && options.length > 0 ? (
-            <ul>{optionItems()}</ul>
-          ) : (
-            <span>{t('general.noData')}</span>
+          {(inputValue.length > 0 || valuesArray.length > 0) && (
+            <FontAwesomeIcon
+              icon={faTimes}
+              className="cursor-pointer"
+              onClick={(): void => {
+                setValuesArray([]);
+                setInputValue('');
+                setShowOptionsList(false);
+              }}
+            />
           )}
         </div>
-      )}
-    </div>
-  );
-};
+
+        {showOptionsList && (
+          <div className={style['div-list']} id="div-list">
+            {isLoading ? (
+              <span className="text-muted">{loadingText}</span>
+            ) : !isUndefined(options) && options.length > 0 ? (
+              <ul>{optionItems()}</ul>
+            ) : (
+              <span>{t('general.noData')}</span>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+);
 
 AutoComplete.defaultProps = {
   defaultSelectedItem: '',
