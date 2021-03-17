@@ -6,13 +6,13 @@ import {
   Grid,
   Divider,
   Button,
+  Link,
 } from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { UserInterface, NewUserData } from '../../../../../interfaces';
+import { AccountingCardInterface } from '../../../../interfaces/AccountingInterface';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { TextMessage } from '../../../../../enum';
-import { BackDrop } from '../../../../public';
+import { BackDrop } from '../../../public';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -24,56 +24,47 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const CardContainer: React.FC<UserInterface> = (props) => {
+const CardContainer: React.FC<AccountingCardInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const { root } = useStyle();
-  
-  const {  data,editRoleHandler } = props;
+
+  const { data, exchangeHandler } = props;
 
   const {
-    name,
-      family,
-      email,
-      mobile,
-      birthDate,
-      id,
-      nationalCode,
-      pharmacyID,
-      userName,
-   active
+    id,
+    date,
+    description,
+    amount,
+    exchangeID,
+    mandeh
   } = data;
 
-  
+
 
   return (
     <Paper className={root} elevation={1}>
       <Grid container spacing={0}>
         <Detail
           id={id}
-          name={name}
-          family={family}
-          mobile={mobile}
-          email={email}
-          userName={userName}
-          nationalCode={nationalCode}
-          birthDate={birthDate}
-          active={active}
-          pharmacyID={pharmacyID}
-          
+          date={date}
+          description={description}
+          amount={amount}
+          exchangeID={exchangeID}
+          mandeh={mandeh}
+
+
+
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
         <Divider />
       </Grid>
 
-      <Grid item xs={12} justify="flex-end">
-        <Button
-          onClick={(): void => editRoleHandler(data)}
-          style={{ color: 'red', fontSize: '14px' }}
-        >
-          ویرایش نقش
-        </Button>
+      {exchangeID && (<Grid item xs={12} justify="flex-end">
+        {exchangeHandler(data)}
+
       </Grid>
+      )}
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );
