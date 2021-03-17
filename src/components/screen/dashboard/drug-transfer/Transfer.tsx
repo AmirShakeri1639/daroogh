@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  createStyles,
-  makeStyles,
-  CircularProgress,
-} from '@material-ui/core';
+import { createStyles, makeStyles, CircularProgress } from '@material-ui/core';
 import './transfer.scss';
 import Context, { TransferDrugContextInterface } from './Context';
 import { Grid } from '@material-ui/core';
@@ -91,8 +87,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const params = queryString.parse(location.search);
 
   useEffect(() => {
-    const xId = params.eid == null
-      ? undefined : params.eid.toString();
+    const xId = params.eid == null ? undefined : params.eid.toString();
     setEid(xId);
   }, [params]);
 
@@ -234,6 +229,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             setBasketCount(newItemsB);
             setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
+
+          // console.log('setBasketCount', newItemsA);
+          // console.log('setUbasketCount', newItemsB);
         }
 
         if (res !== undefined) {
@@ -414,7 +412,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                   {activeStep === 2 && <ThirdStep />}
                   {activeStep === 3 && <FourthStep />} */}
 
-                 
                 {activeStep === 0 ? <FirstStep /> : <Exchange />}
               </>
             )}

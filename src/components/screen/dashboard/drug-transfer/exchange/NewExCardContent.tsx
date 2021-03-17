@@ -632,15 +632,19 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
             <Grid item xs={9}>
               <ul className={ulCardName} style={{ paddingRight: 10 }}>
                 <li>
-                  <TextWithTitle title="دسته بندی" body={pharmacyDrug?.packCategoryName} />
-                  
+                  <TextWithTitle
+                    title="دسته بندی"
+                    body={pharmacyDrug?.packName}
+                  />
                 </li>
                 <li>
-                <TextWithTitle title="تعداد داروهای عرضه شده در این پک" body={pharmacyDrug?.cnt} suffix="عدد" />
-
-                 
+                  <TextWithTitle
+                    title="تعداد داروهای عرضه شده در این پک"
+                    body={pharmacyDrug?.cnt}
+                    suffix="عدد"
+                  />
                 </li>
-               
+
                 <li>
                   <span style={{ fontSize: 9.5, color: 'red' }}>
                     همه اقلام یک پک با هم و با تعداد مشخص شده قابل انتخاب هستند
@@ -671,9 +675,16 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
             </Grid>
             <Grid item xs={3}>
               <GreenCheckbox
-                checked={state.checkedG}
+                checked={
+                  activeStep === 1
+                    ? basketCount.findIndex((x) => x.id == pharmacyDrug?.id) !==
+                      -1
+                    : uBasketCount.findIndex(
+                        (x) => x.id == pharmacyDrug?.id
+                      ) !== -1
+                }
                 onChange={handleChange}
-                name="checkedG"
+                name={pharmacyDrug?.id.toString()}
               />
             </Grid>
           </Grid>
@@ -683,7 +694,9 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    const faDate = moment(date, 'YYYY/MM/DD')
+      .locale('fa')
+      .format('YYYY/MM/DD');
     const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
     const fromDate = new Date(eDate);
     const today = new Date();
@@ -760,7 +773,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           if (pharmacyDrug.cnt > pharmacyDrug.currentCnt) {
             setDrugInfo({
               ...pharmacyDrug,
-              currentCnt: (pharmacyDrug.currentCnt += 1),
+              currentCnt: pharmacyDrug.currentCnt += 1,
             });
           }
           break;
@@ -768,7 +781,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           if (pharmacyDrug.currentCnt > 1) {
             setDrugInfo({
               ...pharmacyDrug,
-              currentCnt: (pharmacyDrug.currentCnt -= 1),
+              currentCnt: pharmacyDrug.currentCnt -= 1,
             });
           }
           break;
@@ -780,7 +793,6 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const counterButtonFunc = (): JSX.Element => {
-    debugger;
     return pharmacyDrug?.buttonName === 'افزودن به تبادل' ? (
       <>
         <Button
@@ -824,11 +836,12 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     );
   };
 
-  const handleTotalAmount = () => {
+  const handleTotalAmount = React.useCallback(() => {
+    debugger;
     let val = 0;
     if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
     setTotalAmount(Utils.numberWithCommas(val));
-  };
+  }, []);
 
   const GreenCheckbox = withStyles({
     root: {

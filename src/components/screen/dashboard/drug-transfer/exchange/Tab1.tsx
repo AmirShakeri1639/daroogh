@@ -41,7 +41,6 @@ const style = makeStyles((theme) =>
       marginLeft: '1px !important',
       top: 128,
       zIndex: 999,
-  
     },
     stickyRecommendation: {
       position: 'sticky',
@@ -218,7 +217,7 @@ const Tab1: React.FC = () => {
         (item: AllPharmacyDrugInterface, index: number) => {
           item.order = index + 1;
           item.buttonName = 'حذف از تبادل';
-          if (item.cardColor === 'white') item.cardColor = '#33ff33';
+          if (item.cardColor === 'white') item.cardColor = '#dff4ff';
 
           return (
             <Grid item xs={12} sm={12} xl={12} key={index}>
@@ -226,18 +225,29 @@ const Tab1: React.FC = () => {
                 {item.packID ? (
                   <NewCardContainer
                     basicDetail={
-                      <NewExCardContent formType={1} pharmacyDrug={item} />
+                      <NewExCardContent
+                        formType={1}
+                        pharmacyDrug={item}
+                        isPack={true}
+                      />
                     }
                     isPack={true}
                     pharmacyDrug={item}
                     collapsableContent={
-                      <NewExCardContent formType={3} packInfo={item.packDetails} />
+                      <NewExCardContent
+                        formType={3}
+                        packInfo={item.packDetails}
+                      />
                     }
                   />
                 ) : (
                   <NewCardContainer
                     basicDetail={
-                      <NewExCardContent formType={2} pharmacyDrug={item} />
+                      <NewExCardContent
+                        formType={2}
+                        pharmacyDrug={item}
+                        isPack={false}
+                      />
                     }
                     isPack={false}
                     pharmacyDrug={item}
@@ -280,7 +290,6 @@ const Tab1: React.FC = () => {
               });
             }
 
-            debugger;
             return (
               <Grid item xs={12} sm={12} xl={12} key={index}>
                 <div className={paper}>

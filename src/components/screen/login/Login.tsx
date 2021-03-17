@@ -109,6 +109,13 @@ const Login: React.FC = (): JSX.Element => {
         localStorage.setItem('mainToken', data.token);
         localStorage.setItem('mainPharmacyName', data.pharmacyName);
 
+        // Get settings from SERVER
+        const { getPublic } = new Settings();
+        const result = await getPublic(data.token);
+        const { smsAPIkey, ...settings } = result;
+        localStorage.setItem('settings', JSON.stringify(settings));
+        console.log('settings:', settings);
+
         // Save blob of profile pic in local storage
         const fileApi = new File();
         const blob = await fileApi.get(data.imageKey);
@@ -119,25 +126,18 @@ const Login: React.FC = (): JSX.Element => {
             try {
               console.info('Enviroment: ', process.env.NODE_ENV);
               if (process.env.NODE_ENV === 'production') {
-              window.najvaUserSubscribed = async function (
-                najva_user_token: string
-              ): Promise<void> {
-                await setNotification(najva_user_token);
-              };
-              console.log('Najva subscription fnished.');
-            }} catch (e) {
+                window.najvaUserSubscribed = async function (
+                  najva_user_token: string
+                ): Promise<void> {
+                  await setNotification(najva_user_token);
+                };
+                console.log('Najva subscription fnished.');
+              }
+            } catch (e) {
               errorHandler(e);
             }
           })();
         }
-
-        // Get settings from SERVER
-        (async (): Promise<any> => {
-          const { getPublic } = new Settings();
-          const result = await getPublic();
-          const { smsAPIkey, ...settings } = result;
-          localStorage.setItem('settings', JSON.stringify(settings));
-        })();
 
         push({
           pathname: from.pathname,
@@ -245,8 +245,8 @@ const Login: React.FC = (): JSX.Element => {
                         { state.isVisiblePassword ? (
                           <Visibility />
                         ) : (
-                            <VisibilityOff />
-                          ) }
+                          <VisibilityOff />
+                        ) }
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -264,8 +264,8 @@ const Login: React.FC = (): JSX.Element => {
                 { isLoading ? (
                   <CircleLoading size={ 16 } color="inherit" />
                 ) : (
-                    <LockOpenIcon fontSize="inherit" className={ classes.margin } />
-                  ) }
+                  <LockOpenIcon fontSize="inherit" className={ classes.margin } />
+                ) }
               </Button>
             </Grid>
             <Grid item xs={ 12 } className="no-padding">
