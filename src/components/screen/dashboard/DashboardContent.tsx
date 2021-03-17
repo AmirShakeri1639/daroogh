@@ -21,10 +21,10 @@ import { TabPanel } from '@material-ui/lab';
 // @ts-ignore
 // import { Steps, Hints } from 'intro.js-react';
 
-// import 'intro.js/introjs.css';
+import 'intro.js/introjs.css';
 // import 'intro.js/themes/introjs-modern.css';
-// import 'intro.js/introjs-rtl.css';
-// import introJs from 'intro.js';
+import 'intro.js/introjs-rtl.css';
+import introJs from 'intro.js';
 import './style.css';
 import { checkVersion, clearMyCache, showWhatsNew } from 'utils';
 import ExchangeWithFavoritesWidget from './widgets/ExchangeWithFavoritesWidget';

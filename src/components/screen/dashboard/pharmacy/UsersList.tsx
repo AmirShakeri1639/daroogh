@@ -10,7 +10,7 @@ import {
   Grid,
   Button,
   TextField,
-  Input as SelectInput, 
+  Input as SelectInput,
   FormControl,
   InputLabel,
   Select,
@@ -63,6 +63,7 @@ import ModalContent from '../../../public/modal-content/ModalContent';
 import { NewPharmacyUserData } from '../../../../model';
 import { Role, User } from '../../../../services/api';
 import RoleForm from '../user/RoleForm';
+import CardContainer from './user/CardContainer';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -245,7 +246,11 @@ const UsersList: React.FC = () => {
     disableUser,
     saveNewUser,
   } = new User();
+  const { isLoading, data, isFetched } = useQuery(
+    UserQueryEnum.GET_ALL_USERS,
 
+    () => getCurrentPharmacyUsers(0, 50)
+  );
   const {
     isLoading: roleListLoading,
     data: roleListData,
@@ -315,7 +320,7 @@ const UsersList: React.FC = () => {
     buttonContainer,
     formContainer,
     addButton,
-    
+
     formContent,
     cancelButton,
     submitBtn,
@@ -557,28 +562,48 @@ const UsersList: React.FC = () => {
   ): Promise<any> => {
     setSelectedRoles(event.target.value as number[]);
   };
+  const contentGenerator = (): JSX.Element[] | null => {
+    if (fullScreen) {
+      if (!isLoading && data !== undefined && isFetched) {
+        console.log(data)
+        return data.items.map((item: any) => {
+          //const { user } = item;
+          //if (user !== null) {
+            return (
+              <Grid key={item.id} item xs={12}>
+                <CardContainer data={item} formHandler={formHandler} />
+              </Grid>
+            );
+          //}
 
+          return null;
+        });
+      }
+    }
+    return null;
+  };
   return (
     <Container maxWidth="lg">
-      <DataTable
-        tableRef={ref}
-        extraMethods={{ editUser: enableUserHandler }}
-        columns={tableColumns()}
-        // editAction={editUserHandler}
-        // editUser={enableUserHandler}
-        // removeAction={removeUserHandler}
-        queryKey={PharmacyUsersEnum.GET_PHARMACY_USERS}
-        queryCallback={getCurrentPharmacyUsers}
-        initLoad={false}
-        isLoading={isLoadingRemoveUser || isLoadingEditUser}
-        pageSize={10}
-        urlAddress={UrlAddress.getPharmacyUsers}
-        // stateAction={disableUserHandler}
-        customActions={customDataTAbleACtions}
-      />
+      {!fullScreen && (
+        <DataTable
+          tableRef={ref}
+          extraMethods={{ editUser: enableUserHandler }}
+          columns={tableColumns()}
+          // editAction={editUserHandler}
+          // editUser={enableUserHandler}
+          // removeAction={removeUserHandler}
+          queryKey={PharmacyUsersEnum.GET_PHARMACY_USERS}
+          queryCallback={getCurrentPharmacyUsers}
+          initLoad={false}
+          isLoading={isLoadingRemoveUser || isLoadingEditUser}
+          pageSize={10}
+          urlAddress={UrlAddress.getPharmacyUsers}
+          // stateAction={disableUserHandler}
+          customActions={customDataTAbleACtions}
+        />
+      )}
       <br />
       <br />
-
       <Grid container spacing={1} className={buttonContainer}>
         <Button
           variant="outlined"
@@ -588,35 +613,27 @@ const UsersList: React.FC = () => {
           {t('user.create-user')}
         </Button>
       </Grid>
-
-      <Dialog
-        open={isOpenRoleModal}
-        
-        onClose={toggleIsOpenRoleModal}
-      >
-        <DialogTitle className="text-sm">
-        {t('user.edit-role')}
-        </DialogTitle>
+      {fullScreen &&  contentGenerator()}
+      <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal}>
+        <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <Grid container spacing={1} className={formContent}>
               <Grid item xs={12}>
                 <Grid container spacing={1}>
-                  
                   <Grid item xs={12}>
-            <RoleForm
-              userId={idOfSelectedUser}
-              toggleForm={toggleIsOpenRoleModal}
-              roleType={RoleType.PHARMACY}
-            />
+                    <RoleForm
+                      userId={idOfSelectedUser}
+                      toggleForm={toggleIsOpenRoleModal}
+                      roleType={RoleType.PHARMACY}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
-              </Grid>
-            </Grid>
             </Grid>
           </DialogContentText>
         </DialogContent>
-             </Dialog>
-
+      </Dialog>
       <Dialog
         open={isOpenModalOfCreateUser}
         fullScreen={fullScreen}
@@ -634,17 +651,16 @@ const UsersList: React.FC = () => {
                     <label>نام کاربر</label>
                   </Grid>
                   <Grid item xs={12}>
-               
-              <Input
-                error={state.name.trim().length < 2 && showError}
-                label="نام کاربر"
-                className="w-100"
-                value={state.name}
-                onChange={(e): void =>
-                  dispatch({ type: 'name', value: e.target.value })
-                }
-              />
-             </Grid>
+                    <Input
+                      error={state.name.trim().length < 2 && showError}
+                      label="نام کاربر"
+                      className="w-100"
+                      value={state.name}
+                      onChange={(e): void =>
+                        dispatch({ type: 'name', value: e.target.value })
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
@@ -654,17 +670,15 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-              <Input
-                className="w-100"
-                error={state.family.trim().length < 2 && showError}
-                
-                
-                value={state.family}
-                onChange={(e): void =>
-                  dispatch({ type: 'family', value: e.target.value })
-                }
-              />
-             </Grid>
+                    <Input
+                      className="w-100"
+                      error={state.family.trim().length < 2 && showError}
+                      value={state.family}
+                      onChange={(e): void =>
+                        dispatch({ type: 'family', value: e.target.value })
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
@@ -674,18 +688,16 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-              <Input
-                className="w-100"
-                error={state.mobile.trim().length < 11 && showError}
-                
-                type="number"
-               
-                value={state.mobile}
-                onChange={(e): void =>
-                  dispatch({ type: 'mobile', value: e.target.value })
-                }
-              />
-             </Grid>
+                    <Input
+                      className="w-100"
+                      error={state.mobile.trim().length < 11 && showError}
+                      type="number"
+                      value={state.mobile}
+                      onChange={(e): void =>
+                        dispatch({ type: 'mobile', value: e.target.value })
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
@@ -695,25 +707,20 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-              <Input
-                error={
-                  state?.email?.length > 0 &&
-                  !emailRegex.test(state.email) &&
-                  showError
-                }
-                
-                className="w-100"
-                type="email"
-                
-               
-                value={state.email}
-                onChange={(e): void =>
-                  dispatch({ type: 'email', value: e.target.value })
-                }
-                >
-
-                </Input>
-                </Grid>
+                    <Input
+                      error={
+                        state?.email?.length > 0 &&
+                        !emailRegex.test(state.email) &&
+                        showError
+                      }
+                      className="w-100"
+                      type="email"
+                      value={state.email}
+                      onChange={(e): void =>
+                        dispatch({ type: 'email', value: e.target.value })
+                      }
+                    ></Input>
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
@@ -723,17 +730,15 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-              <Input
-                error={state?.userName?.length < 1 && showError}
-                
-                className="w-100"
-               
-                value={state.userName}
-                onChange={(e): void =>
-                  dispatch({ type: 'userName', value: e.target.value })
-                }
-              />
-             </Grid>
+                    <Input
+                      error={state?.userName?.length < 1 && showError}
+                      className="w-100"
+                      value={state.userName}
+                      onChange={(e): void =>
+                        dispatch({ type: 'userName', value: e.target.value })
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
@@ -743,22 +748,23 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-              <Input
-                error={
-                  state?.nationalCode !== '' &&
-                  state?.nationalCode?.length < 10 &&
-                  showError
-                }
-               
-                className="w-100"
-                type="text"
-              
-                value={state.nationalCode}
-                onChange={(e): void =>
-                  dispatch({ type: 'nationalCode', value: e.target.value })
-                }
-              />
-             </Grid>
+                    <Input
+                      error={
+                        state?.nationalCode !== '' &&
+                        state?.nationalCode?.length < 10 &&
+                        showError
+                      }
+                      className="w-100"
+                      type="text"
+                      value={state.nationalCode}
+                      onChange={(e): void =>
+                        dispatch({
+                          type: 'nationalCode',
+                          value: e.target.value,
+                        })
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
@@ -768,16 +774,14 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-              <Input
-                readOnly = {true}
-               
-                className="w-100"
-                type="text"
-                
-                value={state?.birthDate}
-                onClick={toggleIsOpenDatePicker}
-              />
-             </Grid>
+                    <Input
+                      readOnly={true}
+                      className="w-100"
+                      type="text"
+                      value={state?.birthDate}
+                      onClick={toggleIsOpenDatePicker}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
@@ -787,31 +791,36 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                  <FormControl size="small" className="w-100" variant="outlined">
-              
-                <Select
-                  labelId="user-roles-list"
-                  id="roles-list"
-                  multiple
-                  input={<SelectInput />}
-                  label="نقش های کاربر:"
-                  MenuProps={MenuProps}
-                  value={selectedRoles}
-                  onChange={handleChange}
-                  renderValue={(selected: any): string => {
-                    const items = roleListData?.items
-                      .filter((item: any) => selected.indexOf(item.id) !== -1)
-                      .map((item: any) => item.name);
+                    <FormControl
+                      size="small"
+                      className="w-100"
+                      variant="outlined"
+                    >
+                      <Select
+                        labelId="user-roles-list"
+                        id="roles-list"
+                        multiple
+                        input={<SelectInput />}
+                        label="نقش های کاربر:"
+                        MenuProps={MenuProps}
+                        value={selectedRoles}
+                        onChange={handleChange}
+                        renderValue={(selected: any): string => {
+                          const items = roleListData?.items
+                            .filter(
+                              (item: any) => selected.indexOf(item.id) !== -1
+                            )
+                            .map((item: any) => item.name);
 
-                    return ((items as string[]) ?? []).join(', ');
-                  }}
-                >
-                  {rolesListGenerator()}
-                </Select>
-              </FormControl>
+                          return ((items as string[]) ?? []).join(', ');
+                        }}
+                      >
+                        {rolesListGenerator()}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
-              </Grid>
-            </Grid>
             </Grid>
           </DialogContentText>
         </DialogContent>
@@ -821,7 +830,7 @@ const UsersList: React.FC = () => {
             <Grid container xs={12}>
               <Grid item xs={7} sm={8} />
               <Grid item xs={2} sm={2}>
-              <Button
+                <Button
                   type="button"
                   className={cancelButton}
                   onClick={(): void => {
@@ -833,21 +842,21 @@ const UsersList: React.FC = () => {
                 </Button>
               </Grid>
               <Grid item xs={3} sm={2}>
-                
                 <Button
                   type="submit"
                   disabled={isLoadingNewUser}
                   className={submitBtn}
                   onClick={formHandler}
                 >
-                  {isLoadingNewUser ? t('general.pleaseWait') : t('general.submit')}
+                  {isLoadingNewUser
+                    ? t('general.pleaseWait')
+                    : t('general.submit')}
                 </Button>
               </Grid>
             </Grid>
           </Grid>
         </DialogActions>
       </Dialog>
-
       <Modal
         open={isOpenDatePicker}
         toggle={toggleIsOpenDatePicker}

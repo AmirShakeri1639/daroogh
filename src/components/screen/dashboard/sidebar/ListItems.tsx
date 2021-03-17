@@ -462,7 +462,7 @@ const ListItems: React.FC = () => {
           <ListItemIcon>
             <CategoryIcon />
           </ListItemIcon>
-          <ListItemText primary={t('exchange.exchange')} />
+          <ListItemText primary={t('fda.exchanges')} />
           {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
@@ -472,7 +472,7 @@ const ListItems: React.FC = () => {
                 <AppsIcon />
               </ListItemIcon>
               <ListItemText
-                primary={`${t('general.submit')} ${t('exchange.myProducts')}`}
+                primary={`${t('general.submit')} ${t('exchange.products')}`}
               />
             </Link>
           </List>
@@ -482,7 +482,7 @@ const ListItems: React.FC = () => {
               <ListItemIcon>
                 <FontAwesomeIcon icon={faBars} size="lg" />
               </ListItemIcon>
-              <ListItemText primary={t('pack.submitMyPacks')} />
+              <ListItemText primary={t('pack.submitPacks')} />
             </Link>
           </List>
 
@@ -515,7 +515,14 @@ const ListItems: React.FC = () => {
             <ListItemText primary={t('general.yourFavorite')} />
           </Link>
         </List>
-
+        <List component="div" className={linkWrapper}>
+          <Link to={pharmacyUsersList} className={notNested}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faUser} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('user.users-list')} />
+          </Link>
+        </List>
         <ListItem
           button
           className={linkWrapper}
@@ -546,14 +553,7 @@ const ListItems: React.FC = () => {
           </List>
         </Collapse>
 
-        <List component="div" className={linkWrapper}>
-          <Link to={pharmacyUsersList} className={notNested}>
-            <ListItemIcon>
-              <FontAwesomeIcon icon={faUser} size="lg" />
-            </ListItemIcon>
-            <ListItemText primary={t('user.users-list')} />
-          </Link>
-        </List>
+  
         {/* <ListItem button onClick={(): void => setIsOpenMembers((v) => !v)}>
           <ListItemIcon style={{ color: '#4625B2' }}>
             <PermIdentityTwoToneIcon />

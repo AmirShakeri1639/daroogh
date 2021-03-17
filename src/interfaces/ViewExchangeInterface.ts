@@ -43,6 +43,8 @@ export interface ViewExchangeInterface {
   cartB: CardInfo[];
   totalPriceA?: number;
   totalPriceB?: number;
+  viewDateB?:any;
+  viewDateA?:any;
 }
 
 export interface CardInfo {
