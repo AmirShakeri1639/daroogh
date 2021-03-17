@@ -366,7 +366,7 @@ const JobsList: React.FC = () => {
   };
 
   const toggleConfirmHandler = async (
-      row: JobInterface
+    row: JobInterface
   ): Promise<any> => {
     if (window.confirm(t('alert.cancelConfirm'))) {
       try {
@@ -591,7 +591,7 @@ const JobsList: React.FC = () => {
   const { isLoading, data, isFetched, refetch } = useQuery(
     JobsEnum.GET_ALL,
 
-    () => all(pageRef.current, 10),
+    () => all(pageRef.current, 3),
     {
       onSuccess: (result) => {
         if (result == undefined || result.count == 0) {
@@ -608,25 +608,33 @@ const JobsList: React.FC = () => {
     setPage(data);
   };
   const handleScroll = (e: any): any => {
-    const el = e.target;
-    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (!noData) {
-        const currentpage = pageRef.current + 1;
-        setPageRef(currentpage);
-        refetch()
+    //if (fullScreen) {
+      console.log("scroll")
+      const el = e.target;
+      if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+        if (!noData) {
+          const currentpage = pageRef.current + 1;
+          setPageRef(currentpage);
+          console.log(pageRef.current)
+          const result = getList();
+          
 
-      }
+        }
+      //}
     }
   };
-
+  async function getList(): Promise<any> {
+    const result =await all(pageRef.current, 3);
+    
+  }
   React.useEffect(() => {
     // const res = (async (): Promise<any> => await getExchanges())
     // res();
-    if (fullScreen) {
-      window.addEventListener('scroll', (e) => handleScroll(e), {
-        capture: true,
-      });
-    }
+
+    window.addEventListener('scroll', (e) => handleScroll(e), {
+      capture: true,
+    });
+
     return () => window.removeEventListener('scroll', (e) => handleScroll(e));
   }, []);
   const editModal = (): JSX.Element => {
@@ -1013,7 +1021,7 @@ const JobsList: React.FC = () => {
         //if (user !== null) {
         return (
           <Grid key={item.id} item xs={12}>
-            <CardContainer data={item} saveHandler={saveHandler}  toggleConfirmHandler={toggleConfirmHandler}/>
+            <CardContainer data={item} saveHandler={saveHandler} toggleConfirmHandler={toggleConfirmHandler} />
           </Grid>
         );
         //}
@@ -1057,7 +1065,7 @@ const JobsList: React.FC = () => {
           </Grid>
           {fullScreen && contentGenerator()}
           {fullScreen && <CircleBackdropLoading
-           isOpen={isLoading} />}
+            isOpen={isLoading} />}
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
