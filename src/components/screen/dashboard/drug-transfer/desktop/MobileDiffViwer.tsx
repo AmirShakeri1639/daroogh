@@ -94,13 +94,13 @@ const MobileDiffViwer: React.FC<TextLinePropsInterface> = (props) => {
 <Grid container className={classes.rootRight}>
       <Grid item xs={6} style={{paddingLeft:2}}>
           <Grid container className={classes.stepContainerRight}>
-            <Grid item xs={8} className={classes.grayContainer}>
+            <Grid item xs={12} className={classes.grayContainer}>
               <div className={classes.dateContainerRight}
             style={{ width : `${(diff < 0) ? (percentage) : '0' }% ` }} />
             </Grid>
 
-            <Grid item xs={4} className={classes.centerText}>
-                <span style={{fontSize:10}}>سبد مقابل</span>
+            <Grid item xs={12} className={classes.centerText}>
+                <span style={{fontSize:10}}>سبد مقابل: </span>
                 <span style={{fontSize:10}}>‍‍‍{Convertor.thousandsSeperatorFa(otherAmount)}</span>
 
               </Grid>
@@ -108,13 +108,13 @@ const MobileDiffViwer: React.FC<TextLinePropsInterface> = (props) => {
       </Grid>
       <Grid item xs={6} style={{paddingRight:2}}>
       <Grid container className={classes.stepContainer}>
-            <Grid item xs={8} className={classes.grayContainer} >
+            <Grid item xs={12} className={classes.grayContainer} >
               <div className={classes.dateContainerLeft}
             style={{ width : `${(diff > 0) ? (percentage) : '0' }% ` }} />
             </Grid>
 
-            <Grid item xs={4} className={classes.centerText}>
-                <span style={{fontSize:10}}>سبد شما</span>
+            <Grid item xs={12} className={classes.centerText}>
+                <span style={{fontSize:10}}>سبد شما: </span>
                 <span style={{fontSize:10}}>‍‍‍{Convertor.thousandsSeperatorFa(yourAmount)}</span>
 
               </Grid>

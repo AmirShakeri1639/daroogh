@@ -15,6 +15,7 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Paper,
 } from '@material-ui/core';
 import { useClasses } from '../../classes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -51,6 +52,7 @@ import {
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import ExchangeTree from '../exchange-tree/ExchangeTree';
+import { DriveEtaOutlined } from '@material-ui/icons';
 
 interface Props {
   item?: ViewExchangeInterface;
@@ -255,14 +257,16 @@ const DesktopCardContent = ({
   const {
     cardContent,
     cardContainer,
+    mobileCardContainer,
     faIcons,
     rowRight,
     rowLeft,
     colLeft,
     cardRoot,
+    mobileCardRoot,
     cardTitle,
     cardTop,
-    spacingVertical3,
+    spacingVertical1,
     scaleRoot,
     scaleContainer,
   } = useClasses();
@@ -311,7 +315,7 @@ const DesktopCardContent = ({
   // }, [item.totalPriceA, item.totalPriceB]);
   const ExchangeInfo = (): JSX.Element => {
     return (
-      <Grid container spacing={0} className={cardContainer}>
+      <Grid container spacing={0} className={fullScreen? mobileCardContainer : cardContainer}>
         {/* <Grid container className={cardTop}> */}
         {/* <Grid item container xs={6} className={rowRight}>
             <Grid item xs={12} className={rowRight}>
@@ -458,7 +462,7 @@ const DesktopCardContent = ({
 
           {full && (
             <>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TextWithTitle
                   title={t('exchange.difference')}
                   body={`${Convertor.thousandsSeperatorFa(difference)} 
@@ -467,7 +471,7 @@ const DesktopCardContent = ({
               </Grid>
               <Grid item xs={12} style={{ padding: 2 }}>
                 <Divider />
-              </Grid>
+              </Grid> */}
               {(item.state === 1 ||
                 item.state === 2 ||
                 (item.state === 12 && !item.lockSuggestion)) && (
@@ -535,7 +539,7 @@ const DesktopCardContent = ({
                     />
                   </Grid>
                   {differenceMessage && (
-                    <Grid item xs={12} className={spacingVertical3}>
+                    <Grid item xs={12} className={spacingVertical1}>
                       {differenceMessage.split('\n').map((i, k) => {
                         return (
                           <div key={k}>
@@ -638,8 +642,7 @@ const DesktopCardContent = ({
   return (
     <>
       <div>
-        <Card className={`${cardRoot}`}>
-          <CardContent>
+        <Paper className={fullScreen ? mobileCardRoot : cardRoot}>
             {/* <Grid container alignItems="center" spacing={1}>
               <Grid item xs={10}>
                 <Typography
@@ -679,19 +682,18 @@ const DesktopCardContent = ({
               </Grid>
             </Grid>
             <Divider /> */}
-            <Container className={cardContent}>
+            <div className={cardContent}>
               <>
                 {item && (
                   <>
                     <ExchangeInfo />
-                    <Divider />
-                    {showActions && <CardActions />}
+                    {/* <Divider />
+                    {showActions && <CardActions />} */}
                   </>
                 )}
               </>
-            </Container>
-          </CardContent>
-        </Card>
+            </div>
+        </Paper>
       </div>
 
       <div

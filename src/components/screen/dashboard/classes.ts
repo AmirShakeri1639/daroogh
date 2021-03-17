@@ -98,8 +98,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     padding: theme.spacing(2)
   },
   spacingVertical1: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginTop: 4,
     marginLeft: 0,
     marginRight: 0,
   },
@@ -168,8 +167,6 @@ export const useClasses = makeStyles((theme) => createStyles({
   stickyRecommendation: {
     position: 'sticky',
     margin: 0,
-    padding: 10,
-    paddingTop: 0,
     top: 135,
     zIndex: 999,
   },
@@ -181,6 +178,12 @@ export const useClasses = makeStyles((theme) => createStyles({
   cardContainer: {
    
     minHeight: 170,
+    alignItems: 'center',
+    fontSize: 11,
+    
+  },
+  mobileCardContainer: {
+   
     alignItems: 'center',
     fontSize: 11,
     
@@ -211,6 +214,16 @@ export const useClasses = makeStyles((theme) => createStyles({
     display: 'inline-block',
     position: 'relative',
     boxShadow: '0 0 5px #cecece',
+    padding: theme.spacing(1)
+  },
+  mobileCardRoot: {
+    width: '98%',
+    float:'left',
+    borderRadius: 5,
+    display: 'inline-block',
+    position: 'relative',
+    boxShadow: '0 0 5px #cecece',
+    padding: theme.spacing(1)
   },
   cardTitle: {
     padding: '.65em',
