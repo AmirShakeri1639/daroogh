@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   makeStyles,
   Paper,
@@ -33,6 +33,7 @@ import moment from 'jalali-moment';
 import { useQuery } from 'react-query';
 import { Prescription as presApi } from '../../../../../services/api';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import { useLocation } from 'react-router-dom';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -74,6 +75,14 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
 
     setIsOpenModal((v) => !v);
   };
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  useEffect(() => {
+    debugger
+    if (props.data.id.toString() == params.get('q')) {
+      toggleIsOpenModal();
+    }
+  }, []);
   const {
     cardContent,
     cardContainer,
@@ -111,14 +120,18 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
       await formHandler(_id);
     }
   };
-  const hasAnswer = !cancelDate &&
+  const hasAnswer =
+    !cancelDate &&
     data &&
     data.prescriptionResponse &&
-    data.prescriptionResponse.length != 0
+    data.prescriptionResponse.length != 0;
 
   return (
-    <Paper style={{ border:`1px solid ${hasAnswer?'rgb(0 150 1)':'#fff'}`}}
-     className={root} elevation={1}>
+    <Paper
+      style={{ border: `1px solid ${hasAnswer ? 'rgb(0 150 1)' : '#fff'}` }}
+      className={root}
+      elevation={1}
+    >
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Detail
@@ -151,21 +164,20 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
                 </Grid>
               </Grid>
             )}
-          {!cancelDate &&
-            hasAnswer && (
-              <Grid item xs={12}>
-                <Grid justify="flex-end" container spacing={0}>
-                  <Grid item xs={4}>
-                    <Button
-                      onClick={toggleIsOpenModal}
-                      style={{ color: 'green', fontSize: '14px' }}
-                    >
-                      مشاهده {data.prescriptionResponse.length} پاسخ
-                    </Button>
-                  </Grid>
+          {!cancelDate && hasAnswer && (
+            <Grid item xs={12}>
+              <Grid justify="flex-end" container spacing={0}>
+                <Grid item xs={4}>
+                  <Button
+                    onClick={toggleIsOpenModal}
+                    style={{ color: 'green', fontSize: '14px' }}
+                  >
+                    مشاهده {data.prescriptionResponse.length} پاسخ
+                  </Button>
                 </Grid>
               </Grid>
-            )}
+            </Grid>
+          )}
           {cancelDate && (
             <Grid item xs={12} className={spacingVertical1}>
               <TextWithTitle
@@ -187,12 +199,17 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
         <DialogTitle>
           <span style={{ fontSize: 12 }}>پاسخ ها</span>
         </DialogTitle>
-        <DialogContent style={{ backgroundColor: '#FAFAFA', width:'100%' }}>
+        <DialogContent style={{ backgroundColor: '#FAFAFA', width: '100%' }}>
           <Grid container xs={12} spacing={1}>
             {dataApi &&
               dataApi.prescriptionResponse.map((rec: any) => (
                 <Grid item xs={12}>
-                  <Paper style={{ padding: theme.spacing(2) , borderRight:'2px solid #f80501'}}>
+                  <Paper
+                    style={{
+                      padding: theme.spacing(2),
+                      borderRight: '2px solid #f80501',
+                    }}
+                  >
                     <TextWithTitle
                       title="نام داروخانه"
                       body={rec.pharmacy.name}
@@ -213,13 +230,13 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
               ))}
           </Grid>
         </DialogContent>
-        <DialogActions >
-        <Button color="default" onClick={toggleIsOpenModal}>
-                  {'بستن'}
-                </Button>
+        <DialogActions>
+          <Button color="default" onClick={toggleIsOpenModal}>
+            {'بستن'}
+          </Button>
         </DialogActions>
       </Dialog>
-      
+
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );

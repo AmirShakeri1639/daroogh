@@ -33,6 +33,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
 import { PrescriptionSendInterface } from '../../../../../interfaces/PrescriptionInterface';
 import { ActionInterface } from '../../../../../interfaces';
+import { useLocation } from 'react-router';
 
 const { getPrescriptionOfUser, send, cancel } = new presApi();
 
@@ -130,7 +131,7 @@ function reducer(state = initialState, action: ActionInterface): any {
       console.error('Action type not defined');
   }
 }
-const Prescription: React.FC = () => {
+const Prescription: React.FC = (props) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [provinceList, setProvinceList] = useState<any[]>([]);
@@ -138,6 +139,8 @@ const Prescription: React.FC = () => {
   const [selectedProvince, setSelectedProvince] = useState<string>('');
 
   const { t } = useTranslation();
+
+
 
   const { addButton, modalContainer, buttonContainer, input, fab } = useStyle();
 

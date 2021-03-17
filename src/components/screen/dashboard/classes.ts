@@ -183,6 +183,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     minHeight: 170,
     alignItems: 'center',
     fontSize: 11,
+    
   },
   ulCardName: {
     padding: 0,
@@ -203,7 +204,8 @@ export const useClasses = makeStyles((theme) => createStyles({
     justifyContent: 'flex-end',
   },
   cardRoot: {
-    width: '100%',
+    width: '98%',
+    float:'left',
     minHeight: 110,
     borderRadius: 5,
     display: 'inline-block',
@@ -212,7 +214,7 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   cardTitle: {
     padding: '.65em',
-    fontSize: '1.2em',
+    fontSize: '1.1em',
   },
   title: {
     fontSize: 14,
