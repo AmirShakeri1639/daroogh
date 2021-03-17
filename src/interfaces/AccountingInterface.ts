@@ -21,6 +21,14 @@ export interface AccountingInterface {
   isChecked?: boolean;
   exchangeID: number | null;
   mandeh: number;
+  currentPharmacyIsA?: boolean;
+  numberA?: number;
+  numberB?: number;
+}
+
+export interface AccountingCardInterface {
+  data: AccountingInterface
+  exchangeHandler: any
 }
 
 export interface BankGetwayesInterface {

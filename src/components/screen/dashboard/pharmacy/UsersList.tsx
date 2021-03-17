@@ -64,6 +64,7 @@ import { NewPharmacyUserData } from '../../../../model';
 import { Role, User } from '../../../../services/api';
 import RoleForm from '../user/RoleForm';
 import CardContainer from './user/CardContainer';
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -246,10 +247,15 @@ const UsersList: React.FC = () => {
     disableUser,
     saveNewUser,
   } = new User();
-  const { isLoading, data, isFetched } = useQuery(
+  const { isLoading, data, isFetched, refetch } = useQuery(
     UserQueryEnum.GET_ALL_USERS,
 
-    () => getCurrentPharmacyUsers(0, 50)
+    () => getCurrentPharmacyUsers(pageRef.current, 10),
+    {onSuccess: (result) => {
+      if (result == undefined || result.count ==0) {
+        setNoData(true);
+      } 
+    },}
   );
   const {
     isLoading: roleListLoading,
@@ -563,25 +569,54 @@ const UsersList: React.FC = () => {
     setSelectedRoles(event.target.value as number[]);
   };
   const contentGenerator = (): JSX.Element[] | null => {
-    if (fullScreen) {
-      if (!isLoading && data !== undefined && isFetched) {
-        console.log(data)
-        return data.items.map((item: any) => {
-          //const { user } = item;
-          //if (user !== null) {
-            return (
-              <Grid key={item.id} item xs={12}>
-                <CardContainer data={item} formHandler={formHandler} />
-              </Grid>
-            );
-          //}
 
-          return null;
-        });
-      }
+    if (!isLoading && data !== undefined && isFetched) {
+      console.log(data)
+      return data.items.map((item: any) => {
+        //const { user } = item;
+        //if (user !== null) {
+        return (
+          <Grid key={item.id} item xs={12}>
+            <CardContainer data={item} editRoleHandler={formHandler} />
+          </Grid>
+        );
+        //}
+
+        return null;
+      });
     }
+
     return null;
   };
+  const [noData, setNoData] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const pageRef = React.useRef(page);
+  const setPageRef = (data: number) => {
+    pageRef.current = data;
+    setPage(data);
+  };
+  const handleScroll = (e: any): any => {
+    const el = e.target;
+    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+      if (!noData) {
+        const currentpage = pageRef.current + 1;
+        setPageRef(currentpage);
+        refetch()
+
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    // const res = (async (): Promise<any> => await getExchanges())
+    // res();
+    if (fullScreen) {
+      window.addEventListener('scroll', (e) => handleScroll(e), {
+        capture: true,
+      });
+    }
+    return () => window.removeEventListener('scroll', (e) => handleScroll(e));
+  }, []);
   return (
     <Container maxWidth="lg">
       {!fullScreen && (
@@ -613,7 +648,8 @@ const UsersList: React.FC = () => {
           {t('user.create-user')}
         </Button>
       </Grid>
-      {fullScreen &&  contentGenerator()}
+      {fullScreen && contentGenerator()}
+      {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
       <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal}>
         <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
         <DialogContent>

@@ -1,5 +1,5 @@
-import React, { useReducer } from 'react';
-import { useQueryCache } from 'react-query';
+import React, { useReducer, useState } from 'react';
+import { useQuery, useQueryCache } from 'react-query';
 import { Accounting } from '../../../../services/api';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../classes';
@@ -10,7 +10,10 @@ import {
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { AccountingEnum } from '../../../../enum/query';
-import { Container, createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
+import {
+  Container, createStyles, Grid, makeStyles, Paper, useMediaQuery,
+  useTheme
+} from '@material-ui/core';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { getJalaliDate } from '../../../../utils/jalali';
 import { Convertor } from '../../../../utils';
@@ -20,6 +23,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faExchangeAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import CardContainer from './CardContainer'
 
 const initialState: AccountingInterface = {
   id: 0,
@@ -137,21 +142,114 @@ const AccountingList: React.FC = () => {
       }
     ];
   };
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { isLoading, data, isFetched, refetch } = useQuery(
+    AccountingEnum.GET_ALL,
 
+    () => all(pageRef.current, 10),
+    {
+      onSuccess: (result) => {
+        if (result == undefined || result.count == 0) {
+          setNoData(true);
+        }
+      },
+    }
+  );
+  const [noData, setNoData] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const pageRef = React.useRef(page);
+  const setPageRef = (data: number) => {
+    pageRef.current = data;
+    setPage(data);
+  };
+  const handleScroll = (e: any): any => {
+    const el = e.target;
+    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+      if (!noData) {
+        const currentpage = pageRef.current + 1;
+        setPageRef(currentpage);
+        refetch()
+
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    // const res = (async (): Promise<any> => await getExchanges())
+    // res();
+    if (fullScreen) {
+      window.addEventListener('scroll', (e) => handleScroll(e), {
+        capture: true,
+      });
+    }
+    return () => window.removeEventListener('scroll', (e) => handleScroll(e));
+  }, []);
+  const exchangeHandler = (row: AccountingInterface): JSX.Element | null => {
+
+    let exchangeUrl = '';
+    if (row.exchangeID) {
+      const { transfer } = routes;
+      exchangeUrl = `${transfer}?eid=${row.currentPharmacyIsA ? row.numberA : row.numberB}`;
+    }
+    return (
+      <>
+        { exchangeUrl.length > 0 &&
+          <div className={linkWrapper}>
+            <Link to={exchangeUrl}>
+              <FontAwesomeIcon icon={faExchangeAlt} />
+              &nbsp;
+              {t('exchange.viewExchange')}
+            </Link>
+          </div>
+        }
+      </>
+    )
+    return null;
+  }
+
+
+
+
+  const contentGenerator = (): JSX.Element[] | null => {
+
+    if (!isLoading && data !== undefined && isFetched) {
+      console.log(data)
+      return data.items.map((item: any) => {
+        //const { user } = item;
+        //if (user !== null) {
+        return (
+          <Grid key={item.id} item xs={12}>
+            <CardContainer data={item} exchangeHandler={exchangeHandler} />
+          </Grid>
+        );
+        //}
+
+        return null;
+      });
+    }
+
+    return null;
+  };
   return (
     <Container maxWidth="lg" className={container}>
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <div>{t('accounting.list')}</div>
           <Paper>
-            <DataTable
-              ref={ref}
-              columns={tableColumns()}
-              queryKey={AccountingEnum.GET_ALL}
-              queryCallback={all}
-              urlAddress={UrlAddress.getAllAccounting}
-              initLoad={false}
-            />
+            {!fullScreen && (
+              <DataTable
+                ref={ref}
+                columns={tableColumns()}
+                queryKey={AccountingEnum.GET_ALL}
+                queryCallback={all}
+                urlAddress={UrlAddress.getAllAccounting}
+                initLoad={false}
+              />
+            )}
+            {fullScreen && contentGenerator()}
+            {fullScreen && <CircleBackdropLoading
+              isOpen={isLoading} />}
           </Paper>
         </Grid>
       </Grid>
