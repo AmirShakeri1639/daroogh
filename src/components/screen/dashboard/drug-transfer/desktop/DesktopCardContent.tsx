@@ -656,7 +656,6 @@ const DesktopCardContent = ({
 
   return (
     <>
-      <div style={{width:'100%'}}>
         <Paper className={isSmallDevice ? mobileCardRoot : cardRoot}>
           {! (isSmallDevice && full)  && (
             <>
@@ -717,7 +716,6 @@ const DesktopCardContent = ({
             </>
           </div>
         </Paper>
-      </div>
 
       {! (isSmallDevice && full)  && !full && (
         <div

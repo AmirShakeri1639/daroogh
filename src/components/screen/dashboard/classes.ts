@@ -217,7 +217,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     padding: theme.spacing(1)
   },
   mobileCardRoot: {
-    width: '98%',
+    width: '100%',
     float:'left',
     borderRadius: 5,
     display: 'inline-block',
