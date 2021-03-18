@@ -8,6 +8,9 @@ import {
   isNullOrEmpty,
   JwtData,
   successSweetAlert,
+  warningSweetAlert,
+  today,
+  getJalaliDate,
 } from '../../../../utils';
 import {
   ActionInterface,
@@ -22,7 +25,6 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { ColorEnum, PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
-import { getJalaliDate } from '../../../../utils/jalali';
 import FormContainer from '../../../public/form-container/FormContainer';
 import {
   Button, createStyles, Dialog, DialogActions, DialogContent,
@@ -253,29 +255,34 @@ const PrescriptionList: React.FC = () => {
   };
 
   const saveHandler = (item: PrescriptionInterface): void => {
-    toggleIsOpenSaveModalForm();
-    const {
-      id, prescriptionResponse
-    } = item;
-    let pharmacyComment: string = '';
-    let accept: boolean = false;
-    let thisState: number = 1;
-    if (prescriptionResponse.length > 0) {
-      const responses = prescriptionResponse.filter((i: any) => {
-        return i.pharmacy.name === pharmacyName
-      });
-      if (responses.length > 0) {
-        pharmacyComment = responses[0].pharmacyComment;
-        accept = responses[0].state == PrescriptionResponseStateEnum.Accept;
-        thisState = responses[0].state
+    if ((item.cancelDate == null || item.cancelDate == undefined) &&
+      item.expireDate >= today('-')) {
+      toggleIsOpenSaveModalForm();
+      const {
+        id, prescriptionResponse
+      } = item;
+      let pharmacyComment: string = '';
+      let accept: boolean = false;
+      let thisState: number = 1;
+      if (prescriptionResponse.length > 0) {
+        const responses = prescriptionResponse.filter((i: any) => {
+          return i.pharmacy.name === pharmacyName
+        });
+        if (responses.length > 0) {
+          pharmacyComment = responses[0].pharmacyComment;
+          accept = responses[0].state == PrescriptionResponseStateEnum.Accept;
+          thisState = responses[0].state
+        }
       }
+      dispatch({ type: 'prescriptionID', value: id });
+      dispatch({ type: 'isAccept', value: accept });
+      dispatch({ type: 'pharmacyComment', value: pharmacyComment });
+      dispatch({ type: 'state', value: thisState });
+      dispatch({ type: 'comment', value: item.comment });
+      dispatch({ type: 'fileKey', value: item.fileKey });
+    } else {
+      warningSweetAlert(t('prescription.cantEdit'))
     }
-    dispatch({ type: 'prescriptionID', value: id });
-    dispatch({ type: 'isAccept', value: accept });
-    dispatch({ type: 'pharmacyComment', value: pharmacyComment });
-    dispatch({ type: 'state', value: thisState });
-    dispatch({ type: 'comment', value: item.comment });
-    dispatch({ type: 'fileKey', value: item.fileKey });
   };
 
   const submitSave = async (el?: React.FormEvent<HTMLFormElement>): Promise<any> => {
@@ -360,7 +367,7 @@ const PrescriptionList: React.FC = () => {
                   label={ t('general.comment') }
                   required
                   multiline
-                  style={{ whiteSpace: "pre-line" }}
+                  style={ { whiteSpace: "pre-line" } }
                   rows="3"
                   className={ formItem }
                   onChange={ (e): void =>

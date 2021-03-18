@@ -52,7 +52,8 @@ import {
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import ExchangeTree from '../exchange-tree/ExchangeTree';
-import { DriveEtaOutlined } from '@material-ui/icons';
+import { useHistory } from 'react-router-dom';
+import routes from 'routes';
 
 interface Props {
   item?: ViewExchangeInterface;
@@ -619,6 +620,8 @@ const DesktopCardContent = ({
   const [showExchangeTree, setShowExchangeTree] = useState(false);
 
   const CardActions = (): JSX.Element => {
+    const history = useHistory();
+    const { survey } = routes;
     return (
       <Grid container xs={12} direction="row-reverse">
         {item.needSurvey && (
@@ -629,7 +632,7 @@ const DesktopCardContent = ({
               color="primary"
               style={{ fontSize: 10 }}
               onClick={(): void => {
-                //show survey
+                history.push(`${survey}?exchangeId=${item.id}`)
               }}
             >
               {t('survey.survey')}

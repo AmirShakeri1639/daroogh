@@ -104,16 +104,18 @@ const Desktop1: React.FC = () => {
           const statesList: LabelValue[] = [];
           let hasCompleted: boolean = false;
           const items = newList.map((item: any) => {
-            hasCompleted = false;
+            let thisHasCompleted = false;
             if (
               !item.currentPharmacyIsA &&
               item.state <= 10 &&
               !isStateCommon(item.state)
             )
               item.state += 10;
-            if (isExchangeCompleted(item.state, item.currentPharmacyIsA))
+            if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
               hasCompleted = true;
-            if (!hasLabelValue(statesList, item.state) && !hasCompleted) {
+              thisHasCompleted = true;
+            }
+            if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
               statesList.push({
                 label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
                 value: item.state,
@@ -182,16 +184,18 @@ const Desktop1: React.FC = () => {
       const statesList: LabelValue[] = [];
       let hasCompleted: boolean = false;
       const items = newList.map((item: any) => {
-        hasCompleted = false;
+        let thisHasCompleted = false;
         if (
           !item.currentPharmacyIsA &&
           item.state <= 10 &&
           !isStateCommon(item.state)
         )
           item.state += 10;
-        if (isExchangeCompleted(item.state, item.currentPharmacyIsA))
+        if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
           hasCompleted = true;
-        if (!hasLabelValue(statesList, item.state) && !hasCompleted) {
+          thisHasCompleted = true;
+        }
+        if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
           statesList.push({
             label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
             value: item.state,
