@@ -255,8 +255,7 @@ const PrescriptionList: React.FC = () => {
   };
 
   const saveHandler = (item: PrescriptionInterface): void => {
-    debugger;
-    if (item.cancelDate == null || item.cancelDate == undefined ||
+    if ((item.cancelDate == null || item.cancelDate == undefined) &&
       item.expireDate >= today('-')) {
       toggleIsOpenSaveModalForm();
       const {

@@ -12,7 +12,7 @@ class Accounting extends Api {
   all = async (skip: number, top: number = 10): Promise<any> => {
     try {
       const result = await this.postJsonData(
-        `${this.urls.all}?$top=${top}&$skip=${skip * top}`
+        `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`
       );
       return result.data;
     } catch (e) {
