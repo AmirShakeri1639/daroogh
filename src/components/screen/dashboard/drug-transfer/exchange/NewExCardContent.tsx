@@ -837,7 +837,6 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   };
 
   const handleTotalAmount = React.useCallback(() => {
-    debugger;
     let val = 0;
     if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
     setTotalAmount(Utils.numberWithCommas(val));

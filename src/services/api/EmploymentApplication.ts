@@ -19,7 +19,6 @@ class EmploymentApplication extends Api {
   };
 
   save = async (data: EmploymentApplicationDataInterface): Promise<any> => {
-    debugger;
     const result = await this.postFormData(
       `${this.urls.save}`,
       {
