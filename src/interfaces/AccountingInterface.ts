@@ -24,6 +24,7 @@ export interface AccountingInterface {
   currentPharmacyIsA?: boolean;
   numberA?: number;
   numberB?: number;
+  exchangeNumber?: number | string;
 }
 
 export interface AccountingCardInterface {
