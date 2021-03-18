@@ -836,12 +836,15 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     );
   };
 
-  const handleTotalAmount = React.useCallback(() => {
-    debugger;
+  React.useEffect(()=>{
+    handleTotalAmount();
+  }, [])
+
+  const handleTotalAmount = () => {
     let val = 0;
     if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
     setTotalAmount(Utils.numberWithCommas(val));
-  }, []);
+  };
 
   const GreenCheckbox = withStyles({
     root: {
@@ -928,7 +931,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                       color: '1d0d50',
                     }}
                   >
-                    {handleTotalAmount()}
+                    {/* {handleTotalAmount()} */}
                     {totalAmount}
                   </span>
                   <span style={{ fontSize: 11, marginRight: 5 }}>
