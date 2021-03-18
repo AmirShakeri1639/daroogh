@@ -115,7 +115,6 @@ const initialState: EmploymentApplicationDataInterface = {
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
-  debugger;
   switch (action.type) {
     case 'name':
       return {
@@ -322,7 +321,6 @@ const EmploymentApplication: React.FC = () => {
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const changeprovince = (e: any): void => {
-    debugger;
     const val = e.target.value as string;
     dispatch({ type: 'countryDivisionCode', value: e.target.value });
     setSelectedProvince(val);
