@@ -178,14 +178,11 @@ const AccountingList: React.FC = () => {
   };
   function isMobile() {
     return window.innerWidth < 960;
-
-
-
   }
 
   function useWindowDimensions() {
 
-    const [mobile, setMobile] = useState(isMobile());
+    const [mobile, setMobile] = useState(false);
     const mobileRef = React.useRef(mobile);
     const setMobileRef = (data: boolean) => {
       mobileRef.current = data;
@@ -193,8 +190,6 @@ const AccountingList: React.FC = () => {
     };
     React.useEffect(() => {
       function handleResize() {
-        console.log(mobileRef.current)
-        console.log(isMobile())
         if (!mobileRef.current && isMobile()) {
           window.addEventListener('scroll', (e) => handleScroll(e), {
             capture: true,
@@ -204,7 +199,7 @@ const AccountingList: React.FC = () => {
         }
         setMobileRef(isMobile());
       }
-
+      handleResize()
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);

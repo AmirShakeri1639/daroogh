@@ -591,7 +591,7 @@ const JobsList: React.FC = () => {
   }, []);
   const [list, setList] = useState<any>([]);
   const listRef = React.useRef(list);
-  const setListRef = (data:any) => {
+  const setListRef = (data: any) => {
     listRef.current = listRef.current.concat(data);
     setList(data);
   };
@@ -607,7 +607,7 @@ const JobsList: React.FC = () => {
         } else {
           console.log(result.items);
 
-          setListRef(result.items          
+          setListRef(result.items
           );
         }
       },
@@ -620,11 +620,11 @@ const JobsList: React.FC = () => {
     pageRef.current = data;
     setPage(data);
   };
- 
+
   const handleScroll = (e: any): any => {
     //if (fullScreen) {
 
-   
+
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
       if (!noData) {
@@ -645,13 +645,13 @@ const JobsList: React.FC = () => {
       return result;
     }
   }
-  
+
   function isMobile() {
     return window.innerWidth < 960;
   }
   function useWindowDimensions() {
 
-    const [mobile, setMobile] = useState(isMobile());
+    const [mobile, setMobile] = useState(false);
     const mobileRef = React.useRef(mobile);
     const setMobileRef = (data: boolean) => {
       mobileRef.current = data;
@@ -668,7 +668,7 @@ const JobsList: React.FC = () => {
         }
         setMobileRef(isMobile());
       }
-
+      handleResize()
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -1060,12 +1060,12 @@ const JobsList: React.FC = () => {
       action: addTransactionHandler,
     },*/
   ];
- 
+
   const contentGenerator = (): JSX.Element[] => {
     if (!isLoading && list !== undefined && isFetched) {
       console.log(data);
       console.log(list);
-      
+
       return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {

@@ -640,7 +640,7 @@ const UsersList: React.FC = () => {
   }
   function useWindowDimensions() {
 
-    const [mobile, setMobile] = useState(isMobile());
+    const [mobile, setMobile] = useState(false);
     const mobileRef = React.useRef(mobile);
     const setMobileRef = (data: boolean) => {
       mobileRef.current = data;
@@ -657,7 +657,7 @@ const UsersList: React.FC = () => {
         }
         setMobileRef(isMobile());
       }
-
+      handleResize()
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);
