@@ -16,7 +16,7 @@ class Drug extends Api {
 
   save = async (data: DrugInterface): Promise<any> => {
     try {
-      const result = await this.postJsonData(this.urls.save, data);
+      const result = await this.postFormData(this.urls.save, data);
       return result.data;
     } catch (e) {
       errorHandler(e);
