@@ -275,6 +275,7 @@ export default {
         family: 'نام خانوادگی',
         birthDate: 'تاریخ تولد',
         email: 'ایمیل',
+        cantEdit: 'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
         resumeFile: 'فایل رزومه',
       },
       message: {
