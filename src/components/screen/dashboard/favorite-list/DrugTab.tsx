@@ -6,12 +6,9 @@ import {
   Hidden,
   makeStyles,
   Paper,
-  TextField,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  DialogContentText,
   useMediaQuery,
   useTheme,
   Divider,
@@ -19,18 +16,14 @@ import {
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { PharmacyDrugEnum } from '../../../../enum';
-import { debounce, remove, unset } from 'lodash';
+import { debounce, remove } from 'lodash';
 import { Favorite, Drug as DrugApi, Search } from '../../../../services/api';
-import {
-  MaterialContainer,
-  Modal,
-  Button,
-  AutoComplete,
-} from '../../../public';
+import { MaterialContainer, Button, AutoComplete } from '../../../public';
 import { errorHandler, successSweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
+import styled from 'styled-components';
 
 const { getFavoriteList, saveFavoriteList } = new Favorite();
 
@@ -94,6 +87,10 @@ const useStyle = makeStyles((theme) =>
     },
   })
 );
+
+const AutoCompleteGrid = styled((props) => <Grid {...props} item xs={12} />)`
+  height: 250px;
+`;
 
 const DrugTab: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -249,33 +246,27 @@ const DrugTab: React.FC = () => {
         open={isOpenModal}
         fullScreen={fullScreen}
         onClose={toggleIsOpenModal}
+        fullWidth
       >
         <DialogContent>
-          <DialogContentText>
-            <Grid container spacing={1} className={formContent}>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <AutoComplete
-                      ref={useRef()}
-                      isLoading={isLoading}
-                      onChange={debounce(
-                        (e) => drugSearch(e.target.value),
-                        500
-                      )}
-                      loadingText={t('general.loading')}
-                      className="w-100"
-                      placeholder={t('drug.name')}
-                      options={drugSearchOptions}
-                      onItemSelected={(item): void =>
-                        setDrugName(String(item[0].value))
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
+          <Grid container spacing={1} className={formContent}>
+            <Grid item xs={12}>
+              <AutoCompleteGrid>
+                <AutoComplete
+                  ref={useRef()}
+                  isLoading={isLoading}
+                  onChange={debounce((e) => drugSearch(e.target.value), 500)}
+                  loadingText={t('general.loading')}
+                  className="w-100"
+                  placeholder={t('drug.name')}
+                  options={drugSearchOptions}
+                  onItemSelected={(item): void =>
+                    setDrugName(String(item[0].value))
+                  }
+                />
+              </AutoCompleteGrid>
             </Grid>
-          </DialogContentText>
+          </Grid>
         </DialogContent>
         <Divider />
         <DialogActions>
