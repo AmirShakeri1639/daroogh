@@ -598,7 +598,7 @@ const JobsList: React.FC = () => {
   const { isLoading, data, isFetched } = useQuery(
     JobsEnum.GET_ALL,
 
-    () => all(pageRef.current, 3),
+    () => all(pageRef.current, 10),
     {
       onSuccess: (result) => {
         console.log(result);
@@ -636,7 +636,7 @@ const JobsList: React.FC = () => {
     }
   };
   async function getList(): Promise<any> {
-    const result = await all(pageRef.current, 3);
+    const result = await all(pageRef.current, 10);
     console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
@@ -646,16 +646,36 @@ const JobsList: React.FC = () => {
     }
   }
   
-  React.useEffect(() => {
-    // const res = (async (): Promise<any> => await getExchanges())
-    // res();
+  function isMobile() {
+    return window.innerWidth < 960;
+  }
+  function useWindowDimensions() {
 
-    window.addEventListener('scroll', (e) => handleScroll(e), {
-      capture: true,
-    });
+    const [mobile, setMobile] = useState(isMobile());
+    const mobileRef = React.useRef(mobile);
+    const setMobileRef = (data: boolean) => {
+      mobileRef.current = data;
+      setMobile(data);
+    };
+    React.useEffect(() => {
+      function handleResize() {
+        if (!mobileRef.current && isMobile()) {
+          window.addEventListener('scroll', (e) => handleScroll(e), {
+            capture: true,
+          });
+        } else if (mobileRef.current && !isMobile()) {
+          window.removeEventListener('scroll', (e) => handleScroll(e));
+        }
+        setMobileRef(isMobile());
+      }
 
-    return () => window.removeEventListener('scroll', (e) => handleScroll(e));
-  }, []);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return mobile;
+  }
+  useWindowDimensions();
   const editModal = (): JSX.Element => {
     return (
       <Dialog

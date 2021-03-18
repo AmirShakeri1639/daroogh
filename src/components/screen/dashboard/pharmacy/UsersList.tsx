@@ -247,16 +247,7 @@ const UsersList: React.FC = () => {
     disableUser,
     saveNewUser,
   } = new User();
-  const { isLoading, data, isFetched, refetch } = useQuery(
-    UserQueryEnum.GET_ALL_USERS,
 
-    () => getCurrentPharmacyUsers(pageRef.current, 10),
-    {onSuccess: (result) => {
-      if (result == undefined || result.count ==0) {
-        setNoData(true);
-      } 
-    },}
-  );
   const {
     isLoading: roleListLoading,
     data: roleListData,
@@ -570,9 +561,9 @@ const UsersList: React.FC = () => {
   };
   const contentGenerator = (): JSX.Element[] | null => {
 
-    if (!isLoading && data !== undefined && isFetched) {
+    if (!isLoading && list !== undefined && isFetched) {
       console.log(data)
-      return data.items.map((item: any) => {
+      return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
         return (
@@ -588,6 +579,30 @@ const UsersList: React.FC = () => {
 
     return null;
   };
+  const [list, setList] = useState<any>([]);
+  const listRef = React.useRef(list);
+  const setListRef = (data: any) => {
+    listRef.current = listRef.current.concat(data);
+    setList(data);
+  };
+  const { isLoading, data, isFetched } = useQuery(
+    UserQueryEnum.GET_ALL_USERS,
+
+    () => getCurrentPharmacyUsers(pageRef.current, 10),
+    {
+      onSuccess: (result) => {
+        console.log(result);
+        if (result == undefined || result.count == 0) {
+          setNoData(true);
+        } else {
+          console.log(result.items);
+
+          setListRef(result.items
+          );
+        }
+      },
+    }
+  );
   const [noData, setNoData] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
@@ -595,28 +610,61 @@ const UsersList: React.FC = () => {
     pageRef.current = data;
     setPage(data);
   };
+
   const handleScroll = (e: any): any => {
+    //if (fullScreen) {
+
+
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
       if (!noData) {
         const currentpage = pageRef.current + 1;
         setPageRef(currentpage);
-        refetch()
-
+        console.log(pageRef.current);
+        getList();
       }
     }
   };
-
-  React.useEffect(() => {
-    // const res = (async (): Promise<any> => await getExchanges())
-    // res();
-    if (fullScreen) {
-      window.addEventListener('scroll', (e) => handleScroll(e), {
-        capture: true,
-      });
+  async function getList(): Promise<any> {
+    const result = await getCurrentPharmacyUsers(pageRef.current, 10);
+    console.log(result.items);
+    if (result == undefined || result.items.length == 0) {
+      setNoData(true);
+    } else {
+      setListRef(result.items);
+      return result;
     }
-    return () => window.removeEventListener('scroll', (e) => handleScroll(e));
-  }, []);
+  }
+  function isMobile() {
+    return window.innerWidth < 960;
+  }
+  function useWindowDimensions() {
+
+    const [mobile, setMobile] = useState(isMobile());
+    const mobileRef = React.useRef(mobile);
+    const setMobileRef = (data: boolean) => {
+      mobileRef.current = data;
+      setMobile(data);
+    };
+    React.useEffect(() => {
+      function handleResize() {
+        if (!mobileRef.current && isMobile()) {
+          window.addEventListener('scroll', (e) => handleScroll(e), {
+            capture: true,
+          });
+        } else if (mobileRef.current && !isMobile()) {
+          window.removeEventListener('scroll', (e) => handleScroll(e));
+        }
+        setMobileRef(isMobile());
+      }
+
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return mobile;
+  }
+  useWindowDimensions();
   return (
     <Container maxWidth="lg">
       {!fullScreen && (
