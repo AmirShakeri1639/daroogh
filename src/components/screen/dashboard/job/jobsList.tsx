@@ -267,11 +267,18 @@ const JobsList: React.FC = () => {
   //const { save, all, remove, confirm } = new Pharmacy();
   const { save, all, cancel } = new Job();
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
-
+  const resetListRef = () => {
+    listRef.current = [];
+    setList([]);
+    setPageRef(0);
+    setNoData(false)
+    getList()
+  };
   const [_cancel, { isLoading: isLoadingRemove }] = useMutation(cancel, {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(JobsEnum.GET_ALL);
+      resetListRef()
       await successSweetAlert(t('alert.successfulDelete'));
     },
   });
@@ -280,8 +287,12 @@ const JobsList: React.FC = () => {
     onSuccess: async () => {
       await queryCache.invalidateQueries(JobsEnum.GET_ALL);
       await successSweetAlert(t('alert.successfulSave'));
+      resetListRef()
+      
       ref.current?.onQueryChange();
+      
       dispatch({ type: 'reset' });
+
     },
   });
 

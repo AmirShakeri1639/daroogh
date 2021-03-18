@@ -256,7 +256,13 @@ const UsersList: React.FC = () => {
   );
 
   const queryCache = useQueryCache();
-
+  const resetListRef = () => {
+    listRef.current = [];
+    setList([]);
+    setPageRef(0);
+    setNoData(false)
+    getList()
+  };
   const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(
     removeUser,
     {
@@ -264,6 +270,7 @@ const UsersList: React.FC = () => {
         ref.current?.onQueryChange();
         await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+        resetListRef()
       },
     }
   );
@@ -272,6 +279,7 @@ const UsersList: React.FC = () => {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+      resetListRef()
     },
   });
 
@@ -283,6 +291,7 @@ const UsersList: React.FC = () => {
         dispatch({ type: 'reset' });
         queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulEditTextMessage'));
+        resetListRef()
       },
     }
   );
@@ -301,6 +310,7 @@ const UsersList: React.FC = () => {
         await successSweetAlert(
           message || t('alert.successfulCreateTextMessage')
         );
+        resetListRef()
       },
       onError: async (data: any) => {
         await errorSweetAlert(data || t('error.save'));
