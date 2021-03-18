@@ -177,8 +177,8 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   cardContainer: {
    
-    minHeight: 170,
-    alignItems: 'center',
+    minHeight: 140,
+    alignItems: 'baseline',
     fontSize: 11,
     
   },
@@ -203,8 +203,8 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   colLeft: {
     display: 'flex',
-    alignItems: 'left',
-    justifyContent: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cardRoot: {
     width: '98%',
@@ -248,6 +248,9 @@ export const useClasses = makeStyles((theme) => createStyles({
     // borderTopLeftRadius: '0',
   },
   cardTop: {
+    display:'flex',
+    alignItems:'center',
+    padding:theme.spacing(1)
   },
   pointer: {
     cursor: 'Pointer',
@@ -333,7 +336,6 @@ export const useClasses = makeStyles((theme) => createStyles({
 
   scaleContainer: {
     width: "100%",
-    minHeight: '135px',
     display: 'flex',
     alignItems: 'center',
     alignContent: 'center'
