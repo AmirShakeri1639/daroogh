@@ -333,12 +333,41 @@ export const useClasses = makeStyles((theme) => createStyles({
       bottom: "-6px"
     }
   },
-
   scaleContainer: {
     width: "100%",
     display: 'flex',
     alignItems: 'center',
     alignContent: 'center'
   
-  }
+  },
+  createUserBtn: {
+    background: `${theme.palette.pinkLinearGradient.main} !important`,
+    color: '#fff',
+    float: 'right',
+  },
+  buttonContainer: {
+    marginBottom: theme.spacing(2),
+  },
+  label: {
+    display: 'flex',
+    alignItems: 'center',
+    margin: theme.spacing(1, 0),
+  },
+  formContent: {
+    overflow: 'hidden',
+    overflowY: 'auto',
+    display: 'flex',
+  },
+  cancelButtonDialog: {
+    color: '#fff',
+    backgroundColor: '#5ABC55',
+    fontSize: 10,
+    float: 'right',
+  },
+  submitBtn: {
+    color: '#fff',
+    backgroundColor: '#5ABC55',
+    fontSize: 10,
+    float: 'right',
+  },
 }));
