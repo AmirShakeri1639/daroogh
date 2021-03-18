@@ -2,8 +2,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { createStyles } from "@material-ui/core";
 import { ColorEnum } from "../../../enum";
 
-
-
 export const useClasses = makeStyles((theme) => createStyles({
   root: {
     minWidth: 500,
@@ -176,17 +174,14 @@ export const useClasses = makeStyles((theme) => createStyles({
     padding: 0,
   },
   cardContainer: {
-   
     minHeight: 140,
     alignItems: 'baseline',
     fontSize: 11,
-    
   },
   mobileCardContainer: {
-   
+    minHeight: 170,
     alignItems: 'center',
     fontSize: 11,
-    
   },
   ulCardName: {
     padding: 0,
@@ -236,7 +231,6 @@ export const useClasses = makeStyles((theme) => createStyles({
     marginBottom: 12,
   },
   titleCode: {
-    
     position: 'absolute',
     top: '2em',
     right: '1.5em',
@@ -338,7 +332,6 @@ export const useClasses = makeStyles((theme) => createStyles({
     display: 'flex',
     alignItems: 'center',
     alignContent: 'center'
-  
   },
   createUserBtn: {
     background: `${theme.palette.pinkLinearGradient.main} !important`,
