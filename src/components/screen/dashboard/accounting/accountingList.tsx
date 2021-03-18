@@ -32,7 +32,8 @@ const initialState: AccountingInterface = {
   description: '',
   amount: 0,
   exchangeID: null,
-  mandeh: 0
+  mandeh: 0,
+  exchangeNumber: '0',
 };
 
 const AccountingList: React.FC = () => {
@@ -123,7 +124,7 @@ const AccountingList: React.FC = () => {
           let exchangeUrl = '';
           if (row.exchangeID) {
             const { transfer } = routes;
-            exchangeUrl = `${transfer}?eid=${row.currentPharmacyIsA ? row.numberA : row.numberB}`;
+            exchangeUrl = `${transfer}?eid=${row.exchangeNumber}`;
           }
           return (
             <>
@@ -142,6 +143,7 @@ const AccountingList: React.FC = () => {
       }
     ];
   };
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -151,24 +153,23 @@ const AccountingList: React.FC = () => {
     listRef.current = listRef.current.concat(data);
     setList(data);
   };
+
   const { isLoading, data, isFetched, refetch } = useQuery(
     AccountingEnum.GET_ALL,
 
     () => all(pageRef.current, 10),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
-
           setListRef(result.items
           );
         }
       },
     }
   );
+
   const [noData, setNoData] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
@@ -181,7 +182,6 @@ const AccountingList: React.FC = () => {
   }
 
   function useWindowDimensions() {
-
     const [mobile, setMobile] = useState(false);
     const mobileRef = React.useRef(mobile);
     const setMobileRef = (data: boolean) => {
@@ -206,25 +206,21 @@ const AccountingList: React.FC = () => {
 
     return mobile;
   }
+
   useWindowDimensions();
   const handleScroll = (e: any): any => {
-
-
-
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
       if (!noData) {
         const currentpage = pageRef.current + 1;
         setPageRef(currentpage);
-        console.log(pageRef.current);
         getList();
       }
     }
-
   };
+
   async function getList(): Promise<any> {
     const result = await all(pageRef.current, 10);
-    console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
     } else {
@@ -233,22 +229,11 @@ const AccountingList: React.FC = () => {
     }
   }
 
-  /*React.useEffect(() => {
-    // const res = (async (): Promise<any> => await getExchanges())
-    // res();
-
-    window.addEventListener('scroll', (e) => handleScroll(e), {
-      capture: true,
-    });
-
-    return () => 
-  }, []);*/
   const exchangeHandler = (row: AccountingInterface): JSX.Element | null => {
-
     let exchangeUrl = '';
     if (row.exchangeID) {
       const { transfer } = routes;
-      exchangeUrl = `${transfer}?eid=${row.currentPharmacyIsA ? row.numberA : row.numberB}`;
+      exchangeUrl = `${transfer}?eid=${row.exchangeNumber}`;
     }
     return (
       <>
@@ -263,27 +248,16 @@ const AccountingList: React.FC = () => {
         }
       </>
     )
-    return null;
   }
 
-
-
-
   const contentGenerator = (): JSX.Element[] | null => {
-
     if (!isLoading && list !== undefined && isFetched) {
-      console.log(data)
       return listRef.current.map((item: any) => {
-        //const { user } = item;
-        //if (user !== null) {
         return (
           <Grid key={item.id} item xs={12}>
             <CardContainer data={item} exchangeHandler={exchangeHandler} />
           </Grid>
         );
-        //}
-
-        return null;
       });
     }
 
