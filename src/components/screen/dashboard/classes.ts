@@ -2,8 +2,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { createStyles } from "@material-ui/core";
 import { ColorEnum } from "../../../enum";
 
-
-
 export const useClasses = makeStyles((theme) => createStyles({
   root: {
     minWidth: 500,
@@ -98,8 +96,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     padding: theme.spacing(2)
   },
   spacingVertical1: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginTop: 4,
     marginLeft: 0,
     marginRight: 0,
   },
@@ -168,8 +165,6 @@ export const useClasses = makeStyles((theme) => createStyles({
   stickyRecommendation: {
     position: 'sticky',
     margin: 0,
-    padding: 10,
-    paddingTop: 0,
     top: 135,
     zIndex: 999,
   },
@@ -179,11 +174,14 @@ export const useClasses = makeStyles((theme) => createStyles({
     padding: 0,
   },
   cardContainer: {
-   
+    minHeight: 140,
+    alignItems: 'baseline',
+    fontSize: 11,
+  },
+  mobileCardContainer: {
     minHeight: 170,
     alignItems: 'center',
     fontSize: 11,
-    
   },
   ulCardName: {
     padding: 0,
@@ -200,8 +198,8 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   colLeft: {
     display: 'flex',
-    alignItems: 'left',
-    justifyContent: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cardRoot: {
     width: '98%',
@@ -211,6 +209,16 @@ export const useClasses = makeStyles((theme) => createStyles({
     display: 'inline-block',
     position: 'relative',
     boxShadow: '0 0 5px #cecece',
+    padding: theme.spacing(1)
+  },
+  mobileCardRoot: {
+    width: '100%',
+    float:'left',
+    borderRadius: 5,
+    display: 'inline-block',
+    position: 'relative',
+    boxShadow: '0 0 5px #cecece',
+    padding: theme.spacing(1)
   },
   cardTitle: {
     padding: '.65em',
@@ -223,7 +231,6 @@ export const useClasses = makeStyles((theme) => createStyles({
     marginBottom: 12,
   },
   titleCode: {
-    
     position: 'absolute',
     top: '2em',
     right: '1.5em',
@@ -235,6 +242,9 @@ export const useClasses = makeStyles((theme) => createStyles({
     // borderTopLeftRadius: '0',
   },
   cardTop: {
+    display:'flex',
+    alignItems:'center',
+    padding:theme.spacing(1)
   },
   pointer: {
     cursor: 'Pointer',
@@ -319,8 +329,9 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   scaleContainer: {
     width: "100%",
-    
-  
+    display: 'flex',
+    alignItems: 'center',
+    alignContent: 'center'
   },
   createUserBtn: {
     background: `${theme.palette.pinkLinearGradient.main} !important`,
