@@ -148,6 +148,8 @@ export const ViewExchangeInitialState: ViewExchangeInterface = {
   cartB: [],
   totalPriceA: 0,
   totalPriceB: 0,
+  viewDateA:'',
+  viewDateB:'',
 };
 
 export interface DifferenceCheckInterface {

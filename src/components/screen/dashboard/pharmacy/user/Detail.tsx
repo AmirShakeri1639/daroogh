@@ -5,10 +5,11 @@ import {
   faPills,
   faBoxes,
   faMoneyBillWave,
+  faCalendarTimes,
 } from '@fortawesome/free-solid-svg-icons';
-import { TextLine } from '../../../public';
+import {DrugInterface, InitialNewUserInterface, NewUserData, UserLoginInterface  } from '../../../../../interfaces';
+import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
-import { Convertor } from '../../../../utils';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const useStyle = makeStyles((theme) =>
@@ -18,7 +19,7 @@ const useStyle = makeStyles((theme) =>
     },
     container: {
       padding: 5,
-      borderRadius: 0,
+      borderRadius: 15,
       '& .drug-name': {
         marginLeft: 10,
       },
@@ -40,49 +41,72 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-interface DetailProps {
-  name: string;
-  drugsCounter: number | string;
-  totalPrice: string | number;
-}
+const Detail: React.FC<NewUserData> = (props) => {
+  const {  name,
+    family,
+    email,
+    mobile,
+    birthDate,
+    id,
+    nationalCode,
+    pharmacyID,
+    active,
+    userName } = props;
+  const { paper, container } = useStyle();
 
-const Detail: React.FC<DetailProps> = (props) => {
-  const { paper, container, textLeft, icon } = useStyle();
-  const { drugsCounter, name, totalPrice } = props;
   const { t } = useTranslation();
-  const { thousandsSeperator } = Convertor;
 
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12} spacing={0}>
       <Paper className={paper} elevation={0}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <div className={container}>
               <Grid container spacing={0}>
                 <Grid container xs={12} className="drug-container">
-                  <Grid container xs={1}>
-                    <img src="pack.png" style={{ height: '25px' }} />
-                  </Grid>
+                  
                   <Grid
                     container
                     xs={11}
                     style={{ alignItems: 'center', paddingRight: '8px' }}
                   >
-                    <span>{name}</span>
-                  </Grid>
+                    <span>{name + ' ' +  family}</span>
+                     </Grid>
                 </Grid>
 
                 <Grid container style={{ padding: '8px' }}>
+                  <Grid item xs={12}>
+                    <TextWithTitle
+                      title="موبایل"
+                      body={mobile || t('general.undefined')}
+                    />
+                  </Grid>
                   <Grid item xs={6}>
                     <TextWithTitle
-                      title={t('exchange.basketTotalPrice')}
-                      body={thousandsSeperator(totalPrice)}
-                      suffix={t('general.defaultCurrency')}
+                      title='ایمیل'
+                      body={email || t('general.undefined')}
                     />
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <TextWithTitle
+                      title='کد ملی'
+                      body={nationalCode || t('general.undefined')}
+                    />
+                    </Grid>
+
+                  <Grid item xs={6}>
 
                     <TextWithTitle
-                      title={t('general.number')}
-                      body={thousandsSeperator(drugsCounter)}
+                      title='نام کاربری'
+                      body={userName || t('general.undefined')}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+
+                    <TextWithTitle
+                      title='وضعیت کاربر'
+                      body={active ? 'فعال' : 'غیرفعال'}
                     />
                   </Grid>
                 </Grid>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   createStyles,
   Grid,
@@ -13,7 +13,7 @@ import { debounce } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { Exchange, PharmacyDrug } from 'services/api';
+import { PharmacyDrug } from 'services/api';
 import { PharmacyDrugEnum } from 'enum/query';
 import { CircleLoading, EmptyContent } from 'components/public';
 import CardContainer from './CardContainer';
@@ -37,7 +37,6 @@ import { SelectOption } from 'interfaces';
 import { AdvancedSearchInterface } from 'interfaces/search';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from 'redux/actions';
-import { useLocalStorage } from 'hooks';
 import { ListOptions } from 'components/public/auto-complete/AutoComplete';
 
 const { getRelatedPharmacyDrug } = new PharmacyDrug();
@@ -133,7 +132,6 @@ const useStyle = makeStyles((theme) =>
         padding: 5,
       },
     },
-
   })
 );
 
@@ -168,8 +166,9 @@ const FirstStep: React.FC = () => {
 
   let minimumDrugExpireDay = 30;
   try {
-    const localStorageSettings =
-      JSON.parse(localStorage.getItem('settings') ?? '{}');
+    const localStorageSettings = JSON.parse(
+      localStorage.getItem('settings') ?? '{}'
+    );
     minimumDrugExpireDay = localStorageSettings.drugExpireDay;
   } catch (e) {
     errorHandler(e);
@@ -243,8 +242,9 @@ const FirstStep: React.FC = () => {
   }, [searchedDrugs]);
 
   const getDrugName = (item: any): string => {
-    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''
-      }${item.type !== null ? ` - ${item.type}` : ''}`;
+    return `${item.name}${
+      item.genericName !== null ? ` (${item.genericName}) ` : ''
+    }${item.type !== null ? ` - ${item.type}` : ''}`;
   };
 
   const drugSearch = async (title: string): Promise<void> => {
@@ -262,10 +262,12 @@ const FirstStep: React.FC = () => {
         },
         el: (
           <div>
-            <div>{ getDrugName(_item) }</div>
-            <div className="text-muted txt-sm">{ `${_item.enName !== null ? `-${_item.enName}` : ''
-              }${_item.companyName !== null ? ` - ${_item.companyName}` : ''
-              }` }</div>
+            <div>{getDrugName(_item)}</div>
+            <div className="text-muted txt-sm">{`${
+              _item.enName !== null ? `-${_item.enName}` : ''
+            }${
+              _item.companyName !== null ? ` - ${_item.companyName}` : ''
+            }`}</div>
           </div>
         ),
       }));
@@ -326,16 +328,16 @@ const FirstStep: React.FC = () => {
     if (isInSearchMode) {
       if (searchedDrugsReesult === null || searchedDrugsReesult.length === 0) {
         return (
-          <div className={ `${noContent} w-100` }>
+          <div className={`${noContent} w-100`}>
             <EmptyContent />
             <Button
               variant="outlined"
               color="blue"
               type="button"
-              onClick={ (): void => {
+              onClick={(): void => {
                 setSearchedDrugs([]);
                 setIsInSearchMode(false);
-              } }
+              }}
             >
               نمایش کارت ها بدون فیلتر
             </Button>
@@ -345,8 +347,8 @@ const FirstStep: React.FC = () => {
         items = searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
           return (
             <>
-              <Grid item xs={ 12 } sm={ 6 } lg={ 6 }>
-                <CardContainer data={ d } />
+              <Grid item xs={12} sm={6} lg={6}>
+                <CardContainer data={d} />
               </Grid>
             </>
           );
@@ -356,8 +358,8 @@ const FirstStep: React.FC = () => {
       items = data.map((d: PharmacyDrugInterface) => {
         return (
           <>
-            <Grid item xs={ 12 } sm={ 6 } lg={ 6 }>
-              <CardContainer data={ d } />
+            <Grid item xs={12} sm={6} lg={6}>
+              <CardContainer data={d} />
             </Grid>
           </>
         );
@@ -369,11 +371,11 @@ const FirstStep: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={ 12 }>
-        <Grid container spacing={ 2 }>
+      <Grid item xs={12}>
+        <Grid container spacing={2}>
           <Hidden xsDown>
-            <Grid item xs={ 12 }>
-              <span >
+            <Grid item xs={12}>
+              <span>
                 برای جستجو در لیست های عرضه شده توسط همکارانتان میتوانید نام
                 دارو٬ دسته دارویی یا نام ژنریک را وارد کنید. همچنین میتوانید چند
                 دارو را جستجو کنید و لیست هایی که بیشترین مطابقت با خواسته شما
@@ -383,46 +385,47 @@ const FirstStep: React.FC = () => {
             </Grid>
           </Hidden>
 
-          <Grid item xs={ 12 }>
-            <div className={ searchContainer }>
-              <Button onClick={ (): void => setIsOpenDrawer(true) }>
+          <Grid item xs={12}>
+            <div className={searchContainer}>
+              <Button onClick={(): void => setIsOpenDrawer(true)}>
                 <FilterListIcon fontSize="small" />
-                { t('general.filter') }
+                {t('general.filter')}
               </Button>
 
               <AutoComplete
-                isLoading={ isLoadingSearch }
-                onChange={ debounce(
+                ref={useRef()}
+                isLoading={isLoadingSearch}
+                onChange={debounce(
                   (e): Promise<void> => drugSearch(e.target.value),
                   500
-                ) }
+                )}
                 className="w-100"
-                loadingText={ t('general.loading') }
-                options={ searchOptions }
-                placeholder='جستجو (نام دارو٬ دسته دارویی٬ نام ژنریک) '
-                multiple={ isMultipleSelection }
-                onItemSelected={ (arrayList): void => {
+                loadingText={t('general.loading')}
+                options={searchOptions}
+                placeholder="جستجو (نام دارو٬ دسته دارویی٬ نام ژنریک) "
+                multiple={isMultipleSelection}
+                onItemSelected={(arrayList): void => {
                   if (arrayList.length > 0) {
                     setIsInSearchMode(true);
                   } else {
                     setIsInSearchMode(false);
                   }
                   setSearchedDrugs(arrayList);
-                } }
+                }}
               />
             </div>
           </Grid>
 
-          { contentHandler() }
+          {contentHandler()}
         </Grid>
       </Grid>
 
-      <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
-        <div className={ drawerContainer }>
+      <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
+        <div className={drawerContainer}>
           <div id="titleContainer">
             <h6 className="txt-md">فیلترهای جستجو</h6>
             <CloseIcon
-              onClick={ (): void => setIsOpenDrawer(false) }
+              onClick={(): void => setIsOpenDrawer(false)}
               className="cursor-pointer"
             />
           </div>
@@ -432,7 +435,7 @@ const FirstStep: React.FC = () => {
           <div id="content">
             <Accordion>
               <AccordionSummary
-                expandIcon={ <ExpandMoreIcon /> }
+                expandIcon={<ExpandMoreIcon />}
                 aria-controls="category-filter"
                 id="category-filter"
               >
@@ -441,58 +444,58 @@ const FirstStep: React.FC = () => {
               <AccordionDetails>
                 <div id="react-select">
                   <ReactSelect
-                    onChange={ (e): void => {
+                    onChange={(e): void => {
                       setSearchedCategory(e);
-                    } }
-                    onInputChange={ debounce(categorySearch, 250) }
-                    options={ categoryOptions }
-                    value={ searchedCategory }
-                    noOptionsMessage={ t('general.noData') }
+                    }}
+                    onInputChange={debounce(categorySearch, 250)}
+                    options={categoryOptions}
+                    value={searchedCategory}
+                    noOptionsMessage={t('general.noData')}
                   />
                 </div>
               </AccordionDetails>
             </Accordion>
 
-            <div className={ switchContainer }>
-              <span>{ t('general.justOffer') }</span>
+            <div className={switchContainer}>
+              <span>{t('general.justOffer')}</span>
               <Switch
                 id="just-offer"
-                checked={ isCheckedJustOffer }
-                onChange={ toggleCheckbox }
+                checked={isCheckedJustOffer}
+                onChange={toggleCheckbox}
               />
             </div>
 
-            <Divider className={ divider } />
+            <Divider className={divider} />
 
-            <div className={ dateContainer }>
+            <div className={dateContainer}>
               <div>
-                <span>{ t('date.minDateAsDay') }</span>
+                <span>{t('date.minDateAsDay')}</span>
                 <p className="txt-xs text-danger">
-                  عدد انتخابی باید حداقل { minimumDrugExpireDay } باشد
+                  عدد انتخابی باید حداقل {minimumDrugExpireDay} باشد
                 </p>
               </div>
               <Input
-                value={ remainingExpireDays || '' }
-                className={ monthInput }
-                error={ Number(remainingExpireDays) < minimumDrugExpireDay }
-                onChange={ (e): any =>
+                value={remainingExpireDays || ''}
+                className={monthInput}
+                error={Number(remainingExpireDays) < minimumDrugExpireDay}
+                onChange={(e): any =>
                   setRemainingExpireDays(Number(e.target.value))
                 }
               />
             </div>
 
-            <Divider className={ divider } />
+            <Divider className={divider} />
 
-            <div className={ distanceContainer }>
+            <div className={distanceContainer}>
               <Typography id="discrete-slider" gutterBottom>
                 حداکثر فاصله تا شما (برحسب کیلومتر)
               </Typography>
               <Input
                 numberFormat
-                value={ maxDistance || '' }
+                value={maxDistance || ''}
                 type="number"
-                className={ `${monthInput} w-100` }
-                onChange={ (e): any => setMaxDistance(Number(e)) }
+                className={`${monthInput} w-100`}
+                onChange={(e): any => setMaxDistance(Number(e))}
               />
               {/* <div id="slider-container">
                 <Slider
@@ -509,40 +512,40 @@ const FirstStep: React.FC = () => {
               </div> */}
             </div>
 
-            <Divider className={ divider } />
+            <Divider className={divider} />
 
-            <div className={ dateContainer }>
-              <span>{ t('province.selectCounty') }</span>
+            <div className={dateContainer}>
+              <span>{t('province.selectCounty')}</span>
               <County
-                countyHandler={ (e): void => {
+                countyHandler={(e): void => {
                   setSelectedCounty(e ?? '');
                   setSelectedProvince('-2');
-                } }
-                value={ selectedCounty }
+                }}
+                value={selectedCounty}
               />
             </div>
 
-            <Divider className={ divider } />
+            <Divider className={divider} />
 
-            <div className={ dateContainer }>
-              <span>{ t('province.selectProvince') }</span>
+            <div className={dateContainer}>
+              <span>{t('province.selectProvince')}</span>
               <Province
-                countyId={ selectedCounty }
-                value={ selectedProvince }
-                provinceHandler={ (e): void => setSelectedProvince(e ?? '') }
+                countyId={selectedCounty}
+                value={selectedProvince}
+                provinceHandler={(e): void => setSelectedProvince(e ?? '')}
               />
             </div>
           </div>
 
-          <Grid container spacing={ 0 }>
-            <Grid item xs={ 12 } className={ buttonWrapper }>
+          <Grid container spacing={0}>
+            <Grid item xs={12} className={buttonWrapper}>
               <Button
-                onClick={ advancedSearchItems }
+                onClick={advancedSearchItems}
                 variant="outlined"
                 type="button"
                 color="pink"
               >
-                { t('general.emal') } { t('general.filter') }
+                {t('general.emal')} {t('general.filter')}
               </Button>
             </Grid>
           </Grid>

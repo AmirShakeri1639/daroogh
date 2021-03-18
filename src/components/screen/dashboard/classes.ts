@@ -98,8 +98,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     padding: theme.spacing(2)
   },
   spacingVertical1: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
+    marginTop: 4,
     marginLeft: 0,
     marginRight: 0,
   },
@@ -168,8 +167,6 @@ export const useClasses = makeStyles((theme) => createStyles({
   stickyRecommendation: {
     position: 'sticky',
     margin: 0,
-    padding: 10,
-    paddingTop: 0,
     top: 135,
     zIndex: 999,
   },
@@ -180,9 +177,16 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   cardContainer: {
    
-    minHeight: 170,
+    minHeight: 140,
+    alignItems: 'baseline',
+    fontSize: 11,
+    
+  },
+  mobileCardContainer: {
+   
     alignItems: 'center',
     fontSize: 11,
+    
   },
   ulCardName: {
     padding: 0,
@@ -199,20 +203,31 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   colLeft: {
     display: 'flex',
-    alignItems: 'left',
-    justifyContent: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   cardRoot: {
-    width: '100%',
+    width: '98%',
+    float:'left',
     minHeight: 110,
     borderRadius: 5,
     display: 'inline-block',
     position: 'relative',
     boxShadow: '0 0 5px #cecece',
+    padding: theme.spacing(1)
+  },
+  mobileCardRoot: {
+    width: '100%',
+    float:'left',
+    borderRadius: 5,
+    display: 'inline-block',
+    position: 'relative',
+    boxShadow: '0 0 5px #cecece',
+    padding: theme.spacing(1)
   },
   cardTitle: {
     padding: '.65em',
-    fontSize: '1.2em',
+    fontSize: '1.1em',
   },
   title: {
     fontSize: 14,
@@ -233,6 +248,9 @@ export const useClasses = makeStyles((theme) => createStyles({
     // borderTopLeftRadius: '0',
   },
   cardTop: {
+    display:'flex',
+    alignItems:'center',
+    padding:theme.spacing(1)
   },
   pointer: {
     cursor: 'Pointer',
@@ -315,10 +333,41 @@ export const useClasses = makeStyles((theme) => createStyles({
       bottom: "-6px"
     }
   },
-
   scaleContainer: {
     width: "100%",
-    
+    display: 'flex',
+    alignItems: 'center',
+    alignContent: 'center'
   
-  }
+  },
+  createUserBtn: {
+    background: `${theme.palette.pinkLinearGradient.main} !important`,
+    color: '#fff',
+    float: 'right',
+  },
+  buttonContainer: {
+    marginBottom: theme.spacing(2),
+  },
+  label: {
+    display: 'flex',
+    alignItems: 'center',
+    margin: theme.spacing(1, 0),
+  },
+  formContent: {
+    overflow: 'hidden',
+    overflowY: 'auto',
+    display: 'flex',
+  },
+  cancelButtonDialog: {
+    color: '#fff',
+    backgroundColor: '#5ABC55',
+    fontSize: 10,
+    float: 'right',
+  },
+  submitBtn: {
+    color: '#fff',
+    backgroundColor: '#5ABC55',
+    fontSize: 10,
+    float: 'right',
+  },
 }));

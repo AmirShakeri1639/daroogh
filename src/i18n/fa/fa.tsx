@@ -78,7 +78,7 @@ export default {
         all: 'همه',
         add: 'اضافه کردن',
         favorite: 'علاقه مندی',
-        yourFavorite: 'علاقه مندی شما',
+        yourFavorite: 'محصولات پرمصرف شما',
         peopleSection: 'بخش مردمی',
         undefined: 'تعریف نشده',
         toman: 'تومان',
@@ -118,6 +118,7 @@ export default {
         category: 'دسته بندی پک',
         addDrug: 'اضافه کردن دارو',
         submitMyPacks: 'ثبت پک های من',
+        submitPacks: 'ثبت پک '
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -197,7 +198,7 @@ export default {
         'create-new-role': 'ایجاد نقش جدید',
         'edit-role': 'ویرایش نقش',
         'cancel-edit-eole': 'انصراف ویرایش نقش',
-        'users-list': 'لیست کاربران',
+        'users-list': 'لیست کارمندان',
         'create-user': 'ایجاد کاربر',
         'disable-user': 'غیرفعال کردن حساب کاربر',
         'enable-user': 'فعال کردن حساب کاربر',
@@ -296,6 +297,17 @@ export default {
         create: 'شروع {{var}} تبادل',
         exchange: 'تبادل',
         desktop: 'کارتابل',
+        exchangeStartWith: 'شروع تبادل توسط',
+        exchangeCanceledWith: 'لغو شده توسط',
+        exchangeConfirmedWith: 'تایید شده توسط',
+        exchangeConfirmed: 'تایید شد',
+        system: 'سیستم',
+        exchangeConfirmWith: 'تایید توسط',
+        exchangeDeniedWith: 'رد شده توسط',
+        exchangeViewedWith: 'مشاهده شده توسط',
+        exchangeViewWith: 'مشاهده توسط',
+        exchangeViewWithAutomaticConfermedAlert: 'به علت عدم تغییر سبد توسط',
+        exchangeTree: 'درخت تبادل',
         expirationDate: 'تاریخ انقضای تبادل',
         expirationCompletionDate: 'تاریخ انقضا/تکمیل',
         GOLD: 'کاربر طلایی',
@@ -314,6 +326,7 @@ export default {
         totalPrice: 'مجموع قیمت',
         basketTotalPrice: 'مجموع قیمت سبد',
         myProducts: 'محصولات من',
+        products: 'محصولات',
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
@@ -325,7 +338,7 @@ export default {
         viewExchange: 'مشاهده تبادل',
         widget: 'ابزارک تبادل',
         waitingForYourConfirmation: 'تبادل‌های در انتظار',
-        exchangesWithFavorites: 'تبادل‌های شامل علاقمندی',
+        exchangesWithFavorites: 'سبدهای شامل علاقمندی',
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
@@ -477,6 +490,7 @@ export default {
         cancelDate: 'تاریخ لغو',
         responseDate: 'تاریخ پاسخ',
         response: 'پاسخ به نسخه',
+        cantEdit: 'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
         comment: 'شرح نسخه',
       },
       PrescriptionResponseStateEnum: {
@@ -659,7 +673,7 @@ export default {
 
       fda: {
         fda: 'سازمان غذا و دارو',
-        exchanges: 'تبادل‌ها',
+        exchanges: 'تبادلات',
       }
     },
   },

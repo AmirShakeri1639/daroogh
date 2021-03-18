@@ -3,6 +3,7 @@ import {
   createStyles,
   Divider,
   Grid,
+  Hidden,
   makeStyles,
   Tab,
   Tabs,
@@ -79,11 +80,7 @@ const useClasses = makeStyles((theme) =>
 );
 
 const Exchange: React.FC = () => {
-  const {
-    root,
-    stickyTab,
-    stickyRecommendation,
-  } = useClasses();
+  const { root, stickyTab, stickyRecommendation } = useClasses();
   const [value, setValue] = React.useState(0);
 
   const {
@@ -99,18 +96,47 @@ const Exchange: React.FC = () => {
   };
 
   return (
-    <Grid container item spacing={1} xs={12} className={root}>
-      <span style={{ padding: 5, marginBottom: 2 }}>
-        ابتدا از تب انتخاب از داروخانه مقابل دارو یا پک های عرضه شده را بررسی و
-        برای تبادل انتخاب نمایید. سپس می توانید در تب پیشنهاد دارو از لیست عرضه
-        خود در صورت تمایل لیستی را انتخاب و برای این تبادل پیشنهاد نمایید.به
-        پیام هایی که در کادر سمت چپ نمایش داده می شود دقت فرمایید تا کنترل کامل
-        بر روند تبادل داشته باشید
-      </span>
-      <Grid item xs={12} style={{ padding: 2 }}>
-        <Divider />
+    <Grid
+      container
+      item
+      spacing={1}
+      xs={12}
+      direction="row-reverse"
+      className={root}
+    >
+      <Hidden smDown>
+        <span style={{ padding: 5, marginBottom: 2 }}>
+          ابتدا از تب انتخاب از داروخانه مقابل دارو یا پک های عرضه شده را بررسی
+          و برای تبادل انتخاب نمایید. سپس می توانید در تب پیشنهاد دارو از لیست
+          عرضه خود در صورت تمایل لیستی را انتخاب و برای این تبادل پیشنهاد
+          نمایید.به پیام هایی که در کادر سمت چپ نمایش داده می شود دقت فرمایید تا
+          کنترل کامل بر روند تبادل داشته باشید
+        </span>
+        <Grid item xs={12} style={{ padding: 2 }}>
+          <Divider />
+        </Grid>
+      </Hidden>
+
+      <Grid item xs={12} sm={4} md={4}>
+        <Grid container className={stickyRecommendation}>
+          <DesktopCardContent item={viewExhcnage} />
+          {exchangeStateCode !== 1 && (
+            <TextField
+              style={{ width: '100%', marginTop: 15 }}
+              multiline
+              defaultValue={messageOfExchangeState}
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          )}
+          <Hidden smDown>
+            <ActionButtons />
+          </Hidden>
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={8} md={8} >
+      <Grid item xs={12} sm={8} md={8}>
         <Tabs value={value} onChange={handleChange} className={stickyTab}>
           <Tab
             label={
@@ -168,23 +194,6 @@ const Exchange: React.FC = () => {
         <TabPanel value={value} index={1}>
           <Tab2 />
         </TabPanel>
-      </Grid>
-      <Grid item xs={12} sm={4} md={4}>
-        <Grid container className={stickyRecommendation}>
-          <DesktopCardContent item={viewExhcnage} />
-          {exchangeStateCode !== 1 && (
-            <TextField
-              style={{ width: '100%', marginTop: 15 }}
-              multiline
-              defaultValue={messageOfExchangeState}
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          )}
-          <ActionButtons />
-        </Grid>
       </Grid>
     </Grid>
   );

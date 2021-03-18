@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   AppBar,
   Container,
   Grid,
+  Hidden,
   makeStyles,
   Paper,
   Tab,
@@ -12,11 +13,20 @@ import {
 import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
-import './style.css';
+
 import ExchangeWidget from './widgets/ExchangeWidget';
 import SurveyWidget from './widgets/SurveyWidget';
 import PrescriptionWidget from './widgets/PrescriptionWidget';
 import EmpApplicationWidget from './widgets/EmpApplicationWidget';
+import { TabPanel } from '@material-ui/lab';
+// @ts-ignore
+// import { Steps, Hints } from 'intro.js-react';
+
+import 'intro.js/introjs.css';
+// import 'intro.js/themes/introjs-modern.css';
+import 'intro.js/introjs-rtl.css';
+import introJs from 'intro.js';
+import './style.css';
 import { checkVersion, clearMyCache, showWhatsNew } from 'utils';
 import ExchangeWithFavoritesWidget from './widgets/ExchangeWithFavoritesWidget';
 
@@ -40,6 +50,16 @@ const DashboardContent: React.FC<any> = () => {
   const theme = useTheme();
 
   const [value, setValue] = React.useState(0);
+  useEffect(() => {
+    // introJs()
+    //   .setOptions({
+    //     nextLabel: 'بعدی',
+    //     prevLabel: 'قبلی',
+    //     doneLabel: 'پایان',
+    //     hintButtonLabel: 'فهمیدم',
+    //   })
+    //   .start();
+  }, []);
 
   const handleChange = (event: any, newValue: any): void => {
     setValue(newValue);
@@ -49,17 +69,17 @@ const DashboardContent: React.FC<any> = () => {
     setValue(index);
   };
 
-  React.useEffect(() => {
-    if (checkVersion()) {
-      clearMyCache();
-    } else {
-      const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
-      if (whatsNewExistsFromStorage === 'true') {
-        localStorage.removeItem('whatsNewExists');
-        showWhatsNew(localStorage.getItem('version') || '0.1.0');
-      }
+  // React.useEffect(() => {
+  if (checkVersion()) {
+    clearMyCache();
+  } else {
+    const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
+    if (whatsNewExistsFromStorage === 'true') {
+      localStorage.removeItem('whatsNewExists');
+      showWhatsNew(localStorage.getItem('version') || '0.1.0');
     }
-  }, []);
+  }
+  // }, [localStorage.getItem('version')]);
 
   return (
     <Container maxWidth="lg" className={classes.container}>

@@ -5,11 +5,14 @@ import {
   faPills,
   faBoxes,
   faMoneyBillWave,
+  faCalendarTimes,
 } from '@fortawesome/free-solid-svg-icons';
+import { AccountingInterface } from '../../../../interfaces';
 import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
-import { Convertor } from '../../../../utils';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import { getJalaliDate } from 'utils/jalali';
+import { Convertor } from 'utils';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -18,7 +21,7 @@ const useStyle = makeStyles((theme) =>
     },
     container: {
       padding: 5,
-      borderRadius: 0,
+      borderRadius: 15,
       '& .drug-name': {
         marginLeft: 10,
       },
@@ -40,49 +43,55 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-interface DetailProps {
-  name: string;
-  drugsCounter: number | string;
-  totalPrice: string | number;
-}
+const Detail: React.FC<AccountingInterface> = (props) => {
+  const { id,
+    date,
+    description,
+    amount,
+    exchangeID,
+    mandeh
+  } = props;
+  const { paper, container } = useStyle();
 
-const Detail: React.FC<DetailProps> = (props) => {
-  const { paper, container, textLeft, icon } = useStyle();
-  const { drugsCounter, name, totalPrice } = props;
   const { t } = useTranslation();
-  const { thousandsSeperator } = Convertor;
 
   return (
-    <Grid item xs={12}>
+    <Grid item xs={12} spacing={0}>
       <Paper className={paper} elevation={0}>
         <Grid container spacing={1}>
           <Grid item xs={12}>
             <div className={container}>
               <Grid container spacing={0}>
                 <Grid container xs={12} className="drug-container">
-                  <Grid container xs={1}>
-                    <img src="pack.png" style={{ height: '25px' }} />
-                  </Grid>
+
                   <Grid
                     container
                     xs={11}
                     style={{ alignItems: 'center', paddingRight: '8px' }}
                   >
-                    <span>{name}</span>
+                    <span>{id}</span>
                   </Grid>
                 </Grid>
 
                 <Grid container style={{ padding: '8px' }}>
                   <Grid item xs={6}>
                     <TextWithTitle
-                      title={t('exchange.basketTotalPrice')}
-                      body={thousandsSeperator(totalPrice)}
-                      suffix={t('general.defaultCurrency')}
+                      title={t('general.date')}
+                      body={getJalaliDate(date)}
                     />
-
+                  </Grid>
+                  <Grid item xs={6}>
                     <TextWithTitle
-                      title={t('general.number')}
-                      body={thousandsSeperator(drugsCounter)}
+                      title={t('general.description')}
+                      body={description}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextWithTitle
+                      title={t('accounting.debtor')}
+                      body={amount >= 0 ?
+                        Convertor.thousandsSeperatorFa(amount)
+                        : ''}
                     />
                   </Grid>
                 </Grid>

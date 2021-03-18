@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   createStyles,
   Fab,
@@ -6,24 +6,24 @@ import {
   Hidden,
   makeStyles,
   Paper,
-  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  useMediaQuery,
+  useTheme,
+  Divider,
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Autocomplete } from '@material-ui/lab';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { PharmacyDrugEnum } from '../../../../enum';
 import { debounce, remove } from 'lodash';
 import { Favorite, Drug as DrugApi, Search } from '../../../../services/api';
-import {
-  MaterialContainer,
-  Modal,
-  Button,
-  AutoComplete,
-} from '../../../public';
+import { MaterialContainer, Button, AutoComplete } from '../../../public';
 import { errorHandler, successSweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
+import styled from 'styled-components';
 
 const { getFavoriteList, saveFavoriteList } = new Favorite();
 
@@ -49,7 +49,8 @@ const useStyle = makeStyles((theme) =>
     modalContainer: {
       backgroundColor: '#fff',
       borderRadius: 5,
-      padding: theme.spacing(2, 3),
+      width: '400px',
+      overflow: 'hidden',
       maxWidth: 500,
     },
     buttonContainer: {
@@ -67,8 +68,29 @@ const useStyle = makeStyles((theme) =>
       position: 'fixed',
       backgroundColor: '#54bc54 ',
     },
+    formContent: {
+      overflow: 'hidden',
+
+      display: 'flex',
+    },
+    cancelButton: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
   })
 );
+
+const AutoCompleteGrid = styled((props) => <Grid {...props} item xs={12} />)`
+  height: 250px;
+`;
 
 const DrugTab: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -77,10 +99,19 @@ const DrugTab: React.FC = () => {
     any[]
   >([]);
   const [drugName, setDrugName] = useState<string>('');
-
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
 
-  const { addButton, modalContainer, buttonContainer, fab } = useStyle();
+  const {
+    addButton,
+    modalContainer,
+    buttonContainer,
+    fab,
+    formContent,
+    cancelButton,
+    submitBtn,
+  } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -211,42 +242,63 @@ const DrugTab: React.FC = () => {
         </Hidden>
       </Grid>
 
-      <Modal
-        style={{ overflow: 'visible' }}
+      <Dialog
         open={isOpenModal}
-        toggle={toggleIsOpenModal}
+        fullScreen={fullScreen}
+        onClose={toggleIsOpenModal}
+        fullWidth
       >
-        <div className={modalContainer}>
-          <Grid container spacing={1}>
+        <DialogContent>
+          <Grid container spacing={1} className={formContent}>
             <Grid item xs={12}>
-              <AutoComplete
-                isLoading={isLoading}
-                onChange={debounce((e) => drugSearch(e.target.value), 500)}
-                loadingText={t('general.loading')}
-                className="w-100"
-                placeholder={t('drug.name')}
-                options={drugSearchOptions}
-                onItemSelected={(item): void =>
-                  setDrugName(String(item[0].value))
-                }
-              />
-            </Grid>
-
-            <Grid item xs={12} className={buttonContainer}>
-              <Button color="pink" onClick={toggleIsOpenModal}>
-                {t('general.cancel')}
-              </Button>
-              <Button
-                color="blue"
-                onClick={formHandler}
-                disabled={isLoadingSaveData}
-              >
-                {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
-              </Button>
+              <AutoCompleteGrid>
+                <AutoComplete
+                  ref={useRef()}
+                  isLoading={isLoading}
+                  onChange={debounce((e) => drugSearch(e.target.value), 500)}
+                  loadingText={t('general.loading')}
+                  className="w-100"
+                  placeholder={t('drug.name')}
+                  options={drugSearchOptions}
+                  onItemSelected={(item): void =>
+                    setDrugName(String(item[0].value))
+                  }
+                />
+              </AutoCompleteGrid>
             </Grid>
           </Grid>
-        </div>
-      </Modal>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={6} sm={6} />
+              <Grid item xs={2} sm={2}>
+                <Button
+                  type="button"
+                  className={cancelButton}
+                  onClick={toggleIsOpenModal}
+                >
+                  {t('general.close')}
+                </Button>
+              </Grid>
+              <Grid item xs={1} sm={2} />
+              <Grid item xs={3} sm={2}>
+                <Button
+                  type="submit"
+                  onClick={formHandler}
+                  disabled={isLoadingSaveData}
+                  className={submitBtn}
+                >
+                  {isLoadingSaveData
+                    ? t('general.pleaseWait')
+                    : t('general.submit')}
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </DialogActions>
+      </Dialog>
     </MaterialContainer>
   );
 };

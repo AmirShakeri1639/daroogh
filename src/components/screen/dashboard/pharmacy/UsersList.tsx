@@ -10,15 +10,23 @@ import {
   Grid,
   Button,
   TextField,
+  Input as SelectInput,
   FormControl,
   InputLabel,
   Select,
-  Input,
   Checkbox,
   ListItemText,
   MenuItem,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
+import Input from '../../../public/input/Input';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -55,6 +63,8 @@ import ModalContent from '../../../public/modal-content/ModalContent';
 import { NewPharmacyUserData } from '../../../../model';
 import { Role, User } from '../../../../services/api';
 import RoleForm from '../user/RoleForm';
+import CardContainer from './user/CardContainer';
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -76,9 +86,22 @@ const useClasses = makeStyles((theme) =>
     gridEditForm: {
       margin: theme.spacing(2, 0, 2),
     },
+    formContent: {
+      overflow: 'hidden',
+      overflowY: 'auto',
+      display: 'flex',
+    },
     cancelButton: {
-      background: theme.palette.pinkLinearGradient.main,
-      marginLeft: theme.spacing(2),
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
+    },
+    submitBtn: {
+      color: '#fff',
+      backgroundColor: '#5ABC55',
+      fontSize: 10,
+      float: 'right',
     },
     checkIcon: {
       color: theme.palette.success.main,
@@ -204,11 +227,14 @@ const UsersList: React.FC = () => {
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
-  const [isOpenModalOfCreateUser, setIsOpenModalOfCreateUser] = useState<
-    boolean
-  >(false);
+  const [
+    isOpenModalOfCreateUser,
+    setIsOpenModalOfCreateUser,
+  ] = useState<boolean>(false);
   const [showError, setShowError] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const toggleIsOpenModalOfUser = (): void =>
     setIsOpenModalOfCreateUser((v) => !v);
@@ -230,7 +256,13 @@ const UsersList: React.FC = () => {
   );
 
   const queryCache = useQueryCache();
-
+  const resetListRef = () => {
+    listRef.current = [];
+    setList([]);
+    setPageRef(0);
+    setNoData(false)
+    getList()
+  };
   const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(
     removeUser,
     {
@@ -238,6 +270,7 @@ const UsersList: React.FC = () => {
         ref.current?.onQueryChange();
         await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+        resetListRef()
       },
     }
   );
@@ -246,6 +279,7 @@ const UsersList: React.FC = () => {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+      resetListRef()
     },
   });
 
@@ -257,6 +291,7 @@ const UsersList: React.FC = () => {
         dispatch({ type: 'reset' });
         queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulEditTextMessage'));
+        resetListRef()
       },
     }
   );
@@ -275,6 +310,7 @@ const UsersList: React.FC = () => {
         await successSweetAlert(
           message || t('alert.successfulCreateTextMessage')
         );
+        resetListRef()
       },
       onError: async (data: any) => {
         await errorSweetAlert(data || t('error.save'));
@@ -291,7 +327,10 @@ const UsersList: React.FC = () => {
     buttonContainer,
     formContainer,
     addButton,
+
+    formContent,
     cancelButton,
+    submitBtn,
   } = useClasses();
 
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -530,28 +569,134 @@ const UsersList: React.FC = () => {
   ): Promise<any> => {
     setSelectedRoles(event.target.value as number[]);
   };
+  const contentGenerator = (): JSX.Element[] | null => {
 
+    if (!isLoading && list !== undefined && isFetched) {
+      console.log(data)
+      return listRef.current.map((item: any) => {
+        //const { user } = item;
+        //if (user !== null) {
+        return (
+          <Grid key={item.id} item xs={12}>
+            <CardContainer data={item} editRoleHandler={editRoleHandler} />
+          </Grid>
+        );
+        //}
+
+        return null;
+      });
+    }
+
+    return null;
+  };
+  const [list, setList] = useState<any>([]);
+  const listRef = React.useRef(list);
+  const setListRef = (data: any) => {
+    listRef.current = listRef.current.concat(data);
+    setList(data);
+  };
+  const { isLoading, data, isFetched } = useQuery(
+    UserQueryEnum.GET_ALL_USERS,
+
+    () => getCurrentPharmacyUsers(pageRef.current, 10),
+    {
+      onSuccess: (result) => {
+        console.log(result);
+        if (result == undefined || result.count == 0) {
+          setNoData(true);
+        } else {
+          console.log(result.items);
+
+          setListRef(result.items
+          );
+        }
+      },
+    }
+  );
+  const [noData, setNoData] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const pageRef = React.useRef(page);
+  const setPageRef = (data: number) => {
+    pageRef.current = data;
+    setPage(data);
+  };
+
+  const handleScroll = (e: any): any => {
+    //if (fullScreen) {
+
+
+    const el = e.target;
+    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+      if (!noData) {
+        const currentpage = pageRef.current + 1;
+        setPageRef(currentpage);
+        console.log(pageRef.current);
+        getList();
+      }
+    }
+  };
+  async function getList(): Promise<any> {
+    const result = await getCurrentPharmacyUsers(pageRef.current, 10);
+    console.log(result.items);
+    if (result == undefined || result.items.length == 0) {
+      setNoData(true);
+    } else {
+      setListRef(result.items);
+      return result;
+    }
+  }
+  function isMobile() {
+    return window.innerWidth < 960;
+  }
+  function useWindowDimensions() {
+
+    const [mobile, setMobile] = useState(false);
+    const mobileRef = React.useRef(mobile);
+    const setMobileRef = (data: boolean) => {
+      mobileRef.current = data;
+      setMobile(data);
+    };
+    React.useEffect(() => {
+      function handleResize() {
+        if (!mobileRef.current && isMobile()) {
+          window.addEventListener('scroll', (e) => handleScroll(e), {
+            capture: true,
+          });
+        } else if (mobileRef.current && !isMobile()) {
+          window.removeEventListener('scroll', (e) => handleScroll(e));
+        }
+        setMobileRef(isMobile());
+      }
+      handleResize()
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return mobile;
+  }
+  useWindowDimensions();
   return (
     <Container maxWidth="lg">
-      <DataTable
-        tableRef={ref}
-        extraMethods={{ editUser: enableUserHandler }}
-        columns={tableColumns()}
-        // editAction={editUserHandler}
-        // editUser={enableUserHandler}
-        // removeAction={removeUserHandler}
-        queryKey={PharmacyUsersEnum.GET_PHARMACY_USERS}
-        queryCallback={getCurrentPharmacyUsers}
-        initLoad={false}
-        isLoading={isLoadingRemoveUser || isLoadingEditUser}
-        pageSize={10}
-        urlAddress={UrlAddress.getPharmacyUsers}
-        // stateAction={disableUserHandler}
-        customActions={customDataTAbleACtions}
-      />
+      {!fullScreen && (
+        <DataTable
+          tableRef={ref}
+          extraMethods={{ editUser: enableUserHandler }}
+          columns={tableColumns()}
+          // editAction={editUserHandler}
+          // editUser={enableUserHandler}
+          // removeAction={removeUserHandler}
+          queryKey={PharmacyUsersEnum.GET_PHARMACY_USERS}
+          queryCallback={getCurrentPharmacyUsers}
+          initLoad={false}
+          isLoading={isLoadingRemoveUser || isLoadingEditUser}
+          pageSize={10}
+          urlAddress={UrlAddress.getPharmacyUsers}
+          // stateAction={disableUserHandler}
+          customActions={customDataTAbleACtions}
+        />
+      )}
       <br />
       <br />
-
       <Grid container spacing={1} className={buttonContainer}>
         <Button
           variant="outlined"
@@ -561,206 +706,255 @@ const UsersList: React.FC = () => {
           {t('user.create-user')}
         </Button>
       </Grid>
-
-      <Modal open={isOpenRoleModal} toggle={toggleIsOpenRoleModal}>
-        <Card className={root}>
-          <CardHeader
-            title={t('user.edit-role')}
-            action={
-              <IconButton onClick={toggleIsOpenRoleModal}>
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-
-          <Divider />
-
-          <CardContent>
-            <RoleForm
-              userId={idOfSelectedUser}
-              toggleForm={toggleIsOpenRoleModal}
-              roleType={RoleType.PHARMACY}
-            />
-          </CardContent>
-        </Card>
-      </Modal>
-
-      <Modal open={isOpenSaveModal} toggle={toggleIsOpenSaveModalForm}>
-        <Card className={root}>
-          <CardHeader
-            title={state?.id === 0 ? t('action.create') : t('action.edit')}
-            action={
-              <IconButton onClick={toggleIsOpenSaveModalForm}>
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            {/* <UserForm
-              userData={state}
-              noShowInput={['password']}
-              onCancel={toggleIsOpenSaveModalForm}
-              onSubmit={(): void => {
-                queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-                toggleIsOpenSaveModalForm();
-              }}
-            /> */}
-          </CardContent>
-        </Card>
-      </Modal>
-
-      <ModalContent
+      {fullScreen && contentGenerator()}
+      {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+      <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal}>
+        <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <RoleForm
+                      userId={idOfSelectedUser}
+                      toggleForm={toggleIsOpenRoleModal}
+                      roleType={RoleType.PHARMACY}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+      <Dialog
         open={isOpenModalOfCreateUser}
-        toggle={toggleIsOpenModalOfUser}
-        confirmHandler={formHandler}
-        disabled={isLoadingNewUser}
+        fullScreen={fullScreen}
+        onClose={toggleIsOpenModalOfUser}
       >
-        <form
-          autoComplete="off"
-          onSubmit={formHandler}
-          className={formContainer}
-        >
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
-                error={state.name.trim().length < 2 && showError}
-                label="نام کاربر"
-                size="small"
-                className="w-100"
-                variant="outlined"
-                value={state.name}
-                onChange={(e): void =>
-                  dispatch({ type: 'name', value: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
-                className="w-100"
-                error={state.family.trim().length < 2 && showError}
-                label="نام خانوادگی کاربر"
-                size="small"
-                variant="outlined"
-                value={state.family}
-                onChange={(e): void =>
-                  dispatch({ type: 'family', value: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
-                className="w-100"
-                error={state.mobile.trim().length < 11 && showError}
-                label="موبایل"
-                type="number"
-                size="small"
-                variant="outlined"
-                value={state.mobile}
-                onChange={(e): void =>
-                  dispatch({ type: 'mobile', value: e.target.value })
-                }
-              />
-            </Grid>
+        <DialogTitle className="text-sm">
+          {state?.id === 0 ? t('action.create') : t('action.edit')}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نام کاربر</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      error={state.name.trim().length < 2 && showError}
+                      label="نام کاربر"
+                      className="w-100"
+                      value={state.name}
+                      onChange={(e): void =>
+                        dispatch({ type: 'name', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نام خانوادگی کاربر</label>
+                  </Grid>
 
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
-                error={
-                  state?.email?.length > 0 &&
-                  !emailRegex.test(state.email) &&
-                  showError
-                }
-                label="ایمیل"
-                className="w-100"
-                type="email"
-                size="small"
-                variant="outlined"
-                value={state.email}
-                onChange={(e): void =>
-                  dispatch({ type: 'email', value: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
-                error={state?.userName?.length < 1 && showError}
-                label="نام کاربری"
-                size="small"
-                className="w-100"
-                variant="outlined"
-                autoComplete="off"
-                value={state.userName}
-                onChange={(e): void =>
-                  dispatch({ type: 'userName', value: e.target.value })
-                }
-              />
-            </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      error={state.family.trim().length < 2 && showError}
+                      value={state.family}
+                      onChange={(e): void =>
+                        dispatch({ type: 'family', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>موبایل</label>
+                  </Grid>
 
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
-                error={
-                  state?.nationalCode !== '' &&
-                  state?.nationalCode?.length < 10 &&
-                  showError
-                }
-                label="کد ملی"
-                className="w-100"
-                type="text"
-                size="small"
-                variant="outlined"
-                value={state.nationalCode}
-                onChange={(e): void =>
-                  dispatch({ type: 'nationalCode', value: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <TextField
-                label="تاریخ تولد"
-                inputProps={{
-                  readOnly: true,
-                }}
-                className="w-100"
-                type="text"
-                size="small"
-                variant="outlined"
-                value={state?.birthDate}
-                onClick={toggleIsOpenDatePicker}
-              />
-            </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      error={state.mobile.trim().length < 11 && showError}
+                      type="number"
+                      value={state.mobile}
+                      onChange={(e): void =>
+                        dispatch({ type: 'mobile', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>ایمیل</label>
+                  </Grid>
 
-            <Grid item xs={12} sm={6} xl={3}>
-              <FormControl size="small" className="w-100" variant="outlined">
-                <InputLabel id="user-roles-list">نقش های کاربر:</InputLabel>
-                <Select
-                  labelId="user-roles-list"
-                  id="roles-list"
-                  multiple
-                  input={<Input />}
-                  label="نقش های کاربر:"
-                  MenuProps={MenuProps}
-                  value={selectedRoles}
-                  onChange={handleChange}
-                  renderValue={(selected: any): string => {
-                    const items = roleListData?.items
-                      .filter((item: any) => selected.indexOf(item.id) !== -1)
-                      .map((item: any) => item.name);
+                  <Grid item xs={12}>
+                    <Input
+                      error={
+                        state?.email?.length > 0 &&
+                        !emailRegex.test(state.email) &&
+                        showError
+                      }
+                      className="w-100"
+                      type="email"
+                      value={state.email}
+                      onChange={(e): void =>
+                        dispatch({ type: 'email', value: e.target.value })
+                      }
+                    ></Input>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نام کاربری</label>
+                  </Grid>
 
-                    return ((items as string[]) ?? []).join(', ');
+                  <Grid item xs={12}>
+                    <Input
+                      error={state?.userName?.length < 1 && showError}
+                      className="w-100"
+                      value={state.userName}
+                      onChange={(e): void =>
+                        dispatch({ type: 'userName', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>کد ملی</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Input
+                      error={
+                        state?.nationalCode !== '' &&
+                        state?.nationalCode?.length < 10 &&
+                        showError
+                      }
+                      className="w-100"
+                      type="text"
+                      value={state.nationalCode}
+                      onChange={(e): void =>
+                        dispatch({
+                          type: 'nationalCode',
+                          value: e.target.value,
+                        })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>تاریخ تولد</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <Input
+                      readOnly={true}
+                      className="w-100"
+                      type="text"
+                      value={state?.birthDate}
+                      onClick={toggleIsOpenDatePicker}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>نقش های کاربر:</label>
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <FormControl
+                      size="small"
+                      className="w-100"
+                      variant="outlined"
+                    >
+                      <Select
+                        labelId="user-roles-list"
+                        id="roles-list"
+                        multiple
+                        input={<SelectInput />}
+                        label="نقش های کاربر:"
+                        MenuProps={MenuProps}
+                        value={selectedRoles}
+                        onChange={handleChange}
+                        renderValue={(selected: any): string => {
+                          const items = roleListData?.items
+                            .filter(
+                              (item: any) => selected.indexOf(item.id) !== -1
+                            )
+                            .map((item: any) => item.name);
+
+                          return ((items as string[]) ?? []).join(', ');
+                        }}
+                      >
+                        {rolesListGenerator()}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+        <DialogActions>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={8} />
+              <Grid item xs={2} sm={2}>
+                <Button
+                  type="button"
+                  className={cancelButton}
+                  onClick={(): void => {
+                    dispatch({ type: 'reset' });
+                    toggleIsOpenModalOfUser();
                   }}
                 >
-                  {rolesListGenerator()}
-                </Select>
-              </FormControl>
+                  {t('general.close')}
+                </Button>
+              </Grid>
+              <Grid item xs={3} sm={2}>
+                <Button
+                  type="submit"
+                  disabled={isLoadingNewUser}
+                  className={submitBtn}
+                  onClick={formHandler}
+                >
+                  {isLoadingNewUser
+                    ? t('general.pleaseWait')
+                    : t('general.submit')}
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
-        </form>
-      </ModalContent>
-
+        </DialogActions>
+      </Dialog>
       <Modal
         open={isOpenDatePicker}
         toggle={toggleIsOpenDatePicker}
-        zIndex={1060}
+        zIndex={2000}
       >
         <DateTimePicker
           selectedDateHandler={(e): void => {

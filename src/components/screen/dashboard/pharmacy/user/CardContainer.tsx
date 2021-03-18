@@ -1,0 +1,82 @@
+import React, { useState } from 'react';
+import {
+  makeStyles,
+  Paper,
+  createStyles,
+  Grid,
+  Divider,
+  Button,
+} from '@material-ui/core';
+import Detail from './Detail';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UserInterface, NewUserData } from '../../../../../interfaces';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { TextMessage } from '../../../../../enum';
+import { BackDrop } from '../../../../public';
+
+const useStyle = makeStyles((theme) =>
+  createStyles({
+    root: {
+      backgroundColor: '#fff',
+      padding: theme.spacing(1, 1, 1),
+      borderRadius: 5,
+    },
+  })
+);
+
+const CardContainer: React.FC<UserInterface> = (props) => {
+  const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
+  const { root } = useStyle();
+  
+  const {  data,editRoleHandler } = props;
+
+  const {
+    name,
+      family,
+      email,
+      mobile,
+      birthDate,
+      id,
+      nationalCode,
+      pharmacyID,
+      userName,
+   active
+  } = data;
+
+  
+
+  return (
+    <Paper className={root} elevation={1}>
+      <Grid container spacing={0}>
+        <Detail
+          id={id}
+          name={name}
+          family={family}
+          mobile={mobile}
+          email={email}
+          userName={userName}
+          nationalCode={nationalCode}
+          birthDate={birthDate}
+          active={active}
+          pharmacyID={pharmacyID}
+          
+        />
+      </Grid>
+      <Grid item xs={12} style={{ padding: '4px' }}>
+        <Divider />
+      </Grid>
+
+      <Grid item xs={12} justify="flex-end">
+        <Button
+          onClick={(): void => editRoleHandler(data)}
+          style={{ color: 'red', fontSize: '14px' }}
+        >
+          ویرایش نقش
+        </Button>
+      </Grid>
+      <BackDrop isOpen={isOpenBackDrop} />
+    </Paper>
+  );
+};
+
+export default CardContainer;

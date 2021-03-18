@@ -17,9 +17,9 @@ import {
   useMediaQuery,
   useTheme,
   Divider,
-  Paper
+  Paper,
 } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { faPlus, faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
@@ -36,16 +36,11 @@ import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
 import { useEffectOnce } from '../../../../../hooks';
-import {
-  errorHandler,
-  Convertor,
-  jalali,
-  successSweetAlert,
-} from '../../../../../utils';
+import { errorHandler, Convertor, jalali } from '../../../../../utils';
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { DrugType } from '../../../../../enum/pharmacyDrug';
 // @ts-ignore
 import jalaali from 'jalaali-js';
@@ -55,6 +50,8 @@ import { SearchDrugInCategory } from '../../../../../interfaces/search';
 import { PackCreation } from 'model/pack';
 import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import styled from 'styled-components';
+import { useSnackbar } from 'notistack';
 
 const { packsList } = routes;
 
@@ -167,6 +164,12 @@ const monthMinimumLength = 28;
 const monthIsValid = (month: number): boolean => month < 13;
 const dayIsValid = (day: number): boolean => day < 32;
 
+const StyledGrid = styled((props: any) => (
+  <Grid {...props} item xs={12} spacing={3} />
+))`
+  margin: 24px 24px 0px 0px;
+`;
+
 const Create: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
@@ -197,25 +200,28 @@ const Create: React.FC = () => {
   const [daroogRecommendation, setDaroogRecommendation] = useState<string>('');
   const [comissionPercent, setComissionPercent] = useState<string>('');
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
+  const [drugsPack, setDrugsPack] = useState<PharmacyDrugSupplyList[]>([]);
+  const [storedPackId, setStoredPackId] = useState<number | null>(null);
+
   const theme = useTheme();
+
+  const { enqueueSnackbar } = useSnackbar();
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { t } = useTranslation();
-  const { push } = useHistory();
 
   const { packId } = useParams() as { packId: string };
 
+  const autoCompleteRef = useRef<any>(null);
+
   const {
     addButton,
-    modalContainer,
     expireDate,
-    buttonContainer,
     label,
     submitBtn,
     cancelButton,
     fieldset,
-    countContainer,
     fab,
     fab2,
     formContainer,
@@ -236,6 +242,10 @@ const Create: React.FC = () => {
     setOptions([]);
     setIsWrongDate(false);
     setHasMinimumDate(true);
+
+    if (autoCompleteRef && autoCompleteRef.current) {
+      autoCompleteRef.current.setInputValue('');
+    }
   };
 
   const isJalaliDate = (num: number): boolean => num < 2000;
@@ -374,24 +384,20 @@ const Create: React.FC = () => {
     return totalPrice;
   };
 
-  useEffect(() => {
-    async function getPackDrugs(): Promise<any> {
+  async function getPackDrugs(_packId?: number): Promise<any> {
+    if (packId !== undefined || _packId !== undefined) {
       try {
         setIsBackdropLoading(true);
-        const result = await getPackDetail(packId);
-        const { name, pharmacyDrug } = result;
+        const result = await getPackDetail(
+          packId !== undefined ? packId : _packId || 0
+        );
+        const { pharmacyDrug } = result;
 
         setPackTotalItems(pharmacyDrug.length);
         setSelectedCategory(
           result.category !== null ? result.category.id : '-1'
         );
-
-        setTemporaryDrugs(mapApiDrugsToStandardDrugs(pharmacyDrug));
-
-        // let totalPrice = 0;
-        // pharmacyDrug.forEach((item: any) => {
-        //   totalPrice += item.amount;
-        // });
+        setDrugsPack([...mapApiDrugsToStandardDrugs(pharmacyDrug)]);
 
         setPackTotalPrice(getTotalPrice(pharmacyDrug));
         setIsBackdropLoading(false);
@@ -399,21 +405,32 @@ const Create: React.FC = () => {
         errorHandler(e);
       }
     }
+  }
 
+  useEffect(() => {
     if (packId !== undefined) {
-      getPackDrugs();
+      setStoredPackId(Number(packId));
     }
+    getPackDrugs();
   }, [packId]);
 
   const [_savePack] = useMutation(savePack, {
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       if (packId === undefined) {
         setSelectedCategory('');
       }
       setIsBackdropLoading(false);
-      await successSweetAlert(t('alert.successfulCreateTextMessage'));
-      push({
-        pathname: packsList,
+
+      if (isCheckedNewItem) {
+        resetValues();
+      } else {
+        setIsOpenModal(false);
+        resetValues();
+      }
+
+      await getPackDrugs(data.data.packID);
+      enqueueSnackbar(t('alert.done'), {
+        variant: 'success',
       });
     },
     onError: () => {
@@ -432,18 +449,63 @@ const Create: React.FC = () => {
     })();
   });
 
-  const removeHandler = (drugId: number): void => {
+  const submition = async (data: any): Promise<void> => {
+    const packData: PackCreation = {
+      id:
+        packId !== undefined
+          ? packId
+          : storedPackId !== null
+          ? storedPackId
+          : 0,
+      categoryID: selectedCategory,
+      // name: packTitle,
+      name: '',
+      pharmacyDrug: data as PharmacyDrugSupplyList[],
+    };
+
+    if (selectedCategory === '-1') {
+      delete packData.categoryID;
+    }
+
+    await _savePack(packData);
+  };
+
+  const mapDrugsPackToApi = (_drugsPack: any[]): any[] => {
+    let items: any[] = [];
+    if (_drugsPack.length > 0) {
+      items = _drugsPack.map((item) => {
+        if (has(item.drugID, 'value')) {
+          return {
+            ...omit(item, 'id'),
+            drugID: item.drugID.value,
+          };
+        }
+        return item;
+      });
+
+      return items;
+    }
+
+    return [];
+  };
+
+  const removeHandler = async (drugId: number): Promise<void> => {
     if (window.confirm(t('alert.remove'))) {
-      remove(temporaryDrugs, (item) => item.drugID.value === drugId);
-      setTemporaryDrugs([...temporaryDrugs]);
+      remove(drugsPack, (item) => item.drugID.value === drugId);
+      try {
+        await submition(mapDrugsPackToApi(drugsPack));
+        setDrugsPack([...drugsPack]);
+      } catch (e) {
+        errorHandler(e);
+      }
     }
   };
 
   const contentHandler = (): JSX.Element[] | null => {
-    if (temporaryDrugs.length > 0) {
-      return temporaryDrugs.map((item) => {
+    if (drugsPack.length > 0) {
+      return drugsPack.map((item) => {
         return (
-          <Grid item xs={12} sm={12} md={4} xl={4}>
+          <Grid item xs={12} md={4}>
             <CardContainer item={item} removeHandler={removeHandler} />
           </Grid>
         );
@@ -452,6 +514,8 @@ const Create: React.FC = () => {
 
     return null;
   };
+
+  const memoContent = useMemo(() => contentHandler(), [drugsPack]);
 
   const typeHandler = (item: string): string => {
     let name = '';
@@ -516,63 +580,6 @@ const Create: React.FC = () => {
     });
   };
 
-  const formHandler = async (): Promise<any> => {
-    try {
-      if (
-        temporaryDrugs.length === 0 ||
-        selectedCategory === '' ||
-        isWrongDate ||
-        !hasMinimumDate
-      ) {
-        return;
-      }
-      setIsBackdropLoading(true);
-
-      const intSelectedYear = Number(selectedYear);
-      const intSelectedMonth = Number(selectedMonth);
-      const intSelectedDay = Number(
-        selectedDay === '' ? monthMinimumLength : selectedDay
-      );
-      let date = '';
-      if (!isJalaliDate(intSelectedYear)) {
-        date = `${intSelectedYear}-${numberWithZero(
-          intSelectedMonth
-        )}-${numberWithZero(intSelectedDay)}T00:00:00Z`;
-      } else {
-        const jalail2Gregorian = jalaali.toGregorian(
-          intSelectedYear,
-          intSelectedMonth,
-          intSelectedDay
-        );
-
-        date = `${jalail2Gregorian.gy}-${numberWithZero(
-          jalail2Gregorian.gm
-        )}-${numberWithZero(jalail2Gregorian.gd)}T00:00:00Z`;
-      }
-
-      const data = temporaryDrugs.map((item) => ({
-        ...omit(item, 'id'),
-        drugID: item.drugID.value,
-      }));
-
-      const packData: PackCreation = {
-        id: packId !== undefined ? packId : 0,
-        categoryID: selectedCategory,
-        // name: packTitle,
-        name: '',
-        pharmacyDrug: data as PharmacyDrugSupplyList[],
-      };
-
-      if (selectedCategory === '-1') {
-        delete packData.categoryID;
-      }
-
-      await _savePack(packData);
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
-
   const isValidInputs = (): boolean => {
     return (
       amount !== '' &&
@@ -584,16 +591,7 @@ const Create: React.FC = () => {
     );
   };
 
-  useEffect(() => {
-    setPackTotalItems(temporaryDrugs.length);
-    setPackTotalPrice(getTotalPrice(temporaryDrugs));
-  }, [temporaryDrugs]);
-
-  const addTemporaryHandler = (): void => {
-    if (!isValidInputs()) {
-      return;
-    }
-
+  const getNewDrugData = (): PharmacyDrugSupplyList => {
     const intSelectedYear = Number(selectedYear);
     const intSelectedMonth = Number(selectedMonth);
     const intSelectedDay = Number(
@@ -628,26 +626,53 @@ const Create: React.FC = () => {
       batchNO: '',
     };
 
-    setTemporaryDrugs((v) => [...v, data]);
+    return data;
+  };
 
-    if (isCheckedNewItem) {
-      resetValues();
-    } else {
-      toggleIsOpenModal();
-      resetValues();
+  const formHandler = async (): Promise<any> => {
+    try {
+      if (
+        !isValidInputs() ||
+        selectedCategory === '' ||
+        isWrongDate ||
+        !hasMinimumDate
+      ) {
+        return;
+      }
+
+      setIsBackdropLoading(true);
+
+      const items: any[] = mapDrugsPackToApi(drugsPack);
+
+      const data: PharmacyDrugSupplyList[] = [
+        ...items,
+        {
+          ...omit(getNewDrugData(), 'id'),
+          drugID: getNewDrugData().drugID.value,
+        },
+      ];
+
+      await submition(data);
+    } catch (e) {
+      errorHandler(e);
     }
   };
 
+  useEffect(() => {
+    setPackTotalItems(temporaryDrugs.length);
+    setPackTotalPrice(getTotalPrice(temporaryDrugs));
+  }, [temporaryDrugs]);
+
   return (
     <MaterialContainer>
-      <Grid item xs={12} spacing={3} style={{ margin: ' 24px 24px 0px 0px' }}>
+      <StyledGrid>
         <span>
           ابتدا یک دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را
           اضافه نمایید و در نهایت ثبت نمایید. اقلامی که به صورت پک ثبت مینمایید
           در تبادل٬ با هم و با قیمت و تعداد غیر قابل تغییر توسط طرف مقابل عرضه
           میشود{' '}
         </span>
-      </Grid>
+      </StyledGrid>
       <Grid container spacing={3} alignItems="center">
         <Grid item xs={12} className={formContainer}>
           <Grid container spacing={1}>
@@ -672,6 +697,7 @@ const Create: React.FC = () => {
                       onChange={(e): void => {
                         setSelectedCategory(e.target.value as string);
                       }}
+                      disabled={drugsPack.length > 0}
                     >
                       <MenuItem value="-1">همه دسته ها</MenuItem>
                       {itemsGenerator()}
@@ -701,20 +727,6 @@ const Create: React.FC = () => {
                     </Grid>
                   </Grid>
                 </Grid>
-
-                <Hidden xsDown>
-                  <Grid item xs={3}>
-                    <Button
-                      type="button"
-                      onClick={formHandler}
-                      className={submitBtn}
-                    >
-                      {isLoadingSave
-                        ? t('general.pleaseWait')
-                        : t('general.submit')}
-                    </Button>
-                  </Grid>
-                </Hidden>
 
                 <Hidden smUp>
                   <Fab onClick={formHandler} className={fab2} aria-label="add">
@@ -748,7 +760,7 @@ const Create: React.FC = () => {
           </Fab>
         </Hidden>
 
-        {contentHandler()}
+        {memoContent}
       </Grid>
       <Dialog
         fullScreen={fullScreen}
@@ -761,6 +773,7 @@ const Create: React.FC = () => {
             <Grid container spacing={1}>
               <Grid item xs={12}>
                 <AutoComplete
+                  ref={autoCompleteRef}
                   isLoading={isLoading}
                   options={options}
                   className="w-100"
@@ -768,6 +781,7 @@ const Create: React.FC = () => {
                   loadingText={t('general.loading')}
                   onChange={debounce((e) => searchDrugs(e.target.value), 500)}
                   onItemSelected={(item): void => setSelectedDrug(item[0])}
+                  defaultSelectedItem=""
                 />
               </Grid>
 
@@ -855,30 +869,6 @@ const Create: React.FC = () => {
                     </Grid>
                     <Grid item xs={2}>
                       {t('general.gift')}
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Grid
-                    container
-                    spacing={0}
-                    alignItems="center"
-                    justify="space-between"
-                  >
-                    <Grid item xs={1}>
-                      <span>تا</span>
-                    </Grid>
-                    <Grid item xs={9}>
-                      <Input
-                        value={offer1}
-                        label={t('general.number')}
-                        onChange={(e): void => {
-                          setOffer1(e.target.value);
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={2}>
-                      <div className="text-left">{t('general.gift')}</div>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -1000,9 +990,12 @@ const Create: React.FC = () => {
                 <Button
                   className={submitBtn}
                   type="button"
-                  onClick={addTemporaryHandler}
+                  onClick={formHandler}
+                  disabled={isBackdropLoading}
                 >
-                  {t('general.add')}
+                  {isBackdropLoading
+                    ? t('general.pleaseWait')
+                    : t('general.add')}
                 </Button>
               </Grid>
             </Grid>
