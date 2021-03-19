@@ -18,7 +18,7 @@ import {
   DialogContentText,
   useMediaQuery,
   useTheme,
-  Divider
+  Divider,
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -34,7 +34,6 @@ import {
   Search,
   Category as CategoryApi,
 } from '../../../../../services/api';
-import { Autocomplete } from '@material-ui/lab';
 import { errorHandler, successSweetAlert } from '../../../../../utils';
 
 const { getFavoriteList, saveFavoriteList } = new Favorite();
@@ -96,7 +95,6 @@ const useStyle = makeStyles((theme) =>
       fontSize: 10,
       float: 'right',
     },
-    
   })
 );
 
@@ -119,12 +117,20 @@ const Category: React.FC = () => {
   const [inSubmit, setInSubmit] = useState<boolean>(false);
   const [isOpenBackdrop, setIsOpenBackdrop] = useState<boolean>(false);
 
-  const { addButton, modalContainer, buttonContainer, fab ,formContent, cancelButton, submitBtn} = useStyle();
+  const {
+    addButton,
+    modalContainer,
+    buttonContainer,
+    fab,
+    formContent,
+    cancelButton,
+    submitBtn,
+  } = useStyle();
 
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  
+
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
   const queryCache = useQueryCache();
@@ -275,42 +281,40 @@ const Category: React.FC = () => {
         open={isOpenModal}
         fullScreen={fullScreen}
         onClose={toggleIsOpenModal}
-
       >
- <DialogTitle className="text-sm">
- {t('drug.category')}
-        </DialogTitle>
+        <DialogTitle className="text-sm">{t('drug.category')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <Grid container spacing={1} className={formContent}>
               <Grid item xs={12}>
                 <Grid container spacing={1}>
-
                   <Grid item xs={12}>
-              <Select
-                multiple
-                labelId="cateogry-list"
-                label={t('drug.category')}
-                variant="filled"
-                className="w-100"
-                MenuProps={MenuProps}
-                value={selectedCategory}
-                onChange={(e): void => {
-                  const val = e.target.value;
-                  setSelectedCategory(val as number[]);
-                }}
-                input={<Input />}
-                renderValue={(selected: any): string => {
-                  const items = allCategories?.items
-                    .filter((item: any) => selected.indexOf(item.id) !== -1)
-                    .map((item: any) => item.name);
+                    <Select
+                      multiple
+                      labelId="cateogry-list"
+                      label={t('drug.category')}
+                      variant="filled"
+                      className="w-100"
+                      MenuProps={MenuProps}
+                      value={selectedCategory}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        setSelectedCategory(val as number[]);
+                      }}
+                      input={<Input />}
+                      renderValue={(selected: any): string => {
+                        const items = allCategories?.items
+                          .filter(
+                            (item: any) => selected.indexOf(item.id) !== -1
+                          )
+                          .map((item: any) => item.name);
 
-                  return ((items as string[]) ?? []).join(', ');
-                }}
-              >
-                {listGenerator()}
-              </Select>
-            </Grid>
+                        return ((items as string[]) ?? []).join(', ');
+                      }}
+                    >
+                      {listGenerator()}
+                    </Select>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
@@ -330,15 +334,12 @@ const Category: React.FC = () => {
                   {t('general.close')}
                 </Button>
               </Grid>
-             
               <Grid item xs={3} sm={2}>
-
                 <Button
                   type="submit"
                   onClick={formHandler}
                   disabled={inSubmit}
                   className={submitBtn}
-
                 >
                   {inSubmit ? t('general.pleaseWait') : t('general.submit')}
                 </Button>
@@ -346,7 +347,6 @@ const Category: React.FC = () => {
             </Grid>
           </Grid>
         </DialogActions>
-
       </Dialog>
     </MaterialContainer>
   );

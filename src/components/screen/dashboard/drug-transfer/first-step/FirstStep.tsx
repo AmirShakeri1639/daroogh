@@ -38,8 +38,10 @@ import { AdvancedSearchInterface } from 'interfaces/search';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from 'redux/actions';
 import { ListOptions } from 'components/public/auto-complete/AutoComplete';
+import { useQueryString } from 'hooks';
+import { useLocation } from 'react-router';
 
-const { getRelatedPharmacyDrug } = new PharmacyDrug();
+const { getRelatedPharmacyDrug, getFavoritePharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
 
 const useStyle = makeStyles((theme) =>
@@ -165,6 +167,8 @@ const FirstStep: React.FC = () => {
   const dispatch = useDispatch();
 
   let minimumDrugExpireDay = 30;
+  const { search: useLocationSearch } = useLocation();
+
   try {
     const localStorageSettings = JSON.parse(
       localStorage.getItem('settings') ?? '{}'
@@ -173,6 +177,8 @@ const FirstStep: React.FC = () => {
   } catch (e) {
     errorHandler(e);
   }
+
+  const shouldDisplayFavoriteList = useLocationSearch.includes('faves=true');
 
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
@@ -307,8 +313,12 @@ const FirstStep: React.FC = () => {
   } = useStyle();
 
   const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
-    PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG,
-    () => getRelatedPharmacyDrug(),
+    shouldDisplayFavoriteList
+      ? PharmacyDrugEnum.GET_FAVORITE_EXCHANGE_LIST_OF_DRUGS
+      : PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG,
+    shouldDisplayFavoriteList
+      ? () => getFavoritePharmacyDrug()
+      : () => getRelatedPharmacyDrug(),
     {
       enabled: searchedDrugs.length === 0,
     }
@@ -355,7 +365,7 @@ const FirstStep: React.FC = () => {
         });
       }
     } else {
-      items = data.map((d: PharmacyDrugInterface) => {
+      items = data.items.map((d: PharmacyDrugInterface) => {
         return (
           <>
             <Grid item xs={12} sm={6} lg={6}>
