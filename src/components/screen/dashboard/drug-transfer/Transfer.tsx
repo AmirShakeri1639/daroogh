@@ -26,7 +26,7 @@ const style = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#f7f7f7',
-      padding: theme.spacing(2, 1),
+      //padding: theme.spacing(2, 1),
     },
   })
 );

@@ -322,235 +322,203 @@ const DesktopCardContent = ({
         className={isSmallDevice ? mobileCardContainer : cardContainer}
       >
         <Grid container className={cardTop}>
-          {! (isSmallDevice && full)  && (
-            <>
-              <Grid item container xs={6} className={rowRight}>
-                <Grid item xs={12} className={rowRight}>
-                  <div>
-                    {item.currentPharmacyIsA
-                      ? `${item.pharmacyProvinceB}، ${item.pharmacyCityB}`
-                      : `${item.pharmacyProvinceA}، ${item.pharmacyCityA}`}
-                  </div>
-                </Grid>
-              </Grid>
-            </>
-          )}
-          {! (isSmallDevice && full)  && (
-            <>
-              <Grid item container xs={6} className={colLeft}>
-                <Grid item xs={12} className={rowLeft}>
-                  {pharmacyWarranty !== 0 && (
-                    <>
-                      {t('general.warrantyTo')} {pharmacyWarranty}{' '}
-                      {t('general.defaultCurrency')}
-                      <FontAwesomeIcon icon={faMedal} size="lg" />
-                    </>
-                  )}
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  className={rowLeft}
-                  style={{ direction: 'ltr', color: ColorEnum.GOLD }}
-                >
-                  {stars()}
-                </Grid>
-              </Grid>
-              <Grid item xs={12} style={{ padding: '2px' }}>
-                <Divider />
-              </Grid>
-            </>
-          )}
+          <Grid item container xs={6} className={rowRight}>
+            <Grid item xs={12} className={rowRight}>
+              <div>
+                {item.currentPharmacyIsA
+                  ? `${item.pharmacyProvinceB}، ${item.pharmacyCityB}`
+                  : `${item.pharmacyProvinceA}، ${item.pharmacyCityA}`}
+              </div>
+            </Grid>
+          </Grid>
+
+          <Grid item container xs={6} className={colLeft}>
+            <Grid item xs={12} className={rowLeft}>
+              {pharmacyWarranty !== 0 && (
+                <>
+                  {t('general.warrantyTo')} {pharmacyWarranty}{' '}
+                  {t('general.defaultCurrency')}
+                  <FontAwesomeIcon icon={faMedal} size="lg" />
+                </>
+              )}
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              className={rowLeft}
+              style={{ direction: 'ltr', color: ColorEnum.GOLD }}
+            >
+              {stars()}
+            </Grid>
+          </Grid>
+          <Grid item xs={12} style={{ padding: '2px' }}>
+            <Divider />
+          </Grid>
         </Grid>
 
         <Grid item container xs={12}>
-          {! (isSmallDevice && full)  && (
-            <>
-              {!isNullOrEmpty(item?.sendDate) && (
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={t('exchange.sendDate')}
-                    body={
-                      item?.sendDate == null
-                        ? ''
-                        : moment(item?.sendDate, 'YYYY/MM/DD')
-                            .locale('fa')
-                            .format('YYYY/MM/DD')
-                    }
-                  />
-                </Grid>
-              )}
-              {!isNullOrEmpty(expireDate) && (
-                <Grid item xs={12}>
-                  <TextWithTitle title={expireDateText} body={expireDate} />
-                </Grid>
-              )}
+          {!isNullOrEmpty(item?.sendDate) && (
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={t('exchange.sendDate')}
+                body={
+                  item?.sendDate == null
+                    ? ''
+                    : moment(item?.sendDate, 'YYYY/MM/DD')
+                        .locale('fa')
+                        .format('YYYY/MM/DD')
+                }
+              />
+            </Grid>
+          )}
+          {!isNullOrEmpty(expireDate) && (
+            <Grid item xs={12}>
+              <TextWithTitle title={expireDateText} body={expireDate} />
+            </Grid>
+          )}
 
-              {!isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={t('exchange.commission')}
-                    body={totalPourcentage}
-                    suffix={t('general.defaultCurrency')}
-                  />
-                </Grid>
-              )}
+          {!isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={t('exchange.commission')}
+                body={totalPourcentage}
+                suffix={t('general.defaultCurrency')}
+              />
+            </Grid>
+          )}
 
-              {!isNullOrEmpty(paymentStatus) && (
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={t('exchange.paymentStatus')}
-                    body={paymentStatus}
-                  />
-                </Grid>
-              )}
+          {!isNullOrEmpty(paymentStatus) && (
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={t('exchange.paymentStatus')}
+                body={paymentStatus}
+              />
+            </Grid>
+          )}
 
-              {totalPriceA !== undefined && totalPriceA > 0 && (
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={
-                      <>
-                        {`${t('exchange.basketTotalPrice')} `}
-                        {item.currentPharmacyIsA && t('exchange.you')}
-                        {!item.currentPharmacyIsA && t('exchange.otherSide')}
-                      </>
+          {totalPriceA !== undefined && totalPriceA > 0 && (
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={
+                  <>
+                    {`${t('exchange.basketTotalPrice')} `}
+                    {item.currentPharmacyIsA && t('exchange.you')}
+                    {!item.currentPharmacyIsA && t('exchange.otherSide')}
+                  </>
+                }
+                body={
+                  <>
+                    {
+                      //@ts-ignore
+                      item.currentPharmacyIsA &&
+                        Convertor.thousandsSeperatorFa(totalPriceA)
                     }
-                    body={
-                      <>
-                        {
-                          //@ts-ignore
-                          item.currentPharmacyIsA &&
-                            Convertor.thousandsSeperatorFa(totalPriceA)
-                        }
-                        {
-                          // @ts-ignore
-                          !item.currentPharmacyIsA &&
-                            Convertor.thousandsSeperatorFa(totalPriceA)
-                        }
-                      </>
+                    {
+                      // @ts-ignore
+                      !item.currentPharmacyIsA &&
+                        Convertor.thousandsSeperatorFa(totalPriceA)
                     }
-                    suffix={t('general.defaultCurrency')}
-                  />
-                </Grid>
-              )}
-              {totalPriceB !== undefined && totalPriceB > 0 && (
-                <Grid item xs={12}>
-                  <TextWithTitle
-                    title={
-                      <>
-                        {`${t('exchange.basketTotalPrice')} `}
-                        {!item.currentPharmacyIsA && t('exchange.you')}
-                        {item.currentPharmacyIsA && t('exchange.otherSide')}
-                      </>
+                  </>
+                }
+                suffix={t('general.defaultCurrency')}
+              />
+            </Grid>
+          )}
+          {totalPriceB !== undefined && totalPriceB > 0 && (
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={
+                  <>
+                    {`${t('exchange.basketTotalPrice')} `}
+                    {!item.currentPharmacyIsA && t('exchange.you')}
+                    {item.currentPharmacyIsA && t('exchange.otherSide')}
+                  </>
+                }
+                body={
+                  <>
+                    {
+                      //@ts-ignore
+                      item.currentPharmacyIsA &&
+                        Convertor.thousandsSeperatorFa(totalPriceB)
                     }
-                    body={
-                      <>
-                        {
-                          //@ts-ignore
-                          item.currentPharmacyIsA &&
-                            Convertor.thousandsSeperatorFa(totalPriceB)
-                        }
-                        {
-                          // @ts-ignore
-                          !item.currentPharmacyIsA &&
-                            Convertor.thousandsSeperatorFa(totalPriceB)
-                        }
-                      </>
+                    {
+                      // @ts-ignore
+                      !item.currentPharmacyIsA &&
+                        Convertor.thousandsSeperatorFa(totalPriceB)
                     }
-                    suffix={t('general.defaultCurrency')}
-                  />
-                </Grid>
-              )}
-            </>
+                  </>
+                }
+                suffix={t('general.defaultCurrency')}
+              />
+            </Grid>
           )}
 
           {full && (
             <>
-              {! (isSmallDevice && full)  && (
-                <>
-                  <Grid item xs={12}>
-                    <TextWithTitle
-                      title={t('exchange.difference')}
-                      body={`${Convertor.thousandsSeperatorFa(difference)} 
+              <Grid item xs={12}>
+                <TextWithTitle
+                  title={t('exchange.difference')}
+                  body={`${Convertor.thousandsSeperatorFa(difference)} 
                   ${currency} (${l(diffPercent)}%)`}
-                    />
-                  </Grid>
-                  <Grid item xs={12} style={{ padding: 2 }}>
-                    <Divider />
-                  </Grid>
-                </>
-              )}
+                />
+              </Grid>
+              <Grid item xs={12} style={{ padding: 2 }}>
+                <Divider />
+              </Grid>
+
               {(item.state === 1 ||
                 item.state === 2 ||
                 (item.state === 12 && !item.lockSuggestion)) && (
-                  <Grid container item xs={12}>
-                    
+                <Grid container item xs={12}>
                   <Grid item xs={12}>
-                    {! (isSmallDevice && full)  && (
+                    <div
+                      className={scaleContainer}
+                      style={{ minHeight: `${diffPercent * 0.75 + 85}px` }}
+                    >
                       <div
-                        className={scaleContainer}
-                        style={{ minHeight: `${diffPercent* (0.75) + 85}px` }}
+                        className={scaleRoot}
+                        style={{
+                          transform: `rotate(${
+                            (diffSign * diffPercent) / 5
+                          }deg)`,
+                        }}
                       >
-                        <div
-                          className={scaleRoot}
+                        <span className="right">
+                          {
+                            //@ts-ignore
+                            item.currentPharmacyIsA &&
+                              Convertor.thousandsSeperatorFa(totalPriceB)
+                          }
+                          {
+                            // @ts-ignore
+                            !item.currentPharmacyIsA &&
+                              Convertor.thousandsSeperatorFa(totalPriceA)
+                          }
+                        </span>
+                        <span
+                          className="center"
                           style={{
-                            transform: `rotate(${
-                              (diffSign * diffPercent) / 5
-                            }deg)`,
+                            background: `${is3PercentOk ? 'green' : 'red'}`,
                           }}
                         >
-                          <span className="right">
-                            {
-                              //@ts-ignore
-                              item.currentPharmacyIsA &&
-                                Convertor.thousandsSeperatorFa(totalPriceB)
-                            }
-                            {
-                              // @ts-ignore
-                              !item.currentPharmacyIsA &&
-                                Convertor.thousandsSeperatorFa(totalPriceA)
-                            }
-                          </span>
-                          <span
-                            className="center"
-                            style={{
-                              background: `${is3PercentOk ? 'green' : 'red'}`,
-                            }}
-                          >
-                            {l(diffPercent)}%
-                          </span>
-                          <hr />
-                          <span className="left">
-                            {
-                              //@ts-ignore
-                              item.currentPharmacyIsA &&
-                                Convertor.thousandsSeperatorFa(totalPriceA)
-                            }
-                            {
-                              // @ts-ignore
-                              !item.currentPharmacyIsA &&
-                                Convertor.thousandsSeperatorFa(totalPriceB)
-                            }
-                          </span>
-                        </div>
+                          {l(diffPercent)}%
+                        </span>
+                        <hr />
+                        <span className="left">
+                          {
+                            //@ts-ignore
+                            item.currentPharmacyIsA &&
+                              Convertor.thousandsSeperatorFa(totalPriceA)
+                          }
+                          {
+                            // @ts-ignore
+                            !item.currentPharmacyIsA &&
+                              Convertor.thousandsSeperatorFa(totalPriceB)
+                          }
+                        </span>
                       </div>
-                    )}
-                    
+                    </div>
                   </Grid>
-                  {isSmallDevice && (
-                      <Grid item xs={12}>
-                        <MobileDiffViwer
-                          percentage={diffPercent}
-                          otherAmount={`${
-                            item.currentPharmacyIsA ? totalPriceB : totalPriceA
-                          }`}
-                          yourAmount={`${
-                            item.currentPharmacyIsA ? totalPriceA : totalPriceB
-                          }`}
-                          is3PercentOk={is3PercentOk}
-                        />
-                      </Grid>
-                    )}
                   {differenceMessage && (
                     <Grid item xs={12} className={spacingVertical1}>
                       {differenceMessage.split('\n').map((i, k) => {
@@ -563,7 +531,7 @@ const DesktopCardContent = ({
                       })}
                     </Grid>
                   )}
-                  </Grid>
+                </Grid>
               )}
             </>
           )}
@@ -632,7 +600,7 @@ const DesktopCardContent = ({
               color="primary"
               style={{ fontSize: 10 }}
               onClick={(): void => {
-                history.push(`${survey}?exchangeId=${item.id}`)
+                history.push(`${survey}?exchangeId=${item.id}`);
               }}
             >
               {t('survey.survey')}
@@ -659,97 +627,138 @@ const DesktopCardContent = ({
 
   return (
     <>
-        <Paper className={isSmallDevice ? mobileCardRoot : cardRoot}>
-          {! (isSmallDevice && full)  && (
-            <>
-              <Grid container alignItems="center" spacing={1}>
-                <Grid item xs={10}>
-                  <Typography
-                    variant="h5"
-                    component="h5"
-                    className={`${cardTitle}`}
-                    style={{
-                      padding: '0 6px',
-                      // borderRight: `5px solid ${getExchangeTitleColor()}`,
-                      height: '40px',
-                      backgroundColor: '#FEFFF2',
-                      paddingTop: '8px',
-                      marginBottom: '8px',
-                      cursor: 'pointer',
-                      width: '100%',
-                    }}
-                    onClick={(): void => {
-                      if (onCardClick) {
-                        onCardClick(
-                          item.id,
-                          item.state > 10 ? item.state - 10 : item.state,
-                          item.currentPharmacyIsA ? item.numberA : item.numberB
-                        );
-                      }
-                    }}
-                  >
-                    {getExchangeTitle()}
-                  </Typography>
+      {!(isSmallDevice && full) && (
+        <>
+          <Paper className={isSmallDevice ? mobileCardRoot : cardRoot}>
+            <Grid container alignItems="center" spacing={1}>
+              <Grid item xs={10}>
+                <Typography
+                  variant="h5"
+                  component="h5"
+                  className={`${cardTitle}`}
+                  style={{
+                    padding: '0 6px',
+                    // borderRight: `5px solid ${getExchangeTitleColor()}`,
+                    height: '40px',
+                    backgroundColor: '#FEFFF2',
+                    paddingTop: '8px',
+                    marginBottom: '8px',
+                    cursor: 'pointer',
+                    width: '100%',
+                  }}
+                  onClick={(): void => {
+                    if (onCardClick) {
+                      onCardClick(
+                        item.id,
+                        item.state > 10 ? item.state - 10 : item.state,
+                        item.currentPharmacyIsA ? item.numberA : item.numberB
+                      );
+                    }
+                  }}
+                >
+                  {getExchangeTitle()}
+                </Typography>
+              </Grid>
+              <Grid container xs={2}>
+                <Grid item xs={12}>
+                  <span className="txt-xs">کد تبادل</span>
                 </Grid>
-                <Grid container xs={2}>
-                  <Grid item xs={12}>
-                    <span className="txt-xs">کد تبادل</span>
-                  </Grid>
-                  <Grid item xs={12}>
-                    {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
-                  </Grid>
+                <Grid item xs={12}>
+                  {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
                 </Grid>
               </Grid>
-              <Divider />
-            </>
+            </Grid>
+            <Divider />
+
+            <div className={cardContent}>
+              <>
+                {item && (
+                  <>
+                    <ExchangeInfo />
+
+                    <Divider />
+                    {showActions && <CardActions />}
+                  </>
+                )}
+              </>
+            </div>
+          </Paper>
+          {!full && (
+            <div
+              style={{
+                width: '6px',
+                height: '100%',
+                float: 'right',
+              }}
+            >
+              <CardProgressbar />
+            </div>
           )}
-          <div className={cardContent}>
-            <>
-              {item && (
-                <>
-                  <ExchangeInfo />
-                  {! (isSmallDevice && full)  && !full && (
-                    <>
-                      <Divider />
-                      {showActions && <CardActions />}
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          </div>
-        </Paper>
 
-      {! (isSmallDevice && full)  && !full && (
-        <div
-          style={{
-            width: '6px',
-            height: '100%',
-            float: 'right',
-          }}
-        >
-          <CardProgressbar />
-        </div>
+          <Dialog
+            open={showExchangeTree}
+            fullScreen={isSmallDevice}
+            fullWidth={true}
+            onClose={() => setShowExchangeTree(false)}
+          >
+            <DialogTitle className="text-sm">
+              {t('exchange.exchangeTree')}
+            </DialogTitle>
+            <DialogContent>
+              <ExchangeTree exchangeId={item.id} />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setShowExchangeTree(false)}
+                color="primary"
+              >
+                بستن
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
       )}
-
-      <Dialog
-        open={showExchangeTree}
-        fullScreen={isSmallDevice}
-        fullWidth={true}
-        onClose={() => setShowExchangeTree(false)}
-      >
-        <DialogTitle className="text-sm">
-          {t('exchange.exchangeTree')}
-        </DialogTitle>
-        <DialogContent>
-          <ExchangeTree exchangeId={item.id} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowExchangeTree(false)} color="primary">
-            بستن
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {isSmallDevice && full && (
+        <>
+          <Grid
+            container
+            xs={12}
+            spacing={0}
+            style={{ background: 'white', padding: 4 }}
+          >
+            <Grid item xs={12} spacing={0}>
+              <MobileDiffViwer
+                percentage={diffPercent}
+                otherAmount={`${
+                  item.currentPharmacyIsA ? totalPriceB : totalPriceA
+                }`}
+                yourAmount={`${
+                  item.currentPharmacyIsA ? totalPriceA : totalPriceB
+                }`}
+                is3PercentOk={is3PercentOk}
+              />
+            </Grid>
+            {differenceMessage && (
+              <Grid
+                item
+                xs={12}
+                spacing={0}
+                style={{ fontSize: 12, marginTop: 8 }}
+              >
+                <Divider />
+                {differenceMessage.split('\n').map((i, k) => {
+                  return (
+                    <div key={k}>
+                      {i}
+                      <br key={k} />
+                    </div>
+                  );
+                })}
+              </Grid>
+            )}
+          </Grid>
+        </>
+      )}
     </>
   );
 };

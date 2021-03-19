@@ -9,6 +9,8 @@ import {
   Tabs,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import React, { useContext } from 'react';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
@@ -65,7 +67,7 @@ const useClasses = makeStyles((theme) =>
     stickyRecommendation: {
       position: 'sticky',
       margin: 0,
-      padding: 10,
+      //padding: 10,
       paddingTop: 0,
       top: 70,
       zIndex: 999,
@@ -94,12 +96,14 @@ const Exchange: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
+  const theme = useTheme();
 
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Grid
       container
       item
-      spacing={1}
+      spacing={isSmallDevice? 0:3}
       xs={12}
       direction="row-reverse"
       className={root}
@@ -137,7 +141,7 @@ const Exchange: React.FC = () => {
         </Grid>
       </Grid>
       <Grid item xs={12} sm={8} md={8}>
-        <Tabs value={value} onChange={handleChange} className={stickyTab}>
+        <Tabs value={value} onChange={handleChange}>
           <Tab
             label={
               <Basket
