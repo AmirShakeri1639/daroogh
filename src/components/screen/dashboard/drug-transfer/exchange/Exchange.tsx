@@ -103,7 +103,7 @@ const Exchange: React.FC = () => {
     <Grid
       container
       item
-      spacing={isSmallDevice? 0:3}
+      spacing={isSmallDevice ? 0 : 3}
       xs={12}
       direction="row-reverse"
       className={root}
@@ -125,19 +125,16 @@ const Exchange: React.FC = () => {
         <Grid container className={stickyRecommendation}>
           <DesktopCardContent item={viewExhcnage} />
           {exchangeStateCode !== 1 && (
-            <TextField
-              style={{ width: '100%', marginTop: 15 }}
-              multiline
-              defaultValue={messageOfExchangeState}
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
+            <span style={{ color: '#1d0d50', fontSize: 15, width: '100%',marginTop:10 }}>
+              {messageOfExchangeState}
+            </span>
           )}
-          <Hidden smDown>
+          <Grid item xs={12}>
+          <ActionButtons />
+          </Grid>
+          {/* <Hidden smDown>
             <ActionButtons />
-          </Hidden>
+          </Hidden> */}
         </Grid>
       </Grid>
       <Grid item xs={12} sm={8} md={8}>
