@@ -90,9 +90,11 @@ export interface UserDataProps {
 
 export interface ExCardContentProps {
   pharmacyDrug?: AllPharmacyDrugInterface;
-  formType: number;
+  formType?: number;
   packInfo?: AllPharmacyDrugInterface[];
   isPack?: boolean;
+  onchange?: () => void;
+  amount?: number;
 }
 
 export interface CardPropsInterface {
@@ -166,7 +168,6 @@ export interface FavoriteDrugInterface {
   data: DrugInterface;
   formHandler: (item: number) => Promise<any>;
 }
-
 
 export interface UserInterface {
   data: NewUserData;

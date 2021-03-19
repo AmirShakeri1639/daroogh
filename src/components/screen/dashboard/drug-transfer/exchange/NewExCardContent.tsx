@@ -54,6 +54,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import errorHandler from 'utils/errorHandler';
 import { AddDrog1, AddDrog2, AddPack1, AddPack2 } from 'model/exchange';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import CounterButton from './CounterButton';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -802,6 +803,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   console.log('re render');
 
   const handleTotalAmount = () => {
+    debugger;
     let val = 0;
     if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
     setTotalAmount(Utils.numberWithCommas(val));
@@ -809,7 +811,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   const counterButtonFunc = (): JSX.Element =>
     pharmacyDrug?.buttonName === 'افزودن به تبادل' ? (
-      <>
+      <div key={pharmacyDrug.id}>
         <Button
           size="small"
           variant="outlined"
@@ -825,7 +827,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           size="small"
           className={textCounter}
           defaultValue={pharmacyDrug.currentCnt}
-          onInput={(e: any): void => {
+          onChange={(e: any): void => {
             pharmacyDrug.currentCnt = +e.target.value;
             handleTotalAmount();
           }}
@@ -840,7 +842,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
         >
           <RemoveIcon />
         </Button>
-      </>
+      </div>
     ) : (
       <>
         <span style={{ fontSize: 13 }}>تعداد اقلام انتخاب شده: </span>
@@ -925,7 +927,15 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                   {t('general.defaultCurrency')}
                 </span>
               </li>
-              <li>{counterButtonFunc()}</li>
+              <li>
+                {pharmacyDrug && (
+                  <CounterButton
+                    pharmacyDrug={pharmacyDrug}
+                    amount={pharmacyDrug.amount}
+                    onchange={handleTotalAmount}
+                  />
+                )}
+              </li>
               <li>
                 <span style={{ fontSize: 13 }}>جمع اقلام انتخاب شده: </span>
                 <span
