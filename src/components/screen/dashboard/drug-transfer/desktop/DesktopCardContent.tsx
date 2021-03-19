@@ -541,7 +541,7 @@ const DesktopCardContent = ({
   };
   const theme = useTheme();
 
-  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('xs'));
   const CardProgressbar = (): JSX.Element => {
     let thisState = item.state > 10 ? item.state - 10 : item.state;
     thisState = thisState === 7 ? 0 : thisState;
