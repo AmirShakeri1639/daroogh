@@ -392,7 +392,7 @@ const Tab2: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={12} style={{maxHeight:"52vh", minHeight:"52vh",overflow:"auto"}}>
+      <Grid item xs={12} style={{maxHeight: `${fullScreen?'52vh':'60vh'}`, minHeight:`${fullScreen?'52vh':'60vh'}`,overflow:"auto"}}>
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={12}>
             <Grid container >
