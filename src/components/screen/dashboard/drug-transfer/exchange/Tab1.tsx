@@ -62,6 +62,12 @@ const style = makeStyles((theme) =>
       top: 60,
       zIndex: 999,
     },
+    stickySearch:{
+      position:'sticky',
+      top:'0',
+      zIndex: 999,
+      marginBottom:8
+    },
     desktopCardContent: {
       marginTop: 0,
       [theme.breakpoints.up('md')]: {
@@ -151,7 +157,7 @@ const Tab1: React.FC = () => {
     },
   });
 
-  const { paper, stickyToolbox } = style();
+  const { paper, stickySearch } = style();
 
   const [listPageNo] = useState(0);
   const [pageSize] = useState(100);
@@ -360,7 +366,7 @@ const Tab1: React.FC = () => {
   const handleAgree = (): any => {
     setActiveStep(activeStep + 1);
   };
-
+  
   const ConfirmDialog = (): JSX.Element => {
     return (
       <div>
@@ -391,10 +397,10 @@ const Tab1: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={12} style={{maxHeight:"52vh", minHeight:"52vh",overflow:"auto"}} >
+      <Grid item xs={12}  style={{maxHeight: `${fullScreen? 'calc(100vh - 260px)':'calc(100vh - 230px)'}`, minHeight:`${fullScreen? 'calc(100vh - 260px)':'calc(100vh - 230px)'}`,overflow:"auto", marginTop:-20}} >
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={12}>
-            <Grid container>
+            <Grid container className={stickySearch}>
               <Grid item xs={12} style={{ padding: 0 }}>
                 <SearchInAList />
               </Grid>

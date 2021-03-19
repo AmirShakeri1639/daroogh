@@ -179,7 +179,6 @@ export const useClasses = makeStyles((theme) => createStyles({
     fontSize: 11,
   },
   mobileCardContainer: {
-    minHeight: 170,
     alignItems: 'center',
     fontSize: 11,
   },
