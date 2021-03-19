@@ -718,7 +718,9 @@ const DesktopCardContent = ({
           </Dialog>
         </>
       )}
-      {isSmallDevice && full && (
+      {isSmallDevice && full && (item.state === 1 ||
+                item.state === 2 ||
+                (item.state === 12 && !item.lockSuggestion)) && (
         <>
           <Grid
             container
