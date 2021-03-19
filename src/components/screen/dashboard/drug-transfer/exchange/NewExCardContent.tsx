@@ -12,7 +12,7 @@ import {
   TextField,
   withStyles,
 } from '@material-ui/core';
-import React, { useContext, useReducer, useState } from 'react';
+import React, { HtmlHTMLAttributes, useContext, useReducer, useState } from 'react';
 import {
   ExCardContentProps,
   ViewExchangeInterface,
@@ -932,7 +932,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                     }}
                   >
                     {/* {handleTotalAmount()} */}
-                    {totalAmount}
+                    
+                    <label>{totalAmount}</label>
                   </span>
                   <span style={{ fontSize: 11, marginRight: 5 }}>
                     {t('general.defaultCurrency')}
