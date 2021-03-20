@@ -230,6 +230,9 @@ const useStyle = makeStyles((theme) =>
       fontSize: 10,
       float: 'right',
     },
+    gridCard: {
+      backgroundColor: 'whitesmoke',
+    },
   })
 );
 
@@ -260,6 +263,7 @@ const JobsList: React.FC = () => {
     formContent,
     cancelButton,
     submitBtn,
+    gridCard
   } = useStyle();
 
   const queryCache = useQueryCache();
@@ -1099,7 +1103,7 @@ const JobsList: React.FC = () => {
   // @ts-ignore
   return (
     <FormContainer title={t('jobs.list')}>
-      <Grid container spacing={0}>
+      <Grid container spacing={0} className={gridCard}>
         <Grid item xs={12}>
           {!fullScreen && (
             <DataTable

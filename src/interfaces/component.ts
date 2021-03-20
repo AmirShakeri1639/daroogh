@@ -6,6 +6,7 @@ import { DataTableColumns } from './DataTableColumns';
 import { IconProps } from '@material-ui/core';
 import { PrescriptionInterface } from './PrescriptionInterface';
 import { JobInterface } from './JobInterface';
+import { JobApplicationInterface } from './JobApplicationInterface';
 
 export interface SelectPropsInterface {
   value: string;
@@ -177,6 +178,12 @@ export interface CardJobInterface {
   data: JobInterface;
   saveHandler: (item: any) => void;
   toggleConfirmHandler: (row: JobInterface) => Promise<any>;
+}
+
+export interface CardJobApplicationInterface {
+  data: JobApplicationInterface;
+  cancelHandler: (item: any) =>  Promise<any>;
+  detailHandler: (row: any) => void;
 }
 
 export interface PrescriptionDataInterface {

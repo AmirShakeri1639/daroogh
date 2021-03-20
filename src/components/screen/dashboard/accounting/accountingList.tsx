@@ -11,8 +11,13 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { AccountingEnum } from '../../../../enum/query';
 import {
-  Container, createStyles, Grid, makeStyles, Paper, useMediaQuery,
-  useTheme
+  Container,
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { getJalaliDate } from '../../../../utils/jalali';
@@ -20,11 +25,9 @@ import { Convertor } from '../../../../utils';
 import routes from '../../../../routes';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faExchangeAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
-import CardContainer from './CardContainer'
+import CardContainer from './CardContainer';
 
 const initialState: AccountingInterface = {
   id: 0,
@@ -81,9 +84,7 @@ const AccountingList: React.FC = () => {
         title: t('general.date'),
         type: 'string',
         render: (row: any): any => {
-          return (
-            <>{getJalaliDate(row.date)}</>
-          );
+          return <>{getJalaliDate(row.date)}</>;
         },
       },
 
@@ -95,9 +96,9 @@ const AccountingList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>
-              { row.amount < 0 &&
+              {row.amount < 0 &&
                 Convertor.thousandsSeperatorFa(Math.abs(row.amount))}
-              { row.amount >= 0 && ''}
+              {row.amount >= 0 && ''}
             </>
           );
         },
@@ -109,9 +110,8 @@ const AccountingList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>
-              { row.amount >= 0 &&
-                Convertor.thousandsSeperatorFa(row.amount)}
-              { row.amount < 0 && ''}
+              {row.amount >= 0 && Convertor.thousandsSeperatorFa(row.amount)}
+              {row.amount < 0 && ''}
             </>
           );
         },
@@ -128,7 +128,7 @@ const AccountingList: React.FC = () => {
           }
           return (
             <>
-              { exchangeUrl.length > 0 &&
+              {exchangeUrl.length > 0 && (
                 <div className={linkWrapper}>
                   <Link to={exchangeUrl}>
                     <FontAwesomeIcon icon={faExchangeAlt} />
@@ -136,11 +136,11 @@ const AccountingList: React.FC = () => {
                     {t('exchange.viewExchange')}
                   </Link>
                 </div>
-              }
+              )}
             </>
-          )
-        }
-      }
+          );
+        },
+      },
     ];
   };
 
@@ -163,8 +163,7 @@ const AccountingList: React.FC = () => {
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          setListRef(result.items
-          );
+          setListRef(result.items);
         }
       },
     }
@@ -199,7 +198,7 @@ const AccountingList: React.FC = () => {
         }
         setMobileRef(isMobile());
       }
-      handleResize()
+      handleResize();
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -237,7 +236,7 @@ const AccountingList: React.FC = () => {
     }
     return (
       <>
-        { exchangeUrl.length > 0 &&
+        {exchangeUrl.length > 0 && (
           <div className={linkWrapper}>
             <Link to={exchangeUrl}>
               <FontAwesomeIcon icon={faExchangeAlt} />
@@ -245,10 +244,10 @@ const AccountingList: React.FC = () => {
               {t('exchange.viewExchange')}
             </Link>
           </div>
-        }
+        )}
       </>
-    )
-  }
+    );
+  };
 
   const contentGenerator = (): JSX.Element[] | null => {
     if (!isLoading && list !== undefined && isFetched) {
@@ -268,8 +267,8 @@ const AccountingList: React.FC = () => {
       <Grid container spacing={0}>
         <Grid item xs={12}>
           <div>{t('accounting.list')}</div>
-          <Paper>
-            {!fullScreen && (
+          {!fullScreen && (
+            <Paper>
               <DataTable
                 ref={ref}
                 columns={tableColumns()}
@@ -278,11 +277,10 @@ const AccountingList: React.FC = () => {
                 urlAddress={UrlAddress.getAllAccounting}
                 initLoad={false}
               />
-            )}
-            {fullScreen && contentGenerator()}
-            {fullScreen && <CircleBackdropLoading
-              isOpen={isLoading} />}
-          </Paper>
+            </Paper>
+          )}
+          {fullScreen && contentGenerator()}
+          {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
         </Grid>
       </Grid>
     </Container>
