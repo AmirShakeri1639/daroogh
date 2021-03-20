@@ -17,9 +17,10 @@ import { BackDrop } from '../../../../public';
 const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
-      backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1),
+     
+     backgroundColor: 'unset',
       borderRadius: 5,
+      margin: theme.spacing(1.5),
     },
   })
 );
@@ -27,27 +28,25 @@ const useStyle = makeStyles((theme) =>
 const CardContainer: React.FC<UserInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const { root } = useStyle();
-  
-  const {  data,editRoleHandler } = props;
+
+  const { data, editRoleHandler } = props;
 
   const {
     name,
-      family,
-      email,
-      mobile,
-      birthDate,
-      id,
-      nationalCode,
-      pharmacyID,
-      userName,
-   active
+    family,
+    email,
+    mobile,
+    birthDate,
+    id,
+    nationalCode,
+    pharmacyID,
+    userName,
+    active,
   } = data;
-
-  
 
   return (
     <Paper className={root} elevation={1}>
-      <Grid container spacing={0}>
+      <Grid container spacing={1}>
         <Detail
           id={id}
           name={name}
@@ -59,7 +58,6 @@ const CardContainer: React.FC<UserInterface> = (props) => {
           birthDate={birthDate}
           active={active}
           pharmacyID={pharmacyID}
-          
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>

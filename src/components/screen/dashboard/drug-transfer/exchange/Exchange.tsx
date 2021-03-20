@@ -3,11 +3,14 @@ import {
   createStyles,
   Divider,
   Grid,
+  Hidden,
   makeStyles,
   Tab,
   Tabs,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import React, { useContext } from 'react';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
@@ -64,7 +67,7 @@ const useClasses = makeStyles((theme) =>
     stickyRecommendation: {
       position: 'sticky',
       margin: 0,
-      padding: 10,
+      //padding: 10,
       paddingTop: 0,
       top: 70,
       zIndex: 999,
@@ -79,11 +82,7 @@ const useClasses = makeStyles((theme) =>
 );
 
 const Exchange: React.FC = () => {
-  const {
-    root,
-    stickyTab,
-    stickyRecommendation,
-  } = useClasses();
+  const { root, stickyTab, stickyRecommendation } = useClasses();
   const [value, setValue] = React.useState(0);
 
   const {
@@ -97,21 +96,49 @@ const Exchange: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
+  const theme = useTheme();
 
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   return (
-    <Grid container item spacing={1} xs={12} className={root}>
-      <span style={{ padding: 5, marginBottom: 2 }}>
-        ابتدا از تب انتخاب از داروخانه مقابل دارو یا پک های عرضه شده را بررسی و
-        برای تبادل انتخاب نمایید. سپس می توانید در تب پیشنهاد دارو از لیست عرضه
-        خود در صورت تمایل لیستی را انتخاب و برای این تبادل پیشنهاد نمایید.به
-        پیام هایی که در کادر سمت چپ نمایش داده می شود دقت فرمایید تا کنترل کامل
-        بر روند تبادل داشته باشید
-      </span>
-      <Grid item xs={12} style={{ padding: 2 }}>
-        <Divider />
+    <Grid
+      container
+      item
+      spacing={isSmallDevice ? 0 : 3}
+      xs={12}
+      direction="row-reverse"
+      className={root}
+    >
+      <Hidden smDown>
+        <span style={{ padding: 5, marginBottom: 2 }}>
+          ابتدا از تب انتخاب از داروخانه مقابل دارو یا پک های عرضه شده را بررسی
+          و برای تبادل انتخاب نمایید. سپس می توانید در تب پیشنهاد دارو از لیست
+          عرضه خود در صورت تمایل لیستی را انتخاب و برای این تبادل پیشنهاد
+          نمایید.به پیام هایی که در کادر سمت چپ نمایش داده می شود دقت فرمایید تا
+          کنترل کامل بر روند تبادل داشته باشید
+        </span>
+        <Grid item xs={12} style={{ padding: 2 }}>
+          <Divider />
+        </Grid>
+      </Hidden>
+
+      <Grid item xs={12} sm={4} md={4}>
+        <Grid container className={stickyRecommendation}>
+          <DesktopCardContent item={viewExhcnage} />
+          {exchangeStateCode !== 1 && (
+            <span style={{ color: '#1d0d50', fontSize: 15, width: '100%',marginTop:10 }}>
+              {messageOfExchangeState}
+            </span>
+          )}
+          <Grid item xs={12}>
+          <ActionButtons />
+          </Grid>
+          {/* <Hidden smDown>
+            <ActionButtons />
+          </Hidden> */}
+        </Grid>
       </Grid>
-      <Grid item xs={12} sm={8} md={8} >
-        <Tabs value={value} onChange={handleChange} className={stickyTab}>
+      <Grid item xs={12} sm={8} md={8}>
+        <Tabs value={value} onChange={handleChange}>
           <Tab
             label={
               <Basket
@@ -168,23 +195,6 @@ const Exchange: React.FC = () => {
         <TabPanel value={value} index={1}>
           <Tab2 />
         </TabPanel>
-      </Grid>
-      <Grid item xs={12} sm={4} md={4}>
-        <Grid container className={stickyRecommendation}>
-          <DesktopCardContent item={viewExhcnage} />
-          {exchangeStateCode !== 1 && (
-            <TextField
-              style={{ width: '100%', marginTop: 15 }}
-              multiline
-              defaultValue={messageOfExchangeState}
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          )}
-          <ActionButtons />
-        </Grid>
       </Grid>
     </Grid>
   );

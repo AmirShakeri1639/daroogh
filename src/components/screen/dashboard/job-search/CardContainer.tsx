@@ -6,11 +6,14 @@ import {
   Grid,
   Divider,
   Button,
-  Link,
 } from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { AccountingCardInterface } from '../../../../interfaces/AccountingInterface';
+import {
+  CardJobApplicationInterface,
+  CardJobInterface,
+  NewUserData,
+} from '../../../../interfaces';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { BackDrop } from '../../../public';
 
@@ -22,52 +25,52 @@ const useStyle = makeStyles((theme) =>
       borderRadius: 5,
       margin:theme.spacing(1.5)
     },
-
-    
   })
 );
 
-const CardContainer: React.FC<AccountingCardInterface> = (props) => {
+const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const { root } = useStyle();
 
-  const { data, exchangeHandler } = props;
+  const { data, cancelHandler, detailHandler } = props;
 
-  const {
-    id,
-    date,
-    description,
-    amount,
-    exchangeID,
-    mandeh
-  } = data;
-
-
+  const { id, genderStr, name, family, mobile, workExperienceYear } = data;
 
   return (
     <Paper className={root} elevation={1}>
-      <Grid container spacing={1} >
+      <Grid container spacing={0}>
         <Detail
           id={id}
-          date={date}
-          description={description}
-          amount={amount}
-          exchangeID={exchangeID}
-          mandeh={mandeh}
-
-
-
+          genderStr={genderStr}
+          name={name}
+          family={family}
+          mobile={
+            mobile
+          }
+          workExperienceYear={
+            workExperienceYear
+          }
+          
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
         <Divider />
       </Grid>
 
-      {exchangeID && (<Grid item xs={12} justify="flex-end">
-        {exchangeHandler(data)}
-
+      <Grid item xs={12} justify="flex-end">
+        <Button
+          onClick={(): void => detailHandler(data)}
+          style={{ color: 'red', fontSize: '14px' }}
+        >
+          جزییات
+        </Button>
+        <Button
+          onClick={(): Promise<any> => cancelHandler(data)}
+          style={{ color: 'red', fontSize: '14px' }}
+        >
+          انصراف
+        </Button>
       </Grid>
-      )}
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );

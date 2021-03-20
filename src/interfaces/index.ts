@@ -73,6 +73,7 @@ export type { PrescriptionInterface, PrescriptionResponseInterface } from './Pre
 export type { EmploymentApplicationInterface } from './EmploymentApplicationInterface';
 export type { ProfileInterface } from './profile';
 export type { JobInterface } from './JobInterface';
+export type { JobApplicationInterface } from './JobApplicationInterface';
 
 export * from './component';
 export * from './general';
