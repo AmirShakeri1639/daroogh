@@ -34,7 +34,6 @@ import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import RoleForm from './RoleForm';
 import { UrlAddress } from '../../../../enum/UrlAddress';
-import ModalContent from '../../../public/modal-content/ModalContent';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -103,6 +102,8 @@ const initialState: NewUserData = {
   nationalCode: '',
   birthDate: '',
   active: false,
+  smsActive: true,
+  notifActive: true,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -158,6 +159,16 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         birthDate: value,
+      };
+    case 'notifActive':
+      return {
+        ...state,
+        notifActive: value,
+      };
+    case 'smsActive':
+      return {
+        ...state,
+        smsActive: value,
       };
     case 'active':
       return {
@@ -336,6 +347,8 @@ const UsersList: React.FC = () => {
       nationalCode,
       pharmacyID,
       userName,
+      smsActive,
+      notifActive,
     } = user;
 
     await _editUser({
@@ -349,11 +362,14 @@ const UsersList: React.FC = () => {
       email,
       mobile,
       pharmacyID,
+      smsActive,
+      notifActive,
     });
   };
 
   const editUserHandler = (e: any, row: any): void => {
     toggleIsOpenSaveModalForm();
+    console.log(232);
     const {
       name,
       family,
@@ -366,7 +382,10 @@ const UsersList: React.FC = () => {
       active,
       pharmacyName,
       pharmacyID,
+      smsActive,
+      notifActive,
     } = row;
+
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'family', value: family });
     dispatch({ type: 'email', value: email });
@@ -376,6 +395,8 @@ const UsersList: React.FC = () => {
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'birthDate', value: birthDate });
     dispatch({ type: 'active', value: active });
+    dispatch({ type: 'smsActive', value: smsActive });
+    dispatch({ type: 'notifActive', value: notifActive });
     dispatch({
       type: 'pharmacyID',
       value: { id: pharmacyID, name: pharmacyName },
@@ -388,7 +409,7 @@ const UsersList: React.FC = () => {
     toggleIsOpenRoleModal();
   };
 
-  const customDataTAbleACtions: DataTableCustomActionInterface[] = [
+  const customDataTableActions: DataTableCustomActionInterface[] = [
     {
       icon: (): any => (
         <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />
@@ -398,10 +419,11 @@ const UsersList: React.FC = () => {
     },
   ];
 
-  const addUserHander = (): void => {
+  const addUserHandler = (): void => {
     if (isOpenUserModal) {
       queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
     }
+
     toggleIsOpenUserModal();
   };
 
@@ -412,7 +434,7 @@ const UsersList: React.FC = () => {
         extraMethods={{ editUser: enableUserHandler }}
         columns={tableColumns()}
         editAction={editUserHandler}
-        addAction={addUserHander}
+        addAction={addUserHandler}
         editUser={enableUserHandler}
         removeAction={removeUserHandler}
         queryKey={UserQueryEnum.GET_ALL_USERS}
@@ -422,7 +444,7 @@ const UsersList: React.FC = () => {
         pageSize={10}
         urlAddress={UrlAddress.getAllUser}
         stateAction={disableUserHandler}
-        customActions={customDataTAbleACtions}
+        customActions={customDataTableActions}
       />
 
       <Modal open={isOpenRoleModal} toggle={toggleIsOpenRoleModal}>
@@ -459,12 +481,14 @@ const UsersList: React.FC = () => {
           />
           <Divider />
           <CardContent>
+            {/* Form of edit user */}
             <UserForm
               userData={state}
               noShowInput={['password']}
               onCancel={toggleIsOpenSaveModalForm}
               onSubmit={(): void => {
                 queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+                ref.current?.onQueryChange();
                 toggleIsOpenSaveModalForm();
               }}
             />
@@ -482,7 +506,14 @@ const UsersList: React.FC = () => {
       </Modal>
 
       <Modal open={isOpenUserModal} toggle={toggleIsOpenUserModal}>
-        <UserForm onSubmit={addUserHander} onCancel={addUserHander} />
+        {/* Form of new user */}
+        <UserForm
+          onSubmit={(): void => {
+            addUserHandler();
+            ref.current?.onQueryChange();
+          }}
+          onCancel={addUserHandler}
+        />
       </Modal>
     </FormContainer>
   );
