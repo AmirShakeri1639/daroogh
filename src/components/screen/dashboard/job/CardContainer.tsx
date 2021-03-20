@@ -19,7 +19,8 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#fff',
       padding: theme.spacing(1, 1, 1),
       borderRadius: 5,
-    },
+      margin: theme.spacing(1.5),
+    }
   })
 );
 
@@ -46,10 +47,8 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
     maxAge,
     livingInAreaStr,
     descriptions,
-    cancelDate
+    cancelDate,
   } = data;
-
-
 
   return (
     <Paper className={root} elevation={1}>
@@ -58,22 +57,24 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
           id={id}
           maritalStatusStr={maritalStatusStr}
           genderStr={genderStr}
-          hasReadingPrescriptionCertificateStr={hasReadingPrescriptionCertificateStr}
-          minGradeOfReadingPrescriptionCertificateStr={minGradeOfReadingPrescriptionCertificateStr}
+          hasReadingPrescriptionCertificateStr={
+            hasReadingPrescriptionCertificateStr
+          }
+          minGradeOfReadingPrescriptionCertificateStr={
+            minGradeOfReadingPrescriptionCertificateStr
+          }
           minWorkExperienceYearStr={minWorkExperienceYearStr}
           suggestedWorkShiftStr={suggestedWorkShiftStr}
           pharmaceuticalSoftwareSkillStr={pharmaceuticalSoftwareSkillStr}
           computerSkillStr={computerSkillStr}
           foreignLanguagesSkillStr={foreignLanguagesSkillStr}
-              jobPositionStr={jobPositionStr}
+          jobPositionStr={jobPositionStr}
           educationStr={educationStr}
           maxAge={maxAge}
           livingInAreaStr={livingInAreaStr}
           descriptions={descriptions}
           hasGuaranteeStr={hasGuaranteeStr}
           cancelDate={cancelDate}
-   
-
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
@@ -85,13 +86,13 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
           onClick={(): void => saveHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-          ویرایش 
+          ویرایش
         </Button>
         <Button
           onClick={(): Promise<any> => toggleConfirmHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-         تغییر وضعیت
+          تغییر وضعیت
         </Button>
       </Grid>
       <BackDrop isOpen={isOpenBackDrop} />

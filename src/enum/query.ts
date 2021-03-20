@@ -46,6 +46,7 @@ export enum RoleQueryEnum {
 export enum PharmacyDrugEnum {
   GET_RELATED_PHARMACY_DRUG = 'getRelatedPharmacyDrug',
   GET_FAVORITE_LIST = 'getFavoriteList',
+  GET_FAVORITE_EXCHANGE_LIST_OF_DRUGS = 'getRelatedExchangeListOfDrugs',
 }
 
 export enum PharmacyUsersEnum {
