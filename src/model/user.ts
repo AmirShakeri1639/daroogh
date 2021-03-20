@@ -7,4 +7,6 @@ export class NewPharmacyUserData {
   public userName: string = '';
   public nationalCode: string = '';
   public birthDate: string = '';
+  public smsActive: boolean = false;
+  public notifActive: boolean = false;
 }

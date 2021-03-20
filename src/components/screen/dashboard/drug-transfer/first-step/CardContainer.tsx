@@ -141,7 +141,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
           userType={userType}
         />
         <span className="txt-sm">نمونه اقلام عرضه شده در این داروخانه:</span>
-  
+
         <Box component="div" className={box}>
           <Grid container spacing={0}>
             <Grid item xs={8} md={7} lg={7} className={detailContainer}>
@@ -166,16 +166,18 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
           </Grid>
           <Divider />
           <div className={`${itemContainer} w-100`}>
-            {betterItems.map((item: any) => (
-              <ItemContainer
-                drugGenericName={item.drugName}
-                cnt={item.cnt}
-                offer2={item.offer2}
-                offer1={item.offer1}
-                price={item.price}
-                expireDate={item.expireDate}
-              />
-            ))}
+            {React.Children.toArray(
+              betterItems.map((item: any) => (
+                <ItemContainer
+                  drugGenericName={item.drugName}
+                  cnt={item.cnt}
+                  offer2={item.offer2}
+                  offer1={item.offer1}
+                  price={item.price}
+                  expireDate={item.expireDate}
+                />
+              ))
+            )}
           </div>
         </Box>
       </Grid>
@@ -197,7 +199,6 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
               : t('general.tabadol')}
           </Button>
         </Grid>
-       
       </Grid>
     </Paper>
   );
