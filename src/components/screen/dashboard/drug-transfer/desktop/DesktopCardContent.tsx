@@ -683,7 +683,7 @@ const DesktopCardContent = ({
               </>
             </div>
           </Paper>
-          {!full && (
+          {!full && !isSmallDevice && (
             <div
               style={{
                 width: '6px',
