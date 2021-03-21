@@ -99,7 +99,7 @@ const MobileDiffViwer: React.FC<TextLinePropsInterface> = (props) => {
   let diff: number = Number(yourAmount) - Number(otherAmount) > 0 ? 1 : -1;
 
   return (
-    <Grid container>
+    <Grid container style={{marginTop:8, border:'1px solid #1d0d50'}}>
       <Grid item xs={10}>
         <Grid container className={classes.rootRight}>
           <Grid item xs={6} style={{ paddingLeft: 2 }}>
@@ -116,8 +116,8 @@ const MobileDiffViwer: React.FC<TextLinePropsInterface> = (props) => {
               </Grid>
 
               <Grid item xs={12} className={classes.centerText}>
-                <span style={{ fontSize: 10 }}>سبد مقابل: </span>
-                <span style={{ fontSize: 10 }}>
+                <span style={{ fontSize: 11 }}>سبد مقابل: </span>
+                <span style={{ fontSize: 11 }}>
                   ‍‍‍{Convertor.thousandsSeperatorFa(otherAmount)}
                 </span>
               </Grid>
@@ -137,8 +137,8 @@ const MobileDiffViwer: React.FC<TextLinePropsInterface> = (props) => {
               </Grid>
 
               <Grid item xs={12} className={classes.centerText}>
-                <span style={{ fontSize: 10 }}>سبد شما: </span>
-                <span style={{ fontSize: 10 }}>
+                <span style={{ fontSize: 11 }}>سبد شما: </span>
+                <span style={{ fontSize: 11 }}>
                   ‍‍‍{Convertor.thousandsSeperatorFa(yourAmount)}
                 </span>
               </Grid>

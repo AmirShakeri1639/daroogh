@@ -319,7 +319,7 @@ const DesktopCardContent = ({
       <Grid
         container
         spacing={0}
-        className={isSmallDevice ? mobileCardContainer : cardContainer}
+        className={isSmallDevice && full ? mobileCardContainer : cardContainer}
       >
         <Grid container className={cardTop}>
           <Grid item container xs={6} className={rowRight}>
@@ -683,7 +683,7 @@ const DesktopCardContent = ({
               </>
             </div>
           </Paper>
-          {!full && !isSmallDevice && (
+          {/* {!full && !isSmallDevice && (
             <div
               style={{
                 width: '6px',
@@ -693,7 +693,7 @@ const DesktopCardContent = ({
             >
               <CardProgressbar />
             </div>
-          )}
+          )} */}
 
           <Dialog
             open={showExchangeTree}
@@ -745,9 +745,8 @@ const DesktopCardContent = ({
                 item
                 xs={12}
                 spacing={0}
-                style={{ fontSize: 12, marginTop: 8 }}
+                style={{ fontSize: 13, marginTop: 8 , border:'1px solid #F4CB08',padding:4 }}
               >
-                <Divider />
                 {differenceMessage.split('\n').map((i, k) => {
                   return (
                     <div key={k}>
