@@ -315,6 +315,8 @@ export default {
         BRONZE: 'کاربر برنزی',
         PLATINUM: 'کاربر پلاتینوم',
         amount: 'مبلغ تبادل',
+        finalAmount: 'مبلغ قابل پرداخت',
+        selectedAmount: 'مبلغ انتخابی',
         commission: 'مبلغ پورسانت',
         paymentStatus: 'وضعیت پرداخت',
         payed: 'پرداخت شده',
