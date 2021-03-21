@@ -476,6 +476,7 @@ export default {
         creditor: 'بستانکار',
         debtor: 'بدهکار',
         enterAmount: 'مبلغ را وارد کنید.',
+        code:'کد تراکنش'
       },
       countryDivision: {
         province: 'استان',
