@@ -42,6 +42,7 @@ import { useHistory } from 'react-router-dom';
 import Ribbon from '../../../../public/ribbon/Ribbon';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import { useTranslation } from 'react-i18next';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -64,11 +65,11 @@ const useClasses = makeStyles((theme) =>
     content: {
       display: 'contents',
     },
-    paper: {
-      textAlign: 'center',
-      padding: theme.spacing(1),
-      backgroundColor: '#E4E4E4',
-    },
+    // paper: {
+    //   textAlign: 'center',
+    //   padding: theme.spacing(1),
+    //   backgroundColor: '#E4E4E4',
+    // },
     card: {
       backgroundColor: 'silver',
       borderRadius: 5,
@@ -81,6 +82,38 @@ const useClasses = makeStyles((theme) =>
       width: '100%',
       bottom: 0,
     },
+    paper: {
+      backgroundColor: '#fff',
+    },
+    container: {
+      padding: 5,
+      borderRadius: 0,
+      '& .drug-name': {
+        marginLeft: 10,
+      },
+      '& .drug-container': {
+        padding: '0 6px',
+        borderLeft: '3px solid #f80501',
+        height: '40px',
+        backgroundColor: '#FEFFF2',
+        paddingTop: '8px',
+        marginBottom: theme.spacing(1),
+      },
+    },
+    textLeft: {
+      textAlign: 'right',
+    },
+    icon: {
+      color: '#313235',
+    },
+    checkBoxContainer: {
+      display: 'flex',
+      alignContent: 'center',
+      alignItems: 'center',
+    },
+    cardContainer:{
+      margin:theme.spacing(2)
+    }
   })
 );
 
@@ -99,6 +132,9 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
     stickyCardAction,
     content,
     cardDetail,
+    container,
+    checkBoxContainer,
+    cardContainer
   } = useClasses();
   const [accountingForPayment, setAccountingForPayment] = useState<
     AccountingInterface[]
@@ -209,7 +245,6 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
   };
 
   const handleSubmit = async (): Promise<any> => {
-    ;
     const res = await getPayment(payment);
     if (res.data.type === 1) {
       // history.push(res.data.url)
@@ -256,204 +291,206 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
   const cardDetailContent = (item: AccountingInterface): JSX.Element => {
     return (
-      <Card className={cardDetail}>
-        {item.amount <= 0 && <Ribbon text="بستانکار" isExchange={false} />}
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          <li
-            style={{
-              textAlign: 'center',
-              fontSize: 12,
-              minHeight: 50,
-              margin: 60,
-              marginTop: 0,
-              marginBottom: 0,
-            }}
-          >
-            {item.description}
-          </li>
-          <li>
-            <Grid alignItems="flex-end" container spacing={1}>
-              <Grid item xs={1} style={{ textAlign: 'left' }}>
-                <FontAwesomeIcon icon={faMoneyBillWave} size="sm" />
+      <>
+        <Grid container item xs={12}>
+          <Paper className={paper} elevation={1} style={{width:'100%'}}>
+            <Grid container spacing={0}>
+              <Grid item container xs={10}>
+                <div className={container}>
+                  <Grid container spacing={0}>
+                    <Grid container xs={12} className="drug-container">
+                      <Grid item xs={1}>
+                        <img src="pack.png" style={{ height: '25px' }} />
+                      </Grid>
+                      <Grid
+                        item
+                        xs={11}
+                        style={{ alignItems: 'center', paddingRight: '8px' }}
+                      >
+                        <span>{item.description}</span>
+                      </Grid>
+                    </Grid>
+
+                    <Grid item container xs={12} style={{ padding: '8px' }}>
+                      <Grid item xs={12}>
+                        <TextWithTitle
+                          title={t('accounting.amount')}
+                          body={Utils.numberWithCommas(Math.abs(item.amount))}
+                          suffix={t('general.defaultCurrency')}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextWithTitle
+                          title={t('general.date')}
+                          body={moment(item.date, 'YYYY/MM/DD')
+                            .locale('fa')
+                            .format('YYYY/MM/DD')}
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextWithTitle
+                          title="نوع تراکنش"
+                          body={item.amount <= 0 ? 'بستانکار' : 'بدهکار'}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </div>
               </Grid>
-              <Grid item xs={11}>
-                <TextLine
-                  rightText={'مبلغ'}
-                  leftText={Utils.numberWithCommas(item.amount)}
+              <Grid item xs={2} className={checkBoxContainer}>
+                <Checkbox
+                  disabled={item.amount <= 0}
+                  checked={item.isChecked}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
+                    item.isChecked = e.target.checked;
+                    let amount = 0;
+                    if (e.target.checked) {
+                      amount = totalAmount + item.amount;
+                      setTotoalAmount(amount);
+                      handleAccountingIds('add', item.id);
+                    } else {
+                      amount = totalAmount - item.amount;
+                      setTotoalAmount(amount);
+                      handleAccountingIds('remove', item.id);
+                    }
+                    if (amount > paymentAmount) setPaymentAmount(paymentAmount);
+                    else setPaymentAmount(amount);
+                  }}
                 />
               </Grid>
             </Grid>
-          </li>
-          {/* <li>{item.amount}</li> */}
-          <li>
-            <Grid alignItems="flex-end" container spacing={1}>
-              <Grid item xs={1} style={{ textAlign: 'left' }}>
-                <FontAwesomeIcon icon={faCalendarTimes} size="sm" />
-              </Grid>
-              <Grid item xs={11}>
-                <TextLine
-                  rightText={'تاریخ'}
-                  leftText={moment(item.date, 'YYYY/MM/DD')
-                    .locale('fa')
-                    .format('YYYY/MM/DD')}
-                />
-              </Grid>
-            </Grid>
-          </li>
-        </ul>
-        <div
-          style={{
-            marginTop: item.amount <= 0 ? 0 : -10,
-            padding: item.amount <= 0 ? 8 : 0,
-          }}
-        >
-          {item.amount <= 0 ? (
-            <span
-              style={{
-                fontWeight: 'bold',
-                color: 'red',
-                margin: 11,
-              }}
-            ></span>
-          ) : (
-            <Checkbox
-              disabled={item.amount <= 0}
-              checked={item.isChecked}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
-                item.isChecked = e.target.checked;
-                let amount = 0;
-                if (e.target.checked) {
-                  amount = totalAmount + item.amount;
-                  setTotoalAmount(amount);
-                  handleAccountingIds('add', item.id);
-                } else {
-                  amount = totalAmount - item.amount;
-                  setTotoalAmount(amount);
-                  handleAccountingIds('remove', item.id);
-                }
-                if (amount > paymentAmount) setPaymentAmount(paymentAmount);
-                else setPaymentAmount(amount);
-              }}
-            />
-          )}
-        </div>
-      </Card>
+          </Paper>
+        </Grid>
+      </>
+      // <Card className={cardDetail}>
+      //   {item.amount <= 0 && <Ribbon text="بستانکار" isExchange={false} />}
+      //   <ul style={{ listStyleType: 'none', padding: 0 }}>
+      //     <li
+      //       style={{
+      //         textAlign: 'center',
+      //         fontSize: 12,
+      //         minHeight: 50,
+      //         margin: 60,
+      //         marginTop: 0,
+      //         marginBottom: 0,
+      //       }}
+      //     >
+      //       {item.description}
+      //     </li>
+      //     <li>
+      //       <Grid alignItems="flex-end" container spacing={1}>
+      //         <Grid item xs={1} style={{ textAlign: 'left' }}>
+      //           <FontAwesomeIcon icon={faMoneyBillWave} size="sm" />
+      //         </Grid>
+      //         <Grid item xs={11}>
+      //           <TextLine
+      //             rightText={'مبلغ'}
+      //             leftText={Utils.numberWithCommas(item.amount)}
+      //           />
+      //         </Grid>
+      //       </Grid>
+      //     </li>
+      //     {/* <li>{item.amount}</li> */}
+      //     <li>
+      //       <Grid alignItems="flex-end" container spacing={1}>
+      //         <Grid item xs={1} style={{ textAlign: 'left' }}>
+      //           <FontAwesomeIcon icon={faCalendarTimes} size="sm" />
+      //         </Grid>
+      //         <Grid item xs={11}>
+      //           <TextLine
+      //             rightText={'تاریخ'}
+      //             leftText={moment(item.date, 'YYYY/MM/DD')
+      //               .locale('fa')
+      //               .format('YYYY/MM/DD')}
+      //           />
+      //         </Grid>
+      //       </Grid>
+      //     </li>
+      //   </ul>
+      //   <div
+      //     style={{
+      //       marginTop: item.amount <= 0 ? 0 : -10,
+      //       padding: item.amount <= 0 ? 8 : 0,
+      //     }}
+      //   >
+      //     {item.amount <= 0 ? (
+      //       <span
+      //         style={{
+      //           fontWeight: 'bold',
+      //           color: 'red',
+      //           margin: 11,
+      //         }}
+      //       ></span>
+      //     ) : (
+      //       <Checkbox
+      //         disabled={item.amount <= 0}
+      //         checked={item.isChecked}
+      //         onChange={(e: React.ChangeEvent<HTMLInputElement>): any => {
+      //           item.isChecked = e.target.checked;
+      //           let amount = 0;
+      //           if (e.target.checked) {
+      //             amount = totalAmount + item.amount;
+      //             setTotoalAmount(amount);
+      //             handleAccountingIds('add', item.id);
+      //           } else {
+      //             amount = totalAmount - item.amount;
+      //             setTotoalAmount(amount);
+      //             handleAccountingIds('remove', item.id);
+      //           }
+      //           if (amount > paymentAmount) setPaymentAmount(paymentAmount);
+      //           else setPaymentAmount(amount);
+      //         }}
+      //       />
+      //     )}
+      //   </div>
+      // </Card>
     );
   };
 
   const Content = (): JSX.Element => {
     return (
-      <Card className={`${root} ${!isModal ? content : ''}`}>
-        <CardHeader
-          style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-          title="لیست موارد قابل پرداخت"
-          titleTypographyProps={{ variant: 'h6' }}
-          action={
-            isModal && (
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={toggleIsOpenModalForm}
-              >
-                <CloseIcon />
-              </IconButton>
-            )
-          }
-        />
-        <Divider />
-        <CardContent style={{ marginBottom: 110 }}>
-          <div>
-            {accountingForPayment && accountingForPayment.length > 0 ? (
-              <span>
-                با توجه به اینکه حداکثر بدهی در سیستم داروگ مبلغ
-                <span style={{ marginRight: 5, marginLeft: 5, color: 'red' }}>
-                  <b>{Utils.numberWithCommas(debtAmountAllow)}</b>
-                </span>
+      <Grid container>
+
+        { !isModal && <Grid  item xs={12} style={{marginTop:16}}>
+          <span style={{fontSize:16}}>لیست موارد قابل پرداخت</span>
+        </Grid>}
+ 
+        <Grid item xs={12} style={{marginTop:8}}>
+        {accountingForPayment && accountingForPayment.length > 0 ? (
                 <span>
-                  { t('general.defaultCurrency') } می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و سپس
-                  پرداخت نمایید
+                  با توجه به اینکه حداکثر بدهی در سیستم داروگ مبلغ
+                  <span style={{ marginRight: 5, marginLeft: 5, color: 'red' }}>
+                    <b>{Utils.numberWithCommas(debtAmountAllow)}</b>
+                  </span>
+                  <span>
+                    {t('general.defaultCurrency')} می باشد لطفا از لیست ذیل
+                    موارد دلخواه خود را انتخاب و سپس پرداخت نمایید
+                  </span>
                 </span>
-              </span>
-            ) : (
-              <span>هیچ داده ای وجود ندارد</span>
-            )}
-          </div>
-          <hr />
-          <Grid container spacing={1}>
-            {accountingForPayment.map(
-              (item: AccountingInterface, index: number) => (
-                <Grid
-                  key={index}
-                  item
-                  //   className={card}
-                  xs={12}
-                  sm={4}
-                >
-                  {cardDetailContent(item)}
-                </Grid>
-              )
-            )}
-          </Grid>
-        </CardContent>
-        <CardActions className={stickyCardAction}>
-          <Grid container spacing={1}>
-            <Grid item xs={12} xl={12} md={12} style={{ marginBottom: -5 }}>
-              <FormControl style={{ width: 120, marginTop: -10 }}>
-                <InputLabel>درگاه پرداخت</InputLabel>
-                <Select onChange={handleChangeBank}>
-                  {bankGetwayes.map((item: BankGetwayesInterface) => (
-                    <MenuItem value={item.name}>{item.title}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              {/* <ul style={{ display: 'inline-block', margin: 0 }}>
-                {/* <li>
-                  <b style={{ color: 'red' }}>
-                    <span>مبلغ قابل پرداخت: </span>
-                    <span>{paymentAmount}</span>
-                  </b>
-                </li> */}
-              {/* <li>
-                <b>
-                  <span>مبلغ انتخابی: </span>
-                  <span>{totalAmount}</span>
-                </b>
-              </li>
-              </ul>  */}
-            </Grid>
-            <Grid
-              container
-              style={{ backgroundColor: '#8a88efc7', margin: 5, padding: 5 }}
-            >
-              <Grid item xs={6} xl={6} md={6}>
-                <span>مبلغ انتخابی: </span>
-                <span style={{ fontWeight: 'bold', color: 'green' }}>
-                  {Utils.numberWithCommas(totalAmount)}
-                </span>
-              </Grid>
-              <Grid item xs={6} xl={6} md={6} style={{ textAlign: 'left' }}>
-                <span>مبلغ قابل پرداخت: </span>
-                <span style={{ fontWeight: 'bold', color: 'red' }}>
-                  {Utils.numberWithCommas(mandeh)}
-                </span>
-              </Grid>
-            </Grid>
-            <Grid item xs={6} xl={6} md={6}>
-              <PaymentPage />
-            </Grid>
-            <Grid item xs={6} xl={6} md={6} style={{ textAlign: 'left' }}>
-              <Button
-                type="button"
-                variant="outlined"
-                color="red"
-                onClick={(): any => history.push(desktop)}
-              >
-                بعدا پرداخت میکنم
-              </Button>
-            </Grid>
-          </Grid>
-        </CardActions>
-      </Card>
+              ) : (
+                <span>هیچ موردی برای ورداخت وجود ندارد</span>
+              )}
+        </Grid>
+        <Grid item style={{margin:4}} xs={12}>
+          <Divider/>
+        </Grid>
+        <Grid item container xs={12} spacing={2} className={cardContainer}>
+        {accountingForPayment.map(
+                (item: AccountingInterface, index: number) => (
+                  <Grid
+                    key={index}
+                    item
+                    //   className={card}
+                    xs={isModal ? 12: 4}
+                    
+                  >
+                    {cardDetailContent(item)}
+                  </Grid>
+                )
+              )}
+        </Grid>
+        
+      </Grid>
     );
   };
 
@@ -466,7 +503,10 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
           <Content />
         </Modal>
       ) : (
-        <Content />
+        <Container>
+                  <Content />
+
+        </Container>
       )}
     </>
   );
