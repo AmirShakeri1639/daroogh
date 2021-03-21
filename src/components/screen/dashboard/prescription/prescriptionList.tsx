@@ -1,8 +1,9 @@
 import React, { useReducer, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQueryCache } from 'react-query';
+import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { Prescription } from '../../../../services/api';
 import CircleLoading from '../../../public/loading/CircleLoading';
+import CardContainer from './CardContainer';
 import {
   errorHandler,
   isNullOrEmpty,
@@ -15,61 +16,85 @@ import {
 import {
   ActionInterface,
   PrescriptionInterface,
-  PrescriptionResponseInterface
+  PrescriptionResponseInterface,
 } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faImage,
-} from '@fortawesome/free-regular-svg-icons';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
-import { ColorEnum, PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
+import {
+  ColorEnum,
+  PrescriptionEnum,
+  PrescriptionResponseStateEnum,
+} from '../../../../enum';
 import FormContainer from '../../../public/form-container/FormContainer';
 import {
-  Button, createStyles, Dialog, DialogActions, DialogContent,
-  DialogTitle, Divider, FormControlLabel, Grid,
+  Button,
+  createStyles,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControlLabel,
+  Grid,
   makeStyles,
   Paper,
-  Switch, TextField, useMediaQuery, useTheme
+  Switch,
+  TextField,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { Picture, PictureDialog } from '../../../public';
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 
-export const useClasses = makeStyles((theme) => createStyles({
-  root: {
-    minWidth: 500,
-    width: '100%',
-    maxWidth: 1000,
-    '& > .MuiCardContent-root': {
-      padding: 0
+export const useClasses = makeStyles((theme) =>
+  createStyles({
+    root: {
+      minWidth: 500,
+      width: '100%',
+      maxWidth: 1000,
+      '& > .MuiCardContent-root': {
+        padding: 0,
+      },
+      '& > .MuiCardHeader-root': {
+        padding: '10px 10px 2px 10px',
+      },
+      '& > .MuiCardHeader-content': {
+        marginTop: '-10px !important',
+        color: 'red',
+      },
     },
-    '& > .MuiCardHeader-root': {
-      padding: '10px 10px 2px 10px'
+    formItem: {
+      display: 'flex',
+      justifySelf: 'stretch',
+      margin: theme.spacing(1),
     },
-    '& > .MuiCardHeader-content': {
-      marginTop: '-10px !important',
-      color: 'red'
-    }
-  },
-  formItem: {
-    display: 'flex',
-    justifySelf: 'stretch',
-    margin: theme.spacing(1)
-  },
-  smallImage: {
-    maxWidth: '300px',
-    maxHeight: '300px',
-  },
-}));
-
+    smallImage: {
+      maxWidth: '300px',
+      maxHeight: '300px',
+    },
+  })
+);
+const useStyle = makeStyles((theme) =>
+  createStyles({
+    gridCard: {
+      backgroundColor: 'whitesmoke',
+    },
+  })
+);
 const initialStatePrescriptionResponse: PrescriptionResponseInterface = {
   prescriptionID: 0,
   isAccept: false,
   pharmacyComment: '',
   state: PrescriptionResponseStateEnum.NotAccept,
-}
+};
 
-function reducer(state = initialStatePrescriptionResponse, action: ActionInterface): any {
+function reducer(
+  state = initialStatePrescriptionResponse,
+  action: ActionInterface
+): any {
   const { value } = action;
 
   switch (action.type) {
@@ -114,21 +139,20 @@ function reducer(state = initialStatePrescriptionResponse, action: ActionInterfa
 const PrescriptionList: React.FC = () => {
   const ref = useDataTableRef();
   const { t } = useTranslation();
-  const [state, dispatch] = useReducer(reducer, initialStatePrescriptionResponse);
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialStatePrescriptionResponse
+  );
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
   const [isOpenPicture, setIsOpenPicture] = useState(false);
   const [fileKeyToShow, setFileKeyToShow] = useState('');
-  const {
-    root,
-    smallImage,
-    formItem,
-  } = useClasses();
+  const { root, smallImage, formItem } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const queryCache = useQueryCache();
   const { getList, save, urls } = new Prescription();
-
+  const { gridCard } = useStyle();
   const [_save, { isLoading }] = useMutation(save, {
     onSuccess: async () => {
       await queryCache.invalidateQueries(PrescriptionEnum.GET_LIST);
@@ -147,12 +171,12 @@ const PrescriptionList: React.FC = () => {
   const pictureDialog = (fileKey: string): JSX.Element => {
     return (
       <PictureDialog
-        fileKey={ fileKey }
-        title={ t('prescription.peoplePrescription') }
-        onClose={ (): void => setIsOpenPicture(false) }
+        fileKey={fileKey}
+        title={t('prescription.peoplePrescription')}
+        onClose={(): void => setIsOpenPicture(false)}
       />
-    )
-  }
+    );
+  };
 
   const tableColumns = (): DataTableColumns[] => {
     return [
@@ -162,9 +186,7 @@ const PrescriptionList: React.FC = () => {
         type: 'string',
         searchable: true,
         render: (row: any): any => {
-          return (
-            <>{ getJalaliDate(row.sendDate) }</>
-          );
+          return <>{getJalaliDate(row.sendDate)}</>;
         },
       },
       {
@@ -186,7 +208,9 @@ const PrescriptionList: React.FC = () => {
         searchable: true,
         render: (row: any): any => {
           return (
-            <>{ !isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate) }</>
+            <>
+              {!isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate)}
+            </>
           );
         },
       },
@@ -197,17 +221,19 @@ const PrescriptionList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>
-              { !isNullOrEmpty(row.fileKey) &&
-                <Button onClick={ (): any => {
-                  setFileKeyToShow(row.fileKey);
-                  setIsOpenPicture(true);
-                } }>
-                  <FontAwesomeIcon icon={ faImage } />
+              {!isNullOrEmpty(row.fileKey) && (
+                <Button
+                  onClick={(): any => {
+                    setFileKeyToShow(row.fileKey);
+                    setIsOpenPicture(true);
+                  }}
+                >
+                  <FontAwesomeIcon icon={faImage} />
                 </Button>
-              }
+              )}
             </>
-          )
-        }
+          );
+        },
       },
       {
         field: 'responseDate',
@@ -217,10 +243,9 @@ const PrescriptionList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>
-              { !isNullOrEmpty(row.prescriptionResponse) &&
+              {!isNullOrEmpty(row.prescriptionResponse) &&
                 !isNullOrEmpty(row.prescriptionResponse[0].responseDate) &&
-                getJalaliDate(row.prescriptionResponse[0].responseDate)
-              }
+                getJalaliDate(row.prescriptionResponse[0].responseDate)}
             </>
           );
         },
@@ -231,47 +256,51 @@ const PrescriptionList: React.FC = () => {
         type: 'string',
         render: (row: any): any => {
           const responses = row.prescriptionResponse.filter((i: any) => {
-            return i.pharmacy.name === pharmacyName
+            return i.pharmacy.name === pharmacyName;
           });
-          const thisState = PrescriptionResponseStateEnum[
-            responses.length > 0
-              ? responses[0].state
-              : 1
-          ];
+          const thisState =
+            PrescriptionResponseStateEnum[
+              responses.length > 0 ? responses[0].state : 1
+            ];
           return (
-            <span style={ {
-              color:
-                thisState == PrescriptionResponseStateEnum[PrescriptionResponseStateEnum.Accept]
-                  ? ColorEnum.Green : ColorEnum.Gray
-            } }>
-              { !isNullOrEmpty(row.prescriptionResponse) &&
-                t(`PrescriptionResponseStateEnum.${thisState}`)
-              }
+            <span
+              style={{
+                color:
+                  thisState ==
+                  PrescriptionResponseStateEnum[
+                    PrescriptionResponseStateEnum.Accept
+                  ]
+                    ? ColorEnum.Green
+                    : ColorEnum.Gray,
+              }}
+            >
+              {!isNullOrEmpty(row.prescriptionResponse) &&
+                t(`PrescriptionResponseStateEnum.${thisState}`)}
             </span>
-          )
-        }
-      }
-    ]
+          );
+        },
+      },
+    ];
   };
 
   const saveHandler = (item: PrescriptionInterface): void => {
-    if ((item.cancelDate == null || item.cancelDate == undefined) &&
-      item.expireDate >= today('-')) {
+    if (
+      (item.cancelDate == null || item.cancelDate == undefined) &&
+      item.expireDate >= today('-')
+    ) {
       toggleIsOpenSaveModalForm();
-      const {
-        id, prescriptionResponse
-      } = item;
+      const { id, prescriptionResponse } = item;
       let pharmacyComment: string = '';
       let accept: boolean = false;
       let thisState: number = 1;
       if (prescriptionResponse.length > 0) {
         const responses = prescriptionResponse.filter((i: any) => {
-          return i.pharmacy.name === pharmacyName
+          return i.pharmacy.name === pharmacyName;
         });
         if (responses.length > 0) {
           pharmacyComment = responses[0].pharmacyComment;
           accept = responses[0].state == PrescriptionResponseStateEnum.Accept;
-          thisState = responses[0].state
+          thisState = responses[0].state;
         }
       }
       dispatch({ type: 'prescriptionID', value: id });
@@ -281,18 +310,20 @@ const PrescriptionList: React.FC = () => {
       dispatch({ type: 'comment', value: item.comment });
       dispatch({ type: 'fileKey', value: item.fileKey });
     } else {
-      warningSweetAlert(t('prescription.cantEdit'))
+      warningSweetAlert(t('prescription.cantEdit'));
     }
   };
+  const detailHandler = (row: any): void => {
+    setFileKeyToShow(row.fileKey);
+    setIsOpenPicture(true);
+  };
 
-  const submitSave = async (el?: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  const submitSave = async (
+    el?: React.FormEvent<HTMLFormElement>
+  ): Promise<any> => {
     el?.preventDefault();
 
-    const {
-      prescriptionID,
-      isAccept,
-      pharmacyComment
-    } = state;
+    const { prescriptionID, isAccept, pharmacyComment } = state;
 
     try {
       toggleIsOpenSaveModalForm();
@@ -300,81 +331,190 @@ const PrescriptionList: React.FC = () => {
         prescriptionID,
         isAccept,
         pharmacyComment: isAccept ? pharmacyComment : '',
-        state
+        state,
       });
       dispatch({ type: 'reset' });
       ref.current?.onQueryChange();
     } catch (e) {
       errorHandler(e);
     }
+  };
+  const [list, setList] = useState<any>([]);
+  const listRef = React.useRef(list);
+  const setListRef = (data: any) => {
+    listRef.current = listRef.current.concat(data);
+    setList(data);
+  };
+  const { data, isFetched } = useQuery(
+    PrescriptionEnum.GET_LIST,
+
+    () => getList(pageRef.current, 10),
+    {
+      onSuccess: (result) => {
+        console.log(result);
+        if (result == undefined || result.count == 0) {
+          setNoData(true);
+        } else {
+          console.log(result.items);
+
+          setListRef(result.items);
+        }
+      },
+    }
+  );
+  const [noData, setNoData] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(0);
+  const pageRef = React.useRef(page);
+  const setPageRef = (data: number) => {
+    pageRef.current = data;
+    setPage(data);
+  };
+
+  const handleScroll = (e: any): any => {
+    //if (fullScreen) {
+
+    const el = e.target;
+    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+      if (!noData) {
+        const currentpage = pageRef.current + 1;
+        setPageRef(currentpage);
+        console.log(pageRef.current);
+        getCardList();
+      }
+    }
+  };
+  async function getCardList(): Promise<any> {
+    const result = await getList(pageRef.current, 10);
+    console.log(result.items);
+    if (result == undefined || result.items.length == 0) {
+      setNoData(true);
+    } else {
+      setListRef(result.items);
+      return result;
+    }
   }
 
+  function isMobile() {
+    return window.innerWidth < 960;
+  }
+  function useWindowDimensions() {
+    const [mobile, setMobile] = useState(false);
+    const mobileRef = React.useRef(mobile);
+    const setMobileRef = (data: boolean) => {
+      mobileRef.current = data;
+      setMobile(data);
+    };
+    React.useEffect(() => {
+      function handleResize() {
+        if (!mobileRef.current && isMobile()) {
+          window.addEventListener('scroll', (e) => handleScroll(e), {
+            capture: true,
+          });
+        } else if (mobileRef.current && !isMobile()) {
+          window.removeEventListener('scroll', (e) => handleScroll(e));
+        }
+        setMobileRef(isMobile());
+      }
+      handleResize();
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return mobile;
+  }
+  useWindowDimensions();
+  const contentGenerator = (): JSX.Element[] => {
+    if (!isLoading && list !== undefined && isFetched) {
+      console.log(data);
+      console.log(list);
+
+      return listRef.current.map((item: any) => {
+        //const { user } = item;
+        //if (user !== null) {
+        return (
+          <Grid key={item.id} item xs={12}>
+            <CardContainer
+              data={item}
+              saveHandler={saveHandler}
+              detailHandler={detailHandler}
+            />
+          </Grid>
+        );
+        //}
+      });
+    }
+
+    return [];
+  };
   const editModal = (): JSX.Element => {
     return (
-      <Dialog open={ isOpenEditModal } fullScreen={ fullScreen }>
-        <DialogTitle>{ t('prescription.response') }</DialogTitle>
+      <Dialog open={isOpenEditModal} fullScreen={fullScreen}>
+        <DialogTitle>{t('prescription.response')}</DialogTitle>
         <Divider />
-        <DialogContent className={ root }>
+        <DialogContent className={root}>
           <Grid container>
-            <Grid item xs={ 12 }>
-              <Paper style={ { padding: '1em' } }>
+            <Grid item xs={12}>
+              <Paper style={{ padding: '1em' }}>
                 <Grid container>
-                  <Grid item xs={ 12 }>
-                    <b>{ t('prescription.comment') }</b>
+                  <Grid item xs={12}>
+                    <b>{t('prescription.comment')}</b>
                     <br />
-                    { state.comment }
+                    {state.comment}
                   </Grid>
-                  { !isNullOrEmpty(state.fileKey) &&
+                  {!isNullOrEmpty(state.fileKey) && (
                     <>
                       <hr />
-                      <Grid item xs={ 12 }>
-                        <b>{ t('prescription.comment') }</b>
+                      <Grid item xs={12}>
+                        <b>{t('prescription.comment')}</b>
                         <br />
-                        <Picture fileKey={ state.fileKey } className={ smallImage } />
+                        <Picture
+                          fileKey={state.fileKey}
+                          className={smallImage}
+                        />
                       </Grid>
                     </>
-                  }
+                  )}
                 </Grid>
               </Paper>
             </Grid>
-            <Grid item xs={ 12 }>
-              <h3>{ t('prescription.response') }</h3>
+            <Grid item xs={12}>
+              <h3>{t('prescription.response')}</h3>
             </Grid>
-            <Grid item xs={ 12 }>
+            <Grid item xs={12}>
               <FormControlLabel
                 control={
                   <Switch
-                    checked={ state.isAccept }
-                    onChange={ (e): void => {
+                    checked={state.isAccept}
+                    onChange={(e): void => {
                       dispatch({ type: 'isAccept', value: e.target.checked });
                       dispatch({
                         type: 'state',
                         value: e.target.checked
                           ? PrescriptionResponseStateEnum.Accept
-                          : PrescriptionResponseStateEnum.NotAccept
+                          : PrescriptionResponseStateEnum.NotAccept,
                       });
-                    } }
+                    }}
                   />
                 }
-                label={ t('general.accept') }
+                label={t('general.accept')}
               />
             </Grid>
-            <Grid item xs={ 12 }>
-              { state.isAccept &&
+            <Grid item xs={12}>
+              {state.isAccept && (
                 <TextField
                   variant="outlined"
-                  value={ state.pharmacyComment }
-                  label={ t('general.comment') }
+                  value={state.pharmacyComment}
+                  label={t('general.comment')}
                   required
                   multiline
-                  style={ { whiteSpace: "pre-line" } }
+                  style={{ whiteSpace: 'pre-line' }}
                   rows="3"
-                  className={ formItem }
-                  onChange={ (e): void =>
+                  className={formItem}
+                  onChange={(e): void =>
                     dispatch({ type: 'pharmacyComment', value: e.target.value })
                   }
                 />
-              }
+              )}
             </Grid>
           </Grid>
         </DialogContent>
@@ -382,43 +522,54 @@ const PrescriptionList: React.FC = () => {
           <Button
             variant="outlined"
             color="primary"
-            onClick={ (): void => {
+            onClick={(): void => {
               submitSave();
               ref.current?.onQueryChange();
-            } }
+            }}
           >
-            { t('general.save') }
+            {t('general.save')}
           </Button>
           <Button
             variant="outlined"
             color="secondary"
-            onClick={ (): void => {
+            onClick={(): void => {
               setIsOpenSaveModal(false);
-            } }
+            }}
           >
-            { t('general.cancel') }
+            {t('general.cancel')}
           </Button>
         </DialogActions>
       </Dialog>
-    )
-  }
+    );
+  };
 
   return (
-    <FormContainer title={ t('prescription.peoplePrescriptions') }>
-      <DataTable
-        tableRef={ ref }
-        columns={ tableColumns() }
-        editAction={ (e: any, row: any): void => saveHandler(row) }
-        queryKey={ PrescriptionEnum.GET_LIST }
-        queryCallback={ getList }
-        urlAddress={ urls.getList }
-        initLoad={ false }
-      />
-      { isLoading && <CircleLoading /> }
-      { isOpenEditModal && editModal() }
-      { isOpenPicture && pictureDialog(fileKeyToShow) }
+    <FormContainer title={t('prescription.peoplePrescriptions')}>
+      {!fullScreen && (
+        <DataTable
+          tableRef={ref}
+          columns={tableColumns()}
+          editAction={(e: any, row: any): void => saveHandler(row)}
+          queryKey={PrescriptionEnum.GET_LIST}
+          queryCallback={getList}
+          urlAddress={urls.getList}
+          initLoad={false}
+        />
+      )}
+      {fullScreen && (
+        <Grid container spacing={0}>
+          <Grid item xs={12} className={gridCard}>
+            {contentGenerator()}
+          </Grid>
+        </Grid>
+      )}
+      {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+
+      {isLoading && <CircleLoading />}
+      {isOpenEditModal && editModal()}
+      {isOpenPicture && pictureDialog(fileKeyToShow)}
     </FormContainer>
-  )
-}
+  );
+};
 
 export default PrescriptionList;
