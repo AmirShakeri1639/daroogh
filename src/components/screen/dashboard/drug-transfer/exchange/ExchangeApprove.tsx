@@ -480,7 +480,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
               </span>
             </span>
           ) : (
-            <span>هیچ موردی برای ورداخت وجود ندارد</span>
+            <span>هیچ موردی برای پرداخت وجود ندارد</span>
           )}
         </Grid>
         <Grid item style={{ margin: 4 }} xs={12}>
@@ -508,7 +508,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
             container
             xs={12}
             spacing={1}
-            style={{ background: '#FEFFF2', position:'fixed' , bottom:16 , maxWidth:'inherit' , width:'inherit' ,}}
+            style={{ background: '#FEFFF2', position:'absolute', left:0 ,right:0, bottom:16 ,padding:16, maxWidth:'100%' , width:'100%' ,}}
           >
             <Grid xs={12} item>
                           <Divider/>
