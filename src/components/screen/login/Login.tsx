@@ -117,22 +117,27 @@ const Login: React.FC = (): JSX.Element => {
         console.log('settings:', settings);
 
         // Save blob of profile pic in local storage
-        const fileApi = new File();
-        const blob = await fileApi.get(data.imageKey);
-        localStorage.setItem('avatar', window.URL.createObjectURL(blob));
+        try {
+          const fileApi = new File();
+          const blob = await fileApi.get(data.imageKey);
+          localStorage.setItem('avatar', window.URL.createObjectURL(blob));
+        } catch (e) {
+          errorHandler(e);
+        }
 
         if (process.env.NODE_ENV === 'production') {
           (async (): Promise<any> => {
             try {
               console.info('Environment: ', process.env.NODE_ENV);
-              if (process.env.NODE_ENV === 'production') {
-                window.najvaUserSubscribed = async function (
-                  najva_user_token: string
-                ): Promise<void> {
-                  await setNotification(najva_user_token);
-                  console.log('Najva subscription finished.');
-                };
-              }
+              window.najvaUserSubscribed = function (
+                najva_user_token: string
+              ): void {
+                (async (najvaUserToken): Promise<void> => {
+                  console.log('Start of set notification key');
+                  await setNotification(najvaUserToken);
+                  console.log('Notification key setted');
+                })(najva_user_token);
+              };
             } catch (e) {
               errorHandler(e);
             }
