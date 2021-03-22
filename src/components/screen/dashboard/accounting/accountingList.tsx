@@ -264,9 +264,10 @@ const AccountingList: React.FC = () => {
   };
   return (
     <Container maxWidth="lg" className={container}>
+      <h1 className="txt-md">{t('accounting.list')}</h1>
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          <div>{t('accounting.list')}</div>
+          
           {!fullScreen && (
             <Paper>
               <DataTable
