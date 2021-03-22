@@ -182,13 +182,19 @@ export interface CardJobInterface {
 
 export interface CardJobApplicationInterface {
   data: JobApplicationInterface;
-  cancelHandler: (item: any) =>  Promise<any>;
+  cancelHandler: (item: any) => Promise<any>;
   detailHandler: (row: any) => void;
 }
 
 export interface PrescriptionDataInterface {
   data: PrescriptionInterface;
   formHandler: (item: number) => Promise<any>;
+}
+
+export interface PrescriptionCardDataInterface {
+  data: PrescriptionInterface;
+  saveHandler: (item: PrescriptionInterface) => void;
+  detailHandler: (row: any) => void;
 }
 
 export interface DetailSupplyInterface {
