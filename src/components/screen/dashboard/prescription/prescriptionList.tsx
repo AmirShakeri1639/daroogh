@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { Prescription } from '../../../../services/api';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import CardContainer from './CardContainer';
+import { useClasses } from '../classes';
 import {
   errorHandler,
   isNullOrEmpty,
@@ -31,6 +32,7 @@ import {
 import FormContainer from '../../../public/form-container/FormContainer';
 import {
   Button,
+  Container,
   createStyles,
   Dialog,
   DialogActions,
@@ -49,7 +51,7 @@ import {
 import { Picture, PictureDialog } from '../../../public';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 
-export const useClasses = makeStyles((theme) =>
+export const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       minWidth: 500,
@@ -77,13 +79,7 @@ export const useClasses = makeStyles((theme) =>
     },
   })
 );
-const useStyle = makeStyles((theme) =>
-  createStyles({
-    gridCard: {
-      backgroundColor: 'whitesmoke',
-    },
-  })
-);
+
 const initialStatePrescriptionResponse: PrescriptionResponseInterface = {
   prescriptionID: 0,
   isAccept: false,
@@ -143,16 +139,16 @@ const PrescriptionList: React.FC = () => {
     reducer,
     initialStatePrescriptionResponse
   );
+  const { container } = useClasses();
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
   const [isOpenPicture, setIsOpenPicture] = useState(false);
   const [fileKeyToShow, setFileKeyToShow] = useState('');
-  const { root, smallImage, formItem } = useClasses();
+  const { root, smallImage, formItem } = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const queryCache = useQueryCache();
   const { getList, save, urls } = new Prescription();
-  const { gridCard } = useStyle();
   const [_save, { isLoading }] = useMutation(save, {
     onSuccess: async () => {
       await queryCache.invalidateQueries(PrescriptionEnum.GET_LIST);
@@ -544,7 +540,8 @@ const PrescriptionList: React.FC = () => {
   };
 
   return (
-    <FormContainer title={t('prescription.peoplePrescriptions')}>
+    <Container maxWidth="lg" className={container}>
+      <h1 className="txt-md">{t('prescription.peoplePrescriptions')}</h1>
       {!fullScreen && (
         <DataTable
           tableRef={ref}
@@ -558,7 +555,7 @@ const PrescriptionList: React.FC = () => {
       )}
       {fullScreen && (
         <Grid container spacing={0}>
-          <Grid item xs={12} className={gridCard}>
+          <Grid item xs={12}>
             {contentGenerator()}
           </Grid>
         </Grid>
@@ -568,7 +565,7 @@ const PrescriptionList: React.FC = () => {
       {isLoading && <CircleLoading />}
       {isOpenEditModal && editModal()}
       {isOpenPicture && pictureDialog(fileKeyToShow)}
-    </FormContainer>
+    </Container>
   );
 };
 
