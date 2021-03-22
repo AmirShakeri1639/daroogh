@@ -14,6 +14,7 @@ import {
   ListItemText,
   MenuItem,
   Container,
+  Hidden,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,7 +24,6 @@ import {
   useTheme,
   FormControlLabel,
   Switch,
-  Hidden,
   Fab,
 } from '@material-ui/core';
 import Input from '../../../public/input/Input';
@@ -721,7 +721,7 @@ const UsersList: React.FC = () => {
         />
       )}
       <br />
-       <Hidden smDown>
+      <Hidden smDown>
         <Grid container spacing={1} className={buttonContainer}>
           <Button
             variant="outlined"
