@@ -54,6 +54,8 @@ import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import ExchangeTree from '../exchange-tree/ExchangeTree';
 import { useHistory } from 'react-router-dom';
 import routes from 'routes';
+import Survey from '../Survey';
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 
 interface Props {
   item?: ViewExchangeInterface;
@@ -587,6 +589,9 @@ const DesktopCardContent = ({
   };
   const [showExchangeTree, setShowExchangeTree] = useState(false);
 
+  const [showSurvey, setShowSurvey] = useState(false);
+  const [showSurveyLoading, setShowSurveyLoading] = useState(false);
+
   const CardActions = (): JSX.Element => {
     const history = useHistory();
     const { survey } = routes;
@@ -600,7 +605,9 @@ const DesktopCardContent = ({
               color="primary"
               style={{ fontSize: 10 }}
               onClick={(): void => {
-                history.push(`${survey}?exchangeId=${item.id}`);
+                // history.push(`${survey}?exchangeId=${item.id}`);
+                setShowSurveyLoading(true);
+                setShowSurvey(true);
               }}
             >
               {t('survey.survey')}
@@ -627,6 +634,9 @@ const DesktopCardContent = ({
 
   return (
     <>
+      {showSurveyLoading && (
+        <CircleBackdropLoading isOpen={showSurveyLoading} />
+      )}
       {!(isSmallDevice && full) && (
         <>
           <Paper className={isSmallDevice ? mobileCardRoot : cardRoot}>
@@ -685,11 +695,11 @@ const DesktopCardContent = ({
           </Paper>
           {/* {!full && !isSmallDevice && (
             <div
-              style={{
+              style={ {
                 width: '6px',
                 height: '100%',
                 float: 'right',
-              }}
+              } }
             >
               <CardProgressbar />
             </div>
@@ -718,47 +728,63 @@ const DesktopCardContent = ({
           </Dialog>
         </>
       )}
-      {isSmallDevice && full && (item.state === 1 ||
-                item.state === 2 ||
-                (item.state === 12 && !item.lockSuggestion)) && (
-        <>
-          <Grid
-            container
-            xs={12}
-            spacing={0}
-            style={{ background: 'white', padding: 4 }}
-          >
-            <Grid item xs={12} spacing={0}>
-              <MobileDiffViwer
-                percentage={diffPercent}
-                otherAmount={`${
-                  item.currentPharmacyIsA ? totalPriceB : totalPriceA
-                }`}
-                yourAmount={`${
-                  item.currentPharmacyIsA ? totalPriceA : totalPriceB
-                }`}
-                is3PercentOk={is3PercentOk}
-              />
-            </Grid>
-            {differenceMessage && (
-              <Grid
-                item
-                xs={12}
-                spacing={0}
-                style={{ fontSize: 13, marginTop: 8 , border:'1px solid #F4CB08',padding:4 }}
-              >
-                {differenceMessage.split('\n').map((i, k) => {
-                  return (
-                    <div key={k}>
-                      {i}
-                      <br key={k} />
-                    </div>
-                  );
-                })}
+      {isSmallDevice &&
+        full &&
+        (item.state === 1 ||
+          item.state === 2 ||
+          (item.state === 12 && !item.lockSuggestion)) && (
+          <>
+            <Grid
+              container
+              xs={12}
+              spacing={0}
+              style={{ background: 'white', padding: 4 }}
+            >
+              <Grid item xs={12} spacing={0}>
+                <MobileDiffViwer
+                  percentage={diffPercent}
+                  otherAmount={`${
+                    item.currentPharmacyIsA ? totalPriceB : totalPriceA
+                  }`}
+                  yourAmount={`${
+                    item.currentPharmacyIsA ? totalPriceA : totalPriceB
+                  }`}
+                  is3PercentOk={is3PercentOk}
+                />
               </Grid>
-            )}
-          </Grid>
-        </>
+              {differenceMessage && (
+                <Grid
+                  item
+                  xs={12}
+                  spacing={0}
+                  style={{
+                    fontSize: 13,
+                    marginTop: 8,
+                    border: '1px solid #F4CB08',
+                    padding: 4,
+                  }}
+                >
+                  {differenceMessage.split('\n').map((i, k) => {
+                    return (
+                      <div key={k}>
+                        {i}
+                        <br key={k} />
+                      </div>
+                    );
+                  })}
+                </Grid>
+              )}
+            </Grid>
+          </>
+        )}
+      {showSurvey && (
+        <Survey
+          exchangeIdProp={item.id}
+          onClose={(): void => {
+            setShowSurveyLoading(false);
+            setShowSurvey(false);
+          }}
+        />
       )}
     </>
   );

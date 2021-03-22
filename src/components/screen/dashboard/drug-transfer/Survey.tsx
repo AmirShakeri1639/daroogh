@@ -87,7 +87,16 @@ const style = makeStyles((theme) =>
   })
 );
 
-const Survey: React.FC = () => {
+interface Props {
+  exchangeIdProp?: number | string;
+  onClose?: () => void;
+}
+
+const Survey: React.FC<Props> = (props) => {
+  const { 
+    exchangeIdProp,
+    onClose 
+  } = props;
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { questionHeader } = style();
   const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
@@ -114,7 +123,9 @@ const Survey: React.FC = () => {
   const [exchangeId, setExchangeId] = React.useState<number>(0);
 
   React.useEffect(() => {
-    const xId = params.exchangeId == null ? 0 : +params.exchangeId;
+    const xId = exchangeIdProp
+      ? +exchangeIdProp
+      : params.exchangeId == null ? 0 : +params.exchangeId;
     // setExchangeId(xId);
     (async (): Promise<void> => {
       await handleGetQuestionGroupOfExchange(xId);
@@ -145,6 +156,7 @@ const Survey: React.FC = () => {
       input.exchangeID = +params.exchangeId;
       input.questionGroupID = questionGroupId;
       await _saveSurvey(input);
+      if (onClose) onClose();
     } catch (e) {
       errorHandler(e);
     }
@@ -357,6 +369,7 @@ const Survey: React.FC = () => {
               color="secondary"
               onClick={() => {
                 setOpenSurvayModal(false);
+                if (onClose) onClose();
                 // history.push(desktop);
               }}
             >
