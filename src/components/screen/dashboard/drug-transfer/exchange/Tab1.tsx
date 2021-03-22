@@ -26,6 +26,7 @@ import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from '../../../../../redux/actions';
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -160,11 +161,13 @@ const Tab1: React.FC = () => {
   const { paper, stickySearch } = style();
 
   const [listPageNo] = useState(0);
-  const [pageSize] = useState(100);
+  const [pageSize] = useState(10);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { isLoading, refetch } = useQuery(
     ['key'],
     () => {
+      setLoading(true);
       return getAllPharmacyDrug(
         selectedPharmacyForTransfer,
         listPageNo,
@@ -200,6 +203,7 @@ const Tab1: React.FC = () => {
         });
         setAllPharmacyDrug(newItems);
         setOrgAllPharmacyDrug(newItems);
+        setLoading(false);
       },
       enabled: false,
     }
@@ -423,7 +427,7 @@ const Tab1: React.FC = () => {
                 <SearchInAList />
               </Grid>
             </Grid>
-            {isLoading && <CircleLoading />}
+            {/* {isLoading && <CircleLoading />} */}
             <Grid container spacing={1}>
               <>
                 {basketCardListGenerator()}
@@ -435,6 +439,7 @@ const Tab1: React.FC = () => {
       </Grid>
 
       <ConfirmDialog />
+      <CircleBackdropLoading isOpen={loading} />
     </>
   );
 };

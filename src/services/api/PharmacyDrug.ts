@@ -47,7 +47,7 @@ class PharmacyDrug extends Api {
     top: number = 100
   ): Promise<any> => {
     try {
-      const query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
+      let query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
       // query += `&$top=${top}&$skip=${skip * top}`;
       const result = await this.postJsonData(query);
       return result.data;

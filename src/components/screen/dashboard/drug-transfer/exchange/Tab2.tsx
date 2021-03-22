@@ -235,6 +235,18 @@ const Tab2: React.FC = () => {
     });
   }, [uBasketCount]);
 
+  useEffect(() => {
+    if (
+      !viewExhcnage ||
+      (viewExhcnage &&
+        !viewExhcnage.lockSuggestion &&
+        (viewExhcnage.state === 1 ||
+          viewExhcnage.state === 2 ||
+          viewExhcnage.state === 12))
+    )
+      refetch();
+  }, [viewExhcnage]);
+
   const basketCardListGenerator = (): any => {
     if (uBasketCount && uBasketCount.length > 0) {
       return uBasketCount.map(
@@ -424,7 +436,7 @@ const Tab2: React.FC = () => {
                 <SearchInAList />
               </Grid>
             </Grid>
-            {(!viewExhcnage ||
+            {/* {(!viewExhcnage ||
               (viewExhcnage &&
                 !viewExhcnage.lockSuggestion &&
                 (viewExhcnage.state === 1 ||
@@ -448,7 +460,7 @@ const Tab2: React.FC = () => {
                   label="انتخاب دارو از سبد عرضه خود"
                 />
               </Grid>
-            )}
+            )} */}
             {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
               <>
@@ -459,7 +471,6 @@ const Tab2: React.FC = () => {
           </Grid>
         </Grid>
       </Grid>
-
       <ConfirmDialog />
       <CircleBackdropLoading isOpen={loading} />
     </>
