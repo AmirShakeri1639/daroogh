@@ -23,6 +23,8 @@ import {
   useTheme,
   FormControlLabel,
   Switch,
+  Hidden,
+  Fab,
 } from '@material-ui/core';
 import Input from '../../../public/input/Input';
 import CloseIcon from '@material-ui/icons/Close';
@@ -45,7 +47,7 @@ import {
   NewUserData,
 } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserTag } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
 import {
@@ -132,6 +134,16 @@ const useClasses = makeStyles((theme) =>
     buttonContainer: {
       marginBottom: theme.spacing(2),
       alignItems: 'left',
+    },
+
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
     },
   })
 );
@@ -336,6 +348,7 @@ const UsersList: React.FC = () => {
     cancelButton,
     submitBtn,
     userRoleIcon,
+    fab,
   } = useClasses();
 
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -687,6 +700,8 @@ const UsersList: React.FC = () => {
   useWindowDimensions();
   return (
     <Container maxWidth="lg">
+      <h1 className="txt-md">{t('user.users-list')}</h1>
+
       {!fullScreen && (
         <DataTable
           tableRef={ref}
@@ -706,16 +721,24 @@ const UsersList: React.FC = () => {
         />
       )}
       <br />
-      <br />
-      <Grid container spacing={1} className={buttonContainer}>
-        <Button
-          variant="outlined"
-          className={createUserBtn}
-          onClick={toggleIsOpenModalOfUser}
-        >
-          {t('user.create-user')}
-        </Button>
-      </Grid>
+       <Hidden smDown>
+        <Grid container spacing={1} className={buttonContainer}>
+          <Button
+            variant="outlined"
+            className={createUserBtn}
+            onClick={toggleIsOpenModalOfUser}
+          >
+            {t('user.create-user')}
+          </Button>
+        </Grid>
+      </Hidden>
+
+      <Hidden mdUp>
+        <Fab onClick={toggleIsOpenModalOfUser} className={fab} aria-label="add">
+          <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+        </Fab>
+      </Hidden>
+
       {fullScreen && contentGenerator()}
       {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
       <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal}>
