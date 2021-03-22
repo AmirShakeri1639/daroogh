@@ -9,55 +9,48 @@ import {
 } from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { UserInterface, NewUserData } from '../../../../../interfaces';
+import {
+  CardJobApplicationInterface,
+  CardJobInterface,
+  NewUserData,
+} from '../../../../interfaces';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { TextMessage } from '../../../../../enum';
-import { BackDrop } from '../../../../public';
+import { BackDrop } from '../../../public';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
-     
-     backgroundColor: 'unset',
+      backgroundColor: '#fff',
+      padding: theme.spacing(1, 1, 1),
       borderRadius: 5,
-      margin: theme.spacing(1.5),
+      margin:theme.spacing(1.5)
     },
   })
 );
 
-const CardContainer: React.FC<UserInterface> = (props) => {
+const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const { root } = useStyle();
 
-  const { data, editRoleHandler } = props;
+  const { data, cancelHandler, detailHandler } = props;
 
-  const {
-    name,
-    family,
-    email,
-    mobile,
-    birthDate,
-    id,
-    nationalCode,
-    pharmacyID,
-    userName,
-    active,
-  } = data;
+  const { id, genderStr, name, family, mobile, workExperienceYear } = data;
 
   return (
     <Paper className={root} elevation={1}>
-      <Grid container spacing={1}>
+      <Grid container spacing={0}>
         <Detail
           id={id}
+          genderStr={genderStr}
           name={name}
           family={family}
-          mobile={mobile}
-          email={email}
-          userName={userName}
-          nationalCode={nationalCode}
-          birthDate={birthDate}
-          active={active}
-          pharmacyID={pharmacyID}
+          mobile={
+            mobile
+          }
+          workExperienceYear={
+            workExperienceYear
+          }
+          
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
@@ -66,10 +59,16 @@ const CardContainer: React.FC<UserInterface> = (props) => {
 
       <Grid item xs={12} justify="flex-end">
         <Button
-          onClick={(): void => editRoleHandler(data)}
+          onClick={(): void => detailHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-          ویرایش نقش
+          جزییات
+        </Button>
+        <Button
+          onClick={(): Promise<any> => cancelHandler(data)}
+          style={{ color: 'red', fontSize: '14px' }}
+        >
+          انصراف
         </Button>
       </Grid>
       <BackDrop isOpen={isOpenBackDrop} />

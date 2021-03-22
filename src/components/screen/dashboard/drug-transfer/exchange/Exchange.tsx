@@ -12,7 +12,8 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useLocation } from 'react-router';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import DesktopCardContent from '../desktop/DesktopCardContent';
 import ActionButtons from './ActionButtons';
@@ -84,14 +85,22 @@ const useClasses = makeStyles((theme) =>
 const Exchange: React.FC = () => {
   const { root, stickyTab, stickyRecommendation } = useClasses();
   const [value, setValue] = React.useState(0);
+  const { search } = useLocation();
 
   const {
+    setActiveStep,
     basketCount,
     uBasketCount,
     viewExhcnage,
     exchangeStateCode,
     messageOfExchangeState,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  useEffect(() => {
+    if (!search.includes('eid')) {
+      setActiveStep(0);
+    }
+  }, [search]);
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -125,12 +134,19 @@ const Exchange: React.FC = () => {
         <Grid container className={stickyRecommendation}>
           <DesktopCardContent item={viewExhcnage} />
           {exchangeStateCode !== 1 && (
-            <span style={{ color: '#1d0d50', fontSize: 15, width: '100%',marginTop:10 }}>
+            <span
+              style={{
+                color: '#1d0d50',
+                fontSize: 15,
+                width: '100%',
+                marginTop: 10,
+              }}
+            >
               {messageOfExchangeState}
             </span>
           )}
           <Grid item xs={12}>
-          <ActionButtons />
+            <ActionButtons />
           </Grid>
           {/* <Hidden smDown>
             <ActionButtons />

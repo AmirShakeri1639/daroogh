@@ -38,6 +38,7 @@ class PharmacyDrug extends Api {
     detailPharmacyInfo: 'Pharmacy/Detail/',
     saveSurvey: 'Survey/Save/',
     getFavoritePharmacyDrugCount: '/PharmacyDrug/GetFavoritePharmacyDrugCount',
+    getFavoritePharmacyDrug: '/PharmacyDrug/GetFavoritePharmacyDrug',
   };
 
   getAllPharmacyDrug = async (
@@ -262,6 +263,11 @@ class PharmacyDrug extends Api {
 
   getFavoritePharmacyDrugCount = async (): Promise<any> => {
     const result = await this.postJsonData(this.urls.getFavoritePharmacyDrugCount);
+    return result.data;
+  }
+
+  getFavoritePharmacyDrug = async (pharmacyKey = ''): Promise<any> => {
+    const result = await this.postData(`${this.urls.getFavoritePharmacyDrug}?pharmacyKey=${pharmacyKey}`);
     return result.data;
   }
 }
