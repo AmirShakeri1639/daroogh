@@ -775,34 +775,35 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
       switch (e) {
         case '+':
           if (pharmacyDrug.cnt > pharmacyDrug.currentCnt) {
-            setDrugInfo({
-              ...pharmacyDrug,
-              currentCnt: (pharmacyDrug.currentCnt += 1),
-            });
+            pharmacyDrug.currentCnt += 1;
           }
           break;
         case '-':
           if (pharmacyDrug.currentCnt > 1) {
-            setDrugInfo({
-              ...pharmacyDrug,
-              currentCnt: (pharmacyDrug.currentCnt -= 1),
-            });
+            pharmacyDrug.currentCnt -= 1;
           }
           break;
         default:
           break;
       }
-      handleTotalAmount();
+      handleTotalAmountByCounter();
     }
   };
 
   React.useEffect(() => {
-    handleTotalAmount();
+    handleTotalAmountByCounter();
   }, []);
 
-  console.log('re render');
-
   const handleTotalAmount = () => {
+    if (!pharmacyDrug) return;
+    let val = 0;
+    val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
+    let el = document.getElementById('lbl_' + pharmacyDrug.id);
+    if (el) el.innerHTML = Utils.numberWithCommas(val);
+  };
+
+  const handleTotalAmountByCounter = () => {
+    if (!pharmacyDrug) return;
     debugger;
     let val = 0;
     if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
@@ -828,8 +829,17 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           className={textCounter}
           defaultValue={pharmacyDrug.currentCnt}
           onChange={(e: any): void => {
-            pharmacyDrug.currentCnt = +e.target.value;
-            handleTotalAmount();
+            if (pharmacyDrug.cnt > +e.target.value && +e.target.value >= 1) {
+              pharmacyDrug.currentCnt = +e.target.value;
+              handleTotalAmount();
+            } else {
+              pharmacyDrug.currentCnt = pharmacyDrug.cnt;
+              setDrugInfo({
+                ...pharmacyDrug,
+                currentCnt: pharmacyDrug.cnt,
+              });
+              handleTotalAmount();
+            }
           }}
         >
           {pharmacyDrug.currentCnt}
@@ -927,15 +937,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                   {t('general.defaultCurrency')}
                 </span>
               </li>
-              <li>
-                {pharmacyDrug && (
-                  <CounterButton
-                    pharmacyDrug={pharmacyDrug}
-                    amount={pharmacyDrug.amount}
-                    onchange={handleTotalAmount}
-                  />
-                )}
-              </li>
+              <li>{pharmacyDrug && counterButtonFunc()}</li>
               <li>
                 <span style={{ fontSize: 13 }}>جمع اقلام انتخاب شده: </span>
                 <span
@@ -945,7 +947,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                     color: '1d0d50',
                   }}
                 >
-                  <label key={pharmacyDrug?.id}>{totalAmount}</label>
+                  <label id={'lbl_' + pharmacyDrug?.id}>{totalAmount}</label>
                 </span>
                 <span style={{ fontSize: 11, marginRight: 5 }}>
                   {t('general.defaultCurrency')}

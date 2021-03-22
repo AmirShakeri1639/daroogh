@@ -230,7 +230,6 @@ const CounterButton: React.FC<ExCardContentProps> = (
         onChange={(e: any): void => {
           pharmacyDrug.currentCnt = +e.target.value;
           if (onchange) onchange();
-          //   handleTotalAmount();
         }}
       >
         {pharmacyDrug.currentCnt}

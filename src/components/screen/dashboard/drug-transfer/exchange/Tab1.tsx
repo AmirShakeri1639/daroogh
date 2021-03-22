@@ -34,12 +34,12 @@ const style = makeStyles((theme) =>
         width: '0.1em',
       },
       '*::-webkit-scrollbar-track': {
-        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
       },
       '*::-webkit-scrollbar-thumb': {
         backgroundColor: 'rgba(0,0,0,.1)',
-        outline: '2px solid slategrey'
-      }
+        outline: '2px solid slategrey',
+      },
     },
     paper: {
       padding: 0,
@@ -62,11 +62,11 @@ const style = makeStyles((theme) =>
       top: 60,
       zIndex: 999,
     },
-    stickySearch:{
-      position:'sticky',
-      top:'0',
+    stickySearch: {
+      position: 'sticky',
+      top: '0',
       zIndex: 999,
-      marginBottom:8
+      marginBottom: 8,
     },
     desktopCardContent: {
       marginTop: 0,
@@ -313,8 +313,10 @@ const Tab1: React.FC = () => {
                 <div className={paper}>
                   {item.packID ? (
                     <NewCardContainer
+                      key={`CardContainer_${item.id}`}
                       basicDetail={
                         <NewExCardContent
+                          key={`CardContent${item.id}`}
                           formType={1}
                           pharmacyDrug={item}
                           isPack={true}
@@ -326,6 +328,7 @@ const Tab1: React.FC = () => {
                       })}
                       collapsableContent={
                         <NewExCardContent
+                          key={`CardContent${item.id}`}
                           formType={3}
                           packInfo={item.packDetails}
                           isPack={true}
@@ -334,8 +337,10 @@ const Tab1: React.FC = () => {
                     />
                   ) : (
                     <NewCardContainer
+                      key={`CardContainer_${item.id}`}
                       basicDetail={
                         <NewExCardContent
+                          key={item.id}
                           formType={2}
                           pharmacyDrug={item}
                           isPack={false}
@@ -366,7 +371,7 @@ const Tab1: React.FC = () => {
   const handleAgree = (): any => {
     setActiveStep(activeStep + 1);
   };
-  
+
   const ConfirmDialog = (): JSX.Element => {
     return (
       <div>
@@ -397,7 +402,20 @@ const Tab1: React.FC = () => {
 
   return (
     <>
-      <Grid item xs={12}  style={{maxHeight: `${fullScreen? 'calc(100vh - 260px)':'calc(100vh - 230px)'}`, minHeight:`${fullScreen? 'calc(100vh - 260px)':'calc(100vh - 230px)'}`,overflow:"auto", marginTop:-20}} >
+      <Grid
+        item
+        xs={12}
+        style={{
+          maxHeight: `${
+            fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'
+          }`,
+          minHeight: `${
+            fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'
+          }`,
+          overflow: 'auto',
+          marginTop: -20,
+        }}
+      >
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={12}>
             <Grid container className={stickySearch}>
