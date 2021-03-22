@@ -99,7 +99,7 @@ const MobileDiffViwer: React.FC<TextLinePropsInterface> = (props) => {
   let diff: number = Number(yourAmount) - Number(otherAmount) > 0 ? 1 : -1;
 
   return (
-    <Grid container style={{marginTop:8, border:'1px solid #1d0d50'}}>
+    <Grid container style={{marginTop:8,paddingTop:2, border:'1px solid #1d0d50'}}>
       <Grid item xs={10}>
         <Grid container className={classes.rootRight}>
           <Grid item xs={6} style={{ paddingLeft: 2 }}>
