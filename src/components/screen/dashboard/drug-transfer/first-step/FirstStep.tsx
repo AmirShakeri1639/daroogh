@@ -328,7 +328,7 @@ const FirstStep: React.FC = () => {
     setIsCheckedJustOffer((v) => !v);
   };
 
-  const contentHandler = (): JSX.Element => {
+  const contentHandler = () => {
     if (isLoadingRelatedDrugs || isLoading) {
       return <CircleLoading />;
     }
@@ -354,7 +354,21 @@ const FirstStep: React.FC = () => {
           </div>
         );
       } else {
-        items = searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
+        items = React.Children.toArray(
+          searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
+            return (
+              <>
+                <Grid item xs={12} sm={6} lg={6}>
+                  <CardContainer data={d} />
+                </Grid>
+              </>
+            );
+          })
+        );
+      }
+    } else {
+      items = React.Children.toArray(
+        data.items.map((d: PharmacyDrugInterface) => {
           return (
             <>
               <Grid item xs={12} sm={6} lg={6}>
@@ -362,18 +376,8 @@ const FirstStep: React.FC = () => {
               </Grid>
             </>
           );
-        });
-      }
-    } else {
-      items = data.items.map((d: PharmacyDrugInterface) => {
-        return (
-          <>
-            <Grid item xs={12} sm={6} lg={6}>
-              <CardContainer data={d} />
-            </Grid>
-          </>
-        );
-      });
+        })
+      );
     }
 
     return items;
@@ -414,7 +418,7 @@ const FirstStep: React.FC = () => {
                 options={searchOptions}
                 placeholder="جستجو (نام دارو٬ دسته دارویی٬ نام ژنریک) "
                 multiple={isMultipleSelection}
-                onItemSelected={(arrayList): void => {
+                onItemSelected={(arrayList: any[]): void => {
                   if (arrayList.length > 0) {
                     setIsInSearchMode(true);
                   } else {

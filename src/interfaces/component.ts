@@ -91,9 +91,11 @@ export interface UserDataProps {
 
 export interface ExCardContentProps {
   pharmacyDrug?: AllPharmacyDrugInterface;
-  formType: number;
+  formType?: number;
   packInfo?: AllPharmacyDrugInterface[];
   isPack?: boolean;
+  onchange?: () => void;
+  amount?: number;
 }
 
 export interface CardPropsInterface {
@@ -168,7 +170,6 @@ export interface FavoriteDrugInterface {
   formHandler: (item: number) => Promise<any>;
 }
 
-
 export interface UserInterface {
   data: NewUserData;
   editRoleHandler: (item: any) => void;
@@ -182,13 +183,19 @@ export interface CardJobInterface {
 
 export interface CardJobApplicationInterface {
   data: JobApplicationInterface;
-  cancelHandler: (item: any) =>  Promise<any>;
+  cancelHandler: (item: any) => Promise<any>;
   detailHandler: (row: any) => void;
 }
 
 export interface PrescriptionDataInterface {
   data: PrescriptionInterface;
   formHandler: (item: number) => Promise<any>;
+}
+
+export interface PrescriptionCardDataInterface {
+  data: PrescriptionInterface;
+  saveHandler: (item: PrescriptionInterface) => void;
+  detailHandler: (row: any) => void;
 }
 
 export interface DetailSupplyInterface {

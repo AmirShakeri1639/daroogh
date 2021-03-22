@@ -5,7 +5,6 @@ import {
   Grid,
   Hidden,
   Input,
-  InputLabel,
   ListItemText,
   makeStyles,
   MenuItem,
@@ -23,7 +22,7 @@ import {
 import React, { useState } from 'react';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { BackDrop, Button, MaterialContainer, Modal } from '../../../../public';
+import { Button, MaterialContainer } from '../../../../public';
 import CardContainer from './CardContainer';
 import { useTranslation } from 'react-i18next';
 import { remove } from 'lodash';

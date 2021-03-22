@@ -60,11 +60,11 @@ const Detail: React.FC<DetailProps> = (props) => {
             <div className={container}>
               <Grid container spacing={0}>
                 <Grid container xs={12} className="drug-container">
-                  <Grid container xs={1}>
+                  <Grid item xs={1}>
                     <img src="pack.png" style={{ height: '25px' }} />
                   </Grid>
                   <Grid
-                    container
+                    item
                     xs={11}
                     style={{ alignItems: 'center', paddingRight: '8px' }}
                   >
@@ -73,7 +73,7 @@ const Detail: React.FC<DetailProps> = (props) => {
                 </Grid>
 
                 <Grid container style={{ padding: '8px' }}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('exchange.basketTotalPrice')}
                       body={thousandsSeperator(totalPrice)}
