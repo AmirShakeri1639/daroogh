@@ -25,6 +25,7 @@ import FormContainer from '../../../public/form-container/FormContainer';
 import {
   Box,
   Button,
+  Container,
   createStyles,
   Dialog,
   DialogActions,
@@ -44,13 +45,7 @@ import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoadi
 interface Props {
   full?: boolean;
 }
-const useStyle = makeStyles((theme) =>
-  createStyles({
-    gridCard: {
-      backgroundColor: 'whitesmoke',
-    },
-  })
-);
+
 const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const { t } = useTranslation();
   const ref = useDataTableRef();
@@ -59,8 +54,8 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const queryCache = useQueryCache();
   const [isOpenDetails, setIsOpenDetails] = useState(false);
   const [detailsItem, setDetailsItem] = useState<any>();
-  const { spacing1 } = useClasses();
-  const { gridCard } = useStyle();
+  const { spacing1, container } = useClasses();
+
   const { all, notCanceled, cancel, urls } = new EmploymentApplication();
   const { urls: fileUrls } = new File();
 
@@ -455,8 +450,8 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     return [];
   };
   return (
-    <FormContainer title={t('employment.application')}>
-      {' '}
+    <Container maxWidth="lg" className={container}>
+      <h1 className="txt-md">{t('employment.application')}</h1>
       {!fullScreen && (
         <DataTable
           tableRef={ref}
@@ -470,15 +465,16 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         />
       )}
       {isOpenDetails && detialsDialog()}
+      <br />
       {fullScreen && (
         <Grid container spacing={0}>
-          <Grid item xs={12} className={gridCard}>
+          <Grid item xs={12}>
             {contentGenerator()}
           </Grid>
         </Grid>
       )}
       {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
-    </FormContainer>
+    </Container>
   );
 };
 
