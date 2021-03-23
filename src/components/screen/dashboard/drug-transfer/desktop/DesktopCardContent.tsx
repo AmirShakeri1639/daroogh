@@ -648,7 +648,7 @@ const DesktopCardContent = ({
                   className={`${cardTitle}`}
                   style={{
                     padding: '0 6px',
-                    // borderRight: `5px solid ${getExchangeTitleColor()}`,
+                    borderRight: `2px solid ${getExchangeTitleColor()}`,
                     height: '40px',
                     backgroundColor: '#FEFFF2',
                     paddingTop: '8px',
