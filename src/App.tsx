@@ -166,6 +166,9 @@ const JobsList = lazy(
 const PharmacyMessage = lazy(
   () => import('./components/screen/dashboard/pharmacy/message/Message')
 );
+const SurveyList = lazy(
+  () => import('./components/screen/dashboard/pharmacy/survey/SurveyList')
+);
 
 const {
   login,
@@ -205,6 +208,7 @@ const {
   settingsAi,
   jobsList,
   pharmacyMessage,
+  surveyList,
   fda_exchangeList,
   survey
 } = routes;
@@ -381,6 +385,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute path={pharmacyMessage}>
               <Dashboard component={<PharmacyMessage />} />
+            </PrivateRoute>
+            <PrivateRoute path={surveyList}>
+              <Dashboard component={<SurveyList />} />
             </PrivateRoute>
 
             <PrivateRoute exact path={ fda_exchangeList }>

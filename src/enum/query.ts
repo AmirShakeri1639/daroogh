@@ -13,6 +13,9 @@ export enum MessageQueryEnum {
   GET_USER_MESSAGES = 'getUserMessages',
   GET_PHARMACY_MESSAGE = 'getPharmacyMessage',
 }
+export enum SurveyQueryEnum {
+  GET_ALL_Survey = 'AllSurvey',
+}
 
 export enum DrugEnum {
   GET_ALL = 'all',

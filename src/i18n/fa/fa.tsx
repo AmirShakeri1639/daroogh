@@ -601,6 +601,7 @@ export default {
       },
       survey: {
         survey: 'نظرسنجی',
+        surveyList: 'لیست نظرسنجی',
         widget: 'ابزارک نظرسنجی',
         participate: 'شرکت در نظرسنجی',
       },

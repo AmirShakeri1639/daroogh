@@ -44,6 +44,7 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
+import SurveyList from '../pharmacy/survey/SurveyList';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -113,6 +114,7 @@ const {
   settingsAi,
   jobsList,
   pharmacyMessage,
+  surveyList,
   fda_exchangeList,
 } = routes;
 
@@ -603,6 +605,14 @@ const ListItems: React.FC = () => {
               <MessageIcon />
             </ListItemIcon>
             <ListItemText primary={t('message.message')} />
+          </Link>
+        </List>
+        <List component="div" className={linkWrapper}>
+          <Link to={surveyList} className={notNested}>
+            <ListItemIcon>
+              <MessageIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('survey.surveyList')} />
           </Link>
         </List>
 
