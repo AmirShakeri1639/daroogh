@@ -882,6 +882,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   ));
 
   const DrugInfo = (): JSX.Element => (
+    <>
+    {pharmacyDrug?.drug != null && (
     <Grid container spacing={1} className={container}>
       <Grid item xs={12} sm={12} md={6}>
         <Grid
@@ -972,6 +974,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
         </Grid>
       </Grid>
     </Grid>
+    )}
+    </>
   );
 
   return (
