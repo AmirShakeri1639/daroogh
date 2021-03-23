@@ -49,10 +49,10 @@ const Basket: React.FC<Props> = (props) => {
   const classes = useStyles();
   return (
     <div className={classes.root}>
-      <Typography className={classes.division} style={{fontSize: `${isSmallDevice ? '11px':'14px'}`}} >
+      <Typography className={classes.division} style={{fontSize: `${isSmallDevice ? '12px':'14px'}`}} >
         {label}
       </Typography>
-      <IconButton className={classes.division} style={{fontSize: `${isSmallDevice ? '11px':'14px'}`}}  aria-label="cart">
+      <IconButton className={classes.division} style={{fontSize: `${isSmallDevice ? '12px':'14px'}`}}  aria-label="cart">
         <StyledBadge badgeContent={count} color="primary">
         </StyledBadge>
       </IconButton>

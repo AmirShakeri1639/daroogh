@@ -181,6 +181,7 @@ export const useClasses = makeStyles((theme) => createStyles({
   mobileCardContainer: {
     alignItems: 'center',
     fontSize: 11,
+
   },
   ulCardName: {
     padding: 0,
@@ -201,7 +202,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     justifyContent: 'center',
   },
   cardRoot: {
-    width: '98%',
+    width: '100%',
     float:'left',
     minHeight: 110,
     borderRadius: 5,
