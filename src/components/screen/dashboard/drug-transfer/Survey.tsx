@@ -5,11 +5,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   FormControlLabel,
   Grid,
   makeStyles,
   MobileStepper,
   Paper,
+  Radio,
+  RadioGroup,
   TextField,
   Typography,
   useMediaQuery,
@@ -71,7 +74,8 @@ const style = makeStyles((theme) =>
     questionHeader: {
       display: 'grid',
       textAlign: 'center',
-      height: 50,
+      height: 80,
+      alignItems: 'center',
       flexDirection: 'column',
       padding: theme.spacing(2),
       backgroundColor: theme.palette.background.default,
@@ -93,10 +97,7 @@ interface Props {
 }
 
 const Survey: React.FC<Props> = (props) => {
-  const { 
-    exchangeIdProp,
-    onClose 
-  } = props;
+  const { exchangeIdProp, onClose } = props;
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { questionHeader } = style();
   const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
@@ -125,7 +126,9 @@ const Survey: React.FC<Props> = (props) => {
   React.useEffect(() => {
     const xId = exchangeIdProp
       ? +exchangeIdProp
-      : params.exchangeId == null ? 0 : +params.exchangeId;
+      : params.exchangeId == null
+      ? 0
+      : +params.exchangeId;
     // setExchangeId(xId);
     (async (): Promise<void> => {
       await handleGetQuestionGroupOfExchange(xId);
@@ -182,6 +185,53 @@ const Survey: React.FC<Props> = (props) => {
     const input = surveyInput;
     let element: JSX.Element = <></>;
     switch (question.type) {
+      case 1:
+        element = (
+          <RadioGroup
+            row
+            aria-label="position"
+            name="position"
+            defaultValue={'1'}
+            style={{ display: 'grid', direction: 'ltr' }}
+          >
+            {question.questionOptions.map(
+              (item: QuestionOptions, index: number) => {
+                return (
+                  <FormControlLabel
+                    value={item.id.toString()}
+                    checked={
+                      surveyInput.surveyAnswer.findIndex(
+                        (x) => x.optionID === item.id
+                      ) !== -1
+                    }
+                    control={<Radio color="primary" />}
+                    label={item.title}
+                    labelPlacement="start"
+                    onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
+                      const i = input.surveyAnswer.findIndex(
+                        (x) => x.questionID === item.questionID
+                      );
+                      if (i === -1)
+                        input.surveyAnswer.push({
+                          questionID: question.id,
+                          optionID: item.id,
+                        });
+                      else {
+                        input.surveyAnswer.splice(i, 1);
+                        input.surveyAnswer.push({
+                          questionID: question.id,
+                          optionID: item.id,
+                        });
+                      }
+                      setSurveyInput({ ...input });
+                    }}
+                  />
+                );
+              }
+            )}
+          </RadioGroup>
+        );
+        break;
       case 2:
         element = (
           <div style={{ textAlign: 'center' }}>
@@ -207,6 +257,53 @@ const Survey: React.FC<Props> = (props) => {
               }}
             />
           </div>
+        );
+        break;
+      case 3:
+        element = (
+          <RadioGroup
+            row
+            aria-label="position"
+            name="position"
+            defaultValue={'1'}
+            style={{ width: '100%', display: 'grid', direction: 'ltr' }}
+          >
+            {question.questionOptions.map(
+              (item: QuestionOptions, index: number) => {
+                return (
+                  <FormControlLabel
+                    value={item.id.toString()}
+                    checked={
+                      surveyInput.surveyAnswer.findIndex(
+                        (x) => x.optionID === item.id
+                      ) !== -1
+                    }
+                    control={<Radio color="primary" />}
+                    label={item.title}
+                    labelPlacement="start"
+                    onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
+                      const i = input.surveyAnswer.findIndex(
+                        (x) => x.questionID === item.questionID
+                      );
+                      if (i === -1)
+                        input.surveyAnswer.push({
+                          questionID: question.id,
+                          optionID: item.id,
+                        });
+                      else {
+                        input.surveyAnswer.splice(i, 1);
+                        input.surveyAnswer.push({
+                          questionID: question.id,
+                          optionID: item.id,
+                        });
+                      }
+                      setSurveyInput({ ...input });
+                    }}
+                  />
+                );
+              }
+            )}
+          </RadioGroup>
         );
         break;
       case 4:
@@ -256,7 +353,7 @@ const Survey: React.FC<Props> = (props) => {
           <TextField
             label="توضیحات"
             required
-            style={{ width: '100%' }}
+            style={{ width: '100%'}}
             multiline={true}
             rows={5}
             size="small"
