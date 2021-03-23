@@ -118,7 +118,7 @@ export default {
         category: 'دسته بندی پک',
         addDrug: 'اضافه کردن دارو',
         submitMyPacks: 'ثبت پک های من',
-        submitPacks:'ثبت پک '
+        submitPacks: 'ثبت پک ',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -219,6 +219,9 @@ export default {
         smsActive: 'دریافت پیامک فعال باشد',
         notifActive: 'دریافت اعلان‌ها فعال باشد',
       },
+      number: {
+        zero: 'صفر',
+      },
       drug: {
         drug: 'دارو',
         drugs: 'داروها',
@@ -297,17 +300,17 @@ export default {
         create: 'شروع {{var}} تبادل',
         exchange: 'تبادل',
         desktop: 'کارتابل',
-        exchangeStartWith:'شروع تبادل توسط',
-        exchangeCanceledWith:'لغو شده توسط',
-        exchangeConfirmedWith:'تایید شده توسط',
-        exchangeConfirmed:'تایید شد',
-        system : 'سیستم',
-        exchangeConfirmWith :'تایید توسط',
-        exchangeDeniedWith :'رد شده توسط',
-        exchangeViewedWith :'مشاهده شده توسط',
-        exchangeViewWith :'مشاهده توسط',
-        exchangeViewWithAutomaticConfermedAlert:'به علت عدم تغییر سبد توسط',
-        exchangeTree:'درخت تبادل',
+        exchangeStartWith: 'شروع تبادل توسط',
+        exchangeCanceledWith: 'لغو شده توسط',
+        exchangeConfirmedWith: 'تایید شده توسط',
+        exchangeConfirmed: 'تایید شد',
+        system: 'سیستم',
+        exchangeConfirmWith: 'تایید توسط',
+        exchangeDeniedWith: 'رد شده توسط',
+        exchangeViewedWith: 'مشاهده شده توسط',
+        exchangeViewWith: 'مشاهده توسط',
+        exchangeViewWithAutomaticConfermedAlert: 'به علت عدم تغییر سبد توسط',
+        exchangeTree: 'درخت تبادل',
         expirationDate: 'تاریخ انقضای تبادل',
         expirationCompletionDate: 'تاریخ انقضا/تکمیل',
         GOLD: 'کاربر طلایی',
@@ -315,6 +318,8 @@ export default {
         BRONZE: 'کاربر برنزی',
         PLATINUM: 'کاربر پلاتینوم',
         amount: 'مبلغ تبادل',
+        finalAmount: 'مبلغ قابل پرداخت',
+        selectedAmount: 'مبلغ انتخابی',
         commission: 'مبلغ پورسانت',
         paymentStatus: 'وضعیت پرداخت',
         payed: 'پرداخت شده',
@@ -326,7 +331,7 @@ export default {
         totalPrice: 'مجموع قیمت',
         basketTotalPrice: 'مجموع قیمت سبد',
         myProducts: 'محصولات من',
-        products:'محصولات',
+        products: 'محصولات',
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
@@ -342,7 +347,7 @@ export default {
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
-        addToCategoryList: 'اضافه کردن دسته بندی به لیست علاقه مندی'
+        addToCategoryList: 'اضافه کردن دسته بندی به لیست علاقه مندی',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -474,6 +479,7 @@ export default {
         creditor: 'بستانکار',
         debtor: 'بدهکار',
         enterAmount: 'مبلغ را وارد کنید.',
+        code: 'کد تراکنش',
       },
       countryDivision: {
         province: 'استان',
@@ -490,6 +496,8 @@ export default {
         cancelDate: 'تاریخ لغو',
         responseDate: 'تاریخ پاسخ',
         response: 'پاسخ به نسخه',
+        cantEdit:
+          'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
         comment: 'شرح نسخه',
       },
       PrescriptionResponseStateEnum: {
@@ -674,7 +682,7 @@ export default {
       fda: {
         fda: 'سازمان غذا و دارو',
         exchanges: 'تبادلات',
-      }
+      },
     },
   },
 };

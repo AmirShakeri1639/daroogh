@@ -27,6 +27,8 @@ import {
   makeStyles,
   useMediaQuery,
   useTheme,
+  Hidden,
+  Fab,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import Input from '../../../public/input/Input';
@@ -68,6 +70,7 @@ import {
   faUserCog,
   faFileInvoiceDollar,
   faGlobe,
+  faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
@@ -230,6 +233,16 @@ const useStyle = makeStyles((theme) =>
       fontSize: 10,
       float: 'right',
     },
+
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
+    },
   })
 );
 
@@ -260,6 +273,7 @@ const JobsList: React.FC = () => {
     formContent,
     cancelButton,
     submitBtn,
+    fab,
   } = useStyle();
 
   const queryCache = useQueryCache();
@@ -271,14 +285,14 @@ const JobsList: React.FC = () => {
     listRef.current = [];
     setList([]);
     setPageRef(0);
-    setNoData(false)
-    getList()
+    setNoData(false);
+    getList();
   };
   const [_cancel, { isLoading: isLoadingRemove }] = useMutation(cancel, {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(JobsEnum.GET_ALL);
-      resetListRef()
+      resetListRef();
       await successSweetAlert(t('alert.successfulDelete'));
     },
   });
@@ -287,12 +301,11 @@ const JobsList: React.FC = () => {
     onSuccess: async () => {
       await queryCache.invalidateQueries(JobsEnum.GET_ALL);
       await successSweetAlert(t('alert.successfulSave'));
-      resetListRef()
-      
-      ref.current?.onQueryChange();
-      
-      dispatch({ type: 'reset' });
+      resetListRef();
 
+      ref.current?.onQueryChange();
+
+      dispatch({ type: 'reset' });
     },
   });
 
@@ -618,8 +631,7 @@ const JobsList: React.FC = () => {
         } else {
           console.log(result.items);
 
-          setListRef(result.items
-          );
+          setListRef(result.items);
         }
       },
     }
@@ -634,7 +646,6 @@ const JobsList: React.FC = () => {
 
   const handleScroll = (e: any): any => {
     //if (fullScreen) {
-
 
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
@@ -661,7 +672,6 @@ const JobsList: React.FC = () => {
     return window.innerWidth < 960;
   }
   function useWindowDimensions() {
-
     const [mobile, setMobile] = useState(false);
     const mobileRef = React.useRef(mobile);
     const setMobileRef = (data: boolean) => {
@@ -679,7 +689,7 @@ const JobsList: React.FC = () => {
         }
         setMobileRef(isMobile());
       }
-      handleResize()
+      handleResize();
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -1098,7 +1108,8 @@ const JobsList: React.FC = () => {
 
   // @ts-ignore
   return (
-    <FormContainer title={t('jobs.list')}>
+    <Container maxWidth="lg" className={container}>
+      <h1 className="txt-md">{t('jobs.list')}</h1>
       <Grid container spacing={0}>
         <Grid item xs={12}>
           {!fullScreen && (
@@ -1116,22 +1127,33 @@ const JobsList: React.FC = () => {
           )}
           {(isLoadingRemove || isLoadingSave) && <CircleLoading />}
           <br />
-          <br />
-          <Grid container spacing={1} className={buttonContainer}>
-            <Button
-              variant="outlined"
-              className={createUserBtn}
+          <Hidden smDown>
+            <Grid container spacing={1} className={buttonContainer}>
+              <Button
+                variant="outlined"
+                className={createUserBtn}
+                onClick={(): void => saveHandler(initialState)}
+              >
+                ایجاد فرصت شغلی
+              </Button>
+            </Grid>
+          </Hidden>
+
+          <Hidden mdUp>
+            <Fab
               onClick={(): void => saveHandler(initialState)}
+              className={fab}
+              aria-label="add"
             >
-              ایجاد فرصت شغلی
-            </Button>
-          </Grid>
+              <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+            </Fab>
+          </Hidden>
           {fullScreen && contentGenerator()}
           {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
-    </FormContainer>
+    </Container>
   );
 };
 

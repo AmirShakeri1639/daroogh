@@ -11,8 +11,13 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { AccountingEnum } from '../../../../enum/query';
 import {
-  Container, createStyles, Grid, makeStyles, Paper, useMediaQuery,
-  useTheme
+  Container,
+  createStyles,
+  Grid,
+  makeStyles,
+  Paper,
+  useMediaQuery,
+  useTheme,
 } from '@material-ui/core';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { getJalaliDate } from '../../../../utils/jalali';
@@ -20,11 +25,9 @@ import { Convertor } from '../../../../utils';
 import routes from '../../../../routes';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faExchangeAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
-import CardContainer from './CardContainer'
+import CardContainer from './CardContainer';
 
 const initialState: AccountingInterface = {
   id: 0,
@@ -32,7 +35,8 @@ const initialState: AccountingInterface = {
   description: '',
   amount: 0,
   exchangeID: null,
-  mandeh: 0
+  mandeh: 0,
+  exchangeNumber: '0',
 };
 
 const AccountingList: React.FC = () => {
@@ -80,9 +84,7 @@ const AccountingList: React.FC = () => {
         title: t('general.date'),
         type: 'string',
         render: (row: any): any => {
-          return (
-            <>{getJalaliDate(row.date)}</>
-          );
+          return <>{getJalaliDate(row.date)}</>;
         },
       },
 
@@ -94,9 +96,9 @@ const AccountingList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>
-              { row.amount < 0 &&
+              {row.amount < 0 &&
                 Convertor.thousandsSeperatorFa(Math.abs(row.amount))}
-              { row.amount >= 0 && ''}
+              {row.amount >= 0 && ''}
             </>
           );
         },
@@ -108,9 +110,8 @@ const AccountingList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>
-              { row.amount >= 0 &&
-                Convertor.thousandsSeperatorFa(row.amount)}
-              { row.amount < 0 && ''}
+              {row.amount >= 0 && Convertor.thousandsSeperatorFa(row.amount)}
+              {row.amount < 0 && ''}
             </>
           );
         },
@@ -123,11 +124,11 @@ const AccountingList: React.FC = () => {
           let exchangeUrl = '';
           if (row.exchangeID) {
             const { transfer } = routes;
-            exchangeUrl = `${transfer}?eid=${row.currentPharmacyIsA ? row.numberA : row.numberB}`;
+            exchangeUrl = `${transfer}?eid=${row.exchangeNumber}`;
           }
           return (
             <>
-              { exchangeUrl.length > 0 &&
+              {exchangeUrl.length > 0 && (
                 <div className={linkWrapper}>
                   <Link to={exchangeUrl}>
                     <FontAwesomeIcon icon={faExchangeAlt} />
@@ -135,13 +136,14 @@ const AccountingList: React.FC = () => {
                     {t('exchange.viewExchange')}
                   </Link>
                 </div>
-              }
+              )}
             </>
-          )
-        }
-      }
+          );
+        },
+      },
     ];
   };
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -151,24 +153,22 @@ const AccountingList: React.FC = () => {
     listRef.current = listRef.current.concat(data);
     setList(data);
   };
+
   const { isLoading, data, isFetched, refetch } = useQuery(
     AccountingEnum.GET_ALL,
 
     () => all(pageRef.current, 10),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
-
-          setListRef(result.items
-          );
+          setListRef(result.items);
         }
       },
     }
   );
+
   const [noData, setNoData] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
@@ -181,7 +181,6 @@ const AccountingList: React.FC = () => {
   }
 
   function useWindowDimensions() {
-
     const [mobile, setMobile] = useState(false);
     const mobileRef = React.useRef(mobile);
     const setMobileRef = (data: boolean) => {
@@ -199,32 +198,28 @@ const AccountingList: React.FC = () => {
         }
         setMobileRef(isMobile());
       }
-      handleResize()
+      handleResize();
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     return mobile;
   }
+
   useWindowDimensions();
   const handleScroll = (e: any): any => {
-
-
-
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
       if (!noData) {
         const currentpage = pageRef.current + 1;
         setPageRef(currentpage);
-        console.log(pageRef.current);
         getList();
       }
     }
-
   };
+
   async function getList(): Promise<any> {
     const result = await all(pageRef.current, 10);
-    console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
     } else {
@@ -233,26 +228,15 @@ const AccountingList: React.FC = () => {
     }
   }
 
-  /*React.useEffect(() => {
-    // const res = (async (): Promise<any> => await getExchanges())
-    // res();
-
-    window.addEventListener('scroll', (e) => handleScroll(e), {
-      capture: true,
-    });
-
-    return () => 
-  }, []);*/
   const exchangeHandler = (row: AccountingInterface): JSX.Element | null => {
-
     let exchangeUrl = '';
     if (row.exchangeID) {
       const { transfer } = routes;
-      exchangeUrl = `${transfer}?eid=${row.currentPharmacyIsA ? row.numberA : row.numberB}`;
+      exchangeUrl = `${transfer}?eid=${row.exchangeNumber}`;
     }
     return (
       <>
-        { exchangeUrl.length > 0 &&
+        {exchangeUrl.length > 0 && (
           <div className={linkWrapper}>
             <Link to={exchangeUrl}>
               <FontAwesomeIcon icon={faExchangeAlt} />
@@ -260,30 +244,19 @@ const AccountingList: React.FC = () => {
               {t('exchange.viewExchange')}
             </Link>
           </div>
-        }
+        )}
       </>
-    )
-    return null;
-  }
-
-
-
+    );
+  };
 
   const contentGenerator = (): JSX.Element[] | null => {
-
     if (!isLoading && list !== undefined && isFetched) {
-      console.log(data)
       return listRef.current.map((item: any) => {
-        //const { user } = item;
-        //if (user !== null) {
         return (
           <Grid key={item.id} item xs={12}>
             <CardContainer data={item} exchangeHandler={exchangeHandler} />
           </Grid>
         );
-        //}
-
-        return null;
       });
     }
 
@@ -291,11 +264,12 @@ const AccountingList: React.FC = () => {
   };
   return (
     <Container maxWidth="lg" className={container}>
+      <h1 className="txt-md">{t('accounting.list')}</h1>
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          <div>{t('accounting.list')}</div>
-          <Paper>
-            {!fullScreen && (
+          
+          {!fullScreen && (
+            <Paper>
               <DataTable
                 ref={ref}
                 columns={tableColumns()}
@@ -304,11 +278,10 @@ const AccountingList: React.FC = () => {
                 urlAddress={UrlAddress.getAllAccounting}
                 initLoad={false}
               />
-            )}
-            {fullScreen && contentGenerator()}
-            {fullScreen && <CircleBackdropLoading
-              isOpen={isLoading} />}
-          </Paper>
+            </Paper>
+          )}
+          {fullScreen && contentGenerator()}
+          {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
         </Grid>
       </Grid>
     </Container>

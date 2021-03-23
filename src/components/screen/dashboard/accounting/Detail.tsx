@@ -69,7 +69,7 @@ const Detail: React.FC<AccountingInterface> = (props) => {
                     xs={11}
                     style={{ alignItems: 'center', paddingRight: '8px' }}
                   >
-                    <span>{id}</span>
+                    <TextWithTitle title={t('accounting.code')} body={id}/>
                   </Grid>
                 </Grid>
 
@@ -82,16 +82,16 @@ const Detail: React.FC<AccountingInterface> = (props) => {
                   </Grid>
                   <Grid item xs={6}>
                     <TextWithTitle
-                      title={t('general.description')}
-                      body={description}
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextWithTitle
                       title={t('accounting.debtor')}
                       body={amount >= 0 ?
                         Convertor.thousandsSeperatorFa(amount)
                         : ''}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextWithTitle
+                      title={t('general.description')}
+                      body={description}
                     />
                   </Grid>
                 </Grid>

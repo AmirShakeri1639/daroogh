@@ -352,6 +352,8 @@ export interface InitialNewUserInterface {
   password: string;
   nationalCode: string;
   birthDate: string;
+  smsActive: boolean;
+  notifActive: boolean;
 }
 
 export interface ChangeUserPasswordInterface {

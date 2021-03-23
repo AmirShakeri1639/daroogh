@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../enum';
 import { AllPharmacyDrug } from '../../../../enum/query';
 import { BackDrop } from '../../../public';
+import styled from 'styled-components';
 
 const { removePharmacyDrug } = new PharmacyDrug();
 
@@ -25,12 +26,31 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#fff',
       padding: theme.spacing(1, 1, 1, 1),
       borderRadius: 5,
+      position: 'relative',
+      overflow: 'hidden',
     },
     redTrash: {
       color: '#ff0000',
     },
   })
 );
+
+const Ribbon = styled.div.attrs((props: any) => ({ text: props.text }))`
+  position: absolute;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(-45deg);
+  left: -24px;
+  top: 14px;
+  width: 100px;
+  height: 25px;
+  background-color: #ff2e2e;
+  content: '${(props: any): any => props.text}';
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  color: #fff;
+`;
 
 const CardContainer: React.FC<SupplyListCardContainer> = memo((props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
@@ -77,6 +97,9 @@ const CardContainer: React.FC<SupplyListCardContainer> = memo((props) => {
 
   return (
     <Paper className={root} elevation={1}>
+      {cnt == 0 && (
+        <Ribbon>{`${t('general.inventory')} ${t('number.zero')}`}</Ribbon>
+      )}
       <Grid container xs={12} spacing={1}>
         <Detail
           drugName={name}

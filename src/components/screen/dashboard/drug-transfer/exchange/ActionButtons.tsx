@@ -21,11 +21,11 @@ import {
   TextField,
   Typography,
   useMediaQuery,
+  Button
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
-import Button from '../../../../public/button/Button';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { default as MatButton } from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
@@ -48,7 +48,7 @@ import { Map, TextLine } from '../../../../public';
 // import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import ExCalculator from './ExCalculator';
 import { theme } from '../../../../../RTL';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { Fullscreen, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import {
   GetQuestionGroupOfExchangeInterface,
   Question,
@@ -68,9 +68,20 @@ const style = makeStyles((theme) =>
   createStyles({
     actionContainer: {
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'row',
       marginTop: 5,
       width: '100%',
+      padding:4,
+      background:'white'
+    },
+    mobileActionContainer:{
+      position: 'fixed', bottom: 0, left: 0,right: 0,
+      display: 'flex',
+      flexDirection: 'row',
+      marginTop: 5,
+      padding:4,
+      background:'white',
+
     },
     cancelButton: {
       width: '100%',
@@ -80,7 +91,10 @@ const style = makeStyles((theme) =>
     },
     fullRow: {
       width: '100%',
-      marginBottom: 5,
+      border: "1px solid #3A2F8B",
+      margin: "2px",
+      borderRadius: "5px",
+      color:'#3A2F8B'
     },
     cancelButton4: {
       width: '50%',
@@ -128,6 +142,7 @@ const ActionButtons = (): JSX.Element => {
     cancelButton4,
     confirmButton4,
     actionContainer,
+    mobileActionContainer,
     fullRow,
     pharmacyInfoStyle,
     questionHeader,
@@ -244,7 +259,6 @@ const ActionButtons = (): JSX.Element => {
     { isLoading: isLoadingConfirmOrNotExchange },
   ] = useMutation(confirmOrNotExchange, {
     onSuccess: async (res) => {
-      debugger;
       if (res) {
         await sweetAlert({
           type: 'success',
@@ -873,7 +887,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="red"
               onClick={async (): Promise<any> => await handleCancelExchange()}
             >
               لغو درخواست
@@ -889,7 +902,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
               onClick={(): any => {
                 toggleIsOpenCancelExchangeModalForm('approve');
               }}
@@ -901,7 +913,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
               onClick={(): any => {
                 toggleIsOpenCancelExchangeModalForm('cancel');
               }}
@@ -919,7 +930,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
               onClick={(): any => {
                 setShowApproveModalForm(true);
               }}
@@ -937,7 +947,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="blue"
               onClick={handlePharmacyInfo}
             >
               نمایش آدرس
@@ -953,7 +962,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="blue"
               onClick={handlePharmacyInfo}
             >
               نمایش آدرس
@@ -962,7 +970,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
               onClick={(): any => {
                 setShowApproveModalForm(true);
               }}
@@ -980,7 +987,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="blue"
               onClick={(): void => setOpenApproveModal(true)}
             >
               {t('general.sendExchange')}
@@ -998,19 +1004,17 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
               onClick={(): any => {
                 toggleIsOpenCancelExchangeModalForm('approve');
               }}
             >
-              تایید و پرداخت
+              تایید
             </Button>
 
             <Button
               className={fullRow}
               type="button"
               variant="outlined"
-              color="red"
               onClick={(): any => {
                 toggleIsOpenCancelExchangeModalForm('cancel');
               }}
@@ -1028,7 +1032,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
               onClick={(): any => {
                 setShowApproveModalForm(true);
               }}
@@ -1046,7 +1049,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
               onClick={handlePharmacyInfo}
             >
               نمایش آدرس
@@ -1061,7 +1063,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="blue"
               onClick={handlePharmacyInfo}
             >
               نمایش آدرس
@@ -1071,7 +1072,6 @@ const ActionButtons = (): JSX.Element => {
               className={fullRow}
               type="button"
               variant="outlined"
-              color="green"
               onClick={(): any => {
                 setShowApproveModalForm(true);
               }}
@@ -1086,15 +1086,14 @@ const ActionButtons = (): JSX.Element => {
   element = (
     <>
       <>{element}</>
-      <Button
+      {/* <Button
         className={fullRow}
         type="button"
         variant="outlined"
-        color="bluegreen"
         onClick={(): any => history.push(desktop)}
       >
         برگشت به کارتابل
-      </Button>
+      </Button> */}
       {/* <Button
         className={fullRow}
         type="button"
@@ -1114,7 +1113,7 @@ const ActionButtons = (): JSX.Element => {
   );
 
   return (
-    <div className={actionContainer}>
+    <div className={fullScreen ? mobileActionContainer: actionContainer} >
       {element} <CircleBackdropLoading isOpen={isLoadingSend} />
     </div>
   );

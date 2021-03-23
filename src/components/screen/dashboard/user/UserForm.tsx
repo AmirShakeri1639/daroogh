@@ -71,6 +71,8 @@ const initialState = {
   nationalCode: '',
   birthDate: '',
   active: false,
+  smsActive: true,
+  notifActive: true,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -126,6 +128,16 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         birthDate: value,
       };
+    case 'smsActive':
+      return {
+        ...state,
+        smsActive: value,
+      };
+    case 'notifActive':
+      return {
+        ...state,
+        notifActive: value,
+      };
     case 'user':
       return value;
     case 'reset':
@@ -161,11 +173,15 @@ const UserForm: React.FC<UserDataProps> = (props) => {
         if (showError) {
           setShowError(false);
         }
-        dispatch({ type: 'reset' });
+
         setOptions([]);
         await successSweetAlert(
           message || t('alert.successfulCreateTextMessage')
         );
+        if (onSubmit) {
+          onSubmit();
+        }
+        dispatch({ type: 'reset' });
       },
       onError: async (data: any) => {
         await errorSweetAlert(data || t('error.save'));
@@ -209,12 +225,10 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       birthDate: state.birthDate,
       password: state.password,
       active: state.active,
+      smsActive: state.smsActive,
+      notifActive: state.notifActive,
     };
-
     await _saveNewUser(data);
-    if (onSubmit) {
-      onSubmit();
-    }
   };
 
   const isVisibleField = (field: string): boolean => {
@@ -418,6 +432,41 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               }`}
             />
           </Grid>
+
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={state.smsActive}
+                  onChange={(e): void =>
+                    dispatch({
+                      type: 'smsActive',
+                      value: e.target.checked,
+                    })
+                  }
+                />
+              }
+              label={t('user.smsActive')}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={state.notifActive}
+                  onChange={(e): void =>
+                    dispatch({
+                      type: 'notifActive',
+                      value: e.target.checked,
+                    })
+                  }
+                />
+              }
+              label={t('user.notifActive')}
+            />
+          </Grid>
+
           <Grid container spacing={1} className={buttonContainer}>
             <Grid item xs={12}>
               <Button

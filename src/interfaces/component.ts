@@ -6,6 +6,7 @@ import { DataTableColumns } from './DataTableColumns';
 import { IconProps } from '@material-ui/core';
 import { PrescriptionInterface } from './PrescriptionInterface';
 import { JobInterface } from './JobInterface';
+import { JobApplicationInterface } from './JobApplicationInterface';
 
 export interface SelectPropsInterface {
   value: string;
@@ -90,9 +91,11 @@ export interface UserDataProps {
 
 export interface ExCardContentProps {
   pharmacyDrug?: AllPharmacyDrugInterface;
-  formType: number;
+  formType?: number;
   packInfo?: AllPharmacyDrugInterface[];
   isPack?: boolean;
+  onchange?: () => void;
+  amount?: number;
 }
 
 export interface CardPropsInterface {
@@ -167,7 +170,6 @@ export interface FavoriteDrugInterface {
   formHandler: (item: number) => Promise<any>;
 }
 
-
 export interface UserInterface {
   data: NewUserData;
   editRoleHandler: (item: any) => void;
@@ -179,9 +181,21 @@ export interface CardJobInterface {
   toggleConfirmHandler: (row: JobInterface) => Promise<any>;
 }
 
+export interface CardJobApplicationInterface {
+  data: JobApplicationInterface;
+  cancelHandler: (item: any) => Promise<any>;
+  detailHandler: (row: any) => void;
+}
+
 export interface PrescriptionDataInterface {
   data: PrescriptionInterface;
   formHandler: (item: number) => Promise<any>;
+}
+
+export interface PrescriptionCardDataInterface {
+  data: PrescriptionInterface;
+  saveHandler: (item: PrescriptionInterface) => void;
+  detailHandler: (row: any) => void;
 }
 
 export interface DetailSupplyInterface {

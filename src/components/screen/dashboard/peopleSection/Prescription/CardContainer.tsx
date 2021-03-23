@@ -78,7 +78,6 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   useEffect(() => {
-    debugger
     if (props.data.id.toString() == params.get('q')) {
       toggleIsOpenModal();
     }

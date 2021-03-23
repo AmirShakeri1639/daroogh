@@ -20,6 +20,7 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#fff',
       padding: theme.spacing(1, 1, 1),
       borderRadius: 5,
+      margin: theme.spacing(1.5),
     },
   })
 );
@@ -30,20 +31,11 @@ const CardContainer: React.FC<AccountingCardInterface> = (props) => {
 
   const { data, exchangeHandler } = props;
 
-  const {
-    id,
-    date,
-    description,
-    amount,
-    exchangeID,
-    mandeh
-  } = data;
-
-
+  const { id, date, description, amount, exchangeID, mandeh } = data;
 
   return (
     <Paper className={root} elevation={1}>
-      <Grid container spacing={0}>
+      <Grid container spacing={1}>
         <Detail
           id={id}
           date={date}
@@ -51,19 +43,17 @@ const CardContainer: React.FC<AccountingCardInterface> = (props) => {
           amount={amount}
           exchangeID={exchangeID}
           mandeh={mandeh}
-
-
-
         />
       </Grid>
-      <Grid item xs={12} style={{ padding: '4px' }}>
-        <Divider />
-      </Grid>
 
-      {exchangeID && (<Grid item xs={12} justify="flex-end">
-        {exchangeHandler(data)}
+      {exchangeID && (
+        <Grid item xs={12} justify="flex-end">
+          <Grid item xs={12} style={{ padding: '4px' }}>
+            <Divider />
+          </Grid>
 
-      </Grid>
+          {exchangeHandler(data)}
+        </Grid>
       )}
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>

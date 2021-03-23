@@ -1,12 +1,8 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import {
   createStyles,
   Divider,
-  Card,
-  CardHeader,
-  IconButton,
-  CardContent,
   Grid,
   Button,
   TextField,
@@ -18,6 +14,7 @@ import {
   ListItemText,
   MenuItem,
   Container,
+  Hidden,
   Dialog,
   DialogActions,
   DialogContent,
@@ -25,6 +22,9 @@ import {
   DialogContentText,
   useMediaQuery,
   useTheme,
+  FormControlLabel,
+  Switch,
+  Fab,
 } from '@material-ui/core';
 import Input from '../../../public/input/Input';
 import CloseIcon from '@material-ui/icons/Close';
@@ -47,7 +47,7 @@ import {
   NewUserData,
 } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserTag } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
 import {
@@ -58,8 +58,6 @@ import {
 import DataTable from '../../../public/datatable/DataTable';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { UrlAddress } from '../../../../enum/UrlAddress';
-import { MaterialContainer } from '../../../public';
-import ModalContent from '../../../public/modal-content/ModalContent';
 import { NewPharmacyUserData } from '../../../../model';
 import { Role, User } from '../../../../services/api';
 import RoleForm from '../user/RoleForm';
@@ -137,6 +135,16 @@ const useClasses = makeStyles((theme) =>
       marginBottom: theme.spacing(2),
       alignItems: 'left',
     },
+
+    fab: {
+      margin: 0,
+      top: 'auto',
+      right: 20,
+      bottom: 40,
+      left: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
+    },
   })
 );
 
@@ -149,6 +157,8 @@ const initialState: NewPharmacyUserData = {
   userName: '',
   nationalCode: '',
   birthDate: '',
+  smsActive: false,
+  notifActive: false,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -195,6 +205,16 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         birthDate: value,
+      };
+    case 'smsActive':
+      return {
+        ...state,
+        smsActive: value,
+      };
+    case 'notifActive':
+      return {
+        ...state,
+        notifActive: value,
       };
     case 'reset':
       return initialState;
@@ -260,9 +280,10 @@ const UsersList: React.FC = () => {
     listRef.current = [];
     setList([]);
     setPageRef(0);
-    setNoData(false)
-    getList()
+    setNoData(false);
+    getList();
   };
+
   const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(
     removeUser,
     {
@@ -270,7 +291,7 @@ const UsersList: React.FC = () => {
         ref.current?.onQueryChange();
         await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulRemoveTextMessage'));
-        resetListRef()
+        resetListRef();
       },
     }
   );
@@ -279,7 +300,7 @@ const UsersList: React.FC = () => {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      resetListRef()
+      resetListRef();
     },
   });
 
@@ -291,7 +312,7 @@ const UsersList: React.FC = () => {
         dispatch({ type: 'reset' });
         queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
         await successSweetAlert(t('alert.successfulEditTextMessage'));
-        resetListRef()
+        resetListRef();
       },
     }
   );
@@ -310,7 +331,7 @@ const UsersList: React.FC = () => {
         await successSweetAlert(
           message || t('alert.successfulCreateTextMessage')
         );
-        resetListRef()
+        resetListRef();
       },
       onError: async (data: any) => {
         await errorSweetAlert(data || t('error.save'));
@@ -321,16 +342,13 @@ const UsersList: React.FC = () => {
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
   const {
-    root,
-    userRoleIcon,
     createUserBtn,
     buttonContainer,
-    formContainer,
-    addButton,
-
     formContent,
     cancelButton,
     submitBtn,
+    userRoleIcon,
+    fab,
   } = useClasses();
 
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -363,10 +381,11 @@ const UsersList: React.FC = () => {
       nationalCode: state.nationalCode,
       birthDate: state.birthDate,
       roleUser: selectedRoles.map((item) => ({ roleID: item })),
+      smsActive: state.smsActive,
+      notifActive: state.notifActive,
     };
 
     await _addPharmacyUser(data);
-    // if (onSubmit) onSubmit();
   };
 
   const tableColumns = (): TableColumnInterface[] => {
@@ -482,6 +501,8 @@ const UsersList: React.FC = () => {
       nationalCode,
       pharmacyID,
       userName,
+      smsActive,
+      notifActive,
     } = user;
 
     await _editUser({
@@ -495,6 +516,8 @@ const UsersList: React.FC = () => {
       email,
       mobile,
       pharmacyID,
+      smsActive,
+      notifActive,
     });
   };
 
@@ -512,6 +535,8 @@ const UsersList: React.FC = () => {
       active,
       pharmacyName,
       pharmacyID,
+      smsActive,
+      notifActive,
     } = row;
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'family', value: family });
@@ -522,6 +547,8 @@ const UsersList: React.FC = () => {
     dispatch({ type: 'id', value: id });
     dispatch({ type: 'birthDate', value: birthDate });
     dispatch({ type: 'active', value: active });
+    dispatch({ type: 'smsActive', value: smsActive });
+    dispatch({ type: 'notifActive', value: notifActive });
     dispatch({
       type: 'pharmacyID',
       value: { id: pharmacyID, name: pharmacyName },
@@ -570,9 +597,8 @@ const UsersList: React.FC = () => {
     setSelectedRoles(event.target.value as number[]);
   };
   const contentGenerator = (): JSX.Element[] | null => {
-
     if (!isLoading && list !== undefined && isFetched) {
-      console.log(data)
+      console.log(data);
       return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
@@ -607,8 +633,7 @@ const UsersList: React.FC = () => {
         } else {
           console.log(result.items);
 
-          setListRef(result.items
-          );
+          setListRef(result.items);
         }
       },
     }
@@ -623,7 +648,6 @@ const UsersList: React.FC = () => {
 
   const handleScroll = (e: any): any => {
     //if (fullScreen) {
-
 
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
@@ -649,7 +673,6 @@ const UsersList: React.FC = () => {
     return window.innerWidth < 960;
   }
   function useWindowDimensions() {
-
     const [mobile, setMobile] = useState(false);
     const mobileRef = React.useRef(mobile);
     const setMobileRef = (data: boolean) => {
@@ -667,7 +690,7 @@ const UsersList: React.FC = () => {
         }
         setMobileRef(isMobile());
       }
-      handleResize()
+      handleResize();
       window.addEventListener('resize', handleResize);
       return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -677,6 +700,8 @@ const UsersList: React.FC = () => {
   useWindowDimensions();
   return (
     <Container maxWidth="lg">
+      <h1 className="txt-md">{t('user.users-list')}</h1>
+
       {!fullScreen && (
         <DataTable
           tableRef={ref}
@@ -696,16 +721,24 @@ const UsersList: React.FC = () => {
         />
       )}
       <br />
-      <br />
-      <Grid container spacing={1} className={buttonContainer}>
-        <Button
-          variant="outlined"
-          className={createUserBtn}
-          onClick={toggleIsOpenModalOfUser}
-        >
-          {t('user.create-user')}
-        </Button>
-      </Grid>
+      <Hidden smDown>
+        <Grid container spacing={1} className={buttonContainer}>
+          <Button
+            variant="outlined"
+            className={createUserBtn}
+            onClick={toggleIsOpenModalOfUser}
+          >
+            {t('user.create-user')}
+          </Button>
+        </Grid>
+      </Hidden>
+
+      <Hidden mdUp>
+        <Fab onClick={toggleIsOpenModalOfUser} className={fab} aria-label="add">
+          <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+        </Fab>
+      </Hidden>
+
       {fullScreen && contentGenerator()}
       {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
       <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal}>
@@ -914,6 +947,40 @@ const UsersList: React.FC = () => {
                     </FormControl>
                   </Grid>
                 </Grid>
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={state.smsActive}
+                      onChange={(e): void =>
+                        dispatch({
+                          type: 'smsActive',
+                          value: e.target.checked,
+                        })
+                      }
+                    />
+                  }
+                  label={t('user.smsActive')}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={state.notifActive}
+                      onChange={(e): void =>
+                        dispatch({
+                          type: 'notifActive',
+                          value: e.target.checked,
+                        })
+                      }
+                    />
+                  }
+                  label={t('user.notifActive')}
+                />
               </Grid>
             </Grid>
           </DialogContentText>
