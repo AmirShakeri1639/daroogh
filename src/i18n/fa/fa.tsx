@@ -118,7 +118,7 @@ export default {
         category: 'دسته بندی پک',
         addDrug: 'اضافه کردن دارو',
         submitMyPacks: 'ثبت پک های من',
-        submitPacks: 'ثبت پک '
+        submitPacks: 'ثبت پک ',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -218,6 +218,9 @@ export default {
         profilePicChanged: 'تصویر پروفایل با موفقیت تغییر کرد.',
         smsActive: 'دریافت پیامک فعال باشد',
         notifActive: 'دریافت اعلان‌ها فعال باشد',
+      },
+      number: {
+        zero: 'صفر',
       },
       drug: {
         drug: 'دارو',
@@ -344,7 +347,7 @@ export default {
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
-        addToCategoryList: 'اضافه کردن دسته بندی به لیست علاقه مندی'
+        addToCategoryList: 'اضافه کردن دسته بندی به لیست علاقه مندی',
       },
       alert: {
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
@@ -476,7 +479,7 @@ export default {
         creditor: 'بستانکار',
         debtor: 'بدهکار',
         enterAmount: 'مبلغ را وارد کنید.',
-        code:'کد تراکنش'
+        code: 'کد تراکنش',
       },
       countryDivision: {
         province: 'استان',
@@ -493,7 +496,8 @@ export default {
         cancelDate: 'تاریخ لغو',
         responseDate: 'تاریخ پاسخ',
         response: 'پاسخ به نسخه',
-        cantEdit: 'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
+        cantEdit:
+          'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
         comment: 'شرح نسخه',
       },
       PrescriptionResponseStateEnum: {
@@ -677,7 +681,7 @@ export default {
       fda: {
         fda: 'سازمان غذا و دارو',
         exchanges: 'تبادلات',
-      }
+      },
     },
   },
 };
