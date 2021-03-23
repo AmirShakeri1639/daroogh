@@ -906,7 +906,7 @@ const ActionButtons = (): JSX.Element => {
                 toggleIsOpenCancelExchangeModalForm('approve');
               }}
             >
-              تایید
+              تایید و پرداخت
             </Button>
 
             <Button
@@ -1008,7 +1008,7 @@ const ActionButtons = (): JSX.Element => {
                 toggleIsOpenCancelExchangeModalForm('approve');
               }}
             >
-              تایید و پرداخت
+              تایید
             </Button>
 
             <Button
