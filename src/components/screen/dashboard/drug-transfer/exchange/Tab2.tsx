@@ -29,6 +29,7 @@ import queryString from 'query-string';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from '../../../../../redux/actions';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import { options } from 'date-fns/locale/af';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -177,7 +178,7 @@ const Tab2: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const { isLoading, refetch } = useQuery(
-    ['key'],
+    ['key2'],
     () => {
       setLoading(true);
       return getAllPharmacyDrug('', listPageNo, pageSize);
@@ -243,8 +244,9 @@ const Tab2: React.FC = () => {
         (viewExhcnage.state === 1 ||
           viewExhcnage.state === 2 ||
           viewExhcnage.state === 12))
-    )
+    ) {
       refetch();
+    }
   }, [viewExhcnage]);
 
   const basketCardListGenerator = (): any => {
@@ -461,7 +463,6 @@ const Tab2: React.FC = () => {
                 />
               </Grid>
             )} */}
-            {isLoading && <CircleLoading />}
             <Grid container spacing={1}>
               <>
                 {basketCardListGenerator()}

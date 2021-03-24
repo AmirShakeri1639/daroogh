@@ -289,7 +289,7 @@ const Tab1: React.FC = () => {
     if (allPharmacyDrug.length > 0) {
       return (
         allPharmacyDrug
-          .filter(comparer(basketCount))
+          // .filter(comparer(basketCount))
           // .sort((a, b) => (a.order > b.order ? 1 : -1))
           .map((item: AllPharmacyDrugInterface, index: number) => {
             // Object.assign(item, {
@@ -303,6 +303,10 @@ const Tab1: React.FC = () => {
                 order: index + 1,
                 buttonName: 'حذف از تبادل',
                 cardColor: '#dff4ff',
+                cnt: basketCount.find((x) => x.id == item.id)?.cnt,
+                totalAmount:
+                  basketCount.find((x) => x.id == item.id)?.cnt ??
+                  1 * item.amount,
               });
             else {
               Object.assign(item, {
@@ -427,10 +431,9 @@ const Tab1: React.FC = () => {
                 <SearchInAList />
               </Grid>
             </Grid>
-            {/* {isLoading && <CircleLoading />} */}
             <Grid container spacing={1}>
               <>
-                {basketCardListGenerator()}
+                {/* {basketCardListGenerator()} */}
                 {cardListGenerator()}
               </>
             </Grid>
