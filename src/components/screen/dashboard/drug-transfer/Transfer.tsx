@@ -219,7 +219,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               if (!ignore) newItemsB.push(item);
             }
           });
-
           if (!res.currentPharmacyIsA) {
             setBasketCount(newItemsA);
             setUbasketCount(newItemsB);

@@ -770,6 +770,13 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     return <></>;
   };
 
+  const handleTotalAmountByCounter = () => {
+    if (!pharmacyDrug) return;
+    let val = 0;
+    if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
+    setTotalAmount(Utils.numberWithCommas(val));
+  };
+
   const counterHandle = (e: string): void => {
     if (pharmacyDrug) {
       switch (e) {
@@ -798,16 +805,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     if (!pharmacyDrug) return;
     let val = 0;
     val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
-    let el = document.getElementById('lbl_' + pharmacyDrug.id);
+    const el = document.getElementById('lbl_' + pharmacyDrug.id);
     if (el) el.innerHTML = Utils.numberWithCommas(val);
-  };
-
-  const handleTotalAmountByCounter = () => {
-    if (!pharmacyDrug) return;
-    debugger;
-    let val = 0;
-    if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
-    setTotalAmount(Utils.numberWithCommas(val));
   };
 
   const counterButtonFunc = (): JSX.Element =>
@@ -883,98 +882,110 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   const DrugInfo = (): JSX.Element => (
     <>
-    {pharmacyDrug?.drug != null && (
-    <Grid container spacing={1} className={container}>
-      <Grid item xs={12} sm={12} md={6}>
-        <Grid
-          container
-          style={{ display: 'flex', alignItems: 'center', paddingRight: 15 }}
-        >
-          <Grid item xs={3} style={{ direction: 'ltr' }}>
-            <img src={drug} className={avatar} width="80" height="80" />
+      {pharmacyDrug?.drug != null && (
+        <Grid container spacing={1} className={container}>
+          <Grid item xs={12} sm={12} md={6}>
+            <Grid
+              container
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                paddingRight: 15,
+              }}
+            >
+              <Grid item xs={3} style={{ direction: 'ltr' }}>
+                <img src={drug} className={avatar} width="80" height="80" />
+              </Grid>
+              <Grid item xs={9}>
+                <ul className={ulCardName} style={{ paddingRight: 10 }}>
+                  <li>
+                    <span style={{ fontSize: 17, fontWeight: 'bold' }}>
+                      {pharmacyDrug?.drug.name}
+                    </span>
+                  </li>
+                  <li>
+                    <span style={{ fontSize: 12 }}>
+                      {pharmacyDrug?.drug.genericName}
+                      {pharmacyDrug?.drug.enName &&
+                        `(${pharmacyDrug?.drug.enName})`}
+                    </span>
+                  </li>
+                  <li>
+                    <TextWithTitle
+                      title="موجودی عرضه شده"
+                      body={pharmacyDrug?.cnt}
+                      suffix="عدد"
+                    />
+                  </li>
+                  <li>
+                    <TextWithTitle
+                      title="تاریخ انقضا"
+                      body={getExpireDate(pharmacyDrug?.expireDate)}
+                    />
+                  </li>
+                </ul>
+              </Grid>
+            </Grid>
           </Grid>
-          <Grid item xs={9}>
-            <ul className={ulCardName} style={{ paddingRight: 10 }}>
-              <li>
-                <span style={{ fontSize: 17, fontWeight: 'bold' }}>
-                  {pharmacyDrug?.drug.name}
-                </span>
-              </li>
-              <li>
-                <span style={{ fontSize: 12 }}>
-                  {pharmacyDrug?.drug.genericName}
-                  {pharmacyDrug?.drug.enName &&
-                    `(${pharmacyDrug?.drug.enName})`}
-                </span>
-              </li>
-              <li>
-                <TextWithTitle
-                  title="موجودی عرضه شده"
-                  body={pharmacyDrug?.cnt}
-                  suffix="عدد"
+          <Grid item xs={12} sm={12} md={6}>
+            <Grid container style={{ display: 'flex', alignItems: 'center' }}>
+              <Grid item xs={9}>
+                <ul className={ulRightCardName} style={{ paddingRight: 10 }}>
+                  <li>
+                    <span style={{ fontSize: 13 }}>قیمت واحد: </span>
+                    <span
+                      style={{
+                        fontSize: 17,
+                        fontWeight: 'bold',
+                        color: 'green',
+                      }}
+                    >
+                      {Utils.numberWithCommas(pharmacyDrug?.amount)}
+                    </span>
+                    <span style={{ fontSize: 11, marginRight: 5 }}>
+                      {t('general.defaultCurrency')}
+                    </span>
+                  </li>
+                  <li>{pharmacyDrug && counterButtonFunc()}</li>
+                  <li>
+                    <span style={{ fontSize: 13 }}>جمع اقلام انتخاب شده: </span>
+                    <span
+                      style={{
+                        fontSize: 17,
+                        fontWeight: 'bold',
+                        color: '1d0d50',
+                      }}
+                    >
+                      <label id={'lbl_' + pharmacyDrug?.id}>
+                        {totalAmount}
+                      </label>
+                    </span>
+                    <span style={{ fontSize: 11, marginRight: 5 }}>
+                      {t('general.defaultCurrency')}
+                    </span>
+                  </li>
+                </ul>
+              </Grid>
+              <Grid item xs={3}>
+                <GreenCheckbox
+                  checked={
+                    activeStep === 1
+                      ? basketCount.findIndex(
+                          (x) => x.id == pharmacyDrug?.id
+                        ) !== -1
+                      : uBasketCount.findIndex(
+                          (x) => x.id == pharmacyDrug?.id
+                        ) !== -1
+                  }
+                  onChange={handleChange}
+                  name={pharmacyDrug?.id.toString()}
+                  disabled={!lockedAction}
                 />
-              </li>
-              <li>
-                <TextWithTitle
-                  title="تاریخ انقضا"
-                  body={getExpireDate(pharmacyDrug?.expireDate)}
-                />
-              </li>
-            </ul>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
-      <Grid item xs={12} sm={12} md={6}>
-        <Grid container style={{ display: 'flex', alignItems: 'center' }}>
-          <Grid item xs={9}>
-            <ul className={ulRightCardName} style={{ paddingRight: 10 }}>
-              <li>
-                <span style={{ fontSize: 13 }}>قیمت واحد: </span>
-                <span
-                  style={{ fontSize: 17, fontWeight: 'bold', color: 'green' }}
-                >
-                  {Utils.numberWithCommas(pharmacyDrug?.amount)}
-                </span>
-                <span style={{ fontSize: 11, marginRight: 5 }}>
-                  {t('general.defaultCurrency')}
-                </span>
-              </li>
-              <li>{pharmacyDrug && counterButtonFunc()}</li>
-              <li>
-                <span style={{ fontSize: 13 }}>جمع اقلام انتخاب شده: </span>
-                <span
-                  style={{
-                    fontSize: 17,
-                    fontWeight: 'bold',
-                    color: '1d0d50',
-                  }}
-                >
-                  <label id={'lbl_' + pharmacyDrug?.id}>{totalAmount}</label>
-                </span>
-                <span style={{ fontSize: 11, marginRight: 5 }}>
-                  {t('general.defaultCurrency')}
-                </span>
-              </li>
-            </ul>
-          </Grid>
-          <Grid item xs={3}>
-            <GreenCheckbox
-              checked={
-                activeStep === 1
-                  ? basketCount.findIndex((x) => x.id == pharmacyDrug?.id) !==
-                    -1
-                  : uBasketCount.findIndex((x) => x.id == pharmacyDrug?.id) !==
-                    -1
-              }
-              onChange={handleChange}
-              name={pharmacyDrug?.id.toString()}
-              disabled={!lockedAction}
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-    </Grid>
-    )}
+      )}
     </>
   );
 
