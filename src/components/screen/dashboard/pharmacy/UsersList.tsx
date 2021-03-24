@@ -686,7 +686,9 @@ const UsersList: React.FC = () => {
             capture: true,
           });
         } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', (e) => handleScroll(e));
+          window.removeEventListener('scroll', (e) => handleScroll(e), {
+            capture: true,
+          });
         }
         setMobileRef(isMobile());
       }
