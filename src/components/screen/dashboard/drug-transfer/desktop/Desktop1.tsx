@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
 import { Container, Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
@@ -98,7 +98,8 @@ const Desktop1: React.FC = () => {
     setTotalCount(data);
   };
 
-  const { refetch } = useQuery(['key', page], () => getDashboard(page), {
+  const { refetch } = useQuery(['key', page], () => getDashboard(page, String(params.state)
+    .split(',')), {
     onSuccess: (result) => {
       if (result != undefined) {
         const newList = exchanges.concat(result.items);
@@ -252,15 +253,15 @@ const Desktop1: React.FC = () => {
       const listToShow = filter.includes(ExchangeStateEnum.UNKNOWN)
         ? [...exchanges]
         : exchanges.filter(
-            (ex) =>
-              filter.includes(ex.state) ||
-              (filter.includes(NeedSurvey) && ex.needSurvey) ||
-              (isExchangeCompleted(
-                ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
-                ex.currentPharmacyIsA
-              ) &&
-                filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
-          );
+          (ex) =>
+            filter.includes(ex.state) ||
+            (filter.includes(NeedSurvey) && ex.needSurvey) ||
+            (isExchangeCompleted(
+              ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
+              ex.currentPharmacyIsA
+            ) &&
+              filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
+        );
 
       // sort
       if (sortField !== '') {
@@ -277,15 +278,15 @@ const Desktop1: React.FC = () => {
       elements = (
         <>
           {listToShow.map((item, index) => (
-            <Grid spacing={0} item xs={12} sm={6} md={4} xl={4} key={index}>
+            <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
               <DesktopCardContent
-                item={item}
-                full={false}
-                showActions={true}
-                onCardClick={cardClickHandler}
+                item={ item }
+                full={ false }
+                showActions={ true }
+                onCardClick={ cardClickHandler }
               ></DesktopCardContent>
             </Grid>
-          ))}
+          )) }
         </>
       );
 
@@ -297,21 +298,21 @@ const Desktop1: React.FC = () => {
 
   return (
     <Container>
-      <Grid item={true} xs={12}>
-        <Grid container spacing={2}>
-          <Grid item={true} xs={12}>
+      <Grid item={ true } xs={ 12 }>
+        <Grid container spacing={ 2 }>
+          <Grid item={ true } xs={ 12 }>
             <DesktopToolbox
-              filterList={stateFilterList}
-              onFilterChanged={filterChanged}
-              onSortSelected={sortSelected}
+              filterList={ stateFilterList }
+              onFilterChanged={ filterChanged }
+              onSortSelected={ sortSelected }
             />
           </Grid>
         </Grid>
 
-        <Grid container spacing={3}>
-          {<CardListGenerator />}
+        <Grid container spacing={ 3 }>
+          { <CardListGenerator /> }
         </Grid>
-        <CircleBackdropLoading isOpen={loadingRef.current} />
+        <CircleBackdropLoading isOpen={ loadingRef.current } />
       </Grid>
     </Container>
   );

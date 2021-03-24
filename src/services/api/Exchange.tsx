@@ -37,14 +37,15 @@ class Exchange extends Api {
     return result.data;
   };
 
-  getDashboard = async (e: any): Promise<any> => {
+  getDashboard = async (e: any, states: any = undefined): Promise<any> => {
     try {
       e *= 10;
-      const url = `${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`;
+      let url = `${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`;
+      if (states !== undefined) {
+        url += `&$filter=cast(state, 'Edm.String') in [${states.map((i: any) => '\'' + i.toString() + '\'')}]`
+      }
       console.log('Dashboard Url => ', url);
-      const result = await this.postData(
-        `${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`
-      );
+      const result = await this.postData(url);
       return result.data;
     } catch (e) {
       errorHandler(e);
