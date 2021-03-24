@@ -194,7 +194,9 @@ const AccountingList: React.FC = () => {
             capture: true,
           });
         } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', (e) => handleScroll(e));
+          window.removeEventListener('scroll', (e) => handleScroll(e), {
+            capture: true,
+          });
         }
         setMobileRef(isMobile());
       }
@@ -267,7 +269,6 @@ const AccountingList: React.FC = () => {
       <h1 className="txt-md">{t('accounting.list')}</h1>
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          
           {!fullScreen && (
             <Paper>
               <DataTable
