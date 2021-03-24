@@ -20,23 +20,20 @@ import ActionButtons from './ActionButtons';
 import Basket from './Basket';
 import Tab1 from './Tab1';
 import Tab2 from './Tab2';
+import { connect, ConnectedProps } from 'react-redux';
 
 interface TabPanelProps {
   children?: React.ReactNode;
-
 }
 
-function TabPanel(props:TabPanelProps) {
+function TabPanel(props: TabPanelProps) {
   const { children, ...other } = props;
 
   return (
-    <div
-    
-    >
-        <Box p={3} style={{ paddingRight: 0, paddingLeft: 0, marginLeft: -5 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      
+    <div>
+      <Box p={3} style={{ paddingRight: 0, paddingLeft: 0, marginLeft: -5 }}>
+        <Typography>{children}</Typography>
+      </Box>
     </div>
   );
 }
@@ -76,10 +73,18 @@ const useClasses = makeStyles((theme) =>
   })
 );
 
-const Exchange: React.FC = () => {
+const mapStateToProps = ({ transfer }: any) => ({
+  transfer,
+});
+
+const connector = connect(mapStateToProps);
+type ReduxProps = ConnectedProps<typeof connector>;
+
+const Exchange: React.FC<ReduxProps> = (props) => {
   const { root, stickyTab, stickyRecommendation } = useClasses();
   const [value, setValue] = React.useState(0);
   const { search } = useLocation();
+  const { transfer } = props;
 
   const {
     setActiveStep,
@@ -91,7 +96,7 @@ const Exchange: React.FC = () => {
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   useEffect(() => {
-    if (!search.includes('eid')) {
+    if (!search.includes('eid') && !transfer.isStarted) {
       setActiveStep(0);
     }
   }, [search]);
@@ -205,12 +210,19 @@ const Exchange: React.FC = () => {
         <TabPanel value={value} index={1}>
           <Tab2 />
         </TabPanel> */}
-        <div style={{display: value === 0 ? 'none' : 'block'}}><TabPanel><Tab1 /></TabPanel></div>
-        <div style={{display: value === 1 ? 'none' : 'block'}}><TabPanel><Tab2 /></TabPanel></div>
-
+        <div style={{ display: value === 0 ? 'none' : 'block' }}>
+          <TabPanel>
+            <Tab1 />
+          </TabPanel>
+        </div>
+        <div style={{ display: value === 1 ? 'none' : 'block' }}>
+          <TabPanel>
+            <Tab2 />
+          </TabPanel>
+        </div>
       </Grid>
     </Grid>
   );
 };
 
-export default Exchange;
+export default connector(Exchange);
