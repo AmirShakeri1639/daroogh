@@ -38,7 +38,6 @@ import { AdvancedSearchInterface } from 'interfaces/search';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from 'redux/actions';
 import { ListOptions } from 'components/public/auto-complete/AutoComplete';
-import { useQueryString } from 'hooks';
 import { useLocation } from 'react-router';
 
 const { getRelatedPharmacyDrug, getFavoritePharmacyDrug } = new PharmacyDrug();
@@ -317,8 +316,8 @@ const FirstStep: React.FC = () => {
       ? PharmacyDrugEnum.GET_FAVORITE_EXCHANGE_LIST_OF_DRUGS
       : PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG,
     shouldDisplayFavoriteList
-      ? () => getFavoritePharmacyDrug()
-      : () => getRelatedPharmacyDrug(),
+      ? (): Promise<any> => getFavoritePharmacyDrug()
+      : (): Promise<any> => getRelatedPharmacyDrug(),
     {
       enabled: searchedDrugs.length === 0,
     }
