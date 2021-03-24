@@ -22,8 +22,6 @@ import routes from '../../../../../routes';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 import { useQuery } from 'react-query';
 import queryString from 'query-string';
-// load test data
-// import d from './testdata.json';
 
 const Desktop1: React.FC = () => {
   const { getDashboard } = new Exchange();
@@ -56,31 +54,35 @@ const Desktop1: React.FC = () => {
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
 
-  function usePrevious(value: number) {
-    const ref = useRef<number>();
-    React.useEffect(() => {
-      ref.current = value;
-    });
-    return ref.current;
-  }
+  // function usePrevious(value: number) {
+  //   const ref = useRef<number>();
+  //   React.useEffect(() => {
+  //     ref.current = value;
+  //   });
+  //   return ref.current;
+  // }
 
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
+  const [page, setPage] = useState<number>(0);
+
   const exchangesRef = React.useRef(exchanges);
   const setExchangesRef = (data: ViewExchangeInterface[]) => {
     exchangesRef.current = data;
     setExchanges(data);
   };
 
-  const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
+
   const setPageRef = (data: number) => {
     pageRef.current = data;
     setPage(data);
   };
 
-  const prevCount = usePrevious(page);
+  // const prevCount = usePrevious(page);
   const [loading, setLoading] = useState(false);
+
   const loadingRef = React.useRef(loading);
+
   const setLoadingRef = (data: boolean) => {
     loadingRef.current = data;
     setLoading(data);
@@ -90,99 +92,81 @@ const Desktop1: React.FC = () => {
 
   const [totalCount, setTotalCount] = useState<number>(0);
   const totalCountRef = React.useRef(totalCount);
+
   const setTotalCountRef = (data: number) => {
     totalCountRef.current = data;
     setTotalCount(data);
   };
 
-  const { isLoading, refetch } = useQuery(
-    ['key'],
-    () => {
-      return getDashboard(pageRef.current);
-    },
-    {
-      onSuccess: (result) => {
-        if (result != undefined) {
-          const newList = exchanges.concat(result.items);
-          setTotalCountRef(result.count);
-          const statesList: LabelValue[] = [];
-          let hasCompleted: boolean = false;
-          const items = newList.map((item: any) => {
-            let thisHasCompleted = false;
-            if (
-              !item.currentPharmacyIsA &&
-              item.state <= 10 &&
-              !isStateCommon(item.state)
-            )
-              item.state += 10;
-            if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
-              hasCompleted = true;
-              thisHasCompleted = true;
-            }
-            if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
-              statesList.push({
-                label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
-                value: item.state,
-              });
-            }
-            return { ...item, expireDate: getExpireDate(item) };
-          });
-
-          if (hasCompleted) {
+  const { refetch } = useQuery(['key', page], () => getDashboard(page), {
+    onSuccess: (result) => {
+      if (result != undefined) {
+        const newList = exchanges.concat(result.items);
+        // setTotalCountRef(result.count);
+        setTotalCount(result.count);
+        const statesList: LabelValue[] = [];
+        let hasCompleted: boolean = false;
+        const items = newList.map((item: any) => {
+          let thisHasCompleted = false;
+          if (
+            !item.currentPharmacyIsA &&
+            item.state <= 10 &&
+            !isStateCommon(item.state)
+          )
+            item.state += 10;
+          if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
+            hasCompleted = true;
+            thisHasCompleted = true;
+          }
+          if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
             statesList.push({
-              label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
-              value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+              label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
+              value: item.state,
             });
           }
-          // setExchanges(items);
-          setExchangesRef(items);
-          // setIsLoading(false);
-          statesList.push(needSurveyItem);
-          setStateFilterList(statesList);
-          setLoadingRef(false);
-          setNoData(false);
-        } else {
-          setNoData(true);
-          setLoading(false);
+          return { ...item, expireDate: getExpireDate(item) };
+        });
+
+        if (hasCompleted) {
+          statesList.push({
+            label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
+            value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+          });
         }
-      },
-    }
-  );
+        // setExchanges(items);
+        setExchanges(items);
+        // setIsLoading(false);
+        statesList.push(needSurveyItem);
+        setStateFilterList(statesList);
+        setLoading(false);
+        setNoData(false);
+      } else {
+        setNoData(true);
+        setLoading(false);
+      }
+    },
+  });
 
   const handleScroll = (e: any): any => {
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (
-        totalCountRef.current === 0 ||
-        exchangesRef.current.length < totalCountRef.current
-      ) {
-        const currentpage = pageRef.current + 1;
-        setPageRef(currentpage);
-        setLoadingRef(true);
+      if (totalCount === 0 || exchanges.length < totalCount) {
+        // const currentpage = pageRef.current + 1;
+        setPage((v) => v + 1);
+        setLoading(true);
         refetch();
       }
     }
   };
 
   React.useEffect(() => {
-    // const res = (async (): Promise<any> => await getExchanges())
-    // res();
-    window.addEventListener('scroll', handleScroll, {
+    document.addEventListener('scroll', handleScroll, {
       capture: true,
     });
-
-    return () =>
-      window.removeEventListener('scroll', handleScroll, {
-        capture: true,
-      });
+    return (): void => {
+      document.removeEventListener('scroll', handleScroll);
+    };
   }, []);
-
-  // React.useEffect(() => {
-  //   console.log("Page => ", page);
-  //   // const res = (async (): Promise<any> => { setLoading(true); await getExchanges(); setLoading(false); })
-  //   // res();
-  //   refetch();
-  // }, [page])
 
   async function getExchanges(): Promise<any> {
     const result = await getDashboard(page);
@@ -327,10 +311,7 @@ const Desktop1: React.FC = () => {
         <Grid container spacing={3}>
           {<CardListGenerator />}
         </Grid>
-        {/* {loading && <CircleLoading />} */}
         <CircleBackdropLoading isOpen={loadingRef.current} />
-        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */}
-        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */}
       </Grid>
     </Container>
   );
