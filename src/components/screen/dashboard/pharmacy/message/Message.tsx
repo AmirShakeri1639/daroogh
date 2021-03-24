@@ -31,7 +31,9 @@ const PharmacyMessage: React.FC = () => {
     window.addEventListener('scroll', debounce(func, 100), { capture: true });
 
     return (): void => {
-      window.removeEventListener('scroll', debounce(func, 100));
+      window.removeEventListener('scroll', debounce(func, 100), {
+        capture: true,
+      });
     };
   }, []);
 
