@@ -5,7 +5,11 @@ import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
 import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
-import { ExchangeStateEnum, NeedSurvey, SortTypeEnum } from '../../../../../enum';
+import {
+  ExchangeStateEnum,
+  NeedSurvey,
+  SortTypeEnum,
+} from '../../../../../enum';
 import {
   getExpireDate,
   isExchangeCompleted,
@@ -18,8 +22,6 @@ import routes from '../../../../../routes';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 import { useQuery } from 'react-query';
 import queryString from 'query-string';
-// load test data
-// import d from './testdata.json';
 
 const Desktop1: React.FC = () => {
   const { getDashboard } = new Exchange();
@@ -28,7 +30,7 @@ const Desktop1: React.FC = () => {
   const { transfer } = routes;
   const needSurveyItem = {
     label: t('survey.participate'),
-    value: NeedSurvey
+    value: NeedSurvey,
   };
 
   // const [isLoading, setIsLoading] = useState(true);
@@ -52,31 +54,35 @@ const Desktop1: React.FC = () => {
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
 
-  function usePrevious(value: number) {
-    const ref = useRef<number>();
-    React.useEffect(() => {
-      ref.current = value;
-    });
-    return ref.current;
-  }
+  // function usePrevious(value: number) {
+  //   const ref = useRef<number>();
+  //   React.useEffect(() => {
+  //     ref.current = value;
+  //   });
+  //   return ref.current;
+  // }
 
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
+  const [page, setPage] = useState<number>(0);
+
   const exchangesRef = React.useRef(exchanges);
   const setExchangesRef = (data: ViewExchangeInterface[]) => {
     exchangesRef.current = data;
     setExchanges(data);
   };
 
-  const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
+
   const setPageRef = (data: number) => {
     pageRef.current = data;
     setPage(data);
   };
 
-  const prevCount = usePrevious(page);
+  // const prevCount = usePrevious(page);
   const [loading, setLoading] = useState(false);
+
   const loadingRef = React.useRef(loading);
+
   const setLoadingRef = (data: boolean) => {
     loadingRef.current = data;
     setLoading(data);
@@ -86,95 +92,81 @@ const Desktop1: React.FC = () => {
 
   const [totalCount, setTotalCount] = useState<number>(0);
   const totalCountRef = React.useRef(totalCount);
+
   const setTotalCountRef = (data: number) => {
     totalCountRef.current = data;
     setTotalCount(data);
   };
 
-  const { isLoading, refetch } = useQuery(
-    ['key'],
-    () => {
-      return getDashboard(pageRef.current);
-    },
-    {
-      onSuccess: (result) => {
-        if (result != undefined) {
-          const newList = exchanges.concat(result.items);
-          setTotalCountRef(result.count);
-          const statesList: LabelValue[] = [];
-          let hasCompleted: boolean = false;
-          const items = newList.map((item: any) => {
-            let thisHasCompleted = false;
-            if (
-              !item.currentPharmacyIsA &&
-              item.state <= 10 &&
-              !isStateCommon(item.state)
-            )
-              item.state += 10;
-            if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
-              hasCompleted = true;
-              thisHasCompleted = true;
-            }
-            if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
-              statesList.push({
-                label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
-                value: item.state,
-              });
-            }
-            return { ...item, expireDate: getExpireDate(item) };
-          });
-
-          if (hasCompleted) {
+  const { refetch } = useQuery(['key', page], () => getDashboard(page), {
+    onSuccess: (result) => {
+      if (result != undefined) {
+        const newList = exchanges.concat(result.items);
+        // setTotalCountRef(result.count);
+        setTotalCount(result.count);
+        const statesList: LabelValue[] = [];
+        let hasCompleted: boolean = false;
+        const items = newList.map((item: any) => {
+          let thisHasCompleted = false;
+          if (
+            !item.currentPharmacyIsA &&
+            item.state <= 10 &&
+            !isStateCommon(item.state)
+          )
+            item.state += 10;
+          if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
+            hasCompleted = true;
+            thisHasCompleted = true;
+          }
+          if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
             statesList.push({
-              label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
-              value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+              label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
+              value: item.state,
             });
           }
-          // setExchanges(items);
-          setExchangesRef(items);
-          // setIsLoading(false);
-          statesList.push(needSurveyItem);
-          setStateFilterList(statesList);
-          setLoadingRef(false);
-          setNoData(false);
-        } else {
-          setNoData(true);
-          setLoading(false);
+          return { ...item, expireDate: getExpireDate(item) };
+        });
+
+        if (hasCompleted) {
+          statesList.push({
+            label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
+            value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
+          });
         }
-      },
-    }
-  );
+        // setExchanges(items);
+        setExchanges(items);
+        // setIsLoading(false);
+        statesList.push(needSurveyItem);
+        setStateFilterList(statesList);
+        setLoading(false);
+        setNoData(false);
+      } else {
+        setNoData(true);
+        setLoading(false);
+      }
+    },
+  });
 
   const handleScroll = (e: any): any => {
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (
-        totalCountRef.current === 0 ||
-        exchangesRef.current.length < totalCountRef.current
-      ) {
-        const currentpage = pageRef.current + 1;
-        setPageRef(currentpage);
-        setLoadingRef(true);
+      if (totalCount === 0 || exchanges.length < totalCount) {
+        // const currentpage = pageRef.current + 1;
+        setPage((v) => v + 1);
+        setLoading(true);
         refetch();
       }
     }
   };
 
   React.useEffect(() => {
-    // const res = (async (): Promise<any> => await getExchanges())
-    // res();
-    window.addEventListener('scroll', (e) => handleScroll(e), {
+    document.addEventListener('scroll', handleScroll, {
       capture: true,
     });
-    return () => window.removeEventListener('scroll', (e) => handleScroll(e));
+    return (): void => {
+      document.removeEventListener('scroll', handleScroll);
+    };
   }, []);
-
-  // React.useEffect(() => {
-  //   console.log("Page => ", page);
-  //   // const res = (async (): Promise<any> => { setLoading(true); await getExchanges(); setLoading(false); })
-  //   // res();
-  //   refetch();
-  // }, [page])
 
   async function getExchanges(): Promise<any> {
     const result = await getDashboard(page);
@@ -260,15 +252,15 @@ const Desktop1: React.FC = () => {
       const listToShow = filter.includes(ExchangeStateEnum.UNKNOWN)
         ? [...exchanges]
         : exchanges.filter(
-          (ex) =>
-            filter.includes(ex.state) ||
-            (filter.includes(NeedSurvey) && ex.needSurvey) ||
-            (isExchangeCompleted(
-              ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
-              ex.currentPharmacyIsA
-            ) &&
-              filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
-        );
+            (ex) =>
+              filter.includes(ex.state) ||
+              (filter.includes(NeedSurvey) && ex.needSurvey) ||
+              (isExchangeCompleted(
+                ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
+                ex.currentPharmacyIsA
+              ) &&
+                filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
+          );
 
       // sort
       if (sortField !== '') {
@@ -285,15 +277,15 @@ const Desktop1: React.FC = () => {
       elements = (
         <>
           {listToShow.map((item, index) => (
-            <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
+            <Grid spacing={0} item xs={12} sm={6} md={4} xl={4} key={index}>
               <DesktopCardContent
-                item={ item }
-                full={ false }
-                showActions={ true }
-                onCardClick={ cardClickHandler }
+                item={item}
+                full={false}
+                showActions={true}
+                onCardClick={cardClickHandler}
               ></DesktopCardContent>
             </Grid>
-          )) }
+          ))}
         </>
       );
 
@@ -305,24 +297,21 @@ const Desktop1: React.FC = () => {
 
   return (
     <Container>
-      <Grid item={ true } xs={ 12 }>
-        <Grid container spacing={ 2 }>
-          <Grid item={ true } xs={ 12 }>
+      <Grid item={true} xs={12}>
+        <Grid container spacing={2}>
+          <Grid item={true} xs={12}>
             <DesktopToolbox
-              filterList={ stateFilterList }
-              onFilterChanged={ filterChanged }
-              onSortSelected={ sortSelected }
+              filterList={stateFilterList}
+              onFilterChanged={filterChanged}
+              onSortSelected={sortSelected}
             />
           </Grid>
         </Grid>
 
-        <Grid container spacing={ 3 }>
-          { <CardListGenerator /> }
+        <Grid container spacing={3}>
+          {<CardListGenerator />}
         </Grid>
-        {/* {loading && <CircleLoading />} */ }
-        <CircleBackdropLoading isOpen={ loadingRef.current } />
-        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */ }
-        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */ }
+        <CircleBackdropLoading isOpen={loadingRef.current} />
       </Grid>
     </Container>
   );
