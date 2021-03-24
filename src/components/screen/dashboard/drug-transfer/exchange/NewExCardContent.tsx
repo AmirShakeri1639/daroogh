@@ -55,6 +55,8 @@ import errorHandler from 'utils/errorHandler';
 import { AddDrog1, AddDrog2, AddPack1, AddPack2 } from 'model/exchange';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import CounterButton from './CounterButton';
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import { debug } from 'console';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -802,6 +804,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   }, []);
 
   const handleTotalAmount = () => {
+    debugger;
     if (!pharmacyDrug) return;
     let val = 0;
     val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
@@ -1000,6 +1003,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
       {formType === 1 && <PackContent />}
       {formType === 2 && <DrugInfo key={pharmacyDrug?.id} />}
       {formType === 3 && <PackDetailContent />}
+      <CircleBackdropLoading isOpen={isLoading} />
     </Container>
   );
 }
