@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
 import { Container, Grid } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
@@ -35,17 +35,22 @@ const Desktop1: React.FC = () => {
 
   // const [isLoading, setIsLoading] = useState(true);
   const [stateFilterList, setStateFilterList] = useState<LabelValue[]>([]);
-  // If false then apply querystring filter, otherwise load all data.
-  const [toolboxFilterSelectedChange, setToolboxFilterSelectedChange] = useState(false);
 
   const location = useLocation();
   const params = queryString.parse(location.search);
+  // Should we load API filtered data for waiting states? (if it's in querystring)
+  const [waiting, setWaiting] = useState(() => {
+    return params.state && params.state === 'waiting'
+  });
   const [filter, setFilter] = useState<any[]>((): any => {
     let result = [];
-    if (params.state && params.state.length > 0 && !toolboxFilterSelectedChange) {
-      result = String(params.state)
-        .split(',')
-        .map((i) => +i);
+    if (waiting) {
+      result = [
+        //Remove the first one, it's just for test.
+        // ExchangeStateEnum.WAITFORB,
+        ExchangeStateEnum.WAITFORB_FORB,
+        ExchangeStateEnum.CONFIRMB_AND_WAITFORA
+      ];
     } else {
       result = [ExchangeStateEnum.UNKNOWN];
     }
@@ -59,17 +64,18 @@ const Desktop1: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const loadingRef = React.useRef(loading);
-  const [totalCount, setTotalCount] = useState<number>(0);
+  const [totalCount, setTotalCount] = useState(() => {
+    return 0;
+  });
 
   const { refetch } = useQuery(['key', page],
-    () => getDashboard(page,
-      toolboxFilterSelectedChange
-        ? undefined
-        : String(params.state).split(',')), {
+    () => getDashboard(page, waiting), {
     onSuccess: (result) => {
       if (result != undefined) {
         const newList = exchanges.concat(result.items);
-        setTotalCount(result.count);
+        if (result.count != undefined && result.count != 0) {
+          setTotalCount(result.count);
+        }
         const statesList: LabelValue[] = [];
         let hasCompleted: boolean = false;
         const items = newList.map((item: any) => {
@@ -99,9 +105,7 @@ const Desktop1: React.FC = () => {
             value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
           });
         }
-        // setExchanges(items);
         setExchanges(items);
-        // setIsLoading(false);
         statesList.push(needSurveyItem);
         setStateFilterList(statesList);
         setLoading(false);
@@ -111,14 +115,19 @@ const Desktop1: React.FC = () => {
     },
   });
 
+  useEffect(() => {
+    setPage(0);
+  }, [waiting]);
+
   const handleScroll = (e: any): any => {
     const el = e.target;
     if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (totalCount === 0 || exchanges.length < totalCount) {
-        // const currentpage = pageRef.current + 1;
+      if (totalCount == 0 || exchanges.length < (totalCount ?? 0)) {
         setPage((v) => v + 1);
         setLoading(true);
-        refetch();
+        if (!waiting) {
+          refetch();
+        }
       }
     }
   };
@@ -146,12 +155,10 @@ const Desktop1: React.FC = () => {
   };
 
   const filterChanged = (v: number): void => {
-    console.log('%c Filter changed', 'color: #fff59d; background: #ff9800; padding: 2px 5px')
-    console.log('toolboxFilterSelectedChange:', toolboxFilterSelectedChange)
-    if (toolboxFilterSelectedChange) {
+    setWaiting(false);
+    if (waiting) {
       refetch();
     }
-    setToolboxFilterSelectedChange(true);
     if (v === 0) {
       setFilter([ExchangeStateEnum.UNKNOWN]);
     } else {
@@ -203,6 +210,7 @@ const Desktop1: React.FC = () => {
         <>
           {listToShow.map((item, index) => (
             <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
+              <div style={ { color: 'red', fontWeight: 'bold' } }>{ item.state }</div>
               <DesktopCardContent
                 item={ item }
                 full={ false }
