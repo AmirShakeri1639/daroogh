@@ -44,6 +44,7 @@ const Input: React.FC<InputInterface & { ref?: Ref<any> }> = forwardRef(
         return (
           <NumberFormat
             ref={ref}
+            type="tel"
             className={numberInput}
             value={value}
             placeholder={String(placeholder)}
