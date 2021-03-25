@@ -373,7 +373,7 @@ const ExCalculator: React.FC<Props> = (props) => {
   return (
     <>
       {full ? (
-        <Dialog open={ dialogOpen } fullScreen={ fullScreen }>
+        <Dialog open={ dialogOpen } fullScreen={ fullScreen } fullWidth={true}>
           <DialogTitle>{ t('exchange.exCalculator') }</DialogTitle>
           <Divider />
           <DialogContent className={ darkText }>

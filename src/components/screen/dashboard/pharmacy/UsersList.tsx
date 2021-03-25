@@ -743,7 +743,7 @@ const UsersList: React.FC = () => {
 
       {fullScreen && contentGenerator()}
       {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
-      <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal}>
+      <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal} fullWidth>
         <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -767,6 +767,7 @@ const UsersList: React.FC = () => {
         open={isOpenModalOfCreateUser}
         fullScreen={fullScreen}
         onClose={toggleIsOpenModalOfUser}
+        fullWidth
       >
         <DialogTitle className="text-sm">
           {state?.id === 0 ? t('action.create') : t('action.edit')}

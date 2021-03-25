@@ -639,6 +639,7 @@ const SupplyList: React.FC = () => {
         fullScreen={fullScreen}
         open={isOpenModalOfNewList}
         onClose={toggleIsOpenModalOfNewList}
+        fullWidth
       >
         <DialogTitle className="text-sm">{'افزودن به لیست عرضه'}</DialogTitle>
         <DialogContent>

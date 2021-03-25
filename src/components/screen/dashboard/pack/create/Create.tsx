@@ -766,6 +766,7 @@ const Create: React.FC = () => {
         fullScreen={fullScreen}
         open={isOpenModal}
         onClose={toggleIsOpenModal}
+        fullWidth
       >
         <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
         <DialogContent>

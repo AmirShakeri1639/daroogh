@@ -83,7 +83,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       descriptions,
     } = detailsItem;
     return (
-      <Dialog open={isOpenDetails} fullScreen={fullScreen} maxWidth="md">
+      <Dialog open={isOpenDetails} fullScreen={fullScreen} fullWidth maxWidth="md">
         <DialogTitle>{t('employment.application')}</DialogTitle>
         <Divider />
         <DialogContent>

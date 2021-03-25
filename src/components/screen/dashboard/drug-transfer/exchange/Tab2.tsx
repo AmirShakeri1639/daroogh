@@ -394,6 +394,7 @@ const Tab2: React.FC = () => {
           fullScreen={fullScreen}
           open={openDialog}
           onClose={handleClose}
+          fullWidth={true}
           aria-labelledby="responsive-dialog-title"
         >
           <DialogTitle>{'انتخاب دارو از سبد خود'}</DialogTitle>
