@@ -35,12 +35,14 @@ const Desktop1: React.FC = () => {
 
   // const [isLoading, setIsLoading] = useState(true);
   const [stateFilterList, setStateFilterList] = useState<LabelValue[]>([]);
+  // If false then apply querystring filter, otherwise load all data.
+  const [toolboxFilterSelectedChange, setToolboxFilterSelectedChange] = useState(false);
 
   const location = useLocation();
   const params = queryString.parse(location.search);
   const [filter, setFilter] = useState<any[]>((): any => {
     let result = [];
-    if (params.state && params.state.length > 0) {
+    if (params.state && params.state.length > 0 && !toolboxFilterSelectedChange) {
       result = String(params.state)
         .split(',')
         .map((i) => +i);
@@ -53,57 +55,20 @@ const Desktop1: React.FC = () => {
 
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
-
-  // function usePrevious(value: number) {
-  //   const ref = useRef<number>();
-  //   React.useEffect(() => {
-  //     ref.current = value;
-  //   });
-  //   return ref.current;
-  // }
-
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
   const [page, setPage] = useState<number>(0);
-
-  const exchangesRef = React.useRef(exchanges);
-  const setExchangesRef = (data: ViewExchangeInterface[]) => {
-    exchangesRef.current = data;
-    setExchanges(data);
-  };
-
-  const pageRef = React.useRef(page);
-
-  const setPageRef = (data: number) => {
-    pageRef.current = data;
-    setPage(data);
-  };
-
-  // const prevCount = usePrevious(page);
   const [loading, setLoading] = useState(false);
-
   const loadingRef = React.useRef(loading);
-
-  const setLoadingRef = (data: boolean) => {
-    loadingRef.current = data;
-    setLoading(data);
-  };
-
-  const [noData, setNoData] = useState(false);
-
   const [totalCount, setTotalCount] = useState<number>(0);
-  const totalCountRef = React.useRef(totalCount);
 
-  const setTotalCountRef = (data: number) => {
-    totalCountRef.current = data;
-    setTotalCount(data);
-  };
-
-  const { refetch } = useQuery(['key', page], () => getDashboard(page, String(params.state)
-    .split(',')), {
+  const { refetch } = useQuery(['key', page],
+    () => getDashboard(page,
+      toolboxFilterSelectedChange
+        ? undefined
+        : String(params.state).split(',')), {
     onSuccess: (result) => {
       if (result != undefined) {
         const newList = exchanges.concat(result.items);
-        // setTotalCountRef(result.count);
         setTotalCount(result.count);
         const statesList: LabelValue[] = [];
         let hasCompleted: boolean = false;
@@ -140,9 +105,7 @@ const Desktop1: React.FC = () => {
         statesList.push(needSurveyItem);
         setStateFilterList(statesList);
         setLoading(false);
-        setNoData(false);
       } else {
-        setNoData(true);
         setLoading(false);
       }
     },
@@ -169,51 +132,6 @@ const Desktop1: React.FC = () => {
     };
   }, []);
 
-  async function getExchanges(): Promise<any> {
-    const result = await getDashboard(page);
-    if (result != undefined) {
-      const newList = exchanges.concat(result.items);
-      // setTotalCount(result.count);
-      const statesList: LabelValue[] = [];
-      let hasCompleted: boolean = false;
-      const items = newList.map((item: any) => {
-        let thisHasCompleted = false;
-        if (
-          !item.currentPharmacyIsA &&
-          item.state <= 10 &&
-          !isStateCommon(item.state)
-        )
-          item.state += 10;
-        if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
-          hasCompleted = true;
-          thisHasCompleted = true;
-        }
-        if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
-          statesList.push({
-            label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
-            value: item.state,
-          });
-        }
-        return { ...item, expireDate: getExpireDate(item) };
-      });
-
-      if (hasCompleted) {
-        statesList.push({
-          label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
-          value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
-        });
-      }
-      setExchanges(items);
-      statesList.push(needSurveyItem);
-      setStateFilterList(statesList);
-      setLoading(false);
-      setNoData(false);
-    } else {
-      setNoData(true);
-      setLoading(false);
-    }
-  }
-
   const cardClickHandler = (
     id: number,
     state: any,
@@ -228,6 +146,12 @@ const Desktop1: React.FC = () => {
   };
 
   const filterChanged = (v: number): void => {
+    console.log('%c Filter changed', 'color: #fff59d; background: #ff9800; padding: 2px 5px')
+    console.log('toolboxFilterSelectedChange:', toolboxFilterSelectedChange)
+    if (toolboxFilterSelectedChange) {
+      refetch();
+    }
+    setToolboxFilterSelectedChange(true);
     if (v === 0) {
       setFilter([ExchangeStateEnum.UNKNOWN]);
     } else {
