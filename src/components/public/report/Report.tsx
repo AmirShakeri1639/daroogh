@@ -144,6 +144,7 @@ const Report = (props: ReportProp): JSX.Element => {
         open={showReport}
         TransitionComponent={Transition}
         fullScreen={true}
+        fullWidth={true}
       >
         <AppBar>
           <Toolbar

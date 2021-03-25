@@ -129,7 +129,7 @@ const FourthStep: React.FC = () => {
             </Grid>
           </Grid>
         </Hidden>
-        <Dialog fullScreen={fullScreen} open={open} onClose={handleClose}>
+        <Dialog fullScreen={fullScreen} open={open} onClose={handleClose} fullWidth={true}>
           <DialogTitle>{'تایید نهایی'}</DialogTitle>
           <DialogContent>
             <ExCalculator exchange={viewExhcnage} full={false} />
