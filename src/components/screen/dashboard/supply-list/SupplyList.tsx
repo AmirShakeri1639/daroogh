@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect, useRef } from 'react';
+import React, { useState, useReducer, useEffect, useRef, useMemo } from 'react';
 import {
   createStyles,
   Grid,
@@ -541,16 +541,7 @@ const SupplyList: React.FC = () => {
     return items.reverse();
   };
 
-  const drugListGenerator = (): JSX.Element[] => {
-    return drugList.map((item: DrugInterface) => {
-      return (
-        <MenuItem key={item.id} value={item.id}>
-          {item.name}
-        </MenuItem>
-      );
-    });
-  };
-
+  const memoItems = useMemo(() => displayHandler(), [data]);
   const formHandler = async (): Promise<any> => {
     try {
       if (
@@ -622,7 +613,7 @@ const SupplyList: React.FC = () => {
             </Grid>
           </Hidden>
 
-          {displayHandler()}
+          {memoItems}
           <Hidden smUp>
             <Fab
               onClick={toggleIsOpenModalOfNewList}
