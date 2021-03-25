@@ -143,8 +143,17 @@ const DesktopCardContent = ({
       : 0;
   };
 
-  const totalPriceA = calcPrice(cartA);
-  const totalPriceB = calcPrice(cartB);
+  // const totalPriceA = calcPrice(cartA);
+  // const totalPriceB = calcPrice(cartB);
+
+  const [totalPriceA, setTotalPriceA] = useState<number>(0);
+  const [totalPriceB, setTotalPriceB] = useState<number>(0);
+
+  React.useEffect(()=> {
+      setTotalPriceA(calcPrice(cartA));
+      setTotalPriceB(calcPrice(cartB));
+  }, [basketCount, uBasketCount])
+  
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -472,7 +481,7 @@ const DesktopCardContent = ({
                 item.state === 2 ||
                 (item.state === 12 && !item.lockSuggestion)) && (
                 <Grid container item xs={12}>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <div
                       className={scaleContainer}
                       style={{ minHeight: `${diffPercent * 0.75 + 85}px` }}
@@ -520,19 +529,41 @@ const DesktopCardContent = ({
                         </span>
                       </div>
                     </div>
-                  </Grid>
-                  {differenceMessage && (
-                    <Grid item xs={12} className={spacingVertical1}>
-                      {differenceMessage.split('\n').map((i, k) => {
-                        return (
-                          <div key={k}>
-                            {i}
-                            <br key={k} />
-                          </div>
-                        );
-                      })}
-                    </Grid>
-                  )}
+                  </Grid> */}
+                  <Grid item xs={12} spacing={0}>
+                <MobileDiffViwer
+                  percentage={diffPercent}
+                  otherAmount={`${
+                    item.currentPharmacyIsA ? totalPriceB : totalPriceA
+                  }`}
+                  yourAmount={`${
+                    item.currentPharmacyIsA ? totalPriceA : totalPriceB
+                  }`}
+                  is3PercentOk={is3PercentOk}
+                />
+              </Grid>
+              {differenceMessage && (
+                <Grid
+                  item
+                  xs={12}
+                  spacing={0}
+                  style={{
+                    fontSize: 13,
+                    marginTop: 8,
+                    border: '1px solid #F4CB08',
+                    padding: 4,
+                  }}
+                >
+                  {differenceMessage.split('\n').map((i, k) => {
+                    return (
+                      <div key={k}>
+                        {i}
+                        <br key={k} />
+                      </div>
+                    );
+                  })}
+                </Grid>
+              )}
                 </Grid>
               )}
             </>

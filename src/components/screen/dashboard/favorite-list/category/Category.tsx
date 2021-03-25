@@ -280,6 +280,7 @@ const Category: React.FC = () => {
         open={isOpenModal}
         fullScreen={fullScreen}
         onClose={toggleIsOpenModal}
+        fullWidth
       >
         <DialogTitle className="text-sm">{t('drug.category')}</DialogTitle>
         <DialogContent>

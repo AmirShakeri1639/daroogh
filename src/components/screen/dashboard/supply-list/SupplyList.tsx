@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect, useRef } from 'react';
+import React, { useState, useReducer, useEffect, useRef, useMemo } from 'react';
 import {
   createStyles,
   Grid,
@@ -541,16 +541,7 @@ const SupplyList: React.FC = () => {
     return items.reverse();
   };
 
-  const drugListGenerator = (): JSX.Element[] => {
-    return drugList.map((item: DrugInterface) => {
-      return (
-        <MenuItem key={item.id} value={item.id}>
-          {item.name}
-        </MenuItem>
-      );
-    });
-  };
-
+  const memoItems = useMemo(() => displayHandler(), [data]);
   const formHandler = async (): Promise<any> => {
     try {
       if (
@@ -622,7 +613,7 @@ const SupplyList: React.FC = () => {
             </Grid>
           </Hidden>
 
-          {displayHandler()}
+          {memoItems}
           <Hidden smUp>
             <Fab
               onClick={toggleIsOpenModalOfNewList}
@@ -639,6 +630,7 @@ const SupplyList: React.FC = () => {
         fullScreen={fullScreen}
         open={isOpenModalOfNewList}
         onClose={toggleIsOpenModalOfNewList}
+        fullWidth
       >
         <DialogTitle className="text-sm">{'افزودن به لیست عرضه'}</DialogTitle>
         <DialogContent>
@@ -653,7 +645,9 @@ const SupplyList: React.FC = () => {
                   className="w-100"
                   placeholder={t('drug.name')}
                   options={options}
-                  onItemSelected={(item): void => setSelectedDrug(item[0])}
+                  onItemSelected={(item: any[]): void =>
+                    setSelectedDrug(item[0])
+                  }
                   defaultSelectedItem={selectedDrug?.label}
                 />
               </Grid>
@@ -725,16 +719,15 @@ const SupplyList: React.FC = () => {
                     </Grid>
                     <Grid item xs={10} className="w-100">
                       <Input
+                        type="number"
                         value={state?.offer2}
                         label={t('general.number')}
-                        onChange={debounce(
-                          (e) =>
-                            dispatch({
-                              type: 'offer2',
-                              value: e,
-                            }),
-                          500
-                        )}
+                        onChange={(e): void =>
+                          dispatch({
+                            type: 'offer2',
+                            value: e.target.value,
+                          })
+                        }
                       />
                     </Grid>
                   </Grid>
@@ -752,16 +745,15 @@ const SupplyList: React.FC = () => {
                     </Grid>
                     <Grid item xs={9}>
                       <Input
+                        type="number"
                         value={state?.offer1}
                         label={t('general.number')}
-                        onChange={debounce(
-                          (e) =>
-                            dispatch({
-                              type: 'offer1',
-                              value: e,
-                            }),
-                          500
-                        )}
+                        onChange={(e): void =>
+                          dispatch({
+                            type: 'offer1',
+                            value: e.target.value,
+                          })
+                        }
                       />
                     </Grid>
                     <Grid item xs={2}>
@@ -786,28 +778,46 @@ const SupplyList: React.FC = () => {
                   <Grid item xs={3}>
                     <Input
                       label={t('general.day')}
+                      type="number"
                       value={selectedDay}
-                      onChange={(e): void => setSelectedDay(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedDay.length < 2 || val.length < 2) {
+                          setSelectedDay(e.target.value);
+                        }
+                      }}
                       error={Number(selectedDay) > 31}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={3}>
                     <Input
+                      type="number"
                       value={selectedMonth}
                       label={t('general.month')}
                       required
                       error={Number(selectedMonth) > 12}
-                      onChange={(e): void => setSelectedMonth(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedMonth.length < 2 || val.length < 2) {
+                          setSelectedMonth(e.target.value);
+                        }
+                      }}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={3}>
                     <Input
+                      type="number"
                       value={selectedYear}
                       required
                       label={t('general.year')}
-                      onChange={(e): void => setSelectedYear(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedYear.length < 4 || val.length < 4) {
+                          setSelectedYear(val);
+                        }
+                      }}
                     />
                   </Grid>
 

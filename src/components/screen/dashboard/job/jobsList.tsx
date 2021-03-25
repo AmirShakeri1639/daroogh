@@ -704,6 +704,7 @@ const JobsList: React.FC = () => {
       <Dialog
         open={isOpenEditModal}
         fullScreen={fullScreen}
+        fullWidth
         onClose={toggleIsOpenSaveModalForm}
       >
         <DialogTitle className="text-sm">

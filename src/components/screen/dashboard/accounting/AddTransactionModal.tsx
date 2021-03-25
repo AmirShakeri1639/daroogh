@@ -224,7 +224,7 @@ const AddTransactionModal: React.FC<Props> = ({
 
   return (
     <>
-      <Dialog open={dialogOpen} fullScreen={fullScreen}>
+      <Dialog open={dialogOpen} fullScreen={fullScreen} fullWidth={true}>
         <DialogTitle>
           {`${t('accounting.addTransaction')} \
              - ${t('pharmacy.pharmacy')} ${pharmacyName}`}

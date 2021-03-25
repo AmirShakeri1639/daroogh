@@ -407,6 +407,7 @@ const ActionButtons = (): JSX.Element => {
       <Dialog
         fullScreen={fullScreen}
         open={openApproveModal}
+        fullWidth={true}
         onClose={() => {
           setOpenApproveModal(false);
         }}
@@ -704,6 +705,7 @@ const ActionButtons = (): JSX.Element => {
     <Dialog
       fullScreen={fullScreen}
       open={openSurvayModal}
+      fullWidth={true}
       onClose={() => {
         setOpenSurvayModal(false);
       }}
