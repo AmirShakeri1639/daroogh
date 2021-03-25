@@ -143,8 +143,17 @@ const DesktopCardContent = ({
       : 0;
   };
 
-  const totalPriceA = calcPrice(cartA);
-  const totalPriceB = calcPrice(cartB);
+  // const totalPriceA = calcPrice(cartA);
+  // const totalPriceB = calcPrice(cartB);
+
+  const [totalPriceA, setTotalPriceA] = useState<number>(0);
+  const [totalPriceB, setTotalPriceB] = useState<number>(0);
+
+  React.useEffect(()=> {
+      setTotalPriceA(calcPrice(cartA));
+      setTotalPriceB(calcPrice(cartB));
+  }, [basketCount, uBasketCount])
+  
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;

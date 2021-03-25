@@ -801,7 +801,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   React.useEffect(() => {
     handleTotalAmountByCounter();
-  }, []);
+  }, [pharmacyDrug?.currentCnt]);
 
   const handleTotalAmount = () => {
     debugger;
