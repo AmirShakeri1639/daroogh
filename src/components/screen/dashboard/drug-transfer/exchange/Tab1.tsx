@@ -304,9 +304,9 @@ const Tab1: React.FC = () => {
                 buttonName: 'حذف از تبادل',
                 cardColor: '#dff4ff',
                 cnt: basketCount.find((x) => x.id == item.id)?.cnt,
-                totalAmount:
-                  basketCount.find((x) => x.id == item.id)?.cnt ??
-                  1 * item.amount,
+                // totalAmount:
+                //   basketCount.find((x) => x.id == item.id)?.cnt ??
+                //   1 * item.amount,
               });
             else {
               Object.assign(item, {
