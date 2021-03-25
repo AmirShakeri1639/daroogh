@@ -24,21 +24,27 @@ import { connect, ConnectedProps } from 'react-redux';
 
 interface TabPanelProps {
   children?: React.ReactNode;
-
+  index: any;
+  value: any;
 }
 
 function TabPanel(props: TabPanelProps) {
-  const { children, ...other } = props;
+  const { children, value, index, ...other } = props;
 
   return (
-      <div
-
-      >
-          <Box p={3} style={{ paddingRight: 0, paddingLeft: 0, marginLeft: -5 }}>
-              <Typography>{children}</Typography>
-          </Box>
-
-      </div>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3} style={{ paddingRight: 0, paddingLeft: 0, marginLeft: -5 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
   );
 }
 
@@ -208,15 +214,12 @@ const Exchange: React.FC<ReduxProps> = (props) => {
           />
         </Tabs>
         <Divider />
-        {/* <TabPanel value={value} index={0}>
+        <TabPanel value={value} index={0}>
           <Tab1 />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <Tab2 />
-        </TabPanel> */}
-          < div style = {{ display: value === 0 ? 'none' : 'block' }}> <TabPanel><Tab1 /></TabPanel></div >
-        <div style={{ display: value === 1 ? 'none' : 'block' }}><TabPanel><Tab2 /></TabPanel></div>
-
+        </TabPanel>
       </Grid>
     </Grid>
   );
