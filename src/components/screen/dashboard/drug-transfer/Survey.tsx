@@ -381,7 +381,7 @@ const Survey: React.FC<Props> = (props) => {
         break;
     }
     return (
-      <div style={{ height: 320, maxHeight: 320, width: 550, maxWidth: 550 }}>
+      <div style={{ height: 250, maxHeight: 250, width: '100٪', maxWidth: '100%' }}>
         {element}
       </div>
     );
@@ -391,6 +391,7 @@ const Survey: React.FC<Props> = (props) => {
     <Dialog
       fullScreen={fullScreen}
       open={openSurvayModal}
+      fullWidth={true}
       closeAfterTransition={true}
       onClose={() => {
         setOpenSurvayModal(false);

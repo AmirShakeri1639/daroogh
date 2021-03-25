@@ -40,7 +40,7 @@ const PictureDialog: React.FC<Props> = (props) => {
   const [isOpenDialog, setIsOpenDialog] = useState(true);
 
   return (
-    <Dialog open={ isOpenDialog } fullScreen={ fullScreen }>
+    <Dialog open={ isOpenDialog } fullScreen={ fullScreen } fullWidth={true}>
       <DialogTitle>{ title }</DialogTitle>
       <Divider />
       <DialogContent className={ root }>

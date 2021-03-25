@@ -236,6 +236,7 @@ const DataTable: React.ForwardRefRenderFunction<
       open={showReport}
       TransitionComponent={Transition}
       fullScreen={true}
+      fullWidth={true}
     >
       <AppBar>
         <Toolbar

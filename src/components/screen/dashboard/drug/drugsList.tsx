@@ -360,7 +360,7 @@ const DrugsList: React.FC = () => {
 
   const editModal = (): JSX.Element => {
     return (
-      <Dialog open={ isOpenEditModal } fullScreen={ fullScreen }
+      <Dialog open={ isOpenEditModal } fullScreen={ fullScreen } fullWidth={true}
         onClose={ toggleIsOpenSaveModalForm }>
         <DialogTitle className="text-sm">
           { state.id === 0 ? t('action.create') : t('action.edit') }

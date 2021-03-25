@@ -446,7 +446,7 @@ const PrescriptionList: React.FC = () => {
   };
   const editModal = (): JSX.Element => {
     return (
-      <Dialog open={isOpenEditModal} fullScreen={fullScreen}>
+      <Dialog open={isOpenEditModal} fullScreen={fullScreen} fullWidth>
         <DialogTitle>{t('prescription.response')}</DialogTitle>
         <Divider />
         <DialogContent className={root}>
