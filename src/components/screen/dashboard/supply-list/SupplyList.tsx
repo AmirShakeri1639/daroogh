@@ -654,7 +654,9 @@ const SupplyList: React.FC = () => {
                   className="w-100"
                   placeholder={t('drug.name')}
                   options={options}
-                  onItemSelected={(item): void => setSelectedDrug(item[0])}
+                  onItemSelected={(item: any[]): void =>
+                    setSelectedDrug(item[0])
+                  }
                   defaultSelectedItem={selectedDrug?.label}
                 />
               </Grid>
@@ -726,16 +728,15 @@ const SupplyList: React.FC = () => {
                     </Grid>
                     <Grid item xs={10} className="w-100">
                       <Input
+                        type="number"
                         value={state?.offer2}
                         label={t('general.number')}
-                        onChange={debounce(
-                          (e) =>
-                            dispatch({
-                              type: 'offer2',
-                              value: e,
-                            }),
-                          500
-                        )}
+                        onChange={(e): void =>
+                          dispatch({
+                            type: 'offer2',
+                            value: e.target.value,
+                          })
+                        }
                       />
                     </Grid>
                   </Grid>
@@ -753,16 +754,15 @@ const SupplyList: React.FC = () => {
                     </Grid>
                     <Grid item xs={9}>
                       <Input
+                        type="number"
                         value={state?.offer1}
                         label={t('general.number')}
-                        onChange={debounce(
-                          (e) =>
-                            dispatch({
-                              type: 'offer1',
-                              value: e,
-                            }),
-                          500
-                        )}
+                        onChange={(e): void =>
+                          dispatch({
+                            type: 'offer1',
+                            value: e.target.value,
+                          })
+                        }
                       />
                     </Grid>
                     <Grid item xs={2}>
@@ -787,28 +787,46 @@ const SupplyList: React.FC = () => {
                   <Grid item xs={3}>
                     <Input
                       label={t('general.day')}
+                      type="number"
                       value={selectedDay}
-                      onChange={(e): void => setSelectedDay(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedDay.length < 2 || val.length < 2) {
+                          setSelectedDay(e.target.value);
+                        }
+                      }}
                       error={Number(selectedDay) > 31}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={3}>
                     <Input
+                      type="number"
                       value={selectedMonth}
                       label={t('general.month')}
                       required
                       error={Number(selectedMonth) > 12}
-                      onChange={(e): void => setSelectedMonth(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedMonth.length < 2 || val.length < 2) {
+                          setSelectedMonth(e.target.value);
+                        }
+                      }}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={3}>
                     <Input
+                      type="number"
                       value={selectedYear}
                       required
                       label={t('general.year')}
-                      onChange={(e): void => setSelectedYear(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedYear.length < 4 || val.length < 4) {
+                          setSelectedYear(val);
+                        }
+                      }}
                     />
                   </Grid>
 
