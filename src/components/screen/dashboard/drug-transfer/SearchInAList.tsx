@@ -25,6 +25,7 @@ import Modal from 'components/public/modal/Modal';
 import CloseIcon from '@material-ui/icons/Close';
 import { default as MatButton } from '@material-ui/core/Button';
 import { useMutation } from 'react-query';
+import ToolBox from './Toolbox';
 
 const styles = makeStyles((theme) =>
   createStyles({
@@ -32,12 +33,17 @@ const styles = makeStyles((theme) =>
       marginTop: 0,
       color: theme.palette.gray.dark,
     },
+    container:{
+      backgroundColor: 'white',display:'flex', justifyContent:'space-between'
+    },
+    searchBar:{
+      flex:1,paddingLeft:8,paddingRight:8
+    }
   })
 );
 
 const SearchInAList: React.FC = () => {
-  const { container } = useClasses();
-  const { icons } = styles();
+  const { icons,container,searchBar } = styles();
   const {
     orgAllPharmacyDrug,
     setAllPharmacyDrug,
@@ -169,14 +175,19 @@ const SearchInAList: React.FC = () => {
   };
 
   return (
-    <Grid container spacing={1} style={{backgroundColor: '#f7f7f7'}}>
-      <Grid item xs={11}>
-        <DaroogSearchBar
-          onValueChange={(v: string): void => searchHandler(v)}
-        />
-      </Grid>
-      <Grid item xs={1}>
-        {viewExhcnage &&
+    <Grid container spacing={1} className={container}>
+       <div className={searchBar}>
+        <DaroogSearchBar 
+                  onValueChange={(v: string): void => searchHandler(v)}
+                />
+       </div>
+        <ToolBox/>
+      {/* <Grid item xs={9}>
+       
+      </Grid> */}
+      {/* <Grid item xs={3}> */}
+       
+        {/* {viewExhcnage &&
           viewExhcnage.currentPharmacyIsA &&
           viewExhcnage.state == 1 && (
             <Tooltip title="حذف تبادل">
@@ -184,8 +195,8 @@ const SearchInAList: React.FC = () => {
                 <DeleteForeverIcon className={icons} />
               </IconButton>
             </Tooltip>
-          )}
-      </Grid>
+          )} */}
+      {/* </Grid> */}
       {isRemoveExchangeModal && exchangeModalRemove()}
     </Grid>
   );
