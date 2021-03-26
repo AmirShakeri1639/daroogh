@@ -14,7 +14,7 @@ import { AllPharmacyDrugInterface } from 'interfaces';
 import moment from 'jalali-moment';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import drug from '../../../../../assets/images/drug.png';
+import drug from '../../../../../../assets/images/drug.png';
 
 interface Props {
   pharmacyDrug?: AllPharmacyDrugInterface;
@@ -148,7 +148,7 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
             xs={2}
             className={avatarContainer}
           >
-            <img src={drug} className={avatar} width="40" height="80" />
+            <img src={drug} className={avatar} width="40" height="40" />
           </Grid>
         </Hidden>
 
