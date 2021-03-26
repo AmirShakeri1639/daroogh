@@ -6,10 +6,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControlLabel,
   Grid,
   makeStyles,
-  Switch,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
@@ -29,7 +27,6 @@ import queryString from 'query-string';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from '../../../../../redux/actions';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
-import { options } from 'date-fns/locale/af';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -58,12 +55,6 @@ const style = makeStyles((theme) =>
       top: 128,
       zIndex: 999,
     },
-    stickySearch: {
-      position: 'sticky',
-      top: '0',
-      zIndex: 999,
-      marginBottom: 8,
-    },
     stickyRecommendation: {
       position: 'sticky',
       margin: 0,
@@ -71,6 +62,12 @@ const style = makeStyles((theme) =>
       paddingTop: 0,
       top: 60,
       zIndex: 999,
+    },
+    stickySearch: {
+      position: 'sticky',
+      top: '0',
+      zIndex: 999,
+      marginBottom: 8,
     },
     desktopCardContent: {
       marginTop: 0,
@@ -108,14 +105,12 @@ const Tab2: React.FC = () => {
     activeStep,
     setActiveStep,
     uAllPharmacyDrug,
-    orgUAllPharmacyDrug,
     setUAllPharmacyDrug,
     setOrgUAllPharmacyDrug,
     openDialog,
     setOpenDialog,
     uBasketCount,
     selectedPharmacyForTransfer,
-    viewExhcnage,
     lockedAction,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
@@ -166,22 +161,18 @@ const Tab2: React.FC = () => {
   const { paper, stickySearch } = style();
 
   const [listPageNo] = useState(0);
-  const [pageSize] = useState(100);
-  const [isSelected, setIsSelected] = React.useState(false);
-
-  const handleChange = (event: any): any => {
-    setIsSelected(event.target.checked);
-    if (event.target.checked && lockedAction) refetch();
-    else setUAllPharmacyDrug([]);
-  };
-
+  const [pageSize] = useState(10);
   const [loading, setLoading] = useState<boolean>(false);
 
   const { isLoading, refetch } = useQuery(
-    ['key2'],
+    ['key'],
     () => {
       setLoading(true);
-      return getAllPharmacyDrug('', listPageNo, pageSize);
+      return getAllPharmacyDrug(
+        '',
+        listPageNo,
+        pageSize
+      );
     },
     {
       onSuccess: (data) => {
@@ -226,6 +217,12 @@ const Tab2: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const id = params.eid == null ? undefined : params.eid;
+    if (id !== undefined && !selectedPharmacyForTransfer) return;
+    if (lockedAction) refetch();
+  }, [selectedPharmacyForTransfer]);
+
+  useEffect(() => {
     uBasketCount.forEach((x) => {
       if (!x.packID) {
         const pharmacyDrug = uAllPharmacyDrug.find((a) => a.id === x.id);
@@ -235,19 +232,6 @@ const Tab2: React.FC = () => {
       }
     });
   }, [uBasketCount]);
-
-  useEffect(() => {
-    if (
-      !viewExhcnage ||
-      (viewExhcnage &&
-        !viewExhcnage.lockSuggestion &&
-        (viewExhcnage.state === 1 ||
-          viewExhcnage.state === 2 ||
-          viewExhcnage.state === 12))
-    ) {
-      refetch();
-    }
-  }, [viewExhcnage]);
 
   const basketCardListGenerator = (): any => {
     if (uBasketCount && uBasketCount.length > 0) {
@@ -305,7 +289,7 @@ const Tab2: React.FC = () => {
     if (uAllPharmacyDrug.length > 0) {
       return (
         uAllPharmacyDrug
-          .filter(comparer(uBasketCount))
+          // .filter(comparer(basketCount))
           // .sort((a, b) => (a.order > b.order ? 1 : -1))
           .map((item: AllPharmacyDrugInterface, index: number) => {
             // Object.assign(item, {
@@ -319,6 +303,7 @@ const Tab2: React.FC = () => {
                 order: index + 1,
                 buttonName: 'حذف از تبادل',
                 cardColor: '#dff4ff',
+                cnt: uBasketCount.find((x) => x.id == item.id)?.cnt,
               });
             else {
               Object.assign(item, {
@@ -333,8 +318,10 @@ const Tab2: React.FC = () => {
                 <div className={paper}>
                   {item.packID ? (
                     <NewCardContainer
+                      key={`CardContainer_${item.id}`}
                       basicDetail={
                         <NewExCardContent
+                          key={`CardContent${item.id}`}
                           formType={1}
                           pharmacyDrug={item}
                           isPack={true}
@@ -346,6 +333,7 @@ const Tab2: React.FC = () => {
                       })}
                       collapsableContent={
                         <NewExCardContent
+                          key={`CardContent${item.id}`}
                           formType={3}
                           packInfo={item.packDetails}
                           isPack={true}
@@ -354,8 +342,10 @@ const Tab2: React.FC = () => {
                     />
                   ) : (
                     <NewCardContainer
+                      key={`CardContainer_${item.id}`}
                       basicDetail={
                         <NewExCardContent
+                          key={item.id}
                           formType={2}
                           pharmacyDrug={item}
                           isPack={false}
@@ -439,40 +429,16 @@ const Tab2: React.FC = () => {
                 <SearchInAList />
               </Grid>
             </Grid>
-            {/* {(!viewExhcnage ||
-              (viewExhcnage &&
-                !viewExhcnage.lockSuggestion &&
-                (viewExhcnage.state === 1 ||
-                  viewExhcnage.state === 2 ||
-                  viewExhcnage.state === 12))) && (
-              <Grid
-                item
-                xs={12}
-                md={12}
-                style={{ marginTop: -7, marginRight: 5, paddingBottom: 10 }}
-              >
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={isSelected}
-                      onChange={handleChange}
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label="انتخاب دارو از سبد عرضه خود"
-                />
-              </Grid>
-            )} */}
             <Grid container spacing={1}>
               <>
-                {basketCardListGenerator()}
+                {/* {basketCardListGenerator()} */}
                 {cardListGenerator()}
               </>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
+
       <ConfirmDialog />
       <CircleBackdropLoading isOpen={loading} />
     </>

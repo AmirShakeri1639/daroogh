@@ -215,6 +215,10 @@ const Create: React.FC = () => {
 
   const autoCompleteRef = useRef<any>(null);
 
+  const dayRef = useRef<HTMLInputElement>();
+  const monthRef = useRef<HTMLInputElement>();
+  const yearRef = useRef();
+
   const {
     addButton,
     expireDate,
@@ -853,6 +857,7 @@ const Create: React.FC = () => {
                         value={offer2}
                         label={t('general.number')}
                         onChange={(e): void => {
+                          const val = e.target.value;
                           setOffer2(e.target.value);
                         }}
                       />
@@ -889,32 +894,54 @@ const Create: React.FC = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={3}>
                     <Input
+                      ref={dayRef}
                       label={t('general.day')}
                       value={selectedDay}
                       error={!dayIsValid(Number(selectedDay))}
                       type="number"
-                      onChange={(e): void => setSelectedDay(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedDay.length < 2 || val.length < 2) {
+                          setSelectedDay(e.target.value);
+                          if (selectedDay.length === 2) {
+                            // TODO: under development
+                            monthRef?.current?.focus();
+                          }
+                        }
+                      }}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={3}>
                     <Input
+                      ref={monthRef}
                       value={selectedMonth}
                       label={t('general.month')}
                       required
                       type="number"
                       error={!monthIsValid(Number(selectedMonth))}
-                      onChange={(e): void => setSelectedMonth(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedMonth.length < 2 || val.length < 2) {
+                          setSelectedMonth(e.target.value);
+                        }
+                      }}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={3}>
                     <Input
+                      ref={yearRef}
                       value={selectedYear}
                       required
                       type="number"
                       label={t('general.year')}
-                      onChange={(e): void => setSelectedYear(e.target.value)}
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (selectedYear.length < 4 || val.length < 4) {
+                          setSelectedYear(e.target.value);
+                        }
+                      }}
                     />
                   </Grid>
 
