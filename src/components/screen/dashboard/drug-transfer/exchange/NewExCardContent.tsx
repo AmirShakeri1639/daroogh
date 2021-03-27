@@ -207,9 +207,7 @@ const useClasses = makeStyles((theme) =>
 function NewExCardContent(props: ExCardContentProps): JSX.Element {
   const { pharmacyDrug, formType, packInfo, isPack } = props;
   const {
-    root,
-    paper,
-    container,
+  
     cardcontent,
     ulCardName,
     ulDetailPack,
