@@ -116,6 +116,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
   };
 
   const transferStart = (notSendExchangeID: string | null): void => {
+    console.log(notSendExchangeID);
     if (notSendExchangeID === null) {
       setSelectedPharmacyForTransfer(data.pharmacyKey);
       setActiveStep(activeStep + 1);
