@@ -434,7 +434,7 @@ const PharmaciesList: React.FC = () => {
         open={ isOpenEditModal }
         fullScreen={ fullScreen }
         onClose={ toggleIsOpenSaveModalForm }
-        
+        fullWidth
       >
         <DialogTitle className="text-sm">
           { state?.id === 0 ? t('action.create') : t('action.edit') }

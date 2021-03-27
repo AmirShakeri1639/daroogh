@@ -66,8 +66,8 @@ const style = makeStyles((theme) =>
     stickySearch: {
       position: 'sticky',
       top: '0',
-      zIndex: 999,
-      marginBottom: 8,
+      zIndex: 1,
+      marginBottom: 18,
     },
     desktopCardContent: {
       marginTop: 0,
