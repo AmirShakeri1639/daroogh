@@ -28,14 +28,6 @@ import MoneyIcon from '@material-ui/icons/Money';
 import moment from 'jalali-moment';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBars,
-  faBoxes,
-  faCalendarTimes,
-  faExchangeAlt,
-  faMoneyBillWave,
-  faPills,
-} from '@fortawesome/free-solid-svg-icons';
 import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import Utils from '../../../../public/utility/Utils';
@@ -59,6 +51,7 @@ import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoadi
 import { debug } from 'console';
 import ExchangeNormalCard from './components/ExchangeNormalCard';
 import ExchangePackCard from './components/ExchangePackCard';
+import ExchangePackDetail from './components/ExchangePackDetail';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -656,54 +649,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     if (packInfo && packInfo.length > 0) {
       return packInfo.map((item: AllPharmacyDrugInterface) => {
         return (
-          <div className={root}>
-            <Paper className={paper}>
-              <Grid container item spacing={0} style={{ padding: 2 }}>
-                <Grid
-                  item
-                  xs={4}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                >
-                  <FontAwesomeIcon icon={faPills} size="1x" />
-                  <span
-                    style={{ marginRight: 5, fontSize: 11, fontWeight: 'bold' }}
-                  >
-                    {item.drug.name}
-                    {item.drug.enName && `(${item.drug.enName})`}
-                  </span>
-                </Grid>
-                <Grid item xs={8} style={{ textAlign: 'left', fontSize: 11 }}>
-                  <ul className={ulDetailPack}>
-                    <li className={colLeftIcon}>
-                      <span>تاریخ انقضا: </span>
-                      {getExpireDate(item.expireDate)}
-                    </li>
-                    <Hidden smDown>
-                      <span className={horzintalLine}>|</span>
-                    </Hidden>
-                    <li className={colLeftIcon}>
-                      <span>قیمت واحد: </span>
-                      {Utils.numberWithCommas(item.amount)} تومان
-                    </li>
-                    <Hidden smDown>
-                      <span className={horzintalLine}>|</span>
-                    </Hidden>
-                    <li className={colLeftIcon}>
-                      <span>تعداد در این پک: </span>
-                      {item.cnt} عدد
-                    </li>
-                    <Hidden smDown>
-                      <span className={horzintalLine}>|</span>
-                    </Hidden>
-                    <li className={colLeftIcon}>
-                      <span>قیمت کل: </span>
-                      {Utils.numberWithCommas(item.amount * item.cnt)} تومان
-                    </li>
-                  </ul>
-                </Grid>
-              </Grid>
-            </Paper>
-          </div>
+          <ExchangePackDetail item={item}/>
         );
       });
     }
