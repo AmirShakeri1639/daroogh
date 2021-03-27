@@ -180,7 +180,7 @@ const Exchange: React.FC<ReduxProps> = (props) => {
                     basketCount.filter(
                       (thing, i, arr) =>
                         !thing.packID &&
-                        arr.findIndex((t) => t.drug.id === thing.drug.id) === i
+                        arr.findIndex((t) => t.id === thing.id) !== -1
                     )
                   ).length
                 }
@@ -204,7 +204,7 @@ const Exchange: React.FC<ReduxProps> = (props) => {
                     uBasketCount.filter(
                       (thing, i, arr) =>
                         !thing.packID &&
-                        arr.findIndex((t) => t.drug.id === thing.drug.id) === i
+                        arr.findIndex((t) => t.id === thing.id) !== -1
                     )
                   ).length
                 }
