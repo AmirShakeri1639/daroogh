@@ -4,7 +4,6 @@ import {
   Grid,
   makeStyles,
   Paper,
-  MenuItem,
   Container,
   Hidden,
   Fab,
@@ -44,6 +43,11 @@ import { jalali } from '../../../../utils';
 import jalaali from 'jalaali-js';
 import { DrugType } from '../../../../enum/pharmacyDrug';
 import { ListOptions } from '../../../public/auto-complete/AutoComplete';
+import styled from 'styled-components';
+
+const GridCenter = styled((props) => <Grid item {...props} />)`
+  text-align: center;
+`;
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -170,9 +174,9 @@ const useStyle = makeStyles((theme) =>
     fab: {
       margin: 0,
       top: 'auto',
-      right: 20,
+      left: 20,
       bottom: 40,
-      left: 'auto',
+      right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
     },
@@ -705,19 +709,12 @@ const SupplyList: React.FC = () => {
                       مقابل بدهند)
                     </span>
                   </Grid>
-                  <Grid
-                    container
-                    direction="row"
-                    alignItems="center"
-                    spacing={0}
-                    style={{ textAlign: 'center' }}
-                    xs={12}
-                    md={6}
-                  >
+                  <Grid container alignItems="center" spacing={0}>
                     <Grid item xs={2}>
                       <span>به ازای</span>
                     </Grid>
-                    <Grid item xs={10} className="w-100">
+
+                    <Grid item xs={4} className="w-100">
                       <Input
                         type="number"
                         value={state?.offer2}
@@ -730,20 +727,12 @@ const SupplyList: React.FC = () => {
                         }
                       />
                     </Grid>
-                  </Grid>
-                </Grid>
-                <br />
-                <Grid item xs={12} md={6}>
-                  <Grid
-                    container
-                    spacing={0}
-                    alignItems="center"
-                    justify="space-between"
-                  >
-                    <Grid item xs={1}>
+
+                    <GridCenter xs={1}>
                       <span>تا</span>
-                    </Grid>
-                    <Grid item xs={9}>
+                    </GridCenter>
+
+                    <Grid item xs={4}>
                       <Input
                         type="number"
                         value={state?.offer1}
@@ -756,9 +745,8 @@ const SupplyList: React.FC = () => {
                         }
                       />
                     </Grid>
-                    <Grid item xs={2}>
-                      <div className="text-left">{t('general.gift')}</div>
-                    </Grid>
+
+                    <GridCenter xs={1}>{t('general.gift')}</GridCenter>
                   </Grid>
                 </Grid>
               </Grid>

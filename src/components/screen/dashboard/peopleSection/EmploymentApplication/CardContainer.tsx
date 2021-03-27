@@ -73,7 +73,12 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
     <Paper elevation={1}>
       <Grid container xs={12} spacing={0}>
         {cancelDate && (
-          <Grid item xs={12}>
+          <Grid item xs={12} style={{marginRight:16,marginTop:16, padding: '0 6px',
+          borderRight: '3px solid #f80501',
+          height: '40px',
+          backgroundColor: '#FEFFF2',
+          paddingTop: '8px',
+          marginBottom: theme.spacing(1),}}> 
             <TextWithTitle
               title={t('peopleSection.cancelDateText')}
               body={moment(cancelDate, 'YYYY/MM/DD')

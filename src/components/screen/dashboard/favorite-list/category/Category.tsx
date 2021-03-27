@@ -71,9 +71,9 @@ const useStyle = makeStyles((theme) =>
     fab: {
       margin: 0,
       top: 'auto',
-      right: 20,
+      left: 20,
       bottom: 40,
-      left: 'auto',
+      right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
     },
