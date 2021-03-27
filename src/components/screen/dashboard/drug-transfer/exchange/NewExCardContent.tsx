@@ -55,14 +55,7 @@ import ExchangePackDetail from './components/ExchangePackDetail';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
-    root: {
-      flexGrow: 1,
-      marginBottom: theme.spacing(1),
-      padding: '0 !important',
-    },
-    paper: {
-      textAlign: 'center',
-    },
+  
     containerDetailPack: {
       padding: 0,
       borderTop: '1px solid silver',
@@ -75,11 +68,6 @@ const useClasses = makeStyles((theme) =>
       [theme.breakpoints.up('md')]: {
         display: 'flex',
       },
-    },
-    container: {
-      minHeight: 170,
-      alignItems: 'center',
-      // fontSize: 11,
     },
     cardcontent: {
       borderRadius: 0,
