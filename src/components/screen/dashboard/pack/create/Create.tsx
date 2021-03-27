@@ -53,6 +53,10 @@ import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
 
+const GridCenter = styled((props) => <Grid item {...props} />)`
+  text-align: center;
+`;
+
 const { packsList } = routes;
 
 const { seerchDrugInCategory } = new Drug();
@@ -841,18 +845,11 @@ const Create: React.FC = () => {
                       مقابل بدهند)
                     </span>
                   </Grid>
-                  <Grid
-                    container
-                    direction="row"
-                    alignItems="center"
-                    spacing={0}
-                    style={{ textAlign: 'center' }}
-                    xs={12}
-                  >
+                  <Grid container alignItems="center" spacing={0}>
                     <Grid item xs={2}>
                       <span>به ازای</span>
                     </Grid>
-                    <Grid item xs={10} className="w-100">
+                    <Grid item xs={4} className="w-100">
                       <Input
                         value={offer2}
                         label={t('general.number')}
@@ -862,10 +859,10 @@ const Create: React.FC = () => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={1}>
+                    <GridCenter xs={1}>
                       <span>تا</span>
-                    </Grid>
-                    <Grid item xs={2}>
+                    </GridCenter>
+                    <Grid item xs={4}>
                       <Input
                         value={offer1}
                         onChange={(e): void => {
@@ -873,9 +870,7 @@ const Create: React.FC = () => {
                         }}
                       />
                     </Grid>
-                    <Grid item xs={2}>
-                      {t('general.gift')}
-                    </Grid>
+                    <GridCenter xs={1}>{t('general.gift')}</GridCenter>
                   </Grid>
                 </Grid>
               </Grid>
