@@ -403,11 +403,11 @@ const PrescriptionList: React.FC = () => {
     React.useEffect(() => {
       function handleResize() {
         if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', (e) => handleScroll(e), {
+          window.addEventListener('scroll', handleScroll, {
             capture: true,
           });
         } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', (e) => handleScroll(e), {
+          window.removeEventListener('scroll', handleScroll, {
             capture: true,
           });
         }

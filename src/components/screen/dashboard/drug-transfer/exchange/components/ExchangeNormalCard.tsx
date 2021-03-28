@@ -69,7 +69,7 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
         display: 'flex',
         verticalAlign: 'middle',
         alignContent: 'center',
-        alignItems: 'center',
+        // alignItems: 'center',
         textAlign: 'left',
         padding:16
       },
