@@ -3,6 +3,10 @@ import { errorHandler } from '../../utils';
 import { DataTableColumns } from '../../interfaces/DataTableColumns';
 
 class Exchange extends Api {
+  readonly waitingFilter = `&$filter=` +
+    `(contains(cast(state, 'Edm.String'), '3') and currentPharmacyIsA eq true) or ` +
+    `(contains(cast(state, 'Edm.String'), '2') and currentPharmacyIsA eq false)`;
+  readonly surveyFilter = '&$filter=needSurvey eq true';
   readonly urls = {
     pharmacyInfo: '/Exchange/GetExchangePharmacyInfo?exchangeID=',
     dashboard: '/Exchange/Dashboard',
@@ -11,9 +15,7 @@ class Exchange extends Api {
     // state 3 = CONFIRMB_AND_WAITFORA
     // state 2 = WAITFORB (12 for B)
     getForWidget:
-      `/Exchange/Dashboard?$orderby=id desc&$filter=` +
-      `(contains(cast(state, 'Edm.String'), '3') and currentPharmacyIsA eq true) or ` +
-      `(contains(cast(state, 'Edm.String'), '2') and currentPharmacyIsA eq false)`,
+      `/Exchange/Dashboard?${this.waitingFilter}`,
     oneExchange: 'Exchange/ViewExchange?exchangeID=',
   };
 
@@ -37,14 +39,21 @@ class Exchange extends Api {
     return result.data;
   };
 
-  getDashboard = async (e: any): Promise<any> => {
+  getDashboard = async (e: any, filter: any = ''): Promise<any> => {
     try {
       e *= 10;
-      const url = `${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`;
-      console.log('Dashboard Url => ', url);
-      const result = await this.postData(
-        `${this.urls.dashboard}?&$top=10&$skip=${e}&$orderby=id desc`
-      );
+      let url = `${this.urls.dashboard}?$top=10&$skip=${e}&$orderby=id desc`;
+      switch (filter) {
+        case 'waiting':
+          url += this.waitingFilter
+          break;
+        case 'survey':
+          url += this.surveyFilter
+          break;
+        default:
+          break;
+      }
+      const result = await this.postData(url);
       return result.data;
     } catch (e) {
       errorHandler(e);

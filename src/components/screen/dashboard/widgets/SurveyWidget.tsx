@@ -4,14 +4,14 @@ import { Exchange } from 'services/api';
 import { StatsWidget } from '../../../public';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPoll } from '@fortawesome/free-solid-svg-icons';
-import { ColorEnum, NeedSurvey } from 'enum';
+import { ColorEnum } from 'enum';
 import routes from 'routes';
 
 function SurveyWidget() {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
   const { desktop } = routes;
-  const toUrl = `${desktop}?state=${NeedSurvey}`
+  const toUrl = `${desktop}?state=survey`
 
   useEffect(() => {
     const { needSurvey } = new Exchange();
