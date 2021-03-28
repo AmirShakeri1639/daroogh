@@ -103,6 +103,7 @@ const Desktop1: React.FC = () => {
 
   useEffect(() => {
     setPage(0);
+    setExchanges([]);
     refetch();
   }, [waiting]);
 
