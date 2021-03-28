@@ -152,7 +152,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
           itemsCount={itemsCount}
           userType={userType}
         />
-        <span  style={{fontSize:12 , marginBottom:4}}>نمونه اقلام عرضه شده در این داروخانه:</span>
+        <span  style={{fontSize:11 , color:'GrayText' , marginBottom:4}}>نمونه اقلام عرضه شده در این داروخانه:</span>
 
         <Box component="div" className={box}>
           <Grid container spacing={0}>
