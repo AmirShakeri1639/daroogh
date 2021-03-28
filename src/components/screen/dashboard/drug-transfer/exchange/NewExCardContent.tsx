@@ -804,7 +804,6 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   }, [pharmacyDrug?.currentCnt]);
 
   const handleTotalAmount = () => {
-    debugger;
     if (!pharmacyDrug) return;
     let val = 0;
     val = pharmacyDrug.amount * pharmacyDrug.currentCnt;

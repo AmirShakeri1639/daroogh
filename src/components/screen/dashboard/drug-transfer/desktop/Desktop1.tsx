@@ -32,28 +32,14 @@ const Desktop1: React.FC = () => {
     label: t('survey.participate'),
     value: NeedSurvey,
   };
-
-  // const [isLoading, setIsLoading] = useState(true);
   const [stateFilterList, setStateFilterList] = useState<LabelValue[]>([]);
 
   const location = useLocation();
   const params = queryString.parse(location.search);
-  // Should we load API filtered data for waiting states? (if it's in querystring)
-  const [waiting, setWaiting] = useState(() => {
-    return params.state && params.state === 'waiting'
-  });
+  const [isFilterChanged, setIsFilterChanged] = useState(false);
+  let waiting = params.state && params.state === 'waiting' && !isFilterChanged;
   const [filter, setFilter] = useState<any[]>((): any => {
-    let result = [];
-    if (waiting) {
-      result = [
-        //Remove the first one, it's just for test.
-        // ExchangeStateEnum.WAITFORB,
-        ExchangeStateEnum.WAITFORB_FORB,
-        ExchangeStateEnum.CONFIRMB_AND_WAITFORA
-      ];
-    } else {
-      result = [ExchangeStateEnum.UNKNOWN];
-    }
+    const result = [ExchangeStateEnum.UNKNOWN];
     result.push(NeedSurvey);
     return result;
   });
@@ -71,7 +57,6 @@ const Desktop1: React.FC = () => {
   const { refetch } = useQuery(['key', page],
     () => getDashboard(page, waiting), {
     onSuccess: (result) => {
-      debugger;
       if (result != undefined) {
         const newList = exchanges.concat(result.items);
         if (result.count != undefined && result.count != 0) {
@@ -117,11 +102,8 @@ const Desktop1: React.FC = () => {
   });
 
   useEffect(() => {
-    debugger;
     setPage(0);
-    if (!waiting) {
-      refetch();
-    }
+    refetch();
   }, [waiting]);
 
   const handleScroll = (e: any): any => {
@@ -130,10 +112,7 @@ const Desktop1: React.FC = () => {
       if (totalCount == 0 || exchanges.length < (totalCount ?? 0)) {
         setPage((v) => v + 1);
         setLoading(true);
-        debugger;
-        if (!waiting) {
-          refetch();
-        }
+        refetch();
       }
     }
   };
@@ -161,12 +140,12 @@ const Desktop1: React.FC = () => {
   };
 
   const filterChanged = (v: number): void => {
-    setWaiting(false);
-    debugger;
-    if (waiting) {
-      refetch();
-    }
     if (v === 0) {
+      setIsFilterChanged(true);
+      if (waiting) {
+        waiting = false;
+        refetch();
+      }
       setFilter([ExchangeStateEnum.UNKNOWN]);
     } else {
       setFilter([v]);
@@ -217,7 +196,6 @@ const Desktop1: React.FC = () => {
         <>
           {listToShow.map((item, index) => (
             <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
-              <div style={ { color: 'red', fontWeight: 'bold' } }>{ item.state }</div>
               <DesktopCardContent
                 item={ item }
                 full={ false }
@@ -242,11 +220,6 @@ const Desktop1: React.FC = () => {
           <Grid item={ true } xs={ 12 }>
             <DesktopToolbox
               filterList={ stateFilterList }
-              onFilterClicked={ (v: any): void => {
-                console.log('%cFilter clicked', 'color: purple')
-                setWaiting(false);
-                refetch();
-              } }
               onFilterChanged={ filterChanged }
               onSortSelected={ sortSelected }
             />
