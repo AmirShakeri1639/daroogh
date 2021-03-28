@@ -50,6 +50,7 @@ import {
 } from '@material-ui/core';
 import { Picture, PictureDialog } from '../../../public';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import SearchBar from 'material-ui-search-bar';
 
 export const useStyles = makeStyles((theme) =>
   createStyles({
@@ -76,6 +77,12 @@ export const useStyles = makeStyles((theme) =>
     smallImage: {
       maxWidth: '300px',
       maxHeight: '300px',
+    },
+    searchBar: {
+      margin: '0 10px',
+    },
+    searchIconButton: {
+      display: 'none',
     },
   })
 );
@@ -144,7 +151,13 @@ const PrescriptionList: React.FC = () => {
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
   const [isOpenPicture, setIsOpenPicture] = useState(false);
   const [fileKeyToShow, setFileKeyToShow] = useState('');
-  const { root, smallImage, formItem } = useStyles();
+  const {
+    root,
+    smallImage,
+    formItem,
+    searchBar,
+    searchIconButton,
+  } = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const queryCache = useQueryCache();
@@ -180,7 +193,7 @@ const PrescriptionList: React.FC = () => {
         field: 'sendDate',
         title: t('prescription.sendDate'),
         type: 'string',
-        searchable: true,
+
         render: (row: any): any => {
           return <>{getJalaliDate(row.sendDate)}</>;
         },
@@ -201,7 +214,7 @@ const PrescriptionList: React.FC = () => {
         field: 'expireDate',
         title: t('general.expireDate'),
         type: 'string',
-        searchable: true,
+
         render: (row: any): any => {
           return (
             <>
@@ -235,7 +248,7 @@ const PrescriptionList: React.FC = () => {
         field: 'responseDate',
         title: t('prescription.responseDate'),
         type: 'string',
-        searchable: true,
+
         render: (row: any): any => {
           return (
             <>
@@ -337,14 +350,25 @@ const PrescriptionList: React.FC = () => {
   };
   const [list, setList] = useState<any>([]);
   const listRef = React.useRef(list);
-  const setListRef = (data: any) => {
-    listRef.current = listRef.current.concat(data);
+  const setListRef = (data: any, refresh: boolean = false) => {
+    if (!refresh) {
+      listRef.current = listRef.current.concat(data);
+    } else {
+      listRef.current = data;
+    }
     setList(data);
+  };
+  const [search, setSearch] = useState<string>('');
+  const searchRef = React.useRef(search);
+  const setSearchRef = (data: any) => {
+    searchRef.current = data;
+    setSearch(data);
+    getCardList(true);
   };
   const { data, isFetched } = useQuery(
     PrescriptionEnum.GET_LIST,
 
-    () => getList(pageRef.current, 10),
+    () => getList(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
         console.log(result);
@@ -379,15 +403,14 @@ const PrescriptionList: React.FC = () => {
       }
     }
   };
-  async function getCardList(): Promise<any> {
-    const result = await getList(pageRef.current, 10);
+  async function getCardList(refresh: boolean = false): Promise<any> {
+    const result = await getList(pageRef.current, 10, [], searchRef.current);
     console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
-    } else {
-      setListRef(result.items);
-      return result;
     }
+    setListRef(result.items, refresh);
+    return result;
   }
 
   function isMobile() {
@@ -553,6 +576,15 @@ const PrescriptionList: React.FC = () => {
           queryCallback={getList}
           urlAddress={urls.getList}
           initLoad={false}
+        />
+      )}
+      {false && fullScreen && (
+        <SearchBar
+          className={searchBar}
+          classes={{ searchIconButton: searchIconButton }} 
+          placeholder={t('general.search')}
+          onChange={(newValue) => setSearchRef(newValue)}
+          
         />
       )}
       {fullScreen && (
