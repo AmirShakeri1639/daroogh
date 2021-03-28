@@ -41,11 +41,22 @@ import { ColorEnum, EmploymentApplicationEnum } from '../../../../enum';
 import FileLink from '../../../public/picture/fileLink';
 import { api } from '../../../../config/default.json';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import SearchBar from 'material-ui-search-bar';
 
 interface Props {
   full?: boolean;
 }
-
+const useStyles = makeStyles((theme) =>
+  createStyles({
+   
+    searchBar: {
+      margin: '0 10px',
+    },
+    searchIconButton: {
+      display: 'none'
+    },
+  })
+);
 const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const { t } = useTranslation();
   const ref = useDataTableRef();
@@ -55,6 +66,11 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const [isOpenDetails, setIsOpenDetails] = useState(false);
   const [detailsItem, setDetailsItem] = useState<any>();
   const { spacing1, container } = useClasses();
+  const {
+    
+    searchBar,
+    searchIconButton
+  } = useStyles ();
 
   const { all, notCanceled, cancel, urls } = new EmploymentApplication();
   const { urls: fileUrls } = new File();
@@ -342,16 +358,27 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         },
       ]
     : [];
-  const [list, setList] = useState<any>([]);
-  const listRef = React.useRef(list);
-  const setListRef = (data: any) => {
-    listRef.current = listRef.current.concat(data);
-    setList(data);
-  };
+    const [list, setList] = useState<any>([]);
+    const listRef = React.useRef(list);
+    const setListRef = (data: any, refresh: boolean = false) => {
+      if (!refresh) {
+        listRef.current = listRef.current.concat(data);
+      } else {
+        listRef.current = data;
+      }
+      setList(data);
+    };
+    const [search, setSearch] = useState<string>('');
+    const searchRef = React.useRef(search);
+    const setSearchRef = (data: any) => {
+      searchRef.current = data
+      setSearch(data);
+      getList(true);
+    };
   const { isLoading, data, isFetched } = useQuery(
     EmploymentApplicationEnum.GET_ALL,
 
-    () => all(pageRef.current, 10),
+    () => all(pageRef.current, 10,[], searchRef.current),
     {
       onSuccess: (result) => {
         console.log(result);
@@ -386,15 +413,16 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       }
     }
   };
-  async function getList(): Promise<any> {
-    const result = await all(pageRef.current, 10);
+  async function getList(refresh: boolean = false): Promise<any> {
+    const result = await all(pageRef.current, 10,[], searchRef.current);
     console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
     } else {
-      setListRef(result.items);
-      return result;
+      
     }
+    setListRef(result.items,refresh);
+      return result;
   }
 
   function isMobile() {
@@ -468,6 +496,15 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       )}
       {isOpenDetails && detialsDialog()}
       <br />
+      {fullScreen && (
+        <SearchBar
+          className={searchBar}
+          classes={{ searchIconButton: searchIconButton }} 
+          placeholder={t('general.search')}
+          onChange={(newValue) => setSearchRef(newValue)}
+          
+        />
+      )}
       {fullScreen && (
         <Grid container spacing={0}>
           <Grid item xs={12}>
