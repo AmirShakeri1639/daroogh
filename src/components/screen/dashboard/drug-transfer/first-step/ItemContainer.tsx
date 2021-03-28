@@ -31,7 +31,7 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
     },
     detailText:{
       color:'#1d0d50',
-      fontSize:`${fullScreen?'11px':'13px'}`
+      fontSize:`${fullScreen?'10px':'13px'}`
     }
   })
 );

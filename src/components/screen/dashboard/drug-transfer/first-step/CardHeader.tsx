@@ -74,7 +74,8 @@ const useStyle = makeStyles((theme) =>
 
     headerBack: {
       background: '#fefff2',
-      margin: theme.spacing(2, 0),
+      margin: '8px 8px',
+      borderRadius: '8px ​8px 0px 0px',
     },
     logoType: {
       width: '60px',

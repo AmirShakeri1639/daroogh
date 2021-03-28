@@ -48,7 +48,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
       backgroundColor: '#fcfdfc',
     },
     box: {
-      padding: theme.spacing(1, 2),
+      // padding: theme.spacing(1, 2),
       backgroundColor: '#fcfdfc',
       marginBottom: theme.spacing(1),
       width: '100%',
@@ -81,7 +81,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     },
     detailText:{
       color:'#f80501',
-      fontSize:`${fullScreen?'12px':'14px'}`
+      fontSize:`${fullScreen?'10px':'13px'}`
     }
   })
 );
