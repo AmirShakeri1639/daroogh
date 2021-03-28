@@ -237,9 +237,9 @@ const useStyle = makeStyles((theme) =>
     fab: {
       margin: 0,
       top: 'auto',
-      right: 20,
+      left: 20,
       bottom: 40,
-      left: 'auto',
+      right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
     },
@@ -681,11 +681,11 @@ const JobsList: React.FC = () => {
     React.useEffect(() => {
       function handleResize() {
         if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', (e) => handleScroll(e), {
+          window.addEventListener('scroll', handleScroll, {
             capture: true,
           });
         } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', (e) => handleScroll(e), {
+          window.removeEventListener('scroll', handleScroll, {
             capture: true,
           });
         }

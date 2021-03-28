@@ -28,6 +28,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import CardContainer from './CardContainer';
+import SearchBar from 'material-ui-search-bar';
 
 const initialState: AccountingInterface = {
   id: 0,
@@ -66,10 +67,17 @@ const AccountingList: React.FC = () => {
           },
         },
       },
+
+      searchBar: {
+        margin: '0 10px',
+      },
+      searchIconButton: {
+        display: 'none',
+      },
     })
   );
 
-  const { linkWrapper } = useStyles();
+  const { linkWrapper, searchBar, searchIconButton } = useStyles();
 
   const tableColumns = (): TableColumnInterface[] => {
     return [
@@ -88,7 +96,12 @@ const AccountingList: React.FC = () => {
         },
       },
 
-      { field: 'description', title: t('general.description'), type: 'string' },
+      {
+        field: 'description',
+        title: t('general.description'),
+        type: 'string',
+        searchable: true,
+      },
       {
         field: 'amount',
         title: t('accounting.creditor'),
@@ -149,15 +162,26 @@ const AccountingList: React.FC = () => {
 
   const [list, setList] = useState<any>([]);
   const listRef = React.useRef(list);
-  const setListRef = (data: any) => {
-    listRef.current = listRef.current.concat(data);
+  const setListRef = (data: any, refresh: boolean = false) => {
+    if (!refresh) {
+      listRef.current = listRef.current.concat(data);
+    } else {
+      listRef.current = data;
+    }
     setList(data);
+  };
+  const [search, setSearch] = useState<string>('');
+  const searchRef = React.useRef(search);
+  const setSearchRef = (data: any) => {
+    searchRef.current = data;
+    setSearch(data);
+    getList(true);
   };
 
   const { isLoading, data, isFetched, refetch } = useQuery(
     AccountingEnum.GET_ALL,
 
-    () => all(pageRef.current, 10),
+    () => all(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
         if (result == undefined || result.count == 0) {
@@ -190,11 +214,11 @@ const AccountingList: React.FC = () => {
     React.useEffect(() => {
       function handleResize() {
         if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', (e) => handleScroll(e), {
+          window.addEventListener('scroll', handleScroll, {
             capture: true,
           });
         } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', (e) => handleScroll(e), {
+          window.removeEventListener('scroll', handleScroll, {
             capture: true,
           });
         }
@@ -220,14 +244,13 @@ const AccountingList: React.FC = () => {
     }
   };
 
-  async function getList(): Promise<any> {
-    const result = await all(pageRef.current, 10);
+  async function getList(refresh: boolean = false): Promise<any> {
+    const result = await all(pageRef.current, 10, [], searchRef.current);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
-    } else {
-      setListRef(result.items);
-      return result;
     }
+    setListRef(result.items, refresh);
+    return result;
   }
 
   const exchangeHandler = (row: AccountingInterface): JSX.Element | null => {
@@ -280,6 +303,14 @@ const AccountingList: React.FC = () => {
                 initLoad={false}
               />
             </Paper>
+          )}
+          {fullScreen && (
+            <SearchBar
+              className={searchBar}
+              classes={{ searchIconButton: searchIconButton }}
+              placeholder={t('general.search')}
+              onChange={(newValue) => setSearchRef(newValue)}
+            />
           )}
           {fullScreen && contentGenerator()}
           {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}

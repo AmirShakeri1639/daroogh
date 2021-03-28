@@ -103,11 +103,11 @@ const style = makeStyles((theme) =>
     actionExpand: {
       display: 'flex',
       justifyContent: 'center',
-      height: 35,
+      height: 16,
       '& > .MuiIconButton-root': {
         marginLeft: 0,
       },
-      marginBottom: 7,
+      marginBottom: 5,
     },
     textBoxCounter: {
       fontSize: 12,

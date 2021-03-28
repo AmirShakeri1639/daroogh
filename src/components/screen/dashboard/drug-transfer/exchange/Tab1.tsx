@@ -66,8 +66,8 @@ const style = makeStyles((theme) =>
     stickySearch: {
       position: 'sticky',
       top: '0',
-      zIndex: 999,
-      marginBottom: 8,
+      zIndex: 1,
+      marginBottom: 18,
     },
     desktopCardContent: {
       marginTop: 0,
@@ -222,6 +222,7 @@ const Tab1: React.FC = () => {
     if (lockedAction) refetch();
   }, [selectedPharmacyForTransfer]);
 
+  const [concatList, setConcatList] = useState<AllPharmacyDrugInterface[]>([]);
   useEffect(() => {
     basketCount.forEach((x) => {
       if (!x.packID) {
@@ -231,7 +232,14 @@ const Tab1: React.FC = () => {
         }
       }
     });
-  }, [basketCount]);
+    let newList: AllPharmacyDrugInterface[] = [];
+    allPharmacyDrug.forEach((x) => {
+      if (basketCount.findIndex((y) => y.id === x.id) !== -1) return;
+      newList.push(x);
+    });
+    let output = newList.concat(basketCount);
+    setConcatList(output);
+  }, [basketCount, allPharmacyDrug]);
 
   const basketCardListGenerator = (): any => {
     if (basketCount && basketCount.length > 0) {
@@ -286,11 +294,11 @@ const Tab1: React.FC = () => {
   };
 
   const cardListGenerator = (): JSX.Element[] | null => {
-    if (allPharmacyDrug.length > 0) {
+    if (concatList.length > 0) {
       return (
-        allPharmacyDrug
+        concatList
           // .filter(comparer(basketCount))
-          // .sort((a, b) => (a.order > b.order ? 1 : -1))
+          .sort((a, b) => (a.order > b.order ? 1 : -1))
           .map((item: AllPharmacyDrugInterface, index: number) => {
             // Object.assign(item, {
             //   order: index + 1,
