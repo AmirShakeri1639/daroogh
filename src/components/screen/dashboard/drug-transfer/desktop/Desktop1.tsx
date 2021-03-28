@@ -37,7 +37,9 @@ const Desktop1: React.FC = () => {
   const location = useLocation();
   const params = queryString.parse(location.search);
   const [isFilterChanged, setIsFilterChanged] = useState(false);
-  let waiting = params.state && params.state === 'waiting' && !isFilterChanged;
+  const queryFilters = ['waiting', 'survey'];
+  let queryFilter = params.state && !isFilterChanged &&
+    queryFilters.includes(params.state.toString());
   const [filter, setFilter] = useState<any[]>((): any => {
     const result = [ExchangeStateEnum.UNKNOWN];
     result.push(NeedSurvey);
@@ -55,7 +57,7 @@ const Desktop1: React.FC = () => {
   });
 
   const { refetch } = useQuery(['key', page],
-    () => getDashboard(page, waiting), {
+    () => getDashboard(page, queryFilter ? params.state : ''), {
     onSuccess: (result) => {
       if (result != undefined) {
         const newList = exchanges.concat(result.items);
@@ -105,7 +107,7 @@ const Desktop1: React.FC = () => {
     setPage(0);
     setExchanges([]);
     refetch();
-  }, [waiting]);
+  }, [queryFilter]);
 
   const handleScroll = (e: any): any => {
     const el = e.target;
@@ -143,8 +145,8 @@ const Desktop1: React.FC = () => {
   const filterChanged = (v: number): void => {
     if (v === 0) {
       setIsFilterChanged(true);
-      if (waiting) {
-        waiting = false;
+      if (queryFilter) {
+        queryFilter = false;
         refetch();
       }
       setFilter([ExchangeStateEnum.UNKNOWN]);
