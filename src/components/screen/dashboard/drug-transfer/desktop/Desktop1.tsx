@@ -71,6 +71,7 @@ const Desktop1: React.FC = () => {
   const { refetch } = useQuery(['key', page],
     () => getDashboard(page, waiting), {
     onSuccess: (result) => {
+      debugger;
       if (result != undefined) {
         const newList = exchanges.concat(result.items);
         if (result.count != undefined && result.count != 0) {
@@ -116,7 +117,11 @@ const Desktop1: React.FC = () => {
   });
 
   useEffect(() => {
+    debugger;
     setPage(0);
+    if (!waiting) {
+      refetch();
+    }
   }, [waiting]);
 
   const handleScroll = (e: any): any => {
@@ -125,6 +130,7 @@ const Desktop1: React.FC = () => {
       if (totalCount == 0 || exchanges.length < (totalCount ?? 0)) {
         setPage((v) => v + 1);
         setLoading(true);
+        debugger;
         if (!waiting) {
           refetch();
         }
@@ -156,6 +162,7 @@ const Desktop1: React.FC = () => {
 
   const filterChanged = (v: number): void => {
     setWaiting(false);
+    debugger;
     if (waiting) {
       refetch();
     }
@@ -235,6 +242,11 @@ const Desktop1: React.FC = () => {
           <Grid item={ true } xs={ 12 }>
             <DesktopToolbox
               filterList={ stateFilterList }
+              onFilterClicked={ (v: any): void => {
+                console.log('%cFilter clicked', 'color: purple')
+                setWaiting(false);
+                refetch();
+              } }
               onFilterChanged={ filterChanged }
               onSortSelected={ sortSelected }
             />

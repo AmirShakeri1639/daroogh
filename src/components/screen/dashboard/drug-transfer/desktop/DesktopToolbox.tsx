@@ -16,12 +16,18 @@ import { isExchangeCompleted } from '../../../../../utils/ExchangeTools';
 
 interface Props {
   onFilterChanged?: (v: number) => void;
+  onFilterClicked?: (v: any) => void;
   onSortSelected?: (field: string, sortType: SortTypeEnum) => void;
   filterList?: LabelValue[];
 }
 
 const DesktopToolbox: React.FC<Props> = (props) => {
-  const { onFilterChanged, onSortSelected, filterList } = props;
+  const { 
+    onFilterChanged, 
+    onSortSelected, 
+    onFilterClicked,
+    filterList 
+  } = props;
   const { t } = useTranslation();
   const { ul, faIcons } = useClasses();
 
@@ -126,6 +132,9 @@ const DesktopToolbox: React.FC<Props> = (props) => {
           <li>
             <DaroogDropdown
               defaultValue="0"
+              onClick={ (v: any): void => {
+                if (onFilterClicked) onFilterClicked(v);
+               } }
               onChangeHandler={ stateFilterSelected }
               data={ statesFilterList }
               variant="standard"

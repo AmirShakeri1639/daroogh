@@ -5,8 +5,8 @@ import { DataTableColumns } from '../../interfaces/DataTableColumns';
 class Exchange extends Api {
   readonly waitingFilter = `&$filter=` +
     // `(contains(cast(state, 'Edm.String'), '3')) or (contains(cast(state, 'Edm.String'), '2')) and cast(sendDate, 'Edm.String') gt '2021-03-23'`;
-    `(contains(cast(state, 'Edm.String'), '3') and currentPharmacyIsA eq true) or ` +
-    `(contains(cast(state, 'Edm.String'), '2') and currentPharmacyIsA eq false)`;
+    `(contains(cast(state, 'Edm.String'), '13') and currentPharmacyIsA eq true) or ` +
+    `(contains(cast(state, 'Edm.String'), '12') and currentPharmacyIsA eq false)`;
   readonly urls = {
     pharmacyInfo: '/Exchange/GetExchangePharmacyInfo?exchangeID=',
     dashboard: '/Exchange/Dashboard',
@@ -40,12 +40,14 @@ class Exchange extends Api {
   };
 
   getDashboard = async (e: any, waitingStates: any = false): Promise<any> => {
+    debugger;
     try {
       e *= 10;
       let url = `${this.urls.dashboard}?$top=10&$skip=${e}&$orderby=id desc`;
       if (waitingStates) {
         url += this.waitingFilter
       }
+      console.log('%cDashboard URL:', 'background: orange; padding: .5em 2em', url)
       const result = await this.postData(url);
       return result.data;
     } catch (e) {
