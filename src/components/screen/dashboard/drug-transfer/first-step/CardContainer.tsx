@@ -35,6 +35,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
       width: '100%',
       padding: theme.spacing(1),
       position: 'relative',
+      minHeight:339
     },
     span: {
       color: '#707070',
@@ -82,6 +83,13 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     detailText:{
       color:'#f80501',
       fontSize:`${fullScreen?'10px':'13px'}`
+    },
+    button:{
+      display:'flex',
+      flexDirection:'row-reverse',
+      position:'absolute',
+      bottom: 8,
+      right: 8
     }
   })
 );
@@ -117,7 +125,8 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     detailContainer,
     buttonContinueExchange,
     buttonExchange,
-    detailText
+    detailText,
+    button
   } = useStyle();
 
   const { t } = useTranslation();
@@ -193,8 +202,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
           </div>
         </Box>
       </Grid>
-      <Grid container xs={12}>
-        <Grid item xs={9}></Grid>
+      <Grid container className={button} xs={12}>
 
         <Grid item xs={3}>
           <Button

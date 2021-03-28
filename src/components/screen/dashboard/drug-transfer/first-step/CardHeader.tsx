@@ -75,8 +75,9 @@ const useStyle = makeStyles((theme) =>
 
     headerBack: {
       background: ColorEnum.LiteBack,
-      margin: '8px 8px',
-      borderRadius: '8px ​8px 0px 0px',
+      margin: '4px 4px 8px 4px',
+      borderRadius: '8px 8px 0px 0px',
+      padding: 4
     },
     logoType: {
       width: '60px',

@@ -29,7 +29,7 @@ export enum ColorEnum {
   Confirmed = '#dff4ff',//'#33ff33',
   NotConfirmed = '#009900',
   DeepBlue ='#1d0d50',
-  LiteBack = '#FEFFF2',
+  LiteBack = '#4625b205',
   Borders = '#f80501'
 }
 
