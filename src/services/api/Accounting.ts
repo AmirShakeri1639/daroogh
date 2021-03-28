@@ -1,6 +1,7 @@
 import Api from './Api';
 import { errorHandler } from '../../utils';
 import { AccountingTransactionInterface } from '../../interfaces';
+import { DataTableColumns } from 'interfaces/DataTableColumns';
 
 class Accounting extends Api {
   readonly urls = {
@@ -9,10 +10,16 @@ class Accounting extends Api {
     isIndebtPharmacy: '/Accounting/IsIndebtPharmacy',
   };
 
-  all = async (skip: number, top: number = 10): Promise<any> => {
+  all = async (skip: number, top: number = 10,
+    searchableColumns: DataTableColumns[] = [],
+    searchText: string = ""): Promise<any> => {
+      var filter = 'true';
+    if (searchText.trim() != "") {
+      filter = `(contains(cast(description,'Edm.String'),'${searchText}'))`
+    }
     try {
       const result = await this.postJsonData(
-        `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`
+        `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc&$filter=${filter}`
       );
       return result.data;
     } catch (e) {
