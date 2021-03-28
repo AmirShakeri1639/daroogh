@@ -7,8 +7,9 @@ import {
   Divider,
   Button,
   Hidden,
+  useMediaQuery,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import CardHeader from './CardHeader';
 import { CardContainerRelatedPharmacyDrugsInterface } from '../../../../../interfaces';
 import ItemContainer from './ItemContainer';
@@ -19,7 +20,14 @@ import { useDispatch } from 'react-redux';
 import { setTransferStart } from '../../../../../redux/actions';
 import routes from '../../../../../routes';
 
-const useStyle = makeStyles((theme) =>
+
+
+const { transfer } = routes;
+
+const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
+  props
+) => {
+  const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
       backgroundColor: '#fff',
@@ -71,14 +79,16 @@ const useStyle = makeStyles((theme) =>
       width: '100%',
       fontSize: '12px',
     },
+    detailText:{
+      color:'#f80501',
+      fontSize:`${fullScreen?'12px':'14px'}`
+    }
   })
 );
 
-const { transfer } = routes;
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
-  props
-) => {
   const {
     setSelectedPharmacyForTransfer,
     setActiveStep,
@@ -107,6 +117,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     detailContainer,
     buttonContinueExchange,
     buttonExchange,
+    detailText
   } = useStyle();
 
   const { t } = useTranslation();
@@ -146,21 +157,21 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
         <Box component="div" className={box}>
           <Grid container spacing={0}>
             <Grid item xs={8} md={7} lg={7} className={detailContainer}>
-              <span className="txt-xs text-nowrap">نام دارو</span>
+              <span className={detailText}>نام دارو</span>
             </Grid>
 
             <Grid item xs={4} md={5} lg={5}>
               <Grid container spacing={1} alignItems="flex-end">
                 <Hidden xsDown>
                   <Grid item xs={4} className={detailContainer}>
-                    <span className="txt-xs text-nowrap">هدیه</span>
+                    <span className={detailText}>هدیه</span>
                   </Grid>
                 </Hidden>
                 <Grid item xs={6} md={4} lg={4} className={detailContainer}>
-                  <span className="txt-xs text-nowrap">انقضا</span>
+                  <span className={detailText}>انقضا</span>
                 </Grid>
                 <Grid item xs={6} md={4} lg={4} className={detailContainer}>
-                  <span className="txt-xs text-nowrap"> قیمت</span>
+                  <span className={detailText}> قیمت</span>
                 </Grid>
               </Grid>
             </Grid>
