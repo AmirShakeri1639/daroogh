@@ -30,6 +30,7 @@ import sweetAlert from '../../../../utils/sweetAlert';
 import routes from '../../../../routes';
 import { useHistory } from 'react-router-dom';
 import errorHandler from '../../../../utils/errorHandler';
+import { ColorEnum } from 'enum';
 
 const styles = makeStyles((theme) =>
   createStyles({
@@ -53,7 +54,7 @@ const styles = makeStyles((theme) =>
     },
     icons: {
       marginTop: 0,
-      color: '#1d0d50',
+      color: ColorEnum.DeepBlue,
     },
     buttonContainer: {
       textAlign: 'right',

@@ -4,6 +4,7 @@ import { Box, createStyles, Divider, Grid, Hidden, useMediaQuery } from '@materi
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Convertor from '../../../../../utils/Convertor';
+import { ColorEnum } from 'enum';
 
 
 
@@ -30,7 +31,7 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
       },
     },
     detailText:{
-      color:'#1d0d50',
+      color:ColorEnum.DeepBlue,
       fontSize:`${fullScreen?'10px':'13px'}`
     }
   })

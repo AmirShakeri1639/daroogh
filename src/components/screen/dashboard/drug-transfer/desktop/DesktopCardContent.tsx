@@ -601,7 +601,7 @@ const DesktopCardContent = ({
           style={{
             height: 6,
             width: 4,
-            background: '#1d0d50',
+            background:ColorEnum.DeepBlue,
             borderRadius: '50%',
           }}
         />

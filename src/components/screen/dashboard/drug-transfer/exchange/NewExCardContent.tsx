@@ -168,7 +168,7 @@ const useClasses = makeStyles((theme) =>
       fontSize: 11,
       fontWeight: 'bold',
       backgroundColor: '#fff',
-      color: '#1d0d50',
+      color: ColorEnum.DeepBlue,
       '&:hover': {
         backgroundColor: '#ccc',
       },
