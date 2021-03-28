@@ -31,7 +31,7 @@ const MessageBox: React.FC<MessageBoxProps> = memo(({ message }) => {
             padding: '16px 16px 0px 16px',
             marginTop: 24,
             width: '100%',
-            borderRight: '3px solid #f80501',
+            borderRight: `2px solid ${ColorEnum.Borders}`,
           }}
           elevation={1}
         >
