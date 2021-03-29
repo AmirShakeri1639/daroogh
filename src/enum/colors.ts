@@ -1,5 +1,6 @@
 export enum ColorEnum {
   White = '#ffffff',
+  Black = '#000',
   Green = '#4caf50',
   Red = '#f44336',
   Gray = '#455a64',
@@ -28,6 +29,9 @@ export enum ColorEnum {
   AddedByB = '#00cc00',
   Confirmed = '#dff4ff',//'#33ff33',
   NotConfirmed = '#009900',
+  DeepBlue ='#1d0d50',
+  LiteBack = '#4625b205',
+  Borders = '#f80501'
 }
 
 export const CardColors = [

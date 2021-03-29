@@ -24,6 +24,7 @@ import moment from 'jalali-moment';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import drug from '../../../../../../assets/images/drug.png';
+import { ColorEnum } from 'enum';
 
 interface Props {
   item: AllPharmacyDrugInterface;
@@ -75,7 +76,7 @@ const ExchangePackDetail: React.FC<Props> = (props) => {
         display: 'flex',
       },
       textC: {
-        color: '#1d0d50',
+        color: ColorEnum.DeepBlue,
         fontSize: '14px',
         verticalAlign: 'middle',
         lineHeight: '20px',
@@ -166,7 +167,7 @@ const ExchangePackDetail: React.FC<Props> = (props) => {
     <div className={root}>
         <Grid container item spacing={0} style={{ padding: 2 }}>
           <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={{ marginRight: 5, fontSize: 12,color:'#1d0d50',
+            <span style={{ marginRight: 5, fontSize: 12,color:`${ColorEnum.DeepBlue}`,
  }}>
               {item.drug.name}
               {item.drug.enName && `(${item.drug.enName})`}
