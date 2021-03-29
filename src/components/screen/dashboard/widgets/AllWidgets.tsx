@@ -9,8 +9,8 @@ import { ColorEnum } from 'enum';
 import { Grid } from '@material-ui/core';
 
 const AllWidgets: React.FC = () => {
-  const { getWidgetInfo } = new Reports()
-  const [widgetData, setWidgetData] = useState<WidgetInterface[]>()
+  const { getWidgetInfo } = new Reports();
+  const [widgetData, setWidgetData] = useState<WidgetInterface[]>();
 
   useEffect(() => {
     async function getWidgetData() {
@@ -18,38 +18,38 @@ const AllWidgets: React.FC = () => {
       setWidgetData(result);
     }
 
-    getWidgetData()
-  }, [])
+    getWidgetData();
+  }, []);
 
   return (
-    <Grid item xs={ 12 } container spacing={ 3 }>
-      { widgetData && widgetData?.length > 0 &&
+    <Grid item xs={12} container spacing={3}>
+      {widgetData &&
+        widgetData?.length > 0 &&
         widgetData.map((wData: WidgetInterface) => {
-          let w = dashboardWidgets.filter(i => i.name === wData.name)[0];
+          let w = dashboardWidgets.filter((i) => i.name === wData.name)[0];
           w = {
             ...w,
             title: wData.title,
             value: wData.value,
-          }
+          };
           return (
-            <Grid item xs={ 12 } sm={ 6 } md={ 3 } xl={ 3 }>
+            <Grid item xs={12} sm={6} md={3} xl={3}>
               <div>
                 <StatsWidget
-                  title={ w.title ?? '' }
-                  value={ w.value ?? 0 }
-                  icon={ <FontAwesomeIcon icon={ w.icon ?? faInfoCircle } size="4x" /> }
-                  backColor={ w.backColor ?? ColorEnum.White }
-                  color={ w.color ?? ColorEnum.Black }
-                  titleFontSize={ w.titleFontSize }
-                  to={ w.to ?? undefined }
+                  title={w.title ?? ''}
+                  value={w.value ?? 0}
+                  icon={<FontAwesomeIcon icon={w.icon ?? faInfoCircle} size="4x" />}
+                  backColor={w.backColor ?? ColorEnum.White}
+                  color={w.color ?? ColorEnum.Black}
+                  titleFontSize={w.titleFontSize}
+                  to={w.to ?? undefined}
                 />
               </div>
             </Grid>
-          )
-        })
-      }
+          );
+        })}
     </Grid>
-  )
-}
+  );
+};
 
 export default AllWidgets;
