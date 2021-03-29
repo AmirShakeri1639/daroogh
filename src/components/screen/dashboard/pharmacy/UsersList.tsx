@@ -261,7 +261,8 @@ const UsersList: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen =  true
 
   const toggleIsOpenModalOfUser = (): void =>
     setIsOpenModalOfCreateUser((v) => !v);
@@ -704,17 +705,20 @@ const UsersList: React.FC = () => {
       setMobile(data);
     };
     React.useEffect(() => {
-      function handleResize() {
-        if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        }
-        setMobileRef(isMobile());
+       function handleResize() {
+      //   if (!mobileRef.current && isMobile()) {
+      //     window.addEventListener('scroll', handleScroll, {
+      //       capture: true,
+      //     });
+      //   } else if (mobileRef.current && !isMobile()) {
+      //     window.removeEventListener('scroll', handleScroll, {
+      //       capture: true,
+      //     });
+      //   }
+      //   setMobileRef(isMobile());
+      window.addEventListener('scroll', handleScroll, {
+        capture: true,
+      })
       }
       handleResize();
       window.addEventListener('resize', handleResize);

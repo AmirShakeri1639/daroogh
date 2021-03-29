@@ -119,7 +119,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               (res.state === 2 || res.state === 12) &&
               res.lockSuggestion === false) ||
             (res.currentPharmacyIsA && res.state === 1);
+
           setLockedAction(locked ?? true);
+
           if (res.cartA !== undefined) {
             res.cartA.forEach((item) => {
               basketA.push({
@@ -172,6 +174,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
           const newItemsA: AllPharmacyDrugInterface[] = [];
           const packListA = new Array<AllPharmacyDrugInterface>();
+
           basketA.forEach((item) => {
             let ignore = false;
             if (item.packID) {
@@ -197,6 +200,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
           const newItemsB: AllPharmacyDrugInterface[] = [];
           const packListB = new Array<AllPharmacyDrugInterface>();
+
           basketB.forEach((item) => {
             let ignore = false;
             if (item.packID) {
@@ -228,9 +232,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             setBasketCount(newItemsB);
             setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
-
-          // console.log('setBasketCount', newItemsA);
-          // console.log('setUbasketCount', newItemsB);
         }
 
         if (res !== undefined) {
@@ -396,23 +397,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 <span>در حال انتقال به صفحه تبادل. لطفا منتظر بمانید...</span>
                 <CircularProgress size={20} />
               </div>
+            ) : activeStep === 0 ? (
+              <FirstStep />
             ) : (
-              <>
-                {/* {activeStep > 0 && (
-                    <>
-                      <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
-                        <ProgressBar />
-                      </Grid>
-                    </>
-                  )}
-
-                  {activeStep === 0 && <FirstStep />}
-                  {activeStep === 1 && <SecondStep />}
-                  {activeStep === 2 && <ThirdStep />}
-                  {activeStep === 3 && <FourthStep />} */}
-
-                {activeStep === 0 ? <FirstStep /> : <Exchange />}
-              </>
+              <Exchange />
             )}
           </Grid>
         </MaterialContainer>

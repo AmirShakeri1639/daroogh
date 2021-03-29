@@ -264,7 +264,9 @@ const JobsList: React.FC = () => {
     dropdown,
   } = useClasses();
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen =  true
+  
 
   const {
     createUserBtn,
@@ -680,16 +682,19 @@ const JobsList: React.FC = () => {
     };
     React.useEffect(() => {
       function handleResize() {
-        if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        }
-        setMobileRef(isMobile());
+        // if (!mobileRef.current && isMobile()) {
+        //   window.addEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // } else if (mobileRef.current && !isMobile()) {
+        //   window.removeEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // }
+        // setMobileRef(isMobile());
+        window.addEventListener('scroll', handleScroll, {
+          capture: true,
+        })
       }
       handleResize();
       window.addEventListener('resize', handleResize);

@@ -159,7 +159,8 @@ const PrescriptionList: React.FC = () => {
     searchIconButton,
   } = useStyles();
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen =  true
   const queryCache = useQueryCache();
   const { getList, save, urls } = new Prescription();
   const [_save, { isLoading }] = useMutation(save, {
@@ -425,16 +426,19 @@ const PrescriptionList: React.FC = () => {
     };
     React.useEffect(() => {
       function handleResize() {
-        if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        }
-        setMobileRef(isMobile());
+        // if (!mobileRef.current && isMobile()) {
+        //   window.addEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // } else if (mobileRef.current && !isMobile()) {
+        //   window.removeEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // }
+        // setMobileRef(isMobile());
+        window.addEventListener('scroll', handleScroll, {
+          capture: true,
+        })
       }
       handleResize();
       window.addEventListener('resize', handleResize);
