@@ -24,6 +24,7 @@ import CircleLoading from '../../../../public/loading/CircleLoading';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
+import { AllPharmacyDrug } from 'enum';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from '../../../../../redux/actions';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
@@ -165,9 +166,13 @@ const Tab1: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const { isLoading, refetch } = useQuery(
-    ['key'],
+    AllPharmacyDrug.GET_ALL_PHARMACY_DRUG,
     () => {
       setLoading(true);
+      console.log(
+        'selectedPharmacyForTransfer--->',
+        selectedPharmacyForTransfer
+      );
       return getAllPharmacyDrug(
         selectedPharmacyForTransfer,
         listPageNo,
@@ -201,8 +206,9 @@ const Tab1: React.FC = () => {
             if (!ignore) newItems.push(item);
           }
         });
-        setAllPharmacyDrug(newItems);
-        setOrgAllPharmacyDrug(newItems);
+        console.log('newItems', newItems);
+        setAllPharmacyDrug([...newItems]);
+        setOrgAllPharmacyDrug([...newItems]);
         setLoading(false);
       },
       enabled: false,
@@ -218,11 +224,18 @@ const Tab1: React.FC = () => {
 
   useEffect(() => {
     const id = params.eid == null ? undefined : params.eid;
-    if (id !== undefined && !selectedPharmacyForTransfer) return;
-    if (lockedAction) refetch();
+    if (id !== undefined && !selectedPharmacyForTransfer) {
+      console.log('line222');
+      return;
+    }
+    if (lockedAction) {
+      console.log('line226');
+      refetch();
+    }
   }, [selectedPharmacyForTransfer]);
 
   const [concatList, setConcatList] = useState<AllPharmacyDrugInterface[]>([]);
+
   useEffect(() => {
     basketCount.forEach((x) => {
       if (!x.packID) {
@@ -232,12 +245,14 @@ const Tab1: React.FC = () => {
         }
       }
     });
-    let newList: AllPharmacyDrugInterface[] = [];
+    const newList: AllPharmacyDrugInterface[] = [];
     allPharmacyDrug.forEach((x) => {
       if (basketCount.findIndex((y) => y.id === x.id) !== -1) return;
       newList.push(x);
     });
-    let output = newList.concat(basketCount);
+    console.log('newList', newList);
+    console.log('basketCount', basketCount);
+    const output = newList.concat(basketCount);
     setConcatList(output);
   }, [basketCount, allPharmacyDrug]);
 
@@ -295,6 +310,7 @@ const Tab1: React.FC = () => {
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (concatList.length > 0) {
+      console.log('concatList', concatList);
       return (
         concatList
           // .filter(comparer(basketCount))

@@ -101,6 +101,8 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     setSelectedPharmacyForTransfer,
     setActiveStep,
     activeStep,
+    setBasketCount,
+    setUbasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { push } = useHistory();
@@ -136,9 +138,10 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
   };
 
   const transferStart = (notSendExchangeID: string | null): void => {
-    console.log(notSendExchangeID);
     if (notSendExchangeID === null) {
       setSelectedPharmacyForTransfer(data.pharmacyKey);
+      setBasketCount([]);
+      setUbasketCount([]);
       setActiveStep(activeStep + 1);
     } else {
       cardClickHandler(notSendExchangeID);
