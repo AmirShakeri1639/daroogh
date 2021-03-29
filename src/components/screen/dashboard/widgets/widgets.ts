@@ -4,6 +4,9 @@ import {
   faUserMd,
   faPills,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  faThumbsUp
+} from '@fortawesome/free-regular-svg-icons';
 import { ColorEnum } from 'enum';
 import { WidgetInterface } from 'interfaces';
 import routes from 'routes';
@@ -46,7 +49,7 @@ const dashboardWidgets: WidgetInterface[] = [
   },
   {
     name: "FavoriteListCount",
-    icon: faHandshake,
+    icon: faThumbsUp,
     backColor: ColorEnum.Maroon,
     color: ColorEnum.White,
     to: transferWithFavorites,
