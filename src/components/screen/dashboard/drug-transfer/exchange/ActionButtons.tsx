@@ -63,6 +63,8 @@ import { Rating } from '@material-ui/lab';
 import { SaveSurvey } from '../../../../../model/SaveSurvey';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import { ColorEnum } from 'enum';
 //https://sweetalert2.github.io/
 // import Swal from 'sweetalert2'
 // import withReactContent from 'sweetalert2-react-content'
@@ -135,6 +137,11 @@ const style = makeStyles((theme) =>
       top: 60,
       zIndex: 999,
     },
+    addressBar:{
+      backgroundColor: ColorEnum.LiteBack,
+      borderLeft: `2px solid ${ColorEnum.Borders}`,
+
+    }
   })
 );
 
@@ -152,6 +159,7 @@ const ActionButtons = (): JSX.Element => {
     fullRow,
     pharmacyInfoStyle,
     questionHeader,
+    addressBar
   } = style();
   const {
     activeStep,
@@ -461,53 +469,41 @@ const ActionButtons = (): JSX.Element => {
 
   const ShowPharmacyInfo = (): JSX.Element => {
     return (
-      <Modal
+      <Dialog
+        fullScreen={fullScreen}
         open={isShowPharmacyInfoModal}
-        toggle={toggleIsShowPharmacyInfoModalForm}
+        fullWidth={true}
+        onClose={toggleIsShowPharmacyInfoModalForm}
       >
-        <Card className={pharmacyInfoStyle}>
-          <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title="اطلاعات داروخانه مقابل"
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={toggleIsShowPharmacyInfoModalForm}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={1}>
-              <Grid item xs={12} sm={6}>
-                <span>نام داروخانه : </span>
-                <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.name}
-                </span>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <span>آدرس : </span>
-                <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.address}
-                </span>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <span>تلفن : </span>
-                <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.telphon}
-                </span>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <span>موبایل : </span>
-                <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.mobile}
-                </span>
-              </Grid>
-              <Grid item xs={12} sm={12}>
+        <DialogTitle>اطلاعات داروخانه مقابل</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2} className={addressBar}>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title="نام داروخانه"
+                body={pharmacyInfoState?.data.name}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextWithTitle
+                title="آدرس"
+                body={pharmacyInfoState?.data.address}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title="تلفن"
+                body={pharmacyInfoState?.data.telphon}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title="موبایل"
+                body={pharmacyInfoState?.data.mobile}
+              />
+            </Grid>
+          </Grid>
+          <Grid item xs={12} sm={12}>
                 <Card>
                   <CardContent style={{ textAlign: 'center' }}>
                     {pharmacyInfoState?.data.x && pharmacyInfoState?.data.y ? (
@@ -526,13 +522,16 @@ const ActionButtons = (): JSX.Element => {
                   </CardContent>
                 </Card>
               </Grid>
-            </Grid>
-          </CardContent>
-          <CardActions>
-            <Grid container spacing={1}></Grid>
-          </CardActions>
-        </Card>
-      </Modal>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={toggleIsShowPharmacyInfoModalForm}
+            autoFocus
+          >
+            بستن
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   };
 
