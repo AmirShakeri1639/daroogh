@@ -169,10 +169,6 @@ const Tab1: React.FC = () => {
     AllPharmacyDrug.GET_ALL_PHARMACY_DRUG,
     () => {
       setLoading(true);
-      console.log(
-        'selectedPharmacyForTransfer--->',
-        selectedPharmacyForTransfer
-      );
       return getAllPharmacyDrug(
         selectedPharmacyForTransfer,
         listPageNo,
@@ -206,7 +202,6 @@ const Tab1: React.FC = () => {
             if (!ignore) newItems.push(item);
           }
         });
-        console.log('newItems', newItems);
         setAllPharmacyDrug([...newItems]);
         setOrgAllPharmacyDrug([...newItems]);
         setLoading(false);
@@ -225,11 +220,9 @@ const Tab1: React.FC = () => {
   useEffect(() => {
     const id = params.eid == null ? undefined : params.eid;
     if (id !== undefined && !selectedPharmacyForTransfer) {
-      console.log('line222');
       return;
     }
     if (lockedAction) {
-      console.log('line226');
       refetch();
     }
   }, [selectedPharmacyForTransfer]);
@@ -250,8 +243,6 @@ const Tab1: React.FC = () => {
       if (basketCount.findIndex((y) => y.id === x.id) !== -1) return;
       newList.push(x);
     });
-    console.log('newList', newList);
-    console.log('basketCount', basketCount);
     const output = newList.concat(basketCount);
     setConcatList(output);
   }, [basketCount, allPharmacyDrug]);
@@ -310,7 +301,6 @@ const Tab1: React.FC = () => {
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (concatList.length > 0) {
-      console.log('concatList', concatList);
       return (
         concatList
           // .filter(comparer(basketCount))
