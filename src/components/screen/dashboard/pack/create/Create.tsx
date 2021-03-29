@@ -887,7 +887,7 @@ const Create: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">فرمت تاریخ به صورت 01 02 1400 باشد</span>
+                <span className="txt-sm">فرمت تاریخ به صورت 00 00 0000 باشد</span>
               </Grid>
             </Grid>
 
