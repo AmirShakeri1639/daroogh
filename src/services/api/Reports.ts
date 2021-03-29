@@ -1,13 +1,18 @@
 import Api from './Api';
 import { errorHandler } from '../../utils';
-import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface } from '../../interfaces';
 
 class Reports extends Api {
   readonly urls = {
     getBestPharmaciesList: '/Reports/GetBestPharmacyListScores2',
     getExchangeStatus: '/Reports/getExchangeStatus',
     getExchangeCount: '/Reports/GetExchangeCount',
+    getWidgetInfo: '/Reports/GetWidgetInfo',
   };
+
+  getWidgetInfo = async (): Promise<any> => {
+    const result = await this.postJsonData(this.urls.getWidgetInfo);
+    return result.data;
+  }
 
   getBestPharmaciesList = async (for24Hour: boolean): Promise<any> => {
     try {
