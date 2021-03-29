@@ -13,13 +13,7 @@ import {
 import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
-
-import ExchangeWidget from './widgets/ExchangeWidget';
-import SurveyWidget from './widgets/SurveyWidget';
 import AllWidgets from './widgets/AllWidgets';
-import PrescriptionWidget from './widgets/PrescriptionWidget';
-import EmpApplicationWidget from './widgets/EmpApplicationWidget';
-import { TabPanel } from '@material-ui/lab';
 // @ts-ignore
 // import { Steps, Hints } from 'intro.js-react';
 
@@ -88,18 +82,8 @@ const DashboardContent: React.FC<any> = () => {
         {/* Widgets */}
         <AllWidgets />
         {/* Chart */}
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={6}
-          xl={6}
-          style={{ height: 500, overflow: 'disabled' }}
-        >
-          <Paper
-            className={classes.paper}
-            style={{ height: 500, overflow: 'disabled' }}
-          >
+        <Grid item xs={12} sm={12} md={6} xl={6} style={{ height: 500, overflow: 'disabled' }}>
+          <Paper className={classes.paper} style={{ height: 500, overflow: 'disabled' }}>
             <span>هیت مپ تبادلات در کشور</span>
             <div id="map">
               <MapCluster />
