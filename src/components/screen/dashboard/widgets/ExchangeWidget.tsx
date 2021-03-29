@@ -11,7 +11,7 @@ function ExchangeWidget() {
   const { t } = useTranslation();
   const [count, setCount] = useState(0);
   const { desktop } = routes;
-  const toUrl = `${desktop}?state=2,3`
+  const toUrl = `${desktop}?state=waiting`
 
   useEffect(() => {
     const { getForWidget } = new Exchange();

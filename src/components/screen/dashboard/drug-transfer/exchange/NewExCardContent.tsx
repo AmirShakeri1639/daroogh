@@ -168,7 +168,7 @@ const useClasses = makeStyles((theme) =>
       fontSize: 11,
       fontWeight: 'bold',
       backgroundColor: '#fff',
-      color: '#1d0d50',
+      color: ColorEnum.DeepBlue,
       '&:hover': {
         backgroundColor: '#ccc',
       },
@@ -674,7 +674,6 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   }, [pharmacyDrug?.currentCnt]);
 
   const handleTotalAmount = () => {
-    debugger;
     if (!pharmacyDrug) return;
     let val = 0;
     val = pharmacyDrug.amount * pharmacyDrug.currentCnt;

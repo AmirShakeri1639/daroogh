@@ -12,6 +12,7 @@ import {
 import { green } from '@material-ui/core/colors';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import Utils from 'components/public/utility/Utils';
+import { ColorEnum } from 'enum';
 import { AllPharmacyDrugInterface } from 'interfaces';
 import moment from 'jalali-moment';
 import React from 'react';
@@ -84,7 +85,7 @@ const ExchangePackCard: React.FC<Props> = (props) => {
         display: 'flex',
       },
       textC: {
-        color: '#1d0d50',
+        color: ColorEnum.DeepBlue,
         fontSize: '14px',
         verticalAlign: 'middle',
         lineHeight: '20px',

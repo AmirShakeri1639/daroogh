@@ -1,4 +1,5 @@
 import { createStyles, Grid, makeStyles } from '@material-ui/core';
+import { ColorEnum } from 'enum';
 import React from 'react';
 import { TextWithTitlePropsInterface } from '../../../interfaces';
 
@@ -22,7 +23,7 @@ const TextWithTitle: React.FC<TextWithTitlePropsInterface> = (props) => {
           lineHeight: '20px'
       },
         textC:{
-          color:"#1d0d50",
+          color:ColorEnum.DeepBlue,
           fontSize:"14px",
           verticalAlign:'middle',
           lineHeight: '20px'

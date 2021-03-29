@@ -1,5 +1,6 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
+import SearchBar from 'material-ui-search-bar';
 import {
   createStyles,
   Divider,
@@ -144,6 +145,12 @@ const useClasses = makeStyles((theme) =>
       right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
+    },
+    searchBar: {
+      margin: '0 10px',
+    },
+    searchIconButton: {
+      display: 'none'
     },
   })
 );
@@ -349,6 +356,8 @@ const UsersList: React.FC = () => {
     submitBtn,
     userRoleIcon,
     fab,
+    searchBar,
+    searchIconButton
   } = useClasses();
 
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -617,14 +626,25 @@ const UsersList: React.FC = () => {
   };
   const [list, setList] = useState<any>([]);
   const listRef = React.useRef(list);
-  const setListRef = (data: any) => {
-    listRef.current = listRef.current.concat(data);
+  const setListRef = (data: any, refresh: boolean = false) => {
+    if (!refresh) {
+      listRef.current = listRef.current.concat(data);
+    } else {
+      listRef.current = data;
+    }
     setList(data);
+  };
+  const [search, setSearch] = useState<string>('');
+  const searchRef = React.useRef(search);
+  const setSearchRef = (data: any) => {
+    searchRef.current = data
+    setSearch(data);
+    getList(true);
   };
   const { isLoading, data, isFetched } = useQuery(
     UserQueryEnum.GET_ALL_USERS,
 
-    () => getCurrentPharmacyUsers(pageRef.current, 10),
+    () => getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
         console.log(result);
@@ -659,15 +679,19 @@ const UsersList: React.FC = () => {
       }
     }
   };
-  async function getList(): Promise<any> {
-    const result = await getCurrentPharmacyUsers(pageRef.current, 10);
+  async function getList(refresh: boolean = false): Promise<any> {
+    const result = await getCurrentPharmacyUsers(
+      pageRef.current,
+      10,
+      [],
+      searchRef.current
+    );
     console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
-    } else {
-      setListRef(result.items);
-      return result;
     }
+    setListRef(result.items, refresh);
+    return result;
   }
   function isMobile() {
     return window.innerWidth < 960;
@@ -740,9 +764,18 @@ const UsersList: React.FC = () => {
           <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
         </Fab>
       </Hidden>
-
+      {fullScreen && (
+        <SearchBar
+          className={searchBar}
+          classes={{ searchIconButton: searchIconButton }} 
+          placeholder={t('general.search')}
+          onChange={(newValue) => setSearchRef(newValue)}
+          
+        />
+      )}
       {fullScreen && contentGenerator()}
       {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+
       <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal} fullWidth>
         <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
         <DialogContent>

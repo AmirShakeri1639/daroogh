@@ -4,6 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import { difference } from 'lodash';
 import { Convertor } from '../../../../../utils';
 import { borderRadius } from 'react-select/src/theme';
+import { ColorEnum } from 'enum';
 
 interface TextLinePropsInterface {
   percentage: number;
@@ -43,7 +44,7 @@ const MobileDiffViwer: React.FC<TextLinePropsInterface> = (props) => {
       display:'flex',
       alignContent:'center',
       // borderLeft:`2px solid ${is3PercentOk ? okColor : '#f44336'}`,
-      color: '#1d0d50',
+      color: ColorEnum.DeepBlue,
     },
 
     containerRight: {
@@ -93,13 +94,18 @@ const MobileDiffViwer: React.FC<TextLinePropsInterface> = (props) => {
     centerText: {
       textAlign: 'center',
     },
+    container:{
+      marginTop:8,
+      paddingTop:2,
+      border: `1px solid ${ColorEnum.DeepBlue}`
+    }
   }));
 
   const classes = useStyles();
   let diff: number = Number(yourAmount) - Number(otherAmount) > 0 ? 1 : -1;
 
   return (
-    <Grid container style={{marginTop:8,paddingTop:2, border:'1px solid #1d0d50'}}>
+    <Grid container className={classes.container}>
       <Grid item xs={10}>
         <Grid container className={classes.rootRight}>
           <Grid item xs={6} style={{ paddingLeft: 2 }}>

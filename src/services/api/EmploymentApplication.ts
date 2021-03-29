@@ -1,3 +1,4 @@
+import { DataTableColumns } from 'interfaces/DataTableColumns';
 import { EmploymentApplicationDataInterface } from 'interfaces/EmploymentApplicationInterface';
 import Api from './Api';
 
@@ -11,9 +12,14 @@ class EmploymentApplication extends Api {
     detail: '/EmploymentApplication/detail',
   };
 
-  all = async (skip: number, top: number = 10): Promise<any> => {
+  all = async (skip: number, top: number = 10, searchableColumns: DataTableColumns[] = [],
+    searchText: string = ""): Promise<any> => {
+      var filter = 'true';
+    if (searchText.trim() != "") {
+      filter = `(contains(cast(name,'Edm.String'),'${searchText}')or contains(cast(family,'Edm.String'),'${searchText}')or contains(cast(mobile,'Edm.String'),'${searchText}'))`
+    }
     const result = await this.postJsonData(
-      `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`
+      `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc&$filter=${filter}`
     );
     return result.data;
   };

@@ -10,6 +10,7 @@ import {
 import { green } from '@material-ui/core/colors';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import Utils from 'components/public/utility/Utils';
+import { ColorEnum } from 'enum';
 import { AllPharmacyDrugInterface } from 'interfaces';
 import moment from 'jalali-moment';
 import React from 'react';
@@ -77,7 +78,7 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
         display: 'flex',
       },
       textC: {
-        color: '#1d0d50',
+        color: ColorEnum.DeepBlue,
         fontSize: '14px',
         verticalAlign: 'middle',
         lineHeight: '20px',
@@ -120,7 +121,7 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
          
         
         <Grid item xs={11} style={{paddingLeft:16}} >
-          <span style={{ fontSize: 17, color: '#1d0d50' }}>
+          <span style={{ fontSize: 17, color: `${ColorEnum.DeepBlue}` }}>
             {pharmacyDrug?.drug.name}
           </span>
         </Grid>

@@ -74,9 +74,9 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
       <Grid container xs={12} spacing={0}>
         {cancelDate && (
           <Grid item xs={12} style={{marginRight:16,marginTop:16, padding: '0 6px',
-          borderRight: '3px solid #f80501',
+          borderRight: `2px solid ${ColorEnum.Borders}`,
           height: '40px',
-          backgroundColor: '#FEFFF2',
+          backgroundColor: ColorEnum.LiteBack,
           paddingTop: '8px',
           marginBottom: theme.spacing(1),}}> 
             <TextWithTitle

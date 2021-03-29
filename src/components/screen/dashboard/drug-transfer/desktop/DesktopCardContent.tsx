@@ -601,7 +601,7 @@ const DesktopCardContent = ({
           style={{
             height: 6,
             width: 4,
-            background: '#1d0d50',
+            background:ColorEnum.DeepBlue,
             borderRadius: '50%',
           }}
         />
@@ -681,7 +681,7 @@ const DesktopCardContent = ({
                     padding: '0 6px',
                     borderRight: `2px solid ${getExchangeTitleColor()}`,
                     height: '40px',
-                    backgroundColor: '#FEFFF2',
+                    backgroundColor: ColorEnum.LiteBack,
                     paddingTop: '8px',
                     marginBottom: '8px',
                     cursor: 'pointer',

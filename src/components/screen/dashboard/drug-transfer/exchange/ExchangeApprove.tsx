@@ -50,6 +50,7 @@ import sweetAlert from '../../../../../utils/sweetAlert';
 import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { Fullscreen } from '@material-ui/icons';
+import { ColorEnum } from 'enum';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -100,9 +101,9 @@ const useClasses = makeStyles((theme) =>
       },
       '& .drug-container': {
         padding: '0 6px',
-        borderLeft: '3px solid #f80501',
+        borderLeft: `2px solid ${ColorEnum.Borders}`,
         height: '40px',
-        backgroundColor: '#FEFFF2',
+        backgroundColor: ColorEnum.LiteBack,
         paddingTop: '8px',
         marginBottom: theme.spacing(1),
       },
@@ -508,7 +509,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
             container
             xs={12}
             spacing={1}
-            style={{ background: '#FEFFF2', position:'absolute', left:0 ,right:0, bottom:8 ,padding:8, maxWidth:'100%' , width:'100%' ,}}
+            style={{ background: ColorEnum.LiteBack , position:'absolute', left:0 ,right:0, bottom:8 ,padding:8, maxWidth:'100%' , width:'100%' ,}}
           >
             <Grid xs={12} item>
                           <Divider/>
@@ -590,7 +591,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
           </DialogContent>
           <DialogActions>
 
-            <Grid  container style={{ background: '#FEFFF2',  }} >
+            <Grid  container style={{ background: ColorEnum.LiteBack,  }} >
               <Grid item container spacing={2} xs={12} sm={6}>
                 <Grid item xs={12}>
                   <TextWithTitle
