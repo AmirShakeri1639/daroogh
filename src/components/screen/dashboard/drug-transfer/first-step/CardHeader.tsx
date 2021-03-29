@@ -13,6 +13,7 @@ import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@material-ui/icons/Person';
 import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
+import { ColorEnum } from 'enum';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -73,8 +74,10 @@ const useStyle = makeStyles((theme) =>
     },
 
     headerBack: {
-      background: '#fefff2',
-      margin: theme.spacing(2, 0),
+      background: ColorEnum.LiteBack,
+      margin: '4px 4px 8px 4px',
+      borderRadius: '8px 8px 0px 0px',
+      padding: 4
     },
     logoType: {
       width: '60px',

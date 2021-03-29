@@ -74,6 +74,7 @@ export type { EmploymentApplicationInterface } from './EmploymentApplicationInte
 export type { ProfileInterface } from './profile';
 export type { JobInterface } from './JobInterface';
 export type { JobApplicationInterface } from './JobApplicationInterface';
+export type { WidgetInterface } from './WidgetInterface';
 
 export * from './component';
 export * from './general';

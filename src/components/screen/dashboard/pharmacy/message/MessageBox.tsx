@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Convertor } from 'utils';
 import { MaterialContainer } from 'components/public';
 import styled from 'styled-components';
+import { ColorEnum } from 'enum';
 
 const StyledMaterialContainer = styled(MaterialContainer)`
   display: 'flex';
@@ -30,7 +31,7 @@ const MessageBox: React.FC<MessageBoxProps> = memo(({ message }) => {
             padding: '16px 16px 0px 16px',
             marginTop: 24,
             width: '100%',
-            borderRight: '3px solid #f80501',
+            borderRight: `2px solid ${ColorEnum.Borders}`,
           }}
           elevation={1}
         >
@@ -51,7 +52,7 @@ const MessageBox: React.FC<MessageBoxProps> = memo(({ message }) => {
               <Grid item xs={12} sm={11} spacing={0}>
                 <Grid container xs={12} spacing={0}>
                   <Grid item xs={12} spacing={1}>
-                    <strong style={{ color: '#1d0d50' }}>{subject}</strong>
+                    <strong style={{ color: `${ColorEnum.DeepBlue}` }}>{subject}</strong>
                   </Grid>
                   <Grid item xs={12} spacing={1}>
                     <p>{message1}</p>

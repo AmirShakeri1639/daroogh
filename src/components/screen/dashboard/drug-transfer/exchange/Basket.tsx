@@ -9,6 +9,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
+import { ColorEnum } from 'enum';
 
 const StyledBadge = withStyles((theme: Theme) =>
   createStyles({
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: 'auto',
     paddingLeft: '4px',
     display: 'inline-block',
-    color: '#1d0d50',
+    color: ColorEnum.DeepBlue,
   },
   icons: {
     marginTop: 0,

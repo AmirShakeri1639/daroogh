@@ -6,6 +6,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
 import Utils from 'components/public/utility/Utils';
 import { AllPharmacyDrugInterface } from 'interfaces/AllPharmacyDrugInterface';
+import { ColorEnum } from 'enum';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -133,7 +134,7 @@ const useClasses = makeStyles((theme) =>
       fontSize: 11,
       fontWeight: 'bold',
       backgroundColor: '#fff',
-      color: '#1d0d50',
+      color: ColorEnum.DeepBlue,
       '&:hover': {
         backgroundColor: '#ccc',
       },

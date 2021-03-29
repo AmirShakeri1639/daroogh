@@ -21,6 +21,7 @@ import Basket from './Basket';
 import Tab1 from './Tab1';
 import Tab2 from './Tab2';
 import { connect, ConnectedProps } from 'react-redux';
+import { ColorEnum } from 'enum';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -145,7 +146,7 @@ const Exchange: React.FC<ReduxProps> = (props) => {
           {exchangeStateCode !== 1 && (
             <span
               style={{
-                color: '#1d0d50',
+                color: ColorEnum.DeepBlue,
                 fontSize: 15,
                 width: '100%',
                 marginTop: 10,
