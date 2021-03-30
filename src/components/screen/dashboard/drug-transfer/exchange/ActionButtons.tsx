@@ -73,6 +73,7 @@ import { ColorEnum } from 'enum';
 const style = makeStyles((theme) =>
   createStyles({
     actionContainer: {
+      zIndex: 101,
       display: 'flex',
       flexDirection: 'row',
       marginTop: 5,
@@ -81,6 +82,7 @@ const style = makeStyles((theme) =>
       background: 'white',
     },
     mobileActionContainer: {
+      zIndex: 101,
       position: 'fixed',
       bottom: 0,
       left: 0,

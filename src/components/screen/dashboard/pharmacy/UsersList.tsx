@@ -26,6 +26,7 @@ import {
   FormControlLabel,
   Switch,
   Fab,
+  Paper,
 } from '@material-ui/core';
 import Input from '../../../public/input/Input';
 import CloseIcon from '@material-ui/icons/Close';
@@ -145,12 +146,27 @@ const useClasses = makeStyles((theme) =>
       right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
+      zIndex: 1,
     },
-    searchBar: {
-      margin: '0 10px',
-    },
+
     searchIconButton: {
-      display: 'none'
+      display: 'none',
+    },
+    blankCard: {
+      minHeight: 150,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
+      },
+    },
+    contentContainer: {
+      marginTop: 15,
     },
   })
 );
@@ -261,8 +277,8 @@ const UsersList: React.FC = () => {
   const [showError, setShowError] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const theme = useTheme();
-  //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const fullScreen =  true
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen =  true
 
   const toggleIsOpenModalOfUser = (): void =>
     setIsOpenModalOfCreateUser((v) => !v);
@@ -357,8 +373,9 @@ const UsersList: React.FC = () => {
     submitBtn,
     userRoleIcon,
     fab,
-    searchBar,
-    searchIconButton
+    searchIconButton,
+    blankCard,
+    contentContainer,
   } = useClasses();
 
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -613,7 +630,7 @@ const UsersList: React.FC = () => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid key={item.id} item xs={12}>
+          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
             <CardContainer data={item} editRoleHandler={editRoleHandler} />
           </Grid>
         );
@@ -652,7 +669,7 @@ const UsersList: React.FC = () => {
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
+          //console.log(result.items);
 
           setListRef(result.items);
         }
@@ -681,18 +698,15 @@ const UsersList: React.FC = () => {
     }
   };
   async function getList(refresh: boolean = false): Promise<any> {
-    const result = await getCurrentPharmacyUsers(
-      pageRef.current,
-      10,
-      [],
-      searchRef.current
-    );
-    console.log(result.items);
+    const result = await getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current);
+    // console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
     }
-    setListRef(result.items, refresh);
-    return result;
+    if (result != undefined) {
+      setListRef(result.items, refresh);
+      return result;
+    }
   }
   function isMobile() {
     return window.innerWidth < 960;
@@ -705,20 +719,20 @@ const UsersList: React.FC = () => {
       setMobile(data);
     };
     React.useEffect(() => {
-       function handleResize() {
-      //   if (!mobileRef.current && isMobile()) {
-      //     window.addEventListener('scroll', handleScroll, {
-      //       capture: true,
-      //     });
-      //   } else if (mobileRef.current && !isMobile()) {
-      //     window.removeEventListener('scroll', handleScroll, {
-      //       capture: true,
-      //     });
-      //   }
-      //   setMobileRef(isMobile());
-      window.addEventListener('scroll', handleScroll, {
-        capture: true,
-      })
+      function handleResize() {
+        //   if (!mobileRef.current && isMobile()) {
+        //     window.addEventListener('scroll', handleScroll, {
+        //       capture: true,
+        //     });
+        //   } else if (mobileRef.current && !isMobile()) {
+        //     window.removeEventListener('scroll', handleScroll, {
+        //       capture: true,
+        //     });
+        //   }
+        //   setMobileRef(isMobile());
+        window.addEventListener('scroll', handleScroll, {
+          capture: true,
+        });
       }
       handleResize();
       window.addEventListener('resize', handleResize);
@@ -732,7 +746,7 @@ const UsersList: React.FC = () => {
     <Container maxWidth="lg">
       <h1 className="txt-md">{t('user.users-list')}</h1>
 
-      {!fullScreen && (
+      {false && (
         <DataTable
           tableRef={ref}
           extraMethods={{ editUser: enableUserHandler }}
@@ -751,34 +765,36 @@ const UsersList: React.FC = () => {
         />
       )}
       <br />
-      <Hidden smDown>
-        <Grid container spacing={1} className={buttonContainer}>
-          <Button
-            variant="outlined"
-            className={createUserBtn}
-            onClick={toggleIsOpenModalOfUser}
-          >
-            {t('user.create-user')}
-          </Button>
-        </Grid>
-      </Hidden>
 
-      <Hidden mdUp>
-        <Fab onClick={toggleIsOpenModalOfUser} className={fab} aria-label="add">
-          <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-        </Fab>
-      </Hidden>
-      {fullScreen && (
-        <SearchBar
-          className={searchBar}
-          classes={{ searchIconButton: searchIconButton }} 
-          placeholder={t('general.search')}
-          onChange={(newValue) => setSearchRef(newValue)}
-          
-        />
+      {true && (
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
+            <SearchBar
+              classes={{ searchIconButton: searchIconButton }}
+              placeholder={t('general.search')}
+              onChange={(newValue) => setSearchRef(newValue)}
+            />
+          </Grid>
+        </Grid>
       )}
-      {fullScreen && contentGenerator()}
-      {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+      <Grid container spacing={3} className={contentContainer}>
+        <Hidden xsDown>
+          <Grid item xs={12} sm={12} md={4} xl={4}>
+            <Paper className={blankCard} onClick={toggleIsOpenModalOfUser}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
+              <span>{t('user.create-user')}</span>
+            </Paper>
+          </Grid>
+        </Hidden>
+
+        <Hidden smUp>
+          <Fab onClick={toggleIsOpenModalOfUser} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
+        {true && contentGenerator()}
+        {true && <CircleBackdropLoading isOpen={isLoading} />}
+      </Grid>
 
       <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal} fullWidth>
         <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
@@ -823,9 +839,7 @@ const UsersList: React.FC = () => {
                       label="نام کاربر"
                       className="w-100"
                       value={state.name}
-                      onChange={(e): void =>
-                        dispatch({ type: 'name', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -841,9 +855,7 @@ const UsersList: React.FC = () => {
                       className="w-100"
                       error={state.family.trim().length < 2 && showError}
                       value={state.family}
-                      onChange={(e): void =>
-                        dispatch({ type: 'family', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -860,9 +872,7 @@ const UsersList: React.FC = () => {
                       error={state.mobile.trim().length < 11 && showError}
                       type="number"
                       value={state.mobile}
-                      onChange={(e): void =>
-                        dispatch({ type: 'mobile', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'mobile', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -875,17 +885,11 @@ const UsersList: React.FC = () => {
 
                   <Grid item xs={12}>
                     <Input
-                      error={
-                        state?.email?.length > 0 &&
-                        !emailRegex.test(state.email) &&
-                        showError
-                      }
+                      error={state?.email?.length > 0 && !emailRegex.test(state.email) && showError}
                       className="w-100"
                       type="email"
                       value={state.email}
-                      onChange={(e): void =>
-                        dispatch({ type: 'email', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'email', value: e.target.value })}
                     ></Input>
                   </Grid>
                 </Grid>
@@ -901,9 +905,7 @@ const UsersList: React.FC = () => {
                       error={state?.userName?.length < 1 && showError}
                       className="w-100"
                       value={state.userName}
-                      onChange={(e): void =>
-                        dispatch({ type: 'userName', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'userName', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -917,9 +919,7 @@ const UsersList: React.FC = () => {
                   <Grid item xs={12}>
                     <Input
                       error={
-                        state?.nationalCode !== '' &&
-                        state?.nationalCode?.length < 10 &&
-                        showError
+                        state?.nationalCode !== '' && state?.nationalCode?.length < 10 && showError
                       }
                       className="w-100"
                       type="text"
@@ -958,11 +958,7 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <FormControl
-                      size="small"
-                      className="w-100"
-                      variant="outlined"
-                    >
+                    <FormControl size="small" className="w-100" variant="outlined">
                       <Select
                         labelId="user-roles-list"
                         id="roles-list"
@@ -974,9 +970,7 @@ const UsersList: React.FC = () => {
                         onChange={handleChange}
                         renderValue={(selected: any): string => {
                           const items = roleListData?.items
-                            .filter(
-                              (item: any) => selected.indexOf(item.id) !== -1
-                            )
+                            .filter((item: any) => selected.indexOf(item.id) !== -1)
                             .map((item: any) => item.name);
 
                           return ((items as string[]) ?? []).join(', ');
@@ -1049,20 +1043,14 @@ const UsersList: React.FC = () => {
                   className={submitBtn}
                   onClick={formHandler}
                 >
-                  {isLoadingNewUser
-                    ? t('general.pleaseWait')
-                    : t('general.submit')}
+                  {isLoadingNewUser ? t('general.pleaseWait') : t('general.submit')}
                 </Button>
               </Grid>
             </Grid>
           </Grid>
         </DialogActions>
       </Dialog>
-      <Modal
-        open={isOpenDatePicker}
-        toggle={toggleIsOpenDatePicker}
-        zIndex={2000}
-      >
+      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker} zIndex={2000}>
         <DateTimePicker
           selectedDateHandler={(e): void => {
             dispatch({ type: 'birthDate', value: e });
