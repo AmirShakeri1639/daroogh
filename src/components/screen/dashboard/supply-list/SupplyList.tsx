@@ -564,7 +564,7 @@ const SupplyList: React.FC = () => {
         <Grid container spacing={1} alignItems="center">
           <Grid item xs={9} md={5}>
             <MaterialSearchBar
-              placeholder={`${t('general.term')} ${t('general.then')} ${t('general.enter')}`}
+              placeholder={t('exchange.searchDrugPlaceHolder')}
               onRequestSearch={filteredItemsHandler}
             />
           </Grid>
