@@ -165,10 +165,11 @@ class PharmacyDrug extends Api {
 
   allPharmacyDrug = async (
     pharmacyKey: string = '',
-    isFull = true
+    isFull = true,
+    order: 'asc' | 'desc' = 'asc'
   ): Promise<any> => {
     const result = await this.postData(
-      `/PharmacyDrug/AllPharmacyDrug?full=${isFull}&pharmacyKey=${pharmacyKey}`
+      `/PharmacyDrug/AllPharmacyDrug?full=${isFull}&pharmacyKey=${pharmacyKey}&$orderby=id ${order}`
     );
     return result.data;
   };
