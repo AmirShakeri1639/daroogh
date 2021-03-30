@@ -242,6 +242,23 @@ const useStyle = makeStyles((theme) =>
       right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
+      zIndex:1
+    },
+    blankCard: {
+      minHeight: 150,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
+      },
+    },
+    contentContainer: {
+      marginTop: 15,
     },
   })
 );
@@ -262,9 +279,12 @@ const JobsList: React.FC = () => {
     addButton,
 
     dropdown,
+
   } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen =  true
+  
 
   const {
     createUserBtn,
@@ -274,6 +294,8 @@ const JobsList: React.FC = () => {
     cancelButton,
     submitBtn,
     fab,
+    blankCard,
+    contentContainer,
   } = useStyle();
 
   const queryCache = useQueryCache();
@@ -629,7 +651,7 @@ const JobsList: React.FC = () => {
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
+          //console.log(result.items);
 
           setListRef(result.items);
         }
@@ -659,7 +681,7 @@ const JobsList: React.FC = () => {
   };
   async function getList(): Promise<any> {
     const result = await all(pageRef.current, 10);
-    console.log(result.items);
+    //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
     } else {
@@ -680,16 +702,19 @@ const JobsList: React.FC = () => {
     };
     React.useEffect(() => {
       function handleResize() {
-        if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        }
-        setMobileRef(isMobile());
+        // if (!mobileRef.current && isMobile()) {
+        //   window.addEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // } else if (mobileRef.current && !isMobile()) {
+        //   window.removeEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // }
+        // setMobileRef(isMobile());
+        window.addEventListener('scroll', handleScroll, {
+          capture: true,
+        })
       }
       handleResize();
       window.addEventListener('resize', handleResize);
@@ -1094,7 +1119,8 @@ const JobsList: React.FC = () => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid key={item.id} item xs={12}>
+          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+         
             <CardContainer
               data={item}
               saveHandler={saveHandler}
@@ -1115,7 +1141,7 @@ const JobsList: React.FC = () => {
       <h1 className="txt-md">{t('jobs.list')}</h1>
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          {!fullScreen && (
+          {false && (
             <DataTable
               tableRef={ref}
               columns={tableColumns()}
@@ -1129,20 +1155,21 @@ const JobsList: React.FC = () => {
             />
           )}
           {(isLoadingRemove || isLoadingSave) && <CircleLoading />}
-          <br />
-          <Hidden smDown>
-            <Grid container spacing={1} className={buttonContainer}>
-              <Button
-                variant="outlined"
-                className={createUserBtn}
-                onClick={(): void => saveHandler(initialState)}
-              >
-                ایجاد فرصت شغلی
-              </Button>
+        
+          <Grid container spacing={3} className={contentContainer}>
+      
+          <Hidden xsDown>
+          <Grid item xs={12} sm={12} md={4} xl={4}>
+        
+            <Paper className={blankCard} onClick={(): void => saveHandler(initialState)}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
+              <span>ایجاد فرصت شغلی</span>
+            </Paper>
+              
             </Grid>
           </Hidden>
 
-          <Hidden mdUp>
+          <Hidden smUp>
             <Fab
               onClick={(): void => saveHandler(initialState)}
               className={fab}
@@ -1151,8 +1178,9 @@ const JobsList: React.FC = () => {
               <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
             </Fab>
           </Hidden>
-          {fullScreen && contentGenerator()}
-          {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+          {true && contentGenerator()}
+          {true && <CircleBackdropLoading isOpen={isLoading} />}
+        </Grid>
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>

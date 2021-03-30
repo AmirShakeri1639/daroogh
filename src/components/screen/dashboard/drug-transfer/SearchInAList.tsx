@@ -33,17 +33,21 @@ const styles = makeStyles((theme) =>
       marginTop: 0,
       color: theme.palette.gray.dark,
     },
-    container:{
-      backgroundColor: 'white',display:'flex', justifyContent:'space-between'
+    container: {
+      backgroundColor: 'white',
+      display: 'flex',
+      justifyContent: 'space-between',
     },
-    searchBar:{
-      flex:1,paddingLeft:8,paddingRight:8
-    }
+    searchBar: {
+      flex: 1,
+      paddingLeft: 8,
+      paddingRight: 8,
+    },
   })
 );
 
 const SearchInAList: React.FC = () => {
-  const { icons,container,searchBar } = styles();
+  const { icons, container, searchBar } = styles();
   const {
     orgAllPharmacyDrug,
     setAllPharmacyDrug,
@@ -52,27 +56,66 @@ const SearchInAList: React.FC = () => {
     setUAllPharmacyDrug,
     viewExhcnage,
     exchangeId,
+    basketCount,
+    uBasketCount,
+    setBasketCount,
+    setUbasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
-  const searchHandler = (v: string): void => {
-    const pharmacyDrugList =
-      activeStep === 1 ? orgAllPharmacyDrug : orgUAllPharmacyDrug;
+  const [orgBasket, setOrgBasket] = React.useState<AllPharmacyDrugInterface[]>([]);
+  const [orgUBasket, setOrgUBasket] = React.useState<AllPharmacyDrugInterface[]>([]);
 
-    if (pharmacyDrugList && pharmacyDrugList.length > 0) {
-      const filtered: AllPharmacyDrugInterface[] = pharmacyDrugList.filter(
-        (p) => {
-          return (
-            (p.drug.name && p.drug.name.includes(v)) ||
-            (p.drug.companyName && p.drug.companyName?.includes(v)) ||
-            (p.drug.genericName && p.drug.genericName?.includes(v))
-          );
-        }
-      );
+  React.useEffect(() => {
+    setOrgBasket(basketCount);
+    setOrgUBasket(uBasketCount);
+  }, []);
+
+  const searchHandler = (v: string): void => {
+    let order = 0;
+    const basketList = activeStep === 1 ? orgBasket : orgUBasket;
+    if (basketList && basketList.length > 0) {
+      const filtered: AllPharmacyDrugInterface[] = basketList.filter((p) => {
+        return (
+          (p.drug.name && p.drug.name.includes(v)) ||
+          (p.drug.companyName && p.drug.companyName?.includes(v)) ||
+          (p.drug.genericName && p.drug.genericName?.includes(v))
+        );
+      });
+      filtered.forEach((x) => {
+        x.order += order;
+      });
       switch (activeStep) {
         case 1:
+          setBasketCount(filtered);
+          break;
+        case 2:
+          setUbasketCount(filtered);
+        default:
+          break;
+      }
+    }
+
+    const pharmacyDrugList = activeStep === 1 ? orgAllPharmacyDrug : orgUAllPharmacyDrug;
+    if (pharmacyDrugList && pharmacyDrugList.length > 0) {
+      const filtered: AllPharmacyDrugInterface[] = pharmacyDrugList.filter((p) => {
+        return (
+          (p.drug.name && p.drug.name.includes(v)) ||
+          (p.drug.companyName && p.drug.companyName?.includes(v)) ||
+          (p.drug.genericName && p.drug.genericName?.includes(v))
+        );
+      });
+
+      switch (activeStep) {
+        case 1:
+          filtered.forEach((x) => {
+            x.order += order + basketCount.length;
+          });
           setAllPharmacyDrug(filtered);
           break;
         case 2:
+          filtered.forEach((x) => {
+            x.order += order + uBasketCount.length;
+          });
           setUAllPharmacyDrug(filtered);
         default:
           break;
@@ -90,20 +133,17 @@ const SearchInAList: React.FC = () => {
 
   const { removeExchange } = new PharmacyDrug();
 
-  const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(
-    removeExchange,
-    {
-      onSuccess: async (res) => {
-        if (res) {
-          await sweetAlert({
-            type: 'success',
-            text: res.message,
-          });
-          history.push(desktop);
-        }
-      },
-    }
-  );
+  const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
+    onSuccess: async (res) => {
+      if (res) {
+        await sweetAlert({
+          type: 'success',
+          text: res.message,
+        });
+        history.push(desktop);
+      }
+    },
+  });
 
   const handleRemoveExchange = async (): Promise<any> => {
     try {
@@ -116,10 +156,7 @@ const SearchInAList: React.FC = () => {
 
   const exchangeModalRemove = (): JSX.Element => {
     return (
-      <Modal
-        open={isRemoveExchangeModal}
-        toggle={toggleIsRemoveExchangeModalForm}
-      >
+      <Modal open={isRemoveExchangeModal} toggle={toggleIsRemoveExchangeModalForm}>
         <Card>
           <CardHeader
             style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
@@ -147,9 +184,7 @@ const SearchInAList: React.FC = () => {
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <MatButton
-                  onClick={async (): Promise<any> =>
-                    await handleRemoveExchange()
-                  }
+                  onClick={async (): Promise<any> => await handleRemoveExchange()}
                   variant="contained"
                   color="primary"
                   autoFocus
@@ -176,18 +211,16 @@ const SearchInAList: React.FC = () => {
 
   return (
     <Grid container spacing={1} className={container}>
-       <div className={searchBar}>
-        <DaroogSearchBar 
-                  onValueChange={(v: string): void => searchHandler(v)}
-                />
-       </div>
-        <ToolBox/>
+      <div className={searchBar}>
+        <DaroogSearchBar onValueChange={(v: string): void => searchHandler(v)} />
+      </div>
+      <ToolBox />
       {/* <Grid item xs={9}>
        
       </Grid> */}
       {/* <Grid item xs={3}> */}
-       
-        {/* {viewExhcnage &&
+
+      {/* {viewExhcnage &&
           viewExhcnage.currentPharmacyIsA &&
           viewExhcnage.state == 1 && (
             <Tooltip title="حذف تبادل">

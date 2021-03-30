@@ -24,11 +24,7 @@ import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
-import {
-  ColorEnum,
-  PrescriptionEnum,
-  PrescriptionResponseStateEnum,
-} from '../../../../enum';
+import { ColorEnum, PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
 import FormContainer from '../../../public/form-container/FormContainer';
 import {
   Button,
@@ -84,6 +80,10 @@ export const useStyles = makeStyles((theme) =>
     searchIconButton: {
       display: 'none',
     },
+
+    contentContainer: {
+      marginTop: 15,
+    },
   })
 );
 
@@ -94,10 +94,7 @@ const initialStatePrescriptionResponse: PrescriptionResponseInterface = {
   state: PrescriptionResponseStateEnum.NotAccept,
 };
 
-function reducer(
-  state = initialStatePrescriptionResponse,
-  action: ActionInterface
-): any {
+function reducer(state = initialStatePrescriptionResponse, action: ActionInterface): any {
   const { value } = action;
 
   switch (action.type) {
@@ -142,24 +139,16 @@ function reducer(
 const PrescriptionList: React.FC = () => {
   const ref = useDataTableRef();
   const { t } = useTranslation();
-  const [state, dispatch] = useReducer(
-    reducer,
-    initialStatePrescriptionResponse
-  );
+  const [state, dispatch] = useReducer(reducer, initialStatePrescriptionResponse);
   const { container } = useClasses();
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
   const [isOpenPicture, setIsOpenPicture] = useState(false);
   const [fileKeyToShow, setFileKeyToShow] = useState('');
-  const {
-    root,
-    smallImage,
-    formItem,
-    searchBar,
-    searchIconButton,
-  } = useStyles();
+  const { root, smallImage, formItem, searchBar, searchIconButton, contentContainer } = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen = true;
   const queryCache = useQueryCache();
   const { getList, save, urls } = new Prescription();
   const [_save, { isLoading }] = useMutation(save, {
@@ -216,11 +205,7 @@ const PrescriptionList: React.FC = () => {
         type: 'string',
 
         render: (row: any): any => {
-          return (
-            <>
-              {!isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate)}
-            </>
-          );
+          return <>{!isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate)}</>;
         },
       },
       {
@@ -268,17 +253,12 @@ const PrescriptionList: React.FC = () => {
             return i.pharmacy.name === pharmacyName;
           });
           const thisState =
-            PrescriptionResponseStateEnum[
-              responses.length > 0 ? responses[0].state : 1
-            ];
+            PrescriptionResponseStateEnum[responses.length > 0 ? responses[0].state : 1];
           return (
             <span
               style={{
                 color:
-                  thisState ==
-                  PrescriptionResponseStateEnum[
-                    PrescriptionResponseStateEnum.Accept
-                  ]
+                  thisState == PrescriptionResponseStateEnum[PrescriptionResponseStateEnum.Accept]
                     ? ColorEnum.Green
                     : ColorEnum.Gray,
               }}
@@ -327,9 +307,7 @@ const PrescriptionList: React.FC = () => {
     setIsOpenPicture(true);
   };
 
-  const submitSave = async (
-    el?: React.FormEvent<HTMLFormElement>
-  ): Promise<any> => {
+  const submitSave = async (el?: React.FormEvent<HTMLFormElement>): Promise<any> => {
     el?.preventDefault();
 
     const { prescriptionID, isAccept, pharmacyComment } = state;
@@ -375,7 +353,7 @@ const PrescriptionList: React.FC = () => {
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
+          // console.log(result.items);
 
           setListRef(result.items);
         }
@@ -405,12 +383,14 @@ const PrescriptionList: React.FC = () => {
   };
   async function getCardList(refresh: boolean = false): Promise<any> {
     const result = await getList(pageRef.current, 10, [], searchRef.current);
-    console.log(result.items);
+    //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
     }
-    setListRef(result.items, refresh);
-    return result;
+    if (result != undefined) {
+      setListRef(result.items, refresh);
+      return result;
+    }
   }
 
   function isMobile() {
@@ -425,16 +405,19 @@ const PrescriptionList: React.FC = () => {
     };
     React.useEffect(() => {
       function handleResize() {
-        if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', handleScroll, {
-            capture: true,
-          });
-        }
-        setMobileRef(isMobile());
+        // if (!mobileRef.current && isMobile()) {
+        //   window.addEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // } else if (mobileRef.current && !isMobile()) {
+        //   window.removeEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // }
+        // setMobileRef(isMobile());
+        window.addEventListener('scroll', handleScroll, {
+          capture: true,
+        });
       }
       handleResize();
       window.addEventListener('resize', handleResize);
@@ -453,12 +436,8 @@ const PrescriptionList: React.FC = () => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid key={item.id} item xs={12}>
-            <CardContainer
-              data={item}
-              saveHandler={saveHandler}
-              detailHandler={detailHandler}
-            />
+          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+            <CardContainer data={item} saveHandler={saveHandler} detailHandler={detailHandler} />
           </Grid>
         );
         //}
@@ -488,10 +467,7 @@ const PrescriptionList: React.FC = () => {
                       <Grid item xs={12}>
                         <b>{t('prescription.comment')}</b>
                         <br />
-                        <Picture
-                          fileKey={state.fileKey}
-                          className={smallImage}
-                        />
+                        <Picture fileKey={state.fileKey} className={smallImage} />
                       </Grid>
                     </>
                   )}
@@ -567,7 +543,7 @@ const PrescriptionList: React.FC = () => {
   return (
     <Container maxWidth="lg" className={container}>
       <h1 className="txt-md">{t('prescription.peoplePrescriptions')}</h1>
-      {!fullScreen && (
+      {false && (
         <DataTable
           tableRef={ref}
           columns={tableColumns()}
@@ -578,23 +554,21 @@ const PrescriptionList: React.FC = () => {
           initLoad={false}
         />
       )}
-      {false && fullScreen && (
-        <SearchBar
-          className={searchBar}
-          classes={{ searchIconButton: searchIconButton }} 
-          placeholder={t('general.search')}
-          onChange={(newValue) => setSearchRef(newValue)}
-          
-        />
-      )}
-      {fullScreen && (
-        <Grid container spacing={0}>
-          <Grid item xs={12}>
-            {contentGenerator()}
+      {false && (
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
+            <SearchBar
+              classes={{ searchIconButton: searchIconButton }}
+              placeholder={t('general.search')}
+              onChange={(newValue) => setSearchRef(newValue)}
+            />
           </Grid>
         </Grid>
       )}
-      {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+      <Grid container spacing={3} className={contentContainer}>
+        {true && contentGenerator()}
+      </Grid>
+      {true && <CircleBackdropLoading isOpen={isLoading} />}
 
       {isLoading && <CircleLoading />}
       {isOpenEditModal && editModal()}

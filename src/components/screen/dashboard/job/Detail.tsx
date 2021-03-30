@@ -83,31 +83,31 @@ const Detail: React.FC<JobInterface> = (props) => {
                 </Grid>
 
                 <Grid container style={{ padding: '8px' }}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={12}>
                     <TextWithTitle
                       title={t('jobs.hasReadingPrescriptionCertificate')}
                       body={hasReadingPrescriptionCertificateStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={12}>
                     <TextWithTitle
                       title={t('jobs.livingInArea')}
                       body={livingInAreaStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid xs={12} sm={6} md={12}>
                     <TextWithTitle
                       title={t('jobs.pharmaceuticalSoftwareSkill')}
                       body={pharmaceuticalSoftwareSkillStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid xs={12} sm={6} md={12}>
                     <TextWithTitle
                       title={t('jobs.computerSkill')}
                       body={computerSkillStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={12}>
                     <TextWithTitle
                       title={t('jobs.hasGuarantee')}
                       body={hasGuaranteeStr}
@@ -119,7 +119,7 @@ const Detail: React.FC<JobInterface> = (props) => {
                       body={genderStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid xs={12} sm={6} md={12}>
                     <TextWithTitle
                       title={t('jobs.suggestedWorkShift')}
                       body={suggestedWorkShiftStr}
@@ -131,13 +131,13 @@ const Detail: React.FC<JobInterface> = (props) => {
                       body={maritalStatusStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={12}>
                     <TextWithTitle
                       title={t('jobs.foreignLanguagesSkill')}
                       body={foreignLanguagesSkillStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12} sm={6} md={12}>
                     <TextWithTitle
                       title={t('jobs.foreignLanguagesSkill')}
                       body={foreignLanguagesSkillStr}

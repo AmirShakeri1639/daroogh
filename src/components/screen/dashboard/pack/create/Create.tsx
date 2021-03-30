@@ -132,7 +132,7 @@ const useStyle = makeStyles((theme) =>
       margin: 0,
       top: 'auto',
       left: 20,
-      bottom: 140,
+      bottom: 40,
       right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
@@ -682,16 +682,6 @@ const Create: React.FC = () => {
                     </Grid>
                   </Grid>
                 </Grid>
-
-                <Hidden smUp>
-                  <Fab onClick={formHandler} className={fab2} aria-label="add">
-                    {isLoadingSave ? (
-                      <FontAwesomeIcon size="2x" icon={faSpinner} color="white" />
-                    ) : (
-                      <FontAwesomeIcon size="2x" icon={faSave} color="white" />
-                    )}
-                  </Fab>
-                </Hidden>
               </Grid>
             </Grid>
           </Grid>
@@ -783,25 +773,26 @@ const Create: React.FC = () => {
                     </span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
-                    <Grid item xs={2}>
+                    <GridCenter item xs={1}>
                       <span>به ازای</span>
-                    </Grid>
-                    <Grid item xs={4} className="w-100">
+                    </GridCenter>
+                    <GridCenter item xs={2} className="w-100">
                       <Input
                         value={offer2}
-                        label={t('general.number')}
+                        placeholder="تعداد"
                         onChange={(e): void => {
                           const val = e.target.value;
                           setOffer2(e.target.value);
                         }}
                       />
-                    </Grid>
+                    </GridCenter>
                     <GridCenter xs={1}>
                       <span>تا</span>
                     </GridCenter>
-                    <Grid item xs={4}>
+                    <Grid item xs={2}>
                       <Input
                         value={offer1}
+                        placeholder="تعداد"
                         onChange={(e): void => {
                           setOffer1(e.target.value);
                         }}
@@ -820,13 +811,14 @@ const Create: React.FC = () => {
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
-                  <Grid item xs={3}>
+                  <Grid item xs={4} sm={3}>
                     <Input
                       ref={dayRef}
                       label={t('general.day')}
                       value={selectedDay}
                       error={!dayIsValid(Number(selectedDay))}
                       type="number"
+                      placeholder={'22'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
@@ -840,12 +832,13 @@ const Create: React.FC = () => {
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
-                  <Grid item xs={3}>
+                  <Grid item xs={4} sm={3}>
                     <Input
                       ref={monthRef}
                       value={selectedMonth}
                       label={t('general.month')}
                       required
+                      placeholder={'08'}
                       type="number"
                       error={!monthIsValid(Number(selectedMonth))}
                       onChange={(e): void => {
@@ -857,13 +850,14 @@ const Create: React.FC = () => {
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
-                  <Grid item xs={3}>
+                  <Grid item xs={4} sm={3}>
                     <Input
                       ref={yearRef}
                       value={selectedYear}
                       required
                       type="number"
                       label={t('general.year')}
+                      placeholder={'1401/2022'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedYear.length < 4 || val.length < 4) {
@@ -887,7 +881,7 @@ const Create: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">فرمت تاریخ به صورت 00 00 0000 باشد</span>
+                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
             </Grid>
 

@@ -82,7 +82,7 @@ const Detail: React.FC<NewUserData> = (props) => {
                       body={mobile || t('general.undefined')}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title='ایمیل'
                       body={email || t('general.undefined')}
@@ -96,7 +96,7 @@ const Detail: React.FC<NewUserData> = (props) => {
                     />
                     </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12} lg={6}>
 
                     <TextWithTitle
                       title='نام کاربری'

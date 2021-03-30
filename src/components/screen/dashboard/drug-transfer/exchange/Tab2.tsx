@@ -27,6 +27,7 @@ import queryString from 'query-string';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from '../../../../../redux/actions';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import { ColorEnum } from 'enum';
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -66,7 +67,7 @@ const style = makeStyles((theme) =>
     stickySearch: {
       position: 'sticky',
       top: '0',
-      zIndex: 1,
+      zIndex: 101,
       marginBottom: 18,
     },
     desktopCardContent: {
@@ -238,6 +239,7 @@ const Tab2: React.FC = () => {
       newList.push(x);
     });
     let output = newList.concat(uBasketCount);
+    debugger;
     setConcatList(output);
   }, [uBasketCount, uAllPharmacyDrug]);
 
@@ -306,18 +308,22 @@ const Tab2: React.FC = () => {
             //   cardColor: item.cardColor,
             // });
 
+            let changedColor = true;
+            if (item.cardColor === ColorEnum.AddedByB || item.cardColor === ColorEnum.NotConfirmed)
+              changedColor = false;
+
             if (uBasketCount.findIndex((x) => x.id == item.id) !== -1)
               Object.assign(item, {
                 order: index + 1,
                 buttonName: 'حذف از تبادل',
-                cardColor: '#dff4ff',
+                cardColor: changedColor ? '#dff4ff' : item.cardColor,
                 cnt: uBasketCount.find((x) => x.id == item.id)?.cnt,
               });
             else {
               Object.assign(item, {
                 order: index + 1,
                 buttonName: 'افزودن به تبادل',
-                cardColor: 'white',
+                cardColor: changedColor ? 'white' : item.cardColor,
               });
             }
 
