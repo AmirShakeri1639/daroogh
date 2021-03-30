@@ -174,7 +174,7 @@ const ExchangePackCard: React.FC<Props> = (props) => {
           <Grid item xs={12}>
             <TextWithTitle
               title="تعداد داروهای عرضه شده در این پک"
-              body={pharmacyDrug?.totalCount}
+              body={pharmacyDrug?.packDetails.length}
               suffix="عدد"
             />
           </Grid>
