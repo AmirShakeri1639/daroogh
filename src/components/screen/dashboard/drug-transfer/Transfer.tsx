@@ -45,37 +45,20 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [activeStep, setActiveStep] = useState<number>(0);
 
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [allPharmacyDrug, setAllPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
-  const [uAllPharmacyDrug, setUAllPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
-  const [orgAllPharmacyDrug, setOrgAllPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
-  const [orgUAllPharmacyDrug, setOrgUAllPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
-  const [basketCount, setBasketCount] = useState<AllPharmacyDrugInterface[]>(
-    []
-  );
-  const [uBasketCount, setUbasketCount] = useState<AllPharmacyDrugInterface[]>(
-    []
-  );
+  const [allPharmacyDrug, setAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [uAllPharmacyDrug, setUAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [orgAllPharmacyDrug, setOrgAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [orgUAllPharmacyDrug, setOrgUAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [basketCount, setBasketCount] = useState<AllPharmacyDrugInterface[]>([]);
+  const [uBasketCount, setUbasketCount] = useState<AllPharmacyDrugInterface[]>([]);
   const [recommendationMessage, setRecommendationMessage] = React.useState('');
   const [exchangeId, setExchangeId] = React.useState(0);
-  const [
-    selectedPharmacyForTransfer,
-    setSelectedPharmacyForTransfer,
-  ] = useState<string>('');
+  const [selectedPharmacyForTransfer, setSelectedPharmacyForTransfer] = useState<string>('');
 
   const [viewExhcnage, setViewExchange] = useState<ViewExchangeInterface>();
 
   const [exchangeStateCode, setExchangeStateCode] = React.useState(0);
-  const [messageOfExchangeState, setMessageOfExchangeState] = React.useState(
-    ''
-  );
+  const [messageOfExchangeState, setMessageOfExchangeState] = React.useState('');
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
   const [is3PercentOk, setIs3PercentOk] = React.useState(true);
   const [eid, setEid] = useState<number | string | undefined>(0);
@@ -232,6 +215,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             setBasketCount(newItemsB);
             setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
+
         }
 
         if (res !== undefined) {
@@ -263,9 +247,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 );
                 break;
               case 5:
-                setMessageOfExchangeState(
-                  'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
-                );
+                setMessageOfExchangeState('این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت');
                 break;
               case 6:
                 setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
@@ -290,9 +272,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 );
                 break;
               case 3:
-                setMessageOfExchangeState(
-                  'لطفا منتظر تایید نهایی داروخانه مقابل بمانید'
-                );
+                setMessageOfExchangeState('لطفا منتظر تایید نهایی داروخانه مقابل بمانید');
                 break;
               case 4 || 8:
                 setMessageOfExchangeState(
@@ -300,9 +280,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 );
                 break;
               case 6:
-                setMessageOfExchangeState(
-                  'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
-                );
+                setMessageOfExchangeState('این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت');
                 break;
               case 5:
                 setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');

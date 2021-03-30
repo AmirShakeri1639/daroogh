@@ -28,11 +28,16 @@ interface Props {
   counterButtonFunc: JSX.Element;
 }
 const ExchangeNormalCard: React.FC<Props> = (props) => {
-  const { pharmacyDrug,totalAmount,
+  const {
+    pharmacyDrug,
+    totalAmount,
     activeStep,
-  basketCount,
-  uBasketCount,
-  lockedAction , handleChange,counterButtonFunc} = props;
+    basketCount,
+    uBasketCount,
+    lockedAction,
+    handleChange,
+    counterButtonFunc,
+  } = props;
   const getExpireDate = (date: any): string => {
     const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
     const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
@@ -72,7 +77,7 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
         alignContent: 'center',
         // alignItems: 'center',
         textAlign: 'left',
-        padding:16
+        padding: 16,
       },
       verticalAlign: {
         display: 'flex',
@@ -94,38 +99,46 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
       avatarContainer: {
         display: 'flex',
         verticalAlign: 'middle',
-         alignContent: 'center',
-         alignItems: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
         justifyContent: 'center',
       },
-      detailsHolder:{
+      detailsHolder: {
         borderLeft: '1px solid #f80501',
-        paddingLeft:8
+        paddingLeft: 8,
       },
-      checkBoxContainer:{
+      checkBoxContainer: {
         display: 'flex',
         // verticalAlign: 'middle',
         //  alignContent: 'center',
         //  alignItems: 'center',
         // justifyContent: 'right',
-        flexDirection:'row-reverse'
-      }
+        flexDirection: 'row-reverse',
+      },
     })
   );
 
-  const { root, avatar, avatarContainer,detailsHolder,checkBoxContainer } = useStyle();
+  const { root, avatar, avatarContainer, detailsHolder, checkBoxContainer } = useStyle();
 
   return (
     <Grid container item xs={12} spacing={0} className={root}>
       <Grid item container xs={12}>
-         
-        
-        <Grid item xs={11} style={{paddingLeft:16}} >
+        <Grid item xs={11} style={{ paddingLeft: 16 }}>
+          <GreenCheckbox
+            checked={
+              activeStep === 1
+                ? basketCount.findIndex((x) => x.id == pharmacyDrug?.id) !== -1
+                : uBasketCount.findIndex((x) => x.id == pharmacyDrug?.id) !== -1
+            }
+            onChange={handleChange}
+            name={pharmacyDrug?.id.toString()}
+            disabled={!lockedAction}
+          />
           <span style={{ fontSize: 17, color: `${ColorEnum.DeepBlue}` }}>
             {pharmacyDrug?.drug.name}
           </span>
         </Grid>
-        <Grid item xs={1} className={checkBoxContainer}>
+        {/* <Grid item xs={1} className={checkBoxContainer}>
         <GreenCheckbox
                   checked={
                     activeStep === 1
@@ -140,15 +153,11 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
                   name={pharmacyDrug?.id.toString()}
                   disabled={!lockedAction}
                 />
-        </Grid>
+        </Grid> */}
       </Grid>
-      <Grid item container xs={6} sm={6} >
+      <Grid item container xs={6} sm={6}>
         <Hidden smDown>
-          <Grid
-            item
-            xs={2}
-            className={avatarContainer}
-          >
+          <Grid item xs={2} className={avatarContainer}>
             <img src={drug} className={avatar} width="40" height="40" />
           </Grid>
         </Hidden>
@@ -161,61 +170,45 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
             </span>
           </Grid>
           <Grid item xs={12}>
-            <TextWithTitle
-              title="موجودی عرضه شده"
-              body={pharmacyDrug?.cnt}
-              suffix="عدد"
-            />
+            <TextWithTitle title="موجودی عرضه شده" body={pharmacyDrug?.cnt} suffix="عدد" />
           </Grid>
           <Grid item xs={12}>
-            <TextWithTitle
-              title="تاریخ انقضا"
-              body={getExpireDate(pharmacyDrug?.expireDate)}
-            />
+            <TextWithTitle title="تاریخ انقضا" body={getExpireDate(pharmacyDrug?.expireDate)} />
           </Grid>
         </Grid>
       </Grid>
-      <Grid item container xs={6} sm={6}  >
+      <Grid item container xs={6} sm={6}>
         <Grid item xs={12} className={detailsHolder}>
           <Grid item xs={12}>
-          <span style={{ fontSize: 13 }}>قیمت واحد: </span>
-                    <span
-                      style={{
-                        fontSize: 17,
-                        fontWeight: 'bold',
-                        color: 'green',
-                      }}
-                    >
-                      {Utils.numberWithCommas(pharmacyDrug?.amount)}
-                    </span>
-                    <span style={{ fontSize: 11, marginRight: 5 }}>
-                      {t('general.defaultCurrency')}
-                    </span>
-
+            <span style={{ fontSize: 13 }}>قیمت واحد: </span>
+            <span
+              style={{
+                fontSize: 17,
+                fontWeight: 'bold',
+                color: 'green',
+              }}
+            >
+              {Utils.numberWithCommas(pharmacyDrug?.amount)}
+            </span>
+            <span style={{ fontSize: 11, marginRight: 5 }}>{t('general.defaultCurrency')}</span>
           </Grid>
           <Grid item xs={12}>
-          {pharmacyDrug && counterButtonFunc}
+            {pharmacyDrug && counterButtonFunc}
           </Grid>
           <Grid item xs={12}>
-          <span style={{ fontSize: 13 }}>جمع اقلام؛</span>
-                    <span
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        color: '1d0d50',
-                      }}
-                    >
-                      <label id={'lbl_' + pharmacyDrug?.id}>
-                        {totalAmount}
-                      </label>
-                    </span>
-                    <span style={{ fontSize: 11, marginRight: 5 }}>
-                      {t('general.defaultCurrency')}
-                    </span>
-                 
+            <span style={{ fontSize: 13 }}>جمع اقلام؛</span>
+            <span
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '1d0d50',
+              }}
+            >
+              <label id={'lbl_' + pharmacyDrug?.id}>{totalAmount}</label>
+            </span>
+            <span style={{ fontSize: 11, marginRight: 5 }}>{t('general.defaultCurrency')}</span>
           </Grid>
         </Grid>
-        
       </Grid>
     </Grid>
   );
