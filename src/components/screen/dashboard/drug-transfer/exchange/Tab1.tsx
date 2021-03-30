@@ -24,7 +24,7 @@ import CircleLoading from '../../../../public/loading/CircleLoading';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
-import { AllPharmacyDrug } from 'enum';
+import { AllPharmacyDrug, ColorEnum } from 'enum';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from '../../../../../redux/actions';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
@@ -67,7 +67,7 @@ const style = makeStyles((theme) =>
     stickySearch: {
       position: 'sticky',
       top: '0',
-      zIndex: 1,
+      zIndex: 101,
       marginBottom: 18,
     },
     desktopCardContent: {
@@ -169,11 +169,7 @@ const Tab1: React.FC = () => {
     AllPharmacyDrug.GET_ALL_PHARMACY_DRUG,
     () => {
       setLoading(true);
-      return getAllPharmacyDrug(
-        selectedPharmacyForTransfer,
-        listPageNo,
-        pageSize
-      );
+      return getAllPharmacyDrug(selectedPharmacyForTransfer, listPageNo, pageSize);
     },
     {
       onSuccess: (data) => {
@@ -184,6 +180,7 @@ const Tab1: React.FC = () => {
           let ignore = false;
           if (item.packID) {
             let totalAmount = 0;
+            let totalCount = 0;
             if (!packList.find((x) => x.packID === item.packID)) {
               if (!item.packDetails) item.packDetails = [];
               items
@@ -192,8 +189,10 @@ const Tab1: React.FC = () => {
                   item.packDetails.push(p);
                   packList.push(p);
                   totalAmount += p.amount * p.cnt;
+                  totalCount += p.cnt;
                 });
               item.totalAmount = totalAmount;
+              item.totalCount = totalCount;
               newItems.push(item);
             } else {
               ignore = true;
@@ -249,51 +248,32 @@ const Tab1: React.FC = () => {
 
   const basketCardListGenerator = (): any => {
     if (basketCount && basketCount.length > 0) {
-      return basketCount.map(
-        (item: AllPharmacyDrugInterface, index: number) => {
-          item.order = index + 1;
-          item.buttonName = 'حذف از تبادل';
-          if (item.cardColor === 'white') item.cardColor = '#dff4ff';
+      return basketCount.map((item: AllPharmacyDrugInterface, index: number) => {
+        item.order = index + 1;
+        item.buttonName = 'حذف از تبادل';
+        if (item.cardColor === 'white') item.cardColor = '#dff4ff';
 
-          return (
-            <Grid item xs={12} sm={12} xl={12} key={index}>
-              <div className={paper}>
-                {item.packID ? (
-                  <NewCardContainer
-                    basicDetail={
-                      <NewExCardContent
-                        formType={1}
-                        pharmacyDrug={item}
-                        isPack={true}
-                      />
-                    }
-                    isPack={true}
-                    pharmacyDrug={item}
-                    collapsableContent={
-                      <NewExCardContent
-                        formType={3}
-                        packInfo={item.packDetails}
-                      />
-                    }
-                  />
-                ) : (
-                  <NewCardContainer
-                    basicDetail={
-                      <NewExCardContent
-                        formType={2}
-                        pharmacyDrug={item}
-                        isPack={false}
-                      />
-                    }
-                    isPack={false}
-                    pharmacyDrug={item}
-                  />
-                )}
-              </div>
-            </Grid>
-          );
-        }
-      );
+        return (
+          <Grid item xs={12} sm={12} xl={12} key={index}>
+            <div className={paper}>
+              {item.packID ? (
+                <NewCardContainer
+                  basicDetail={<NewExCardContent formType={1} pharmacyDrug={item} isPack={true} />}
+                  isPack={true}
+                  pharmacyDrug={item}
+                  collapsableContent={<NewExCardContent formType={3} packInfo={item.packDetails} />}
+                />
+              ) : (
+                <NewCardContainer
+                  basicDetail={<NewExCardContent formType={2} pharmacyDrug={item} isPack={false} />}
+                  isPack={false}
+                  pharmacyDrug={item}
+                />
+              )}
+            </div>
+          </Grid>
+        );
+      });
     }
 
     return null;
@@ -312,21 +292,22 @@ const Tab1: React.FC = () => {
             //   cardColor: item.cardColor,
             // });
 
+            let changedColor = true;
+            if (item.cardColor === ColorEnum.AddedByB || item.cardColor === ColorEnum.NotConfirmed)
+              changedColor = false;
+
             if (basketCount.findIndex((x) => x.id == item.id) !== -1)
               Object.assign(item, {
                 order: index + 1,
                 buttonName: 'حذف از تبادل',
-                cardColor: '#dff4ff',
+                cardColor: changedColor ? '#dff4ff' : item.cardColor,
                 cnt: basketCount.find((x) => x.id == item.id)?.cnt,
-                // totalAmount:
-                //   basketCount.find((x) => x.id == item.id)?.cnt ??
-                //   1 * item.amount,
               });
             else {
               Object.assign(item, {
                 order: index + 1,
                 buttonName: 'افزودن به تبادل',
-                cardColor: 'white',
+                cardColor: changedColor ? 'white' : item.cardColor,
               });
             }
 
@@ -370,9 +351,7 @@ const Tab1: React.FC = () => {
                       }
                       isPack={false}
                       pharmacyDrug={Object.assign(item, {
-                        currentCnt: item.currentCnt
-                          ? item.currentCnt
-                          : item.cnt,
+                        currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
                       })}
                     />
                   )}
@@ -429,12 +408,8 @@ const Tab1: React.FC = () => {
         item
         xs={12}
         style={{
-          maxHeight: `${
-            fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'
-          }`,
-          minHeight: `${
-            fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'
-          }`,
+          maxHeight: `${fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'}`,
+          minHeight: `${fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'}`,
           overflow: 'auto',
           marginTop: -20,
         }}
@@ -442,7 +417,7 @@ const Tab1: React.FC = () => {
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={12}>
             <Grid container className={stickySearch}>
-              <Grid item xs={12} style={{ padding: 0 }}>
+              <Grid item xs={12} style={{ padding: 0, zIndex: 101 }}>
                 <SearchInAList />
               </Grid>
             </Grid>

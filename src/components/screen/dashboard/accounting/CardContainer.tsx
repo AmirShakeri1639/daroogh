@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  makeStyles,
-  Paper,
-  createStyles,
-  Grid,
-  Divider,
-  Button,
-  Link,
-} from '@material-ui/core';
+import { makeStyles, Paper, createStyles, Grid, Divider, Button, Link } from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AccountingCardInterface } from '../../../../interfaces/AccountingInterface';
@@ -18,9 +10,10 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1),
+      padding: theme.spacing(1, 1, 1, 1),
       borderRadius: 5,
-      margin: theme.spacing(1.5),
+      position: 'relative',
+      overflow: 'hidden',
     },
   })
 );
@@ -49,10 +42,12 @@ const CardContainer: React.FC<AccountingCardInterface> = (props) => {
       {exchangeID && (
         <Grid item xs={12} justify="flex-end">
           <Grid item xs={12} style={{ padding: '4px' }}>
+            {' '}
             <Divider />
           </Grid>
-
-          {exchangeHandler(data)}
+          <Grid item xs={12} container spacing={0} justify="flex-end">
+            {exchangeHandler(data)}
+          </Grid>
         </Grid>
       )}
       <BackDrop isOpen={isOpenBackDrop} />

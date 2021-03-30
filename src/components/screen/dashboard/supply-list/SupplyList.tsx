@@ -653,15 +653,13 @@ const SupplyList: React.FC = () => {
                     </span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
-                    <Grid item xs={2}>
+                    <GridCenter item xs={1}>
                       <span>به ازای</span>
-                    </Grid>
-
-                    <Grid item xs={4} className="w-100">
+                    </GridCenter>
+                    <GridCenter item xs={2} className="w-100">
                       <Input
-                        type="number"
                         value={state?.offer2}
-                        label={t('general.number')}
+                        placeholder="تعداد"
                         onChange={(e): void =>
                           dispatch({
                             type: 'offer2',
@@ -669,26 +667,22 @@ const SupplyList: React.FC = () => {
                           })
                         }
                       />
-                    </Grid>
-
+                    </GridCenter>
                     <GridCenter xs={1}>
                       <span>تا</span>
                     </GridCenter>
-
-                    <Grid item xs={4}>
+                    <Grid item xs={2}>
                       <Input
-                        type="number"
                         value={state?.offer1}
-                        label={t('general.number')}
+                        placeholder="تعداد"
                         onChange={(e): void =>
                           dispatch({
                             type: 'offer1',
                             value: e.target.value,
                           })
                         }
-                      />
+                        />
                     </Grid>
-
                     <GridCenter xs={1}>{t('general.gift')}</GridCenter>
                   </Grid>
                 </Grid>
@@ -702,11 +696,12 @@ const SupplyList: React.FC = () => {
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
-                  <Grid item xs={3}>
+                  <Grid item xs={4} sm={3}>
                     <Input
                       label={t('general.day')}
                       type="number"
                       value={selectedDay}
+                      placeholder={"22"}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
@@ -717,12 +712,13 @@ const SupplyList: React.FC = () => {
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
-                  <Grid item xs={3}>
+                  <Grid item xs={4} sm={3}>
                     <Input
                       type="number"
                       value={selectedMonth}
                       label={t('general.month')}
                       required
+                      placeholder={"08"}
                       error={Number(selectedMonth) > 12}
                       onChange={(e): void => {
                         const val = e.target.value;
@@ -733,11 +729,12 @@ const SupplyList: React.FC = () => {
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
-                  <Grid item xs={3}>
+                  <Grid item xs={4} sm={3}>
                     <Input
                       type="number"
                       value={selectedYear}
                       required
+                      placeholder={"1401/2022"}
                       label={t('general.year')}
                       onChange={(e): void => {
                         const val = e.target.value;
@@ -762,7 +759,7 @@ const SupplyList: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">فرمت تاریخ به صورت 0000 00 00 باشد</span>
+                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
               {/* <Grid item xs={12}>
