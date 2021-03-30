@@ -682,8 +682,6 @@ const Create: React.FC = () => {
                     </Grid>
                   </Grid>
                 </Grid>
-
-                
               </Grid>
             </Grid>
           </Grid>
@@ -820,7 +818,7 @@ const Create: React.FC = () => {
                       value={selectedDay}
                       error={!dayIsValid(Number(selectedDay))}
                       type="number"
-                      placeholder={"22"}
+                      placeholder={'22'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
@@ -840,7 +838,7 @@ const Create: React.FC = () => {
                       value={selectedMonth}
                       label={t('general.month')}
                       required
-                      placeholder={"08"}
+                      placeholder={'08'}
                       type="number"
                       error={!monthIsValid(Number(selectedMonth))}
                       onChange={(e): void => {
@@ -852,14 +850,14 @@ const Create: React.FC = () => {
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
-                  <Grid item xs={4}sm={3}>
+                  <Grid item xs={4} sm={3}>
                     <Input
                       ref={yearRef}
                       value={selectedYear}
                       required
                       type="number"
                       label={t('general.year')}
-                      placeholder={"1401/2022"}
+                      placeholder={'1401/2022'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedYear.length < 4 || val.length < 4) {
