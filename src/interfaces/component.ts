@@ -156,10 +156,6 @@ export interface TransferPropsInterface {
   location?: string;
 }
 
-export interface MaterialSearchPropsInterface {
-  onRequestSearch: (term: string) => void;
-}
-
 export interface SupplyListCardContainer {
   drug: AllPharmacyDrugInterface;
   editHandler?: () => void;
