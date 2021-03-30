@@ -17,10 +17,11 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1),
+      padding: theme.spacing(1, 1, 1, 1),
       borderRadius: 5,
-      margin: theme.spacing(1.5),
-    }
+      position: 'relative',
+      overflow: 'hidden',
+    },
   })
 );
 
@@ -78,10 +79,11 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
+      {' '}
         <Divider />
       </Grid>
 
-      <Grid item xs={12} justify="flex-end">
+      <Grid item xs={12}  container spacing={0} justify="flex-end">
         <Button
           onClick={(): void => saveHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
