@@ -25,7 +25,7 @@ interface Props {
   activeStep: number;
   basketCount: AllPharmacyDrugInterface[];
   uBasketCount: AllPharmacyDrugInterface[];
-  // lockedAction: boolean;
+   lockedAction: boolean;
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
   // counterButtonFunc: JSX.Element;
 }
@@ -36,7 +36,7 @@ const ExchangePackCard: React.FC<Props> = (props) => {
     activeStep,
      basketCount,
     uBasketCount,
-    // lockedAction ,
+    lockedAction ,
     handleChange,
     // counterButtonFunc
   } = props;
@@ -146,7 +146,8 @@ const ExchangePackCard: React.FC<Props> = (props) => {
             <span style={{ fontSize: 12, marginRight: 5, color: 'green' }}>
               تومان
             </span></Grid>
-        <Grid item xs={1} className={checkBoxContainer}>
+            {lockedAction && (
+              <Grid item xs={1} className={checkBoxContainer}>
           <GreenCheckbox
             checked={
               activeStep === 1
@@ -155,8 +156,10 @@ const ExchangePackCard: React.FC<Props> = (props) => {
             }
             onChange={handleChange}
             name={pharmacyDrug?.id.toString()}
-          />{' '}
+          />
         </Grid>
+            )}
+        
       </Grid>
       <Grid item container xs={12} sm={12}>
         <Hidden smDown>
@@ -173,7 +176,7 @@ const ExchangePackCard: React.FC<Props> = (props) => {
           </Grid>
           <Grid item xs={12}>
             <TextWithTitle
-              title="تعداد داروهای عرضه شده در این پک"
+              title="تعداد محصولات عرضه شده در این پک"
               body={pharmacyDrug?.packDetails.length}
               suffix="عدد"
             />

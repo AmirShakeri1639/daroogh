@@ -124,7 +124,8 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
             {pharmacyDrug?.drug.name}
           </span>
         </Grid>
-        <Grid item xs={1} className={checkBoxContainer}>
+        {lockedAction && (
+          <Grid item xs={1} className={checkBoxContainer}>
         <GreenCheckbox
                   checked={
                     activeStep === 1
@@ -140,6 +141,8 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
                   disabled={!lockedAction}
                 />
         </Grid>
+        )}
+        
       </Grid>
       <Grid item container xs={6} sm={6} >
         <Hidden smDown>
