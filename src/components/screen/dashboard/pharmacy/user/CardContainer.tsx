@@ -17,10 +17,11 @@ import { BackDrop } from '../../../../public';
 const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
-     
-     backgroundColor: 'unset',
+      backgroundColor: '#fff',
+      padding: theme.spacing(1, 1, 1, 1),
       borderRadius: 5,
-      margin: theme.spacing(1.5),
+      position: 'relative',
+      overflow: 'hidden',
     },
   })
 );
@@ -61,17 +62,20 @@ const CardContainer: React.FC<UserInterface> = (props) => {
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
+        {' '}
         <Divider />
       </Grid>
 
-      <Grid item xs={12} justify="flex-end">
+      <Grid item xs={12}  container spacing={0} justify="flex-end">
+     
         <Button
           onClick={(): void => editRoleHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
           ویرایش نقش
         </Button>
-      </Grid>
+        </Grid>
+      
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );
