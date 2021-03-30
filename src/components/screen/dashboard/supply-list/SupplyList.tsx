@@ -194,6 +194,10 @@ const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
 const monthMinimumLength = 28;
 
+const SearchButton = styled(Button)`
+  color: #2e67e2;
+`;
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
@@ -310,7 +314,7 @@ const SupplyList: React.FC = () => {
   };
 
   const { data, isFetched } = useQuery(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () =>
-    allPharmacyDrug()
+    allPharmacyDrug('', true, 'desc')
   );
 
   const [_savePharmacyDrug, { isLoading: isLoadingSave }] = useMutation(savePharmacyDrug, {
@@ -499,7 +503,7 @@ const SupplyList: React.FC = () => {
         });
       }
     }
-    return items.reverse();
+    return items;
   };
 
   const memoItems = useMemo(() => displayHandler(), [data, filteredItems]);
@@ -557,10 +561,20 @@ const SupplyList: React.FC = () => {
     <>
       <Container>
         <h1 className="txt-md">{t('drug.SuppliedDrugsList')}</h1>
-        <Grid container spacing={1}>
-          <Grid item xs={12} md={6}>
-            <MaterialSearchBar onRequestSearch={filteredItemsHandler} />
+        <Grid container spacing={1} alignItems="center">
+          <Grid item xs={9} md={5}>
+            <MaterialSearchBar
+              placeholder={`${t('general.term')} ${t('general.then')} ${t('general.enter')}`}
+              onRequestSearch={filteredItemsHandler}
+            />
           </Grid>
+          {filteredItems.length > 0 && (
+            <Grid item xs={3} md={2}>
+              <SearchButton variant="text" onClick={(): void => setFilteredItems([])}>
+                {t('general.displayList', { var: 'اولیه' })}
+              </SearchButton>
+            </Grid>
+          )}
         </Grid>
 
         <Grid container spacing={3} className={contentContainer}>
