@@ -167,6 +167,10 @@ const PharmacyMessage = lazy(
   () => import('./components/screen/dashboard/pharmacy/message/Message')
 );
 
+const Error404 = lazy(
+  () =>import('./components/screen/public/404')
+)
+
 const {
   login,
   drugFavoriteList,
@@ -386,6 +390,8 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={ fda_exchangeList }>
               <Dashboard component={ <FDA_exchangeList /> } />
             </PrivateRoute>
+
+            <PublicRoute component={ Error404 } />
           </Suspense>
         </Switch>
       </Router>
