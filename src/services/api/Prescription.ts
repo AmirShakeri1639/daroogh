@@ -17,7 +17,7 @@ class Prescription extends Api {
     searchText: string = ""): Promise<any> => {
       var filter = 'true';
       if (searchText.trim() != "") {
-        filter = `(contains(cast(contryDivisionName,'Edm.String'),'${searchText}')or contains(cast(comment,'Edm.String'),'${searchText}'))`
+        filter = `(contains(cast(comment,'Edm.String'),'${searchText}'))`
       }
     const result = await this.postJsonData(
       `${this.urls.getList}?$top=${top}&$skip=${skip * top}&$orderby=id desc&$filter=${filter}`
