@@ -190,8 +190,7 @@ const PrescriptionList: React.FC = () => {
       {
         field: 'contryDivisionName',
         title: t('countryDivision.city'),
-        type: 'string',
-        searchable: true,
+        type: 'string'
       },
       {
         field: 'comment',
@@ -554,7 +553,7 @@ const PrescriptionList: React.FC = () => {
           initLoad={false}
         />
       )}
-      {false && (
+      {true && (
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
             <SearchBar
