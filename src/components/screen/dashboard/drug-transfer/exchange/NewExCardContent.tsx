@@ -346,7 +346,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
         pharmacyDrug.currentCnt === 0 ||
         !(pharmacyDrug.cnt > pharmacyDrug.currentCnt && pharmacyDrug.currentCnt >= 1))
     ) {
-      setAutoFocus(false)
+      setAutoFocus(false);
       await sweetAlert({
         type: 'error',
         text: 'مقدار وارد شده معتبر نمی باشد',
@@ -405,11 +405,11 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
         pharmacyDrug.currentCnt === 0 ||
         !(pharmacyDrug.cnt > pharmacyDrug.currentCnt && pharmacyDrug.currentCnt >= 1))
     ) {
+      setAutoFocus(false);
       await sweetAlert({
         type: 'error',
         text: 'مقدار وارد شده معتبر نمی باشد',
-      });
-      setAutoFocus(true);
+      }).then(() => setAutoFocus(true));
       return;
     }
 
