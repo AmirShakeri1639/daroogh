@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from 'react';
-import { HashRouter as Router, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import PublicRoute from './routes/PublicRoute';
 import CircleLoading from './components/public/loading/CircleLoading';
 import PrivateRoute from './routes/PrivateRoute';
@@ -277,85 +277,85 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path="/dashboardActivePage">
               <Dashboard component={<DashboardActivePage />} />
             </PrivateRoute>
-            <PrivateRoute path={desktop}>
+            <PrivateRoute exact path={desktop}>
               <Dashboard component={<Desktop1 />} />
             </PrivateRoute>
-            <PrivateRoute path={transfer}>
+            <PrivateRoute exact path={transfer}>
               <Dashboard component={<Transfer />} />
             </PrivateRoute>
-            <PrivateRoute path={survey}>
+            <PrivateRoute exact path={survey}>
               <Dashboard component={<Survey />} />
             </PrivateRoute>
-            <PrivateRoute path={supplyList}>
+            <PrivateRoute exact path={supplyList}>
               <Dashboard component={<SupplyList />} />
             </PrivateRoute>
-            <PrivateRoute path={transactions}>
+            <PrivateRoute exact path={transactions}>
               <Dashboard component={<Transactions />} />
             </PrivateRoute>
-            <PrivateRoute path={membershipRequests}>
+            <PrivateRoute exact path={membershipRequests}>
               <Dashboard component={<MembershipRequests />} />
             </PrivateRoute>
-            <PrivateRoute path={memberRole}>
+            <PrivateRoute exact path={memberRole}>
               <Dashboard component={<MemberRole />} />
             </PrivateRoute>
-            <PrivateRoute path={createRole}>
+            <PrivateRoute exact path={createRole}>
               <Dashboard component={<CreateRole />} />
             </PrivateRoute>
-            <PrivateRoute path={createUser}>
+            <PrivateRoute exact path={createUser}>
               <Dashboard component={<CreateUser />} />
             </PrivateRoute>
-            <PrivateRoute path={usersList}>
+            <PrivateRoute exact path={usersList}>
               <Dashboard component={<UsersList />} />
             </PrivateRoute>
-            <PrivateRoute path={changeUserPassword}>
+            <PrivateRoute exact path={changeUserPassword}>
               <Dashboard component={<ChangeUserPassword />} />
             </PrivateRoute>
-            <PrivateRoute path={createDrug}>
+            <PrivateRoute exact path={createDrug}>
               <Dashboard component={<CreateDrug />} />
             </PrivateRoute>
-            <PrivateRoute path={drugsList}>
+            <PrivateRoute exact path={drugsList}>
               <Dashboard component={<DrugsList />} />
             </PrivateRoute>
-            <PrivateRoute path={categoryList}>
+            <PrivateRoute exact path={categoryList}>
               <Dashboard component={<CategoryList />} />
             </PrivateRoute>
-            <PrivateRoute path={createPharmacy}>
+            <PrivateRoute exact path={createPharmacy}>
               <Dashboard component={<CreatePharmacy />} />
             </PrivateRoute>
-            <PrivateRoute path={pharmaciesList}>
+            <PrivateRoute exact path={pharmaciesList}>
               <Dashboard component={<PharmaciesList />} />
             </PrivateRoute>
-            <PrivateRoute path={createMessage}>
+            <PrivateRoute exact path={createMessage}>
               <Dashboard component={<CreateMessage />} />
             </PrivateRoute>
-            <PrivateRoute path={messagesList}>
+            <PrivateRoute exact path={messagesList}>
               <Dashboard component={<MessagesList />} />
             </PrivateRoute>
-            <PrivateRoute path={drugFavoriteList}>
+            <PrivateRoute exact path={drugFavoriteList}>
               <Dashboard component={<FavoriteList />} />
             </PrivateRoute>
-            <PrivateRoute path={drugCategoryfavoriteList}>
+            <PrivateRoute exact path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />
             </PrivateRoute>
-            <PrivateRoute path={accountingInfo}>
+            <PrivateRoute exact path={accountingInfo}>
               <Dashboard component={<AccountingInfo />} />
             </PrivateRoute>
-            <PrivateRoute path={packsList}>
+            <PrivateRoute exact path={packsList}>
               <Dashboard component={<PackList />} />
             </PrivateRoute>
-            <PrivateRoute path={prescription}>
+            <PrivateRoute exact path={prescription}>
               <Dashboard component={<Prescription />} />
             </PrivateRoute>
-            <PrivateRoute path={jobApplication}>
+            <PrivateRoute exact path={jobApplication}>
               <Dashboard component={<EmploymentApplication />} />
             </PrivateRoute>
-            <PrivateRoute path={drugCategoryfavoriteList}>
+            <PrivateRoute exact path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />
             </PrivateRoute>
             <PrivateRoute exact path={createPack}>
               <Dashboard component={<CreatePack />} />
             </PrivateRoute>
-            <PrivateRoute path={`${createPack}/:packId`}>
+            <PrivateRoute exact path={`${createPack}/:packId`}>
               <Dashboard component={<CreatePack />} />
             </PrivateRoute>
             <PrivateRoute exact path={exchangeManagementList}>
@@ -380,10 +380,10 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={settingsAi}>
               <Dashboard component={<SettingsAiForm />} />
             </PrivateRoute>
-            <PrivateRoute path={jobsList}>
+            <PrivateRoute exact path={jobsList}>
               <Dashboard component={<JobsList />} />
             </PrivateRoute>
-            <PrivateRoute path={pharmacyMessage}>
+            <PrivateRoute exact path={pharmacyMessage}>
               <Dashboard component={<PharmacyMessage />} />
             </PrivateRoute>
 
@@ -391,7 +391,22 @@ const App = (): JSX.Element => {
               <Dashboard component={ <FDA_exchangeList /> } />
             </PrivateRoute>
 
-            <PublicRoute component={ Error404 } />
+            <Route
+              render={(x): any => {
+               console.log('%cit is rendered', 'font-size: large; color: orange; font-weight: bold',
+               // @ts-ignore
+               routes[x.location.pathname.substring(1)]
+               )
+               console.log('x is:', x)
+               console.log('routes:', routes)
+               console.log()
+
+              //  if (routes[x.location.pathname.substring(1)])
+              }}
+            />
+              {/* <Error404 />
+              </PublicRoute> */}
+
           </Suspense>
         </Switch>
       </Router>
