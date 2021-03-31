@@ -342,12 +342,15 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
     if (
       pharmacyDrug.buttonName === 'افزودن به تبادل' &&
-      (!pharmacyDrug.currentCnt || pharmacyDrug.currentCnt === 0)
+      (!pharmacyDrug.currentCnt ||
+        pharmacyDrug.currentCnt === 0 ||
+        !(pharmacyDrug.cnt > pharmacyDrug.currentCnt && pharmacyDrug.currentCnt >= 1))
     ) {
+      setAutoFocus(false)
       await sweetAlert({
         type: 'error',
         text: 'مقدار وارد شده معتبر نمی باشد',
-      });
+      }).then(() => setAutoFocus(true));
       return;
     }
 
@@ -398,12 +401,15 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
     if (
       pharmacyDrug.buttonName === 'افزودن به تبادل' &&
-      (!pharmacyDrug.currentCnt || pharmacyDrug.currentCnt === 0)
+      (!pharmacyDrug.currentCnt ||
+        pharmacyDrug.currentCnt === 0 ||
+        !(pharmacyDrug.cnt > pharmacyDrug.currentCnt && pharmacyDrug.currentCnt >= 1))
     ) {
       await sweetAlert({
         type: 'error',
         text: 'مقدار وارد شده معتبر نمی باشد',
       });
+      setAutoFocus(true);
       return;
     }
 
@@ -604,19 +610,19 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           defaultValue={pharmacyDrug.currentCnt}
           autoFocus={autoFocus}
           onChange={(e: any): void => {
-            if (pharmacyDrug.cnt > +e.target.value && +e.target.value >= 1) {
-              pharmacyDrug.currentCnt = +e.target.value;
-              handleTotalAmount();
-            } else {
-              pharmacyDrug.currentCnt = pharmacyDrug.cnt;
-              setDrugInfo({
-                ...pharmacyDrug,
-                currentCnt: pharmacyDrug.cnt,
-              });
-              handleTotalAmount();
-              alert('مقدار وارد شده نباید کوچکتر از یک و بزرگتر از موجودی باشد')
-              setAutoFocus(true);
-            }
+            // if (pharmacyDrug.cnt > +e.target.value && +e.target.value >= 1) {
+            pharmacyDrug.currentCnt = +e.target.value;
+            handleTotalAmount();
+            // } else {
+            //   pharmacyDrug.currentCnt = pharmacyDrug.cnt;
+            //   setDrugInfo({
+            //     ...pharmacyDrug,
+            //     currentCnt: pharmacyDrug.cnt,
+            //   });
+            //   handleTotalAmount();
+            //   alert('مقدار وارد شده نباید کوچکتر از یک و بزرگتر از موجودی باشد')
+            //   setAutoFocus(true);
+            // }
           }}
         >
           {pharmacyDrug.currentCnt}
