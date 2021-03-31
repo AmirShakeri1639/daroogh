@@ -17,6 +17,7 @@ import {
 } from '../../../../interfaces';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { BackDrop } from '../../../public';
+import { useTranslation } from 'react-i18next';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -33,7 +34,7 @@ const useStyle = makeStyles((theme) =>
 const CardContainer: React.FC<PrescriptionCardDataInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const { root } = useStyle();
-
+  const { t } = useTranslation();
   const { data, saveHandler, detailHandler } = props;
 
   const {
@@ -84,7 +85,7 @@ const CardContainer: React.FC<PrescriptionCardDataInterface> = (props) => {
           onClick={(): void => saveHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-          انصراف
+          {t('general.reject')}
         </Button>
       </Grid>
       <BackDrop isOpen={isOpenBackDrop} />
