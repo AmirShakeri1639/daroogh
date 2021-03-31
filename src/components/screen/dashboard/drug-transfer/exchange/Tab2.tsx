@@ -239,7 +239,6 @@ const Tab2: React.FC = () => {
       newList.push(x);
     });
     let output = newList.concat(uBasketCount);
-    debugger;
     setConcatList(output);
   }, [uBasketCount, uAllPharmacyDrug]);
 
