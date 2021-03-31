@@ -122,14 +122,10 @@ const isOpenPageOfThisGroup = (item: string): boolean => {
 };
 
 const ListItems: React.FC = () => {
-  const [isOpenExchange, setIsOpenExchange] = useState<boolean>(
-    isOpenPageOfThisGroup('exchange')
-  );
+  const [isOpenExchange, setIsOpenExchange] = useState<boolean>(true);
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
   const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
-  const [isopenFavoriteList, setIsopenFavoriteList] = useState(
-    isOpenPageOfThisGroup('favorite')
-  );
+  const [isopenFavoriteList, setIsopenFavoriteList] = useState(isOpenPageOfThisGroup('favorite'));
   const { activePageHandler: setActivePage } = useContext(Context);
 
   const { nested, linkWrapper, notNested, menuContainer } = useStyles();
@@ -140,8 +136,7 @@ const ListItems: React.FC = () => {
   const { userData, roles } = new JwtData();
   const rolesArray = roles();
 
-  const preventDefault = (event: React.SyntheticEvent): any =>
-    event.preventDefault();
+  const preventDefault = (event: React.SyntheticEvent): any => event.preventDefault();
 
   const fdaMenu = (): JSX.Element => {
     return (
@@ -189,16 +184,6 @@ const ListItems: React.FC = () => {
     return (
       <div className={menuContainer}>
         <h3 className={spacing3}>{t('user.admin')}</h3>
-
-        {/* //// Role */}
-        <List component="div" className={linkWrapper}>
-          <Link to={dashboard} className={notNested}>
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary={t('general.dashboard')} />
-          </Link>
-        </List>
 
         <List component="div" className={linkWrapper}>
           <Link to={createRole} className={notNested}>
@@ -454,6 +439,15 @@ const ListItems: React.FC = () => {
     return (
       <div className={menuContainer}>
         <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3>
+        <List component="div" className={linkWrapper}>
+          <Link to={dashboard} className={notNested}>
+            <ListItemIcon>
+              <DashboardIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('general.dashboard')} />
+          </Link>
+        </List>
+
         <ListItem
           button
           className={linkWrapper}
@@ -471,9 +465,7 @@ const ListItems: React.FC = () => {
               <ListItemIcon>
                 <AppsIcon />
               </ListItemIcon>
-              <ListItemText
-                primary={`${t('general.submit')} ${t('exchange.products')}`}
-              />
+              <ListItemText primary={`${t('general.submit')} ${t('exchange.products')}`} />
             </Link>
           </List>
 
@@ -491,9 +483,7 @@ const ListItems: React.FC = () => {
               <ListItemIcon>
                 <AddToPhotosIcon />
               </ListItemIcon>
-              <ListItemText
-                primary={`${t('general.start')} ${t('exchange.exchange')}`}
-              />
+              <ListItemText primary={`${t('general.start')} ${t('exchange.exchange')}`} />
             </Link>
           </List>
 
@@ -553,7 +543,6 @@ const ListItems: React.FC = () => {
           </List>
         </Collapse>
 
-  
         {/* <ListItem button onClick={(): void => setIsOpenMembers((v) => !v)}>
           <ListItemIcon style={{ color: '#4625B2' }}>
             <PermIdentityTwoToneIcon />
@@ -652,13 +641,10 @@ const ListItems: React.FC = () => {
         <>
           {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
           {(rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 ||
-            rolesArray?.some((item: any) =>
-              GetValuesOfEnum(PharmacyRoleEnum).includes(item)
-            )) &&
+            rolesArray?.some((item: any) => GetValuesOfEnum(PharmacyRoleEnum).includes(item))) &&
             pharmacyMenu()}
           {!(rolesArray?.indexOf(RolesEnum.PUBLIC) >= 0) && publicMenu()}
-          {(rolesArray?.indexOf(RolesEnum.FDA) >= 0 ||
-            rolesArray?.indexOf(RolesEnum.ADMIN) >= 0) &&
+          {(rolesArray?.indexOf(RolesEnum.FDA) >= 0 || rolesArray?.indexOf(RolesEnum.ADMIN) >= 0) &&
             fdaMenu()}
         </>
       )}

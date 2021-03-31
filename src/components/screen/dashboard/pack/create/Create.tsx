@@ -196,6 +196,7 @@ const Create: React.FC = () => {
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
   const [drugsPack, setDrugsPack] = useState<PharmacyDrugSupplyList[]>([]);
   const [storedPackId, setStoredPackId] = useState<number | null>(null);
+  const [showError, setShowError] = useState(false);
 
   const theme = useTheme();
 
@@ -239,6 +240,7 @@ const Create: React.FC = () => {
     setSelectedDate('');
     setOptions([]);
     setIsWrongDate(false);
+    setShowError(false);
     setHasMinimumDate(true);
 
     if (autoCompleteRef && autoCompleteRef.current) {
@@ -603,6 +605,7 @@ const Create: React.FC = () => {
   const formHandler = async (): Promise<any> => {
     try {
       if (!isValidInputs() || selectedCategory === '' || isWrongDate || !hasMinimumDate) {
+        setShowError(true);
         return;
       }
 
@@ -658,7 +661,7 @@ const Create: React.FC = () => {
                       }}
                       disabled={drugsPack.length > 0}
                     >
-                      <MenuItem value="-1">همه دسته ها</MenuItem>
+                      {/* <MenuItem value="-1">همه دسته ها</MenuItem> */}
                       {itemsGenerator()}
                     </Select>
                   </FormControl>
@@ -840,7 +843,7 @@ const Create: React.FC = () => {
                       required
                       placeholder={'08'}
                       type="number"
-                      error={!monthIsValid(Number(selectedMonth))}
+                      error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedMonth.length < 2 || val.length < 2) {
@@ -857,6 +860,7 @@ const Create: React.FC = () => {
                       required
                       type="number"
                       label={t('general.year')}
+                      error={selectedYear === '' && showError}
                       placeholder={'1401/2022'}
                       onChange={(e): void => {
                         const val = e.target.value;

@@ -226,6 +226,8 @@ const SupplyList: React.FC = () => {
   const [isWrongDate, setIsWrongDate] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
+  const [showError, setShowError] = useState(false);
+
   const theme = useTheme();
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -304,6 +306,7 @@ const SupplyList: React.FC = () => {
     setOptions([]);
     setIsWrongDate(false);
     setHasMinimumDate(true);
+    setShowError(false);
   };
 
   const toggleIsOpenModalOfNewList = (): void => {
@@ -511,17 +514,18 @@ const SupplyList: React.FC = () => {
   const formHandler = async (): Promise<any> => {
     try {
       if (
-        selectedYear === '' ||
-        selectedMonth === '' ||
+        selectedYear.trim() === '' ||
+        selectedMonth.trim() === '' ||
         !monthIsValid(Number(selectedMonth)) ||
         !dayIsValid(Number(selectedDay)) ||
         selectedYear.length < 4 ||
         isWrongDate ||
         !hasMinimumDate
       ) {
+        setShowError(true);
         return;
       }
-
+      setShowError(false);
       const intSelectedYear = Number(selectedYear);
       const intSelectedMonth = Number(selectedMonth);
       const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay);
@@ -602,7 +606,7 @@ const SupplyList: React.FC = () => {
         onClose={toggleIsOpenModalOfNewList}
         fullWidth
       >
-        <DialogTitle className="text-sm">{'افزودن به لیست عرضه'}</DialogTitle>
+        <DialogTitle className="text-sm">افزودن به لیست عرضه</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <Grid container spacing={1} className={formContent}>
@@ -732,8 +736,8 @@ const SupplyList: React.FC = () => {
                       value={selectedMonth}
                       label={t('general.month')}
                       required
+                      error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
                       placeholder={'08'}
-                      error={Number(selectedMonth) > 12}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedMonth.length < 2 || val.length < 2) {
@@ -748,6 +752,7 @@ const SupplyList: React.FC = () => {
                       type="number"
                       value={selectedYear}
                       required
+                      error={selectedYear === '' && showError}
                       placeholder={'1401/2022'}
                       label={t('general.year')}
                       onChange={(e): void => {
