@@ -39,11 +39,12 @@ const style = makeStyles((theme) =>
     root: {
       width: '100%',
       minHeight: 110,
-      borderRadius: 5,
+      borderRadius: '0px !important',
       display: 'inline-block',
       position: 'relative',
-      margin: -7,
-      boxShadow: '0 0 5px #cecece',
+      margin: -8,
+      // boxShadow: '0 0 5px #cecece',
+      border:`1px solid #ccc`
     },
     button: {
       height: 32,

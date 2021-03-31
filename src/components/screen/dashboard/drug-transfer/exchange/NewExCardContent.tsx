@@ -2,39 +2,19 @@ import {
   Button,
   Checkbox,
   CheckboxProps,
-  Container,
   createStyles,
-  FormControlLabel,
   Grid,
-  Hidden,
   makeStyles,
-  Paper,
   TextField,
   withStyles,
 } from '@material-ui/core';
-import React, {
-  HtmlHTMLAttributes,
-  useContext,
-  useReducer,
-  useState,
-} from 'react';
-import {
-  ExCardContentProps,
-  ViewExchangeInterface,
-} from '../../../../../interfaces';
-import EventBusyIcon from '@material-ui/icons/EventBusy';
-import CardGiftcardIcon from '@material-ui/icons/CardGiftcard';
-import MoneyIcon from '@material-ui/icons/Money';
+import React, { useContext, useState } from 'react';
+import { ExCardContentProps, ViewExchangeInterface } from '../../../../../interfaces';
 import moment from 'jalali-moment';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import Utils from '../../../../public/utility/Utils';
-import Ribbon from '../../../../public/ribbon/Ribbon';
 import { ColorEnum } from '../../../../../enum';
-import drug from '../../../../../assets/images/drug.png';
-import pack from '../../../../../assets/images/pack.png';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { green } from '@material-ui/core/colors';
@@ -45,17 +25,13 @@ import sweetAlert from 'utils/sweetAlert';
 import MuiAlert from '@material-ui/lab/Alert';
 import errorHandler from 'utils/errorHandler';
 import { AddDrog1, AddDrog2, AddPack1, AddPack2 } from 'model/exchange';
-import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
-import CounterButton from './CounterButton';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
-import { debug } from 'console';
 import ExchangeNormalCard from './components/ExchangeNormalCard';
 import ExchangePackCard from './components/ExchangePackCard';
 import ExchangePackDetail from './components/ExchangePackDetail';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
-  
     containerDetailPack: {
       padding: 0,
       borderTop: '1px solid silver',
@@ -207,21 +183,12 @@ const useClasses = makeStyles((theme) =>
 function NewExCardContent(props: ExCardContentProps): JSX.Element {
   const { pharmacyDrug, formType, packInfo, isPack } = props;
   const {
-  
     cardcontent,
-    ulCardName,
-    ulDetailPack,
-    ulRightCardName,
-    colLeftIcon,
-    ribbon,
-    ribbonTopLeft,
-    avatar,
     counterButton,
     counterButtonRight,
     counterButtonLeft,
     textCounter,
     containerDetailPack,
-    horzintalLine,
   } = useClasses();
 
   const {
@@ -245,9 +212,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     checkedG: false,
   });
 
-  const handleChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ): Promise<void> => {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     setState({ ...state, [event.target.name]: event.target.checked });
 
     if (!isPack) {
@@ -269,14 +234,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   const { getViewExchange } = new PharmacyDrug();
 
-  const {
-    addDrug1,
-    addPack1,
-    removePack1,
-    addDrug2,
-    addPack2,
-    removePack2,
-  } = new PharmacyDrug();
+  const { addDrug1, addPack1, removePack1, addDrug2, addPack2, removePack2 } = new PharmacyDrug();
 
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState<string>('');
@@ -286,25 +244,6 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   const snackBarHandleClick = (): any => {
     setOpen(true);
-  };
-
-  const snackBarHandleClose = (event: any, reason: any): any => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  const Alert = (props: any): JSX.Element => {
-    return (
-      <MuiAlert
-        style={{ zIndex: 99999 }}
-        elevation={6}
-        variant="filled"
-        {...props}
-      />
-    );
   };
 
   const [_addDrug1] = useMutation(addDrug1, {
@@ -439,13 +378,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           else setUbasketCount([]);
         } else {
           if (activeStep === 1)
-            setBasketCount([
-              ...basketCount.filter((x) => x.id !== pharmacyDrug.id),
-            ]);
-          else
-            setUbasketCount([
-              ...uBasketCount.filter((x) => x.id !== pharmacyDrug.id),
-            ]);
+            setBasketCount([...basketCount.filter((x) => x.id !== pharmacyDrug.id)]);
+          else setUbasketCount([...uBasketCount.filter((x) => x.id !== pharmacyDrug.id)]);
         }
       }
       setIsLoading(false);
@@ -500,13 +434,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           else setUbasketCount([]);
         } else {
           if (activeStep === 1)
-            setBasketCount([
-              ...basketCount.filter((x) => x.id !== pharmacyDrug.id),
-            ]);
-          else
-            setUbasketCount([
-              ...uBasketCount.filter((x) => x.id !== pharmacyDrug.id),
-            ]);
+            setBasketCount([...basketCount.filter((x) => x.id !== pharmacyDrug.id)]);
+          else setUbasketCount([...uBasketCount.filter((x) => x.id !== pharmacyDrug.id)]);
         }
       }
       setIsLoading(false);
@@ -524,16 +453,13 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
       setIsLoading(true);
       if (
-        (activeStep === 1 &&
-          !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
-        (activeStep === 2 &&
-          !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
+        (activeStep === 1 && !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
+        (activeStep === 2 && !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
       ) {
         try {
           const res = await _addPack1(inputmodel);
           if (res) {
-            if (activeStep === 1)
-              setBasketCount([...basketCount, pharmacyDrug]);
+            if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
             else setUbasketCount([...uBasketCount, pharmacyDrug]);
           }
           setIsLoading(false);
@@ -546,13 +472,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           await _removePack1(inputmodel);
           // dispatch({ type: 'reset' });
           if (activeStep === 1)
-            setBasketCount([
-              ...basketCount.filter((x) => x.packID !== pharmacyDrug.packID),
-            ]);
-          else
-            setUbasketCount([
-              ...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID),
-            ]);
+            setBasketCount([...basketCount.filter((x) => x.packID !== pharmacyDrug.packID)]);
+          else setUbasketCount([...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID)]);
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
@@ -570,16 +491,13 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
       setIsLoading(true);
       if (
-        (activeStep === 1 &&
-          !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
-        (activeStep === 2 &&
-          !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
+        (activeStep === 1 && !basketCount.find((x) => x.packID == pharmacyDrug.packID)) ||
+        (activeStep === 2 && !uBasketCount.find((x) => x.packID == pharmacyDrug.packID))
       ) {
         try {
           const res = await _addPack2(inputmodel);
           if (res) {
-            if (activeStep === 1)
-              setBasketCount([...basketCount, pharmacyDrug]);
+            if (activeStep === 1) setBasketCount([...basketCount, pharmacyDrug]);
             else setUbasketCount([...uBasketCount, pharmacyDrug]);
           }
           setIsLoading(false);
@@ -592,13 +510,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           await _removePack2(inputmodel);
           // dispatch({ type: 'reset' });
           if (activeStep === 1)
-            setBasketCount([
-              ...basketCount.filter((x) => x.packID !== pharmacyDrug.packID),
-            ]);
-          else
-            setUbasketCount([
-              ...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID),
-            ]);
+            setBasketCount([...basketCount.filter((x) => x.packID !== pharmacyDrug.packID)]);
+          else setUbasketCount([...uBasketCount.filter((x) => x.packID !== pharmacyDrug.packID)]);
           setIsLoading(false);
         } catch (e) {
           setIsLoading(false);
@@ -610,33 +523,21 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   const PackContent = (): JSX.Element => {
     return (
-     <ExchangePackCard pharmacyDrug={pharmacyDrug} 
-     activeStep={activeStep}
-     basketCount= {basketCount}
-     uBasketCount={uBasketCount}
-     handleChange={handleChange}/>
+      <ExchangePackCard
+        pharmacyDrug={pharmacyDrug}
+        lockedAction={lockedAction}
+        activeStep={activeStep}
+        basketCount={basketCount}
+        uBasketCount={uBasketCount}
+        handleChange={handleChange}
+      />
     );
-  };
-
-  const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-    const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
-    const fromDate = new Date(eDate);
-    const today = new Date();
-
-    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
-
-    const res = `${faDate}`;
-
-    return res;
   };
 
   const PackDetailContent = (): JSX.Element[] | any => {
     if (packInfo && packInfo.length > 0) {
       return packInfo.map((item: AllPharmacyDrugInterface) => {
-        return (
-          <ExchangePackDetail item={item}/>
-        );
+        return <ExchangePackDetail item={item} />;
       });
     }
     return <></>;
@@ -681,6 +582,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     if (el) el.innerHTML = Utils.numberWithCommas(val);
   };
 
+  const [autoFocus, setAutoFocus] = React.useState<boolean>(false);
+
   const counterButtonFunc = (): JSX.Element =>
     pharmacyDrug?.buttonName === 'افزودن به تبادل' ? (
       <div key={pharmacyDrug.id}>
@@ -699,6 +602,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           size="small"
           className={textCounter}
           defaultValue={pharmacyDrug.currentCnt}
+          autoFocus={autoFocus}
           onChange={(e: any): void => {
             if (pharmacyDrug.cnt > +e.target.value && +e.target.value >= 1) {
               pharmacyDrug.currentCnt = +e.target.value;
@@ -710,6 +614,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
                 currentCnt: pharmacyDrug.cnt,
               });
               handleTotalAmount();
+              alert('مقدار وارد شده نباید کوچکتر از یک و بزرگتر از موجودی باشد')
+              setAutoFocus(true);
             }
           }}
         >
@@ -734,44 +640,24 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
       </>
     );
 
-  const GreenCheckbox = withStyles({
-    root: {
-      color: green[400],
-      '&$checked': {
-        color: green[600],
-      },
-    },
-    checked: {},
-  })((props: CheckboxProps) => (
-    <Checkbox
-      color="default"
-      {...props}
-      style={{
-        transform: 'scale(2)',
-      }}
-    />
-  ));
-
   const DrugInfo = (): JSX.Element => (
-    
-      <ExchangeNormalCard pharmacyDrug={pharmacyDrug} totalAmount={totalAmount}
+    <ExchangeNormalCard
+      pharmacyDrug={pharmacyDrug}
+      totalAmount={totalAmount}
       activeStep={activeStep}
-      basketCount= {basketCount}
+      basketCount={basketCount}
       uBasketCount={uBasketCount}
       lockedAction={lockedAction}
       handleChange={handleChange}
       counterButtonFunc={counterButtonFunc()}
-     />
-    
+    />
   );
 
   return (
-    <Grid container spacing={0}
-      className={
-        formType === 1 || formType === 2
-          ? `${cardcontent}`
-          : `${containerDetailPack}`
-      }
+    <Grid
+      container
+      spacing={0}
+      className={formType === 1 || formType === 2 ? `${cardcontent}` : `${containerDetailPack}`}
     >
       {formType === 1 && <PackContent />}
       {formType === 2 && <DrugInfo key={pharmacyDrug?.id} />}
