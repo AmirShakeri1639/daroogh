@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   createStyles,
   Grid,
@@ -143,22 +143,14 @@ const FirstStep: React.FC = () => {
   const [isCheckedJustOffer, setIsCheckedJustOffer] = useState<boolean>(false);
   const [selectedCounty, setSelectedCounty] = useState<string>('-2');
   const [selectedProvince, setSelectedProvince] = useState<string>('-2');
-  const [searchOptions, setSearchOptions] = useState<object[] | undefined>(
-    undefined
-  );
+  const [searchOptions, setSearchOptions] = useState<object[] | undefined>(undefined);
   const [searchedDrugs, setSearchedDrugs] = useState<ListOptions[]>([]);
   const [searchedDrugsReesult, setSearchedDrugsReesult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [searchedCategory, setSearchedCategory] = useState<
-    SelectOption | undefined
-  >(undefined);
-  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(
-    undefined
-  );
+  const [searchedCategory, setSearchedCategory] = useState<SelectOption | undefined>(undefined);
+  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(undefined);
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
-  const [remainingExpireDays, setRemainingExpireDays] = useState<number | null>(
-    null
-  );
+  const [remainingExpireDays, setRemainingExpireDays] = useState<string>('');
   const [isInSearchMode, setIsInSearchMode] = useState<boolean>(false);
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
 
@@ -169,9 +161,7 @@ const FirstStep: React.FC = () => {
   const { search: useLocationSearch } = useLocation();
 
   try {
-    const localStorageSettings = JSON.parse(
-      localStorage.getItem('settings') ?? '{}'
-    );
+    const localStorageSettings = JSON.parse(localStorage.getItem('settings') ?? '{}');
     minimumDrugExpireDay = localStorageSettings.drugExpireDay;
   } catch (e) {
     errorHandler(e);
@@ -181,9 +171,7 @@ const FirstStep: React.FC = () => {
 
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
-  const setDataOfSearch = (
-    item: AdvancedSearchInterface
-  ): AdvancedSearchInterface => {
+  const setDataOfSearch = (item: AdvancedSearchInterface): AdvancedSearchInterface => {
     const drugsIdsArray = searchedDrugs.map((d) => ({ drugID: d.value }));
 
     if (drugsIdsArray.length > 0) {
@@ -198,8 +186,8 @@ const FirstStep: React.FC = () => {
       item.maxDistance = maxDistance;
     }
 
-    if (remainingExpireDays !== null) {
-      item.minRemainExpDays = remainingExpireDays;
+    if (remainingExpireDays !== '') {
+      item.minRemainExpDays = Number(remainingExpireDays);
     }
 
     if (selectedCounty !== '-1' && selectedCounty !== '*') {
@@ -216,9 +204,9 @@ const FirstStep: React.FC = () => {
   };
 
   async function advancedSearchItems(): Promise<any> {
+    setIsOpenDrawer(false);
     setIsLoading(true);
     setIsInSearchMode(true);
-
     const data: AdvancedSearchInterface = {};
     const searchData = setDataOfSearch(data);
 
@@ -247,9 +235,9 @@ const FirstStep: React.FC = () => {
   }, [searchedDrugs]);
 
   const getDrugName = (item: any): string => {
-    return `${item.name}${
-      item.genericName !== null ? ` (${item.genericName}) ` : ''
-    }${item.type !== null ? ` - ${item.type}` : ''}`;
+    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
+      item.type !== null ? ` - ${item.type}` : ''
+    }`;
   };
 
   const drugSearch = async (title: string): Promise<void> => {
@@ -270,9 +258,7 @@ const FirstStep: React.FC = () => {
             <div>{getDrugName(_item)}</div>
             <div className="text-muted txt-sm">{`${
               _item.enName !== null ? `-${_item.enName}` : ''
-            }${
-              _item.companyName !== null ? ` - ${_item.companyName}` : ''
-            }`}</div>
+            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
           </div>
         ),
       }));
@@ -382,6 +368,13 @@ const FirstStep: React.FC = () => {
     return items;
   };
 
+  const memoContent = useMemo(() => contentHandler(), [
+    isLoading,
+    isLoadingRelatedDrugs,
+    isInSearchMode,
+    data,
+  ]);
+
   return (
     <>
       <Grid item xs={12}>
@@ -389,11 +382,10 @@ const FirstStep: React.FC = () => {
           <Hidden xsDown>
             <Grid item xs={12}>
               <span>
-                برای جستجو در لیست های عرضه شده توسط همکارانتان میتوانید نام
-                دارو٬ دسته دارویی یا نام ژنریک را وارد کنید. همچنین میتوانید چند
-                دارو را جستجو کنید و لیست هایی که بیشترین مطابقت با خواسته شما
-                را داشته باشد به شما پیشنهاد داده میشود برای جستجوی دقیق تر
-                میتوانید از گزینه جستجوی پیشرفته استفاده نمایید
+                برای جستجو در لیست های عرضه شده توسط همکارانتان میتوانید نام دارو٬ دسته دارویی یا
+                نام ژنریک را وارد کنید. همچنین میتوانید چند دارو را جستجو کنید و لیست هایی که
+                بیشترین مطابقت با خواسته شما را داشته باشد به شما پیشنهاد داده میشود برای جستجوی
+                دقیق تر میتوانید از گزینه جستجوی پیشرفته استفاده نمایید
               </span>
             </Grid>
           </Hidden>
@@ -408,10 +400,7 @@ const FirstStep: React.FC = () => {
               <AutoComplete
                 ref={useRef()}
                 isLoading={isLoadingSearch}
-                onChange={debounce(
-                  (e): Promise<void> => drugSearch(e.target.value),
-                  500
-                )}
+                onChange={debounce((e): Promise<void> => drugSearch(e.target.value), 500)}
                 className="w-100"
                 loadingText={t('general.loading')}
                 options={searchOptions}
@@ -429,7 +418,7 @@ const FirstStep: React.FC = () => {
             </div>
           </Grid>
 
-          {contentHandler()}
+          {memoContent}
         </Grid>
       </Grid>
 
@@ -437,10 +426,7 @@ const FirstStep: React.FC = () => {
         <div className={drawerContainer}>
           <div id="titleContainer">
             <h6 className="txt-md">فیلترهای جستجو</h6>
-            <CloseIcon
-              onClick={(): void => setIsOpenDrawer(false)}
-              className="cursor-pointer"
-            />
+            <CloseIcon onClick={(): void => setIsOpenDrawer(false)} className="cursor-pointer" />
           </div>
 
           <Divider />
@@ -471,11 +457,7 @@ const FirstStep: React.FC = () => {
 
             <div className={switchContainer}>
               <span>{t('general.justOffer')}</span>
-              <Switch
-                id="just-offer"
-                checked={isCheckedJustOffer}
-                onChange={toggleCheckbox}
-              />
+              <Switch id="just-offer" checked={isCheckedJustOffer} onChange={toggleCheckbox} />
             </div>
 
             <Divider className={divider} />
@@ -488,12 +470,12 @@ const FirstStep: React.FC = () => {
                 </p>
               </div>
               <Input
-                value={remainingExpireDays || ''}
+                value={remainingExpireDays}
                 className={monthInput}
-                error={Number(remainingExpireDays) < minimumDrugExpireDay}
-                onChange={(e): any =>
-                  setRemainingExpireDays(Number(e.target.value))
+                error={
+                  Number(remainingExpireDays) < minimumDrugExpireDay && remainingExpireDays !== ''
                 }
+                onChange={(e): any => setRemainingExpireDays(e.target.value)}
               />
             </div>
 
@@ -552,12 +534,7 @@ const FirstStep: React.FC = () => {
 
           <Grid container spacing={0}>
             <Grid item xs={12} className={buttonWrapper}>
-              <Button
-                onClick={advancedSearchItems}
-                variant="outlined"
-                type="button"
-                color="pink"
-              >
+              <Button onClick={advancedSearchItems} variant="outlined" type="button" color="pink">
                 {t('general.emal')} {t('general.filter')}
               </Button>
             </Grid>
