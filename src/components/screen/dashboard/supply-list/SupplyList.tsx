@@ -194,6 +194,10 @@ const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
 const monthMinimumLength = 28;
 
+const SearchButton = styled(Button)`
+  color: #2e67e2;
+`;
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
@@ -310,7 +314,7 @@ const SupplyList: React.FC = () => {
   };
 
   const { data, isFetched } = useQuery(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () =>
-    allPharmacyDrug()
+    allPharmacyDrug('', true, 'desc')
   );
 
   const [_savePharmacyDrug, { isLoading: isLoadingSave }] = useMutation(savePharmacyDrug, {
@@ -499,7 +503,7 @@ const SupplyList: React.FC = () => {
         });
       }
     }
-    return items.reverse();
+    return items;
   };
 
   const memoItems = useMemo(() => displayHandler(), [data, filteredItems]);
@@ -557,10 +561,20 @@ const SupplyList: React.FC = () => {
     <>
       <Container>
         <h1 className="txt-md">{t('drug.SuppliedDrugsList')}</h1>
-        <Grid container spacing={1}>
-          <Grid item xs={12} md={6}>
-            <MaterialSearchBar onRequestSearch={filteredItemsHandler} />
+        <Grid container spacing={1} alignItems="center">
+          <Grid item xs={9} md={5}>
+            <MaterialSearchBar
+              placeholder={`${t('general.term')} ${t('general.then')} ${t('general.enter')}`}
+              onRequestSearch={filteredItemsHandler}
+            />
           </Grid>
+          {filteredItems.length > 0 && (
+            <Grid item xs={3} md={2}>
+              <SearchButton variant="text" onClick={(): void => setFilteredItems([])}>
+                {t('general.displayList', { var: 'اولیه' })}
+              </SearchButton>
+            </Grid>
+          )}
         </Grid>
 
         <Grid container spacing={3} className={contentContainer}>
@@ -681,7 +695,7 @@ const SupplyList: React.FC = () => {
                             value: e.target.value,
                           })
                         }
-                        />
+                      />
                     </Grid>
                     <GridCenter xs={1}>{t('general.gift')}</GridCenter>
                   </Grid>
@@ -701,7 +715,7 @@ const SupplyList: React.FC = () => {
                       label={t('general.day')}
                       type="number"
                       value={selectedDay}
-                      placeholder={"22"}
+                      placeholder={'22'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
@@ -718,7 +732,7 @@ const SupplyList: React.FC = () => {
                       value={selectedMonth}
                       label={t('general.month')}
                       required
-                      placeholder={"08"}
+                      placeholder={'08'}
                       error={Number(selectedMonth) > 12}
                       onChange={(e): void => {
                         const val = e.target.value;
@@ -734,7 +748,7 @@ const SupplyList: React.FC = () => {
                       type="number"
                       value={selectedYear}
                       required
-                      placeholder={"1401/2022"}
+                      placeholder={'1401/2022'}
                       label={t('general.year')}
                       onChange={(e): void => {
                         const val = e.target.value;
@@ -759,7 +773,7 @@ const SupplyList: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
+                <span className="txt-sm">فرمت تاریخ به صورت 0000 00 00 باشد</span>
               </Grid>
 
               {/* <Grid item xs={12}>
