@@ -1,19 +1,13 @@
 import Api from "./Api";
 import { ForgetPasswordDataInterface, UserLoginInterface } from "../../interfaces";
-import { errorHandler } from "../../utils";
 
 class Account extends Api {
   loginUser = async (data: UserLoginInterface): Promise<any> => {
-    try {
-      const result = await this.postJsonData(
-        '/Account/Login',
-        data,
-      );
-      return result.data;
-    }
-    catch (e) {
-      errorHandler(e);
-    }
+    const result = await this.postJsonData(
+      '/Account/Login',
+      data,
+    );
+    return result.data;
   }
 
   forgetPassword = async (data: ForgetPasswordDataInterface): Promise<any> => {

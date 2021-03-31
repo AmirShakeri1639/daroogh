@@ -376,6 +376,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.name')}
                 InputLabelProps={{
                   shrink: true,
+                  required: true
                 }}
                 variant="outlined"
                 value={state.name}
@@ -388,6 +389,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.family')}
                 InputLabelProps={{
                   shrink: true,
+                  required: true
                 }}
                 variant="outlined"
                 value={state.family}
@@ -400,6 +402,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.birthDate')}
                 InputLabelProps={{
                   shrink: true,
+                  required: true
                 }}
                 variant="outlined"
                 value={state.birthDate}
@@ -412,7 +415,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.email')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
                 }}
                 variant="outlined"
                 value={state.email}
@@ -480,7 +482,6 @@ const EmploymentApplication: React.FC = () => {
                 type="number"
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
                 }}
                 variant="outlined"
                 value={state.gradeOfReadingPrescriptionCertificate}
@@ -499,6 +500,7 @@ const EmploymentApplication: React.FC = () => {
                 type="number"
                 InputLabelProps={{
                   shrink: true,
+                  required: true
                 }}
                 variant="outlined"
                 value={state.workExperienceYear}
@@ -669,6 +671,7 @@ const EmploymentApplication: React.FC = () => {
                 onChange={changeprovince}
                 SelectProps={{
                   native: true,
+                  required: true
                 }}
                 variant="outlined"
                 value={state.countryDivisionCode}
@@ -687,6 +690,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.ostan')}
                 SelectProps={{
                   native: true,
+                  required:true
                 }}
                 variant="outlined"
               >
@@ -703,7 +707,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.previousWorkplace')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
                 }}
                 variant="outlined"
                 value={state.previousWorkplace}
@@ -722,7 +725,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.previousWorkplacePhone')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
                 }}
                 variant="outlined"
                 value={state.previousWorkplacePhone}
@@ -741,6 +743,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.landlinePhone')}
                 InputLabelProps={{
                   shrink: true,
+                  required: true
                 }}
                 variant="outlined"
                 value={state.landlinePhone}
@@ -775,6 +778,7 @@ const EmploymentApplication: React.FC = () => {
                 margin="normal"
                 InputLabelProps={{
                   shrink: true,
+                  required: true
                 }}
                 variant="outlined"
                 value={state.address}
@@ -791,6 +795,7 @@ const EmploymentApplication: React.FC = () => {
                 margin="normal"
                 InputLabelProps={{
                   shrink: true,
+                  required: true
                 }}
                 variant="outlined"
                 value={state.descriptions}
