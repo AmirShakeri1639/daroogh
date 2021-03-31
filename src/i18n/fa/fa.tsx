@@ -112,6 +112,7 @@ export default {
         gift: 'هدیه',
         defaultCurrency: 'تومان',
         noContent: 'محتوایی وجود ندارد',
+        reject:'عدم پذیرش'
       },
       pack: {
         pack: 'پک',
