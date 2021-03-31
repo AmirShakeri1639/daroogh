@@ -4,20 +4,12 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { EmploymentApplication, File } from '../../../../services/api';
 import CardContainer from './CardContainer';
 
-import {
-  errorHandler,
-  isNullOrEmpty,
-  successSweetAlert,
-} from '../../../../utils';
+import { errorHandler, isNullOrEmpty, successSweetAlert } from '../../../../utils';
 import { DataTableCustomActionInterface } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBan,
-  faInfoCircle,
-  faDownload,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBan, faInfoCircle, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
 import { getJalaliDate } from '../../../../utils/jalali';
@@ -42,18 +34,18 @@ import FileLink from '../../../public/picture/fileLink';
 import { api } from '../../../../config/default.json';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import SearchBar from 'material-ui-search-bar';
+import { TrendingUpRounded } from '@material-ui/icons';
 
 interface Props {
   full?: boolean;
 }
 const useStyles = makeStyles((theme) =>
   createStyles({
-   
-    searchBar: {
-      margin: '0 10px',
-    },
     searchIconButton: {
-      display: 'none'
+      display: 'none',
+    },
+    contentContainer: {
+      marginTop: 15,
     },
   })
 );
@@ -61,17 +53,13 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const { t } = useTranslation();
   const ref = useDataTableRef();
   const theme = useTheme();
-  //const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const fullScreen = true;
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen = true;
   const queryCache = useQueryCache();
   const [isOpenDetails, setIsOpenDetails] = useState(false);
   const [detailsItem, setDetailsItem] = useState<any>();
   const { spacing1, container } = useClasses();
-  const {
-    
-    searchBar,
-    searchIconButton
-  } = useStyles ();
+  const { contentContainer, searchIconButton } = useStyles();
 
   const { all, notCanceled, cancel, urls } = new EmploymentApplication();
   const { urls: fileUrls } = new File();
@@ -312,11 +300,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         type: 'string',
         render: (row: any): any => {
           return (
-            <>
-              {!isNullOrEmpty(row.resumeFileKey) && (
-                <FileLink fileKey={row.resumeFileKey} />
-              )}
-            </>
+            <>{!isNullOrEmpty(row.resumeFileKey) && <FileLink fileKey={row.resumeFileKey} />}</>
           );
         },
       },
@@ -349,44 +333,41 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const actions: DataTableCustomActionInterface[] = full
     ? [
         {
-          icon: (): any => (
-            <FontAwesomeIcon icon={faBan} color={ColorEnum.Red} />
-          ),
+          icon: (): any => <FontAwesomeIcon icon={faBan} color={ColorEnum.Red} />,
           tooltip: t('general.cancel'),
           position: 'row',
-          action: async (e: any, row: any): Promise<void> =>
-            await cancelHandler(row),
+          action: async (e: any, row: any): Promise<void> => await cancelHandler(row),
         },
       ]
     : [];
-    const [list, setList] = useState<any>([]);
-    const listRef = React.useRef(list);
-    const setListRef = (data: any, refresh: boolean = false) => {
-      if (!refresh) {
-        listRef.current = listRef.current.concat(data);
-      } else {
-        listRef.current = data;
-      }
-      setList(data);
-    };
-    const [search, setSearch] = useState<string>('');
-    const searchRef = React.useRef(search);
-    const setSearchRef = (data: any) => {
-      searchRef.current = data
-      setSearch(data);
-      getList(true);
-    };
+  const [list, setList] = useState<any>([]);
+  const listRef = React.useRef(list);
+  const setListRef = (data: any, refresh: boolean = false) => {
+    if (!refresh) {
+      listRef.current = listRef.current.concat(data);
+    } else {
+      listRef.current = data;
+    }
+    setList(data);
+  };
+  const [search, setSearch] = useState<string>('');
+  const searchRef = React.useRef(search);
+  const setSearchRef = (data: any) => {
+    searchRef.current = data;
+    setSearch(data);
+    getList(true);
+  };
   const { isLoading, data, isFetched } = useQuery(
     EmploymentApplicationEnum.GET_ALL,
 
-    () => all(pageRef.current, 10,[], searchRef.current),
+    () => all(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
         console.log(result);
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
+          // console.log(result.items);
 
           setListRef(result.items);
         }
@@ -415,15 +396,15 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     }
   };
   async function getList(refresh: boolean = false): Promise<any> {
-    const result = await all(pageRef.current, 10,[], searchRef.current);
-    console.log(result.items);
+    const result = await all(pageRef.current, 10, [], searchRef.current);
+    //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
-    } else {
-      
     }
-    setListRef(result.items,refresh);
+    if (result != undefined) {
+      setListRef(result.items, refresh);
       return result;
+    }
   }
 
   function isMobile() {
@@ -450,7 +431,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         // setMobileRef(isMobile());
         window.addEventListener('scroll', handleScroll, {
           capture: true,
-        })
+        });
       }
       handleResize();
       window.addEventListener('resize', handleResize);
@@ -462,14 +443,11 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   useWindowDimensions();
   const contentGenerator = (): JSX.Element[] => {
     if (!isLoading && list !== undefined && isFetched) {
-      console.log(data);
-      console.log(list);
-
       return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid key={item.id} item xs={12}>
+          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
             <CardContainer
               data={item}
               cancelHandler={cancelHandler}
@@ -486,7 +464,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   return (
     <Container maxWidth="lg" className={container}>
       <h1 className="txt-md">{t('employment.application')}</h1>
-      {!fullScreen && (
+      {false && (
         <DataTable
           tableRef={ref}
           columns={tableColumns()}
@@ -500,23 +478,21 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       )}
       {isOpenDetails && detialsDialog()}
       <br />
-      {fullScreen && (
-        <SearchBar
-          className={searchBar}
-          classes={{ searchIconButton: searchIconButton }} 
-          placeholder={t('general.search')}
-          onChange={(newValue) => setSearchRef(newValue)}
-          
-        />
-      )}
-      {fullScreen && (
-        <Grid container spacing={0}>
-          <Grid item xs={12}>
-            {contentGenerator()}
+      {true && (
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
+            <SearchBar
+              classes={{ searchIconButton: searchIconButton }}
+              placeholder={t('general.search')}
+              onChange={(newValue) => setSearchRef(newValue)}
+            />
           </Grid>
         </Grid>
       )}
-      {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+      <Grid container spacing={3} className={contentContainer}>
+      {true && contentGenerator()}
+      </Grid>
+      {true && <CircleBackdropLoading isOpen={isLoading} />}
     </Container>
   );
 };

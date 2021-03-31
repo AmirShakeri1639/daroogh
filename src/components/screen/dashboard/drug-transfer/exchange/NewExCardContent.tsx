@@ -611,6 +611,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   const PackContent = (): JSX.Element => {
     return (
      <ExchangePackCard pharmacyDrug={pharmacyDrug} 
+     lockedAction={lockedAction}
      activeStep={activeStep}
      basketCount= {basketCount}
      uBasketCount={uBasketCount}

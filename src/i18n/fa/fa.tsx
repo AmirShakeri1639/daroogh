@@ -14,6 +14,8 @@ export default {
         no: 'خیر',
         confirm: 'تایید',
         search: 'جستجو',
+        then: 'سپس',
+        enter: 'اینتر',
         male: 'مرد',
         female: 'زن',
         action: 'کار',
@@ -34,6 +36,8 @@ export default {
         bikhial: 'بیخیال',
         save: 'ذخیره',
         edit: 'ویرایش',
+        term: 'عبارت',
+        displayList: 'نمایش لیست {{var}}',
         options: 'امکانات',
         expireDate: 'تاریخ انقضا',
         address: 'نشانی',
@@ -177,8 +181,7 @@ export default {
         username: 'نام کاربری',
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
-        failed:
-          'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
+        failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
@@ -335,8 +338,7 @@ export default {
         exCalculator: 'فاکتور تبادل',
         you: 'شما',
         otherSide: 'طرف مقابل',
-        threePercentWarning:
-          'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
+        threePercentWarning: 'اختلاف مبلغ سبد شما و سبد طرف مقابل بیش از ۳ درصد است.',
         difference: 'اختلاف قیمت',
         continue: 'ادامه تبادل',
         exchangeManagement: 'مدیریت تبادل',
@@ -344,6 +346,7 @@ export default {
         widget: 'ابزارک تبادل',
         waitingForYourConfirmation: 'تبادل‌های در انتظار',
         exchangesWithFavorites: 'سبدهای شامل علاقمندی',
+        searchDrugPlaceHolder:'عبارت را وارد کرده و سپس کلید اینتر را بزنید'
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
@@ -496,8 +499,7 @@ export default {
         cancelDate: 'تاریخ لغو',
         responseDate: 'تاریخ پاسخ',
         response: 'پاسخ به نسخه',
-        cantEdit:
-          'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
+        cantEdit: 'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
         comment: 'شرح نسخه',
       },
       PrescriptionResponseStateEnum: {
@@ -533,8 +535,7 @@ export default {
         ticketExireDuration: 'مدت اعتبار رمزیکبار مصرف به دقیقه',
 
         exchange: 'تبادل',
-        diffrenceAllowPercentageInExchange:
-          'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
+        diffrenceAllowPercentageInExchange: 'درصد مجاز اختلاف مجموع مبالغ اقلام هر طرف در تبادل',
         exchangeDeadline: 'مهلت تائید یک تبادل به ساعت',
         debtAmountAllow: 'مبلغ مجاز بدهکاری',
         debtTimeAllow: 'مدت مجازی بدهکاری به ساعت',
@@ -576,8 +577,7 @@ export default {
         pharmacyPharmacyIsSameProvince: 'هم‌استانی بودن',
         pharmacyPharmacyIsSameCity: 'هم‌شهری بودن',
         pharmacyPharmacyIsCloseDistance: 'مجاور (نزدیک) هم بودن',
-        pharmacyPharmacyNeighboringDistanceMeters:
-          'معیار مجاورت (فاصله برحسب متر)',
+        pharmacyPharmacyNeighboringDistanceMeters: 'معیار مجاورت (فاصله برحسب متر)',
         pharmacyScore: 'ضریب امتیاز نهایی',
         pharmacyAvgScore: 'متوسط امتیاز نظرسنجی‌ها',
         pharmacyExchangeCount: 'تعداد تبادل موفق',
@@ -593,8 +593,7 @@ export default {
         pharmacyFillProfileInfo: 'میزان تکمیل اطلاعات پروفایل',
         pharmacyPaymentDaleyCount: 'جریمه تاخیر غیرمجاز در پرداخت',
         pharmacySelectedForceDrugsInExchange: 'تعداد انتخاب داروهای فورس',
-        pharmacyForceDrugDaysCount:
-          'معیار فورس شدن (تعداد روز باقیمانده تا انقضا)',
+        pharmacyForceDrugDaysCount: 'معیار فورس شدن (تعداد روز باقیمانده تا انقضا)',
         pharmacyOfferRatio: 'میانگین آفر داروهای لیست عرضه',
         pharmacyPriceDifAvg: 'اختلاف قیمت با میانگین دیگران',
         pharmacyExpRemainDays: 'میانه مهلت زمانی داروهای لیست عرضه',
@@ -604,8 +603,7 @@ export default {
           'ضرایب امتیازات (ارزش) شاخص‌های ارتباط داروخانه با داروخانه مقابل (اعمال امتیاز به کل لیست عرضه)',
         section4:
           'ضرایب امتیازات (ارزش) شاخص‌های داروخانه بصورت کلی (اعمال امتیاز به کل لیست عرضه)',
-        section5:
-          'ضرایب امتیازات (ارزش) شاخص‌های مختص به داروهای لیست عرضه یک داروخانه',
+        section5: 'ضرایب امتیازات (ارزش) شاخص‌های مختص به داروهای لیست عرضه یک داروخانه',
       },
       survey: {
         survey: 'نظرسنجی',
