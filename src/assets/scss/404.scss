@@ -62,13 +62,13 @@
   .red {
     background: url(/images/bee-sketch/red-1.png) no-repeat center center;
     opacity   : 1;
-    animation : red 3s linear infinite, opacityRed 5s linear alternate infinite;
+    animation : redd 3s linear infinite, opacityRed 5s linear alternate infinite;
   }
 
   .blue {
     background: url(/images/bee-sketch/blue-1.png) no-repeat center center;
     opacity   : 0;
-    animation : blue 3s linear infinite, opacityBlue 5s linear alternate infinite;
+    animation : bluee 3s linear infinite, opacityBlue 5s linear alternate infinite;
   }
 
   .btn {
@@ -112,7 +112,7 @@
   }
 
 
-  @keyframes blue {
+  @keyframes bluee {
     0% {
       background-image: url(/images/bee-sketch/blue-1.png)
     }
@@ -154,7 +154,7 @@
     }
   }
 
-  @keyframes red {
+  @keyframes redd {
     0% {
       background-image: url(/images/bee-sketch/red-1.png)
     }
