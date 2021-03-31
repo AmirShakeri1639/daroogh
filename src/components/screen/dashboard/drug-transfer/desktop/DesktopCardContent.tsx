@@ -627,7 +627,7 @@ const DesktopCardContent = ({
     const history = useHistory();
     const { survey } = routes;
     return (
-      <Grid container xs={12} direction="row-reverse">
+      <Grid container xs={12} direction="row-reverse" style={{display:'flex'}}>
         {item.needSurvey && (
           <div style={{ float: 'right' }}>
             <Button
@@ -659,6 +659,25 @@ const DesktopCardContent = ({
             {t('exchange.exchangeTree')}{' '}
           </Button>
         </div>
+        <div style={{ flex:'1 1 auto' }}>
+          <Button
+            title={t('exchange.viewExchange')}
+            variant="outlined"
+            
+            style={{ fontSize: 11 , color:'green' }}
+            onClick={(): void => {
+              if (onCardClick) {
+                onCardClick(
+                  item.id,
+                  item.state > 10 ? item.state - 10 : item.state,
+                  item.currentPharmacyIsA ? item.numberA : item.numberB
+                );
+              }
+            }}
+          >
+            {t('exchange.viewExchange')}
+          </Button>
+        </div>
       </Grid>
     );
   };
@@ -679,7 +698,7 @@ const DesktopCardContent = ({
                   className={`${cardTitle}`}
                   style={{
                     padding: '0 6px',
-                    borderRight: `2px solid ${getExchangeTitleColor()}`,
+                    borderRight: `24px solid ${getExchangeTitleColor()}`,
                     height: '40px',
                     backgroundColor: ColorEnum.LiteBack,
                     paddingTop: '8px',
@@ -717,7 +736,7 @@ const DesktopCardContent = ({
                   <>
                     <ExchangeInfo />
 
-                    <Divider />
+                    <Divider style={{marginBottom:8}} />
                     {showActions && <CardActions />}
                   </>
                 )}

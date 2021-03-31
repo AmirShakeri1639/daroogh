@@ -112,6 +112,7 @@ export default {
         gift: 'هدیه',
         defaultCurrency: 'تومان',
         noContent: 'محتوایی وجود ندارد',
+        reject:'عدم پذیرش'
       },
       pack: {
         pack: 'پک',
@@ -346,6 +347,7 @@ export default {
         widget: 'ابزارک تبادل',
         waitingForYourConfirmation: 'تبادل‌های در انتظار',
         exchangesWithFavorites: 'سبدهای شامل علاقمندی',
+        searchDrugPlaceHolder:'عبارت را وارد کرده و سپس کلید اینتر را بزنید'
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',

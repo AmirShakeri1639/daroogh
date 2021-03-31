@@ -1,5 +1,4 @@
-import React, { forwardRef, Ref, useCallback } from 'react';
-import { InputInterface } from '../../../interfaces/MaterialUI';
+import React, { forwardRef, ReactText, Ref, useCallback } from 'react';
 import { createStyles, makeStyles, TextField } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 
@@ -19,69 +18,87 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const Input: React.FC<InputInterface & { ref?: Ref<any> }> = forwardRef(
-  (props, ref) => {
-    const { numberInput } = useStyle();
-    const {
-      type,
-      value,
-      label,
-      onChange,
-      isMultiLine,
-      rows,
-      placeholder,
-      dir,
-      readOnly,
-      numberFormat,
-      onClick,
-      required,
-      error,
-      className,
-    } = props;
+interface InputProps {
+  placeholder?: string | number;
+  type?: string;
+  value?: string | number;
+  readOnly?: boolean;
+  label?: string;
+  numberFormat?: boolean;
+  dir?: 'ltr' | 'rtl';
+  rows?: number;
+  required?: boolean;
+  isMultiLine?: boolean;
+  onClick?: () => void;
+  onChange?: (e: any) => void;
+  error?: any;
+  className?: any;
+  helperText?: ReactText;
+}
 
-    const inuptGenerator = useCallback((): JSX.Element => {
-      if (numberFormat) {
-        return (
-          <NumberFormat
-            ref={ref}
-            type="tel"
-            className={numberInput}
-            value={value}
-            placeholder={String(placeholder)}
-            thousandSeparator
-            // @ts-ignore
-            onValueChange={(value): void => onChange(value?.value)}
-            customInput={TextField}
-          />
-        );
-      }
+const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref) => {
+  const { numberInput } = useStyle();
+  const {
+    type,
+    value,
+    label,
+    onChange,
+    isMultiLine,
+    rows,
+    placeholder,
+    dir,
+    readOnly,
+    numberFormat,
+    onClick,
+    required,
+    error,
+    className,
+    helperText,
+  } = props;
+
+  const inuptGenerator = useCallback((): JSX.Element => {
+    if (numberFormat) {
       return (
-        <TextField
+        <NumberFormat
           ref={ref}
-          error={error}
-          className={className || ''}
-          type={type}
+          type="tel"
+          className={numberInput}
           value={value}
-          size="small"
-          variant="outlined"
-          rows={rows}
-          multiline={isMultiLine}
-          label={label}
           placeholder={String(placeholder)}
-          dir={dir}
-          required={required}
-          onClick={onClick}
-          inputProps={{
-            readOnly,
-          }}
-          onChange={onChange}
+          thousandSeparator
+          // @ts-ignore
+          onValueChange={(value): void => onChange(value?.value)}
+          customInput={TextField}
         />
       );
-    }, [value]);
+    }
+    return (
+      <TextField
+        ref={ref}
+        error={error}
+        className={className || ''}
+        type={type}
+        value={value}
+        size="small"
+        helperText={helperText}
+        variant="outlined"
+        rows={rows}
+        multiline={isMultiLine}
+        label={label}
+        placeholder={String(placeholder)}
+        dir={dir}
+        required={required}
+        onClick={onClick}
+        inputProps={{
+          readOnly,
+        }}
+        onChange={onChange}
+      />
+    );
+  }, [value, error]);
 
-    return inuptGenerator();
-  }
-);
+  return inuptGenerator();
+});
 
 Input.defaultProps = {
   type: 'text',
