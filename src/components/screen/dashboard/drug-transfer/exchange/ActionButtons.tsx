@@ -21,7 +21,7 @@ import {
   TextField,
   Typography,
   useMediaQuery,
-  Button
+  Button,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
@@ -30,11 +30,7 @@ import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { default as MatButton } from '@material-ui/core/Button';
 import CloseIcon from '@material-ui/icons/Close';
 import errorHandler from '../../../../../utils/errorHandler';
-import {
-  Cancel,
-  ConfirmOrNotExchange,
-  Send,
-} from '../../../../../model/exchange';
+import { Cancel, ConfirmOrNotExchange, Send } from '../../../../../model/exchange';
 import { useMutation } from 'react-query';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import sweetAlert from '../../../../../utils/sweetAlert';
@@ -59,6 +55,8 @@ import { Rating } from '@material-ui/lab';
 import { SaveSurvey } from '../../../../../model/SaveSurvey';
 import CircleLoading from '../../../../public/loading/CircleLoading';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import { ColorEnum } from 'enum';
 //https://sweetalert2.github.io/
 // import Swal from 'sweetalert2'
 // import withReactContent from 'sweetalert2-react-content'
@@ -67,21 +65,25 @@ import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoad
 const style = makeStyles((theme) =>
   createStyles({
     actionContainer: {
+      zIndex: 101,
       display: 'flex',
       flexDirection: 'row',
       marginTop: 5,
       width: '100%',
-      padding:4,
-      background:'white'
+      padding: 4,
+      background: 'white',
     },
-    mobileActionContainer:{
-      position: 'fixed', bottom: 0, left: 0,right: 0,
+    mobileActionContainer: {
+      zIndex: 101,
+      position: 'fixed',
+      bottom: 0,
+      left: 0,
+      right: 0,
       display: 'flex',
       flexDirection: 'row',
       marginTop: 5,
-      padding:4,
-      background:'white',
-
+      padding: 4,
+      background: 'white',
     },
     cancelButton: {
       width: '100%',
@@ -91,10 +93,10 @@ const style = makeStyles((theme) =>
     },
     fullRow: {
       width: '100%',
-      border: "1px solid #3A2F8B",
-      margin: "2px",
-      borderRadius: "5px",
-      color:'#3A2F8B'
+      border: '1px solid #3A2F8B',
+      margin: '2px',
+      borderRadius: '5px',
+      color: '#3A2F8B',
     },
     cancelButton4: {
       width: '50%',
@@ -129,6 +131,10 @@ const style = makeStyles((theme) =>
       top: 60,
       zIndex: 999,
     },
+    addressBar: {
+      backgroundColor: ColorEnum.LiteBack,
+      borderLeft: `2px solid ${ColorEnum.Borders}`,
+    },
   })
 );
 
@@ -146,6 +152,7 @@ const ActionButtons = (): JSX.Element => {
     fullRow,
     pharmacyInfoStyle,
     questionHeader,
+    addressBar,
   } = style();
   const {
     activeStep,
@@ -160,22 +167,15 @@ const ActionButtons = (): JSX.Element => {
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   const [comment, setComment] = useState<string>('');
   const [modalType, setModalType] = useState('');
-  const [
-    pharmacyInfoState,
-    setPharmacyInfoState,
-  ] = useState<PharmacyInfo | null>(null);
+  const [pharmacyInfoState, setPharmacyInfoState] = useState<PharmacyInfo | null>(null);
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [openApproveModal, setOpenApproveModal] = React.useState(false);
 
   const [isSelected, setIsSelected] = React.useState(false);
 
-  const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(
-    false
-  );
-  const toggleIsOpenCancelExchangeModalForm = async (
-    type: string
-  ): Promise<void> => {
+  const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(false);
+  const toggleIsOpenCancelExchangeModalForm = async (type: string): Promise<void> => {
     setModalType(type);
     if (type !== 'approve') {
       await handleConfirmOrNotExchange(false);
@@ -218,14 +218,36 @@ const ActionButtons = (): JSX.Element => {
   const handleBackQuestion = (): any => {
     setActiveQuestionStep((prevActiveStep) => prevActiveStep - 1);
   };
-  const [getQuestions, setQuestions] = useState<
-    GetQuestionGroupOfExchangeInterface
-  >();
+  const [getQuestions, setQuestions] = useState<GetQuestionGroupOfExchangeInterface>();
 
   const [questionGroupId, serQuestionGroupId] = useState<number>(0);
 
-  const [_cancelExchange, { isLoading: isLoadingCancel }] = useMutation(
-    cancelExchange,
+  const [_cancelExchange, { isLoading: isLoadingCancel }] = useMutation(cancelExchange, {
+    onSuccess: async (res) => {
+      if (res) {
+        await sweetAlert({
+          type: 'success',
+          text: res.data.message,
+        });
+        history.push(desktop);
+      }
+    },
+  });
+
+  const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
+    onSuccess: async (res) => {
+      if (res) {
+        await sweetAlert({
+          type: 'success',
+          text: res.message,
+        });
+        history.push(desktop);
+      }
+    },
+  });
+
+  const [_confirmOrNotExchange, { isLoading: isLoadingConfirmOrNotExchange }] = useMutation(
+    confirmOrNotExchange,
     {
       onSuccess: async (res) => {
         if (res) {
@@ -233,56 +255,23 @@ const ActionButtons = (): JSX.Element => {
             type: 'success',
             text: res.data.message,
           });
-          history.push(desktop);
+          // history.push(desktop);
         }
       },
     }
   );
 
-  const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(
-    removeExchange,
-    {
-      onSuccess: async (res) => {
-        if (res) {
-          await sweetAlert({
-            type: 'success',
-            text: res.message,
-          });
-          history.push(desktop);
-        }
-      },
-    }
-  );
-
-  const [
-    _confirmOrNotExchange,
-    { isLoading: isLoadingConfirmOrNotExchange },
-  ] = useMutation(confirmOrNotExchange, {
+  const [_saveSurvey, { isLoading: isLoadingSaveSurvey }] = useMutation(saveSurvey, {
     onSuccess: async (res) => {
       if (res) {
         await sweetAlert({
           type: 'success',
-          text: res.data.message,
+          text: res.message,
         });
-        // history.push(desktop);
+        history.push(desktop);
       }
     },
   });
-
-  const [_saveSurvey, { isLoading: isLoadingSaveSurvey }] = useMutation(
-    saveSurvey,
-    {
-      onSuccess: async (res) => {
-        if (res) {
-          await sweetAlert({
-            type: 'success',
-            text: res.message,
-          });
-          history.push(desktop);
-        }
-      },
-    }
-  );
 
   const handleSaveSurvey = async (): Promise<any> => {
     try {
@@ -306,7 +295,7 @@ const ActionButtons = (): JSX.Element => {
     // } catch (error) {
     //   errorHandler(error);
     // }
-    console.log('path', `${survey}?exchangeId=${exchangeId}`)
+    console.log('path', `${survey}?exchangeId=${exchangeId}`);
     history.push(`${survey}?exchangeId=${exchangeId}`);
   };
 
@@ -354,23 +343,37 @@ const ActionButtons = (): JSX.Element => {
     }
   };
 
-  const handleConfirmOrNotExchange = async (
-    isConfirm: boolean
-  ): Promise<any> => {
+  const handleConfirmOrNotExchange = async (isConfirm: boolean): Promise<any> => {
     const inputmodel = new ConfirmOrNotExchange();
     inputmodel.exchangeID = exchangeId;
     inputmodel.isConfirm = isConfirm;
     try {
       let res = await _confirmOrNotExchange(inputmodel);
       if (viewExhcnage && viewExhcnage.state === 3) {
-        setShowApproveModalForm(true);
+        if (
+          (viewExhcnage.currentPharmacyIsA === false &&
+            res &&
+            (res.data.data.currentState === 4 || res.data.data.currentState === 8)) ||
+          (viewExhcnage.currentPharmacyIsA === true &&
+            res &&
+            (res.data.data.currentState === 4 || res.data.data.currentState === 9))
+        )
+          setShowApproveModalForm(true);
       }
       if (isConfirm) toggleIsOpenCancelExchangeModalForm(modalType);
       if (isConfirm && res) {
         const viewExResult = await getViewExchange(exchangeId);
         const result: ViewExchangeInterface | undefined = viewExResult.data;
         if (result) setViewExchange(result);
-        setShowApproveModalForm(true);
+        if (
+          (viewExhcnage.currentPharmacyIsA === false &&
+            res &&
+            (res.data.data.currentState === 4 || res.data.data.currentState === 8)) ||
+          (viewExhcnage.currentPharmacyIsA === true &&
+            res &&
+            (res.data.data.currentState === 4 || res.data.data.currentState === 9))
+        )
+          setShowApproveModalForm(true);
       }
     } catch (e) {
       errorHandler(e);
@@ -407,6 +410,7 @@ const ActionButtons = (): JSX.Element => {
       <Dialog
         fullScreen={fullScreen}
         open={openApproveModal}
+        fullWidth={true}
         onClose={() => {
           setOpenApproveModal(false);
         }}
@@ -453,87 +457,55 @@ const ActionButtons = (): JSX.Element => {
 
   const ShowPharmacyInfo = (): JSX.Element => {
     return (
-      <Modal
+      <Dialog
+        fullScreen={fullScreen}
         open={isShowPharmacyInfoModal}
-        toggle={toggleIsShowPharmacyInfoModalForm}
+        fullWidth={true}
+        onClose={toggleIsShowPharmacyInfoModalForm}
       >
-        <Card className={pharmacyInfoStyle}>
-          <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title="اطلاعات داروخانه مقابل"
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={toggleIsShowPharmacyInfoModalForm}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={1}>
-              <Grid item xs={12} sm={6}>
-                <span>نام داروخانه : </span>
-                <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.name}
-                </span>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <span>آدرس : </span>
-                <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.address}
-                </span>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <span>تلفن : </span>
-                <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.telphon}
-                </span>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <span>موبایل : </span>
-                <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.mobile}
-                </span>
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <Card>
-                  <CardContent style={{ textAlign: 'center' }}>
-                    {pharmacyInfoState?.data.x && pharmacyInfoState?.data.y ? (
-                      <Map
-                        draggable={false}
-                        defaultLatLng={[
-                          pharmacyInfoState?.data.x,
-                          pharmacyInfoState?.data.y,
-                        ]}
-                      />
-                    ) : (
-                      <span style={{ color: 'red' }}>
-                        مختصات جغرافیایی این داروخانه ثبت نشده است
-                      </span>
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
+        <DialogTitle>اطلاعات داروخانه مقابل</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2} className={addressBar}>
+            <Grid item xs={12}>
+              <TextWithTitle title="نام داروخانه" body={pharmacyInfoState?.data.name} />
             </Grid>
-          </CardContent>
-          <CardActions>
-            <Grid container spacing={1}></Grid>
-          </CardActions>
-        </Card>
-      </Modal>
+            <Grid item xs={12}>
+              <TextWithTitle title="آدرس" body={pharmacyInfoState?.data.address} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title="تلفن" body={pharmacyInfoState?.data.telphon} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title="موبایل" body={pharmacyInfoState?.data.mobile} />
+            </Grid>
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <Card>
+              <CardContent style={{ textAlign: 'center' }}>
+                {pharmacyInfoState?.data.x && pharmacyInfoState?.data.y ? (
+                  <Map
+                    draggable={false}
+                    defaultLatLng={[pharmacyInfoState?.data.x, pharmacyInfoState?.data.y]}
+                  />
+                ) : (
+                  <span style={{ color: 'red' }}>مختصات جغرافیایی این داروخانه ثبت نشده است</span>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={toggleIsShowPharmacyInfoModalForm} autoFocus>
+            بستن
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
   };
 
   const exchangeModalRemove = (): JSX.Element => {
     return (
-      <Modal
-        open={isRemoveExchangeModal}
-        toggle={toggleIsRemoveExchangeModalForm}
-      >
+      <Modal open={isRemoveExchangeModal} toggle={toggleIsRemoveExchangeModalForm}>
         <Card>
           <CardHeader
             style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
@@ -561,9 +533,7 @@ const ActionButtons = (): JSX.Element => {
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <MatButton
-                  onClick={async (): Promise<any> =>
-                    await handleRemoveExchange()
-                  }
+                  onClick={async (): Promise<any> => await handleRemoveExchange()}
                   variant="contained"
                   color="primary"
                   autoFocus
@@ -596,16 +566,10 @@ const ActionButtons = (): JSX.Element => {
         element = (
           <div style={{ textAlign: 'center' }}>
             <Rating
-              value={
-                surveyInput.surveyAnswer.find(
-                  (x) => x.questionID === question.id
-                )?.barom
-              }
+              value={surveyInput.surveyAnswer.find((x) => x.questionID === question.id)?.barom}
               precision={1}
               onChange={(event, newValue): any => {
-                const i = input.surveyAnswer.findIndex(
-                  (x) => x.questionID === question.id
-                );
+                const i = input.surveyAnswer.findIndex((x) => x.questionID === question.id);
                 if (i !== -1) {
                   input.surveyAnswer.splice(i, 1);
                 }
@@ -622,42 +586,36 @@ const ActionButtons = (): JSX.Element => {
       case 4:
         element = (
           <>
-            {question.questionOptions.map(
-              (item: QuestionOptions, index: number) => {
-                return (
-                  <FormControlLabel
-                    key={index}
-                    style={{ width: '100%' }}
-                    control={
-                      <Checkbox
-                        checked={
-                          surveyInput.surveyAnswer.findIndex(
-                            (x) => x.optionID === item.id
-                          ) !== -1
-                        }
-                        value={item.id}
-                        onChange={(
-                          event: React.ChangeEvent<HTMLInputElement>
-                        ): any => {
-                          const i = input.surveyAnswer.findIndex(
-                            (x) => x.optionID === +event.target.value
-                          );
-                          if (i === -1)
-                            input.surveyAnswer.push({
-                              questionID: question.id,
-                              optionID: item.id,
-                            });
-                          else input.surveyAnswer.splice(i, 1);
-                          setSurveyInput({ ...input });
-                        }}
-                        color="primary"
-                      />
-                    }
-                    label={item.title}
-                  />
-                );
-              }
-            )}
+            {question.questionOptions.map((item: QuestionOptions, index: number) => {
+              return (
+                <FormControlLabel
+                  key={index}
+                  style={{ width: '100%' }}
+                  control={
+                    <Checkbox
+                      checked={
+                        surveyInput.surveyAnswer.findIndex((x) => x.optionID === item.id) !== -1
+                      }
+                      value={item.id}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>): any => {
+                        const i = input.surveyAnswer.findIndex(
+                          (x) => x.optionID === +event.target.value
+                        );
+                        if (i === -1)
+                          input.surveyAnswer.push({
+                            questionID: question.id,
+                            optionID: item.id,
+                          });
+                        else input.surveyAnswer.splice(i, 1);
+                        setSurveyInput({ ...input });
+                      }}
+                      color="primary"
+                    />
+                  }
+                  label={item.title}
+                />
+              );
+            })}
           </>
         );
         break;
@@ -672,13 +630,10 @@ const ActionButtons = (): JSX.Element => {
             size="small"
             variant="outlined"
             value={
-              surveyInput.surveyAnswer.find((x) => x.questionID === question.id)
-                ?.descriptiveAnswer
+              surveyInput.surveyAnswer.find((x) => x.questionID === question.id)?.descriptiveAnswer
             }
             onChange={(e): void => {
-              const i = input.surveyAnswer.findIndex(
-                (x) => x.questionID === question.id
-              );
+              const i = input.surveyAnswer.findIndex((x) => x.questionID === question.id);
               if (i !== -1) {
                 input.surveyAnswer.splice(i, 1);
               }
@@ -693,24 +648,19 @@ const ActionButtons = (): JSX.Element => {
       default:
         break;
     }
-    return (
-      <div style={{ height: 320, maxHeight: 320, width: 550, maxWidth: 550 }}>
-        {element}
-      </div>
-    );
+    return <div style={{ height: 320, maxHeight: 320, width: 550, maxWidth: 550 }}>{element}</div>;
   };
 
   const survayModal = (): JSX.Element => (
     <Dialog
       fullScreen={fullScreen}
       open={openSurvayModal}
+      fullWidth={true}
       onClose={() => {
         setOpenSurvayModal(false);
       }}
     >
-      <DialogTitle
-        style={{ borderBottom: '1px silver solid', textAlign: 'center' }}
-      >
+      <DialogTitle style={{ borderBottom: '1px silver solid', textAlign: 'center' }}>
         {'ثبت نظر (نظرسنجی)'}
       </DialogTitle>
       <DialogContent>
@@ -739,16 +689,10 @@ const ActionButtons = (): JSX.Element => {
                   <MatButton
                     size="small"
                     onClick={handleNextQuestion}
-                    disabled={
-                      activeQuestionStep === getQuestions.question.length - 1
-                    }
+                    disabled={activeQuestionStep === getQuestions.question.length - 1}
                   >
                     بعدی
-                    {theme.direction === 'rtl' ? (
-                      <KeyboardArrowLeft />
-                    ) : (
-                      <KeyboardArrowRight />
-                    )}
+                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                   </MatButton>
                 }
                 backButton={
@@ -757,11 +701,7 @@ const ActionButtons = (): JSX.Element => {
                     onClick={handleBackQuestion}
                     disabled={activeQuestionStep === 0}
                   >
-                    {theme.direction === 'rtl' ? (
-                      <KeyboardArrowRight />
-                    ) : (
-                      <KeyboardArrowLeft />
-                    )}
+                    {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
                     قبلی
                   </MatButton>
                 }
@@ -801,74 +741,55 @@ const ActionButtons = (): JSX.Element => {
 
   const exchangeModalApproveCancel = (type: string): JSX.Element => {
     return (
-      <Modal
+      <Dialog
         open={isOpenCancelExchangeModal}
-        toggle={(): any => toggleIsOpenCancelExchangeModalForm(type)}
+        fullWidth={true}
+        onClose={(): any => toggleIsOpenCancelExchangeModalForm(type)}
       >
-        <Card>
-          <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title={type === 'approve' ? 'تایید تبادل' : 'لغو تبادل'}
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={(): any => toggleIsOpenCancelExchangeModalForm(type)}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={1}>
-              {type === 'approve' ? (
-                <div>
-                  <span>آیا از انجام تبادل اطمینان دارید؟</span>
-                </div>
-              ) : (
-                <div>
-                  <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
-                  <TextField
-                    style={{ width: '100%', marginTop: 10, fontSize: 10 }}
-                    label="توضیحات"
-                    multiline
-                    rows={5}
-                    variant="outlined"
-                  />
-                </div>
-              )}
-            </Grid>
-          </CardContent>
-          <CardActions>
+        <DialogTitle>{type === 'approve' ? 'تایید تبادل' : 'لغو تبادل'}</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={1}>
             {type === 'approve' ? (
-              <MatButton
-                onClick={async (): Promise<any> =>
-                  await handleConfirmOrNotExchange(true)
-                }
-                variant="contained"
-                color="primary"
-                autoFocus
-              >
-                تایید
-              </MatButton>
+              <div>
+                <span>آیا از انجام تبادل اطمینان دارید؟</span>
+              </div>
             ) : (
-              <MatButton
-                onClick={async (): Promise<any> => {
-                  await handleConfirmOrNotExchange(false);
-                  handleGetQuestionGroupOfExchange();
-                }}
-                variant="contained"
-                color="primary"
-                autoFocus
-              >
-                لغو تبادل
-              </MatButton>
+              <div>
+                <span>لطفا در صورت تمایل علت لغو تبادل را توضیح دهید</span>
+                <TextField
+                  style={{ width: '100%', marginTop: 10, fontSize: 10 }}
+                  label="توضیحات"
+                  multiline
+                  rows={5}
+                  variant="outlined"
+                />
+              </div>
             )}
-          </CardActions>
-        </Card>
-      </Modal>
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          {type === 'approve' ? (
+            <Button
+              onClick={async (): Promise<any> => await handleConfirmOrNotExchange(true)}
+              variant="contained"
+              autoFocus
+            >
+              تایید
+            </Button>
+          ) : (
+            <Button
+              onClick={async (): Promise<any> => {
+                await handleConfirmOrNotExchange(false);
+                handleGetQuestionGroupOfExchange();
+              }}
+              variant="contained"
+              autoFocus
+            >
+              لغو تبادل
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
     );
   };
 
@@ -1113,7 +1034,7 @@ const ActionButtons = (): JSX.Element => {
   );
 
   return (
-    <div className={fullScreen ? mobileActionContainer: actionContainer} >
+    <div className={fullScreen ? mobileActionContainer : actionContainer}>
       {element} <CircleBackdropLoading isOpen={isLoadingSend} />
     </div>
   );

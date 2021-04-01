@@ -143,8 +143,17 @@ const DesktopCardContent = ({
       : 0;
   };
 
-  const totalPriceA = calcPrice(cartA);
-  const totalPriceB = calcPrice(cartB);
+  // const totalPriceA = calcPrice(cartA);
+  // const totalPriceB = calcPrice(cartB);
+
+  const [totalPriceA, setTotalPriceA] = useState<number>(0);
+  const [totalPriceB, setTotalPriceB] = useState<number>(0);
+
+  React.useEffect(()=> {
+      setTotalPriceA(calcPrice(cartA));
+      setTotalPriceB(calcPrice(cartB));
+  }, [basketCount, uBasketCount])
+  
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -472,7 +481,7 @@ const DesktopCardContent = ({
                 item.state === 2 ||
                 (item.state === 12 && !item.lockSuggestion)) && (
                 <Grid container item xs={12}>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <div
                       className={scaleContainer}
                       style={{ minHeight: `${diffPercent * 0.75 + 85}px` }}
@@ -520,19 +529,41 @@ const DesktopCardContent = ({
                         </span>
                       </div>
                     </div>
-                  </Grid>
-                  {differenceMessage && (
-                    <Grid item xs={12} className={spacingVertical1}>
-                      {differenceMessage.split('\n').map((i, k) => {
-                        return (
-                          <div key={k}>
-                            {i}
-                            <br key={k} />
-                          </div>
-                        );
-                      })}
-                    </Grid>
-                  )}
+                  </Grid> */}
+                  <Grid item xs={12} spacing={0}>
+                <MobileDiffViwer
+                  percentage={diffPercent}
+                  otherAmount={`${
+                    item.currentPharmacyIsA ? totalPriceB : totalPriceA
+                  }`}
+                  yourAmount={`${
+                    item.currentPharmacyIsA ? totalPriceA : totalPriceB
+                  }`}
+                  is3PercentOk={is3PercentOk}
+                />
+              </Grid>
+              {differenceMessage && (
+                <Grid
+                  item
+                  xs={12}
+                  spacing={0}
+                  style={{
+                    fontSize: 13,
+                    marginTop: 8,
+                    border: '1px solid #F4CB08',
+                    padding: 4,
+                  }}
+                >
+                  {differenceMessage.split('\n').map((i, k) => {
+                    return (
+                      <div key={k}>
+                        {i}
+                        <br key={k} />
+                      </div>
+                    );
+                  })}
+                </Grid>
+              )}
                 </Grid>
               )}
             </>
@@ -570,7 +601,7 @@ const DesktopCardContent = ({
           style={{
             height: 6,
             width: 4,
-            background: '#1d0d50',
+            background:ColorEnum.DeepBlue,
             borderRadius: '50%',
           }}
         />
@@ -596,7 +627,7 @@ const DesktopCardContent = ({
     const history = useHistory();
     const { survey } = routes;
     return (
-      <Grid container xs={12} direction="row-reverse">
+      <Grid container xs={12} direction="row-reverse" style={{display:'flex'}}>
         {item.needSurvey && (
           <div style={{ float: 'right' }}>
             <Button
@@ -628,6 +659,25 @@ const DesktopCardContent = ({
             {t('exchange.exchangeTree')}{' '}
           </Button>
         </div>
+        <div style={{ flex:'1 1 auto' }}>
+          <Button
+            title={t('exchange.viewExchange')}
+            variant="outlined"
+            
+            style={{ fontSize: 11 , color:'green' }}
+            onClick={(): void => {
+              if (onCardClick) {
+                onCardClick(
+                  item.id,
+                  item.state > 10 ? item.state - 10 : item.state,
+                  item.currentPharmacyIsA ? item.numberA : item.numberB
+                );
+              }
+            }}
+          >
+            {t('exchange.viewExchange')}
+          </Button>
+        </div>
       </Grid>
     );
   };
@@ -648,9 +698,9 @@ const DesktopCardContent = ({
                   className={`${cardTitle}`}
                   style={{
                     padding: '0 6px',
-                    borderRight: `2px solid ${getExchangeTitleColor()}`,
+                    borderRight: `24px solid ${getExchangeTitleColor()}`,
                     height: '40px',
-                    backgroundColor: '#FEFFF2',
+                    backgroundColor: ColorEnum.LiteBack,
                     paddingTop: '8px',
                     marginBottom: '8px',
                     cursor: 'pointer',
@@ -686,7 +736,7 @@ const DesktopCardContent = ({
                   <>
                     <ExchangeInfo />
 
-                    <Divider />
+                    <Divider style={{marginBottom:8}} />
                     {showActions && <CardActions />}
                   </>
                 )}

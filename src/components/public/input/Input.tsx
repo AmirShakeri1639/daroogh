@@ -1,5 +1,4 @@
-import React, { useCallback } from 'react';
-import { InputInterface } from '../../../interfaces/MaterialUI';
+import React, { forwardRef, ReactText, Ref, useCallback } from 'react';
 import { createStyles, makeStyles, TextField } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 
@@ -19,7 +18,25 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const Input: React.FC<InputInterface> = (props) => {
+interface InputProps {
+  placeholder?: string | number;
+  type?: string;
+  value?: string | number;
+  readOnly?: boolean;
+  label?: string;
+  numberFormat?: boolean;
+  dir?: 'ltr' | 'rtl';
+  rows?: number;
+  required?: boolean;
+  isMultiLine?: boolean;
+  onClick?: () => void;
+  onChange?: (e: any) => void;
+  error?: any;
+  className?: any;
+  helperText?: ReactText;
+}
+
+const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref) => {
   const { numberInput } = useStyle();
   const {
     type,
@@ -36,12 +53,15 @@ const Input: React.FC<InputInterface> = (props) => {
     required,
     error,
     className,
+    helperText,
   } = props;
 
   const inuptGenerator = useCallback((): JSX.Element => {
     if (numberFormat) {
       return (
         <NumberFormat
+          ref={ref}
+          type="tel"
           className={numberInput}
           value={value}
           placeholder={String(placeholder)}
@@ -54,11 +74,13 @@ const Input: React.FC<InputInterface> = (props) => {
     }
     return (
       <TextField
+        ref={ref}
         error={error}
         className={className || ''}
         type={type}
         value={value}
         size="small"
+        helperText={helperText}
         variant="outlined"
         rows={rows}
         multiline={isMultiLine}
@@ -73,10 +95,10 @@ const Input: React.FC<InputInterface> = (props) => {
         onChange={onChange}
       />
     );
-  }, [value]);
+  }, [value, error]);
 
   return inuptGenerator();
-};
+});
 
 Input.defaultProps = {
   type: 'text',

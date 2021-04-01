@@ -15,7 +15,13 @@ class Reports extends Api {
     getSurplusDrugs: '/Reports/GetSurplusDrugs',
     getFavoriteDrugs: '/Reports/GetFavoriteDrugs',
     getSelectedDrugs: '/Reports/GetSelectedDrugs',
+    getWidgetInfo: '/Reports/GetWidgetInfo',
   };
+
+  getWidgetInfo = async (): Promise<any> => {
+    const result = await this.postJsonData(this.urls.getWidgetInfo);
+    return result.data;
+  }
 
   getBestPharmaciesList = async (for24Hour: boolean): Promise<any> => {
     try {

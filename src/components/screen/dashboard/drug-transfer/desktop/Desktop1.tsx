@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid, useMediaQuery, useTheme } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
 import { Exchange } from '../../../../../services/api';
@@ -16,10 +16,9 @@ import { isNullOrEmpty } from '../../../../../utils';
 import { useHistory, useLocation } from 'react-router-dom';
 import routes from '../../../../../routes';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryCache } from 'react-query';
 import queryString from 'query-string';
-// load test data
-// import d from './testdata.json';
+import { debounce } from 'lodash';
 
 const Desktop1: React.FC = () => {
   const { getDashboard } = new Exchange();
@@ -28,88 +27,59 @@ const Desktop1: React.FC = () => {
   const { transfer } = routes;
   const needSurveyItem = {
     label: t('survey.participate'),
-    value: NeedSurvey
+    value: NeedSurvey,
   };
-
-  // const [isLoading, setIsLoading] = useState(true);
   const [stateFilterList, setStateFilterList] = useState<LabelValue[]>([]);
 
   const location = useLocation();
   const params = queryString.parse(location.search);
+  const [isFilterChanged, setIsFilterChanged] = useState(false);
+  const queryFilters = ['waiting', 'survey'];
+  let queryFilter =
+    params.state && !isFilterChanged && queryFilters.includes(params.state.toString());
   const [filter, setFilter] = useState<any[]>((): any => {
-    let result = [];
-    if (params.state && params.state.length > 0) {
-      result = String(params.state)
-        .split(',')
-        .map((i) => +i);
-    } else {
-      result = [ExchangeStateEnum.UNKNOWN];
-    }
+    const result = [ExchangeStateEnum.UNKNOWN];
     result.push(NeedSurvey);
     return result;
   });
 
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
-
-  function usePrevious(value: number) {
-    const ref = useRef<number>();
-    React.useEffect(() => {
-      ref.current = value;
-    });
-    return ref.current;
-  }
-
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
   const exchangesRef = React.useRef(exchanges);
   const setExchangesRef = (data: ViewExchangeInterface[]) => {
     exchangesRef.current = data;
     setExchanges(data);
   };
-
   const [page, setPage] = useState<number>(0);
-  const pageRef = React.useRef(page);
-  const setPageRef = (data: number) => {
-    pageRef.current = data;
-    setPage(data);
-  };
-
-  const prevCount = usePrevious(page);
   const [loading, setLoading] = useState(false);
   const loadingRef = React.useRef(loading);
-  const setLoadingRef = (data: boolean) => {
-    loadingRef.current = data;
-    setLoading(data);
-  };
-
-  const [noData, setNoData] = useState(false);
-
-  const [totalCount, setTotalCount] = useState<number>(0);
-  const totalCountRef = React.useRef(totalCount);
+  const [totalCount, setTotalCount] = useState(() => {
+    return 0;
+  });
+  const totalCountRef = React.useRef(page);
   const setTotalCountRef = (data: number) => {
     totalCountRef.current = data;
     setTotalCount(data);
   };
 
-  const { isLoading, refetch } = useQuery(
-    ['key'],
-    () => {
-      return getDashboard(pageRef.current);
-    },
+  const cache = useQueryCache();
+
+  const { refetch } = useQuery(
+    ['key', page],
+    () => getDashboard(page, queryFilter ? params.state : ''),
     {
       onSuccess: (result) => {
         if (result != undefined) {
           const newList = exchanges.concat(result.items);
-          setTotalCountRef(result.count);
+          if (result.count != undefined && result.count != 0) {
+            setTotalCountRef(result.count);
+          }
           const statesList: LabelValue[] = [];
           let hasCompleted: boolean = false;
           const items = newList.map((item: any) => {
             let thisHasCompleted = false;
-            if (
-              !item.currentPharmacyIsA &&
-              item.state <= 10 &&
-              !isStateCommon(item.state)
-            )
+            if (!item.currentPharmacyIsA && item.state <= 10 && !isStateCommon(item.state))
               item.state += 10;
             if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
               hasCompleted = true;
@@ -132,100 +102,64 @@ const Desktop1: React.FC = () => {
           }
           // setExchanges(items);
           setExchangesRef(items);
-          // setIsLoading(false);
           statesList.push(needSurveyItem);
           setStateFilterList(statesList);
-          setLoadingRef(false);
-          setNoData(false);
+          setLoading(false);
         } else {
-          setNoData(true);
           setLoading(false);
         }
       },
     }
   );
 
+  useEffect(() => {
+    setPage(0);
+    setExchanges([]);
+    refetch();
+  }, [queryFilter]);
+
+  const screenWidth = {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+    tablet: 640,
+    laptop: 1024,
+    desktop: 1280,
+  };
+
   const handleScroll = (e: any): any => {
     const el = e.target;
-    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
+    const pixelsBeforeEnd = 200;
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight;
+    if (checkDevice) {
       if (
-        totalCountRef.current === 0 ||
-        exchangesRef.current.length < totalCountRef.current
+        totalCountRef.current == 0 ||
+        exchangesRef.current.length < (totalCountRef.current ?? 0)
       ) {
-        const currentpage = pageRef.current + 1;
-        setPageRef(currentpage);
-        setLoadingRef(true);
-        refetch();
+        setLoading(true);
+        setPage((v) => v + 1);        
+        cache.invalidateQueries('key');
       }
     }
   };
 
   React.useEffect(() => {
-    // const res = (async (): Promise<any> => await getExchanges())
-    // res();
-    window.addEventListener('scroll', (e) => handleScroll(e), {
+    document.addEventListener('scroll', debounce(handleScroll, 100), {
       capture: true,
     });
-    return () => window.removeEventListener('scroll', (e) => handleScroll(e));
+    return (): void => {
+      document.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      });
+    };
   }, []);
 
-  // React.useEffect(() => {
-  //   console.log("Page => ", page);
-  //   // const res = (async (): Promise<any> => { setLoading(true); await getExchanges(); setLoading(false); })
-  //   // res();
-  //   refetch();
-  // }, [page])
-
-  async function getExchanges(): Promise<any> {
-    const result = await getDashboard(page);
-    if (result != undefined) {
-      const newList = exchanges.concat(result.items);
-      // setTotalCount(result.count);
-      const statesList: LabelValue[] = [];
-      let hasCompleted: boolean = false;
-      const items = newList.map((item: any) => {
-        let thisHasCompleted = false;
-        if (
-          !item.currentPharmacyIsA &&
-          item.state <= 10 &&
-          !isStateCommon(item.state)
-        )
-          item.state += 10;
-        if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
-          hasCompleted = true;
-          thisHasCompleted = true;
-        }
-        if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
-          statesList.push({
-            label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
-            value: item.state,
-          });
-        }
-        return { ...item, expireDate: getExpireDate(item) };
-      });
-
-      if (hasCompleted) {
-        statesList.push({
-          label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
-          value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
-        });
-      }
-      setExchanges(items);
-      statesList.push(needSurveyItem);
-      setStateFilterList(statesList);
-      setLoading(false);
-      setNoData(false);
-    } else {
-      setNoData(true);
-      setLoading(false);
-    }
-  }
-
-  const cardClickHandler = (
-    id: number,
-    state: any,
-    exNumber: string | undefined
-  ): void => {
+  const cardClickHandler = (id: number, state: any, exNumber: string | undefined): void => {
     history.push(`${transfer}?eid=${exNumber}`);
   };
 
@@ -236,6 +170,11 @@ const Desktop1: React.FC = () => {
 
   const filterChanged = (v: number): void => {
     if (v === 0) {
+      setIsFilterChanged(true);
+      if (queryFilter) {
+        queryFilter = false;
+        refetch();
+      }
       setFilter([ExchangeStateEnum.UNKNOWN]);
     } else {
       setFilter([v]);
@@ -260,15 +199,15 @@ const Desktop1: React.FC = () => {
       const listToShow = filter.includes(ExchangeStateEnum.UNKNOWN)
         ? [...exchanges]
         : exchanges.filter(
-          (ex) =>
-            filter.includes(ex.state) ||
-            (filter.includes(NeedSurvey) && ex.needSurvey) ||
-            (isExchangeCompleted(
-              ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
-              ex.currentPharmacyIsA
-            ) &&
-              filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
-        );
+            (ex) =>
+              filter.includes(ex.state) ||
+              (filter.includes(NeedSurvey) && ex.needSurvey) ||
+              (isExchangeCompleted(
+                ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
+                ex.currentPharmacyIsA
+              ) &&
+                filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
+          );
 
       // sort
       if (sortField !== '') {
@@ -285,15 +224,15 @@ const Desktop1: React.FC = () => {
       elements = (
         <>
           {listToShow.map((item, index) => (
-            <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
+            <Grid spacing={0} item xs={12} sm={6} md={4} xl={4} key={index}>
               <DesktopCardContent
-                item={ item }
-                full={ false }
-                showActions={ true }
-                onCardClick={ cardClickHandler }
+                item={item}
+                full={false}
+                showActions={true}
+                onCardClick={cardClickHandler}
               ></DesktopCardContent>
             </Grid>
-          )) }
+          ))}
         </>
       );
 
@@ -305,24 +244,21 @@ const Desktop1: React.FC = () => {
 
   return (
     <Container>
-      <Grid item={ true } xs={ 12 }>
-        <Grid container spacing={ 2 }>
-          <Grid item={ true } xs={ 12 }>
+      <Grid item={true} xs={12}>
+        <Grid container spacing={2}>
+          <Grid item={true} xs={12}>
             <DesktopToolbox
-              filterList={ stateFilterList }
-              onFilterChanged={ filterChanged }
-              onSortSelected={ sortSelected }
+              filterList={stateFilterList}
+              onFilterChanged={filterChanged}
+              onSortSelected={sortSelected}
             />
           </Grid>
         </Grid>
 
-        <Grid container spacing={ 3 }>
-          { <CardListGenerator /> }
+        <Grid container spacing={3}>
+          {<CardListGenerator />}
         </Grid>
-        {/* {loading && <CircleLoading />} */ }
-        <CircleBackdropLoading isOpen={ loadingRef.current } />
-        {/* {loading ? <div className="text-center">loading data ...</div> : ""} */ }
-        {/* {noData ? <div className="text-center">no data anymore ...</div> : ""} */ }
+        <CircleBackdropLoading isOpen={loading} />
       </Grid>
     </Container>
   );

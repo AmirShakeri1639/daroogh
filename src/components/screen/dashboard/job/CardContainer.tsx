@@ -12,21 +12,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardJobInterface, NewUserData } from '../../../../interfaces';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { BackDrop } from '../../../public';
+import { getJalaliDate } from 'utils';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1),
+      padding: theme.spacing(1, 1, 1, 1),
       borderRadius: 5,
-      margin: theme.spacing(1.5),
+      position: 'relative',
+      overflow: 'hidden',
+    },
+    span :{
+      fontSize: '14px',
+      
+      padding: '8px',
+  
     }
   })
 );
 
 const CardContainer: React.FC<CardJobInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
-  const { root } = useStyle();
+  const { root , span} = useStyle();
 
   const { data, toggleConfirmHandler, saveHandler } = props;
 
@@ -78,10 +86,11 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
+      {' '}
         <Divider />
       </Grid>
-
-      <Grid item xs={12} justify="flex-end">
+        {!cancelDate &&
+      <Grid item xs={12}  container spacing={0} justify="flex-end">
         <Button
           onClick={(): void => saveHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
@@ -92,9 +101,14 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
           onClick={(): Promise<any> => toggleConfirmHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-          تغییر وضعیت
+          لغو درخواست
         </Button>
-      </Grid>
+      </Grid> }
+      {cancelDate &&
+      <Grid item xs={12}  container spacing={0} justify="flex-end" >
+        <span className= {span}>لغو شده در تاریخ { getJalaliDate(cancelDate)}
+          </span>
+      </Grid> }
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );

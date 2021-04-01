@@ -55,12 +55,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { JobsEnum } from '../../../../enum/query';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
-import {
-  ColorEnum,
-  WorkTimeEnum,
-  MaritalStatusType,
-  GenderType,
-} from '../../../../enum';
+import { ColorEnum, WorkTimeEnum, MaritalStatusType, GenderType } from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -80,13 +75,7 @@ import AddTransactionModal from '../accounting/AddTransactionModal';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { Map } from '../../../public';
 import { CountryDivisionSelect } from '../../../public/country-division/CountryDivisionSelect';
-import {
-  StateType,
-  WorkShiftType,
-  SkillLevel,
-  JobPositionType,
-  EducationLevel,
-} from 'enum/Job';
+import { StateType, WorkShiftType, SkillLevel, JobPositionType, EducationLevel } from 'enum/Job';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 
 const initialState: JobInterface = {
@@ -237,11 +226,28 @@ const useStyle = makeStyles((theme) =>
     fab: {
       margin: 0,
       top: 'auto',
-      right: 20,
+      left: 20,
       bottom: 40,
-      left: 'auto',
+      right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
+      zIndex: 1,
+    },
+    blankCard: {
+      minHeight: 150,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
+      },
+    },
+    contentContainer: {
+      marginTop: 15,
     },
   })
 );
@@ -265,6 +271,7 @@ const JobsList: React.FC = () => {
   } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen =  true
 
   const {
     createUserBtn,
@@ -274,6 +281,8 @@ const JobsList: React.FC = () => {
     cancelButton,
     submitBtn,
     fab,
+    blankCard,
+    contentContainer,
   } = useStyle();
 
   const queryCache = useQueryCache();
@@ -509,9 +518,7 @@ const JobsList: React.FC = () => {
     //   }
   };
 
-  const [MaritalStatusList, setMaritalStatusList] = useState(
-    new Array<LabelValue>()
-  );
+  const [MaritalStatusList, setMaritalStatusList] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
@@ -553,9 +560,7 @@ const JobsList: React.FC = () => {
     setStateTypeList(elList);
   }, []);
 
-  const [WorkShiftTypeList, setWorkShiftTypeList] = useState(
-    new Array<LabelValue>()
-  );
+  const [WorkShiftTypeList, setWorkShiftTypeList] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
@@ -582,9 +587,7 @@ const JobsList: React.FC = () => {
     }
     setSkillLevelList(elList);
   }, []);
-  const [JobPositionTypeList, setJobPositionTypeList] = useState(
-    new Array<LabelValue>()
-  );
+  const [JobPositionTypeList, setJobPositionTypeList] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
@@ -598,9 +601,7 @@ const JobsList: React.FC = () => {
     setJobPositionTypeList(elList);
   }, []);
 
-  const [EducationLevelList, setEducationLevel] = useState(
-    new Array<LabelValue>()
-  );
+  const [EducationLevelList, setEducationLevel] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
@@ -629,7 +630,7 @@ const JobsList: React.FC = () => {
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
+          //console.log(result.items);
 
           setListRef(result.items);
         }
@@ -659,7 +660,7 @@ const JobsList: React.FC = () => {
   };
   async function getList(): Promise<any> {
     const result = await all(pageRef.current, 10);
-    console.log(result.items);
+    //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
     } else {
@@ -680,18 +681,23 @@ const JobsList: React.FC = () => {
     };
     React.useEffect(() => {
       function handleResize() {
-        if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', (e) => handleScroll(e), {
-            capture: true,
-          });
-        } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', (e) => handleScroll(e));
-        }
-        setMobileRef(isMobile());
+        // if (!mobileRef.current && isMobile()) {
+        //   window.addEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // } else if (mobileRef.current && !isMobile()) {
+        //   window.removeEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // }
+        // setMobileRef(isMobile());
+        window.addEventListener('scroll', handleScroll, {
+          capture: true,
+        });
       }
       handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      /*window.addEventListener('resize', handleResize);*/
+      return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return mobile;
@@ -702,6 +708,7 @@ const JobsList: React.FC = () => {
       <Dialog
         open={isOpenEditModal}
         fullScreen={fullScreen}
+        fullWidth
         onClose={toggleIsOpenSaveModalForm}
       >
         <DialogTitle className="text-sm">
@@ -769,9 +776,7 @@ const JobsList: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <label>
-                      {t('jobs.minGradeOfReadingPrescriptionCertificate')}
-                    </label>
+                    <label>{t('jobs.minGradeOfReadingPrescriptionCertificate')}</label>
                   </Grid>
 
                   <Grid item xs={12}>
@@ -961,9 +966,7 @@ const JobsList: React.FC = () => {
                       required
                       label={t('jobs.maxAge')}
                       value={state?.maxAge}
-                      onChange={(e): void =>
-                        dispatch({ type: 'maxAge', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'maxAge', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -1036,9 +1039,7 @@ const JobsList: React.FC = () => {
                     submitSave(e);
                   }}
                 >
-                  {isLoadingSave
-                    ? t('general.pleaseWait')
-                    : t('general.submit')}
+                  {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
                 </Button>
               </Grid>
             </Grid>
@@ -1091,7 +1092,7 @@ const JobsList: React.FC = () => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid key={item.id} item xs={12}>
+          <Grid item  xs={12} sm={6} md={4} key={item.id}>
             <CardContainer
               data={item}
               saveHandler={saveHandler}
@@ -1109,10 +1110,12 @@ const JobsList: React.FC = () => {
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
-      <h1 className="txt-md">{t('jobs.list')}</h1>
+      <Grid item xs={12}>
+        <span>{t('jobs.list')}</span>
+      </Grid>
       <Grid container spacing={0}>
         <Grid item xs={12}>
-          {!fullScreen && (
+          {false && (
             <DataTable
               tableRef={ref}
               columns={tableColumns()}
@@ -1126,30 +1129,25 @@ const JobsList: React.FC = () => {
             />
           )}
           {(isLoadingRemove || isLoadingSave) && <CircleLoading />}
-          <br />
-          <Hidden smDown>
-            <Grid container spacing={1} className={buttonContainer}>
-              <Button
-                variant="outlined"
-                className={createUserBtn}
-                onClick={(): void => saveHandler(initialState)}
-              >
-                ایجاد فرصت شغلی
-              </Button>
-            </Grid>
-          </Hidden>
 
-          <Hidden mdUp>
-            <Fab
-              onClick={(): void => saveHandler(initialState)}
-              className={fab}
-              aria-label="add"
-            >
-              <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-            </Fab>
-          </Hidden>
-          {fullScreen && contentGenerator()}
-          {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+          <Grid container spacing={3} className={contentContainer}>
+            <Hidden xsDown>
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper className={blankCard} onClick={(): void => saveHandler(initialState)}>
+                  <FontAwesomeIcon icon={faPlus} size="2x" />
+                  <span>ایجاد فرصت شغلی</span>
+                </Paper>
+              </Grid>
+            </Hidden>
+
+            <Hidden smUp>
+              <Fab onClick={(): void => saveHandler(initialState)} className={fab} aria-label="add">
+                <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+              </Fab>
+            </Hidden>
+            {true && contentGenerator()}
+            {true && <CircleBackdropLoading isOpen={isLoading} />}
+          </Grid>
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>

@@ -20,23 +20,31 @@ import ActionButtons from './ActionButtons';
 import Basket from './Basket';
 import Tab1 from './Tab1';
 import Tab2 from './Tab2';
+import { connect, ConnectedProps } from 'react-redux';
+import { ColorEnum } from 'enum';
 
 interface TabPanelProps {
   children?: React.ReactNode;
-
+  index: any;
+  value: any;
 }
 
-function TabPanel(props:TabPanelProps) {
-  const { children, ...other } = props;
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
 
   return (
     <div
-    
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
     >
+      {value === index && (
         <Box p={3} style={{ paddingRight: 0, paddingLeft: 0, marginLeft: -5 }}>
           <Typography>{children}</Typography>
         </Box>
-      
+      )}
     </div>
   );
 }
@@ -76,10 +84,18 @@ const useClasses = makeStyles((theme) =>
   })
 );
 
-const Exchange: React.FC = () => {
+const mapStateToProps = ({ transfer }: any) => ({
+  transfer,
+});
+
+const connector = connect(mapStateToProps);
+type ReduxProps = ConnectedProps<typeof connector>;
+
+const Exchange: React.FC<ReduxProps> = (props) => {
   const { root, stickyTab, stickyRecommendation } = useClasses();
   const [value, setValue] = React.useState(0);
   const { search } = useLocation();
+  const { transfer } = props;
 
   const {
     setActiveStep,
@@ -91,7 +107,7 @@ const Exchange: React.FC = () => {
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   useEffect(() => {
-    if (!search.includes('eid')) {
+    if (!search.includes('eid') && !transfer.isStarted) {
       setActiveStep(0);
     }
   }, [search]);
@@ -130,7 +146,7 @@ const Exchange: React.FC = () => {
           {exchangeStateCode !== 1 && (
             <span
               style={{
-                color: '#1d0d50',
+                color: ColorEnum.DeepBlue,
                 fontSize: 15,
                 width: '100%',
                 marginTop: 10,
@@ -165,7 +181,7 @@ const Exchange: React.FC = () => {
                     basketCount.filter(
                       (thing, i, arr) =>
                         !thing.packID &&
-                        arr.findIndex((t) => t.drug.id === thing.drug.id) === i
+                        arr.findIndex((t) => t.id === thing.id) !== -1
                     )
                   ).length
                 }
@@ -189,7 +205,7 @@ const Exchange: React.FC = () => {
                     uBasketCount.filter(
                       (thing, i, arr) =>
                         !thing.packID &&
-                        arr.findIndex((t) => t.drug.id === thing.drug.id) === i
+                        arr.findIndex((t) => t.id === thing.id) !== -1
                     )
                   ).length
                 }
@@ -199,18 +215,15 @@ const Exchange: React.FC = () => {
           />
         </Tabs>
         <Divider />
-        {/* <TabPanel value={value} index={0}>
+        <TabPanel value={value} index={0}>
           <Tab1 />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <Tab2 />
-        </TabPanel> */}
-        <div style={{display: value === 0 ? 'none' : 'block'}}><TabPanel><Tab1 /></TabPanel></div>
-        <div style={{display: value === 1 ? 'none' : 'block'}}><TabPanel><Tab2 /></TabPanel></div>
-
+        </TabPanel>
       </Grid>
     </Grid>
   );
 };
 
-export default Exchange;
+export default connector(Exchange);

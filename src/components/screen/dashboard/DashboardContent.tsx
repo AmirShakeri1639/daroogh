@@ -13,12 +13,7 @@ import {
 import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
-
-import ExchangeWidget from './widgets/ExchangeWidget';
-import SurveyWidget from './widgets/SurveyWidget';
-import PrescriptionWidget from './widgets/PrescriptionWidget';
-import EmpApplicationWidget from './widgets/EmpApplicationWidget';
-import { TabPanel } from '@material-ui/lab';
+import AllWidgets from './widgets/AllWidgets';
 // @ts-ignore
 // import { Steps, Hints } from 'intro.js-react';
 
@@ -85,37 +80,10 @@ const DashboardContent: React.FC<any> = () => {
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
         {/* Widgets */}
-        <Grid item xs={12} container spacing={3}>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
-            <ExchangeWidget />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
-            <SurveyWidget />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
-            <PrescriptionWidget />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
-            <EmpApplicationWidget />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3} xl={3}>
-            <ExchangeWithFavoritesWidget />
-          </Grid>
-        </Grid>
+        <AllWidgets />
         {/* Chart */}
-
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={6}
-          xl={6}
-          style={{ height: 500, overflow: 'disabled' }}
-        >
-          <Paper
-            className={classes.paper}
-            style={{ height: 500, overflow: 'disabled' }}
-          >
+        <Grid item xs={12} sm={12} md={6} xl={6} style={{ height: 500, overflow: 'disabled' }}>
+          <Paper className={classes.paper} style={{ height: 500, overflow: 'disabled' }}>
             <span>هیت مپ تبادلات در کشور</span>
             <div id="map">
               <MapCluster />

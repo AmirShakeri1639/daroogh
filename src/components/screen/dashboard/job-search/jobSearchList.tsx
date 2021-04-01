@@ -4,20 +4,12 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { EmploymentApplication, File } from '../../../../services/api';
 import CardContainer from './CardContainer';
 
-import {
-  errorHandler,
-  isNullOrEmpty,
-  successSweetAlert,
-} from '../../../../utils';
+import { errorHandler, isNullOrEmpty, successSweetAlert } from '../../../../utils';
 import { DataTableCustomActionInterface } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBan,
-  faInfoCircle,
-  faDownload,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBan, faInfoCircle, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
 import { getJalaliDate } from '../../../../utils/jalali';
@@ -41,20 +33,33 @@ import { ColorEnum, EmploymentApplicationEnum } from '../../../../enum';
 import FileLink from '../../../public/picture/fileLink';
 import { api } from '../../../../config/default.json';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import SearchBar from 'material-ui-search-bar';
+import { TrendingUpRounded } from '@material-ui/icons';
 
 interface Props {
   full?: boolean;
 }
-
+const useStyles = makeStyles((theme) =>
+  createStyles({
+    searchIconButton: {
+      display: 'none',
+    },
+    contentContainer: {
+      marginTop: 15,
+    },
+  })
+);
 const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const { t } = useTranslation();
   const ref = useDataTableRef();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen = true;
   const queryCache = useQueryCache();
   const [isOpenDetails, setIsOpenDetails] = useState(false);
   const [detailsItem, setDetailsItem] = useState<any>();
   const { spacing1, container } = useClasses();
+  const { contentContainer, searchIconButton } = useStyles();
 
   const { all, notCanceled, cancel, urls } = new EmploymentApplication();
   const { urls: fileUrls } = new File();
@@ -83,7 +88,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       descriptions,
     } = detailsItem;
     return (
-      <Dialog open={isOpenDetails} fullScreen={fullScreen} maxWidth="md">
+      <Dialog open={isOpenDetails} fullScreen={fullScreen} fullWidth maxWidth="md">
         <DialogTitle>{t('employment.application')}</DialogTitle>
         <Divider />
         <DialogContent>
@@ -295,11 +300,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         type: 'string',
         render: (row: any): any => {
           return (
-            <>
-              {!isNullOrEmpty(row.resumeFileKey) && (
-                <FileLink fileKey={row.resumeFileKey} />
-              )}
-            </>
+            <>{!isNullOrEmpty(row.resumeFileKey) && <FileLink fileKey={row.resumeFileKey} />}</>
           );
         },
       },
@@ -332,33 +333,41 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   const actions: DataTableCustomActionInterface[] = full
     ? [
         {
-          icon: (): any => (
-            <FontAwesomeIcon icon={faBan} color={ColorEnum.Red} />
-          ),
+          icon: (): any => <FontAwesomeIcon icon={faBan} color={ColorEnum.Red} />,
           tooltip: t('general.cancel'),
           position: 'row',
-          action: async (e: any, row: any): Promise<void> =>
-            await cancelHandler(row),
+          action: async (e: any, row: any): Promise<void> => await cancelHandler(row),
         },
       ]
     : [];
   const [list, setList] = useState<any>([]);
   const listRef = React.useRef(list);
-  const setListRef = (data: any) => {
-    listRef.current = listRef.current.concat(data);
+  const setListRef = (data: any, refresh: boolean = false) => {
+    if (!refresh) {
+      listRef.current = listRef.current.concat(data);
+    } else {
+      listRef.current = data;
+    }
     setList(data);
+  };
+  const [search, setSearch] = useState<string>('');
+  const searchRef = React.useRef(search);
+  const setSearchRef = (data: any) => {
+    searchRef.current = data;
+    setSearch(data);
+    getList(true);
   };
   const { isLoading, data, isFetched } = useQuery(
     EmploymentApplicationEnum.GET_ALL,
 
-    () => all(pageRef.current, 10),
+    () => all(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
         console.log(result);
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
+          // console.log(result.items);
 
           setListRef(result.items);
         }
@@ -386,13 +395,14 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       }
     }
   };
-  async function getList(): Promise<any> {
-    const result = await all(pageRef.current, 10);
-    console.log(result.items);
+  async function getList(refresh: boolean = false): Promise<any> {
+    const result = await all(pageRef.current, 10, [], searchRef.current);
+    //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
-    } else {
-      setListRef(result.items);
+    }
+    if (result != undefined) {
+      setListRef(result.items, refresh);
       return result;
     }
   }
@@ -409,18 +419,23 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     };
     React.useEffect(() => {
       function handleResize() {
-        if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', (e) => handleScroll(e), {
-            capture: true,
-          });
-        } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', (e) => handleScroll(e));
-        }
-        setMobileRef(isMobile());
+        // if (!mobileRef.current && isMobile()) {
+        //   window.addEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // } else if (mobileRef.current && !isMobile()) {
+        //   window.removeEventListener('scroll', handleScroll, {
+        //     capture: true,
+        //   });
+        // }
+        // setMobileRef(isMobile());
+        window.addEventListener('scroll', handleScroll, {
+          capture: true,
+        });
       }
       handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+     /* window.addEventListener('resize', handleResize);*/
+      return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return mobile;
@@ -428,14 +443,11 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   useWindowDimensions();
   const contentGenerator = (): JSX.Element[] => {
     if (!isLoading && list !== undefined && isFetched) {
-      console.log(data);
-      console.log(list);
-
       return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid key={item.id} item xs={12}>
+          <Grid item xs={12} sm={6} md={4}>
             <CardContainer
               data={item}
               cancelHandler={cancelHandler}
@@ -443,7 +455,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
             />
           </Grid>
         );
-        //}
+    
       });
     }
 
@@ -451,8 +463,11 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   };
   return (
     <Container maxWidth="lg" className={container}>
-      <h1 className="txt-md">{t('employment.application')}</h1>
-      {!fullScreen && (
+      <Grid item xs={12}>
+          <span>{t('employment.applications')}</span>
+        </Grid>
+     
+      {false && (
         <DataTable
           tableRef={ref}
           columns={tableColumns()}
@@ -466,14 +481,21 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       )}
       {isOpenDetails && detialsDialog()}
       <br />
-      {fullScreen && (
-        <Grid container spacing={0}>
-          <Grid item xs={12}>
-            {contentGenerator()}
+      {false && (
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
+            <SearchBar
+              classes={{ searchIconButton: searchIconButton }}
+              placeholder={t('general.search')}
+              onChange={(newValue) => setSearchRef(newValue)}
+            />
           </Grid>
         </Grid>
       )}
-      {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
+      <Grid container spacing={3}>
+      {true && contentGenerator()}
+      </Grid>
+      {true && <CircleBackdropLoading isOpen={isLoading} />}
     </Container>
   );
 };

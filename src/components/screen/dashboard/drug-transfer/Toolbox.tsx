@@ -1,11 +1,10 @@
 import React, { useContext, useState } from 'react';
 import {
-  Badge,
   Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   createStyles,
   Divider,
   Grid,
@@ -31,12 +30,12 @@ import sweetAlert from '../../../../utils/sweetAlert';
 import routes from '../../../../routes';
 import { useHistory } from 'react-router-dom';
 import errorHandler from '../../../../utils/errorHandler';
+import { ColorEnum } from 'enum';
 
 const styles = makeStyles((theme) =>
   createStyles({
     ul: {
       margin: 0,
-      padding: 8,
       textAlign: 'left',
       display: 'flex',
       flexDirection: 'row-reverse',
@@ -44,26 +43,30 @@ const styles = makeStyles((theme) =>
       paddingLeft: 0,
       '& > li': {
         display: 'inline',
-        marginLeft: theme.spacing(2),
         '&:hover': {
           cursor: 'pointer',
         },
         '& > span': {
           color: theme.palette.gray.dark,
-          bottom: 9,
-          left: 3,
+          bottom: 0,
         },
       },
     },
     icons: {
       marginTop: 0,
-      color: theme.palette.gray.dark,
+      color: ColorEnum.DeepBlue,
+    },
+    buttonContainer: {
+      textAlign: 'right',
+      '& button:nth-child(1)': {
+        marginRight: theme.spacing(1),
+      },
     },
   })
 );
 
 const ToolBox: React.FC = () => {
-  const { ul, icons } = styles();
+  const { ul, icons,buttonContainer } = styles();
 
   const {
     basketCount,
@@ -116,62 +119,36 @@ const ToolBox: React.FC = () => {
 
   const exchangeModalRemove = (): JSX.Element => {
     return (
-      <Modal
-        open={isRemoveExchangeModal}
-        toggle={toggleIsRemoveExchangeModalForm}
-      >
-        <Card>
-          <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title="حذف تبادل"
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={toggleIsRemoveExchangeModalForm}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={1}>
-              <div>
-                <span>آیا از حذف تبادل اطمینان دارید؟</span>
-              </div>
-            </Grid>
-          </CardContent>
-          <CardActions>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <MatButton
-                  onClick={async (): Promise<any> =>
+      <Dialog
+      open={isRemoveExchangeModal}
+      onClose={toggleIsRemoveExchangeModalForm}
+    >
+      <DialogTitle className="text-sm">
+      حذف تبادل
+      </DialogTitle>
+      <DialogContent>
+      <span>آیا از حذف تبادل اطمینان دارید؟</span>
+
+        </DialogContent>
+        <Divider/>
+        <DialogActions>
+        <Grid item xs={12} className={buttonContainer}>
+            <Button color="default"  onClick={async (): Promise<any> =>
                     await handleRemoveExchange()
-                  }
-                  variant="contained"
-                  color="primary"
-                  autoFocus
-                >
-                  بله
-                </MatButton>
-              </Grid>
-              <Grid item xs={6} style={{ textAlign: 'left' }}>
-                <MatButton
-                  onClick={toggleIsRemoveExchangeModalForm}
-                  variant="contained"
-                  color="secondary"
-                  autoFocus
-                >
-                  خیر
-                </MatButton>
-              </Grid>
-            </Grid>
-          </CardActions>
-        </Card>
-      </Modal>
-    );
+                  }>
+                    بله
+            </Button>
+            <Button
+              color="primary"
+              onClick={toggleIsRemoveExchangeModalForm}
+            >
+              خیر
+            </Button>
+          </Grid>
+        </DialogActions>
+        
+        </Dialog>
+      );
   };
 
   const exchangeCalculator = (): JSX.Element => {
@@ -191,13 +168,14 @@ const ToolBox: React.FC = () => {
     <>
       <ul className={ul}>
         <li>
-          <Tooltip title="سبد دارو">
+          <Tooltip title="فاکتور تبادل">
             <IconButton
               onClick={(): void => {
                 setShowExCalculator(!showExCalculator);
               }}
             >
-              <Badge
+                              <ShoppingBasketIcon className={icons} />
+              {/* <Badge
                 badgeContent={
                   activeStep === 1
                     ? Array.from(
@@ -238,7 +216,7 @@ const ToolBox: React.FC = () => {
                 color="secondary"
               >
                 <ShoppingBasketIcon className={icons} />
-              </Badge>
+              </Badge> */}
             </IconButton>
           </Tooltip>
         </li>

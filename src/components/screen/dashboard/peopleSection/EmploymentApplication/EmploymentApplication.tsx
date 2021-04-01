@@ -32,10 +32,7 @@ import { errorHandler, successSweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
-import {
-  ActionInterface,
-  EmploymentApplicationInterface,
-} from '../../../../../interfaces';
+import { ActionInterface, EmploymentApplicationInterface } from '../../../../../interfaces';
 import {
   computerSkills,
   educations,
@@ -72,9 +69,9 @@ const useStyle = makeStyles((theme) =>
     fab: {
       margin: 0,
       top: 'auto',
-      right: 20,
+      left: 20,
       bottom: 40,
-      left: 'auto',
+      right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
     },
@@ -308,7 +305,11 @@ const EmploymentApplication: React.FC = () => {
     if (!isLoading && data !== undefined && isFetched) {
       return data.items.map((item: any) => {
         if (item !== null) {
-          return <CardContainer data={item} formHandler={removeHandler} />;
+          return (
+            <Grid key={item.id} item xs={12} sm={12} md={4} xl={4}>
+              <CardContainer data={item} formHandler={removeHandler} />
+            </Grid>
+          );
         }
 
         return null;
@@ -352,9 +353,7 @@ const EmploymentApplication: React.FC = () => {
           </Grid>
         </Hidden>
 
-        <Grid item xs={12} sm={6} md={4} xl={4}>
-          {contentGenerator()}
-        </Grid>
+        {contentGenerator()}
 
         <Hidden smUp>
           <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
@@ -370,10 +369,7 @@ const EmploymentApplication: React.FC = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {' '}
-          {t('peopleSection.jobApplication')}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title"> {t('peopleSection.jobApplication')}</DialogTitle>
         <DialogContent>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -382,12 +378,11 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.name')}
                 InputLabelProps={{
                   shrink: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.name}
-                onChange={(e): void =>
-                  dispatch({ type: 'name', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -396,12 +391,11 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.family')}
                 InputLabelProps={{
                   shrink: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.family}
-                onChange={(e): void =>
-                  dispatch({ type: 'family', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -410,12 +404,11 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.birthDate')}
                 InputLabelProps={{
                   shrink: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.birthDate}
-                onChange={(e): void =>
-                  dispatch({ type: 'birthDate', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'birthDate', value: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -427,9 +420,7 @@ const EmploymentApplication: React.FC = () => {
                 }}
                 variant="outlined"
                 value={state.email}
-                onChange={(e): void =>
-                  dispatch({ type: 'email', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'email', value: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -442,9 +433,7 @@ const EmploymentApplication: React.FC = () => {
                 }}
                 variant="outlined"
                 value={state.gender}
-                onChange={(e): void =>
-                  dispatch({ type: 'gender', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'gender', value: e.target.value })}
               >
                 {genders.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -463,9 +452,7 @@ const EmploymentApplication: React.FC = () => {
                 }}
                 variant="outlined"
                 value={state.maritalStatus}
-                onChange={(e): void =>
-                  dispatch({ type: 'maritalStatus', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'maritalStatus', value: e.target.value })}
               >
                 {maritalStatuses.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -515,6 +502,7 @@ const EmploymentApplication: React.FC = () => {
                 type="number"
                 InputLabelProps={{
                   shrink: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.workExperienceYear}
@@ -584,9 +572,7 @@ const EmploymentApplication: React.FC = () => {
                 }}
                 variant="outlined"
                 value={state.computerSkill}
-                onChange={(e): void =>
-                  dispatch({ type: 'computerSkill', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'computerSkill', value: e.target.value })}
               >
                 {computerSkills.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -653,9 +639,7 @@ const EmploymentApplication: React.FC = () => {
                 }}
                 variant="outlined"
                 value={state.education}
-                onChange={(e): void =>
-                  dispatch({ type: 'education', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'education', value: e.target.value })}
               >
                 {educations.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -689,6 +673,7 @@ const EmploymentApplication: React.FC = () => {
                 onChange={changeprovince}
                 SelectProps={{
                   native: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.countryDivisionCode}
@@ -707,6 +692,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.ostan')}
                 SelectProps={{
                   native: true,
+                  required: true,
                 }}
                 variant="outlined"
               >
@@ -759,12 +745,11 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.landlinePhone')}
                 InputLabelProps={{
                   shrink: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.landlinePhone}
-                onChange={(e): void =>
-                  dispatch({ type: 'landlinePhone', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'landlinePhone', value: e.target.value })}
               />
             </Grid>
 
@@ -776,8 +761,7 @@ const EmploymentApplication: React.FC = () => {
                 multiple
                 type="file"
                 onChange={(e): void => {
-                  if (e.target.files)
-                    dispatch({ type: 'file', value: e.target.files[0] });
+                  if (e.target.files) dispatch({ type: 'file', value: e.target.files[0] });
                 }}
               />
               <label htmlFor="contained-button-file">
@@ -796,12 +780,11 @@ const EmploymentApplication: React.FC = () => {
                 margin="normal"
                 InputLabelProps={{
                   shrink: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.address}
-                onChange={(e): void =>
-                  dispatch({ type: 'address', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'address', value: e.target.value })}
               />
             </Grid>
 
@@ -814,12 +797,11 @@ const EmploymentApplication: React.FC = () => {
                 margin="normal"
                 InputLabelProps={{
                   shrink: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.descriptions}
-                onChange={(e): void =>
-                  dispatch({ type: 'descriptions', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'descriptions', value: e.target.value })}
               />
             </Grid>
           </Grid>
@@ -829,11 +811,7 @@ const EmploymentApplication: React.FC = () => {
             <Button color="default" onClick={toggleIsOpenModal}>
               {t('general.cancel')}
             </Button>
-            <Button
-              color="primary"
-              onClick={formHandler}
-              disabled={isLoadingSaveData}
-            >
+            <Button color="primary" onClick={formHandler} disabled={isLoadingSaveData}>
               {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
             </Button>
           </Grid>

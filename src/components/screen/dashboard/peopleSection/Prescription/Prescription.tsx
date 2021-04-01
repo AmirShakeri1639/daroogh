@@ -86,9 +86,9 @@ const useStyle = makeStyles((theme) =>
     fab: {
       margin: 0,
       top: 'auto',
-      right: 20,
+      left: 20,
       bottom: 40,
-      left: 'auto',
+      right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
     },
@@ -131,6 +131,7 @@ function reducer(state = initialState, action: ActionInterface): any {
       console.error('Action type not defined');
   }
 }
+
 const Prescription: React.FC = (props) => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -140,9 +141,7 @@ const Prescription: React.FC = (props) => {
 
   const { t } = useTranslation();
 
-
-
-  const { addButton, modalContainer, buttonContainer, input, fab } = useStyle();
+  const { addButton, buttonContainer, input, fab } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 

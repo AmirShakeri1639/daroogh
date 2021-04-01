@@ -17,11 +17,7 @@ import {
 import { Modal } from '../../../../public';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCalendarTimes,
-  faEdit,
-  faTrashAlt,
-} from '@fortawesome/free-regular-svg-icons';
+import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { ColorEnum, TextMessage } from '../../../../../enum';
 import { BackDrop, TextLine } from '../../../../public';
 import { useClasses } from '../../classes';
@@ -55,13 +51,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
   const { faIcons, spacingVertical1, paper } = useClasses();
   const { data, formHandler } = props;
 
-  const {
-    sendDate,
-    suggestedJobPositionStr,
-    id,
-    resumeFileKey,
-    cancelDate,
-  } = data;
+  const { sendDate, suggestedJobPositionStr, id, resumeFileKey, cancelDate } = data;
 
   const removeHandler = async (_id: number): Promise<any> => {
     if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
@@ -72,16 +62,31 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
   return (
     <Paper elevation={1}>
       <Grid container xs={12} spacing={0}>
-        {cancelDate && (
-          <Grid item xs={12}>
+        <Grid
+          item
+          xs={12}
+          style={{
+            marginRight: 16,
+            marginTop: 16,
+            padding: '0 6px',
+            borderRight: `2px solid ${ColorEnum.Borders}`,
+            height: '40px',
+            backgroundColor: ColorEnum.LiteBack,
+            paddingTop: '8px',
+            marginBottom: theme.spacing(1),
+          }}
+        >
+          {cancelDate && (
             <TextWithTitle
               title={t('peopleSection.cancelDateText')}
-              body={moment(cancelDate, 'YYYY/MM/DD')
-                .locale('fa')
-                .format('YYYY/MM/DD')}
+              body={moment(cancelDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
             />
-          </Grid>
-        )}
+          )}
+          {!cancelDate && (
+            <TextWithTitle title={t('peopleSection.requestState')} body={t('general.active')} />
+          )}
+        </Grid>
+
         <Grid item xs={12}>
           <Detail
             resumeFileKey={resumeFileKey}
@@ -94,17 +99,30 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
           <Grid item xs={12}>
             <Divider />
           </Grid>
-
-          {!cancelDate && (
-            <Grid justify="flex-end" container xs={12}>
-              <Button
-                onClick={(): Promise<any> => removeHandler(id)}
-                style={{ color: 'green', fontSize: '14px' }}
+          <Grid item container style={{height:36 , display:'flex' , alignItems:'center' , paddingLeft:8, paddingRight:8}} xs={12}>
+            <Grid xs={6}>
+              <a
+                style={{color:'gray' , textDecoration:'none' }}
+                onClick={(e: any): any => {
+                  e.stopPropagation();
+                }}
+                download=""
+                href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
               >
-                حذف
-              </Button>
+                {t('peopleSection.resumeDownload')}
+              </a>
             </Grid>
-          )}
+            <Grid xs={6} style={{display:'flex', flexDirection:'row-reverse'}}>
+              {!cancelDate && (
+                <Button
+                  onClick={(): Promise<any> => removeHandler(id)}
+                  style={{ color: 'green', fontSize: '14px' }}
+                >
+                  حذف
+                </Button>
+              )}
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       <Dialog
@@ -115,9 +133,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {t('peopleSection.detail')}
-        </DialogTitle>
+        <DialogTitle id="alert-dialog-title">{t('peopleSection.detail')}</DialogTitle>
         <DialogContent>
           <Grid container spacing={1}>
             {!dataApi && (
@@ -145,31 +161,21 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
                       title={t('peopleSection.readingPrescriptionCertificate')}
-                      body={
-                        dataApi.readingPrescriptionCertificateStr ||
-                        t('general.undefined')
-                      }
+                      body={dataApi.readingPrescriptionCertificateStr || t('general.undefined')}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
-                      title={t(
-                        'peopleSection.gradeOfReadingPrescriptionCertificate'
-                      )}
-                      body={
-                        dataApi.gradeOfReadingPrescriptionCertificate ||
-                        t('general.undefined')
-                      }
+                      title={t('peopleSection.gradeOfReadingPrescriptionCertificate')}
+                      body={dataApi.gradeOfReadingPrescriptionCertificate || t('general.undefined')}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
                       title={t('peopleSection.workExperienceYear')}
-                      body={
-                        dataApi.workExperienceYear || t('general.undefined')
-                      }
+                      body={dataApi.workExperienceYear || t('general.undefined')}
                       suffix={'سال'}
                     />
                   </Grid>
@@ -177,19 +183,14 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
                       title={t('peopleSection.suggestedWorkShift')}
-                      body={
-                        dataApi.suggestedWorkShiftStr || t('general.undefined')
-                      }
+                      body={dataApi.suggestedWorkShiftStr || t('general.undefined')}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
                       title={t('peopleSection.pharmaceuticalSoftwareSkill')}
-                      body={
-                        dataApi.pharmaceuticalSoftwareSkillStr ||
-                        t('general.undefined')
-                      }
+                      body={dataApi.pharmaceuticalSoftwareSkillStr || t('general.undefined')}
                     />
                   </Grid>
 
@@ -203,20 +204,14 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
                       title={t('peopleSection.foreignLanguagesSkill')}
-                      body={
-                        dataApi.foreignLanguagesSkillStr ||
-                        t('general.undefined')
-                      }
+                      body={dataApi.foreignLanguagesSkillStr || t('general.undefined')}
                     />
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
                       title={t('peopleSection.suggestedJobPosition')}
-                      body={
-                        dataApi.suggestedJobPositionStr ||
-                        t('general.undefined')
-                      }
+                      body={dataApi.suggestedJobPositionStr || t('general.undefined')}
                     />
                   </Grid>
 
@@ -237,9 +232,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
                       title={t('peopleSection.countryDivisionCode')}
-                      body={
-                        dataApi.countryDivisionStr || t('general.undefined')
-                      }
+                      body={dataApi.countryDivisionStr || t('general.undefined')}
                     />
                   </Grid>
 
@@ -253,9 +246,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                   <Grid item xs={12} sm={6}>
                     <TextWithTitle
                       title={t('peopleSection.previousWorkplacePhone')}
-                      body={
-                        dataApi.previousWorkplacePhone || t('general.undefined')
-                      }
+                      body={dataApi.previousWorkplacePhone || t('general.undefined')}
                     />
                   </Grid>
 

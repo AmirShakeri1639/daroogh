@@ -5,6 +5,7 @@ import { TextLine } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../../utils';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import { ColorEnum } from 'enum';
 
 const { convertISOTime } = Convertor;
 const useStyle = makeStyles((theme) =>
@@ -20,9 +21,9 @@ const useStyle = makeStyles((theme) =>
       },
       '& .drug-container': {
         padding: '0 6px',
-        borderLeft: '3px solid #f80501',
+        borderLeft: `2px solid ${ColorEnum.Borders}`,
         height: '40px',
-        backgroundColor: '#FEFFF2',
+        backgroundColor: ColorEnum.LiteBack,
         paddingTop: '8px',
         marginBottom: theme.spacing(1),
       },

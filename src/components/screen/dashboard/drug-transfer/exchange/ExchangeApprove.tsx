@@ -20,7 +20,7 @@ import {
   Paper,
   useMediaQuery,
   useTheme,
-  Button
+  Button,
 } from '@material-ui/core';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import Modal from '../../../../public/modal/Modal';
@@ -34,10 +34,7 @@ import {
 } from '../../../../../interfaces/AccountingInterface';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TextLine from '../../../../public/text-line/TextLine';
-import {
-  faCalendarTimes,
-  faMoneyBillWave,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCalendarTimes, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
 import { Select } from '@material-ui/core';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import moment from 'jalali-moment';
@@ -50,6 +47,7 @@ import sweetAlert from '../../../../../utils/sweetAlert';
 import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { Fullscreen } from '@material-ui/icons';
+import { ColorEnum } from 'enum';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -84,7 +82,7 @@ const useClasses = makeStyles((theme) =>
       textAlign: 'center',
     },
     stickyCardAction: {
-      backgroundColor: '#c6c5ffc7',
+      backgroundColor: 'white',
       position: 'fixed',
       width: '100%',
       bottom: 0,
@@ -100,9 +98,9 @@ const useClasses = makeStyles((theme) =>
       },
       '& .drug-container': {
         padding: '0 6px',
-        borderLeft: '3px solid #f80501',
+        borderLeft: `2px solid ${ColorEnum.Borders}`,
         height: '40px',
-        backgroundColor: '#FEFFF2',
+        backgroundColor: ColorEnum.LiteBack,
         paddingTop: '8px',
         marginBottom: theme.spacing(1),
       },
@@ -121,6 +119,7 @@ const useClasses = makeStyles((theme) =>
     cardContainer: {
       margin: 4,
       overflow: 'auto',
+      marginBottom: 125,
     },
   })
 );
@@ -148,9 +147,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
     checkBoxContainer,
     cardContainer,
   } = useClasses();
-  const [accountingForPayment, setAccountingForPayment] = useState<
-    AccountingInterface[]
-  >([]);
+  const [accountingForPayment, setAccountingForPayment] = useState<AccountingInterface[]>([]);
   const [bankGetwayes, setBankGetwayes] = useState<BankGetwayesInterface[]>([]);
 
   const { desktop } = routes;
@@ -166,10 +163,9 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
   const [trackingNumber, setTrackingNumber] = useState<string>('');
   const [redirectUrl, setRedirectUrl] = useState<string>('');
   const [payment, setPayment] = useState<Payment>(new Payment());
-  const [
-    paymentExchangeByBestankari,
-    setPaymentExchangeByBestankari,
-  ] = useState<PaymentExchangeByBestankari | undefined>(undefined);
+  const [paymentExchangeByBestankari, setPaymentExchangeByBestankari] = useState<
+    PaymentExchangeByBestankari | undefined
+  >(undefined);
 
   const {
     showApproveModalForm,
@@ -177,12 +173,9 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
     exchangeId,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
-  const toggleIsOpenModalForm = (): void =>
-    setShowApproveModalForm(!showApproveModalForm);
+  const toggleIsOpenModalForm = (): void => setShowApproveModalForm(!showApproveModalForm);
 
-  const handleChangeBank = (
-    id: React.ChangeEvent<{ value: unknown }>
-  ): void => {
+  const handleChangeBank = (id: React.ChangeEvent<{ value: unknown }>): void => {
     // const currentTarget: any = id.currentTarget;
     // const name = currentTarget.innerText;
     const pay = payment;
@@ -219,8 +212,8 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
           history.push(desktop);
         }
         setDebtAmountAllow(response.debtAmountAllow);
-        const res: AccountingInterface[] = response.accountingForPayment.sort(
-          (a: any, b: any) => (a > b ? 1 : -1)
+        const res: AccountingInterface[] = response.accountingForPayment.sort((a: any, b: any) =>
+          a > b ? 1 : -1
         );
         setAccountingForPayment(res);
         if (res && res.length > 0) {
@@ -272,18 +265,10 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
   const PaymentPage = (): JSX.Element => {
     return (
       <>
-        <form
-          ref={refFrom}
-          method="post"
-          action="https://api.daroog.org/MyVirtualGateway"
-        >
+        <form ref={refFrom} method="post" action="https://api.daroog.org/MyVirtualGateway">
           <input type="hidden" value={paymentAmount} name="amount"></input>
           <input type="hidden" value={'request'} name="commandType"></input>
-          <input
-            type="hidden"
-            value={trackingNumber}
-            name="trackingNumber"
-          ></input>
+          <input type="hidden" value={trackingNumber} name="trackingNumber"></input>
           <input type="hidden" value={redirectUrl} name="redirectUrl"></input>
           {/* <button type="submit" >
             <span style={{ width: 100 }}>پرداخت</span>
@@ -291,10 +276,11 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
         </form>
         <Button
           type="button"
+          style={{ fontSize: 11, color: 'white', background: 'green',width:130 }}
           variant="outlined"
           onClick={async (): Promise<any> => handleSubmit()}
         >
-          <span style={{ width: 100 }}>پرداخت</span>
+          پرداخت
         </Button>
       </>
     );
@@ -313,11 +299,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                       <Grid item xs={1}>
                         <img src="pack.png" style={{ height: '25px' }} />
                       </Grid>
-                      <Grid
-                        item
-                        xs={11}
-                        style={{ alignItems: 'center', paddingRight: '8px' }}
-                      >
+                      <Grid item xs={11} style={{ alignItems: 'center', paddingRight: '8px' }}>
                         <span>{item.description}</span>
                       </Grid>
                     </Grid>
@@ -333,9 +315,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                       <Grid item xs={12}>
                         <TextWithTitle
                           title={t('general.date')}
-                          body={moment(item.date, 'YYYY/MM/DD')
-                            .locale('fa')
-                            .format('YYYY/MM/DD')}
+                          body={moment(item.date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
                         />
                       </Grid>
                       <Grid item xs={12}>
@@ -460,7 +440,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
   const Content = (): JSX.Element => {
     return (
-      <Grid container style={{ width:`${isModal ? '100%':'95vw'}` , padding:4 }} >
+      <Grid container style={{ width: `${isModal ? '100%' : '95vw'}`, padding: 4 }}>
         {!isModal && (
           <Grid item xs={12} style={{ marginTop: 8 }}>
             <span style={{ fontSize: 16 }}>لیست موارد قابل پرداخت</span>
@@ -475,8 +455,8 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 <b>{Utils.numberWithCommas(debtAmountAllow)}</b>
               </span>
               <span>
-                {t('general.defaultCurrency')} می باشد لطفا از لیست ذیل موارد
-                دلخواه خود را انتخاب و سپس پرداخت نمایید
+                {t('general.defaultCurrency')} می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و
+                سپس پرداخت نمایید
               </span>
             </span>
           ) : (
@@ -487,82 +467,96 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
           <Divider />
         </Grid>
         <Grid item container xs={12} spacing={2} className={cardContainer}>
-          {accountingForPayment.map(
-            (item: AccountingInterface, index: number) => (
-              <Grid
-                key={index}
-                item
-                //   className={card}
-                xs={isModal ? 12 : fullScreen? 12 : 4}
-                // sm={6}
-                // md={4}
-                // lg={3}
-              >
-                {cardDetailContent(item)}
-              </Grid>
-            )
-          )}
+          {accountingForPayment.map((item: AccountingInterface, index: number) => (
+            <Grid
+              key={index}
+              item
+              //   className={card}
+              xs={isModal ? 12 : fullScreen ? 12 : 4}
+              // sm={6}
+              // md={4}
+              // lg={3}
+            >
+              {cardDetailContent(item)}
+            </Grid>
+          ))}
         </Grid>
         {!isModal && (
           <Grid
             container
             xs={12}
             spacing={1}
-            style={{ background: '#FEFFF2', position:'absolute', left:0 ,right:0, bottom:8 ,padding:8, maxWidth:'100%' , width:'100%' ,}}
+            style={{
+              background: 'white',
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 8,
+              padding: 8,
+              maxWidth: '100%',
+              width: '100%',
+            }}
           >
             <Grid xs={12} item>
-                          <Divider/>
+              <Divider />
+            </Grid>
 
-            </Grid>
-            <Grid container spacing={2} xs={12} sm={6}>
-              <Grid item xs={12}>
-                <TextWithTitle
-                  title={t('exchange.finalAmount')}
-                  body={paymentAmount}
-                  suffix={t('general.defaultCurrency')}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextWithTitle
-                  title={t('exchange.selectedAmount')}
-                  body={totalAmount}
-                  suffix={t('general.defaultCurrency')}
-                />
-              </Grid>
-            </Grid>
-            <Grid item container spacing={2} xs={12} sm={6} style={{marginTop: fullScreen? 16 : 0}}>
-              <Grid item container xs={12} sm={8}>
-                <Grid item xs={6}>
-                  <FormControl style={{ width: '100%', marginTop: '-20px' }}>
-                    <InputLabel>درگاه پرداخت</InputLabel>
-                    <Select onChange={handleChangeBank}>
-                      {bankGetwayes.map((item: BankGetwayesInterface) => (
-                        <MenuItem value={item.name}>{item.title}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+            <Grid
+              item
+              container
+              spacing={2}
+              xs={12}
+              style={{
+                display: 'flex',
+                alignContent: 'center',
+                alignItems: 'center',
+                marginTop: fullScreen ? 16 : 0,
+                marginRight: fullScreen ? 0 : 24,
+                marginLeft: fullScreen ? 0 : 24,
+              }}
+            >
+              <Grid item container xs={12} sm={5}>
+                <Grid xs={6}>
+                  <TextWithTitle
+                    title={t('exchange.finalAmount')}
+                    body={paymentAmount}
+                    suffix={t('general.defaultCurrency')}
+                  />
                 </Grid>
-                <Grid
-                  item
-                  xs={6}
-                  style={{ display: 'flex', flexDirection: 'row-reverse' }}
-                >
-                  <PaymentPage />
+                <Grid xs={6}>
+                  <TextWithTitle
+                    title={t('exchange.selectedAmount')}
+                    body={totalAmount}
+                    suffix={t('general.defaultCurrency')}
+                  />
                 </Grid>
               </Grid>
-              <Grid
-                item
-                xs={12}
-                sm={8}
-                style={{ display: 'flex', flexDirection: 'row-reverse' }}
-              >
-                <Button
-                  type="button"
-                  variant="outlined"
-                  onClick={(): any => history.push(desktop)}
-                >
-                  بعدا پرداخت میکنم
-                </Button>
+              <Grid item container spacing={2} xs={12} sm={7}>
+                <Grid item container xs={12} sm={8}>
+                  <Grid xs={6}>
+                    <FormControl style={{ width: '100%', marginTop: '-20px' }}>
+                      <InputLabel>درگاه پرداخت</InputLabel>
+                      <Select onChange={handleChangeBank}>
+                        {bankGetwayes.map((item: BankGetwayesInterface) => (
+                          <MenuItem value={item.name}>{item.title}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid xs={6} style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+                    <PaymentPage />
+                  </Grid>
+                </Grid>
+                <Grid xs={12} sm={4} style={{ display: 'flex', flexDirection: 'row-reverse',alignItems:'center',paddingLeft:8 }}>
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    style={{ fontSize: 11, color: 'white', background: 'red',width:130 }}
+                    onClick={(): any => history.push(desktop)}
+                  >
+                    بعدا پرداخت میکنم
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
@@ -585,21 +579,51 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
         >
           <DialogTitle className="text-sm">لیست موارد قابل پرداخت</DialogTitle>
           <DialogContent>
-
             <Content />
           </DialogContent>
           <DialogActions>
+          <Grid
+            container
+            xs={12}
+            spacing={1}
+            style={{
+              background: 'white',
+              position: 'absolute',
+              left: 0,
+              right: 0,
+              bottom: 8,
+              padding: 8,
+              maxWidth: '100%',
+              width: '100%',
+            }}
+          >
+            <Grid xs={12} item>
+              <Divider />
+            </Grid>
 
-            <Grid  container style={{ background: '#FEFFF2',  }} >
-              <Grid item container spacing={2} xs={12} sm={6}>
-                <Grid item xs={12}>
+            <Grid
+              item
+              container
+              spacing={2}
+              xs={12}
+              style={{
+                display: 'flex',
+                alignContent: 'center',
+                alignItems: 'center',
+                marginTop: fullScreen ? 16 : 0,
+                marginRight: fullScreen ? 0 : 24,
+                marginLeft: fullScreen ? 0 : 24,
+              }}
+            >
+              <Grid item container xs={12}>
+                <Grid xs={6}>
                   <TextWithTitle
                     title={t('exchange.finalAmount')}
                     body={paymentAmount}
                     suffix={t('general.defaultCurrency')}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid xs={6}>
                   <TextWithTitle
                     title={t('exchange.selectedAmount')}
                     body={totalAmount}
@@ -607,9 +631,9 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                   />
                 </Grid>
               </Grid>
-              <Grid item container spacing={2} xs={12} sm={6} style={{marginTop: fullScreen? 16 : 0}}>
-                <Grid item container xs={12}>
-                  <Grid item xs={6}>
+              <Grid item container spacing={2} xs={12} >
+                <Grid item container xs={12} >
+                  <Grid xs={6}>
                     <FormControl style={{ width: '100%', marginTop: '-20px' }}>
                       <InputLabel>درگاه پرداخت</InputLabel>
                       <Select onChange={handleChangeBank}>
@@ -619,22 +643,15 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                       </Select>
                     </FormControl>
                   </Grid>
-                  <Grid
-                    item
-                    xs={6}
-                    style={{ display: 'flex', flexDirection: 'row-reverse' }}
-                  >
+                  <Grid xs={6} style={{ display: 'flex', flexDirection: 'row-reverse' }}>
                     <PaymentPage />
                   </Grid>
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  style={{ display: 'flex', flexDirection: 'row-reverse' }}
-                >
+                <Grid xs={12}  style={{ display: 'flex', flexDirection: 'row-reverse',alignItems:'center',paddingLeft:8 }}>
                   <Button
                     type="button"
                     variant="outlined"
+                    style={{ fontSize: 11, color: 'white', background: 'red',width:130 }}
                     onClick={(): any => history.push(desktop)}
                   >
                     بعدا پرداخت میکنم
@@ -642,11 +659,12 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 </Grid>
               </Grid>
             </Grid>
+          </Grid>
           </DialogActions>
         </Dialog>
       ) : (
         // </Modal>
-        <Container >
+        <Container>
           <Content />
         </Container>
       )}

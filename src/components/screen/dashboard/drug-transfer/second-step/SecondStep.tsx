@@ -325,6 +325,7 @@ const SecondStep: React.FC = () => {
       <div>
         <Dialog
           fullScreen={fullScreen}
+          fullWidth={true}
           open={openDialog}
           onClose={handleClose}
           aria-labelledby="responsive-dialog-title"

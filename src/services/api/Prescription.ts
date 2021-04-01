@@ -1,6 +1,7 @@
 import Api from './Api';
 import { PrescriptionResponseInterface } from '../../interfaces';
 import { PrescriptionSendInterface } from '../../interfaces/PrescriptionInterface';
+import { DataTableColumns } from 'interfaces/DataTableColumns';
 
 class Prescription extends Api {
   readonly urls = {
@@ -12,9 +13,14 @@ class Prescription extends Api {
     detail: '/Prescription/Detail',
   };
 
-  getList = async (skip: number, top: number = 10): Promise<any> => {
+  getList = async (skip: number, top: number = 10,searchableColumns: DataTableColumns[] = [],
+    searchText: string = ""): Promise<any> => {
+      var filter = 'true';
+      if (searchText.trim() != "") {
+        filter = `(contains(cast(comment,'Edm.String'),'${searchText}'))`
+      }
     const result = await this.postJsonData(
-      `${this.urls.getList}?$top=${top}&$skip=${skip * top}&$orderby=id desc`
+      `${this.urls.getList}?$top=${top}&$skip=${skip * top}&$orderby=id desc&$filter=${filter}`
     );
     return result.data;
   };

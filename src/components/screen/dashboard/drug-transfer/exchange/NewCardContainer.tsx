@@ -27,12 +27,7 @@ import { useMutation } from 'react-query';
 import { AddDrugInterface } from '../../../../../interfaces';
 import { errorHandler, sweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
-import {
-  AddDrog1,
-  AddDrog2,
-  AddPack1,
-  AddPack2,
-} from '../../../../../model/exchange';
+import { AddDrog1, AddDrog2, AddPack1, AddPack2 } from '../../../../../model/exchange';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
@@ -44,11 +39,12 @@ const style = makeStyles((theme) =>
     root: {
       width: '100%',
       minHeight: 110,
-      borderRadius: 5,
+      borderRadius: '0px !important',
       display: 'inline-block',
       position: 'relative',
-      margin: -7,
-      boxShadow: '0 0 5px #cecece',
+      margin: -8,
+      // boxShadow: '0 0 5px #cecece',
+      border:`1px solid #ccc`
     },
     button: {
       height: 32,
@@ -103,11 +99,11 @@ const style = makeStyles((theme) =>
     actionExpand: {
       display: 'flex',
       justifyContent: 'center',
-      height: 35,
+      height: 16,
       '& > .MuiIconButton-root': {
         marginLeft: 0,
       },
-      marginBottom: 7,
+      marginBottom: 5,
     },
     textBoxCounter: {
       fontSize: 12,
@@ -174,21 +170,13 @@ function reducer(state = initialState, action: ActionInterface): any {
 const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
   const [expanded, setExpanded] = React.useState(false);
   const [, setDrugInfo] = useState<AllPharmacyDrugInterface>();
-  const {
-    addDrug1,
-    addPack1,
-    removePack1,
-    addDrug2,
-    addPack2,
-    removePack2,
-  } = new PharmacyDrug();
+  const { addDrug1, addPack1, removePack1, addDrug2, addPack2, removePack2 } = new PharmacyDrug();
   const [] = useReducer(reducer, initialState);
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState<string>('');
 
   const [isLoading, setIsLoading] = React.useState(false);
-
 
   const snackBarHandleClose = (event: any, reason: any): any => {
     if (reason === 'clickaway') {
@@ -199,14 +187,7 @@ const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
   };
 
   const Alert = (props: any): JSX.Element => {
-    return (
-      <MuiAlert
-        style={{ zIndex: 99999 }}
-        elevation={6}
-        variant="filled"
-        {...props}
-      />
-    );
+    return <MuiAlert style={{ zIndex: 99999 }} elevation={6} variant="filled" {...props} />;
   };
 
   const {
@@ -227,22 +208,12 @@ const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
   const { getViewExchange } = new PharmacyDrug();
 
-  
-
   // useEffect(() => {
   //   setDrugInfo(pharmacyDrug);
   // }, []);
 
-  const {
-    expand,
-    expandOpen,
-    root,
-    actionExpand,
-    pack,
-    collapse,
-  } = style();
+  const { expand, expandOpen, root, actionExpand, pack, collapse } = style();
 
-  
   // const lockState = async (): Promise<any> => {
   //   await sweetAlert({
   //     type: 'warning',
@@ -250,13 +221,9 @@ const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
   //   });
   // };
 
-  
-  
   const handleExpandClick = (): any => {
     setExpanded(!expanded);
   };
-
-  
 
   return (
     <>
@@ -267,28 +234,15 @@ const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
       >
         {(pharmacyDrug?.cardColor === ColorEnum.AddedByB ||
           pharmacyDrug?.cardColor === ColorEnum.NotConfirmed) && (
-          <Ribbon
-            text={
-              pharmacyDrug?.cardColor === ColorEnum.AddedByB ? 'اضافه' : 'حذف'
-            }
-          />
+          <Ribbon text={pharmacyDrug?.cardColor === ColorEnum.AddedByB ? 'اضافه' : 'حذف'} />
         )}
         <CardContent style={{ padding: 0 }}>{basicDetail}</CardContent>
-        {/* {!isPack && (
-          <CardActions disableSpacing className={action}>
-            <AddRemoveAction />
-          </CardActions>
-        )} */}
         {isPack && (
           <>
             {expanded ? (
-              <span style={{ fontSize: 10, color: 'blue' }}>
-                بستن
-              </span>
+              <span style={{ fontSize: 10, color: 'blue' }}>بستن</span>
             ) : (
-              <span style={{ fontSize: 10, color: 'green' }}>
-                مشاهده اقلام این پک
-              </span>
+              <span style={{ fontSize: 10, color: 'green' }}>مشاهده اقلام این پک</span>
             )}
             <CardActions disableSpacing className={actionExpand}>
               <IconButton
@@ -300,21 +254,12 @@ const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
                 <ExpandMoreIcon />
               </IconButton>
             </CardActions>
-            <Collapse
-              in={expanded}
-              timeout="auto"
-              unmountOnExit
-              className={collapse}
-            >
+            <Collapse in={expanded} timeout="auto" unmountOnExit className={collapse}>
               <div> {collapsableContent} </div>
             </Collapse>
           </>
         )}
-        <Snackbar
-          open={open}
-          autoHideDuration={5000}
-          onClose={snackBarHandleClose}
-        >
+        <Snackbar open={open} autoHideDuration={5000} onClose={snackBarHandleClose}>
           <Alert onClose={snackBarHandleClose} severity="success">
             {message}
           </Alert>

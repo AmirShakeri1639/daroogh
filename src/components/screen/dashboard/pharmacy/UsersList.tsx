@@ -1,5 +1,6 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
+import SearchBar from 'material-ui-search-bar';
 import {
   createStyles,
   Divider,
@@ -25,6 +26,7 @@ import {
   FormControlLabel,
   Switch,
   Fab,
+  Paper,
 } from '@material-ui/core';
 import Input from '../../../public/input/Input';
 import CloseIcon from '@material-ui/icons/Close';
@@ -35,26 +37,14 @@ import {
   TableColumnInterface,
 } from '../../../../interfaces';
 import { RoleType, TextMessage } from '../../../../enum';
-import {
-  errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
-  sweetAlert,
-} from '../../../../utils';
+import { errorHandler, errorSweetAlert, successSweetAlert, sweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
-import {
-  InitialNewUserInterface,
-  NewUserData,
-} from '../../../../interfaces/user';
+import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
-import {
-  PharmacyUsersEnum,
-  RoleQueryEnum,
-  UserQueryEnum,
-} from '../../../../enum/query';
+import { PharmacyUsersEnum, RoleQueryEnum, UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { UrlAddress } from '../../../../enum/UrlAddress';
@@ -139,11 +129,32 @@ const useClasses = makeStyles((theme) =>
     fab: {
       margin: 0,
       top: 'auto',
-      right: 20,
+      left: 20,
       bottom: 40,
-      left: 'auto',
+      right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
+      zIndex: 1,
+    },
+
+    searchIconButton: {
+      display: 'none',
+    },
+    blankCard: {
+      minHeight: 150,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
+      },
+    },
+    contentContainer: {
+      marginTop: 15,
     },
   })
 );
@@ -247,32 +258,22 @@ const UsersList: React.FC = () => {
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
-  const [
-    isOpenModalOfCreateUser,
-    setIsOpenModalOfCreateUser,
-  ] = useState<boolean>(false);
+  const [isOpenModalOfCreateUser, setIsOpenModalOfCreateUser] = useState<boolean>(false);
   const [showError, setShowError] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  //const fullScreen =  true
 
-  const toggleIsOpenModalOfUser = (): void =>
-    setIsOpenModalOfCreateUser((v) => !v);
+  const toggleIsOpenModalOfUser = (): void => setIsOpenModalOfCreateUser((v) => !v);
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
-  const {
-    getCurrentPharmacyUsers,
-    removeUser,
-    disableUser,
-    saveNewUser,
-  } = new User();
+  const { getCurrentPharmacyUsers, removeUser, disableUser, saveNewUser } = new User();
 
-  const {
-    isLoading: roleListLoading,
-    data: roleListData,
-  } = useQuery(RoleQueryEnum.GET_ALL_ROLES, () =>
-    getAllRoles(RoleType.PHARMACY)
+  const { isLoading: roleListLoading, data: roleListData } = useQuery(
+    RoleQueryEnum.GET_ALL_ROLES,
+    () => getAllRoles(RoleType.PHARMACY)
   );
 
   const queryCache = useQueryCache();
@@ -284,17 +285,14 @@ const UsersList: React.FC = () => {
     getList();
   };
 
-  const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(
-    removeUser,
-    {
-      onSuccess: async () => {
-        ref.current?.onQueryChange();
-        await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-        await successSweetAlert(t('alert.successfulRemoveTextMessage'));
-        resetListRef();
-      },
-    }
-  );
+  const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(removeUser, {
+    onSuccess: async () => {
+      ref.current?.onQueryChange();
+      await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+      await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      resetListRef();
+    },
+  });
 
   const [_disableUser, { reset: resetDisableUser }] = useMutation(disableUser, {
     onSuccess: async () => {
@@ -304,40 +302,32 @@ const UsersList: React.FC = () => {
     },
   });
 
-  const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(
-    saveNewUser,
-    {
-      onSuccess: async () => {
-        ref.current?.onQueryChange();
-        dispatch({ type: 'reset' });
-        queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-        await successSweetAlert(t('alert.successfulEditTextMessage'));
-        resetListRef();
-      },
-    }
-  );
+  const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(saveNewUser, {
+    onSuccess: async () => {
+      ref.current?.onQueryChange();
+      dispatch({ type: 'reset' });
+      queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+      await successSweetAlert(t('alert.successfulEditTextMessage'));
+      resetListRef();
+    },
+  });
 
-  const [_addPharmacyUser, { isLoading: isLoadingNewUser }] = useMutation(
-    addPharmacyUser,
-    {
-      onSuccess: async (data) => {
-        const { message } = data;
-        if (showError) {
-          setShowError(false);
-        }
-        dispatch({ type: 'reset' });
-        toggleIsOpenModalOfUser();
-        ref.current?.onQueryChange();
-        await successSweetAlert(
-          message || t('alert.successfulCreateTextMessage')
-        );
-        resetListRef();
-      },
-      onError: async (data: any) => {
-        await errorSweetAlert(data || t('error.save'));
-      },
-    }
-  );
+  const [_addPharmacyUser, { isLoading: isLoadingNewUser }] = useMutation(addPharmacyUser, {
+    onSuccess: async (data) => {
+      const { message } = data;
+      if (showError) {
+        setShowError(false);
+      }
+      dispatch({ type: 'reset' });
+      toggleIsOpenModalOfUser();
+      ref.current?.onQueryChange();
+      await successSweetAlert(message || t('alert.successfulCreateTextMessage'));
+      resetListRef();
+    },
+    onError: async (data: any) => {
+      await errorSweetAlert(data || t('error.save'));
+    },
+  });
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
@@ -349,6 +339,9 @@ const UsersList: React.FC = () => {
     submitBtn,
     userRoleIcon,
     fab,
+    searchIconButton,
+    blankCard,
+    contentContainer,
   } = useClasses();
 
   const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -456,10 +449,7 @@ const UsersList: React.FC = () => {
     ];
   };
 
-  const removeUserHandler = async (
-    e: any,
-    userRow: NewUserData
-  ): Promise<any> => {
+  const removeUserHandler = async (e: any, userRow: NewUserData): Promise<any> => {
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
         await _removeUser(userRow.id);
@@ -485,9 +475,7 @@ const UsersList: React.FC = () => {
     }
   };
 
-  const enableUserHandler = async (
-    user: InitialNewUserInterface
-  ): Promise<any> => {
+  const enableUserHandler = async (user: InitialNewUserInterface): Promise<any> => {
     if (!window.confirm(t('alert.enableTextAlert'))) {
       return;
     }
@@ -563,9 +551,7 @@ const UsersList: React.FC = () => {
 
   const customDataTAbleACtions: DataTableCustomActionInterface[] = [
     {
-      icon: (): any => (
-        <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />
-      ),
+      icon: (): any => <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />,
       tooltip: 'نقش کاربر',
       action: (event: any, rowData: any): void => editRoleHandler(rowData),
     },
@@ -591,9 +577,7 @@ const UsersList: React.FC = () => {
     return <MenuItem />;
   };
 
-  const handleChange = async (
-    event: React.ChangeEvent<{ value: unknown }>
-  ): Promise<any> => {
+  const handleChange = async (event: React.ChangeEvent<{ value: unknown }>): Promise<any> => {
     setSelectedRoles(event.target.value as number[]);
   };
   const contentGenerator = (): JSX.Element[] | null => {
@@ -603,7 +587,7 @@ const UsersList: React.FC = () => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid key={item.id} item xs={12}>
+          <Grid item xs={12} sm={6} md={4} key={item.id}>
             <CardContainer data={item} editRoleHandler={editRoleHandler} />
           </Grid>
         );
@@ -617,21 +601,32 @@ const UsersList: React.FC = () => {
   };
   const [list, setList] = useState<any>([]);
   const listRef = React.useRef(list);
-  const setListRef = (data: any) => {
-    listRef.current = listRef.current.concat(data);
+  const setListRef = (data: any, refresh: boolean = false) => {
+    if (!refresh) {
+      listRef.current = listRef.current.concat(data);
+    } else {
+      listRef.current = data;
+    }
     setList(data);
+  };
+  const [search, setSearch] = useState<string>('');
+  const searchRef = React.useRef(search);
+  const setSearchRef = (data: any) => {
+    searchRef.current = data;
+    setSearch(data);
+    getList(true);
   };
   const { isLoading, data, isFetched } = useQuery(
     UserQueryEnum.GET_ALL_USERS,
 
-    () => getCurrentPharmacyUsers(pageRef.current, 10),
+    () => getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
         console.log(result);
         if (result == undefined || result.count == 0) {
           setNoData(true);
         } else {
-          console.log(result.items);
+          //console.log(result.items);
 
           setListRef(result.items);
         }
@@ -659,13 +654,14 @@ const UsersList: React.FC = () => {
       }
     }
   };
-  async function getList(): Promise<any> {
-    const result = await getCurrentPharmacyUsers(pageRef.current, 10);
-    console.log(result.items);
+  async function getList(refresh: boolean = false): Promise<any> {
+    const result = await getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current);
+    // console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoData(true);
-    } else {
-      setListRef(result.items);
+    }
+    if (result != undefined) {
+      setListRef(result.items, refresh);
       return result;
     }
   }
@@ -681,18 +677,23 @@ const UsersList: React.FC = () => {
     };
     React.useEffect(() => {
       function handleResize() {
-        if (!mobileRef.current && isMobile()) {
-          window.addEventListener('scroll', (e) => handleScroll(e), {
-            capture: true,
-          });
-        } else if (mobileRef.current && !isMobile()) {
-          window.removeEventListener('scroll', (e) => handleScroll(e));
-        }
-        setMobileRef(isMobile());
+        //   if (!mobileRef.current && isMobile()) {
+        //     window.addEventListener('scroll', handleScroll, {
+        //       capture: true,
+        //     });
+        //   } else if (mobileRef.current && !isMobile()) {
+        //     window.removeEventListener('scroll', handleScroll, {
+        //       capture: true,
+        //     });
+        //   }
+        //   setMobileRef(isMobile());
+        window.addEventListener('scroll', handleScroll, {
+          capture: true,
+        });
       }
       handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      /* window.addEventListener('resize', handleResize);*/
+      return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return mobile;
@@ -702,7 +703,7 @@ const UsersList: React.FC = () => {
     <Container maxWidth="lg">
       <h1 className="txt-md">{t('user.users-list')}</h1>
 
-      {!fullScreen && (
+      {false && (
         <DataTable
           tableRef={ref}
           extraMethods={{ editUser: enableUserHandler }}
@@ -721,27 +722,38 @@ const UsersList: React.FC = () => {
         />
       )}
       <br />
-      <Hidden smDown>
-        <Grid container spacing={1} className={buttonContainer}>
-          <Button
-            variant="outlined"
-            className={createUserBtn}
-            onClick={toggleIsOpenModalOfUser}
-          >
-            {t('user.create-user')}
-          </Button>
+
+      {true && (
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={6}>
+            <SearchBar
+              classes={{ searchIconButton: searchIconButton }}
+              placeholder={t('general.search')}
+              onChange={(newValue) => setSearchRef(newValue)}
+            />
+          </Grid>
         </Grid>
-      </Hidden>
+      )}
+      <Grid container spacing={3} className={contentContainer}>
+        <Hidden xsDown>
+          <Grid item xs={12} sm={6} md={4}>
+            <Paper className={blankCard} onClick={toggleIsOpenModalOfUser}>
+              <FontAwesomeIcon icon={faPlus} size="2x" />
+              <span>{t('user.create-user')}</span>
+            </Paper>
+          </Grid>
+        </Hidden>
 
-      <Hidden mdUp>
-        <Fab onClick={toggleIsOpenModalOfUser} className={fab} aria-label="add">
-          <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-        </Fab>
-      </Hidden>
+        <Hidden smUp>
+          <Fab onClick={toggleIsOpenModalOfUser} className={fab} aria-label="add">
+            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          </Fab>
+        </Hidden>
+        {true && contentGenerator()}
+        {true && <CircleBackdropLoading isOpen={isLoading} />}
+      </Grid>
 
-      {fullScreen && contentGenerator()}
-      {fullScreen && <CircleBackdropLoading isOpen={isLoading} />}
-      <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal}>
+      <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal} fullWidth>
         <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -765,6 +777,7 @@ const UsersList: React.FC = () => {
         open={isOpenModalOfCreateUser}
         fullScreen={fullScreen}
         onClose={toggleIsOpenModalOfUser}
+        fullWidth
       >
         <DialogTitle className="text-sm">
           {state?.id === 0 ? t('action.create') : t('action.edit')}
@@ -783,9 +796,7 @@ const UsersList: React.FC = () => {
                       label="نام کاربر"
                       className="w-100"
                       value={state.name}
-                      onChange={(e): void =>
-                        dispatch({ type: 'name', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -801,9 +812,7 @@ const UsersList: React.FC = () => {
                       className="w-100"
                       error={state.family.trim().length < 2 && showError}
                       value={state.family}
-                      onChange={(e): void =>
-                        dispatch({ type: 'family', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -820,9 +829,7 @@ const UsersList: React.FC = () => {
                       error={state.mobile.trim().length < 11 && showError}
                       type="number"
                       value={state.mobile}
-                      onChange={(e): void =>
-                        dispatch({ type: 'mobile', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'mobile', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -835,17 +842,11 @@ const UsersList: React.FC = () => {
 
                   <Grid item xs={12}>
                     <Input
-                      error={
-                        state?.email?.length > 0 &&
-                        !emailRegex.test(state.email) &&
-                        showError
-                      }
+                      error={state?.email?.length > 0 && !emailRegex.test(state.email) && showError}
                       className="w-100"
                       type="email"
                       value={state.email}
-                      onChange={(e): void =>
-                        dispatch({ type: 'email', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'email', value: e.target.value })}
                     ></Input>
                   </Grid>
                 </Grid>
@@ -861,9 +862,7 @@ const UsersList: React.FC = () => {
                       error={state?.userName?.length < 1 && showError}
                       className="w-100"
                       value={state.userName}
-                      onChange={(e): void =>
-                        dispatch({ type: 'userName', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'userName', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -877,9 +876,7 @@ const UsersList: React.FC = () => {
                   <Grid item xs={12}>
                     <Input
                       error={
-                        state?.nationalCode !== '' &&
-                        state?.nationalCode?.length < 10 &&
-                        showError
+                        state?.nationalCode !== '' && state?.nationalCode?.length < 10 && showError
                       }
                       className="w-100"
                       type="text"
@@ -918,11 +915,7 @@ const UsersList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                    <FormControl
-                      size="small"
-                      className="w-100"
-                      variant="outlined"
-                    >
+                    <FormControl size="small" className="w-100" variant="outlined">
                       <Select
                         labelId="user-roles-list"
                         id="roles-list"
@@ -934,9 +927,7 @@ const UsersList: React.FC = () => {
                         onChange={handleChange}
                         renderValue={(selected: any): string => {
                           const items = roleListData?.items
-                            .filter(
-                              (item: any) => selected.indexOf(item.id) !== -1
-                            )
+                            .filter((item: any) => selected.indexOf(item.id) !== -1)
                             .map((item: any) => item.name);
 
                           return ((items as string[]) ?? []).join(', ');
@@ -1009,20 +1000,14 @@ const UsersList: React.FC = () => {
                   className={submitBtn}
                   onClick={formHandler}
                 >
-                  {isLoadingNewUser
-                    ? t('general.pleaseWait')
-                    : t('general.submit')}
+                  {isLoadingNewUser ? t('general.pleaseWait') : t('general.submit')}
                 </Button>
               </Grid>
             </Grid>
           </Grid>
         </DialogActions>
       </Dialog>
-      <Modal
-        open={isOpenDatePicker}
-        toggle={toggleIsOpenDatePicker}
-        zIndex={2000}
-      >
+      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker} zIndex={2000}>
         <DateTimePicker
           selectedDateHandler={(e): void => {
             dispatch({ type: 'birthDate', value: e });

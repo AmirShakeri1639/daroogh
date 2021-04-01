@@ -1,29 +1,20 @@
 import React, { useState } from 'react';
-import {
-  makeStyles,
-  Paper,
-  createStyles,
-  Grid,
-  Divider,
-  Button,
-} from '@material-ui/core';
+import { makeStyles, Paper, createStyles, Grid, Divider, Button } from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  CardJobApplicationInterface,
-  CardJobInterface,
-  NewUserData,
-} from '../../../../interfaces';
+import { CardJobApplicationInterface, CardJobInterface, NewUserData } from '../../../../interfaces';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { BackDrop } from '../../../public';
+import { useTranslation } from 'react-i18next';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1),
+      padding: theme.spacing(1, 1, 1, 1),
       borderRadius: 5,
-      margin:theme.spacing(1.5)
+      position: 'relative',
+      overflow: 'hidden',
     },
   })
 );
@@ -31,7 +22,7 @@ const useStyle = makeStyles((theme) =>
 const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const { root } = useStyle();
-
+  const { t } = useTranslation();
   const { data, cancelHandler, detailHandler } = props;
 
   const { id, genderStr, name, family, mobile, workExperienceYear } = data;
@@ -44,20 +35,16 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
           genderStr={genderStr}
           name={name}
           family={family}
-          mobile={
-            mobile
-          }
-          workExperienceYear={
-            workExperienceYear
-          }
-          
+          mobile={mobile}
+          workExperienceYear={workExperienceYear}
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
+        {' '}
         <Divider />
       </Grid>
 
-      <Grid item xs={12} justify="flex-end">
+      <Grid item xs={12} container spacing={0} justify="flex-end">
         <Button
           onClick={(): void => detailHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
@@ -68,7 +55,7 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
           onClick={(): Promise<any> => cancelHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-          انصراف
+          {t('general.reject')}
         </Button>
       </Grid>
       <BackDrop isOpen={isOpenBackDrop} />

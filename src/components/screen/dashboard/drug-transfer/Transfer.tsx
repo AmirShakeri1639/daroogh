@@ -45,37 +45,20 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [activeStep, setActiveStep] = useState<number>(0);
 
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [allPharmacyDrug, setAllPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
-  const [uAllPharmacyDrug, setUAllPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
-  const [orgAllPharmacyDrug, setOrgAllPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
-  const [orgUAllPharmacyDrug, setOrgUAllPharmacyDrug] = useState<
-    AllPharmacyDrugInterface[]
-  >([]);
-  const [basketCount, setBasketCount] = useState<AllPharmacyDrugInterface[]>(
-    []
-  );
-  const [uBasketCount, setUbasketCount] = useState<AllPharmacyDrugInterface[]>(
-    []
-  );
+  const [allPharmacyDrug, setAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [uAllPharmacyDrug, setUAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [orgAllPharmacyDrug, setOrgAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [orgUAllPharmacyDrug, setOrgUAllPharmacyDrug] = useState<AllPharmacyDrugInterface[]>([]);
+  const [basketCount, setBasketCount] = useState<AllPharmacyDrugInterface[]>([]);
+  const [uBasketCount, setUbasketCount] = useState<AllPharmacyDrugInterface[]>([]);
   const [recommendationMessage, setRecommendationMessage] = React.useState('');
   const [exchangeId, setExchangeId] = React.useState(0);
-  const [
-    selectedPharmacyForTransfer,
-    setSelectedPharmacyForTransfer,
-  ] = useState<string>('');
+  const [selectedPharmacyForTransfer, setSelectedPharmacyForTransfer] = useState<string>('');
 
   const [viewExhcnage, setViewExchange] = useState<ViewExchangeInterface>();
 
   const [exchangeStateCode, setExchangeStateCode] = React.useState(0);
-  const [messageOfExchangeState, setMessageOfExchangeState] = React.useState(
-    ''
-  );
+  const [messageOfExchangeState, setMessageOfExchangeState] = React.useState('');
   const [showApproveModalForm, setShowApproveModalForm] = React.useState(false);
   const [is3PercentOk, setIs3PercentOk] = React.useState(true);
   const [eid, setEid] = useState<number | string | undefined>(0);
@@ -119,7 +102,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               (res.state === 2 || res.state === 12) &&
               res.lockSuggestion === false) ||
             (res.currentPharmacyIsA && res.state === 1);
+
           setLockedAction(locked ?? true);
+
           if (res.cartA !== undefined) {
             res.cartA.forEach((item) => {
               basketA.push({
@@ -172,6 +157,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
           const newItemsA: AllPharmacyDrugInterface[] = [];
           const packListA = new Array<AllPharmacyDrugInterface>();
+
           basketA.forEach((item) => {
             let ignore = false;
             if (item.packID) {
@@ -197,6 +183,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
           const newItemsB: AllPharmacyDrugInterface[] = [];
           const packListB = new Array<AllPharmacyDrugInterface>();
+
           basketB.forEach((item) => {
             let ignore = false;
             if (item.packID) {
@@ -219,7 +206,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
               if (!ignore) newItemsB.push(item);
             }
           });
-
           if (!res.currentPharmacyIsA) {
             setBasketCount(newItemsA);
             setUbasketCount(newItemsB);
@@ -261,9 +247,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 );
                 break;
               case 5:
-                setMessageOfExchangeState(
-                  'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
-                );
+                setMessageOfExchangeState('این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت');
                 break;
               case 6:
                 setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
@@ -288,9 +272,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 );
                 break;
               case 3:
-                setMessageOfExchangeState(
-                  'لطفا منتظر تایید نهایی داروخانه مقابل بمانید'
-                );
+                setMessageOfExchangeState('لطفا منتظر تایید نهایی داروخانه مقابل بمانید');
                 break;
               case 4 || 8:
                 setMessageOfExchangeState(
@@ -298,9 +280,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 );
                 break;
               case 6:
-                setMessageOfExchangeState(
-                  'این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت'
-                );
+                setMessageOfExchangeState('این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت');
                 break;
               case 5:
                 setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
@@ -395,23 +375,10 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 <span>در حال انتقال به صفحه تبادل. لطفا منتظر بمانید...</span>
                 <CircularProgress size={20} />
               </div>
+            ) : activeStep === 0 ? (
+              <FirstStep />
             ) : (
-              <>
-                {/* {activeStep > 0 && (
-                    <>
-                      <Grid item xs={12} sm={9} md={9} style={{ marginRight: 8 }}>
-                        <ProgressBar />
-                      </Grid>
-                    </>
-                  )}
-
-                  {activeStep === 0 && <FirstStep />}
-                  {activeStep === 1 && <SecondStep />}
-                  {activeStep === 2 && <ThirdStep />}
-                  {activeStep === 3 && <FourthStep />} */}
-
-                {activeStep === 0 ? <FirstStep /> : <Exchange />}
-              </>
+              <Exchange />
             )}
           </Grid>
         </MaterialContainer>

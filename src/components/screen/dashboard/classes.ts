@@ -222,8 +222,8 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   cardTitle: {
     padding: '.65em',
-    fontSize: '15px',
-    color:'#1d0d50'
+    fontSize: '15px !important',
+    color:ColorEnum.DeepBlue
   },
   title: {
     fontSize: 14,
