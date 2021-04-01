@@ -289,7 +289,7 @@ const Report1Form: React.FC = () => {
                   <DatePicker
                     value={state.fromDate}
                     calendar="persian"
-                    local="fa"
+                    locale="fa"
                     type="custom"
                     render={<DateComponent label="از تاریخ" />}
                     onChange={(e: any): void => {
@@ -301,7 +301,7 @@ const Report1Form: React.FC = () => {
                   <DatePicker
                     value={state.toDate}
                     calendar="persian"
-                    local="fa"
+                    locale="fa"
                     type="custom"
                     render={<DateComponent label="تا تاریخ" />}
                     onChange={(e: any): void => {
