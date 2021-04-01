@@ -434,8 +434,8 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         });
       }
       handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+     /* window.addEventListener('resize', handleResize);*/
+      return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return mobile;
@@ -447,7 +447,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+          <Grid item xs={12} sm={6} md={4}>
             <CardContainer
               data={item}
               cancelHandler={cancelHandler}
@@ -455,7 +455,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
             />
           </Grid>
         );
-        //}
+    
       });
     }
 
@@ -463,7 +463,10 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   };
   return (
     <Container maxWidth="lg" className={container}>
-      <h1 className="txt-md">{t('employment.application')}</h1>
+      <Grid item xs={12}>
+          <span>{t('employment.applications')}</span>
+        </Grid>
+     
       {false && (
         <DataTable
           tableRef={ref}
@@ -478,7 +481,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       )}
       {isOpenDetails && detialsDialog()}
       <br />
-      {true && (
+      {false && (
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
             <SearchBar
@@ -489,7 +492,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
           </Grid>
         </Grid>
       )}
-      <Grid container spacing={3} className={contentContainer}>
+      <Grid container spacing={3}>
       {true && contentGenerator()}
       </Grid>
       {true && <CircleBackdropLoading isOpen={isLoading} />}

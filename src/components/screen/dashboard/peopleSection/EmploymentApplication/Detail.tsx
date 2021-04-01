@@ -56,17 +56,7 @@ const Detail: React.FC<EmpAppInterface> = (props) => {
           }
         />
       </Grid>
-      <Grid item xs={12}>
-        <a
-          onClick={(e: any): any => {
-            e.stopPropagation();
-          }}
-          download=""
-          href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
-        >
-          {t('peopleSection.resumeDownload')}
-        </a>
-      </Grid>
+     
     </Grid>
   );
 };

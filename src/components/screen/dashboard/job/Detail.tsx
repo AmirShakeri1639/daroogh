@@ -7,7 +7,12 @@ import {
   faMoneyBillWave,
   faCalendarTimes,
 } from '@fortawesome/free-solid-svg-icons';
-import { DrugInterface, InitialNewUserInterface, JobInterface, UserLoginInterface } from '../../../../interfaces';
+import {
+  DrugInterface,
+  InitialNewUserInterface,
+  JobInterface,
+  UserLoginInterface,
+} from '../../../../interfaces';
 import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
@@ -43,7 +48,8 @@ const useStyle = makeStyles((theme) =>
 );
 
 const Detail: React.FC<JobInterface> = (props) => {
-  const { id,
+  const {
+    id,
     maritalStatusStr,
     genderStr,
     hasReadingPrescriptionCertificateStr,
@@ -59,7 +65,8 @@ const Detail: React.FC<JobInterface> = (props) => {
     maxAge,
     livingInAreaStr,
     descriptions,
-    cancelDate } = props;
+    cancelDate,
+  } = props;
   const { paper, container } = useStyle();
 
   const { t } = useTranslation();
@@ -72,90 +79,63 @@ const Detail: React.FC<JobInterface> = (props) => {
             <div className={container}>
               <Grid container spacing={0}>
                 <Grid container xs={12} className="drug-container">
-
-                  <Grid
-                    container
-                    xs={11}
-                    style={{ alignItems: 'center', paddingRight: '8px' }}
-                  >
+                  <Grid container xs={11} style={{ alignItems: 'center', paddingRight: '8px' }}>
                     <span>{jobPositionStr}</span>
                   </Grid>
                 </Grid>
 
                 <Grid container style={{ padding: '8px' }}>
-                  <Grid item xs={12} sm={6} md={12}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('jobs.hasReadingPrescriptionCertificate')}
                       body={hasReadingPrescriptionCertificateStr}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={12}>
-                    <TextWithTitle
-                      title={t('jobs.livingInArea')}
-                      body={livingInAreaStr}
-                    />
+                  <Grid item xs={12}>
+                    <TextWithTitle title={t('jobs.livingInArea')} body={livingInAreaStr} />
                   </Grid>
-                  <Grid xs={12} sm={6} md={12}>
+                  <Grid xs={12}>
                     <TextWithTitle
                       title={t('jobs.pharmaceuticalSoftwareSkill')}
                       body={pharmaceuticalSoftwareSkillStr}
                     />
                   </Grid>
-                  <Grid xs={12} sm={6} md={12}>
-                    <TextWithTitle
-                      title={t('jobs.computerSkill')}
-                      body={computerSkillStr}
-                    />
+                  <Grid xs={12}>
+                    <TextWithTitle title={t('jobs.computerSkill')} body={computerSkillStr} />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={12}>
-                    <TextWithTitle
-                      title={t('jobs.hasGuarantee')}
-                      body={hasGuaranteeStr}
-                    />
+                  <Grid item xs={12}>
+                    <TextWithTitle title={t('jobs.hasGuarantee')} body={hasGuaranteeStr} />
                   </Grid>
-                  <Grid item xs={6}>
-                    <TextWithTitle
-                      title={t('general.gender')}
-                      body={genderStr}
-                    />
+                  <Grid item xs={12}>
+                    <TextWithTitle title={t('general.gender')} body={genderStr} />
                   </Grid>
-                  <Grid xs={12} sm={6} md={12}>
+                  <Grid xs={12}>
                     <TextWithTitle
                       title={t('jobs.suggestedWorkShift')}
                       body={suggestedWorkShiftStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <TextWithTitle
-                      title={t('general.maritalStatus')}
-                      body={maritalStatusStr}
-                    />
+                  <Grid item xs={12}>
+                    <TextWithTitle title={t('general.maritalStatus')} body={maritalStatusStr} />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={12}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('jobs.foreignLanguagesSkill')}
                       body={foreignLanguagesSkillStr}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={12}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('jobs.foreignLanguagesSkill')}
                       body={foreignLanguagesSkillStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
-                    <TextWithTitle
-                      title={t('jobs.education')}
-                      body={educationStr}
-                    />
+                  <Grid item xs={12}>
+                    <TextWithTitle title={t('jobs.education')} body={educationStr} />
                   </Grid>
 
-                  <Grid item xs={6}>
-
-                    <TextWithTitle
-                      title='وضعیت'
-                      body={cancelDate ? 'فعال' : 'غیرفعال'}
-                    />
+                  <Grid item xs={12}>
+                    <TextWithTitle title="وضعیت" body={cancelDate ? 'فعال' : 'غیرفعال'} />
                   </Grid>
                 </Grid>
               </Grid>
