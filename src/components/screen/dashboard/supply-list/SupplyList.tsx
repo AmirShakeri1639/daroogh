@@ -162,9 +162,7 @@ const useStyle = makeStyles((theme) =>
       marginBottom: theme.spacing(1),
     },
     formContent: {
-      height: 485,
-      overflow: 'hidden',
-      overflowY: 'auto',
+      height: 495,
       display: 'flex',
     },
     fab: {
