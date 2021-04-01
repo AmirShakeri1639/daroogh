@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { CardJobInterface, NewUserData } from '../../../../interfaces';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { BackDrop } from '../../../public';
+import { getJalaliDate } from 'utils';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -22,12 +23,18 @@ const useStyle = makeStyles((theme) =>
       position: 'relative',
       overflow: 'hidden',
     },
+    span :{
+      fontSize: '14px',
+      
+      padding: '8px',
+  
+    }
   })
 );
 
 const CardContainer: React.FC<CardJobInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
-  const { root } = useStyle();
+  const { root , span} = useStyle();
 
   const { data, toggleConfirmHandler, saveHandler } = props;
 
@@ -82,7 +89,7 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
       {' '}
         <Divider />
       </Grid>
-
+        {!cancelDate &&
       <Grid item xs={12}  container spacing={0} justify="flex-end">
         <Button
           onClick={(): void => saveHandler(data)}
@@ -96,7 +103,12 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
         >
           تغییر وضعیت
         </Button>
-      </Grid>
+      </Grid> }
+      {cancelDate &&
+      <Grid item xs={12}  container spacing={0} justify="flex-end" >
+        <span className= {span}>لغو شده در تاریخ { getJalaliDate(cancelDate)}
+          </span>
+      </Grid> }
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );

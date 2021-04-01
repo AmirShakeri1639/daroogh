@@ -481,7 +481,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       )}
       {isOpenDetails && detialsDialog()}
       <br />
-      {true && (
+      {false && (
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
             <SearchBar
@@ -492,7 +492,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
           </Grid>
         </Grid>
       )}
-      <Grid container spacing={3} className={contentContainer}>
+      <Grid container spacing={3}>
       {true && contentGenerator()}
       </Grid>
       {true && <CircleBackdropLoading isOpen={isLoading} />}
