@@ -142,7 +142,7 @@ const Desktop1: React.FC = () => {
         exchangesRef.current.length < (totalCountRef.current ?? 0)
       ) {
         setLoading(true);
-        setPage((v) => v + 1);        
+        setPage((v) => v + 1);
         cache.invalidateQueries('key');
       }
     }
