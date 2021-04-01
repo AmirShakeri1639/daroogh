@@ -53,6 +53,7 @@ import { Role, User } from '../../../../services/api';
 import RoleForm from '../user/RoleForm';
 import CardContainer from './user/CardContainer';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import { debounce } from 'lodash';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -281,7 +282,7 @@ const UsersList: React.FC = () => {
     listRef.current = [];
     setList([]);
     setPageRef(0);
-    setNoData(false);
+    setNoDataRef(false);
     getList();
   };
 
@@ -593,7 +594,7 @@ const UsersList: React.FC = () => {
         );
         //}
 
-        return null;
+       
       });
     }
 
@@ -624,7 +625,7 @@ const UsersList: React.FC = () => {
       onSuccess: (result) => {
         console.log(result);
         if (result == undefined || result.count == 0) {
-          setNoData(true);
+          setNoDataRef(true);
         } else {
           //console.log(result.items);
 
@@ -633,7 +634,7 @@ const UsersList: React.FC = () => {
       },
     }
   );
-  const [noData, setNoData] = useState<boolean>(false);
+
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
   const setPageRef = (data: number) => {
@@ -641,64 +642,59 @@ const UsersList: React.FC = () => {
     setPage(data);
   };
 
-  const handleScroll = (e: any): any => {
-    //if (fullScreen) {
-
-    const el = e.target;
-    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (!noData) {
-        const currentpage = pageRef.current + 1;
-        setPageRef(currentpage);
-        console.log(pageRef.current);
-        getList();
-      }
-    }
-  };
+ 
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current);
     // console.log(result.items);
     if (result == undefined || result.items.length == 0) {
-      setNoData(true);
+      setNoDataRef(true);
     }
     if (result != undefined) {
       setListRef(result.items, refresh);
       return result;
     }
   }
-  function isMobile() {
-    return window.innerWidth < 960;
-  }
-  function useWindowDimensions() {
-    const [mobile, setMobile] = useState(false);
-    const mobileRef = React.useRef(mobile);
-    const setMobileRef = (data: boolean) => {
-      mobileRef.current = data;
-      setMobile(data);
+  const [noData, setNoData] = useState<boolean>(false);
+  const noDataRef = React.useRef(noData);
+  const setNoDataRef = (data: boolean) => {
+    noDataRef.current = data;
+    setNoData(data);
+  };
+  const screenWidth = {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+    tablet: 640,
+    laptop: 1024,
+    desktop: 1280,
+  };
+  const handleScroll = (e: any): any => {
+  
+    const el = e.target;
+    const pixelsBeforeEnd = 200;
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight;
+    if (!noDataRef.current && checkDevice) {
+      const currentpage = pageRef.current + 1;
+      setPageRef(currentpage);
+      console.log(pageRef.current);
+      getList();
+    }
+  };
+  React.useEffect(() => {
+    document.addEventListener('scroll', debounce(handleScroll, 100), {
+      capture: true,
+    });
+    return (): void => {
+      document.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      });
     };
-    React.useEffect(() => {
-      function handleResize() {
-        //   if (!mobileRef.current && isMobile()) {
-        //     window.addEventListener('scroll', handleScroll, {
-        //       capture: true,
-        //     });
-        //   } else if (mobileRef.current && !isMobile()) {
-        //     window.removeEventListener('scroll', handleScroll, {
-        //       capture: true,
-        //     });
-        //   }
-        //   setMobileRef(isMobile());
-        window.addEventListener('scroll', handleScroll, {
-          capture: true,
-        });
-      }
-      handleResize();
-      /* window.addEventListener('resize', handleResize);*/
-      return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    return mobile;
-  }
-  useWindowDimensions();
+  }, []);
   return (
     <Container maxWidth="lg">
       <h1 className="txt-md">{t('user.users-list')}</h1>
