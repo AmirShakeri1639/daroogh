@@ -254,7 +254,7 @@ export default {
         listPrescription: 'لیست نسخه ها',
         jobApplication: 'درخواست کار',
         listJobApplication: 'لیست درخواست کار',
-        cancelDateText: 'کنسل شده در تاریخ : ',
+        cancelDateText: 'کنسل شده در تاریخ',
         detail: 'جزییات',
         noAnswer: 'پاسخی وجود ندارد',
         gender: 'جنسیت',
@@ -286,6 +286,7 @@ export default {
         birthDate: 'تاریخ تولد',
         email: 'ایمیل',
         resumeFile: 'فایل رزومه',
+        requestState:'وضعیت درخواست'
       },
       message: {
         message: 'پیام',
