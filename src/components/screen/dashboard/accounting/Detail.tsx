@@ -75,13 +75,13 @@ const Detail: React.FC<AccountingInterface> = (props) => {
                 </Grid>
 
                 <Grid container style={{ padding: '8px' }}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('general.date')}
                       body={getJalaliDate(date)}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('accounting.debtor')}
                       body={amount >= 0 ?

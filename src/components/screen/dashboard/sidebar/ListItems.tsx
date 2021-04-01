@@ -577,14 +577,14 @@ const ListItems: React.FC = () => {
         </List> */}
         {/* </Collapse> */}
 
-        <List component="div" className={linkWrapper}>
+        {/* <List component="div" className={linkWrapper}>
           <Link to={jobSearchList} className={notNested}>
             <ListItemIcon>
               <FontAwesomeIcon icon={faUserMd} size="lg" />
             </ListItemIcon>
             <ListItemText primary={t('jobSearch.jobSearch')} />
           </Link>
-        </List>
+        </List> */}
 
         <List component="div" className={linkWrapper}>
           <Link to={pharmacyMessage} className={notNested}>
@@ -608,7 +608,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon>
               <FontAwesomeIcon icon={faHandshake} size="lg" />
             </ListItemIcon>
-            <ListItemText primary={t('jobs.jobs')} />
+            <ListItemText primary={t('jobs.employment')} />
           </Link>
         </List>
         {/* <ListItem

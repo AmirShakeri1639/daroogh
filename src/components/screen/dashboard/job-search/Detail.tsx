@@ -73,16 +73,16 @@ const Detail: React.FC<JobApplicationInterface> = (props) => {
                 </Grid>
 
                 <Grid container style={{ padding: '8px' }}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('general.gender')}
                       body={genderStr}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle title={t('general.mobile')} body={mobile} />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('employment.workExperience')}
                       body={workExperienceYear}

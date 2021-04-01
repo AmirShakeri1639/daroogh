@@ -159,8 +159,8 @@ const SettingsAiForm = lazy(
   () => import('./components/screen/dashboard/settingsAi/SettingsAi')
 );
 
-const JobsList = lazy(
-  () => import('./components/screen/dashboard/job/jobsList')
+const Job = lazy(
+  () => import('./components/screen/dashboard/job/Job')
 );
 
 const PharmacyMessage = lazy(
@@ -380,8 +380,9 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={ settingsAi }>
               <Dashboard component={ <SettingsAiForm /> } />
             </PrivateRoute>
-            <PrivateRoute exact path={ jobsList }>
-              <Dashboard component={ <JobsList /> } />
+
+            <PrivateRoute path={jobsList}>
+              <Dashboard component={<Job />} />
             </PrivateRoute>
             <PrivateRoute exact path={ pharmacyMessage }>
               <Dashboard component={ <PharmacyMessage /> } />

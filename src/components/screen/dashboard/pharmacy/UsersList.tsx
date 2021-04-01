@@ -37,26 +37,14 @@ import {
   TableColumnInterface,
 } from '../../../../interfaces';
 import { RoleType, TextMessage } from '../../../../enum';
-import {
-  errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
-  sweetAlert,
-} from '../../../../utils';
+import { errorHandler, errorSweetAlert, successSweetAlert, sweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
-import {
-  InitialNewUserInterface,
-  NewUserData,
-} from '../../../../interfaces/user';
+import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
-import {
-  PharmacyUsersEnum,
-  RoleQueryEnum,
-  UserQueryEnum,
-} from '../../../../enum/query';
+import { PharmacyUsersEnum, RoleQueryEnum, UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { UrlAddress } from '../../../../enum/UrlAddress';
@@ -270,33 +258,22 @@ const UsersList: React.FC = () => {
   const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
-  const [
-    isOpenModalOfCreateUser,
-    setIsOpenModalOfCreateUser,
-  ] = useState<boolean>(false);
+  const [isOpenModalOfCreateUser, setIsOpenModalOfCreateUser] = useState<boolean>(false);
   const [showError, setShowError] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState<number[]>([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   //const fullScreen =  true
 
-  const toggleIsOpenModalOfUser = (): void =>
-    setIsOpenModalOfCreateUser((v) => !v);
+  const toggleIsOpenModalOfUser = (): void => setIsOpenModalOfCreateUser((v) => !v);
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
 
-  const {
-    getCurrentPharmacyUsers,
-    removeUser,
-    disableUser,
-    saveNewUser,
-  } = new User();
+  const { getCurrentPharmacyUsers, removeUser, disableUser, saveNewUser } = new User();
 
-  const {
-    isLoading: roleListLoading,
-    data: roleListData,
-  } = useQuery(RoleQueryEnum.GET_ALL_ROLES, () =>
-    getAllRoles(RoleType.PHARMACY)
+  const { isLoading: roleListLoading, data: roleListData } = useQuery(
+    RoleQueryEnum.GET_ALL_ROLES,
+    () => getAllRoles(RoleType.PHARMACY)
   );
 
   const queryCache = useQueryCache();
@@ -308,17 +285,14 @@ const UsersList: React.FC = () => {
     getList();
   };
 
-  const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(
-    removeUser,
-    {
-      onSuccess: async () => {
-        ref.current?.onQueryChange();
-        await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-        await successSweetAlert(t('alert.successfulRemoveTextMessage'));
-        resetListRef();
-      },
-    }
-  );
+  const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(removeUser, {
+    onSuccess: async () => {
+      ref.current?.onQueryChange();
+      await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+      await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      resetListRef();
+    },
+  });
 
   const [_disableUser, { reset: resetDisableUser }] = useMutation(disableUser, {
     onSuccess: async () => {
@@ -328,40 +302,32 @@ const UsersList: React.FC = () => {
     },
   });
 
-  const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(
-    saveNewUser,
-    {
-      onSuccess: async () => {
-        ref.current?.onQueryChange();
-        dispatch({ type: 'reset' });
-        queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-        await successSweetAlert(t('alert.successfulEditTextMessage'));
-        resetListRef();
-      },
-    }
-  );
+  const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(saveNewUser, {
+    onSuccess: async () => {
+      ref.current?.onQueryChange();
+      dispatch({ type: 'reset' });
+      queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+      await successSweetAlert(t('alert.successfulEditTextMessage'));
+      resetListRef();
+    },
+  });
 
-  const [_addPharmacyUser, { isLoading: isLoadingNewUser }] = useMutation(
-    addPharmacyUser,
-    {
-      onSuccess: async (data) => {
-        const { message } = data;
-        if (showError) {
-          setShowError(false);
-        }
-        dispatch({ type: 'reset' });
-        toggleIsOpenModalOfUser();
-        ref.current?.onQueryChange();
-        await successSweetAlert(
-          message || t('alert.successfulCreateTextMessage')
-        );
-        resetListRef();
-      },
-      onError: async (data: any) => {
-        await errorSweetAlert(data || t('error.save'));
-      },
-    }
-  );
+  const [_addPharmacyUser, { isLoading: isLoadingNewUser }] = useMutation(addPharmacyUser, {
+    onSuccess: async (data) => {
+      const { message } = data;
+      if (showError) {
+        setShowError(false);
+      }
+      dispatch({ type: 'reset' });
+      toggleIsOpenModalOfUser();
+      ref.current?.onQueryChange();
+      await successSweetAlert(message || t('alert.successfulCreateTextMessage'));
+      resetListRef();
+    },
+    onError: async (data: any) => {
+      await errorSweetAlert(data || t('error.save'));
+    },
+  });
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
@@ -483,10 +449,7 @@ const UsersList: React.FC = () => {
     ];
   };
 
-  const removeUserHandler = async (
-    e: any,
-    userRow: NewUserData
-  ): Promise<any> => {
+  const removeUserHandler = async (e: any, userRow: NewUserData): Promise<any> => {
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
         await _removeUser(userRow.id);
@@ -512,9 +475,7 @@ const UsersList: React.FC = () => {
     }
   };
 
-  const enableUserHandler = async (
-    user: InitialNewUserInterface
-  ): Promise<any> => {
+  const enableUserHandler = async (user: InitialNewUserInterface): Promise<any> => {
     if (!window.confirm(t('alert.enableTextAlert'))) {
       return;
     }
@@ -590,9 +551,7 @@ const UsersList: React.FC = () => {
 
   const customDataTAbleACtions: DataTableCustomActionInterface[] = [
     {
-      icon: (): any => (
-        <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />
-      ),
+      icon: (): any => <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />,
       tooltip: 'نقش کاربر',
       action: (event: any, rowData: any): void => editRoleHandler(rowData),
     },
@@ -618,9 +577,7 @@ const UsersList: React.FC = () => {
     return <MenuItem />;
   };
 
-  const handleChange = async (
-    event: React.ChangeEvent<{ value: unknown }>
-  ): Promise<any> => {
+  const handleChange = async (event: React.ChangeEvent<{ value: unknown }>): Promise<any> => {
     setSelectedRoles(event.target.value as number[]);
   };
   const contentGenerator = (): JSX.Element[] | null => {
@@ -630,7 +587,7 @@ const UsersList: React.FC = () => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+          <Grid item xs={12} sm={6} md={4} key={item.id}>
             <CardContainer data={item} editRoleHandler={editRoleHandler} />
           </Grid>
         );
@@ -655,7 +612,7 @@ const UsersList: React.FC = () => {
   const [search, setSearch] = useState<string>('');
   const searchRef = React.useRef(search);
   const setSearchRef = (data: any) => {
-    searchRef.current = data
+    searchRef.current = data;
     setSearch(data);
     getList(true);
   };
@@ -735,8 +692,8 @@ const UsersList: React.FC = () => {
         });
       }
       handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      /* window.addEventListener('resize', handleResize);*/
+      return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return mobile;
@@ -779,7 +736,7 @@ const UsersList: React.FC = () => {
       )}
       <Grid container spacing={3} className={contentContainer}>
         <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={4}>
+          <Grid item xs={12} sm={6} md={4}>
             <Paper className={blankCard} onClick={toggleIsOpenModalOfUser}>
               <FontAwesomeIcon icon={faPlus} size="2x" />
               <span>{t('user.create-user')}</span>

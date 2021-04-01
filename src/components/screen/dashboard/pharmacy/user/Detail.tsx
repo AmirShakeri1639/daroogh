@@ -89,21 +89,21 @@ const Detail: React.FC<NewUserData> = (props) => {
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title='کد ملی'
                       body={nationalCode || t('general.undefined')}
                     />
                     </Grid>
 
-                  <Grid item xs={12} lg={6}>
+                  <Grid item xs={12}>
 
                     <TextWithTitle
                       title='نام کاربری'
                       body={userName || t('general.undefined')}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
 
                     <TextWithTitle
                       title='وضعیت کاربر'

@@ -419,8 +419,8 @@ const PrescriptionList: React.FC = () => {
         });
       }
       handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+     /* window.addEventListener('resize', handleResize);*/
+      return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     return mobile;
@@ -435,7 +435,7 @@ const PrescriptionList: React.FC = () => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+          <Grid item xs={12} sm={6} md={4} key={item.id}>
             <CardContainer data={item} saveHandler={saveHandler} detailHandler={detailHandler} />
           </Grid>
         );
