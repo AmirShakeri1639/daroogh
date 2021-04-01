@@ -137,7 +137,6 @@ const ExCalculator: React.FC<Props> = (props) => {
       card = [...basketCount]; // exchange.cartB;
     }
 
-    debugger;
     let totalCount = 0;
     let totalPrice = 0;
     const makeRow = (i: any): JSX.Element => {
