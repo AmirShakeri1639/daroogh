@@ -18,7 +18,7 @@ interface SurveyBoxProps {
 const { convertISOTime } = Convertor;
 
 const SurveyBox: React.FC<SurveyBoxProps> = memo(({ survey }) => {
-  debugger;
+
   const { description, surveyAnswer, questionGroup } = survey;
 
   const { t } = useTranslation();

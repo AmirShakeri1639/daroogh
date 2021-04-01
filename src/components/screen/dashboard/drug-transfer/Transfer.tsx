@@ -230,8 +230,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
 
-          // console.log('setBasketCount', newItemsA);
-          // console.log('setUbasketCount', newItemsB);
         }
 
         if (res !== undefined) {

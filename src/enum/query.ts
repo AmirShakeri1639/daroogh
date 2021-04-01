@@ -15,6 +15,7 @@ export enum MessageQueryEnum {
 }
 export enum SurveyQueryEnum {
   GET_ALL_Survey = 'AllSurvey',
+  DETAIL_BY_EXCHANGE_NUMBER = 'detailByExchangeNumber',
 }
 
 export enum DrugEnum {

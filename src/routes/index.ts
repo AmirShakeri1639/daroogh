@@ -81,6 +81,7 @@ export default {
   profile: `/${dashboard}/${user}/profile`,
   settings: `/${dashboard}/settings`,
   settingsAi: `/${dashboard}/settingsAi`,
+  report1: `/${dashboard}/report1`,
   jobsList: `/${dashboard}/${job}/list`,
 
   ...pharmacyRoutes,

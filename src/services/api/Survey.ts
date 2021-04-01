@@ -5,7 +5,12 @@ class Survey extends Api {
     const result = await this.postData(
       `/Survey/AllSurvey?$skip=${skip}&$top=${top}&$orderby=id desc`
     );
-    debugger
+    return result.data;
+  };
+  detailByExchangeNumber = async (exchangeNumber: string): Promise<any> => {
+    const result = await this.postData(
+      `/Survey/DetailByExchangeNumber/${exchangeNumber}`
+    );
     return result.data;
   };
 }

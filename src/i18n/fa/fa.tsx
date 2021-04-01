@@ -481,6 +481,10 @@ export default {
         enterAmount: 'مبلغ را وارد کنید.',
         code: 'کد تراکنش',
       },
+      reports: {
+        reports: 'گزارشات',
+        report1: 'گزارش یک',
+      },
       countryDivision: {
         province: 'استان',
         city: 'شهر',

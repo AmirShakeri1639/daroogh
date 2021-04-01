@@ -158,6 +158,9 @@ const SettingsForm = lazy(
 const SettingsAiForm = lazy(
   () => import('./components/screen/dashboard/settingsAi/SettingsAi')
 );
+const Report1Form = lazy(
+  () => import('./components/screen/dashboard/report1/Report1')
+);
 
 const JobsList = lazy(
   () => import('./components/screen/dashboard/job/jobsList')
@@ -166,8 +169,8 @@ const JobsList = lazy(
 const PharmacyMessage = lazy(
   () => import('./components/screen/dashboard/pharmacy/message/Message')
 );
-const SurveyList = lazy(
-  () => import('./components/screen/dashboard/pharmacy/survey/SurveyList')
+const SurveyComponent = lazy(
+  () => import('./components/screen/dashboard/pharmacy/survey/SurveyComponent')
 );
 
 const {
@@ -206,6 +209,7 @@ const {
   profile,
   settings,
   settingsAi,
+  report1,
   jobsList,
   pharmacyMessage,
   surveyList,
@@ -380,6 +384,9 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={settingsAi}>
               <Dashboard component={<SettingsAiForm />} />
             </PrivateRoute>
+            <PrivateRoute exact path={report1}>
+              <Dashboard component={<Report1Form />} />
+            </PrivateRoute>
             <PrivateRoute path={jobsList}>
               <Dashboard component={<JobsList />} />
             </PrivateRoute>
@@ -387,7 +394,7 @@ const App = (): JSX.Element => {
               <Dashboard component={<PharmacyMessage />} />
             </PrivateRoute>
             <PrivateRoute path={surveyList}>
-              <Dashboard component={<SurveyList />} />
+              <Dashboard component={<SurveyComponent />} />
             </PrivateRoute>
 
             <PrivateRoute exact path={ fda_exchangeList }>

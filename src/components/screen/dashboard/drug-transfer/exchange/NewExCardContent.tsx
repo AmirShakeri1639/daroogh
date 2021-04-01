@@ -804,7 +804,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   const handleTotalAmountByCounter = () => {
     if (!pharmacyDrug) return;
-    debugger;
+
     let val = 0;
     if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
     setTotalAmount(Utils.numberWithCommas(val));

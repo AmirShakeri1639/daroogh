@@ -44,7 +44,7 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
-import SurveyList from '../pharmacy/survey/SurveyList';
+import SurveyComponent from '../pharmacy/survey/SurveyComponent';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -112,6 +112,7 @@ const {
   prescriptionList,
   settings,
   settingsAi,
+  report1,
   jobsList,
   pharmacyMessage,
   surveyList,
@@ -128,6 +129,7 @@ const ListItems: React.FC = () => {
     isOpenPageOfThisGroup('exchange')
   );
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
+  const [isOpenReports, setIsOpenReports] = useState<boolean>(false);
   const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(
     isOpenPageOfThisGroup('favorite')
@@ -428,6 +430,29 @@ const ListItems: React.FC = () => {
             <ListItemText primary={t('settingsAi.settingsAi')} />
           </Link>
         </List>
+
+        <ListItem
+          button
+          className={linkWrapper}
+          onClick={(): void => setIsOpenReports((val) => !val)}
+        >
+          <ListItemIcon>
+            <AccountBalanceIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('reports.reports')} />
+          {isOpenReports ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isOpenReports} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={report1} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('reports.report1')} />
+            </Link>
+          </List>
+        </Collapse>
+
         {/* <ListItem
           button
           onClick={(): void => setIsOpenExchangeManagement((val) => !val)}
@@ -555,7 +580,6 @@ const ListItems: React.FC = () => {
           </List>
         </Collapse>
 
-  
         {/* <ListItem button onClick={(): void => setIsOpenMembers((v) => !v)}>
           <ListItemIcon style={{ color: '#4625B2' }}>
             <PermIdentityTwoToneIcon />

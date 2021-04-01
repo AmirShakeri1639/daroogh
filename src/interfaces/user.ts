@@ -50,6 +50,7 @@ export class SurveyAnswer {
   public id: number = 0;
   public surveyID: number = 0;
   public questionID: number = 0;
+  public optionID: number = 0;
   public answer: number = 0;
   public barom: number = 0;
   public _date: string = '';
