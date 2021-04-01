@@ -629,6 +629,7 @@ export default {
         computerSkill: 'توانایی کار با کامپیوتر',
         education: 'تحصیلات',
         maxAge: 'حداکثر سن',
+        employment: 'استخدام'
       },
       MaritalStatusType: {
         Married: 'متاهل',

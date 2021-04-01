@@ -123,19 +123,19 @@ const Detail: React.FC<PrescriptionInterface> = (props) => {
                 </Grid>
 
                 <Grid container style={{ padding: '8px' }}>
-                  <Grid item xs={12} sm={6} md={12}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('prescription.sendDate')}
                       body={!isNullOrEmpty(sendDate) && getJalaliDate(sendDate)}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('countryDivision.city')}
                       body={contryDivisionName}
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={12}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('general.expireDate')}
                       body={
@@ -143,13 +143,13 @@ const Detail: React.FC<PrescriptionInterface> = (props) => {
                       }
                     />
                   </Grid>
-                  <Grid item xs={12} sm={6} md={12}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('prescription.responseDate')}
                       body={getResponseDate(responseDate)}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle title={t('general.state')} body={getPrescriptionState()} />
                   </Grid>
                 </Grid>
