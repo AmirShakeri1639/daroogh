@@ -101,7 +101,7 @@ const CardContainer: React.FC<CardJobInterface> = (props) => {
           onClick={(): Promise<any> => toggleConfirmHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-          تغییر وضعیت
+          لغو درخواست
         </Button>
       </Grid> }
       {cancelDate &&

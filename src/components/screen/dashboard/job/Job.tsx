@@ -65,6 +65,7 @@ export default function Drug() {
             <Tab style={{ width: '50%' }} label="کاریابی" {...a11yProps(0)} />
             <Tab style={{ width: '50%' }} label="فرصت های شغلی" {...a11yProps(1)} />
           </Tabs>
+          <Divider/>
           <TabPanel value={value} index={0}>
             <EmploymentApplicationList />
           </TabPanel>
