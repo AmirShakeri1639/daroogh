@@ -343,8 +343,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     if (
       pharmacyDrug.buttonName === 'افزودن به تبادل' &&
       (!pharmacyDrug.currentCnt ||
-        pharmacyDrug.currentCnt === 0 ||
-        !(pharmacyDrug.cnt > pharmacyDrug.currentCnt && pharmacyDrug.currentCnt >= 1))
+        pharmacyDrug.cnt < pharmacyDrug.currentCnt ||
+        pharmacyDrug.currentCnt < 1)
     ) {
       setAutoFocus(false);
       await sweetAlert({
@@ -402,8 +402,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     if (
       pharmacyDrug.buttonName === 'افزودن به تبادل' &&
       (!pharmacyDrug.currentCnt ||
-        pharmacyDrug.currentCnt === 0 ||
-        !(pharmacyDrug.cnt > pharmacyDrug.currentCnt && pharmacyDrug.currentCnt >= 1))
+        pharmacyDrug.cnt < pharmacyDrug.currentCnt ||
+        pharmacyDrug.currentCnt < 1)
     ) {
       setAutoFocus(false);
       await sweetAlert({
