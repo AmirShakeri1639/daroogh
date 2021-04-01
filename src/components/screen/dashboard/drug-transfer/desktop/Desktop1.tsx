@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid, useMediaQuery, useTheme } from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
 import { Exchange } from '../../../../../services/api';
 import DesktopCardContent from './DesktopCardContent';
-import {
-  ExchangeStateEnum,
-  NeedSurvey,
-  SortTypeEnum,
-} from '../../../../../enum';
+import { ExchangeStateEnum, NeedSurvey, SortTypeEnum } from '../../../../../enum';
 import {
   getExpireDate,
   isExchangeCompleted,
@@ -20,8 +16,9 @@ import { isNullOrEmpty } from '../../../../../utils';
 import { useHistory, useLocation } from 'react-router-dom';
 import routes from '../../../../../routes';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryCache } from 'react-query';
 import queryString from 'query-string';
+import { debounce } from 'lodash';
 
 const Desktop1: React.FC = () => {
   const { getDashboard } = new Exchange();
@@ -38,8 +35,8 @@ const Desktop1: React.FC = () => {
   const params = queryString.parse(location.search);
   const [isFilterChanged, setIsFilterChanged] = useState(false);
   const queryFilters = ['waiting', 'survey'];
-  let queryFilter = params.state && !isFilterChanged &&
-    queryFilters.includes(params.state.toString());
+  let queryFilter =
+    params.state && !isFilterChanged && queryFilters.includes(params.state.toString());
   const [filter, setFilter] = useState<any[]>((): any => {
     const result = [ExchangeStateEnum.UNKNOWN];
     result.push(NeedSurvey);
@@ -49,59 +46,71 @@ const Desktop1: React.FC = () => {
   const [sortField, setSortField] = useState('');
   const [sortType, setSortType] = useState(SortTypeEnum.ASC);
   const [exchanges, setExchanges] = useState<ViewExchangeInterface[]>([]);
+  const exchangesRef = React.useRef(exchanges);
+  const setExchangesRef = (data: ViewExchangeInterface[]) => {
+    exchangesRef.current = data;
+    setExchanges(data);
+  };
   const [page, setPage] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const loadingRef = React.useRef(loading);
   const [totalCount, setTotalCount] = useState(() => {
     return 0;
   });
+  const totalCountRef = React.useRef(page);
+  const setTotalCountRef = (data: number) => {
+    totalCountRef.current = data;
+    setTotalCount(data);
+  };
 
-  const { refetch } = useQuery(['key', page],
-    () => getDashboard(page, queryFilter ? params.state : ''), {
-    onSuccess: (result) => {
-      if (result != undefined) {
-        const newList = exchanges.concat(result.items);
-        if (result.count != undefined && result.count != 0) {
-          setTotalCount(result.count);
-        }
-        const statesList: LabelValue[] = [];
-        let hasCompleted: boolean = false;
-        const items = newList.map((item: any) => {
-          let thisHasCompleted = false;
-          if (
-            !item.currentPharmacyIsA &&
-            item.state <= 10 &&
-            !isStateCommon(item.state)
-          )
-            item.state += 10;
-          if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
-            hasCompleted = true;
-            thisHasCompleted = true;
+  const cache = useQueryCache();
+
+  const { refetch } = useQuery(
+    ['key', page],
+    () => getDashboard(page, queryFilter ? params.state : ''),
+    {
+      onSuccess: (result) => {
+        if (result != undefined) {
+          const newList = exchanges.concat(result.items);
+          if (result.count != undefined && result.count != 0) {
+            setTotalCountRef(result.count);
           }
-          if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
+          const statesList: LabelValue[] = [];
+          let hasCompleted: boolean = false;
+          const items = newList.map((item: any) => {
+            let thisHasCompleted = false;
+            if (!item.currentPharmacyIsA && item.state <= 10 && !isStateCommon(item.state))
+              item.state += 10;
+            if (isExchangeCompleted(item.state, item.currentPharmacyIsA)) {
+              hasCompleted = true;
+              thisHasCompleted = true;
+            }
+            if (!hasLabelValue(statesList, item.state) && !thisHasCompleted) {
+              statesList.push({
+                label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
+                value: item.state,
+              });
+            }
+            return { ...item, expireDate: getExpireDate(item) };
+          });
+
+          if (hasCompleted) {
             statesList.push({
-              label: t(`ExchangeStateEnum.${ExchangeStateEnum[item.state]}`),
-              value: item.state,
+              label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
+              value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
             });
           }
-          return { ...item, expireDate: getExpireDate(item) };
-        });
-
-        if (hasCompleted) {
-          statesList.push({
-            label: t('ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL'),
-            value: ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL,
-          });
+          // setExchanges(items);
+          setExchangesRef(items);
+          statesList.push(needSurveyItem);
+          setStateFilterList(statesList);
+          setLoading(false);
+        } else {
+          setLoading(false);
         }
-        setExchanges(items);
-        statesList.push(needSurveyItem);
-        setStateFilterList(statesList);
-        setLoading(false);
-      } else {
-        setLoading(false);
-      }
-    },
-  });
+      },
+    }
+  );
 
   useEffect(() => {
     setPage(0);
@@ -109,31 +118,48 @@ const Desktop1: React.FC = () => {
     refetch();
   }, [queryFilter]);
 
+  const screenWidth = {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+    tablet: 640,
+    laptop: 1024,
+    desktop: 1280,
+  };
+
   const handleScroll = (e: any): any => {
     const el = e.target;
-    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (totalCount == 0 || exchanges.length < (totalCount ?? 0)) {
-        setPage((v) => v + 1);
+    const pixelsBeforeEnd = 200;
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight;
+    if (checkDevice) {
+      if (
+        totalCountRef.current == 0 ||
+        exchangesRef.current.length < (totalCountRef.current ?? 0)
+      ) {
         setLoading(true);
-        refetch();
+        setPage((v) => v + 1);        
+        cache.invalidateQueries('key');
       }
     }
   };
 
   React.useEffect(() => {
-    document.addEventListener('scroll', handleScroll, {
+    document.addEventListener('scroll', debounce(handleScroll, 100), {
       capture: true,
     });
     return (): void => {
-      document.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      });
     };
   }, []);
 
-  const cardClickHandler = (
-    id: number,
-    state: any,
-    exNumber: string | undefined
-  ): void => {
+  const cardClickHandler = (id: number, state: any, exNumber: string | undefined): void => {
     history.push(`${transfer}?eid=${exNumber}`);
   };
 
@@ -173,15 +199,15 @@ const Desktop1: React.FC = () => {
       const listToShow = filter.includes(ExchangeStateEnum.UNKNOWN)
         ? [...exchanges]
         : exchanges.filter(
-          (ex) =>
-            filter.includes(ex.state) ||
-            (filter.includes(NeedSurvey) && ex.needSurvey) ||
-            (isExchangeCompleted(
-              ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
-              ex.currentPharmacyIsA
-            ) &&
-              filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
-        );
+            (ex) =>
+              filter.includes(ex.state) ||
+              (filter.includes(NeedSurvey) && ex.needSurvey) ||
+              (isExchangeCompleted(
+                ex.state == undefined ? ExchangeStateEnum.UNKNOWN : ex.state,
+                ex.currentPharmacyIsA
+              ) &&
+                filter.includes(ExchangeStateEnum.CONFIRMALL_AND_PAYMENTALL))
+          );
 
       // sort
       if (sortField !== '') {
@@ -198,15 +224,15 @@ const Desktop1: React.FC = () => {
       elements = (
         <>
           {listToShow.map((item, index) => (
-            <Grid spacing={ 0 } item xs={ 12 } sm={ 6 } md={ 4 } xl={ 4 } key={ index }>
+            <Grid spacing={0} item xs={12} sm={6} md={4} xl={4} key={index}>
               <DesktopCardContent
-                item={ item }
-                full={ false }
-                showActions={ true }
-                onCardClick={ cardClickHandler }
+                item={item}
+                full={false}
+                showActions={true}
+                onCardClick={cardClickHandler}
               ></DesktopCardContent>
             </Grid>
-          )) }
+          ))}
         </>
       );
 
@@ -218,21 +244,21 @@ const Desktop1: React.FC = () => {
 
   return (
     <Container>
-      <Grid item={ true } xs={ 12 }>
-        <Grid container spacing={ 2 }>
-          <Grid item={ true } xs={ 12 }>
+      <Grid item={true} xs={12}>
+        <Grid container spacing={2}>
+          <Grid item={true} xs={12}>
             <DesktopToolbox
-              filterList={ stateFilterList }
-              onFilterChanged={ filterChanged }
-              onSortSelected={ sortSelected }
+              filterList={stateFilterList}
+              onFilterChanged={filterChanged}
+              onSortSelected={sortSelected}
             />
           </Grid>
         </Grid>
 
-        <Grid container spacing={ 3 }>
-          { <CardListGenerator /> }
+        <Grid container spacing={3}>
+          {<CardListGenerator />}
         </Grid>
-        <CircleBackdropLoading isOpen={ loadingRef.current } />
+        <CircleBackdropLoading isOpen={loading} />
       </Grid>
     </Container>
   );

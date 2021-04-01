@@ -349,7 +349,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
       setAutoFocus(false);
       await sweetAlert({
         type: 'error',
-        text: 'مقدار وارد شده معتبر نمی باشد',
+        text: 'مقدار وارد شده نباید کمتر از یک و یا بیشتر از موجودی باشد',
       }).then(() => setAutoFocus(true));
       return;
     }
@@ -408,7 +408,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
       setAutoFocus(false);
       await sweetAlert({
         type: 'error',
-        text: 'مقدار وارد شده معتبر نمی باشد',
+        text: 'مقدار وارد شده نباید کمتر از یک و یا بیشتر از موجودی باشد',
       }).then(() => setAutoFocus(true));
       return;
     }
