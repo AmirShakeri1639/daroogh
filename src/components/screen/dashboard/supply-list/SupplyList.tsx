@@ -572,7 +572,7 @@ const SupplyList: React.FC = () => {
               onRequestSearch={filteredItemsHandler}
             />
           </Grid>
-          {filteredItems.length > 0 && (
+          {filteredItems.length > 0 && filteredItems.length < data.items.length && (
             <Grid item xs={3} md={2}>
               <SearchButton variant="text" onClick={(): void => setFilteredItems([])}>
                 {t('general.displayList', { var: 'اولیه' })}
