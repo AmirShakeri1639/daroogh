@@ -7,6 +7,7 @@ $base-transition : all .4s ease-in-out;
 $general-radius  : 3em;
 
 .body-login {
+  min-height: 430px;
   background:
     url('/images/daroog-logo-nobg-256.png') no-repeat 5% 5%,
     url('/images/daroog-icon.png') no-repeat 150% -10%;
@@ -24,6 +25,7 @@ $general-radius  : 3em;
   margin-left    : -60%;
   margin-right   : 60%;
   margin-top     : 20%;
+  min-height     : 430px;
 }
 
 .no-padding {
@@ -76,3 +78,20 @@ $general-radius  : 3em;
     margin: 0 auto;
   }
 }
+
+@media (max-height: 580px) {
+  .body-login {
+    background     : url('/images/daroog-logo-nobg-256.png') no-repeat 50% 1%;
+    background-size: 40%;
+  
+    main {
+      padding-top: 40px;
+    }
+  }
+}
+
+// @media (max-height: 480px) {
+//   .body-login {
+//     background: none;
+//   }
+// }
