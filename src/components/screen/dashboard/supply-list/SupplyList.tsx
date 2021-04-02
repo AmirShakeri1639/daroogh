@@ -609,7 +609,6 @@ const SupplyList: React.FC = () => {
           <DialogContentText>
             <Grid container spacing={1} className={formContent}>
               <Grid item xs={12}>
-                {console.log(state?.id)}
                 <AutoComplete
                   disable={state?.id !== 0}
                   ref={useRef()}
