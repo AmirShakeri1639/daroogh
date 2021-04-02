@@ -22,6 +22,7 @@ import Tab1 from './Tab1';
 import Tab2 from './Tab2';
 import { connect, ConnectedProps } from 'react-redux';
 import { ColorEnum } from 'enum';
+import { useTranslation } from 'react-i18next';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -116,8 +117,10 @@ const Exchange: React.FC<ReduxProps> = (props) => {
     setValue(newValue);
   };
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  console.log('exchange', viewExhcnage);
   return (
     <Grid
       container
@@ -128,16 +131,36 @@ const Exchange: React.FC<ReduxProps> = (props) => {
       className={root}
     >
       <Hidden smDown>
-        <span style={{ padding: 5, marginBottom: 2 }}>
-          ابتدا از تب انتخاب از داروخانه مقابل دارو یا پک های عرضه شده را بررسی
-          و برای تبادل انتخاب نمایید. سپس می توانید در تب پیشنهاد دارو از لیست
-          عرضه خود در صورت تمایل لیستی را انتخاب و برای این تبادل پیشنهاد
-          نمایید.به پیام هایی که در کادر سمت چپ نمایش داده می شود دقت فرمایید تا
-          کنترل کامل بر روند تبادل داشته باشید
-        </span>
-        <Grid item xs={12} style={{ padding: 2 }}>
-          <Divider />
-        </Grid>
+        {(viewExhcnage === undefined ||
+          viewExhcnage.state === 1 ||
+          viewExhcnage.state === 2 ||
+          (viewExhcnage.state === 12 && !viewExhcnage.lockSuggestion)) && (
+          <>
+            <Grid container item spacing={1}>
+            <Grid item xs={12} >
+              <span>{t('alerts.ExchangeAlertPart1')}</span>
+              <span style={{ fontSize: 15, color: `${ColorEnum.DeepBlue}` , fontStyle:'italic' }}>
+                {t('alerts.ExchangeAlertPart2')}
+              </span>
+              <span>{t('alerts.ExchangeAlertPart3')}</span>
+              <span style={{ fontSize: 15, color: `${ColorEnum.DeepBlue}` , fontStyle:'italic' }}>
+                {t('alerts.ExchangeAlertPart4')}
+              </span>
+              <span>{t('alerts.ExchangeAlertPart5')}</span>
+            </Grid>
+            <Grid item xs={12}>
+              <span style={{ fontSize: 15, color: '#cc0606' }}>
+                {t('alerts.ExchangeAlertPart6')}
+              </span>
+            </Grid>
+
+            <Grid item xs={12} style={{ padding: 2 }}>
+              <Divider />
+            </Grid>
+            </Grid>
+            
+          </>
+        )}
       </Hidden>
 
       <Grid item xs={12} sm={4} md={4}>
@@ -168,20 +191,18 @@ const Exchange: React.FC<ReduxProps> = (props) => {
           <Tab
             label={
               <Basket
-                label="انتخاب دارو از داروخانه مقابل"
+                label={t('alerts.ExchangeAlertPart2')}
                 count={
                   Array.from(
                     basketCount.filter(
                       (thing, i, arr) =>
-                        thing.packID &&
-                        arr.findIndex((t) => t.packID === thing.packID) === i
+                        thing.packID && arr.findIndex((t) => t.packID === thing.packID) === i
                     )
                   ).length +
                   Array.from(
                     basketCount.filter(
                       (thing, i, arr) =>
-                        !thing.packID &&
-                        arr.findIndex((t) => t.id === thing.id) !== -1
+                        !thing.packID && arr.findIndex((t) => t.id === thing.id) !== -1
                     )
                   ).length
                 }
@@ -192,20 +213,18 @@ const Exchange: React.FC<ReduxProps> = (props) => {
           <Tab
             label={
               <Basket
-                label="انتخاب دارو از لیست عرضه شما"
+                label={t('alerts.ExchangeAlertPart4')}
                 count={
                   Array.from(
                     uBasketCount.filter(
                       (thing, i, arr) =>
-                        thing.packID &&
-                        arr.findIndex((t) => t.packID === thing.packID) === i
+                        thing.packID && arr.findIndex((t) => t.packID === thing.packID) === i
                     )
                   ).length +
                   Array.from(
                     uBasketCount.filter(
                       (thing, i, arr) =>
-                        !thing.packID &&
-                        arr.findIndex((t) => t.id === thing.id) !== -1
+                        !thing.packID && arr.findIndex((t) => t.id === thing.id) !== -1
                     )
                   ).length
                 }

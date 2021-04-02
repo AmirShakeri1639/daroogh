@@ -82,7 +82,7 @@ const Detail: React.FC<DetailProps> = (props) => {
                     />
 
                     <TextWithTitle
-                      title={t('general.number')}
+                      title="تعداد اقلام"
                       body={thousandsSeperator(drugsCounter)}
                     />
                   </Grid>
