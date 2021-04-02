@@ -8,6 +8,7 @@ import DrugTab from './DrugTab';
 import Category from './category/Category';
 import { MaterialContainer } from 'components/public';
 import { Divider, Grid } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,12 +58,13 @@ export default function Drug() {
     setValue(newValue);
   };
 
+  const {t} = useTranslation();
   return (
     <MaterialContainer>
       <Grid container xs={12} className={classes.root}>
         <Grid item xs={12} style={{padding:16}}>
           <span>
-            میتوانید داروها یا دسته بندی های دارویی مورد علاقه خود را انتخاب نمایید. این انتخاب به هوش مصنوعی داروگ کمک میکند تا بهترین لیست ها را برای شما منطبق با علایقتان یافته و تبادل را برای شما مطلوب تر و آسان تر نماید
+            {t('alerts.FavoritesAlert')}
           </span>
         </Grid>
         <Grid item xs={12} style={{ padding: '4px' }}>
