@@ -34,6 +34,7 @@ interface InputProps {
   error?: any;
   className?: any;
   helperText?: ReactText;
+  valueLimit?: (obj: any) => any;
 }
 
 const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref) => {
@@ -54,6 +55,7 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
     error,
     className,
     helperText,
+    valueLimit,
   } = props;
 
   const inuptGenerator = useCallback((): JSX.Element => {
@@ -66,6 +68,7 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
           value={value}
           placeholder={String(placeholder)}
           thousandSeparator
+          isAllowed={valueLimit}
           // @ts-ignore
           onValueChange={(value): void => onChange(value?.value)}
           customInput={TextField}
