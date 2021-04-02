@@ -16,12 +16,20 @@ const useStyle = makeStyles((theme) =>
       position: 'relative',
       overflow: 'hidden',
     },
+    callButton: {
+      fontSize: '11px',
+      color: 'green',
+      border: '1px solid rgba(0, 0, 0, 0.23)',
+      padding: '5px 15px',
+      borderRadius: '4px',
+      textDecoration: 'none'
+    },
   })
 );
 
 const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
-  const { root } = useStyle();
+  const { root, callButton } = useStyle();
   const { t } = useTranslation();
   const { data, cancelHandler, detailHandler } = props;
 
@@ -45,18 +53,31 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
       </Grid>
 
       <Grid item xs={12} container spacing={0} justify="flex-end">
-        <Button
-          onClick={(): void => detailHandler(data)}
-          style={{ color: 'red', fontSize: '14px' }}
-        >
-          جزییات
-        </Button>
-        <Button
-          onClick={(): Promise<any> => cancelHandler(data)}
-          style={{ color: 'red', fontSize: '14px' }}
-        >
-          {t('general.reject')}
-        </Button>
+        <Grid xs={4} style={{ flex: '1 1 auto', marginTop: '4px' }}>
+          <a
+            className={callButton}
+            onClick={(e: any): any => {
+              e.stopPropagation();
+            }}
+            href={'tel:' + mobile}
+          >
+            تماس
+          </a>
+        </Grid>
+        <Grid xs={8} justify="flex-end" style={{ display: 'flex' }}>
+          <Button
+            onClick={(): void => detailHandler(data)}
+            style={{ color: 'red', fontSize: '11px' }}
+          >
+            جزییات
+          </Button>
+          <Button
+            onClick={(): Promise<any> => cancelHandler(data)}
+            style={{ color: 'red', fontSize: '11px' }}
+          >
+            {t('general.reject')}
+          </Button>
+        </Grid>
       </Grid>
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>

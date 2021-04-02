@@ -74,7 +74,8 @@ const CardContainer: React.FC<PrescriptionCardDataInterface> = (props) => {
         <Divider />
       </Grid>
 
-      <Grid item xs={12} justify="flex-end">
+      <Grid item xs={12}  container spacing={0} justify="flex-end">
+     
         <Button
           onClick={(): void => detailHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
@@ -85,7 +86,7 @@ const CardContainer: React.FC<PrescriptionCardDataInterface> = (props) => {
           onClick={(): void => saveHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-          {t('general.reject')}
+          {t('general.edit')}
         </Button>
       </Grid>
       <BackDrop isOpen={isOpenBackDrop} />
