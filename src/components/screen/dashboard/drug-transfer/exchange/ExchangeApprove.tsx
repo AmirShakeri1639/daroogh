@@ -449,14 +449,13 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
         <Grid item xs={12} style={{ marginTop: 4 }}>
           {accountingForPayment && accountingForPayment.length > 0 ? (
-            <span>
-              با توجه به اینکه حداکثر بدهی در سیستم داروگ مبلغ
+            <span style={{margin:16}}>
+              داروساز عزیز با توجه به اینکه سقف بدهی مجاز در سیستم داروگ مبلغ
               <span style={{ marginRight: 5, marginLeft: 5, color: 'red' }}>
                 <b>{Utils.numberWithCommas(debtAmountAllow)}</b>
               </span>
               <span>
-                {t('general.defaultCurrency')} می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و
-                سپس پرداخت نمایید
+                {t('general.defaultCurrency')} می باشد ،لطفا با انتخاب موارد دلخواه از لیست ذیل ، نسبت به پرداخت آن اقدام نمایید.
               </span>
             </span>
           ) : (
