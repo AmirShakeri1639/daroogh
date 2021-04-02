@@ -116,6 +116,10 @@ const Pack: React.FC = () => {
   return (
     <Container>
       <Grid container spacing={3}>
+      <Grid item xs={12} style={{marginTop:16}}>
+          {t('alerts.CreatePackAlert')}
+        </Grid>
+
         <Grid item xs={12}>
           <h3>لیست پک ها</h3>
         </Grid>
