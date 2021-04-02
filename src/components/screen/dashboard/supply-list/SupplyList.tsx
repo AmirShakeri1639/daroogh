@@ -609,7 +609,6 @@ const SupplyList: React.FC = () => {
           <DialogContentText>
             <Grid container spacing={1} className={formContent}>
               <Grid item xs={12}>
-                {console.log(state?.id)}
                 <AutoComplete
                   disable={state?.id !== 0}
                   ref={useRef()}
@@ -634,8 +633,13 @@ const SupplyList: React.FC = () => {
                     <Input
                       numberFormat
                       className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
                       label={`${t('general.number')} ${t('drug.drug')}`}
-                      onChange={debounce((e) => dispatch({ type: 'cnt', value: e }), 500)}
+                      onChange={(e): void => dispatch({ type: 'cnt', value: e })}
                       value={state?.cnt}
                     />
                   </Grid>
@@ -655,8 +659,13 @@ const SupplyList: React.FC = () => {
                       numberFormat
                       value={state?.amount}
                       className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
                       label={t('general.price')}
-                      onChange={debounce((e) => dispatch({ type: 'amount', value: e }), 500)}
+                      onChange={(e): void => dispatch({ type: 'amount', value: e })}
                     />
                   </Grid>
                 </Grid>

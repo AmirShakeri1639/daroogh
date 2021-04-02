@@ -207,17 +207,19 @@ const AutoComplete: React.FC<Props & { ref: Ref<any> }> = forwardRef(
           />
         </div>
         <div className={style['button-wrapper']}>
-          <FontAwesomeIcon
-            icon={showOptionsList ? faCaretUp : faCaretDown}
-            className="cursor-pointer"
-            onClick={(): void => {
-              if (!showOptionsList) {
-                setShowOptionsList(true);
-              } else {
-                setShowOptionsList(false);
-              }
-            }}
-          />
+          {!disable && (
+            <FontAwesomeIcon
+              icon={showOptionsList ? faCaretUp : faCaretDown}
+              className="cursor-pointer"
+              onClick={(): void => {
+                if (!showOptionsList) {
+                  setShowOptionsList(true);
+                } else {
+                  setShowOptionsList(false);
+                }
+              }}
+            />
+          )}
 
           {(inputValue.length > 0 || valuesArray.length > 0) && (
             <FontAwesomeIcon
