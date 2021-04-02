@@ -4,11 +4,10 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import DrugTab from './DrugTab';
-import Category from './category/Category';
+import JobsList from './jobsList';
+import EmploymentApplicationList from './../job-search/jobSearchList';
 import { MaterialContainer } from 'components/public';
 import { Divider, Grid } from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -58,39 +57,21 @@ export default function Drug() {
     setValue(newValue);
   };
 
-  const {t} = useTranslation();
   return (
     <MaterialContainer>
       <Grid container xs={12} className={classes.root}>
-        <Grid item xs={12} style={{padding:16}}>
-          <span>
-            {t('alerts.FavoritesAlert')}
-          </span>
-        </Grid>
-        <Grid item xs={12} style={{ padding: '4px' }}>
-        <Divider />
-        </Grid>
         <Grid item xs={12}>
-
-        <Tabs
-          centered
-          value={value}
-          onChange={handleChange}
-          aria-label="simple tabs example"
-        >
-          <Tab style={{ width: '50%' }} label="دارو" {...a11yProps(0)} />
-          <Tab
-            style={{ width: '50%' }}
-            label="دسته دارویی"
-            {...a11yProps(1)}
-          />
-        </Tabs>
-        <TabPanel value={value} index={0}>
-          <DrugTab />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <Category />
-        </TabPanel>
+          <Tabs centered value={value} onChange={handleChange} aria-label="simple tabs example">
+            <Tab style={{ width: '50%' }} label="کاریابی" {...a11yProps(0)} />
+            <Tab style={{ width: '50%' }} label="فرصت های شغلی" {...a11yProps(1)} />
+          </Tabs>
+          <Divider/>
+          <TabPanel value={value} index={0}>
+            <EmploymentApplicationList />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <JobsList />
+          </TabPanel>
         </Grid>
       </Grid>
     </MaterialContainer>

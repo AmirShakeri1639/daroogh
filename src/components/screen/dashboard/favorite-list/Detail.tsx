@@ -76,21 +76,21 @@ const Detail: React.FC<DrugInterface> = (props) => {
                       body={categoryName || t('general.undefined')}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('drug.latinName')}
                       body={enName || t('general.undefined')}
                     />
                   </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <TextWithTitle
                       title={t('drug.companyName')}
                       body={companyName || t('general.undefined')}
                     />
                     </Grid>
 
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
 
                     <TextWithTitle
                       title={t('drug.genericName')}

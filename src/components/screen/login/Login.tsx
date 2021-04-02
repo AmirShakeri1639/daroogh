@@ -30,6 +30,7 @@ import { Settings, User, File } from '../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
+import ReCAPTCHA from 'react-google-recaptcha';
 import 'assets/scss/login.scss';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -101,6 +102,9 @@ const Login: React.FC = (): JSX.Element => {
   const classes = useStyles();
   const { from }: any = location.state || { from: { pathname: '/dashboard' } };
   const { loginUser } = new Account();
+  const maxTries = 3;
+  const [wrongTries, setWrongTries] = useState(0);
+  const [isValidRecaptcha, setIsValidRecaptcha] = useState()
 
   const [_loginUser, { isLoading }] = useMutation(loginUser, {
     onSuccess: async (data) => {
@@ -114,7 +118,6 @@ const Login: React.FC = (): JSX.Element => {
         const result = await getPublic(data.token);
         const { smsAPIkey, ...settings } = result;
         localStorage.setItem('settings', JSON.stringify(settings));
-        console.log('settings:', settings);
 
         // Save blob of profile pic in local storage
         try {
@@ -150,6 +153,13 @@ const Login: React.FC = (): JSX.Element => {
       }
     },
     onError: async () => {
+      setWrongTries(v => v + 1)
+      if (
+        wrongTries >= maxTries - 1 &&
+        isValidRecaptcha === undefined
+      ) {
+        setIsValidRecaptcha(false)
+      }
       await errorSweetAlert(t('alert.errorUserNamePassword'));
     },
   });
@@ -160,7 +170,8 @@ const Login: React.FC = (): JSX.Element => {
     e.preventDefault();
     if (
       state.username.trim().length === 0 ||
-      state.password.trim().length === 0
+      state.password.trim().length === 0 ||
+      (isValidRecaptcha !== undefined && !isValidRecaptcha)
     ) {
       setShowError(true);
       return;
@@ -195,37 +206,37 @@ const Login: React.FC = (): JSX.Element => {
         <Typography component="h1" variant="h5">
           ورود
         </Typography> */}
-        <form className={classes.form} noValidate onSubmit={formSubmitHandler}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
+        <form className={ classes.form } noValidate onSubmit={ formSubmitHandler }>
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
               <TextField
-                error={state.username.trim().length === 0 && showError}
+                error={ state.username.trim().length === 0 && showError }
                 variant="outlined"
                 margin="normal"
                 required
-                xs={12}
+                xs={ 12 }
                 fullWidth
                 className="text-field"
                 id="email"
-                label={t('login.username')}
+                label={ t('login.username') }
                 name="email"
                 autoComplete="email"
-                onChange={usernameHandler}
-                InputProps={{
+                onChange={ usernameHandler }
+                InputProps={ {
                   startAdornment: (
                     <InputAdornment position="start">
                       <FontAwesomeIcon
-                        icon={faUser}
+                        icon={ faUser }
                         size="lg"
                         color="#3607a5"
                       />
                     </InputAdornment>
                   ),
-                }}
+                } }
               />
               <TextField
-                xs={12}
-                error={state.password.trim().length === 0 && showError}
+                xs={ 12 }
+                error={ state.password.trim().length === 0 && showError }
                 variant="outlined"
                 margin="normal"
                 required
@@ -233,62 +244,77 @@ const Login: React.FC = (): JSX.Element => {
                 className="text-field"
                 name="password"
                 label="کلمه عبور"
-                type={state.isVisiblePassword ? 'text' : 'password'}
+                type={ state.isVisiblePassword ? 'text' : 'password' }
                 id="password"
-                onChange={passwordHandler}
+                onChange={ passwordHandler }
                 autoComplete="current-password"
-                InputProps={{
+                InputProps={ {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <FontAwesomeIcon icon={faKey} size="lg" color="#3607a5" />
+                      <FontAwesomeIcon icon={ faKey } size="lg" color="#3607a5" />
                     </InputAdornment>
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
+                        onClick={ handleClickShowPassword }
+                        onMouseDown={ handleMouseDownPassword }
                         edge="end"
                       >
-                        {state.isVisiblePassword ? (
+                        { state.isVisiblePassword ? (
                           <Visibility />
                         ) : (
                           <VisibilityOff />
-                        )}
+                        ) }
                       </IconButton>
                     </InputAdornment>
                   ),
-                }}
+                } }
               />
             </Grid>
-            <Grid item xs={12} className="no-padding">
+            <Grid item xs={ 12 }>
+              { wrongTries >= maxTries &&
+                <ReCAPTCHA
+                  hl="fa-IR"
+                  sitekey="6LccDpcaAAAAAFS0dQ_9-CZDsEC5U-UGUvN7SLXB"
+                  onChange={ (v: any) => {
+                    if (v) {
+                      setIsValidRecaptcha(true);
+                    } else {
+                      setIsValidRecaptcha(false);
+                    }
+                  } }
+                />
+              }
+            </Grid>
+            <Grid item xs={ 12 } className="no-padding">
               <Button
                 type="submit"
                 className="button"
                 variant="contained"
-                disabled={isLoading}
+                disabled={ isLoading }
               >
-                <Typography variant="button">{t('login.login')}</Typography>
-                {isLoading ? (
-                  <CircleLoading size={16} color="inherit" />
+                <Typography variant="button">{ t('login.login') }</Typography>
+                { isLoading ? (
+                  <CircleLoading size={ 16 } color="inherit" />
                 ) : (
-                  <LockOpenIcon fontSize="inherit" className={classes.margin} />
-                )}
+                  <LockOpenIcon fontSize="inherit" className={ classes.margin } />
+                ) }
               </Button>
             </Grid>
-            <Grid item xs={12} className="no-padding">
+            <Grid item xs={ 12 } className="no-padding">
               <Link className="link" to="/forget-password">
                 رمز عبور را فراموش کردم
               </Link>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <Link
                 className="link MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
                 to="/register-pharmacy-with-user"
               >
                 <Typography variant="button">
-                  {t('login.registerPharmacyWithUser')}
+                  { t('login.registerPharmacyWithUser') }
                 </Typography>
               </Link>
             </Grid>

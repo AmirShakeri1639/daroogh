@@ -26,6 +26,7 @@ import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import CardContainer from './CardContainer';
 import SearchBar from 'material-ui-search-bar';
+import { debounce } from 'lodash';
 
 const initialState: AccountingInterface = {
   id: 0,
@@ -183,7 +184,7 @@ const AccountingList: React.FC = () => {
     {
       onSuccess: (result) => {
         if (result == undefined || result.count == 0) {
-          setNoData(true);
+          setNoDataRef(true);
         } else {
           setListRef(result.items);
         }
@@ -191,64 +192,59 @@ const AccountingList: React.FC = () => {
     }
   );
 
-  const [noData, setNoData] = useState<boolean>(false);
+  
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
   const setPageRef = (data: number) => {
     pageRef.current = data;
     setPage(data);
   };
-  function isMobile() {
-    return window.innerWidth < 960;
-  }
-
-  function useWindowDimensions() {
-    const [mobile, setMobile] = useState(false);
-    const mobileRef = React.useRef(mobile);
-    const setMobileRef = (data: boolean) => {
-      mobileRef.current = data;
-      setMobile(data);
-    };
-    React.useEffect(() => {
-      function handleResize() {
-        // if (!mobileRef.current && isMobile()) {
-        //   window.addEventListener('scroll', handleScroll, {
-        //     capture: true,
-        //   });
-        // } else if (mobileRef.current && !isMobile()) {
-        //   window.removeEventListener('scroll', handleScroll, {
-        //     capture: true,
-        //   });
-        // }
-        // setMobileRef(isMobile());
-        window.addEventListener('scroll', handleScroll, {
-          capture: true,
-        });
-      }
-      handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    return mobile;
-  }
-
-  useWindowDimensions();
+  const [noData, setNoData] = useState<boolean>(false);
+  const noDataRef = React.useRef(noData);
+  const setNoDataRef = (data: boolean) => {
+    noDataRef.current = data;
+    setNoData(data);
+  };
+  const screenWidth = {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+    tablet: 640,
+    laptop: 1024,
+    desktop: 1280,
+  };
   const handleScroll = (e: any): any => {
+  
     const el = e.target;
-    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (!noData) {
-        const currentpage = pageRef.current + 1;
-        setPageRef(currentpage);
-        getList();
-      }
+    const pixelsBeforeEnd = 200;
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight;
+    if (!noDataRef.current && checkDevice) {
+      const currentpage = pageRef.current + 1;
+      setPageRef(currentpage);
+      console.log(pageRef.current);
+      getList();
     }
   };
+  React.useEffect(() => {
+    document.addEventListener('scroll', debounce(handleScroll, 100), {
+      capture: true,
+    });
+    return (): void => {
+      document.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      });
+    };
+  }, []);
 
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await all(pageRef.current, 10, [], searchRef.current);
     if (result == undefined || result.items.length == 0) {
-      setNoData(true);
+      setNoDataRef(true);
     }
     if (result != undefined) {
       setListRef(result.items, refresh);
@@ -281,7 +277,7 @@ const AccountingList: React.FC = () => {
     if (!isLoading && list !== undefined && isFetched) {
       return listRef.current.map((item: any) => {
         return (
-          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+          <Grid item xs={12} sm={6} md={4} key={item.id}>
             <CardContainer data={item} exchangeHandler={exchangeHandler} />
           </Grid>
         );

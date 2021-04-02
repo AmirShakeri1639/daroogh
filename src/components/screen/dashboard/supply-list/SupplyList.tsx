@@ -162,9 +162,7 @@ const useStyle = makeStyles((theme) =>
       marginBottom: theme.spacing(1),
     },
     formContent: {
-      height: 485,
-      overflow: 'hidden',
-      overflowY: 'auto',
+      height: 495,
       display: 'flex',
     },
     fab: {
@@ -572,7 +570,7 @@ const SupplyList: React.FC = () => {
               onRequestSearch={filteredItemsHandler}
             />
           </Grid>
-          {filteredItems.length > 0 && (
+          {filteredItems.length > 0 && filteredItems.length < data.items.length && (
             <Grid item xs={3} md={2}>
               <SearchButton variant="text" onClick={(): void => setFilteredItems([])}>
                 {t('general.displayList', { var: 'اولیه' })}
@@ -612,6 +610,7 @@ const SupplyList: React.FC = () => {
             <Grid container spacing={1} className={formContent}>
               <Grid item xs={12}>
                 <AutoComplete
+                  disable={state?.id !== 0}
                   ref={useRef()}
                   isLoading={isLoading}
                   onChange={debounce((e) => searchDrugs(e.target.value), 500)}
@@ -778,7 +777,7 @@ const SupplyList: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">فرمت تاریخ به صورت 0000 00 00 باشد</span>
+                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
               {/* <Grid item xs={12}>

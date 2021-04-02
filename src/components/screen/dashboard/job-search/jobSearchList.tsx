@@ -35,6 +35,7 @@ import { api } from '../../../../config/default.json';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import SearchBar from 'material-ui-search-bar';
 import { TrendingUpRounded } from '@material-ui/icons';
+import { debounce } from 'lodash';
 
 interface Props {
   full?: boolean;
@@ -365,7 +366,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       onSuccess: (result) => {
         console.log(result);
         if (result == undefined || result.count == 0) {
-          setNoData(true);
+          setNoDataRef(true);
         } else {
           // console.log(result.items);
 
@@ -374,7 +375,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       },
     }
   );
-  const [noData, setNoData] = useState<boolean>(false);
+  
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
   const setPageRef = (data: number) => {
@@ -382,24 +383,12 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     setPage(data);
   };
 
-  const handleScroll = (e: any): any => {
-    //if (fullScreen) {
-
-    const el = e.target;
-    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (!noData) {
-        const currentpage = pageRef.current + 1;
-        setPageRef(currentpage);
-        console.log(pageRef.current);
-        getList();
-      }
-    }
-  };
+  
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await all(pageRef.current, 10, [], searchRef.current);
     //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
-      setNoData(true);
+      setNoDataRef(true);
     }
     if (result != undefined) {
       setListRef(result.items, refresh);
@@ -407,47 +396,55 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     }
   }
 
-  function isMobile() {
-    return window.innerWidth < 960;
-  }
-  function useWindowDimensions() {
-    const [mobile, setMobile] = useState(false);
-    const mobileRef = React.useRef(mobile);
-    const setMobileRef = (data: boolean) => {
-      mobileRef.current = data;
-      setMobile(data);
+  const [noData, setNoData] = useState<boolean>(false);
+  const noDataRef = React.useRef(noData);
+  const setNoDataRef = (data: boolean) => {
+    noDataRef.current = data;
+    setNoData(data);
+  };
+  const screenWidth = {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+    tablet: 640,
+    laptop: 1024,
+    desktop: 1280,
+  };
+  const handleScroll = (e: any): any => {
+  
+    const el = e.target;
+    const pixelsBeforeEnd = 200;
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight;
+    if (!noDataRef.current && checkDevice) {
+      const currentpage = pageRef.current + 1;
+      setPageRef(currentpage);
+      console.log(pageRef.current);
+      getList();
+    }
+  };
+  React.useEffect(() => {
+    document.addEventListener('scroll', debounce(handleScroll, 100), {
+      capture: true,
+    });
+    return (): void => {
+      document.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      });
     };
-    React.useEffect(() => {
-      function handleResize() {
-        // if (!mobileRef.current && isMobile()) {
-        //   window.addEventListener('scroll', handleScroll, {
-        //     capture: true,
-        //   });
-        // } else if (mobileRef.current && !isMobile()) {
-        //   window.removeEventListener('scroll', handleScroll, {
-        //     capture: true,
-        //   });
-        // }
-        // setMobileRef(isMobile());
-        window.addEventListener('scroll', handleScroll, {
-          capture: true,
-        });
-      }
-      handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
+  }, []);
 
-    return mobile;
-  }
-  useWindowDimensions();
   const contentGenerator = (): JSX.Element[] => {
     if (!isLoading && list !== undefined && isFetched) {
       return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+          <Grid item xs={12} sm={6} md={4}>
             <CardContainer
               data={item}
               cancelHandler={cancelHandler}
@@ -455,7 +452,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
             />
           </Grid>
         );
-        //}
+    
       });
     }
 
@@ -463,7 +460,10 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   };
   return (
     <Container maxWidth="lg" className={container}>
-      <h1 className="txt-md">{t('employment.application')}</h1>
+      <Grid item xs={12}>
+          <span>{t('employment.applications')}</span>
+        </Grid>
+     
       {false && (
         <DataTable
           tableRef={ref}
@@ -478,7 +478,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       )}
       {isOpenDetails && detialsDialog()}
       <br />
-      {true && (
+      {false && (
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
             <SearchBar
@@ -489,7 +489,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
           </Grid>
         </Grid>
       )}
-      <Grid container spacing={3} className={contentContainer}>
+      <Grid container spacing={3}>
       {true && contentGenerator()}
       </Grid>
       {true && <CircleBackdropLoading isOpen={isLoading} />}

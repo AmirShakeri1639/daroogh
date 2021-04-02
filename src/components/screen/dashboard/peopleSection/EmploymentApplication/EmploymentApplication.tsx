@@ -2,6 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import {
   Button,
   Checkbox,
+  Container,
   createStyles,
   Dialog,
   DialogActions,
@@ -44,6 +45,7 @@ import {
   suggestedWorkShifts,
 } from './EnumsList';
 import { EmploymentApplicationDataInterface } from 'interfaces/EmploymentApplicationInterface';
+import { useClasses } from '../../classes';
 
 const { currentUserEmploymentApplications, cancel, save } = new applications();
 
@@ -54,7 +56,7 @@ const useStyle = makeStyles((theme) =>
       display: 'none',
     },
     addButton: {
-      minHeight: 175,
+      minHeight: 150,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -80,6 +82,9 @@ const useStyle = makeStyles((theme) =>
       '& button:nth-child(1)': {
         marginRight: theme.spacing(1),
       },
+    },
+    contentContainer: {
+      marginTop: 15,
     },
   })
 );
@@ -242,8 +247,8 @@ const EmploymentApplication: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { addButton, input, fab, buttonContainer } = useStyle();
-
+  const { addButton, input, fab, buttonContainer, contentContainer } = useStyle();
+  const { container } = useClasses();
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
   const { isLoading, data, isFetched, refetch } = useQuery(
@@ -305,7 +310,13 @@ const EmploymentApplication: React.FC = () => {
     if (!isLoading && data !== undefined && isFetched) {
       return data.items.map((item: any) => {
         if (item !== null) {
-          return <CardContainer data={item} formHandler={removeHandler} />;
+          return (
+
+            <Grid item xs={12} sm={6} md={4} key={item.id}>
+
+              <CardContainer data={item} formHandler={removeHandler} />
+            </Grid>
+          );
         }
 
         return null;
@@ -335,29 +346,31 @@ const EmploymentApplication: React.FC = () => {
   };
 
   return (
-    <MaterialContainer>
-      <Grid container spacing={3}>
+    <Container maxWidth="lg" className={container}>
+      <Grid item xs={12}>
+        <span>{t('peopleSection.listJobApplication')}</span>
+      </Grid>
+      <Grid container spacing={0}>
         <Grid item xs={12}>
-          <h3>{t('peopleSection.listJobApplication')}</h3>
-        </Grid>
-        <Hidden xsDown>
-          <Grid item xs={12} sm={6} md={4} xl={4}>
-            <Paper className={addButton} onClick={toggleIsOpenModal}>
-              <FontAwesomeIcon icon={faPlus} size="2x" />
-              <span>{t('peopleSection.addJobApplication')}</span>
-            </Paper>
+          <Grid container spacing={3} className={contentContainer}>
+            <Hidden xsDown>
+              <Grid item xs={12} sm={6} md={4} xl={4}>
+                <Paper className={addButton} onClick={toggleIsOpenModal}>
+                  <FontAwesomeIcon icon={faPlus} size="2x" />
+                  <span>{t('peopleSection.addJobApplication')}</span>
+                </Paper>
+              </Grid>
+            </Hidden>
+            <Hidden smUp>
+              <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+                <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+              </Fab>
+            </Hidden>
+            {contentGenerator()}
           </Grid>
-        </Hidden>
 
-        <Grid item xs={12} sm={6} md={4} xl={4}>
-          {contentGenerator()}
         </Grid>
 
-        <Hidden smUp>
-          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
-            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-          </Fab>
-        </Hidden>
       </Grid>
       <Dialog
         fullScreen={fullScreen}
@@ -376,7 +389,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.name')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.name}
@@ -389,7 +402,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.family')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.family}
@@ -402,7 +415,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.birthDate')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.birthDate}
@@ -500,7 +513,7 @@ const EmploymentApplication: React.FC = () => {
                 type="number"
                 InputLabelProps={{
                   shrink: true,
-                  required: true
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.workExperienceYear}
@@ -671,7 +684,7 @@ const EmploymentApplication: React.FC = () => {
                 onChange={changeprovince}
                 SelectProps={{
                   native: true,
-                  required: true
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.countryDivisionCode}
@@ -690,7 +703,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.ostan')}
                 SelectProps={{
                   native: true,
-                  required:true
+                  required: true,
                 }}
                 variant="outlined"
               >
@@ -743,7 +756,7 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.landlinePhone')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.landlinePhone}
@@ -778,7 +791,7 @@ const EmploymentApplication: React.FC = () => {
                 margin="normal"
                 InputLabelProps={{
                   shrink: true,
-                  required: true
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.address}
@@ -795,7 +808,7 @@ const EmploymentApplication: React.FC = () => {
                 margin="normal"
                 InputLabelProps={{
                   shrink: true,
-                  required: true
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.descriptions}
@@ -815,7 +828,7 @@ const EmploymentApplication: React.FC = () => {
           </Grid>
         </DialogActions>
       </Dialog>
-    </MaterialContainer>
+    </Container>
   );
 };
 

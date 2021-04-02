@@ -90,8 +90,9 @@ const Pack: React.FC = () => {
   const contentHandler = (): JSX.Element[] | null => {
     if (data !== undefined && !isLoading) {
       return data.items.reverse().map((item: any) => {
-        const { id, name, pharmacyDrug, category } = item;
+        const { id, name, pharmacyDrug, category , category2 , category3 } = item;
         let totalPrice = 0;
+        let categories = `${category === null ? name : category.name} ${category2 === null ?  '':category2.name} ${category3 === null ? '' : category3.name} `;
         pharmacyDrug.forEach((item: any) => {
           totalPrice += item.amount * item.cnt;
         });
@@ -100,7 +101,7 @@ const Pack: React.FC = () => {
             <CardContainer
               totalPrice={totalPrice}
               drugsCounter={pharmacyDrug.length}
-              name={category === null ? name : category.name}
+              name={category === null ? name : categories}
               id={id}
               removeHandler={removeHandler}
             />
@@ -115,6 +116,10 @@ const Pack: React.FC = () => {
   return (
     <Container>
       <Grid container spacing={3}>
+      <Grid item xs={12} style={{marginTop:16}}>
+          {t('alerts.CreatePackAlert')}
+        </Grid>
+
         <Grid item xs={12}>
           <h3>لیست پک ها</h3>
         </Grid>

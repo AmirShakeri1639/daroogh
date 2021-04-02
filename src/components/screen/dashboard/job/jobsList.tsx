@@ -55,12 +55,7 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { JobsEnum } from '../../../../enum/query';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
-import {
-  ColorEnum,
-  WorkTimeEnum,
-  MaritalStatusType,
-  GenderType,
-} from '../../../../enum';
+import { ColorEnum, WorkTimeEnum, MaritalStatusType, GenderType } from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -80,14 +75,9 @@ import AddTransactionModal from '../accounting/AddTransactionModal';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { Map } from '../../../public';
 import { CountryDivisionSelect } from '../../../public/country-division/CountryDivisionSelect';
-import {
-  StateType,
-  WorkShiftType,
-  SkillLevel,
-  JobPositionType,
-  EducationLevel,
-} from 'enum/Job';
+import { StateType, WorkShiftType, SkillLevel, JobPositionType, EducationLevel } from 'enum/Job';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import { debounce } from 'lodash';
 
 const initialState: JobInterface = {
   id: 0,
@@ -242,7 +232,7 @@ const useStyle = makeStyles((theme) =>
       right: 'auto',
       position: 'fixed',
       backgroundColor: '#54bc54 ',
-      zIndex:1
+      zIndex: 1,
     },
     blankCard: {
       minHeight: 150,
@@ -279,12 +269,10 @@ const JobsList: React.FC = () => {
     addButton,
 
     dropdown,
-
   } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   //const fullScreen =  true
-  
 
   const {
     createUserBtn,
@@ -307,7 +295,7 @@ const JobsList: React.FC = () => {
     listRef.current = [];
     setList([]);
     setPageRef(0);
-    setNoData(false);
+    setNoDataRef(false);
     getList();
   };
   const [_cancel, { isLoading: isLoadingRemove }] = useMutation(cancel, {
@@ -531,9 +519,7 @@ const JobsList: React.FC = () => {
     //   }
   };
 
-  const [MaritalStatusList, setMaritalStatusList] = useState(
-    new Array<LabelValue>()
-  );
+  const [MaritalStatusList, setMaritalStatusList] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
@@ -575,9 +561,7 @@ const JobsList: React.FC = () => {
     setStateTypeList(elList);
   }, []);
 
-  const [WorkShiftTypeList, setWorkShiftTypeList] = useState(
-    new Array<LabelValue>()
-  );
+  const [WorkShiftTypeList, setWorkShiftTypeList] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
@@ -604,9 +588,7 @@ const JobsList: React.FC = () => {
     }
     setSkillLevelList(elList);
   }, []);
-  const [JobPositionTypeList, setJobPositionTypeList] = useState(
-    new Array<LabelValue>()
-  );
+  const [JobPositionTypeList, setJobPositionTypeList] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
@@ -620,9 +602,7 @@ const JobsList: React.FC = () => {
     setJobPositionTypeList(elList);
   }, []);
 
-  const [EducationLevelList, setEducationLevel] = useState(
-    new Array<LabelValue>()
-  );
+  const [EducationLevelList, setEducationLevel] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
@@ -649,7 +629,7 @@ const JobsList: React.FC = () => {
       onSuccess: (result) => {
         console.log(result);
         if (result == undefined || result.count == 0) {
-          setNoData(true);
+          setNoDataRef(true);
         } else {
           //console.log(result.items);
 
@@ -658,7 +638,7 @@ const JobsList: React.FC = () => {
       },
     }
   );
-  const [noData, setNoData] = useState<boolean>(false);
+  
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
   const setPageRef = (data: number) => {
@@ -666,64 +646,60 @@ const JobsList: React.FC = () => {
     setPage(data);
   };
 
-  const handleScroll = (e: any): any => {
-    //if (fullScreen) {
-
-    const el = e.target;
-    if (el.scrollTop + el.clientHeight === el.scrollHeight) {
-      if (!noData) {
-        const currentpage = pageRef.current + 1;
-        setPageRef(currentpage);
-        console.log(pageRef.current);
-        getList();
-      }
-    }
-  };
   async function getList(): Promise<any> {
     const result = await all(pageRef.current, 10);
-    //console.log(result.items);
+    console.log(result.items);
     if (result == undefined || result.items.length == 0) {
-      setNoData(true);
+     
+      setNoDataRef(true);
     } else {
       setListRef(result.items);
       return result;
     }
   }
 
-  function isMobile() {
-    return window.innerWidth < 960;
-  }
-  function useWindowDimensions() {
-    const [mobile, setMobile] = useState(false);
-    const mobileRef = React.useRef(mobile);
-    const setMobileRef = (data: boolean) => {
-      mobileRef.current = data;
-      setMobile(data);
+  const [noData, setNoData] = useState<boolean>(false);
+  const noDataRef = React.useRef(noData);
+  const setNoDataRef = (data: boolean) => {
+    noDataRef.current = data;
+    setNoData(data);
+  };
+  const screenWidth = {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+    tablet: 640,
+    laptop: 1024,
+    desktop: 1280,
+  };
+  const handleScroll = (e: any): any => {
+  
+    const el = e.target;
+    const pixelsBeforeEnd = 200;
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight;
+    if (!noDataRef.current && checkDevice) {
+      const currentpage = pageRef.current + 1;
+      setPageRef(currentpage);
+      console.log(pageRef.current);
+      getList();
+    }
+  };
+  React.useEffect(() => {
+    document.addEventListener('scroll', debounce(handleScroll, 100), {
+      capture: true,
+    });
+    return (): void => {
+      document.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      });
     };
-    React.useEffect(() => {
-      function handleResize() {
-        // if (!mobileRef.current && isMobile()) {
-        //   window.addEventListener('scroll', handleScroll, {
-        //     capture: true,
-        //   });
-        // } else if (mobileRef.current && !isMobile()) {
-        //   window.removeEventListener('scroll', handleScroll, {
-        //     capture: true,
-        //   });
-        // }
-        // setMobileRef(isMobile());
-        window.addEventListener('scroll', handleScroll, {
-          capture: true,
-        })
-      }
-      handleResize();
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
+  }, []);
 
-    return mobile;
-  }
-  useWindowDimensions();
   const editModal = (): JSX.Element => {
     return (
       <Dialog
@@ -797,9 +773,7 @@ const JobsList: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <label>
-                      {t('jobs.minGradeOfReadingPrescriptionCertificate')}
-                    </label>
+                    <label>{t('jobs.minGradeOfReadingPrescriptionCertificate')}</label>
                   </Grid>
 
                   <Grid item xs={12}>
@@ -989,9 +963,7 @@ const JobsList: React.FC = () => {
                       required
                       label={t('jobs.maxAge')}
                       value={state?.maxAge}
-                      onChange={(e): void =>
-                        dispatch({ type: 'maxAge', value: e.target.value })
-                      }
+                      onChange={(e): void => dispatch({ type: 'maxAge', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
@@ -1064,9 +1036,7 @@ const JobsList: React.FC = () => {
                     submitSave(e);
                   }}
                 >
-                  {isLoadingSave
-                    ? t('general.pleaseWait')
-                    : t('general.submit')}
+                  {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
                 </Button>
               </Grid>
             </Grid>
@@ -1112,15 +1082,11 @@ const JobsList: React.FC = () => {
 
   const contentGenerator = (): JSX.Element[] => {
     if (!isLoading && list !== undefined && isFetched) {
-      console.log(data);
-      console.log(list);
-
       return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
-         
+          <Grid item xs={12} sm={6} md={4} key={item.id}>
             <CardContainer
               data={item}
               saveHandler={saveHandler}
@@ -1138,7 +1104,9 @@ const JobsList: React.FC = () => {
   // @ts-ignore
   return (
     <Container maxWidth="lg" className={container}>
-      <h1 className="txt-md">{t('jobs.list')}</h1>
+      <Grid item xs={12}>
+        <span>{t('jobs.list')}</span>
+      </Grid>
       <Grid container spacing={0}>
         <Grid item xs={12}>
           {false && (
@@ -1155,32 +1123,25 @@ const JobsList: React.FC = () => {
             />
           )}
           {(isLoadingRemove || isLoadingSave) && <CircleLoading />}
-        
-          <Grid container spacing={3} className={contentContainer}>
-      
-          <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={4}>
-        
-            <Paper className={blankCard} onClick={(): void => saveHandler(initialState)}>
-              <FontAwesomeIcon icon={faPlus} size="2x" />
-              <span>ایجاد فرصت شغلی</span>
-            </Paper>
-              
-            </Grid>
-          </Hidden>
 
-          <Hidden smUp>
-            <Fab
-              onClick={(): void => saveHandler(initialState)}
-              className={fab}
-              aria-label="add"
-            >
-              <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-            </Fab>
-          </Hidden>
-          {true && contentGenerator()}
-          {true && <CircleBackdropLoading isOpen={isLoading} />}
-        </Grid>
+          <Grid container spacing={3} className={contentContainer}>
+            <Hidden xsDown>
+              <Grid item xs={12} sm={6} md={4}>
+                <Paper className={blankCard} onClick={(): void => saveHandler(initialState)}>
+                  <FontAwesomeIcon icon={faPlus} size="2x" />
+                  <span>ایجاد فرصت شغلی</span>
+                </Paper>
+              </Grid>
+            </Hidden>
+
+            <Hidden smUp>
+              <Fab onClick={(): void => saveHandler(initialState)} className={fab} aria-label="add">
+                <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+              </Fab>
+            </Hidden>
+            {true && contentGenerator()}
+            {true && <CircleBackdropLoading isOpen={isLoading} />}
+          </Grid>
         </Grid>
         {isOpenEditModal && editModal()}
       </Grid>
