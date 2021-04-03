@@ -69,6 +69,7 @@ export default {
         inventory: 'موجودی',
         price: 'قیمت',
         pricePerUnit: 'قیمت هر واحد',
+        pishkhan: 'پیشخوان',
         offer: 'آفر',
         to: 'به',
         number: 'تعداد',
