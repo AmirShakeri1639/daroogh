@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Button, createStyles, Dialog, DialogActions, DialogContent,
   DialogTitle, Divider, Grid, makeStyles, useMediaQuery, useTheme,
 } from '@material-ui/core';
 import { Picture } from '..';
 import { useTranslation } from 'react-i18next';
+import FileLink from './fileLink';
 
 const useClasses = makeStyles((theme) => createStyles({
   root: {
@@ -29,10 +30,13 @@ interface Props {
   title?: string;
   className?: string;
   onClose?: any;
+  fileName?: string;
 }
 
 const PictureDialog: React.FC<Props> = (props) => {
-  const { fileKey, className = '', title = '', onClose } = props;
+  const {
+    fileKey, className = '', title = '', onClose, fileName
+  } = props;
   const { t } = useTranslation();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -40,13 +44,26 @@ const PictureDialog: React.FC<Props> = (props) => {
   const [isOpenDialog, setIsOpenDialog] = useState(true);
 
   return (
-    <Dialog open={ isOpenDialog } fullScreen={ fullScreen } fullWidth={true}>
+    <Dialog open={ isOpenDialog } fullScreen={ fullScreen } fullWidth={ true }>
       <DialogTitle>{ title }</DialogTitle>
       <Divider />
       <DialogContent className={ root }>
         <Grid container>
           <Grid item xs={ 12 }>
-            <Picture fileKey={ fileKey } className={ className } />
+            { (fileName === undefined ||
+              (!fileName.endsWith('.jpg') && !fileName.endsWith('.png'))
+            ) &&
+              <FileLink
+                fileKey={ fileKey }
+                fileName={ fileName }
+                text={ t('general.download') }
+              />
+            }
+            { (fileName !== undefined &&
+              (fileName.endsWith('.jpg') || fileName.endsWith('.png'))
+            ) &&
+              <Picture fileKey={ fileKey } className={ className } />
+            }
           </Grid>
         </Grid>
       </DialogContent>

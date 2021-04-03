@@ -30,7 +30,7 @@ import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
 import { useEffectOnce } from '../../../../../hooks';
-import { errorHandler, Convertor, jalali } from '../../../../../utils';
+import { errorHandler, Convertor, jalali, warningSweetAlert } from '../../../../../utils';
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
@@ -340,10 +340,15 @@ const Create: React.FC = () => {
   }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
-    if (isOpenModal) {
-      resetValues();
+    console.log('category', selectedCategory);
+    if (selectedCategory === '-1') {
+      warningSweetAlert(t('alerts.SelectCategoryAlert'));
+    } else {
+      if (isOpenModal) {
+        resetValues();
+      }
+      setIsOpenModal((v) => !v);
     }
-    setIsOpenModal((v) => !v);
   };
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
@@ -748,7 +753,7 @@ const Create: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <label htmlFor="">{`${t('general.price')} (${t(
+                    <label htmlFor="">{`${t('general.pricePerUnit')} (${t(
                       'general.defaultCurrency'
                     )})`}</label>
                   </Grid>
@@ -781,11 +786,14 @@ const Create: React.FC = () => {
                     </GridCenter>
                     <GridCenter item xs={2} className="w-100">
                       <Input
+                        type="number"
                         value={offer2}
                         placeholder="تعداد"
                         onChange={(e): void => {
                           const val = e.target.value;
-                          setOffer2(e.target.value);
+                          if (Number(val) >= 1 || Number(offer2) >= 1) {
+                            setOffer2(e.target.value);
+                          }
                         }}
                       />
                     </GridCenter>
@@ -794,10 +802,14 @@ const Create: React.FC = () => {
                     </GridCenter>
                     <Grid item xs={2}>
                       <Input
+                        type="number"
                         value={offer1}
                         placeholder="تعداد"
                         onChange={(e): void => {
-                          setOffer1(e.target.value);
+                          const val = e.target.value;
+                          if (Number(val) >= 1 || Number(offer1) >= 1) {
+                            setOffer1(e.target.value);
+                          }
                         }}
                       />
                     </Grid>

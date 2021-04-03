@@ -196,6 +196,14 @@ const SearchButton = styled(Button)`
   color: #2e67e2;
 `;
 
+const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} />)`
+  .MuiInputBase-input {
+    &::placeholder {
+      font-size: 0.7rem !important;
+    }
+  }
+`;
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
@@ -564,8 +572,8 @@ const SupplyList: React.FC = () => {
       <Container>
         <h1 className="txt-md">{t('drug.SuppliedDrugsList')}</h1>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={9} md={5}>
-            <MaterialSearchBar
+          <Grid item xs={12} md={5}>
+            <StyledMaterialSearchBar
               placeholder={t('exchange.searchDrugPlaceHolder')}
               onRequestSearch={filteredItemsHandler}
             />
@@ -633,8 +641,13 @@ const SupplyList: React.FC = () => {
                     <Input
                       numberFormat
                       className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
                       label={`${t('general.number')} ${t('drug.drug')}`}
-                      onChange={debounce((e) => dispatch({ type: 'cnt', value: e }), 500)}
+                      onChange={(e): void => dispatch({ type: 'cnt', value: e })}
                       value={state?.cnt}
                     />
                   </Grid>
@@ -644,7 +657,7 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <label htmlFor="">{`${t('general.price')} (${t(
+                    <label htmlFor="">{`${t('general.pricePerUnit')} (${t(
                       'general.defaultCurrency'
                     )})`}</label>
                   </Grid>
@@ -654,8 +667,13 @@ const SupplyList: React.FC = () => {
                       numberFormat
                       value={state?.amount}
                       className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
                       label={t('general.price')}
-                      onChange={debounce((e) => dispatch({ type: 'amount', value: e }), 500)}
+                      onChange={(e): void => dispatch({ type: 'amount', value: e })}
                     />
                   </Grid>
                 </Grid>
@@ -675,14 +693,18 @@ const SupplyList: React.FC = () => {
                     </GridCenter>
                     <GridCenter item xs={2} className="w-100">
                       <Input
+                        type="number"
                         value={state?.offer2}
                         placeholder="تعداد"
-                        onChange={(e): void =>
-                          dispatch({
-                            type: 'offer2',
-                            value: e.target.value,
-                          })
-                        }
+                        onChange={(e): void => {
+                          const val = e.target.value;
+                          if (Number(val) >= 1 || Number(state?.offer2) >= 1) {
+                            dispatch({
+                              type: 'offer2',
+                              value: val,
+                            });
+                          }
+                        }}
                       />
                     </GridCenter>
                     <GridCenter xs={1}>
@@ -690,14 +712,18 @@ const SupplyList: React.FC = () => {
                     </GridCenter>
                     <Grid item xs={2}>
                       <Input
+                        type="number"
                         value={state?.offer1}
                         placeholder="تعداد"
-                        onChange={(e): void =>
-                          dispatch({
-                            type: 'offer1',
-                            value: e.target.value,
-                          })
-                        }
+                        onChange={(e): void => {
+                          const val = e.target.value;
+                          if (Number(val) >= 1 || Number(state?.offer1) >= 1) {
+                            dispatch({
+                              type: 'offer1',
+                              value: val,
+                            });
+                          }
+                        }}
                       />
                     </Grid>
                     <GridCenter xs={1}>{t('general.gift')}</GridCenter>

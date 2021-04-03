@@ -17,9 +17,9 @@ const Picture: React.FC<Props> = (props) => {
     async function getFile(fileKey: string) {
       const { get } = new File();
       const result =
-        isNullOrEmpty(fileKey)
-          ? ''
-          : await get(fileKey);
+      isNullOrEmpty(fileKey)
+      ? ''
+      : await get(fileKey);
       setFile(result == '' ? '' : window.URL.createObjectURL(result));
       setIsLoading(false);
     }
@@ -29,7 +29,7 @@ const Picture: React.FC<Props> = (props) => {
   return (
     <>
       { isLoading && <CircleLoading /> }
-      { !isNullOrEmpty(file) &&
+      { !isNullOrEmpty(file) && 
         <img
           width='100%'
           className={ className }
