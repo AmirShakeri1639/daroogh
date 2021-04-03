@@ -19,3 +19,4 @@ export { default as Prescription } from './Prescription';
 export { default as File } from './File';
 export { default as EmploymentApplication } from './EmploymentApplication';
 export { default as Reports } from './Reports';
+export { default as Pharmacy } from './Pharmacy';

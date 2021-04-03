@@ -3,13 +3,21 @@ import { errorHandler } from "../../utils";
 import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface } from '../../interfaces';
 
 class Pharmacy extends Api {
+  pharmacyId: number | string = 0
+
   readonly urls = {
     all: '/Pharmacy/AllPharmacy',
     save: '/Pharmacy/Save',
     get: '/Pharmacy/Detail/',
     remove: '/Pharmacy/Remove/',
     confirm: '/Pharmacy/Confirm',
-    register: '/Pharmacy/Register'
+    register: '/Pharmacy/Register',
+    files: `/Pharmacy/GetFiles`,
+  }
+
+  constructor(pharmacyId: number | string = 0) {
+    super()
+    this.pharmacyId = pharmacyId
   }
 
   save = async (data: PharmacyInterface): Promise<any> => {
@@ -19,7 +27,7 @@ class Pharmacy extends Api {
         data
       );
       return result.data;
-    } catch(e) {
+    } catch (e) {
       errorHandler(e);
     }
   }
@@ -31,7 +39,7 @@ class Pharmacy extends Api {
         data
       );
       return result.data;
-    } catch(e) {
+    } catch (e) {
       errorHandler(e);
     }
   }
@@ -72,6 +80,13 @@ class Pharmacy extends Api {
     } catch (e) {
       errorHandler(e)
     }
+  }
+
+  files = async (skip: number, top: number = 10): Promise<any> => {
+    const result = await this.postJsonData(
+      `${this.urls.files}?pharmacyId=${this.pharmacyId}` +
+      `&$top=${top}&$skip=${skip * top}&$orderby=id desc`)
+    return result.data
   }
 }
 

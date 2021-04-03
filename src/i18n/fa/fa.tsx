@@ -408,6 +408,7 @@ export default {
         long: 'طول جغرافیایی',
         lat: 'عرض جغرافیایی',
         location: 'مکان',
+        docs: 'اسناد',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
