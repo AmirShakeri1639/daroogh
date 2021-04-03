@@ -49,6 +49,9 @@ import {
   faFileInvoiceDollar,
   faGlobe,
 } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCopy
+} from '@fortawesome/free-regular-svg-icons';
 import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../../routes';
@@ -257,6 +260,7 @@ const PharmaciesList: React.FC = () => {
       {
         field: 'x',
         title: t('pharmacy.location'),
+        width: '90px',
         type: 'string',
         render: (row: any): any => {
           return (
@@ -278,7 +282,7 @@ const PharmaciesList: React.FC = () => {
         field: 'active',
         title: t('general.status'),
         type: 'boolean',
-        width: '150px',
+        width: '90px',
         render: (row: any): any => {
           return (
             <span
@@ -752,6 +756,9 @@ const PharmaciesList: React.FC = () => {
     setPharmacyNameForTransaction(rowData.name);
     toggleShowAddTransaction();
   };
+  const gotoDocsHandler = (event: any, rowData: any): void => {
+    history.push(`${routes.pharmacyDocs}?pharmacyId=${rowData.id}`)
+  }
 
   const actions: DataTableCustomActionInterface[] = [
     {
@@ -770,6 +777,13 @@ const PharmaciesList: React.FC = () => {
       tooltip: t('action.impersonateThisPharmacy'),
       color: 'secondary',
       action: impersonateHandler,
+    },
+    {
+      icon: (): any => (
+        <FontAwesomeIcon icon={ faCopy } color={ ColorEnum.Purple } />
+      ),
+      tooltip: t('file.docs'),
+      action: gotoDocsHandler
     },
     {
       icon: (): any => (

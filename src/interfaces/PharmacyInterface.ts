@@ -18,3 +18,17 @@ export interface PharmacyInterface {
   x?: string;
   y?: string;
 }
+
+export interface PharmacyFileInterface {
+  id: number
+  fileKey: string
+  fileName: string
+  fileTypeID: number
+  fileTypeName: string
+}
+
+export interface FileForPharmacyInterface {
+  fileTypeID: number | string
+  pharmacyId: number | string
+  file: any
+}
