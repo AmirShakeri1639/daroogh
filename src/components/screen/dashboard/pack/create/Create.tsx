@@ -213,7 +213,6 @@ const Create: React.FC = () => {
   const dayRef = useRef<HTMLInputElement>();
   const monthRef = useRef<HTMLInputElement>();
   const yearRef = useRef();
-  const packCategorySelect = useRef() as React.MutableRefObject<HTMLSelectElement>;
 
 
   const {
@@ -342,8 +341,8 @@ const Create: React.FC = () => {
   }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
-
-    if (packCategorySelect.current.value === undefined){
+    console.log('category', selectedCategory)
+    if (selectedCategory === '-1' ){
       warningSweetAlert(
          t("alerts.SelectCategoryAlert")
         );
@@ -661,7 +660,6 @@ const Create: React.FC = () => {
                   <FormControl variant="outlined" size="small" className="w-100">
                     <InputLabel id="category-pack">{t('pack.category')}</InputLabel>
                     <Select
-                      ref={packCategorySelect} 
                       labelId="category-pack"
                       id="category"
                       label={t('pack.category')}
