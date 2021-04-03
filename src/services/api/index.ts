@@ -20,3 +20,4 @@ export { default as File } from './File';
 export { default as EmploymentApplication } from './EmploymentApplication';
 export { default as Reports } from './Reports';
 export { default as Pharmacy } from './Pharmacy';
+export { default as FileType } from './FileType';

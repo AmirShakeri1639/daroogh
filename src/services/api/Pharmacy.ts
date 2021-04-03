@@ -1,6 +1,6 @@
 import Api from './Api'
 import { errorHandler } from "../../utils";
-import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface } from '../../interfaces';
+import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface, FileForPharmacyInterface } from '../../interfaces';
 
 class Pharmacy extends Api {
   pharmacyId: number | string = 0
@@ -13,6 +13,8 @@ class Pharmacy extends Api {
     confirm: '/Pharmacy/Confirm',
     register: '/Pharmacy/Register',
     files: `/Pharmacy/GetFiles`,
+    removeFile: '/Pharmacy/RemoveFile',
+    addFile: '/Pharmacy/AddFile',
   }
 
   constructor(pharmacyId: number | string = 0) {
@@ -86,6 +88,25 @@ class Pharmacy extends Api {
     const result = await this.postJsonData(
       `${this.urls.files}?pharmacyId=${this.pharmacyId}` +
       `&$top=${top}&$skip=${skip * top}&$orderby=id desc`)
+    return result.data
+  }
+
+  removeFile = async (id: number | string): Promise<any> => {
+    const result =
+      await this.postJsonData(
+        `${this.urls.removeFile}?fileId=${id}`)
+    return result.data
+  }
+
+  addFile = async (data: FileForPharmacyInterface): Promise<any> => {
+    const {
+      fileTypeID, pharmacyId, file
+    } = data
+    console.log('%cData in addFile:', 'background: #03a9f4; padding: 0 1em', data)
+    const result = await this.postFormData(
+      `${this.urls.addFile}?fileTypeId=${fileTypeID}&pharmacyId=${pharmacyId}`,
+      { file: file }
+    )
     return result.data
   }
 }

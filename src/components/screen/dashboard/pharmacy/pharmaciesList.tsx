@@ -789,7 +789,7 @@ const PharmaciesList: React.FC = () => {
       icon: (): any => (
         <FontAwesomeIcon icon={ faCopy } color={ ColorEnum.Purple } />
       ),
-      tooltip: t('pharmacy.docs'),
+      tooltip: t('file.docs'),
       action: gotoDocsHandler
     }
   ];

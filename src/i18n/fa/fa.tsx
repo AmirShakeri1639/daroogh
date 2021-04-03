@@ -408,7 +408,6 @@ export default {
         long: 'طول جغرافیایی',
         lat: 'عرض جغرافیایی',
         location: 'مکان',
-        docs: 'اسناد',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
@@ -707,6 +706,13 @@ export default {
         EmploymentApplication: 'درخواست کاریابی',
         Prescription: 'نسخه مردمی',
         FavoriteListCount: 'سبد شامل علاقمندی',
+      },
+      file: {
+        docs: 'اسناد',
+        fileName: 'نام فایل',
+        fileType: 'نوع فایل',
+        add: 'افزودن',
+        addToPharmacy: 'افزودن فایل به داروخانه',
       }
     },
   },
