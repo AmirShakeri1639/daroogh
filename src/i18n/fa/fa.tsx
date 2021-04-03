@@ -710,6 +710,7 @@ export default {
       file: {
         file: 'فایل',
         docs: 'اسناد',
+        pharmacyDocs: 'اسناد داروخانه',
         fileName: 'نام فایل',
         fileType: 'نوع فایل',
         add: 'افزودن',
