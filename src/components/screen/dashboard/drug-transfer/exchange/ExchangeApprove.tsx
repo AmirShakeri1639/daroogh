@@ -518,14 +518,14 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 <Grid xs={6}>
                   <TextWithTitle
                     title={t('exchange.finalAmount')}
-                    body={paymentAmount}
+                    body={Utils.numberWithCommas(paymentAmount)}
                     suffix={t('general.defaultCurrency')}
                   />
                 </Grid>
                 <Grid xs={6}>
                   <TextWithTitle
                     title={t('exchange.selectedAmount')}
-                    body={totalAmount}
+                    body={Utils.numberWithCommas(totalAmount)}
                     suffix={t('general.defaultCurrency')}
                   />
                 </Grid>
