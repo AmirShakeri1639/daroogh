@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
-import {
-  makeStyles,
-  Paper,
-  createStyles,
-  Grid,
-  Divider,
-  Button,
-} from '@material-ui/core';
+import { makeStyles, Paper, createStyles, Grid, Divider, Button } from '@material-ui/core';
 import Detail from './Detail';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FavoriteDrugInterface } from '../../../../interfaces';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { TextMessage } from '../../../../enum';
 import { BackDrop } from '../../../public';
 
