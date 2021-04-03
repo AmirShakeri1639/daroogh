@@ -16,6 +16,7 @@ import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { PictureDialog } from 'components/public';
+import FileLinkBlob from 'components/public/picture/fileLinkBlob';
 
 const initialState: FileForPharmacyInterface = {
   fileTypeID: 1,
@@ -68,12 +69,13 @@ const PharmacyDocs: React.FC<Props> = (props) => {
     cancelButtonDialog,
     submitBtn,
   } = useClasses()
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
-  const [fileKeyToShow, setFileKeyToShow] = useState('');
-  const [isOpenPicture, setIsOpenPicture] = useState(false);
+  const [fileKeyToShow, setFileKeyToShow] = useState('')
+  const [isOpenPicture, setIsOpenPicture] = useState(false)
+  const [fileName, setFileName] = useState()
 
   const { all: allFileTypes } = new FileType()
   const [fileTypes, setFileTypes] = useState<LabelValue[]>([])
@@ -94,9 +96,10 @@ const PharmacyDocs: React.FC<Props> = (props) => {
 
   const pharmacy = new Pharmacy(pharmacyId)
 
-  const pictureDialog = (fileKey: string): JSX.Element => {
+  const pictureDialog = (fileKey: string, fileName?: string): JSX.Element => {
     return (
       <PictureDialog
+        fileName={ fileName }
         fileKey={ fileKey }
         title={ t('prescription.peoplePrescription') }
         onClose={ (): void => setIsOpenPicture(false) }
@@ -131,8 +134,9 @@ const PharmacyDocs: React.FC<Props> = (props) => {
             <>
               { !isNullOrEmpty(row.fileKey) &&
                 <Button onClick={ (): any => {
-                  setFileKeyToShow(row.fileKey);
-                  setIsOpenPicture(true);
+                  setFileKeyToShow(row.fileKey)
+                  setIsOpenPicture(true)
+                  setFileName(row.fileName)
                 } }>
                   <FontAwesomeIcon icon={ faImage } />
                 </Button>
@@ -146,9 +150,9 @@ const PharmacyDocs: React.FC<Props> = (props) => {
 
   const [_remove, { isLoading: isLoadingRemove }] = useMutation(pharmacy.removeFile, {
     onSuccess: async () => {
-      ref.current?.onQueryChange();
-      await queryCache.invalidateQueries(pharmacy.urls.files);
-      await successSweetAlert(t('alert.successfulDelete'));
+      ref.current?.onQueryChange()
+      await queryCache.invalidateQueries(pharmacy.urls.files)
+      await successSweetAlert(t('alert.successfulDelete'))
     },
   })
   const removeHandler = async (item: any): Promise<any> => {
@@ -197,10 +201,10 @@ const PharmacyDocs: React.FC<Props> = (props) => {
         dispatch({ type: 'reset' })
         ref.current?.onQueryChange()
       } catch (e) {
-        errorHandler(e);
+        errorHandler(e)
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'));
+      await warningSweetAlert(t('alert.fillFormCarefully'))
     }
   }
 
@@ -236,7 +240,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
                   accept="image/jpeg, image/png, application/pdf"
                   name='fileUpload'
                   onChange={ (e: any): void => {
-                    e.preventDefault();
+                    e.preventDefault()
                     if (e.target.files.length > 0) {
                       dispatch({ type: 'file', value: e.target.files[0] })
                     }
@@ -256,8 +260,8 @@ const PharmacyDocs: React.FC<Props> = (props) => {
                   type="submit"
                   className={ cancelButtonDialog }
                   onClick={ (): void => {
-                    dispatch({ type: 'reset' });
-                    setIsSaveDialogOpen(false);
+                    dispatch({ type: 'reset' })
+                    setIsSaveDialogOpen(false)
                   } }
                 >
                   { t('general.cancel') }
@@ -268,8 +272,8 @@ const PharmacyDocs: React.FC<Props> = (props) => {
                   type="submit"
                   className={ submitBtn }
                   onClick={ (e): void => {
-                    e.preventDefault();
-                    submitSave();
+                    e.preventDefault()
+                    submitSave()
                   } }
                 >
                   { isLoadingSave
@@ -286,10 +290,9 @@ const PharmacyDocs: React.FC<Props> = (props) => {
 
   return (
     <Container maxWidth="lg" className={ container }>
-      <h2>اسناد داروخانه</h2>
       <Grid container spacing={ 0 }>
         <Grid item xs={ 12 }>
-          <div>{ t('pharmacy.list') }</div>
+          <div><b>{ t('file.pharmacyDocs') }</b></div>
           <Paper>
             <DataTable
               tableRef={ ref }
@@ -306,7 +309,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
             />
             { <CircleBackdropLoading isOpen={ isLoadingRemove || isLoadingSave } /> }
             { isSaveDialogOpen && saveModal() }
-            { isOpenPicture && pictureDialog(fileKeyToShow) }
+            { isOpenPicture && pictureDialog(fileKeyToShow, fileName) }
           </Paper>
         </Grid>
       </Grid>

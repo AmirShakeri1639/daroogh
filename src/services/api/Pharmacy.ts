@@ -102,7 +102,6 @@ class Pharmacy extends Api {
     const {
       fileTypeID, pharmacyId, file
     } = data
-    console.log('%cData in addFile:', 'background: #03a9f4; padding: 0 1em', data)
     const result = await this.postFormData(
       `${this.urls.addFile}?fileTypeId=${fileTypeID}&pharmacyId=${pharmacyId}`,
       { file: file }
