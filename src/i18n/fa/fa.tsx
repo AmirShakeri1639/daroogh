@@ -115,6 +115,7 @@ export default {
         defaultCurrency: 'تومان',
         noContent: 'محتوایی وجود ندارد',
         reject: 'عدم پذیرش',
+        pay:'پرداخت'
       },
       pack: {
         pack: 'پک',
