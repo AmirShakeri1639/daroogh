@@ -107,6 +107,10 @@ const PharmaciesList = lazy(
   () => import('./components/screen/dashboard/pharmacy/pharmaciesList')
 );
 
+const PharmacyDocs = lazy(
+  () => import('./components/screen/dashboard/pharmacy/PharmacyDocs')
+)
+
 const CreateMessage = lazy(
   () => import('./components/screen/dashboard/message/CreateMessage')
 );
@@ -193,6 +197,7 @@ const {
   categoryList,
   createPharmacy,
   pharmaciesList,
+  pharmacyDocs,
   createMessage,
   messagesList,
   drugCategoryfavoriteList,
@@ -324,6 +329,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute exact path={ pharmaciesList }>
               <Dashboard component={ <PharmaciesList /> } />
+            </PrivateRoute>
+            <PrivateRoute exact path={ pharmacyDocs }>
+              <Dashboard component={ <PharmacyDocs /> } />
             </PrivateRoute>
             <PrivateRoute exact path={ createMessage }>
               <Dashboard component={ <CreateMessage /> } />

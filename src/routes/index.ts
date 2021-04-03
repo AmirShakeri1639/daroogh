@@ -48,6 +48,7 @@ export default {
   createPharmacy: `/${dashboard}/${pharmacy}/create`,
   pharmaciesList: `/${dashboard}/${pharmacy}/list`,
   pharmacyUsersList: `/${dashboard}/${pharmacy}/users`,
+  pharmacyDocs: `/${dashboard}/${pharmacy}/docs`,
 
   membershipRequests: `/${dashboard}/${pharmacy}/membership-requests`,
   memberRole: `/${dashboard}/${pharmacy}/member-role`,

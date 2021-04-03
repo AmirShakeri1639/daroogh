@@ -29,6 +29,7 @@ interface Props {
   onItemSelected: (e: ListOptions[]) => void;
   defaultSelectedItem?: string;
   multiple?: boolean;
+  disable?: boolean;
 }
 
 const Li = styled.li`
@@ -51,6 +52,7 @@ const AutoComplete: React.FC<Props & { ref: Ref<any> }> = forwardRef(
       onItemSelected,
       defaultSelectedItem,
       multiple,
+      disable,
     },
     ref
   ) => {
@@ -201,20 +203,23 @@ const AutoComplete: React.FC<Props & { ref: Ref<any> }> = forwardRef(
             placeholder={placeholder ?? ''}
             value={!!inputValue ? inputValue : defaultSelectedItem}
             className={`${style['input']} ${className ?? ''}`}
+            disabled={disable ?? false}
           />
         </div>
         <div className={style['button-wrapper']}>
-          <FontAwesomeIcon
-            icon={showOptionsList ? faCaretUp : faCaretDown}
-            className="cursor-pointer"
-            onClick={(): void => {
-              if (!showOptionsList) {
-                setShowOptionsList(true);
-              } else {
-                setShowOptionsList(false);
-              }
-            }}
-          />
+          {!disable && (
+            <FontAwesomeIcon
+              icon={showOptionsList ? faCaretUp : faCaretDown}
+              className="cursor-pointer"
+              onClick={(): void => {
+                if (!showOptionsList) {
+                  setShowOptionsList(true);
+                } else {
+                  setShowOptionsList(false);
+                }
+              }}
+            />
+          )}
 
           {(inputValue.length > 0 || valuesArray.length > 0) && (
             <FontAwesomeIcon
