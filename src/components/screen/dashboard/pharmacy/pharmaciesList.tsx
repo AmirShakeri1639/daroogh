@@ -780,18 +780,18 @@ const PharmaciesList: React.FC = () => {
     },
     {
       icon: (): any => (
+        <FontAwesomeIcon icon={ faCopy } color={ ColorEnum.Purple } />
+      ),
+      tooltip: t('file.docs'),
+      action: gotoDocsHandler
+    },
+    {
+      icon: (): any => (
         <FontAwesomeIcon icon={ faFileInvoiceDollar } color={ ColorEnum.Green } />
       ),
       tooltip: t('accounting.addTransaction'),
       action: addTransactionHandler,
     },
-    {
-      icon: (): any => (
-        <FontAwesomeIcon icon={ faCopy } color={ ColorEnum.Purple } />
-      ),
-      tooltip: t('file.docs'),
-      action: gotoDocsHandler
-    }
   ];
 
   // @ts-ignore
