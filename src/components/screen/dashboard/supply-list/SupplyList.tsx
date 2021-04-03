@@ -685,6 +685,7 @@ const SupplyList: React.FC = () => {
                     </GridCenter>
                     <GridCenter item xs={2} className="w-100">
                       <Input
+                        type="number"
                         value={state?.offer2}
                         placeholder="تعداد"
                         onChange={(e): void =>
@@ -700,6 +701,7 @@ const SupplyList: React.FC = () => {
                     </GridCenter>
                     <Grid item xs={2}>
                       <Input
+                        type="number"
                         value={state?.offer1}
                         placeholder="تعداد"
                         onChange={(e): void =>

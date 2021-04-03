@@ -30,7 +30,7 @@ import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
 import { useEffectOnce } from '../../../../../hooks';
-import { errorHandler, Convertor, jalali } from '../../../../../utils';
+import { errorHandler, Convertor, jalali, warningSweetAlert,  } from '../../../../../utils';
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
@@ -213,6 +213,8 @@ const Create: React.FC = () => {
   const dayRef = useRef<HTMLInputElement>();
   const monthRef = useRef<HTMLInputElement>();
   const yearRef = useRef();
+  const packCategorySelect = useRef() as React.MutableRefObject<HTMLSelectElement>;
+
 
   const {
     addButton,
@@ -340,10 +342,19 @@ const Create: React.FC = () => {
   }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
-    if (isOpenModal) {
+
+    if (packCategorySelect.current.value === undefined){
+      warningSweetAlert(
+         t("alerts.SelectCategoryAlert")
+        );
+    }
+    else{
+       if (isOpenModal) {
       resetValues();
     }
     setIsOpenModal((v) => !v);
+    }
+   
   };
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
@@ -650,6 +661,7 @@ const Create: React.FC = () => {
                   <FormControl variant="outlined" size="small" className="w-100">
                     <InputLabel id="category-pack">{t('pack.category')}</InputLabel>
                     <Select
+                      ref={packCategorySelect} 
                       labelId="category-pack"
                       id="category"
                       label={t('pack.category')}
@@ -781,6 +793,7 @@ const Create: React.FC = () => {
                     </GridCenter>
                     <GridCenter item xs={2} className="w-100">
                       <Input
+                        type="number"
                         value={offer2}
                         placeholder="تعداد"
                         onChange={(e): void => {
@@ -794,6 +807,7 @@ const Create: React.FC = () => {
                     </GridCenter>
                     <Grid item xs={2}>
                       <Input
+                        type="number"
                         value={offer1}
                         placeholder="تعداد"
                         onChange={(e): void => {
