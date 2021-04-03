@@ -16,7 +16,6 @@ import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { PictureDialog } from 'components/public';
-import FileLinkBlob from 'components/public/picture/fileLinkBlob';
 
 const initialState: FileForPharmacyInterface = {
   fileTypeID: 1,
@@ -76,6 +75,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
   const [fileKeyToShow, setFileKeyToShow] = useState('')
   const [isOpenPicture, setIsOpenPicture] = useState(false)
   const [fileName, setFileName] = useState()
+  const [fileTitle, setFileTitle] = useState()
 
   const { all: allFileTypes } = new FileType()
   const [fileTypes, setFileTypes] = useState<LabelValue[]>([])
@@ -90,18 +90,17 @@ const PharmacyDocs: React.FC<Props> = (props) => {
         return item
       }))
     }
-    // dispatch({ type: 'pharmacyId', value: pharmacyId })
     getFileTypes()
   }, [])
 
   const pharmacy = new Pharmacy(pharmacyId)
 
-  const pictureDialog = (fileKey: string, fileName?: string): JSX.Element => {
+  const pictureDialog = (fileKey: string, fileName?: string, title?: string): JSX.Element => {
     return (
       <PictureDialog
         fileName={ fileName }
         fileKey={ fileKey }
-        title={ t('prescription.peoplePrescription') }
+        title={ title }
         onClose={ (): void => setIsOpenPicture(false) }
       />
     )
@@ -137,6 +136,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
                   setFileKeyToShow(row.fileKey)
                   setIsOpenPicture(true)
                   setFileName(row.fileName)
+                  setFileTitle(row.fileTypeName)
                 } }>
                   <FontAwesomeIcon icon={ faImage } />
                 </Button>
@@ -309,7 +309,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
             />
             { <CircleBackdropLoading isOpen={ isLoadingRemove || isLoadingSave } /> }
             { isSaveDialogOpen && saveModal() }
-            { isOpenPicture && pictureDialog(fileKeyToShow, fileName) }
+            { isOpenPicture && pictureDialog(fileKeyToShow, fileName, fileTitle) }
           </Paper>
         </Grid>
       </Grid>
