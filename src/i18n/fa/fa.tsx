@@ -191,6 +191,7 @@ export default {
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
+        getOtp: 'دریافت کلمه عبور یک بار مصرف',
       },
       user: {
         role: 'نقش',
