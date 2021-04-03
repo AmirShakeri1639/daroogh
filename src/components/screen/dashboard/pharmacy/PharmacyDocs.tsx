@@ -10,9 +10,12 @@ import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { useMutation, useQueryCache } from 'react-query';
-import { errorHandler, successSweetAlert, warningSweetAlert } from 'utils';
+import { errorHandler, isNullOrEmpty, successSweetAlert, warningSweetAlert } from 'utils';
 import { ActionInterface, FileForPharmacyInterface, LabelValue } from 'interfaces';
 import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-regular-svg-icons';
+import { PictureDialog } from 'components/public';
 
 const initialState: FileForPharmacyInterface = {
   fileTypeID: 1,
@@ -69,6 +72,8 @@ const PharmacyDocs: React.FC<Props> = (props) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
+  const [fileKeyToShow, setFileKeyToShow] = useState('');
+  const [isOpenPicture, setIsOpenPicture] = useState(false);
 
   const { all: allFileTypes } = new FileType()
   const [fileTypes, setFileTypes] = useState<LabelValue[]>([])
@@ -89,6 +94,16 @@ const PharmacyDocs: React.FC<Props> = (props) => {
 
   const pharmacy = new Pharmacy(pharmacyId)
 
+  const pictureDialog = (fileKey: string): JSX.Element => {
+    return (
+      <PictureDialog
+        fileKey={ fileKey }
+        title={ t('prescription.peoplePrescription') }
+        onClose={ (): void => setIsOpenPicture(false) }
+      />
+    )
+  }
+
   const tableColumns = (): DataTableColumns[] => {
     return [
       {
@@ -106,6 +121,25 @@ const PharmacyDocs: React.FC<Props> = (props) => {
         field: 'fileTypeName',
         title: t('file.fileType'),
         type: 'string',
+      },
+      {
+        field: 'fileKey',
+        title: t('file.file'),
+        type: 'string',
+        render: (row: any): any => {
+          return (
+            <>
+              { !isNullOrEmpty(row.fileKey) &&
+                <Button onClick={ (): any => {
+                  setFileKeyToShow(row.fileKey);
+                  setIsOpenPicture(true);
+                } }>
+                  <FontAwesomeIcon icon={ faImage } />
+                </Button>
+              }
+            </>
+          )
+        }
       },
     ]
   }
@@ -272,6 +306,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
             />
             { <CircleBackdropLoading isOpen={ isLoadingRemove || isLoadingSave } /> }
             { isSaveDialogOpen && saveModal() }
+            { isOpenPicture && pictureDialog(fileKeyToShow) }
           </Paper>
         </Grid>
       </Grid>

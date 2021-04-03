@@ -708,6 +708,7 @@ export default {
         FavoriteListCount: 'سبد شامل علاقمندی',
       },
       file: {
+        file: 'فایل',
         docs: 'اسناد',
         fileName: 'نام فایل',
         fileType: 'نوع فایل',
