@@ -753,7 +753,7 @@ const Create: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <label htmlFor="">{`${t('general.price')} (${t(
+                    <label htmlFor="">{`${t('general.pricePerUnit')} (${t(
                       'general.defaultCurrency'
                     )})`}</label>
                   </Grid>
