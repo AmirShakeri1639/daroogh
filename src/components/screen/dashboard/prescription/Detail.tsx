@@ -22,6 +22,8 @@ import {
 } from 'interfaces/PrescriptionInterface';
 import { getJalaliDate, isNullOrEmpty, JwtData } from 'utils';
 import { ColorEnum, PrescriptionResponseStateEnum } from 'enum';
+import noImage from './noImage.jpg';
+
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -105,60 +107,67 @@ const Detail: React.FC<PrescriptionInterface> = (props) => {
     return '';
   };
 
-  return (
-    <Grid item xs={12} spacing={0}>
-      <Paper className={paper} elevation={0}>
-        <Grid container spacing={1}>
-          <Grid item xs={12}>
-            <div className={container}>
-              <Grid container spacing={0}>
-                <Grid container xs={12} className="drug-container">
-                  <Grid
-                    container
-                    xs={11}
-                    style={{ alignItems: 'center', paddingRight: '8px' }}
-                  >
-                    <span>{comment}</span>
-                  </Grid>
-                </Grid>
+  const addDefaultSrc = (ev: any): void => {
+    ev.target.src = noImage;
+    ev.target.onerror = null;
+  };
 
-                <Grid container style={{ padding: '8px' }}>
-                  <Grid item xs={12}>
-                    <TextWithTitle
+  return (
+    <>
+    <Grid item xs={12} spacing={0}>
+      <Grid container spacing={2}>
+        <Grid item style={{ textAlign: 'center' }} xs={4}>
+          <Grid xs={12} item>
+            تصویر نسخه
+          </Grid>
+          <Grid xs={12} item>
+        
+              <img
+                onError={addDefaultSrc}
+                style={{ height: '80px', width: '80px', margin: '5px' }}
+                src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+              />
+          </Grid>
+        </Grid>
+        <Grid item xs={8}>
+          <Grid
+            container
+            spacing={1}
+            style={{ paddingRight: 8, borderRight: '1px solid #f80501' }}
+          >
+            <Grid item xs={12}>
+              <TextWithTitle
+                title={'شماره پیگیری'}
+                body={id || t('general.undefined')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+            <TextWithTitle
                       title={t('prescription.sendDate')}
                       body={!isNullOrEmpty(sendDate) && getJalaliDate(sendDate)}
                     />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextWithTitle
-                      title={t('countryDivision.city')}
-                      body={contryDivisionName}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextWithTitle
-                      title={t('general.expireDate')}
-                      body={
-                        !isNullOrEmpty(expireDate) && getJalaliDate(expireDate)
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextWithTitle
-                      title={t('prescription.responseDate')}
-                      body={getResponseDate(responseDate)}
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextWithTitle title={t('general.state')} body={getPrescriptionState()} />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </div>
+              {/* <TextWithTitle
+                title={'اسامی داروها'}
+                body={
+                  <div onClick={(): void => toggleIsOpenModal(comment)}>
+                    {(comment &&
+                      (comment.length > 15
+                        ? comment.substring(0, 15) + '...'
+                        : comment)) ||
+                      t('general.undefined')}
+                  </div>
+                }
+              /> */}
+            </Grid>
+            <Grid item xs={12} style={{background: `${getPrescriptionState().props.children ? ColorEnum.LiteBack : 'rgb(220 247 221)'}`}}>
+            <TextWithTitle title={t('general.state')} body={!getPrescriptionState().props.children ? 'منتظر پاسخ شما':getPrescriptionState()} />
+            </Grid>
           </Grid>
         </Grid>
-      </Paper>
+      </Grid>
     </Grid>
+    </>
+
   );
 };
 
