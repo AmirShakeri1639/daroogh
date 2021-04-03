@@ -12,7 +12,6 @@ import {
   successSweetAlert,
   warningSweetAlert,
   today,
-  getJalaliDate,
 } from '../../../../utils';
 import {
   ActionInterface,
@@ -20,12 +19,7 @@ import {
   PrescriptionResponseInterface,
 } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
-import DataTable from '../../../public/datatable/DataTable';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage } from '@fortawesome/free-regular-svg-icons';
-import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { ColorEnum, PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
-import FormContainer from '../../../public/form-container/FormContainer';
 import {
   Button,
   Container,
@@ -38,7 +32,6 @@ import {
   FormControlLabel,
   Grid,
   makeStyles,
-  Paper,
   Switch,
   TextField,
   useMediaQuery,
@@ -141,6 +134,7 @@ const PrescriptionList: React.FC = () => {
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
   const [isOpenPicture, setIsOpenPicture] = useState(false);
   const [fileKeyToShow, setFileKeyToShow] = useState('');
+  const [currentItem, setCurrentItem] = useState<any>();
   const {
     root,
     smallImage,
@@ -174,107 +168,107 @@ const PrescriptionList: React.FC = () => {
   const pictureDialog = (fileKey: string): JSX.Element => {
     return (
       <PictureDialog
-        fileKey={fileKey}
-        title={t('prescription.peoplePrescription')}
-        onClose={(): void => setIsOpenPicture(false)}
+        fileKey={ fileKey }
+        title={ t('prescription.peoplePrescription') }
+        onClose={ (): void => setIsOpenPicture(false) }
       />
     );
   };
 
-  const tableColumns = (): DataTableColumns[] => {
-    return [
-      {
-        field: 'sendDate',
-        title: t('prescription.sendDate'),
-        type: 'string',
+  // const tableColumns = (): DataTableColumns[] => {
+  //   return [
+  //     {
+  //       field: 'sendDate',
+  //       title: t('prescription.sendDate'),
+  //       type: 'string',
 
-        render: (row: any): any => {
-          return <>{getJalaliDate(row.sendDate)}</>;
-        },
-      },
-      {
-        field: 'contryDivisionName',
-        title: t('countryDivision.city'),
-        type: 'string',
-      },
-      {
-        field: 'comment',
-        title: t('general.comment'),
-        type: 'string',
-        searchable: true,
-      },
-      {
-        field: 'expireDate',
-        title: t('general.expireDate'),
-        type: 'string',
+  //       render: (row: any): any => {
+  //         return <>{getJalaliDate(row.sendDate)}</>;
+  //       },
+  //     },
+  //     {
+  //       field: 'contryDivisionName',
+  //       title: t('countryDivision.city'),
+  //       type: 'string',
+  //     },
+  //     {
+  //       field: 'comment',
+  //       title: t('general.comment'),
+  //       type: 'string',
+  //       searchable: true,
+  //     },
+  //     {
+  //       field: 'expireDate',
+  //       title: t('general.expireDate'),
+  //       type: 'string',
 
-        render: (row: any): any => {
-          return <>{!isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate)}</>;
-        },
-      },
-      {
-        field: 'fileKey',
-        title: t('general.picture'),
-        type: 'string',
-        render: (row: any): any => {
-          return (
-            <>
-              {!isNullOrEmpty(row.fileKey) && (
-                <Button
-                  onClick={(): any => {
-                    setFileKeyToShow(row.fileKey);
-                    setIsOpenPicture(true);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faImage} />
-                </Button>
-              )}
-            </>
-          );
-        },
-      },
-      {
-        field: 'responseDate',
-        title: t('prescription.responseDate'),
-        type: 'string',
+  //       render: (row: any): any => {
+  //         return <>{!isNullOrEmpty(row.expireDate) && getJalaliDate(row.expireDate)}</>;
+  //       },
+  //     },
+  //     {
+  //       field: 'fileKey',
+  //       title: t('general.picture'),
+  //       type: 'string',
+  //       render: (row: any): any => {
+  //         return (
+  //           <>
+  //             {!isNullOrEmpty(row.fileKey) && (
+  //               <Button
+  //                 onClick={(): any => {
+  //                   setFileKeyToShow(row.fileKey);
+  //                   setIsOpenPicture(true);
+  //                 }}
+  //               >
+  //                 <FontAwesomeIcon icon={faImage} />
+  //               </Button>
+  //             )}
+  //           </>
+  //         );
+  //       },
+  //     },
+  //     {
+  //       field: 'responseDate',
+  //       title: t('prescription.responseDate'),
+  //       type: 'string',
 
-        render: (row: any): any => {
-          return (
-            <>
-              {!isNullOrEmpty(row.prescriptionResponse) &&
-                !isNullOrEmpty(row.prescriptionResponse[0].responseDate) &&
-                getJalaliDate(row.prescriptionResponse[0].responseDate)}
-            </>
-          );
-        },
-      },
-      {
-        field: 'prescriptionResponse.state',
-        title: t('general.state'),
-        type: 'string',
-        render: (row: any): any => {
-          const responses = row.prescriptionResponse.filter((i: any) => {
-            return i.pharmacy.name === pharmacyName;
-          });
-          const thisState =
-            PrescriptionResponseStateEnum[responses.length > 0 ? responses[0].state : 3];
-          return (
-            <span
-              style={{
-                color:
-                  thisState == PrescriptionResponseStateEnum[PrescriptionResponseStateEnum.Accept]
-                    ? ColorEnum.Green
-                    : ColorEnum.Gray,
-              }}
-            >
-              {!isNullOrEmpty(row.prescriptionResponse) &&
-                t(`PrescriptionResponseStateEnum.${thisState}`)}
-            </span>
-          );
-        },
-      },
-    ];
-  };
+  //       render: (row: any): any => {
+  //         return (
+  //           <>
+  //             {!isNullOrEmpty(row.prescriptionResponse) &&
+  //               !isNullOrEmpty(row.prescriptionResponse[0].responseDate) &&
+  //               getJalaliDate(row.prescriptionResponse[0].responseDate)}
+  //           </>
+  //         );
+  //       },
+  //     },
+  //     {
+  //       field: 'prescriptionResponse.state',
+  //       title: t('general.state'),
+  //       type: 'string',
+  //       render: (row: any): any => {
+  //         const responses = row.prescriptionResponse.filter((i: any) => {
+  //           return i.pharmacy.name === pharmacyName;
+  //         });
+  //         const thisState =
+  //           PrescriptionResponseStateEnum[responses.length > 0 ? responses[0].state : 3];
+  //         return (
+  //           <span
+  //             style={{
+  //               color:
+  //                 thisState == PrescriptionResponseStateEnum[PrescriptionResponseStateEnum.Accept]
+  //                   ? ColorEnum.Green
+  //                   : ColorEnum.Gray,
+  //             }}
+  //           >
+  //             {!isNullOrEmpty(row.prescriptionResponse) &&
+  //               t(`PrescriptionResponseStateEnum.${thisState}`)}
+  //           </span>
+  //         );
+  //       },
+  //     },
+  //   ];
+  // };
 
   const saveHandler = (item: PrescriptionInterface): void => {
     if (
@@ -286,8 +280,9 @@ const PrescriptionList: React.FC = () => {
       let pharmacyComment: string = '';
       let accept: boolean = false;
       let thisState: number = 3;
+      let responses: any;
       if (prescriptionResponse.length > 0) {
-        const responses = prescriptionResponse.filter((i: any) => {
+        responses = prescriptionResponse.filter((i: any) => {
           return i.pharmacy.name === pharmacyName;
         });
         if (responses.length > 0) {
@@ -296,6 +291,11 @@ const PrescriptionList: React.FC = () => {
           thisState = responses[0].state;
         }
       }
+      setCurrentItem({
+        ...item,
+        prescriptionResponse: responses,
+        state: thisState
+      });
       dispatch({ type: 'prescriptionID', value: id });
       dispatch({ type: 'isAccept', value: accept });
       dispatch({ type: 'pharmacyComment', value: pharmacyComment });
@@ -431,17 +431,16 @@ const PrescriptionList: React.FC = () => {
         return (
           <Grid
             item
-            xs={12}
-            sm={6}
-            md={4}
-            key={item.id}
-            style={{
-              border: `${
-                item.prescriptionResponse === null ? '1px solid #ccc' : '0px solid #ff123'
-              }`,
-            }}
+            xs={ 12 }
+            sm={ 6 }
+            md={ 4 }
+            key={ item.id }
+            style={ {
+              border: `${item.prescriptionResponse === null ? '1px solid #ccc' : '0px solid #ff123'
+                }`,
+            } }
           >
-            <CardContainer data={item} saveHandler={saveHandler} detailHandler={detailHandler} />
+            <CardContainer data={ item } saveHandler={ saveHandler } detailHandler={ detailHandler } />
           </Grid>
         );
         //}
@@ -452,52 +451,52 @@ const PrescriptionList: React.FC = () => {
   };
   const editModal = (): JSX.Element => {
     return (
-      <Dialog open={isOpenEditModal} fullScreen={fullScreen} fullWidth>
+      <Dialog open={ isOpenEditModal } fullScreen={ fullScreen } fullWidth>
         <DialogTitle>
-          {state.pharmacyComment === '' ? t('prescription.response') : 'جزئیات'}
+          { state.pharmacyComment === '' ? t('prescription.response') : 'جزئیات' }
         </DialogTitle>
         <Divider />
-        <DialogContent className={root}>
+        <DialogContent className={ root }>
           <Grid container>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <Grid container>
-                {!isNullOrEmpty(state.comment) && (
-                  <Grid item xs={12} className={detailsContainer}>
-                    <TextWithTitle title={t('prescription.comment')} body={state.comment} />
+                { !isNullOrEmpty(state.comment) && (
+                  <Grid item xs={ 12 } className={ detailsContainer }>
+                    <TextWithTitle title={ t('prescription.comment') } body={ state.comment } />
                   </Grid>
-                )}
+                ) }
 
-                {!isNullOrEmpty(state.fileKey) && (
+                { !isNullOrEmpty(state.fileKey) && (
                   <>
-                    <Grid item xs={12} className={detailsContainer}>
-                      <Picture fileKey={state.fileKey} className={smallImage} />
+                    <Grid item xs={ 12 } className={ detailsContainer }>
+                      <Picture fileKey={ state.fileKey } className={ smallImage } />
                     </Grid>
                   </>
-                )}
+                ) }
               </Grid>
             </Grid>
-            {state.state !== 3 && !(state.pharmacyComment === '' || state.pharmacyComment === null) && (
-              <Grid xs={12} item className={detailsContainer}>
-                <TextWithTitle title="پاسخ شما" body={state.pharmacyComment} />
+            { currentItem.state !== 3 && !(state.pharmacyComment === '' || state.pharmacyComment === null) && (
+              <Grid xs={ 12 } item className={ detailsContainer }>
+                <TextWithTitle title="پاسخ شما" body={ state.pharmacyComment } />
               </Grid>
-            )}
-            {state.state === 3 && (
+            ) }
+            { currentItem.state === 3 && (
               <>
-                <Grid xs={12} item style={{ margin: 4 }}>
+                <Grid xs={ 12 } item style={ { margin: 4 } }>
                   <Divider />
                 </Grid>
-                <Grid xs={12} item>
+                <Grid xs={ 12 } item>
                   <span>
                     در صورت تمایل نسخه را قبول نمایید. با قبول نسخه پیامکی برای بیمار ارسال میشود که
                     شامل آدرس و مشخصات دارو خانه شماست.
                   </span>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={ 12 }>
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={state.isAccept}
-                        onChange={(e): void => {
+                        checked={ state.isAccept }
+                        onChange={ (e): void => {
                           dispatch({ type: 'isAccept', value: e.target.checked });
                           dispatch({
                             type: 'state',
@@ -505,61 +504,58 @@ const PrescriptionList: React.FC = () => {
                               ? PrescriptionResponseStateEnum.Accept
                               : PrescriptionResponseStateEnum.NotAccept,
                           });
-                        }}
+                        } }
                       />
                     }
                     label="نسخه را میپذیرم"
                   />
                 </Grid>
-                <Grid item xs={12}>
-                  {state.isAccept && (
+                <Grid item xs={ 12 }>
+                  { state.isAccept && (
                     <TextField
                       variant="outlined"
-                      value={state.pharmacyComment}
-                      label={t('general.comment')}
+                      value={ state.pharmacyComment }
+                      label={ t('general.comment') }
                       required
                       placeholder="توضیحات لازم را درج نمایید"
                       multiline
-                      style={{ whiteSpace: 'pre-line' }}
+                      style={ { whiteSpace: 'pre-line' } }
                       rows="3"
-                      className={formItem}
-                      onChange={(e): void =>
+                      className={ formItem }
+                      onChange={ (e): void =>
                         dispatch({ type: 'pharmacyComment', value: e.target.value })
                       }
                     />
-                  )}
+                  ) }
                 </Grid>
               </>
-            )}
+            ) }
           </Grid>
         </DialogContent>
         <Divider />
         <DialogActions>
-          {state.state ===3 && (<>
+          { currentItem.state === 3 && (<>
             <Button
               variant="outlined"
               color="primary"
-              onClick={(): void => {
-               
+              onClick={ (): void => {
                 submitSave();
-                ref.current?.onQueryChange();
-              }}
+                // ref.current?.onQueryChange();
+              } }
             >
               ذخیره پاسخ
             </Button>
-           
-            </>
-            
-          )}
+          </>
+          ) }
 
           <Button
             variant="outlined"
             color="secondary"
-            onClick={(): void => {
+            onClick={ (): void => {
               setIsOpenSaveModal(false);
-            }}
+            } }
           >
-            {state.pharmacyComment === '' ? t('general.cancel') : 'بستن'}
+            { state.pharmacyComment === '' ? t('general.cancel') : 'بستن' }
           </Button>
         </DialogActions>
       </Dialog>
@@ -567,9 +563,9 @@ const PrescriptionList: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" className={container}>
-      <h1 className="txt-md">{t('prescription.peoplePrescriptions')}</h1>
-      {false && (
+    <Container maxWidth="lg" className={ container }>
+      <h1 className="txt-md">{ t('prescription.peoplePrescriptions') }</h1>
+      {/* false && (
         <DataTable
           tableRef={ref}
           columns={tableColumns()}
@@ -579,7 +575,7 @@ const PrescriptionList: React.FC = () => {
           urlAddress={urls.getList}
           initLoad={false}
         />
-      )}
+      ) */}
       {/* {true && (
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
@@ -591,14 +587,13 @@ const PrescriptionList: React.FC = () => {
           </Grid>
         </Grid>
       )} */}
-      <Grid container spacing={3} className={contentContainer}>
-        {true && contentGenerator()}
+      <Grid container spacing={ 3 } className={ contentContainer }>
+        { contentGenerator() }
       </Grid>
-      {true && <CircleBackdropLoading isOpen={isLoading} />}
-
-      {isLoading && <CircleLoading />}
-      {isOpenEditModal && editModal()}
-      {isOpenPicture && pictureDialog(fileKeyToShow)}
+      { <CircleBackdropLoading isOpen={ isLoading } /> }
+      {isLoading && <CircleLoading /> }
+      {isOpenEditModal && editModal() }
+      {isOpenPicture && pictureDialog(fileKeyToShow) }
     </Container>
   );
 };
