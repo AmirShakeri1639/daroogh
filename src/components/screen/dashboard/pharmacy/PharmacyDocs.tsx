@@ -290,10 +290,9 @@ const PharmacyDocs: React.FC<Props> = (props) => {
 
   return (
     <Container maxWidth="lg" className={ container }>
-      <h2>اسناد داروخانه</h2>
       <Grid container spacing={ 0 }>
         <Grid item xs={ 12 }>
-          <div>{ t('pharmacy.list') }</div>
+          <div><b>{ t('file.pharmacyDocs') }</b></div>
           <Paper>
             <DataTable
               tableRef={ ref }
