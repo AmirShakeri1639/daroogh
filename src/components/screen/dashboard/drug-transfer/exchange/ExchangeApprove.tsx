@@ -197,6 +197,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
   useEffect(() => {
     (async (): Promise<void> => {
+      debugger;
       const result = await getAccountingForPayment(exchangeId);
       if (result) {
         const response: GetAccountingForPaymentInterace = result.data;
