@@ -900,7 +900,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (state === 1 && activeStep === 2)
+      if (state === 1)
         element = (
           <>
             <>{element}</>
