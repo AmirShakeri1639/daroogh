@@ -1,5 +1,5 @@
 import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPills,
@@ -70,35 +70,62 @@ const Detail: React.FC<PrescriptionInterface> = (props) => {
     readOnly,
   } = props;
   const { paper, container } = useStyle();
-  const [pharmacyName, setPharmacyName] = useState('');
-  React.useEffect(() => {
-    const jwtData = new JwtData();
-    setPharmacyName(jwtData.userData.pharmacyName);
-  }, []);
+  const jwtData = new JwtData();
+  const pharmacyName = jwtData.userData.pharmacyName
   const { t } = useTranslation();
-  const getPrescriptionState = (): any => {
+  // const getPrescriptionState = (): any => {
+  //   const responses = prescriptionResponse.filter((i: any) => {
+  //     return i.pharmacy.name === pharmacyName;
+  //   });
+  //   const thisState =
+  //     PrescriptionResponseStateEnum[
+  //       responses.length > 0 ? responses[0].state : 5
+  //     ];
+  //   return (
+  //     <span
+  //       style={{
+  //         color:
+  //           thisState ==
+  //           PrescriptionResponseStateEnum[PrescriptionResponseStateEnum.Accept]
+  //             ? ColorEnum.Green
+  //             : ColorEnum.Gray,
+  //       }}
+  //     >
+  //       {!isNullOrEmpty(prescriptionResponse) &&
+  //         t(`PrescriptionResponseStateEnum.${thisState}`)}
+  //     </span>
+  //   );
+  // };
+
+  const [thisState, setThisState] =
+    useState<any>(PrescriptionResponseStateEnum.Waiting)
+  useEffect(() => {
     const responses = prescriptionResponse.filter((i: any) => {
       return i.pharmacy.name === pharmacyName;
     });
-    const thisState =
-      PrescriptionResponseStateEnum[
-        responses.length > 0 ? responses[0].state : 1
-      ];
-    return (
-      <span
-        style={{
-          color:
-            thisState ==
-            PrescriptionResponseStateEnum[PrescriptionResponseStateEnum.Accept]
-              ? ColorEnum.Green
-              : ColorEnum.Gray,
-        }}
-      >
-        {!isNullOrEmpty(prescriptionResponse) &&
-          t(`PrescriptionResponseStateEnum.${thisState}`)}
-      </span>
-    );
-  };
+    setThisState(
+      responses.length > 0
+        ? responses[0].state
+        : 5 // Waiting -- Unknown
+    )
+  }, [prescriptionResponse, prescriptionResponse.length])
+
+  const [stateLabelBackground, setStateLabelBackground] = useState<any>(ColorEnum.LiteBack)
+  const [stateLabelBody, setStateLabelBody] = useState('منتظر پاسخ شما')
+  useEffect(() => {
+    setStateLabelBackground(
+      thisState != PrescriptionResponseStateEnum.Waiting
+        ? thisState == PrescriptionResponseStateEnum.Accept
+          ? ColorEnum.LightGreen3
+          : ColorEnum.White
+        : ColorEnum.LightGreen2
+    )
+    setStateLabelBody(
+      t('PrescriptionResponseStateEnum.' +
+        PrescriptionResponseStateEnum[thisState])
+    )
+  }, [thisState])
+
   const getResponseDate = (responseDate: any): string => {
     if (!isNullOrEmpty(responseDate)) {
       const rDate: string = responseDate;
@@ -159,8 +186,8 @@ const Detail: React.FC<PrescriptionInterface> = (props) => {
                 }
               /> */}
             </Grid>
-            <Grid item xs={12} style={{background: `${getPrescriptionState().props.children ? ColorEnum.LiteBack : 'rgb(220 247 221)'}`}}>
-            <TextWithTitle title={t('general.state')} body={!getPrescriptionState().props.children ? 'منتظر پاسخ شما':getPrescriptionState()} />
+            <Grid item xs={ 12 } style={ { background: stateLabelBackground } }>
+              <TextWithTitle title={ t('general.state') } body={ stateLabelBody } />
             </Grid>
           </Grid>
         </Grid>

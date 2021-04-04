@@ -55,13 +55,9 @@ const Detail: React.FC<DetailSupplyInterface> = memo((props) => {
                   <Grid container xs={1}>
                     <img src="drug.png" style={{ height: '25px' }} />
                   </Grid>
-                  <Grid
-                    container
-                    xs={11}
-                    style={{ alignItems: 'center', paddingRight: '8px' }}
-                  >
+                  <Grid container xs={11} style={{ alignItems: 'center', paddingRight: '8px' }}>
                     <span>{drugName}</span>
-                    <div className="text-muted txt-sm">{enName || ''}</div>
+                    <div className="text-muted txt-sm">{` ${enName}` ?? ''}</div>
                   </Grid>
                 </Grid>
 
