@@ -29,7 +29,7 @@ const CardContainer: React.FC<AccountingCardInterface> = (props) => {
         color: 'white',
         borderRadius: 30,
         flexDirection: 'column',
-        padding: 3,
+        padding: 5,
       },
     })
   );

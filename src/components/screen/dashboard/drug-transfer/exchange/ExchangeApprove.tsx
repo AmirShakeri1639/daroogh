@@ -297,10 +297,8 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 <div className={container}>
                   <Grid container spacing={0}>
                     <Grid container xs={12} className="drug-container">
-                      <Grid item xs={1}>
-                        <img src="pack.png" style={{ height: '25px' }} />
-                      </Grid>
-                      <Grid item xs={11} style={{ alignItems: 'center', paddingRight: '8px' }}>
+                      
+                      <Grid item xs={12} style={{ alignItems: 'center', paddingRight: '8px' }}>
                         <span>{item.description}</span>
                       </Grid>
                     </Grid>
