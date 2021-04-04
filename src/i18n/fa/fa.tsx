@@ -492,6 +492,7 @@ export default {
         debtor: 'بدهکار',
         enterAmount: 'مبلغ را وارد کنید.',
         code: 'کد تراکنش',
+        exchangeAmount: 'مبلغ تراکنش'
       },
       countryDivision: {
         province: 'استان',

@@ -41,6 +41,9 @@ const useStyle = makeStyles((theme) =>
     icon: {
       color: '#313235',
     },
+    descriptionContainer:{
+      border:'1px solid #ccc' , padding:8 , margin:8
+    }
   })
 );
 
@@ -52,7 +55,7 @@ const Detail: React.FC<AccountingInterface> = (props) => {
     exchangeID,
     mandeh
   } = props;
-  const { paper, container } = useStyle();
+  const { paper, container,descriptionContainer } = useStyle();
 
   const { t } = useTranslation();
 
@@ -81,15 +84,15 @@ const Detail: React.FC<AccountingInterface> = (props) => {
                       body={getJalaliDate(date)}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} >
                     <TextWithTitle
-                      title={t('accounting.debtor')}
+                      title={t('accounting.exchangeAmount')}
                       body={amount >= 0 ?
                         Convertor.thousandsSeperatorFa(amount)
-                        : ''}
+                        : Convertor.thousandsSeperatorFa(amount * (-1))} suffix={t('general.defaultCurrency')}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} className={descriptionContainer}>
                     <TextWithTitle
                       title={t('general.description')}
                       body={description}

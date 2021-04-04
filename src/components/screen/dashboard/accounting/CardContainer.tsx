@@ -5,27 +5,35 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { AccountingCardInterface } from '../../../../interfaces/AccountingInterface';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { BackDrop } from '../../../public';
-
-const useStyle = makeStyles((theme) =>
-  createStyles({
-    root: {
-      backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1, 1),
-      borderRadius: 5,
-      position: 'relative',
-      overflow: 'hidden',
-    },
-  })
-);
+import { ColorEnum } from 'enum';
 
 const CardContainer: React.FC<AccountingCardInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
-  const { root } = useStyle();
 
   const { data, exchangeHandler } = props;
 
   const { id, date, description, amount, exchangeID, mandeh } = data;
-
+  const useStyle = makeStyles((theme) =>
+    createStyles({
+      root: {
+        backgroundColor: '#fff',
+        padding: theme.spacing(1, 1, 1, 1),
+        borderRadius: 5,
+        position: 'relative',
+        overflow: 'hidden',
+      },
+      typeContainer: {
+        display: 'flex',
+        alignContent: 'center',
+        background: `${amount <= 0 ? ColorEnum.Green : ColorEnum.Red}`,
+        color: 'white',
+        borderRadius: 30,
+        flexDirection: 'column',
+        padding: 3,
+      },
+    })
+  );
+  const { root, typeContainer } = useStyle();
   return (
     <Paper className={root} elevation={1}>
       <Grid container spacing={1}>
@@ -38,18 +46,24 @@ const CardContainer: React.FC<AccountingCardInterface> = (props) => {
           mandeh={mandeh}
         />
       </Grid>
-
-      {exchangeID && (
-        <Grid item xs={12} justify="flex-end">
-          <Grid item xs={12} style={{ padding: '4px' }}>
-            {' '}
-            <Divider />
-          </Grid>
-          <Grid item xs={12} container spacing={0} justify="flex-end">
-            {exchangeHandler(data)}
+      <Grid item xs={12} style={{ padding: '4px' }}>
+        <Divider />
+      </Grid>
+      <Grid
+        item
+        xs={12}
+        style={{ display: 'flex', flexDirection: 'row-reverse', alignContent: 'center' }}
+      >
+        <Grid item xs={6} container spacing={0} direction="row-reverse">
+          {exchangeID && <>{exchangeHandler(data)}</>}
+        </Grid>
+        <Grid item container xs={6}>
+          <Grid item xs={6} container spacing={0} className={typeContainer}>
+            <span>{amount <= 0 ? 'بستانکار' : 'بدهکار'}</span>
           </Grid>
         </Grid>
-      )}
+      </Grid>
+
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );
