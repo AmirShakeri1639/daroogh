@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button,
   createStyles,
@@ -17,6 +17,7 @@ import Validation from "../../../utils/validation";
 import CircleLoading from "../../public/loading/CircleLoading";
 import { Alert } from "../../public/alert/Alert";
 import { useTranslation } from 'react-i18next';
+import OtpContext, { OtpContextInterface } from './Context';
 
 const useStyles = makeStyles((theme) => createStyles({
   root: {
@@ -61,17 +62,19 @@ const useStyles = makeStyles((theme) => createStyles({
 
 const SecondStep: React.FC = () => {
   const { t } = useTranslation();
-  const [mobileNumber, setMobileNumber] = useState<string>('');
+  const [code, setCode] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
   const [serverMessage, setServerMessage] = useState<string>('');
 
   const { grid, root, paper, submitBtn, spacing3 } = useStyles();
-  const { forgetPassword } = new Account();
-  const { isValidaMobileNumber } = new Validation();
-  const [_forgetPassword, { isLoading, status, data, reset }] = useMutation(forgetPassword);
+  const { loginByTicket } = new Account();
+  const { isValidOtpCode } = new Validation();
+  const [_loginByTicket, { isLoading, status, data, reset }] = useMutation(loginByTicket);
   const { push } = useHistory();
-
+  const {
+    ticketId
+  } = useContext<OtpContextInterface>(OtpContext);
   if (status === QueryStatus.Success) {
     const { message, data: _data } = data;
     if (_data === null && message !== '') {
@@ -86,12 +89,14 @@ const SecondStep: React.FC = () => {
     }
   }
 
-  const resetPasswordHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+  const loginByTicketHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
+    console.log(ticketId);
     try {
-      if (isValidaMobileNumber(mobileNumber)) {
-        await _forgetPassword({
-          mobile: mobileNumber,
+      if (isValidOtpCode(code)) {
+        await _loginByTicket({
+          ticketId: ticketId,
+          ticket: code,
         });
       }
       else {
@@ -103,11 +108,11 @@ const SecondStep: React.FC = () => {
     }
   }
 
-  const mobileNumberHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  const ticketHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (showError) {
       setShowError(false);
     }
-    setMobileNumber(e.target.value);
+    setCode(e.target.value);
   }
 
   return (
@@ -130,11 +135,11 @@ const SecondStep: React.FC = () => {
             <Grid container className={ grid }>
               <Grid item>
                 <Typography component="p">
-                  { t('login.getNewPassword') }
+                  { t('login.otp') }
                 </Typography>
                 <form
                   noValidate
-                  onSubmit={ resetPasswordHandler }
+                  onSubmit={ loginByTicketHandler }
                 >
                   <TextField
                     error={ showError }
@@ -146,7 +151,7 @@ const SecondStep: React.FC = () => {
                     label={ t('general.mobile') }
                     type="text"
                     id="mobile"
-                    onChange={ mobileNumberHandler }
+                    onChange={ ticketHandler }
                     autoComplete="current-password"
                   />
                   <Button

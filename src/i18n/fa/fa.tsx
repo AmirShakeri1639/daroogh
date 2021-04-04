@@ -194,6 +194,7 @@ export default {
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
         getOtp: 'دریافت کلمه عبور یک بار مصرف',
+        otp: 'کد ورود به سامانه داروگ',
       },
       user: {
         role: 'نقش',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Button,
   createStyles,
@@ -98,10 +98,7 @@ const FirstStep: React.FC = () => {
  /* const {
     ticketId, setTicketId
   } = useContext<OtpContextInterface>(OtpContext);*/
-  const initialContextValues = (): OtpContextInterface => ({
-    ticketId,
-    setTicketId
-  });
+  
   const requestTicketHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
     try {
