@@ -57,6 +57,7 @@ import CircleLoading from '../../../../public/loading/CircleLoading';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { ColorEnum } from 'enum';
+import { GetAccountingForPaymentInterace } from 'interfaces/AccountingInterface';
 //https://sweetalert2.github.io/
 // import Swal from 'sweetalert2'
 // import withReactContent from 'sweetalert2-react-content'
@@ -206,6 +207,7 @@ const ActionButtons = (): JSX.Element => {
     getQuestionGroupOfExchange,
     saveSurvey,
     getViewExchange,
+    getAccountingForPayment,
   } = new PharmacyDrug();
 
   const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
@@ -349,6 +351,7 @@ const ActionButtons = (): JSX.Element => {
     inputmodel.isConfirm = isConfirm;
     try {
       let res = await _confirmOrNotExchange(inputmodel);
+      debugger;
       if (viewExhcnage && viewExhcnage.state === 3) {
         if (
           (viewExhcnage.currentPharmacyIsA === false &&
@@ -372,8 +375,24 @@ const ActionButtons = (): JSX.Element => {
           (viewExhcnage.currentPharmacyIsA === true &&
             res &&
             (res.data.data.currentState === 4 || res.data.data.currentState === 9))
-        )
+        ) {
           setShowApproveModalForm(true);
+        } else {
+          // بررسی پرداخت از محل بستانکاری
+          const result = await getAccountingForPayment(exchangeId);
+          if (result) {
+            const response: GetAccountingForPaymentInterace = result.data;
+            if (
+              response.paymentExchangeByBestankari &&
+              response.paymentExchangeByBestankari.isSuccess
+            ) {
+              await sweetAlert({
+                type: 'success',
+                text: response.paymentExchangeByBestankari.message,
+              });
+            }
+          }
+        }
       }
     } catch (e) {
       errorHandler(e);
@@ -900,7 +919,7 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (state === 1 && activeStep === 2)
+      if (state === 1)
         element = (
           <>
             <>{element}</>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { Avatar, Grid, List } from '@material-ui/core';
+import { Avatar, Button, Grid, List } from '@material-ui/core';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Menu, { MenuProps } from '@material-ui/core/Menu';
@@ -9,9 +9,7 @@ import { ChevronRight as ChevronRightIcon } from '@material-ui/icons';
 import Context from './Context';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
-import {
-  errorHandler, JwtData, logoutUser,
-} from '../../../utils';
+import { errorHandler, JwtData, logoutUser } from '../../../utils';
 import { ColorEnum } from '../../../enum';
 import { Alert } from '@material-ui/lab';
 import Utils from '../../public/utility/Utils';
@@ -21,8 +19,7 @@ import { Accounting } from '../../../services/api';
 import { LoggedInUserInterface } from '../../../interfaces';
 import changeProfilePic from './user/changeProfilePic';
 import routes from '../../../routes';
-import { Link } from 'react-router-dom';
-
+import { Link, useHistory } from 'react-router-dom';
 const { isIndebtPharmacy } = new Accounting();
 const drawerWidth = 240;
 
@@ -174,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
     transition: 'all .7s',
     '&:hover': {
       background: '#bbdefb',
-    }
+    },
   },
 }));
 
@@ -184,17 +181,17 @@ const StyledMenu = withStyles({
   },
 })((props: MenuProps) => (
   <Menu
-    elevation={ 0 }
-    getContentAnchorEl={ null }
-    anchorOrigin={ {
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
       vertical: 'bottom',
       horizontal: 'center',
-    } }
-    transformOrigin={ {
+    }}
+    transformOrigin={{
       vertical: 'top',
       horizontal: 'center',
-    } }
-    { ...props }
+    }}
+    {...props}
   />
 ));
 
@@ -209,9 +206,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
   const [avatarChanged, setAvatarChanged] = useState<any>();
 
-  const {
-    profile
-  } = routes;
+  const { profile } = routes;
 
   const classes = useStyles();
 
@@ -275,163 +270,151 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     const { name, family } = JSON.parse(user);
     const title = (
       <span>
-        {name } {family } عزیز ،
+        {name} {family} عزیز ،
       </span>
     );
     const body = (
-      <span style={ { marginRight: 5 } }>
-        بعلت اینکه سقف بدهی شما بیشتر از حد مجاز می باشد، امکان تبادل
-        برای شما میسر نمی باشد. لطفا نسبت به پرداخت بدهی خود اقدام نمایید.
+      <>
+      <span style={{ marginRight: 5 }}>
+        {t('alerts.DebotAlert')}
       </span>
+      </>
+      
     );
     element = (
       <>
-        {title }
-        {body }
+        
+        {title}
+        {body}
+        <Button onClick={()=> {history.push(accountingInfo)}} type="button" variant="outlined" style={{marginRight:16, color:'white'}}> {t('general.pay')}
+                </Button>
+
       </>
     );
     return element;
   };
 
   const avatar = (): any => {
-    return (
-      localStorage.getItem('avatar') ?? avatarPic
-    );
-  }
+    return localStorage.getItem('avatar') ?? avatarPic;
+  };
 
+  const { accountingInfo } = routes;
+  const history = useHistory();
   return (
-    <Context.Provider value={ contextInitialValues() }>
-      <div className={ classes.root }>
+    <Context.Provider value={contextInitialValues()}>
+      <div className={classes.root}>
         <Appbar />
 
-        <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
-          <div className={ classes.drawerBackground }>
-            <div className={ classes.toolbarIcon }>
-              <div className={ classes.headerHolder }>
-                <div className={ classes.logoTypeHolder }>
-                  <img className={ classes.logoType } src="logotype.svg" />
-                  <span
-                    className={ classes.systemTitle }
-                    style={ { textAlign: 'right' } }
-                  >
-                    { t('general.systemTitle') }
+        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
+          <div className={classes.drawerBackground}>
+            <div className={classes.toolbarIcon}>
+              <div className={classes.headerHolder}>
+                <div className={classes.logoTypeHolder}>
+                  <img className={classes.logoType} src="logotype.svg" />
+                  <span className={classes.systemTitle} style={{ textAlign: 'right' }}>
+                    {t('general.systemTitle')}
                   </span>
                 </div>
-                <IconButton
-                  className={ classes.roundicon }
-                  onClick={ handleDrawerClose }
-                >
+                <IconButton className={classes.roundicon} onClick={handleDrawerClose}>
                   <ChevronRightIcon />
                 </IconButton>
               </div>
             </div>
 
-            <Divider className={ classes.divider } />
+            <Divider className={classes.divider} />
 
-            <Grid container className={ classes.largeSpacing }>
-              <Grid item xs={ 3 }>
+            <Grid container className={classes.largeSpacing}>
+              <Grid item xs={3}>
                 <>
-                  <label style={ { cursor: 'pointer' } }>
+                  <label style={{ cursor: 'pointer' }}>
                     <input
-                      type='file'
-                      style={ { display: 'none' } }
-                      id='profilePicUpload'
+                      type="file"
+                      style={{ display: 'none' }}
+                      id="profilePicUpload"
                       accept="image/jpeg"
-                      name='profilePicUpload'
-                      onChange={ (e: any): void => {
+                      name="profilePicUpload"
+                      onChange={(e: any): void => {
                         e.preventDefault();
                         if (e.target.files.length > 0) {
-                          changeProfilePic(loggedInUser?.userId, e.target.files[0])
-                            .then((response: any) => {
+                          changeProfilePic(loggedInUser?.userId, e.target.files[0]).then(
+                            (response: any) => {
                               const { userData } = new JwtData();
                               setAvatarChanged(userData.imageKey);
                               setLoggedInUser(userData);
-                            });
+                            }
+                          );
                         }
-                      } }
+                      }}
                     />
-                    <Avatar
-                      alt={ t('user.user') }
-                      className={ classes.largeAvatar }
-                      src={ avatar() }
-                    />
+                    <Avatar alt={t('user.user')} className={classes.largeAvatar} src={avatar()} />
                   </label>
                 </>
               </Grid>
-              <Grid item xs={ 9 }>
-                <Grid item xs={ 12 }>
-                  <Link to={ profile } className={ classes.simpleLink }>
-                    <span
-                      style={ { color: '#4625B2', fontSize: 'large' } }>
-                      { loggedInUser?.name } { loggedInUser?.family }
+              <Grid item xs={9}>
+                <Grid item xs={12}>
+                  <Link to={profile} className={classes.simpleLink}>
+                    <span style={{ color: '#4625B2', fontSize: 'large' }}>
+                      {loggedInUser?.name} {loggedInUser?.family}
                     </span>
                   </Link>
                 </Grid>
-                <Grid item xs={ 12 }>
-                  <span style={ { color: '#6B4ECC', fontSize: 'small' } }>
-                    { t('pharmacy.pharmacy') } { loggedInUser?.pharmacyName }
+                <Grid item xs={12}>
+                  <span style={{ color: '#6B4ECC', fontSize: 'small' }}>
+                    {t('pharmacy.pharmacy')} {loggedInUser?.pharmacyName}
                   </span>
                 </Grid>
-                <Grid
-                  item
-                  xs={ 12 }
-                  style={ { display: 'flex', justifyContent: 'flex-end' } }
-                >
-                  <IconButton
-                    edge="start"
-                    color="inherit"
-                    onClick={ (): void => logoutUser() }
-                  >
-                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
-                    <span style={ { color: ColorEnum.Red, fontSize: 'medium' } }>
-                      { t('login.exit') }
+                <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <IconButton edge="start" color="inherit" onClick={(): void => logoutUser()}>
+                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
+                    <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
+                      {t('login.exit')}
                     </span>
                   </IconButton>
                 </Grid>
               </Grid>
             </Grid>
-            <Divider className={ classes.divider } />
-            <List
-              style={ { color: '#4625B2' } }
-              component="nav"
-              aria-labelledby="nested-list-items"
-            >
-              { listItemsGenerator() }
+            <Divider className={classes.divider} />
+            <List style={{ color: '#4625B2' }} component="nav" aria-labelledby="nested-list-items">
+              {listItemsGenerator()}
             </List>
-            <Divider className={ classes.divider } />
+            <Divider className={classes.divider} />
           </div>
         </MaterialDrawer>
-        <main className={ classes.content }>
-          <div className={ classes.appBarSpacer } />
-          <div className={ classes.alert }>
-            { isIndebtPharmacyState && (
-              <Alert variant="filled" severity="error" style={ { margin: 10 } }>
-                {alertContent() }
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          <div className={classes.alert}>
+            {isIndebtPharmacyState && (
+              <Alert variant="filled" severity="error" style={{ margin: 10 }}>
+                {alertContent()}
               </Alert>
-            ) }
+            )}
           </div>
-          { component }
+          {component}
         </main>
-        { debtValueState && (
+        {debtValueState && (
           <StyledMenu
             id="customized-menu"
-            anchorEl={ creditAnchorEl }
+            anchorEl={creditAnchorEl}
             keepMounted
-            open={ Boolean(creditAnchorEl) }
-            onClose={ (): void => setcreditAnchorEl(null) }
+            open={Boolean(creditAnchorEl)}
+            onClose={(): void => setcreditAnchorEl(null)}
           >
-            <div style={ { padding: 5 } }>
-              <span style={ { fontSize: 14 } }>
-                { ' ' }
-                <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
-                <span style={ { fontSize: 10, marginRight: 2 } }>
-                  { t('general.defaultCurrency') }
-                </span>
-                { debtValueState > 0 && ' بدهکار' }
+            <div style={{ padding: 5 }}>
+              <span style={{ fontSize: 14 }}>
+                {' '}
+                <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b>
+                <span style={{ fontSize: 10, marginRight: 2 }}>{t('general.defaultCurrency')}</span>
+                {debtValueState > 0 && (<>
+                  <span style ={{marginLeft:8}}> بدهکار</span>
+                  <Button onClick={()=> {history.push(accountingInfo)}} type="button" variant="outlined">
+                  {t('general.pay')}
+                </Button>
+                </>)}
+                
               </span>
             </div>
           </StyledMenu>
-        ) }
+        )}
       </div>
     </Context.Provider>
   );
