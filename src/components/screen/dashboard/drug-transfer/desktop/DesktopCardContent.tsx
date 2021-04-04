@@ -135,7 +135,6 @@ const DesktopCardContent = ({
   const [totalPriceB, setTotalPriceB] = useState<number>(0);
 
   React.useEffect(() => {
-    debugger;
     const basket1 = basketCount;
     const basket2 = uBasketCount;
     setTotalPriceA(calcPrice(cartA));

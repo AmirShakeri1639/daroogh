@@ -399,24 +399,10 @@ const SupplyList: React.FC = () => {
     }
   }, [selectedDay, selectedMonth, selectedYear]);
 
-  const typeHandler = (item: string): string => {
-    let name = '';
-    switch (item) {
-      case DrugType.CAPSULE:
-      case DrugType.PILL:
-      case DrugType.SUPPOSITORY:
-        name = t('general.box');
-        break;
-      case DrugType.AMPOULE:
-      case DrugType.MILK_POWDER:
-      case DrugType.SYRUP:
-        name = t('general.num');
-        break;
-      default:
-        name = '';
-    }
-
-    return name;
+  const getDrugName = (item: any): string => {
+    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
+      item.type !== null ? ` - ${item.type}` : ''
+    }`;
   };
 
   const searchDrugs = async (title: string): Promise<any> => {
@@ -427,17 +413,22 @@ const SupplyList: React.FC = () => {
       setIsLoading(true);
       const result = await searchDrug(title);
 
-      const items = result.map((item: any) => ({
-        value: item.id,
-        label: `${item.name} (${item.genericName}) ${typeHandler(item.type)}`,
-      }));
-
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
 
-      const optionsList = items.map((item: ListOptions) => ({
-        item,
-        el: <div>{item.label}</div>,
+      const optionsList = result.map((_item: any) => ({
+        item: {
+          value: _item.id,
+          label: getDrugName(_item),
+        },
+        el: (
+          <div>
+            <div>{getDrugName(_item)}</div>
+            <div className="text-muted txt-sm">{`${
+              _item.enName !== null ? `-${_item.enName}` : ''
+            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
+          </div>
+        ),
       }));
 
       setOptions(optionsList);
