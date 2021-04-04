@@ -119,7 +119,7 @@ const useClasses = makeStyles((theme) =>
     cardContainer: {
       margin: 4,
       overflow: 'auto',
-      marginBottom: 125,
+      marginBottom: 160,
     },
   })
 );
@@ -441,7 +441,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
   const Content = (): JSX.Element => {
     return (
-      <Grid container style={{ width: `${isModal ? '100%' : '95vw'}`, padding: 4 }}>
+      <Grid container >
         {!isModal && (
           <Grid item xs={12} style={{ marginTop: 8 }}>
             <span style={{ fontSize: 16 }}>لیست موارد قابل پرداخت</span>
@@ -488,18 +488,17 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
             spacing={1}
             style={{
               background: 'white',
-              position: 'absolute',
+              position: 'fixed',
               left: 0,
               right: 0,
-              bottom: 8,
+              bottom: 0,
               padding: 8,
               maxWidth: '100%',
               width: '100%',
+              borderTop:`1px solid ${ColorEnum.DeepBlue}` 
             }}
           >
-            <Grid xs={12} item>
-              <Divider />
-            </Grid>
+         
 
             <Grid
               item
