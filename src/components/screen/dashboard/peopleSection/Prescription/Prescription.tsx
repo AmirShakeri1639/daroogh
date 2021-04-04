@@ -241,6 +241,9 @@ const Prescription: React.FC = (props) => {
     <MaterialContainer>
       <Grid container spacing={3}>
         <Grid item xs={12}>
+            {t('alerts.PrescriptionAlert')}
+        </Grid>
+        <Grid item xs={12}>
           <h3>{t('peopleSection.listPrescription')}</h3>
         </Grid>
         <Hidden xsDown>

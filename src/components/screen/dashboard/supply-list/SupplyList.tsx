@@ -196,6 +196,14 @@ const SearchButton = styled(Button)`
   color: #2e67e2;
 `;
 
+const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} />)`
+  .MuiInputBase-input {
+    &::placeholder {
+      font-size: 0.7rem !important;
+    }
+  }
+`;
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
@@ -391,24 +399,10 @@ const SupplyList: React.FC = () => {
     }
   }, [selectedDay, selectedMonth, selectedYear]);
 
-  const typeHandler = (item: string): string => {
-    let name = '';
-    switch (item) {
-      case DrugType.CAPSULE:
-      case DrugType.PILL:
-      case DrugType.SUPPOSITORY:
-        name = t('general.box');
-        break;
-      case DrugType.AMPOULE:
-      case DrugType.MILK_POWDER:
-      case DrugType.SYRUP:
-        name = t('general.num');
-        break;
-      default:
-        name = '';
-    }
-
-    return name;
+  const getDrugName = (item: any): string => {
+    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
+      item.type !== null ? ` - ${item.type}` : ''
+    }`;
   };
 
   const searchDrugs = async (title: string): Promise<any> => {
@@ -419,17 +413,22 @@ const SupplyList: React.FC = () => {
       setIsLoading(true);
       const result = await searchDrug(title);
 
-      const items = result.map((item: any) => ({
-        value: item.id,
-        label: `${item.name} (${item.genericName}) ${typeHandler(item.type)}`,
-      }));
-
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
 
-      const optionsList = items.map((item: ListOptions) => ({
-        item,
-        el: <div>{item.label}</div>,
+      const optionsList = result.map((_item: any) => ({
+        item: {
+          value: _item.id,
+          label: getDrugName(_item),
+        },
+        el: (
+          <div>
+            <div>{getDrugName(_item)}</div>
+            <div className="text-muted txt-sm">{`${
+              _item.enName !== null ? `-${_item.enName}` : ''
+            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
+          </div>
+        ),
       }));
 
       setOptions(optionsList);
@@ -564,8 +563,8 @@ const SupplyList: React.FC = () => {
       <Container>
         <h1 className="txt-md">{t('drug.SuppliedDrugsList')}</h1>
         <Grid container spacing={1} alignItems="center">
-          <Grid item xs={9} md={5}>
-            <MaterialSearchBar
+          <Grid item xs={12} md={5}>
+            <StyledMaterialSearchBar
               placeholder={t('exchange.searchDrugPlaceHolder')}
               onRequestSearch={filteredItemsHandler}
             />
@@ -610,6 +609,7 @@ const SupplyList: React.FC = () => {
             <Grid container spacing={1} className={formContent}>
               <Grid item xs={12}>
                 <AutoComplete
+                  disable={state?.id !== 0}
                   ref={useRef()}
                   isLoading={isLoading}
                   onChange={debounce((e) => searchDrugs(e.target.value), 500)}
@@ -632,8 +632,13 @@ const SupplyList: React.FC = () => {
                     <Input
                       numberFormat
                       className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
                       label={`${t('general.number')} ${t('drug.drug')}`}
-                      onChange={debounce((e) => dispatch({ type: 'cnt', value: e }), 500)}
+                      onChange={(e): void => dispatch({ type: 'cnt', value: e })}
                       value={state?.cnt}
                     />
                   </Grid>
@@ -643,7 +648,7 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <label htmlFor="">{`${t('general.price')} (${t(
+                    <label htmlFor="">{`${t('general.pricePerUnit')} (${t(
                       'general.defaultCurrency'
                     )})`}</label>
                   </Grid>
@@ -653,8 +658,13 @@ const SupplyList: React.FC = () => {
                       numberFormat
                       value={state?.amount}
                       className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
                       label={t('general.price')}
-                      onChange={debounce((e) => dispatch({ type: 'amount', value: e }), 500)}
+                      onChange={(e): void => dispatch({ type: 'amount', value: e })}
                     />
                   </Grid>
                 </Grid>
@@ -674,14 +684,18 @@ const SupplyList: React.FC = () => {
                     </GridCenter>
                     <GridCenter item xs={2} className="w-100">
                       <Input
+                        type="number"
                         value={state?.offer2}
                         placeholder="تعداد"
-                        onChange={(e): void =>
-                          dispatch({
-                            type: 'offer2',
-                            value: e.target.value,
-                          })
-                        }
+                        onChange={(e): void => {
+                          const val = e.target.value;
+                          if (Number(val) >= 1 || Number(state?.offer2) >= 1) {
+                            dispatch({
+                              type: 'offer2',
+                              value: val,
+                            });
+                          }
+                        }}
                       />
                     </GridCenter>
                     <GridCenter xs={1}>
@@ -689,14 +703,18 @@ const SupplyList: React.FC = () => {
                     </GridCenter>
                     <Grid item xs={2}>
                       <Input
+                        type="number"
                         value={state?.offer1}
                         placeholder="تعداد"
-                        onChange={(e): void =>
-                          dispatch({
-                            type: 'offer1',
-                            value: e.target.value,
-                          })
-                        }
+                        onChange={(e): void => {
+                          const val = e.target.value;
+                          if (Number(val) >= 1 || Number(state?.offer1) >= 1) {
+                            dispatch({
+                              type: 'offer1',
+                              value: val,
+                            });
+                          }
+                        }}
                       />
                     </Grid>
                     <GridCenter xs={1}>{t('general.gift')}</GridCenter>
@@ -776,7 +794,7 @@ const SupplyList: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">فرمت تاریخ به صورت 0000 00 00 باشد</span>
+                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
               {/* <Grid item xs={12}>

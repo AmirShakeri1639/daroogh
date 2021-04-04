@@ -380,13 +380,8 @@ const FirstStep: React.FC = () => {
       <Grid item xs={12}>
         <Grid container spacing={2}>
           <Hidden xsDown>
-            <Grid item xs={12}>
-              <span>
-                برای جستجو در لیست های عرضه شده توسط همکارانتان میتوانید نام دارو٬ دسته دارویی یا
-                نام ژنریک را وارد کنید. همچنین میتوانید چند دارو را جستجو کنید و لیست هایی که
-                بیشترین مطابقت با خواسته شما را داشته باشد به شما پیشنهاد داده میشود برای جستجوی
-                دقیق تر میتوانید از گزینه جستجوی پیشرفته استفاده نمایید
-              </span>
+            <Grid item xs={12} style={{marginTop:16}}>
+              <span>{t('alerts.supplylistsAlert')}</span>
             </Grid>
           </Hidden>
 

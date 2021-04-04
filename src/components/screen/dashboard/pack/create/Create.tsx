@@ -30,7 +30,7 @@ import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
 import { useEffectOnce } from '../../../../../hooks';
-import { errorHandler, Convertor, jalali } from '../../../../../utils';
+import { errorHandler, Convertor, jalali, warningSweetAlert } from '../../../../../utils';
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
@@ -340,10 +340,15 @@ const Create: React.FC = () => {
   }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
-    if (isOpenModal) {
-      resetValues();
+    console.log('category', selectedCategory);
+    if (selectedCategory === '-1') {
+      warningSweetAlert(t('alerts.SelectCategoryAlert'));
+    } else {
+      if (isOpenModal) {
+        resetValues();
+      }
+      setIsOpenModal((v) => !v);
     }
-    setIsOpenModal((v) => !v);
   };
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
@@ -492,24 +497,10 @@ const Create: React.FC = () => {
 
   const memoContent = useMemo(() => contentHandler(), [drugsPack]);
 
-  const typeHandler = (item: string): string => {
-    let name = '';
-    switch (item) {
-      case DrugType.CAPSULE:
-      case DrugType.PILL:
-      case DrugType.SUPPOSITORY:
-        name = t('general.box');
-        break;
-      case DrugType.AMPOULE:
-      case DrugType.MILK_POWDER:
-      case DrugType.SYRUP:
-        name = t('general.num');
-        break;
-      default:
-        name = '';
-    }
-
-    return name;
+  const getDrugName = (item: any): string => {
+    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
+      item.type !== null ? ` - ${item.type}` : ''
+    }`;
   };
 
   const searchDrugs = async (title: string): Promise<any> => {
@@ -526,16 +517,21 @@ const Create: React.FC = () => {
       }
       const result = await seerchDrugInCategory(data);
 
-      const items = result.map((item: any) => ({
-        value: item.id,
-        label: `${item.name} (${item.genericName}) ${typeHandler(item.type)}`,
-      }));
-      // setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
 
-      const optionsList = items.map((item: ListOptions) => ({
-        item,
-        el: <div>{item.label}</div>,
+      const optionsList = result.map((_item: any) => ({
+        item: {
+          value: _item.id,
+          label: getDrugName(_item),
+        },
+        el: (
+          <div>
+            <div>{getDrugName(_item)}</div>
+            <div className="text-muted txt-sm">{`${
+              _item.enName !== null ? `-${_item.enName}` : ''
+            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
+          </div>
+        ),
       }));
 
       setOptions(optionsList);
@@ -748,7 +744,7 @@ const Create: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <label htmlFor="">{`${t('general.price')} (${t(
+                    <label htmlFor="">{`${t('general.pricePerUnit')} (${t(
                       'general.defaultCurrency'
                     )})`}</label>
                   </Grid>
@@ -781,11 +777,14 @@ const Create: React.FC = () => {
                     </GridCenter>
                     <GridCenter item xs={2} className="w-100">
                       <Input
+                        type="number"
                         value={offer2}
                         placeholder="تعداد"
                         onChange={(e): void => {
                           const val = e.target.value;
-                          setOffer2(e.target.value);
+                          if (Number(val) >= 1 || Number(offer2) >= 1) {
+                            setOffer2(e.target.value);
+                          }
                         }}
                       />
                     </GridCenter>
@@ -794,10 +793,14 @@ const Create: React.FC = () => {
                     </GridCenter>
                     <Grid item xs={2}>
                       <Input
+                        type="number"
                         value={offer1}
                         placeholder="تعداد"
                         onChange={(e): void => {
-                          setOffer1(e.target.value);
+                          const val = e.target.value;
+                          if (Number(val) >= 1 || Number(offer1) >= 1) {
+                            setOffer1(e.target.value);
+                          }
                         }}
                       />
                     </Grid>

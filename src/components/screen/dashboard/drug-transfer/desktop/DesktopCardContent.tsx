@@ -94,12 +94,8 @@ const DesktopCardContent = ({
         : ViewExchangeInitialState;
   }
 
-  if (cartA.length < 1 && uBasketCount.length > 0) {
-    cartA = item.currentPharmacyIsA ? [...uBasketCount] : [...basketCount];
-  }
-  if (cartB.length < 1 && basketCount.length > 0) {
-    cartB = item.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
-  }
+  cartA = item.currentPharmacyIsA ? [...uBasketCount] : [...basketCount];
+  cartB = item.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
 
   const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
     return cart.length > 0
@@ -140,6 +136,8 @@ const DesktopCardContent = ({
   const [totalPriceB, setTotalPriceB] = useState<number>(0);
 
   React.useEffect(() => {
+    const basket1 = basketCount;
+    const basket2 = uBasketCount;
     setTotalPriceA(calcPrice(cartA));
     setTotalPriceB(calcPrice(cartB));
   }, [basketCount, uBasketCount]);
@@ -393,14 +391,7 @@ const DesktopCardContent = ({
                 }
                 body={
                   <>
-                    {
-                      //@ts-ignore
-                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA)
-                    }
-                    {
-                      // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA)
-                    }
+                    { Convertor.thousandsSeperatorFa(totalPriceA) }
                   </>
                 }
                 suffix={t('general.defaultCurrency')}
@@ -419,14 +410,7 @@ const DesktopCardContent = ({
                 }
                 body={
                   <>
-                    {
-                      //@ts-ignore
-                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB)
-                    }
-                    {
-                      // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB)
-                    }
+                    { Convertor.thousandsSeperatorFa(totalPriceB) }
                   </>
                 }
                 suffix={t('general.defaultCurrency')}

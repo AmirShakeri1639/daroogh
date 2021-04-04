@@ -20,6 +20,7 @@ import { AllPharmacyDrug } from '../../../../enum/query';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../../routes';
+import styled from 'styled-components';
 
 const { removePharmacyDrug } = new PharmacyDrug();
 
@@ -27,8 +28,10 @@ const useStyle = makeStyles((theme) =>
   createStyles({
     root: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1,1),
+      padding: theme.spacing(1, 1, 1, 1),
       borderRadius: 5,
+      position: 'relative',
+      overflow: 'hidden',
     },
     redTrash: {
       color: '#ff0000',
@@ -36,19 +39,39 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
+const Ribbon = styled.div.attrs((props: any) => ({ text: props.text }))`
+  position: absolute;
+  transform: rotate(45deg);
+  -webkit-transform: rotate(-45deg);
+  left: -24px;
+  top: 14px;
+  width: 100px;
+  height: 25px;
+  background-color: #ff2e2e;
+  content: '${(props: any): any => props.text}';
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.7rem;
+  color: #fff;
+`;
+
+
 interface CardContainerProps {
   name: string;
   drugsCounter: number | string;
   totalPrice: string | number;
   id: number;
   removeHandler: (item: number) => void;
+  status : number;
+  statusMessage : string;
 }
 
 const { createPack } = routes;
 
 const CardContainer: React.FC<CardContainerProps> = (props) => {
   const { root, redTrash } = useStyle();
-  const { id, removeHandler } = props;
+  const { id, removeHandler,status,statusMessage } = props;
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
@@ -75,6 +98,9 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
 
   return (
     <Paper className={root} elevation={1}>
+       {status != 1 && (
+        <Ribbon>{statusMessage}</Ribbon>
+      )}
       <Grid container spacing={3}>
         <Grid item xs={12} spacing={3}>
           <Detail {...props} />

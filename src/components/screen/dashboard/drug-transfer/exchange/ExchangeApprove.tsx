@@ -119,7 +119,7 @@ const useClasses = makeStyles((theme) =>
     cardContainer: {
       margin: 4,
       overflow: 'auto',
-      marginBottom: 125,
+      marginBottom: 160,
     },
   })
 );
@@ -296,10 +296,8 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 <div className={container}>
                   <Grid container spacing={0}>
                     <Grid container xs={12} className="drug-container">
-                      <Grid item xs={1}>
-                        <img src="pack.png" style={{ height: '25px' }} />
-                      </Grid>
-                      <Grid item xs={11} style={{ alignItems: 'center', paddingRight: '8px' }}>
+                      
+                      <Grid item xs={12} style={{ alignItems: 'center', paddingRight: '8px' }}>
                         <span>{item.description}</span>
                       </Grid>
                     </Grid>
@@ -440,7 +438,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
   const Content = (): JSX.Element => {
     return (
-      <Grid container style={{ width: `${isModal ? '100%' : '95vw'}`, padding: 4 }}>
+      <Grid container >
         {!isModal && (
           <Grid item xs={12} style={{ marginTop: 8 }}>
             <span style={{ fontSize: 16 }}>لیست موارد قابل پرداخت</span>
@@ -449,14 +447,13 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
         <Grid item xs={12} style={{ marginTop: 4 }}>
           {accountingForPayment && accountingForPayment.length > 0 ? (
-            <span>
-              با توجه به اینکه حداکثر بدهی در سیستم داروگ مبلغ
+            <span style={{margin:16}}>
+              داروساز عزیز با توجه به اینکه سقف بدهی مجاز در سیستم داروگ مبلغ
               <span style={{ marginRight: 5, marginLeft: 5, color: 'red' }}>
                 <b>{Utils.numberWithCommas(debtAmountAllow)}</b>
               </span>
               <span>
-                {t('general.defaultCurrency')} می باشد لطفا از لیست ذیل موارد دلخواه خود را انتخاب و
-                سپس پرداخت نمایید
+                {t('general.defaultCurrency')} می باشد ،لطفا با انتخاب موارد دلخواه از لیست ذیل ، نسبت به پرداخت آن اقدام نمایید.
               </span>
             </span>
           ) : (
@@ -488,18 +485,17 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
             spacing={1}
             style={{
               background: 'white',
-              position: 'absolute',
+              position: 'fixed',
               left: 0,
               right: 0,
-              bottom: 8,
+              bottom: 0,
               padding: 8,
               maxWidth: '100%',
               width: '100%',
+              borderTop:`1px solid ${ColorEnum.DeepBlue}` 
             }}
           >
-            <Grid xs={12} item>
-              <Divider />
-            </Grid>
+         
 
             <Grid
               item
@@ -519,14 +515,14 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 <Grid xs={6}>
                   <TextWithTitle
                     title={t('exchange.finalAmount')}
-                    body={paymentAmount}
+                    body={Utils.numberWithCommas(paymentAmount)}
                     suffix={t('general.defaultCurrency')}
                   />
                 </Grid>
                 <Grid xs={6}>
                   <TextWithTitle
                     title={t('exchange.selectedAmount')}
-                    body={totalAmount}
+                    body={Utils.numberWithCommas(totalAmount)}
                     suffix={t('general.defaultCurrency')}
                   />
                 </Grid>

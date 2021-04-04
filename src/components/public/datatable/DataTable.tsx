@@ -112,6 +112,7 @@ const DataTable: React.ForwardRefRenderFunction<
     urlAddress,
     defaultFilter,
     detailPanel,
+    otherQueryString,
   } = props;
 
   const { t } = useTranslation();
@@ -299,6 +300,10 @@ const DataTable: React.ForwardRefRenderFunction<
               url += `?&$top=${query.pageSize}&$skip=${
                 query.page * query.pageSize
               }`;
+
+            if (otherQueryString) {
+              url += `&${otherQueryString}`
+            }
 
             if (defaultFilter) {
               url += `&$filter= ${defaultFilter}`;

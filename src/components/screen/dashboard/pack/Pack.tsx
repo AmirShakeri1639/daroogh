@@ -90,19 +90,25 @@ const Pack: React.FC = () => {
   const contentHandler = (): JSX.Element[] | null => {
     if (data !== undefined && !isLoading) {
       return data.items.reverse().map((item: any) => {
-        const { id, name, pharmacyDrug, category } = item;
+        const { id, name, pharmacyDrug, category , category2 , category3 , status , statusString} = item;
         let totalPrice = 0;
+        let categories = `${category === null ? name : category.name} ${category2 === null ?  '':category2.name} ${category3 === null ? '' : category3.name} `;
         pharmacyDrug.forEach((item: any) => {
           totalPrice += item.amount * item.cnt;
         });
+        let itemStatus = item.status;
+        let itemStatusMessage = item.statusString;
         return (
           <Grid spacing={3} item xs={12} sm={12} md={4} xl={4} key={id}>
             <CardContainer
               totalPrice={totalPrice}
               drugsCounter={pharmacyDrug.length}
-              name={category === null ? name : category.name}
+              name={category === null ? name : categories}
               id={id}
               removeHandler={removeHandler}
+              status = {itemStatus}
+              statusMessage = {itemStatusMessage}
+
             />
           </Grid>
         );
@@ -115,11 +121,15 @@ const Pack: React.FC = () => {
   return (
     <Container>
       <Grid container spacing={3}>
+      <Grid item xs={12} style={{marginTop:16}}>
+          {t('alerts.CreatePackAlert')}
+        </Grid>
+
         <Grid item xs={12}>
           <h3>لیست پک ها</h3>
         </Grid>
         <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={3}>
+          <Grid item xs={12} sm={12} md={4} xl={4}>
             <Paper className={addButton} onClick={createPackLink}>
               <FontAwesomeIcon icon={faPlus} size="2x" />
               <span>{t('pack.create')}</span>

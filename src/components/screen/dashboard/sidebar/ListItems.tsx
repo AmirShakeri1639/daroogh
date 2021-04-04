@@ -471,7 +471,7 @@ const ListItems: React.FC = () => {
             <ListItemIcon>
               <DashboardIcon />
             </ListItemIcon>
-            <ListItemText primary={t('general.dashboard')} />
+            <ListItemText primary={t('general.pishkhan')} />
           </Link>
         </List>
 
@@ -530,6 +530,22 @@ const ListItems: React.FC = () => {
               <Bookmark />
             </ListItemIcon>
             <ListItemText primary={t('general.yourFavorite')} />
+          </Link>
+        </List>
+        <List component="div" className={linkWrapper}>
+          <Link to={prescriptionList} className={notNested}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faFileMedical} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('prescription.peoplePrescription')} />
+          </Link>
+        </List>
+        <List component="div" className={linkWrapper}>
+          <Link to={jobsList} className={notNested}>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={faHandshake} size="lg" />
+            </ListItemIcon>
+            <ListItemText primary={t('jobs.employment')} />
           </Link>
         </List>
         <List component="div" className={linkWrapper}>
@@ -630,22 +646,6 @@ const ListItems: React.FC = () => {
           </Link>
         </List>
 
-        <List component="div" className={linkWrapper}>
-          <Link to={prescriptionList} className={notNested}>
-            <ListItemIcon>
-              <FontAwesomeIcon icon={faFileMedical} size="lg" />
-            </ListItemIcon>
-            <ListItemText primary={t('prescription.peoplePrescription')} />
-          </Link>
-        </List>
-        <List component="div" className={linkWrapper}>
-          <Link to={jobsList} className={notNested}>
-            <ListItemIcon>
-              <FontAwesomeIcon icon={faHandshake} size="lg" />
-            </ListItemIcon>
-            <ListItemText primary={t('jobs.employment')} />
-          </Link>
-        </List>
         {/* <ListItem
           button
           onClick={(): void => setIsOpenUserPharmacyMenu((val) => !val)}
