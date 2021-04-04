@@ -197,6 +197,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
 
   useEffect(() => {
     (async (): Promise<void> => {
+      debugger;
       const result = await getAccountingForPayment(exchangeId);
       if (result) {
         const response: GetAccountingForPaymentInterace = result.data;
@@ -518,14 +519,14 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
                 <Grid xs={6}>
                   <TextWithTitle
                     title={t('exchange.finalAmount')}
-                    body={paymentAmount}
+                    body={Utils.numberWithCommas(paymentAmount)}
                     suffix={t('general.defaultCurrency')}
                   />
                 </Grid>
                 <Grid xs={6}>
                   <TextWithTitle
                     title={t('exchange.selectedAmount')}
-                    body={totalAmount}
+                    body={Utils.numberWithCommas(totalAmount)}
                     suffix={t('general.defaultCurrency')}
                   />
                 </Grid>
