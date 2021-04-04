@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   makeStyles,
   Paper,
@@ -10,7 +10,7 @@ import {
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  
+
   CardJobInterface,
   NewUserData,
   PrescriptionCardDataInterface,
@@ -53,29 +53,29 @@ const CardContainer: React.FC<PrescriptionCardDataInterface> = (props) => {
   } = data;
 
   return (
-    <Paper className={root} elevation={1}>
-      <Grid container spacing={0}>
+    <Paper className={ root } elevation={ 1 }>
+      <Grid container spacing={ 0 }>
         <Detail
-          id={id}
-          sendDate={sendDate}
-          contryDivisionName={contryDivisionName}
-          comment={comment}
-          expireDate={expireDate}
-          fileKey={fileKey}
-          responseDate={responseDate}
-          prescriptionResponse={prescriptionResponse}
-          contryDivisionCode={contryDivisionCode}
-          cancelDate={cancelDate}
-          duration={duration}
-          readOnly={readOnly}
+          id={ id }
+          sendDate={ sendDate }
+          contryDivisionName={ contryDivisionName }
+          comment={ comment }
+          expireDate={ expireDate }
+          fileKey={ fileKey }
+          responseDate={ responseDate }
+          prescriptionResponse={ prescriptionResponse }
+          contryDivisionCode={ contryDivisionCode }
+          cancelDate={ cancelDate }
+          duration={ duration }
+          readOnly={ readOnly }
         />
       </Grid>
-      <Grid item xs={12} style={{ padding: '4px' }}>
+      <Grid item xs={ 12 } style={ { padding: '4px' } }>
         <Divider />
       </Grid>
 
-      <Grid item xs={12}  container spacing={0} justify="flex-end">
-     
+      <Grid item xs={ 12 } container spacing={ 0 } justify="flex-end">
+
         {/* <Button
           onClick={(): void => detailHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
@@ -83,13 +83,13 @@ const CardContainer: React.FC<PrescriptionCardDataInterface> = (props) => {
           نمایش نسخه
         </Button> */}
         <Button
-          onClick={(): void => saveHandler(data)}
-          style={{ color: 'red', fontSize: '14px' }}
+          onClick={ (): void => saveHandler(data) }
+          style={ { color: 'red', fontSize: '14px' } }
         >
           نمایش جزئیات و پاسخ
         </Button>
       </Grid>
-      <BackDrop isOpen={isOpenBackDrop} />
+      <BackDrop isOpen={ isOpenBackDrop } />
     </Paper>
   );
 };
