@@ -93,8 +93,8 @@ const DesktopCardContent = ({
         : ViewExchangeInitialState;
   }
 
-  cartA = [...basketCount];
-  cartB = [...uBasketCount];
+  cartA = item.currentPharmacyIsA ? [...uBasketCount] : [...basketCount];
+  cartB = item.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
 
   const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
     return cart.length > 0
@@ -390,14 +390,7 @@ const DesktopCardContent = ({
                 }
                 body={
                   <>
-                    {
-                      //@ts-ignore
-                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA)
-                    }
-                    {
-                      // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA)
-                    }
+                    { Convertor.thousandsSeperatorFa(totalPriceA) }
                   </>
                 }
                 suffix={t('general.defaultCurrency')}
@@ -416,14 +409,7 @@ const DesktopCardContent = ({
                 }
                 body={
                   <>
-                    {
-                      //@ts-ignore
-                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB)
-                    }
-                    {
-                      // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB)
-                    }
+                    { Convertor.thousandsSeperatorFa(totalPriceB) }
                   </>
                 }
                 suffix={t('general.defaultCurrency')}
