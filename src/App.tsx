@@ -15,7 +15,7 @@ import { createBrowserHistory } from 'history';
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
 const ForgetPassword = lazy(() => import('./components/screen/forget-password/ForgetPassword'));
-const OtpFirstStep = lazy(() => import('./components/screen/otp/FirstStep'));
+const Otp = lazy(() => import('./components/screen/otp/Otp'));
 
 const OtpSecondStep = lazy(() => import('./components/screen/otp/SecondStep'));
 
@@ -143,8 +143,7 @@ const {
   jobSearchList,
   prescriptionList,
   forgetPassword,
-  firstStep,
-  secondStep,
+  otp,
   profile,
   settings,
   settingsAi,
@@ -209,12 +208,10 @@ const App = (): JSX.Element => {
             <PublicRoute exact path={forgetPassword}>
               <ForgetPassword />
             </PublicRoute>
-            <PublicRoute exact path={firstStep}>
-              <OtpFirstStep />
+            <PublicRoute exact path={otp}>
+              <Otp />
             </PublicRoute>
-            <PublicRoute exact path={secondStep}>
-              <OtpSecondStep />
-            </PublicRoute>
+            
             <PublicRoute exact path={registerPharmacyWithUser}>
               <RegisterPharmacyWithUser />
             </PublicRoute>

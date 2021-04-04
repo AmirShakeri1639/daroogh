@@ -59,27 +59,30 @@ const useStyles = makeStyles((theme) => createStyles({
   },
 }));
 
-const FirstStep: React.FC = () => {
+const Otp: React.FC = () => {
   const { t } = useTranslation();
   const [mobileNumber, setMobileNumber] = useState<string>('');
+  const [code, setCode] = useState<string>('');
   const [ticketId, setTicketId] = useState<string>('');
+  const [codeSent, setCodeSent] = useState<boolean>(false);
   const [showError, setShowError] = useState<boolean>(false);
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
   const [serverMessage, setServerMessage] = useState<string>('');
 
   const { grid, root, paper, submitBtn, spacing3 } = useStyles();
-  const { requestTicket } = new Account();
-  const { isValidaMobileNumber } = new Validation();
-  const [_requestTicket, { isLoading, status, data, reset }] = useMutation(requestTicket);
+  const { requestTicket, loginByTicket } = new Account();
+  const { isValidaMobileNumber, isValidOtpCode } = new Validation();
+  const [_requestTicket, { isLoading: isLoadingTicket, status: statusTicket, data: dataTicket, reset: resetTicket }] = useMutation(requestTicket);
+  const [_loginByTicket, { isLoading: isLoadingLogin, status: statusLogin, data: dataLogin, reset: resetLogin }] = useMutation(loginByTicket);
   const { push } = useHistory();
 
   useEffect(() => {
-    if (status === QueryStatus.Success) {
-      const { message, data: _data } = data;
+    if (statusTicket === QueryStatus.Success) {
+      const { message, data: _data } = dataTicket;
       if (_data === null && message !== '') {
         setServerMessage(message);
         setIsOpenSnackbar(true);
-        reset();
+        resetTicket();
         setTimeout(() => {
           push({
             pathname: '/login',
@@ -88,13 +91,11 @@ const FirstStep: React.FC = () => {
       } else {
         console.log(_data.ticketId)
         setTicketId(_data.ticketId);
+        setCodeSent(true);
 
-        push({
-          pathname: '/otp/second-step',
-        });
       }
     }
-  }, [status, data]);
+  }, [statusTicket, dataTicket]);
  /* const {
     ticketId, setTicketId
   } = useContext<OtpContextInterface>(OtpContext);*/
@@ -116,11 +117,37 @@ const FirstStep: React.FC = () => {
     }
   }
 
+  const loginByTicketHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
+    e.preventDefault();
+    //console.log(ticketId);
+    try {
+      if (isValidOtpCode(code)) {
+        await _loginByTicket({
+          ticketId: ticketId,
+          ticket: code,
+        });
+      }
+      else {
+        setShowError(true);
+      }
+    }
+    catch (e) {
+      // TODO: Implement snackbar for handle server error message
+    }
+  }
+
   const mobileNumberHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (showError) {
       setShowError(false);
     }
     setMobileNumber(e.target.value);
+  }
+
+  const ticketHandler = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (showError) {
+      setShowError(false);
+    }
+    setCode(e.target.value);
   }
 
   return (
@@ -155,13 +182,29 @@ const FirstStep: React.FC = () => {
                     margin="dense"
                     required
                     fullWidth
-                    name="password"
+                    name="mobile"
                     label={ t('general.mobile') }
                     type="text"
                     id="mobile"
+                    disabled= {codeSent}
                     onChange={ mobileNumberHandler }
-                    autoComplete="current-password"
+                    
                   />
+                  {codeSent &&
+                  <TextField
+                    error={ showError }
+                    variant="standard"
+                    margin="dense"
+                    required
+                    fullWidth
+                    name="code"
+                    label={ t('general.code') }
+                    type="text"
+                    id="code"
+                    onChange={ ticketHandler }
+                    
+                  />
+  }
                   <Button
                     type="submit"
                     variant="contained"
@@ -169,7 +212,7 @@ const FirstStep: React.FC = () => {
                     disableElevation
                   >
                     {
-                      isLoading
+                      isLoadingLogin || isLoadingTicket
                         ? <CircleLoading size={ 13 } color="inherit" />
                         : <span>{ t('login.send') }</span>
                     }
@@ -196,4 +239,4 @@ const FirstStep: React.FC = () => {
   );
 }
 
-export default FirstStep;
+export default Otp;

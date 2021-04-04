@@ -17,7 +17,7 @@ import Validation from "../../../utils/validation";
 import CircleLoading from "../../public/loading/CircleLoading";
 import { Alert } from "../../public/alert/Alert";
 import { useTranslation } from 'react-i18next';
-import OtpContext, { OtpContextInterface } from './Context';
+
 
 const useStyles = makeStyles((theme) => createStyles({
   root: {
@@ -72,9 +72,7 @@ const SecondStep: React.FC = () => {
   const { isValidOtpCode } = new Validation();
   const [_loginByTicket, { isLoading, status, data, reset }] = useMutation(loginByTicket);
   const { push } = useHistory();
-  const {
-    ticketId
-  } = useContext<OtpContextInterface>(OtpContext);
+  
   if (status === QueryStatus.Success) {
     const { message, data: _data } = data;
     if (_data === null && message !== '') {
@@ -91,9 +89,9 @@ const SecondStep: React.FC = () => {
 
   const loginByTicketHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-    console.log(ticketId);
+    //console.log(ticketId);
     try {
-      if (isValidOtpCode(code)) {
+      /*if (isValidOtpCode(code)) {
         await _loginByTicket({
           ticketId: ticketId,
           ticket: code,
@@ -101,7 +99,7 @@ const SecondStep: React.FC = () => {
       }
       else {
         setShowError(true);
-      }
+      }*/
     }
     catch (e) {
       // TODO: Implement snackbar for handle server error message
