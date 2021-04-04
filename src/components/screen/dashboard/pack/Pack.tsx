@@ -129,7 +129,7 @@ const Pack: React.FC = () => {
           <h3>لیست پک ها</h3>
         </Grid>
         <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={3}>
+          <Grid item xs={12} sm={12} md={4} xl={4}>
             <Paper className={addButton} onClick={createPackLink}>
               <FontAwesomeIcon icon={faPlus} size="2x" />
               <span>{t('pack.create')}</span>

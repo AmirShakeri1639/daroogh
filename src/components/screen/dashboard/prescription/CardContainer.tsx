@@ -76,17 +76,17 @@ const CardContainer: React.FC<PrescriptionCardDataInterface> = (props) => {
 
       <Grid item xs={12}  container spacing={0} justify="flex-end">
      
-        <Button
+        {/* <Button
           onClick={(): void => detailHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
           نمایش نسخه
-        </Button>
+        </Button> */}
         <Button
           onClick={(): void => saveHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
-          {t('general.edit')}
+          نمایش جزئیات و پاسخ
         </Button>
       </Grid>
       <BackDrop isOpen={isOpenBackDrop} />

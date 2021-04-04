@@ -69,6 +69,7 @@ export default {
         inventory: 'موجودی',
         price: 'قیمت',
         pricePerUnit: 'قیمت هر واحد',
+        pishkhan: 'پیشخوان',
         offer: 'آفر',
         to: 'به',
         number: 'تعداد',
@@ -114,6 +115,7 @@ export default {
         defaultCurrency: 'تومان',
         noContent: 'محتوایی وجود ندارد',
         reject: 'عدم پذیرش',
+        pay:'پرداخت'
       },
       pack: {
         pack: 'پک',
