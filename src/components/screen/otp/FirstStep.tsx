@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => createStyles({
 const FirstStep: React.FC = () => {
   const { t } = useTranslation();
   const [mobileNumber, setMobileNumber] = useState<string>('');
+  const [ticketId, setTicketId] = useState<string>('');
   const [showError, setShowError] = useState<boolean>(false);
   const [isOpenSnackbar, setIsOpenSnackbar] = useState<boolean>(false);
   const [serverMessage, setServerMessage] = useState<string>('');
@@ -72,24 +73,35 @@ const FirstStep: React.FC = () => {
   const [_requestTicket, { isLoading, status, data, reset }] = useMutation(requestTicket);
   const { push } = useHistory();
 
-  if (status === QueryStatus.Success) {
-    const { message, data: _data } = data;
-    if (_data === null && message !== '') {
-      setServerMessage(message);
-      setIsOpenSnackbar(true);
-      reset();
-      setTimeout(() => {
-        push({
-          pathname: '/login',
-        });
-      }, 3 * 1000);
-    } else {
-      push({
-        pathname: '/otp/second-step',
-      });
-    }
-  }
+  useEffect(() => {
+    if (status === QueryStatus.Success) {
+      const { message, data: _data } = data;
+      if (_data === null && message !== '') {
+        setServerMessage(message);
+        setIsOpenSnackbar(true);
+        reset();
+        setTimeout(() => {
+          push({
+            pathname: '/login',
+          });
+        }, 3 * 1000);
+      } else {
+        console.log(_data.ticketId)
+        setTicketId(_data.ticketId);
 
+        push({
+          pathname: '/otp/second-step',
+        });
+      }
+    }
+  }, [status, data]);
+ /* const {
+    ticketId, setTicketId
+  } = useContext<OtpContextInterface>(OtpContext);*/
+  const initialContextValues = (): OtpContextInterface => ({
+    ticketId,
+    setTicketId
+  });
   const requestTicketHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
     try {
