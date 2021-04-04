@@ -277,7 +277,7 @@ const AccountingList: React.FC = () => {
     if (!isLoading && list !== undefined && isFetched) {
       return listRef.current.map((item: any) => {
         return (
-          <Grid item xs={12} sm={6} md={4} key={item.id}>
+          <Grid item xs={12} sm={6} key={item.id}>
             <CardContainer data={item} exchangeHandler={exchangeHandler} />
           </Grid>
         );
@@ -303,7 +303,7 @@ const AccountingList: React.FC = () => {
               />
             </Paper>
           )}
-          {true && (
+          {/* {true && (
             <Grid container spacing={1}>
               <Grid item xs={12} md={6}>
                 <SearchBar
@@ -313,7 +313,7 @@ const AccountingList: React.FC = () => {
                 />
               </Grid>
             </Grid>
-          )}
+          )} */}
           <Grid container spacing={3} className={contentContainer}>
             {true && contentGenerator()}
           </Grid>
