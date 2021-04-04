@@ -16,12 +16,14 @@ class Reports extends Api {
     getFavoriteDrugs: '/Reports/GetFavoriteDrugs',
     getSelectedDrugs: '/Reports/GetSelectedDrugs',
     getWidgetInfo: '/Reports/GetWidgetInfo',
+    getAddedValueOfPharmacy: '/Reports/GetAddedValueOfPharmacy',
+    getAddedValue: '/Reports/GetAddedValue',
   };
 
   getWidgetInfo = async (): Promise<any> => {
     const result = await this.postJsonData(this.urls.getWidgetInfo);
     return result.data;
-  }
+  };
 
   getBestPharmaciesList = async (for24Hour: boolean): Promise<any> => {
     try {
@@ -49,11 +51,35 @@ class Reports extends Api {
       errorHandler(e);
     }
   };
-  getSurplusDrugs = async (
-    skip: number,
-    top: number = 10,
-    data: RreportSearch
-  ): Promise<any> => {
+  getAddedValueOfPharmacy = async (): Promise<any> => {
+    try {
+      const result = await this.getData(
+        `${this.urls.getAddedValueOfPharmacy}?fromDate=${new Intl.DateTimeFormat(undefined, {
+          year: 'numeric',
+          day: '2-digit',
+          month: '2-digit',
+        }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
+      );
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+  getAddedValue = async (): Promise<any> => {
+    try {
+      const result = await this.getData(
+        `${this.urls.getAddedValue}?fromDate=${new Intl.DateTimeFormat(undefined, {
+          year: 'numeric',
+          day: '2-digit',
+          month: '2-digit',
+        }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
+      );
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+  getSurplusDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
     try {
       const result = await this.getData(
         `${this.urls.getSurplusDrugs}?top=${top}&$skip=${
@@ -64,9 +90,9 @@ class Reports extends Api {
           .format('YYYY/MM/DD')}&toDate=${data.toDate
           .convert('gregorian')
           .setLocale('en')
-          .format('YYYY/MM/DD')}&geoCode=${
-          data.geoCode
-        }&remainExpDaysFromMinDate=${data.remainExpDaysFromMinDate}`
+          .format('YYYY/MM/DD')}&geoCode=${data.geoCode}&remainExpDaysFromMinDate=${
+          data.remainExpDaysFromMinDate
+        }`
       );
       return result.data.items;
     } catch (e) {
@@ -74,38 +100,28 @@ class Reports extends Api {
     }
   };
 
-  getFavoriteDrugs = async (
-    skip: number,
-    top: number = 10,
-    data: RreportSearch
-  ): Promise<any> => {
+  getFavoriteDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
     try {
       const result = await this.getData(
-        `${this.urls.getFavoriteDrugs}?top=${top}&$skip=${
-          top * skip
-        }&fromDate=${data.fromDate}&toDate=${data.toDate}&geoCode=${
-          data.geoCode
-        }&remainExpDaysFromMinDate=${data.remainExpDaysFromMinDate}`
+        `${this.urls.getFavoriteDrugs}?top=${top}&$skip=${top * skip}&fromDate=${
+          data.fromDate
+        }&toDate=${data.toDate}&geoCode=${data.geoCode}&remainExpDaysFromMinDate=${
+          data.remainExpDaysFromMinDate
+        }`
       );
       return result.data;
     } catch (e) {
       errorHandler(e);
     }
   };
-  getSelectedDrugs = async (
-    skip: number,
-    top: number = 10,
-    data: RreportSearch
-  ): Promise<any> => {
+  getSelectedDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
     try {
       const result = await this.getData(
         `${this.urls.getSelectedDrugs}?top=${top}&$skip=${
           top * skip
-        }&fromDate=${data.fromDate.convert(
+        }&fromDate=${data.fromDate.convert('gregorian')}&toDate=${data.toDate.convert(
           'gregorian'
-        )}&toDate=${data.toDate.convert('gregorian')}&geoCode=${
-          data.geoCode
-        }&remainExpDaysFromMinDate=${data.remainExpDaysFromMinDate}`
+        )}&geoCode=${data.geoCode}&remainExpDaysFromMinDate=${data.remainExpDaysFromMinDate}`
       );
       return result.data;
     } catch (e) {

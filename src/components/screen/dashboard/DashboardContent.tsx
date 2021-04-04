@@ -24,6 +24,8 @@ import introJs from 'intro.js';
 import './style.css';
 import { checkVersion, clearMyCache, showWhatsNew } from 'utils';
 import ExchangeWithFavoritesWidget from './widgets/ExchangeWithFavoritesWidget';
+import AddedValueOfPharmacyWidget from './widgets/AddedValueOfPharmacyWidget';
+import AddedValueWidget from './widgets/AddedValueWidget';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -81,6 +83,15 @@ const DashboardContent: React.FC<any> = () => {
       <Grid container spacing={3}>
         {/* Widgets */}
         <AllWidgets />
+        <Grid item xs={12} container spacing={3}>
+          <Grid item xs={12} sm={12} md={6} xl={6}>
+            <AddedValueOfPharmacyWidget />
+          </Grid>
+          <Grid item xs={12} sm={12} md={6} xl={6}>
+            <AddedValueWidget />
+          </Grid>
+        </Grid>
+
         {/* Chart */}
         <Grid item xs={12} sm={12} md={6} xl={6} style={{ height: 500, overflow: 'disabled' }}>
           <Paper className={classes.paper} style={{ height: 500, overflow: 'disabled' }}>
