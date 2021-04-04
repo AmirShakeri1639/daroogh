@@ -514,6 +514,7 @@ export default {
         Accept: 'پذیرفته شد',
         Tahvil: 'تحویل بیمار شد',
         NoTahvil: 'تحویل بیمار نشد',
+        Waiting: 'منتظر پاسخ شما',
       },
       employment: {
         application: 'درخواست کاریابی',

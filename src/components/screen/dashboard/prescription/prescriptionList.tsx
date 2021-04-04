@@ -152,18 +152,16 @@ const PrescriptionList: React.FC = () => {
   const { getList, save, urls } = new Prescription();
   const [_save, { isLoading }] = useMutation(save, {
     onSuccess: async () => {
-      await queryCache.invalidateQueries(PrescriptionEnum.GET_LIST);
       await successSweetAlert(t('alert.successfulSave'));
-      ref.current?.onQueryChange();
-      dispatch({ type: 'reset' });
+      await getCardList(true);
+      // await queryCache.invalidateQueries(PrescriptionEnum.GET_LIST);
+      // ref.current?.onQueryChange();
+      // dispatch({ type: 'reset' });
     },
   });
 
-  const [pharmacyName, setPharmacyName] = useState('');
-  React.useEffect(() => {
-    const jwtData = new JwtData();
-    setPharmacyName(jwtData.userData.pharmacyName);
-  }, []);
+  const jwtData = new JwtData();
+  const pharmacyName = jwtData.userData.pharmacyName
 
   const pictureDialog = (fileKey: string): JSX.Element => {
     return (
@@ -251,7 +249,7 @@ const PrescriptionList: React.FC = () => {
   //           return i.pharmacy.name === pharmacyName;
   //         });
   //         const thisState =
-  //           PrescriptionResponseStateEnum[responses.length > 0 ? responses[0].state : 3];
+  //           PrescriptionResponseStateEnum[responses.length > 0 ? responses[0].state : 5];
   //         return (
   //           <span
   //             style={{
@@ -279,7 +277,7 @@ const PrescriptionList: React.FC = () => {
       const { id, prescriptionResponse } = item;
       let pharmacyComment: string = '';
       let accept: boolean = false;
-      let thisState: number = 3;
+      let thisState: number = PrescriptionResponseStateEnum.Waiting;
       let responses: any;
       if (prescriptionResponse.length > 0) {
         responses = prescriptionResponse.filter((i: any) => {
@@ -324,8 +322,7 @@ const PrescriptionList: React.FC = () => {
         pharmacyComment: isAccept ? pharmacyComment : '',
         state,
       });
-      dispatch({ type: 'reset' });
-      ref.current?.onQueryChange();
+      // dispatch({ type: 'reset' });
     } catch (e) {
       errorHandler(e);
     }
@@ -357,8 +354,6 @@ const PrescriptionList: React.FC = () => {
         if (result == undefined || result.count == 0) {
           setNoDataRef(true);
         } else {
-          // console.log(result.items);
-
           setListRef(result.items);
         }
       },
@@ -374,7 +369,6 @@ const PrescriptionList: React.FC = () => {
 
   async function getCardList(refresh: boolean = false): Promise<any> {
     const result = await getList(pageRef.current, 10, [], searchRef.current);
-    //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoDataRef(true);
     }
@@ -409,7 +403,6 @@ const PrescriptionList: React.FC = () => {
     if (!noDataRef.current && checkDevice) {
       const currentpage = pageRef.current + 1;
       setPageRef(currentpage);
-      console.log(pageRef.current);
       getCardList();
     }
   };
@@ -440,7 +433,11 @@ const PrescriptionList: React.FC = () => {
                 }`,
             } }
           >
-            <CardContainer data={ item } saveHandler={ saveHandler } detailHandler={ detailHandler } />
+            <CardContainer
+              data={ item }
+              saveHandler={ saveHandler }
+              detailHandler={ detailHandler }
+            />
           </Grid>
         );
         //}
@@ -475,12 +472,14 @@ const PrescriptionList: React.FC = () => {
                 ) }
               </Grid>
             </Grid>
-            { currentItem.state !== 3 && !(state.pharmacyComment === '' || state.pharmacyComment === null) && (
-              <Grid xs={ 12 } item className={ detailsContainer }>
-                <TextWithTitle title="پاسخ شما" body={ state.pharmacyComment } />
-              </Grid>
-            ) }
-            { currentItem.state === 3 && (
+            { currentItem.state !== PrescriptionResponseStateEnum.Waiting &&
+              !(state.pharmacyComment === '' || state.pharmacyComment === null) &&
+              (
+                <Grid xs={ 12 } item className={ detailsContainer }>
+                  <TextWithTitle title="پاسخ شما" body={ state.pharmacyComment } />
+                </Grid>
+              ) }
+            { currentItem.state === PrescriptionResponseStateEnum.Waiting && (
               <>
                 <Grid xs={ 12 } item style={ { margin: 4 } }>
                   <Divider />
@@ -534,13 +533,12 @@ const PrescriptionList: React.FC = () => {
         </DialogContent>
         <Divider />
         <DialogActions>
-          { currentItem.state === 3 && (<>
+          { currentItem.state === PrescriptionResponseStateEnum.Waiting && (<>
             <Button
               variant="outlined"
               color="primary"
               onClick={ (): void => {
                 submitSave();
-                // ref.current?.onQueryChange();
               } }
             >
               ذخیره پاسخ
