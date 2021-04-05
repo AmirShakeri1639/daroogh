@@ -18,6 +18,7 @@ const jobSearch = 'job-search';
 const prescription = 'prescription';
 const job = 'job';
 const fda = `/${dashboard}/fda`;
+const error = `/${dashboard}/error`;
 
 const pharmacyRoutes = {
   pharmacyMessage: `/${dashboard}/pharmacy/messages`
@@ -87,5 +88,6 @@ export default {
   ...pharmacyRoutes,
 
   fda_exchangeList: `${fda}/exchange-list`,
-  
+
+  error401: `${error}/401`,
 };

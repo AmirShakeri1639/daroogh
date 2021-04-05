@@ -107,7 +107,8 @@ const PharmacyMessage = lazy(
   () => import('./components/screen/dashboard/pharmacy/message/Message')
 );
 
-const Error404 = lazy(() => import('./components/screen/public/404'));
+const Error404 = lazy(() => import('./components/screen/public/404'))
+const Error401 = lazy(() => import('./components/screen/public/401'))
 
 const {
   login,
@@ -151,6 +152,7 @@ const {
   pharmacyMessage,
   fda_exchangeList,
   survey,
+  error401,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -211,10 +213,10 @@ const App = (): JSX.Element => {
             <PublicRoute exact path={otp}>
               <Otp />
             </PublicRoute>
-
             <PublicRoute exact path={registerPharmacyWithUser}>
               <RegisterPharmacyWithUser />
             </PublicRoute>
+
             <PrivateRoute exact path={dashboard}>
               <Dashboard component={<DashboardContent />} />
             </PrivateRoute>
@@ -337,6 +339,9 @@ const App = (): JSX.Element => {
 
             <PrivateRoute exact path={fda_exchangeList}>
               <Dashboard component={<FDA_exchangeList />} />
+            </PrivateRoute>
+            <PrivateRoute exact path={ error401 }>
+              <Error401 />
             </PrivateRoute>
 
             <Route
