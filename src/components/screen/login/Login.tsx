@@ -310,7 +310,7 @@ const Login: React.FC = (): JSX.Element => {
             </Grid>
             <Grid item xs={ 12 } className="no-padding">
               <Link className="link" to="/otp">
-                درخواست رمز یک بار مصرف
+                ورود با رمز یک بار مصرف
               </Link>
             </Grid>
             <Grid item xs={ 12 }>
