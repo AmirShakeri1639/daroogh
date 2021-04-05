@@ -1,3 +1,5 @@
+import { RoleType } from 'enum';
+
 export interface ActionInterface {
   type: string;
   value?: any;
@@ -41,6 +43,7 @@ export class NewRoleData {
   public id?: number | string = 0;
   public name: string = '';
   public permissionItemes: string[] = [];
+  public type: RoleType = RoleType.OTHER;
 }
 export interface PermissionItemInterface {
   order: number;
