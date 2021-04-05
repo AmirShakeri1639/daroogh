@@ -115,8 +115,10 @@ export default {
         defaultCurrency: 'تومان',
         noContent: 'محتوایی وجود ندارد',
         reject: 'عدم پذیرش',
-        pay:'پرداخت'
+        pay:'پرداخت',
+        code: 'کد تایید داروگ'
       },
+
       pack: {
         pack: 'پک',
         title: 'عنوان پک',
@@ -195,6 +197,8 @@ export default {
         send: 'ارسال',
         getOtp: 'دریافت کلمه عبور یک بار مصرف',
         otp: 'کد ورود به سامانه داروگ',
+        sendCode: 'ارسال کد تایید',
+        sendPhone: 'ارسال شماره همراه'
       },
       user: {
         role: 'نقش',

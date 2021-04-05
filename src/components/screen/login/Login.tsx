@@ -309,7 +309,7 @@ const Login: React.FC = (): JSX.Element => {
               </Link>
             </Grid>
             <Grid item xs={ 12 } className="no-padding">
-              <Link className="link" to="/otp/first-step">
+              <Link className="link" to="/otp">
                 درخواست رمز یک بار مصرف
               </Link>
             </Grid>
