@@ -211,7 +211,7 @@ const App = (): JSX.Element => {
             <PublicRoute exact path={otp}>
               <Otp />
             </PublicRoute>
-            
+
             <PublicRoute exact path={registerPharmacyWithUser}>
               <RegisterPharmacyWithUser />
             </PublicRoute>
