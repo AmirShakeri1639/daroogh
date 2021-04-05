@@ -351,7 +351,6 @@ const ActionButtons = (): JSX.Element => {
     inputmodel.isConfirm = isConfirm;
     try {
       let res = await _confirmOrNotExchange(inputmodel);
-      debugger;
       if (viewExhcnage && viewExhcnage.state === 3) {
         if (
           (viewExhcnage.currentPharmacyIsA === false &&

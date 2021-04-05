@@ -274,15 +274,21 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
       </span>
     );
     const body = (
+      <>
       <span style={{ marginRight: 5 }}>
-        بعلت اینکه سقف بدهی شما بیشتر از حد مجاز می باشد، امکان تبادل برای شما میسر نمی باشد. لطفا
-        نسبت به پرداخت بدهی خود اقدام نمایید.
+        {t('alerts.DebotAlert')}
       </span>
+      </>
+      
     );
     element = (
       <>
+        
         {title}
         {body}
+        <Button onClick={()=> {history.push(accountingInfo)}} type="button" variant="outlined" style={{marginRight:16, color:'white'}}> {t('general.pay')}
+                </Button>
+
       </>
     );
     return element;

@@ -93,8 +93,8 @@ const DesktopCardContent = ({
         : ViewExchangeInitialState;
   }
 
-  cartA = [...basketCount];
-  cartB = [...uBasketCount];
+  cartA = item.currentPharmacyIsA ? [...uBasketCount] : [...basketCount];
+  cartB = item.currentPharmacyIsA ? [...basketCount] : [...uBasketCount];
 
   const calcPrice = (cart: AllPharmacyDrugInterface[]): any => {
     return cart.length > 0
@@ -135,7 +135,6 @@ const DesktopCardContent = ({
   const [totalPriceB, setTotalPriceB] = useState<number>(0);
 
   React.useEffect(() => {
-    debugger;
     const basket1 = basketCount;
     const basket2 = uBasketCount;
     setTotalPriceA(calcPrice(cartA));
@@ -391,14 +390,7 @@ const DesktopCardContent = ({
                 }
                 body={
                   <>
-                    {
-                      //@ts-ignore
-                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA)
-                    }
-                    {
-                      // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceA)
-                    }
+                    { Convertor.thousandsSeperatorFa(totalPriceA) }
                   </>
                 }
                 suffix={t('general.defaultCurrency')}
@@ -417,14 +409,7 @@ const DesktopCardContent = ({
                 }
                 body={
                   <>
-                    {
-                      //@ts-ignore
-                      item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB)
-                    }
-                    {
-                      // @ts-ignore
-                      !item.currentPharmacyIsA && Convertor.thousandsSeperatorFa(totalPriceB)
-                    }
+                    { Convertor.thousandsSeperatorFa(totalPriceB) }
                   </>
                 }
                 suffix={t('general.defaultCurrency')}

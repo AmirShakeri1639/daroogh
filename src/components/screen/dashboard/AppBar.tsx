@@ -290,10 +290,11 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
         >
           <Hidden smDown>
             {/* {t('general.dashboard')} */}
-            <span>{t('general.daroogLatin')} - </span>
+            
             <span>{t('general.daroog')}</span>
             <span style={{ fontSize: 14, marginRight: 5 }}>
               ({t('general.systemTitle')})
+              <span style={{fontSize: 14,marginRight:8}}>{t('general.daroogLatin')}</span>
             </span>
           </Hidden>
         </Typography>

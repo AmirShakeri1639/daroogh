@@ -2,7 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
-        daroogLatin: 'Daroog',
+        daroogLatin: 'DarooG',
         emal: 'اعمال',
         systemTitle: 'سامانه الکترونیکی داروخانه',
         systemFullTitle: 'سامانه تبادلات دارویی داروگ',
@@ -115,8 +115,10 @@ export default {
         defaultCurrency: 'تومان',
         noContent: 'محتوایی وجود ندارد',
         reject: 'عدم پذیرش',
-        pay:'پرداخت'
+        pay:'پرداخت',
+        code: 'کد تایید داروگ'
       },
+
       pack: {
         pack: 'پک',
         title: 'عنوان پک',
@@ -193,6 +195,10 @@ export default {
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
+        getOtp: 'دریافت کلمه عبور یک بار مصرف',
+        otp: 'کد ورود به سامانه داروگ',
+        sendCode: 'ارسال کد تایید',
+        sendPhone: 'ارسال شماره همراه'
       },
       user: {
         role: 'نقش',
@@ -492,6 +498,7 @@ export default {
         debtor: 'بدهکار',
         enterAmount: 'مبلغ را وارد کنید.',
         code: 'کد تراکنش',
+        exchangeAmount: 'مبلغ تراکنش'
       },
       countryDivision: {
         province: 'استان',
@@ -516,6 +523,7 @@ export default {
         Accept: 'پذیرفته شد',
         Tahvil: 'تحویل بیمار شد',
         NoTahvil: 'تحویل بیمار نشد',
+        Waiting: 'منتظر پاسخ شما',
       },
       employment: {
         application: 'درخواست کاریابی',
@@ -527,7 +535,7 @@ export default {
         suggestedWorkShift: 'شیفت پیشنهادی',
         pharmaceuticalSoftwareSkill: 'تسلط به نرم‌افزارهای دارویی',
         computerSkill: 'میزان تسلط به کامپیوتر',
-        foreignLanguagesSkill: 'آشنایی با زبان خارجی',
+        foreignLanguagesSkill: 'آشنایی با زبان های خارجی',
         education: 'میزان تحصیلات',
         suggestedJobPosition: 'سمت پیشنهادی',
         guarantee: 'وثیقه',
@@ -708,6 +716,7 @@ export default {
         PrescriptionAlert:
           'با درج نام محصول مورد نیاز یا بارگذاری تصویر نسخه،به داروخانه های سراسر کشور یا محدوده درخواستی خود این امکان را می‌دهید تا در صورت موجودی از طریق پیامک و یا مشاهده در نرم افزار و سایت داروگ به شما اطلاع بدهند.',
         SelectCategoryAlert: 'ابتدا دسته بندی را انتخاب نمایید',
+        DebotAlert:'بدهی شما بیشتر از سقف مجاز می باشد و امکان تبادل مقدور نیست.  لطفا نسبت به تسویه و پرداخت بدهی اقدام نمایید',
       },
 
       widget: {
@@ -715,7 +724,7 @@ export default {
         Survey: 'نظرسنجی',
         EmploymentApplication: 'درخواست کاریابی',
         Prescription: 'نسخه مردمی',
-        FavoriteListCount: 'سبد شامل علاقمندی',
+        FavoriteListCount: 'سبد علاقمندی',
       },
       file: {
         file: 'فایل',
