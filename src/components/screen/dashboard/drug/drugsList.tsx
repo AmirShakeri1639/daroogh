@@ -174,7 +174,7 @@ const DrugsList: React.FC = () => {
     },
   });
 
-  const tableColumns = (): DataTableColumns[] => {
+  const tableColumns =                                                          (): DataTableColumns[] => {
     return [
       {
         field: 'id',

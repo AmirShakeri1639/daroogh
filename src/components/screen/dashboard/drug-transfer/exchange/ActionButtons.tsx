@@ -165,6 +165,8 @@ const ActionButtons = (): JSX.Element => {
     exchangeId,
     showApproveModalForm,
     is3PercentOk,
+    basketCount,
+    uBasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   const [comment, setComment] = useState<string>('');
   const [modalType, setModalType] = useState('');
@@ -377,20 +379,7 @@ const ActionButtons = (): JSX.Element => {
         ) {
           setShowApproveModalForm(true);
         } else {
-          // بررسی پرداخت از محل بستانکاری
-          const result = await getAccountingForPayment(exchangeId);
-          if (result) {
-            const response: GetAccountingForPaymentInterace = result.data;
-            if (
-              response.paymentExchangeByBestankari &&
-              response.paymentExchangeByBestankari.isSuccess
-            ) {
-              await sweetAlert({
-                type: 'success',
-                text: response.paymentExchangeByBestankari.message,
-              });
-            }
-          }
+          history.push(desktop);
         }
       }
     } catch (e) {
@@ -918,7 +907,10 @@ const ActionButtons = (): JSX.Element => {
           </>
         );
 
-      if (state === 1)
+      if (
+        state === 1 &&
+        ((basketCount && basketCount.length > 0) || (uBasketCount && uBasketCount.length > 0))
+      )
         element = (
           <>
             <>{element}</>
