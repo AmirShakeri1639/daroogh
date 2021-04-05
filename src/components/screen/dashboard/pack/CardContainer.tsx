@@ -63,15 +63,15 @@ interface CardContainerProps {
   totalPrice: string | number;
   id: number;
   removeHandler: (item: number) => void;
-  status : number;
-  statusMessage : string;
+  status: number;
+  statusMessage: string;
 }
 
 const { createPack } = routes;
 
 const CardContainer: React.FC<CardContainerProps> = (props) => {
   const { root, redTrash } = useStyle();
-  const { id, removeHandler,status,statusMessage } = props;
+  const { id, removeHandler, status, statusMessage } = props;
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
@@ -98,7 +98,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
 
   return (
     <Paper className={root} elevation={1}>
-       {status != 1 && (
+      {status != 1 && (
         <Ribbon>{statusMessage}</Ribbon>
       )}
       <Grid container spacing={3}>
@@ -113,22 +113,24 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
       </Grid>
       <Grid item xs={12}>
         <Grid justify="flex-end" container spacing={0}>
-          <Grid item xs={2}>
+          <Grid item xs={status == 1 ? 2 : 3}>
             <Button
               onClick={(): void => packEditHandler(id)}
               style={{ color: 'green', fontSize: '14px' }}
             >
-              ویرایش
+              {status == 1 ? 'ویرایش' :'مشاهده اقلام'}
             </Button>
           </Grid>
-          <Grid item xs={2}>
+          {status == 1 && <Grid item xs={2}>
             <Button
               onClick={(): void => itemRemoveHandler(id)}
               style={{ color: 'red', fontSize: '14px' }}
             >
               حذف
             </Button>
+
           </Grid>
+          }
         </Grid>
       </Grid>
     </Paper>

@@ -21,6 +21,35 @@ class Account extends Api {
       return e;
     }
   }
+
+  requestTicket = async (data: any): Promise<any> => {
+    try {
+
+      const result = await this.postJsonData(
+        `/Account/RequestTicket?mobile=${data.mobile}`,
+      );
+      console.log(result)
+      return result.data;
+    }
+    catch (e) {
+      return e;
+    }
+  }
+
+
+  loginByTicket = async (data: any): Promise<any> => {
+    try {
+
+      const result = await this.postJsonData(
+        `/Account/LoginByTicket?ticketId=${data.ticketId}&ticket=${data.ticket}`,
+      );
+      console.log(result)
+      return result.data;
+    }
+    catch (e) {
+      return e;
+    }
+  }
 }
 
 export default Account;
