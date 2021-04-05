@@ -531,7 +531,7 @@ export default {
         suggestedWorkShift: 'شیفت پیشنهادی',
         pharmaceuticalSoftwareSkill: 'تسلط به نرم‌افزارهای دارویی',
         computerSkill: 'میزان تسلط به کامپیوتر',
-        foreignLanguagesSkill: 'آشنایی با زبان خارجی',
+        foreignLanguagesSkill: 'آشنایی با زبان های خارجی',
         education: 'میزان تحصیلات',
         suggestedJobPosition: 'سمت پیشنهادی',
         guarantee: 'وثیقه',
