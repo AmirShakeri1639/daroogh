@@ -671,7 +671,6 @@ const DesktopCardContent = ({
                 </Typography>
               </Grid>
               <Grid container xs={ 2 }>
-                { console.log('%cITEM', 'background: #6DD2F7; padding: 1em', item) }
                 { item &&
                   (item?.currentPharmacyIsA
                     ? item?.numberA

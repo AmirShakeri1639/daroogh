@@ -186,7 +186,7 @@ const Create: React.FC = () => {
   const [isBackdropLoading, setIsBackdropLoading] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
   const [packTotalItems, setPackTotalItems] = useState<number>(0);
-  const [packStatus, setPackStatus] = useState<number>(0);
+  const [packStatus, setPackStatus] = useState<number>(1);
   const [packTotalPrice, setPackTotalPrice] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');

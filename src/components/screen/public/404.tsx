@@ -7,7 +7,7 @@ const Error404: React.FC = () => {
   const { t } = useTranslation()
 
   return (
-    <div className="body-404">
+    <div className="body-error">
       <div className="site">
         <div className="sketch">
           <div className="bee-sketch red"></div>
@@ -19,7 +19,7 @@ const Error404: React.FC = () => {
         <small>{ t('error._404') }</small>
           <p>{ t('error._404_desc') }</p>
           <Link to="/">
-            <button className="btn">{ t('general.home') }</button>
+            <button className="btn btn-green">{ t('general.home') }</button>
           </Link>
         </h1>
       </div>
