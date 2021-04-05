@@ -270,10 +270,10 @@ const Create: React.FC = () => {
       isJalaliDate(convertedArray[0])
         ? [selectedDate.gy, selectedDate.gm - 1, selectedDate.gd]
         : [
-          Number(selectedYear),
-          Number(selectedMonth) - 1,
-          Number(selectedDay === '' ? monthMinimumLength : selectedDay),
-        ]
+            Number(selectedYear),
+            Number(selectedMonth) - 1,
+            Number(selectedDay === '' ? monthMinimumLength : selectedDay),
+          ]
     );
 
     const daysDiff = String(selectedDateMomentObject.diff(todayMomentObject, 'days'));
@@ -295,11 +295,11 @@ const Create: React.FC = () => {
     setIsoDate(
       isJalaliDate(convertedArray[0])
         ? `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
-          selectedDate.gd
-        )}T00:00:00Z`
+            selectedDate.gd
+          )}T00:00:00Z`
         : `${[Number(selectedYear), Number(selectedMonth) - 1, Number(selectedDay)].join(
-          '-'
-        )}T00:00:00Z`
+            '-'
+          )}T00:00:00Z`
     );
   };
 
@@ -488,7 +488,7 @@ const Create: React.FC = () => {
       return drugsPack.map((item) => {
         return (
           <Grid item xs={12} md={4}>
-            <CardContainer status={packStatus} item={item}  removeHandler={removeHandler} />
+            <CardContainer status={packStatus} item={item} removeHandler={removeHandler} />
           </Grid>
         );
       });
@@ -500,8 +500,9 @@ const Create: React.FC = () => {
   const memoContent = useMemo(() => contentHandler(), [drugsPack]);
 
   const getDrugName = (item: any): string => {
-    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${item.type !== null ? ` - ${item.type}` : ''
-      }`;
+    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
+      item.type !== null ? ` - ${item.type}` : ''
+    }`;
   };
 
   const searchDrugs = async (title: string): Promise<any> => {
@@ -520,19 +521,22 @@ const Create: React.FC = () => {
 
       setIsLoading(false);
 
-      const optionsList = result.map((_item: any) => ({
-        item: {
-          value: _item.id,
-          label: getDrugName(_item),
-        },
-        el: (
-          <div>
-            <div>{getDrugName(_item)}</div>
-            <div className="text-muted txt-sm">{`${_item.enName !== null ? `-${_item.enName}` : ''
+      const optionsList = result
+        .filter((_item: any) => _item.active === true)
+        .map((_item: any) => ({
+          item: {
+            value: _item.id,
+            label: getDrugName(_item),
+          },
+          el: (
+            <div>
+              <div>{getDrugName(_item)}</div>
+              <div className="text-muted txt-sm">{`${
+                _item.enName !== null ? `-${_item.enName}` : ''
               }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
-          </div>
-        ),
-      }));
+            </div>
+          ),
+        }));
 
       setOptions(optionsList);
     } catch (e) {
