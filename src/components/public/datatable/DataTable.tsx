@@ -1,10 +1,4 @@
-import React, {
-  createRef,
-  useImperativeHandle,
-  useState,
-  forwardRef,
-  useEffect,
-} from 'react';
+import React, { createRef, useImperativeHandle, useState, forwardRef, useEffect } from 'react';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import { DataTableProps } from '../../../interfaces';
 import { usePaginatedQuery, useQueryCache } from 'react-query';
@@ -73,15 +67,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef<
-  TransitionProps,
-  { children?: React.ReactElement<any, any> }
->((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+const Transition = React.forwardRef<TransitionProps, { children?: React.ReactElement<any, any> }>(
+  (props, ref) => <Slide direction="up" ref={ref} {...props} />
+);
 
-const DataTable: React.ForwardRefRenderFunction<
-  CountdownHandle,
-  DataTableProps
-> = (props, forwardedRef) => {
+const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (
+  props,
+  forwardedRef
+) => {
   const { table, closeButton } = useStyles();
   const [page, setPage] = useState<number>(0);
   const [searchText, setSearchText] = useState<string>('');
@@ -229,8 +222,6 @@ const DataTable: React.ForwardRefRenderFunction<
     });
   }, [columns]);
 
-
-
   const ReportContainer = (): JSX.Element => (
     <Dialog
       onClose={(): any => setShowReport(false)}
@@ -240,10 +231,7 @@ const DataTable: React.ForwardRefRenderFunction<
       fullWidth={true}
     >
       <AppBar>
-        <Toolbar
-          variant="dense"
-          style={{ backgroundColor: 'rgb(164, 191, 226)' }}
-        >
+        <Toolbar variant="dense" style={{ backgroundColor: 'rgb(164, 191, 226)' }}>
           <DialogTitle
             disableTypography
             style={{
@@ -280,12 +268,8 @@ const DataTable: React.ForwardRefRenderFunction<
         tableRef={tableRef}
         localization={localization}
         icons={{
-          PreviousPage: forwardRef((props, ref) => (
-            <ChevronRight {...props} ref={ref} />
-          )),
-          NextPage: forwardRef((props, ref) => (
-            <ChevronLeft {...props} ref={ref} />
-          )),
+          PreviousPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+          NextPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
         }}
         components={{
           Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
@@ -295,20 +279,17 @@ const DataTable: React.ForwardRefRenderFunction<
           new Promise((resolve, reject) => {
             let url = UrlAddress.baseUrl + urlAddress;
 
-            url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize
-              }`;
+            url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`;
 
             if (otherQueryString) {
-              url += `&${otherQueryString}`
+              url += `&${otherQueryString}`;
             }
 
             if (defaultFilter) {
               url += `&$filter= ${defaultFilter}`;
             }
 
-            const qFilter = query.filters.filter(
-              (x) => x.value.fieldValue !== ''
-            );
+            const qFilter = query.filters.filter((x) => x.value.fieldValue !== '');
             qFilter.forEach((x: any, i: number) => {
               if (i === 0) url += defaultFilter ? ' and ' : '&$filter=';
               const openP = i === 0 ? '(' : '';
@@ -322,10 +303,7 @@ const DataTable: React.ForwardRefRenderFunction<
             if (query.search && query.search !== '') {
               const columnsFilter = columns.filter((x: any) => x.searchable);
               if (columnsFilter.length > 0) {
-                url +=
-                  defaultFilter || query.filters.length > 0
-                    ? ' and '
-                    : '&$filter=';
+                url += defaultFilter || query.filters.length > 0 ? ' and ' : '&$filter=';
                 columnsFilter.forEach((x: DataTableColumns, i: number) => {
                   const openP = i === 0 ? '(' : '';
                   const closeP = i === columnsFilter.length - 1 ? ')' : '';
@@ -335,8 +313,7 @@ const DataTable: React.ForwardRefRenderFunction<
               }
             }
             if (query.orderBy) {
-              url += `&$orderby=${query.orderBy.field?.toString()} ${query.orderDirection
-                }`;
+              url += `&$orderby=${query.orderBy.field?.toString()} ${query.orderDirection}`;
             } else {
               if (columns.findIndex((c: any) => c.field === 'id') !== -1) {
                 url += `&$orderby=id desc`;
@@ -383,13 +360,13 @@ const DataTable: React.ForwardRefRenderFunction<
         detailPanel={
           detailPanel
             ? [
-              {
-                tooltip: 'نمایش جزئیات',
-                render: (rowData): any => {
-                  return detailPanel(rowData);
+                {
+                  tooltip: 'نمایش جزئیات',
+                  render: (rowData): any => {
+                    return detailPanel(rowData);
+                  },
                 },
-              },
-            ]
+              ]
             : []
         }
         actions={tableActions}
@@ -415,7 +392,7 @@ const DataTable: React.ForwardRefRenderFunction<
           headerStyle: {
             fontWeight: 800,
             backgroundColor: '#0078d4',
-            color: 'white'
+            color: 'white',
           },
           columnsButton: true,
           maxBodyHeight: 400,

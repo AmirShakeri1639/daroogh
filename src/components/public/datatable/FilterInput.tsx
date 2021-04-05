@@ -30,9 +30,9 @@ const useStyles = makeStyles((theme) => ({
   },
   dropDown: {
     '& .MuiSvgIcon-root': {
-      marginLeft: 15
-    }
-  }
+      marginLeft: 15,
+    },
+  },
 }));
 
 interface FilterOptionInterface {
@@ -48,11 +48,12 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
   const [filterOption, setFilterOption] = useState<FilterOptionInterface>({
     text: 'شبیه',
     value: '',
-    operator: !props.columnDef.lookupFilter && props.columnDef.type !== 'date' ?
-      `contains(cast(${props.columnDef.field},'Edm.String'),'$')` :
-      props.columnDef.type !== 'date' ?
-        `cast(${props.columnDef.fieldLookup},'Edm.String') in $` :
-        `concat(cast(year(${props.columnDef.field}),Edm.String),concat('-',concat(cast(month(${props.columnDef.field}),Edm.String),concat('-',cast(day(${props.columnDef.field}),Edm.String))))) eq '$'`
+    operator:
+      !props.columnDef.lookupFilter && props.columnDef.type !== 'date'
+        ? `contains(cast(${props.columnDef.field},'Edm.String'),'$')`
+        : props.columnDef.type !== 'date'
+        ? `cast(${props.columnDef.fieldLookup},'Edm.String') in $`
+        : `concat(cast(year(${props.columnDef.field}),Edm.String),concat('-',concat(cast(month(${props.columnDef.field}),Edm.String),concat('-',cast(day(${props.columnDef.field}),Edm.String))))) eq '$'`,
   });
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -71,8 +72,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     let value = event;
     setValue(value);
     if (props.columnDef.type === 'date') {
-      if (value !== '')
-        value = Utils.convertShamsiToGeo(value, 'YYYY-MM-DD')
+      if (value !== '') value = Utils.convertShamsiToGeo(value, 'YYYY-MM-DD');
     }
     props.onFilterChanged(props.columnDef.tableData.id, {
       fieldValue: value,
@@ -128,11 +128,29 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     },
   ];
 
+  const filterOptionsString = [
+    ...filterOptions.filter(
+      (x) =>
+        x.text !== 'بزرگتر مساوی' &&
+        x.text !== 'بزرگتر' &&
+        x.text !== 'کوچکتر مساوی' &&
+        x.text !== 'کوچکتر'
+    ),
+  ];
+
   const handleEnumChange = (event: any) => {
+    debugger;
     const code = event.target.value as [];
-    const res = (props.columnDef.lookupFilter as LookupFilter[]).filter(x => code.includes(x.name as never));
+    const res = (props.columnDef.lookupFilter as LookupFilter[]).filter((x) =>
+      code.includes(x.name as never)
+    );
     setPersonName(code);
-    const fv = '(' + res.map(x => `'${x.code}'`).join(', ') + ')';
+    let fv = '()';
+    if (props.columnDef.type === 'boolean') {
+      fv = '(' + res.map((x) => (x.code === 1 ? true : false)).join(', ') + ')';
+    } else {
+      fv = '(' + res.map((x) => `'${x.code}'`).join(', ') + ')';
+    }
     props.onFilterChanged(props.columnDef.tableData.id, {
       fieldValue: fv !== '()' ? fv : '',
       operator: filterOption.operator,
@@ -149,6 +167,19 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
       text: 'مخالف',
       value: '',
       operator: `cast(${props.columnDef.fieldLookup},'Edm.String') ne $`,
+    },
+  ];
+
+  const filterLookupBooleanOptions = [
+    {
+      text: 'برابر',
+      value: '',
+      operator: `${props.columnDef.fieldLookup} in $`,
+    },
+    {
+      text: 'مخالف',
+      value: '',
+      operator: `not(${props.columnDef.fieldLookup} in $)`,
     },
   ];
 
@@ -180,8 +211,6 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     },
   ];
 
-
-
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -193,26 +222,51 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     },
   };
 
-
-
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
-
   const filterOperatorMenu = (): JSX.Element[] => {
-    const option = !props.columnDef.lookupFilter && props.columnDef.type !== 'date' ? filterOptions : props.columnDef.type !== 'date' ? filterLookupOptions : filterDateOptions;
+    let option: { text: string; value: string; operator: string }[] = [];
+    if (!props.columnDef.lookupFilter) {
+      switch (props.columnDef.type) {
+        case 'date':
+          option = filterDateOptions;
+          break;
+        case 'string':
+          option = filterOptionsString;
+          break;
+        default:
+          option = filterOptions;
+          break;
+      }
+    } else {
+      if (props.columnDef.type === 'boolean') option = filterLookupBooleanOptions;
+      else option = filterLookupOptions;
+    }
+    // !props.columnDef.lookupFilter &&
+    // props.columnDef.type !== 'date' &&
+    // props.columnDef.type !== 'string'
+    //   ? filterOptions
+    //   : props.columnDef.type !== 'date'
+    //   ? filterLookupOptions
+    //   : props.columnDef.type !== 'string'
+    //   ? filterDateOptions
+    //   : filterOptionsString;
     const res = option.map((option, index) => {
-      return (<MenuItem
-        selected={index === selectedIndex}
-        onClick={(): any => { handleClose(option, index); if (value) handleChange(value, option) }}
-      >
-        {option.text}
-      </MenuItem>)
-    })
+      return (
+        <MenuItem
+          selected={index === selectedIndex}
+          onClick={(): any => {
+            handleClose(option, index);
+            if (value) handleChange(value, option);
+          }}
+        >
+          {option.text}
+        </MenuItem>
+      );
+    });
     return res;
-  }
-
-
+  };
 
   return (
     <div>
@@ -222,91 +276,81 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
             id={props.columnDef.field}
             type="text"
             value={value}
-            onChange={(e)=>handleChange(e.target.value)}
+            onChange={(e) => handleChange(e.target.value)}
             placeholder={`${filterOption.text}`}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton
-                  aria-label="Select Filter"
-                  onClick={handleFilterClick}
-                >
+                <IconButton aria-label="Select Filter" onClick={handleFilterClick}>
                   <FilterListIcon onClick={handleFilterClick} />
                 </IconButton>
               </InputAdornment>
             }
           />
-        </FormControl>) : props.columnDef.type !== 'date' ?
-          (<FormControl className={formControl}>
-            <Select
-              labelId="demo-mutiple-checkbox-label"
-              id="demo-mutiple-checkbox"
-
-              multiple
-              value={personName}
-              onChange={handleEnumChange}
-              IconComponent={(): any => <></>}
-              input={<Input />}
-              renderValue={(selected: any) => selected.join(', ')}
-              MenuProps={MenuProps}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="Select Filter"
-                    onClick={handleFilterClick}
-                  >
-                    <FilterListIcon onClick={handleFilterClick} />
-                  </IconButton>
-                </InputAdornment>
-              }
-            >
-              {props.columnDef.lookupFilter.map((item: any) => (
-                <MenuItem key={item.code} value={item.name}>
-                  <Checkbox checked={personName?.indexOf(item.name as never) > -1} />
-                  <ListItemText primary={item.name} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>) :
-          (<Input
-            inputProps={{
-              readOnly: true,
-            }}
-            className="w-100"
-            type="text"
-            onChange={(e) => handleChange(e)}
-            value={value}
-            style={{ marginTop: 10, minWidth: 145, fontSize: 11 }}
+        </FormControl>
+      ) : props.columnDef.type !== 'date' ? (
+        <FormControl className={formControl}>
+          <Select
+            labelId="demo-mutiple-checkbox-label"
+            id="demo-mutiple-checkbox"
+            multiple
+            value={personName}
+            onChange={handleEnumChange}
+            IconComponent={(): any => <></>}
+            input={<Input />}
+            renderValue={(selected: any) => selected.join(', ')}
+            MenuProps={MenuProps}
             endAdornment={
-              <InputAdornment position="end" style={{ marginRight: 0 }}>
-                {value &&
-                  <IconButton
-                    aria-label="Select Filter"
-                  >
-                    <CloseIcon onClick={() => handleChange('')} />
-                  </IconButton>
-                }
-                <IconButton
-                  aria-label="Select Filter"
-                >
+              <InputAdornment position="end">
+                <IconButton aria-label="Select Filter" onClick={handleFilterClick}>
                   <FilterListIcon onClick={handleFilterClick} />
                 </IconButton>
               </InputAdornment>
             }
-            startAdornment={
-              <InputAdornment position="start" style={{ marginLeft: 0 }}>
-                <IconButton
-                  aria-label="Select Filter"
-                >
-                  <DateRangeIcon onClick={toggleIsOpenDatePicker} />
+          >
+            {props.columnDef.lookupFilter.map((item: any) => (
+              <MenuItem key={item.code} value={item.name}>
+                <Checkbox checked={personName?.indexOf(item.name as never) > -1} />
+                <ListItemText primary={item.name} />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      ) : (
+        <Input
+          inputProps={{
+            readOnly: true,
+          }}
+          className="w-100"
+          type="text"
+          onChange={(e) => handleChange(e)}
+          value={value}
+          style={{ marginTop: 10, minWidth: 145, fontSize: 11 }}
+          endAdornment={
+            <InputAdornment position="end" style={{ marginRight: 0 }}>
+              {value && (
+                <IconButton aria-label="Select Filter">
+                  <CloseIcon onClick={() => handleChange('')} />
                 </IconButton>
-              </InputAdornment>
-            }
-          />)}
-      < Menu
+              )}
+              <IconButton aria-label="Select Filter">
+                <FilterListIcon onClick={handleFilterClick} />
+              </IconButton>
+            </InputAdornment>
+          }
+          startAdornment={
+            <InputAdornment position="start" style={{ marginLeft: 0 }}>
+              <IconButton aria-label="Select Filter">
+                <DateRangeIcon onClick={toggleIsOpenDatePicker} />
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+      )}
+      <Menu
         id={`${props.columnDef.field}-menu`}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
-      // onClose={handleClose}
+        // onClose={handleClose}
       >
         {filterOperatorMenu()}
       </Menu>
@@ -318,7 +362,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
           }}
         />
       </Modal>
-    </div >
+    </div>
   );
 };
 

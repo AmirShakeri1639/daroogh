@@ -49,9 +49,7 @@ import {
   faFileInvoiceDollar,
   faGlobe,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-  faCopy
-} from '@fortawesome/free-regular-svg-icons';
+import { faCopy } from '@fortawesome/free-regular-svg-icons';
 import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
 import routes from '../../../../routes';
@@ -178,12 +176,7 @@ const PharmaciesList: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
-  const {
-    container,
-    formContent,
-    cancelButtonDialog,
-    submitBtn
-  } = useClasses();
+  const { container, formContent, cancelButtonDialog, submitBtn } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const queryCache = useQueryCache();
@@ -265,15 +258,12 @@ const PharmaciesList: React.FC = () => {
         render: (row: any): any => {
           return (
             <>
-              {(isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) && '' }
+              {(isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) && ''}
               {!(isNullOrEmpty(row.x) || isNullOrEmpty(row.y)) && (
-                <a
-                  href={ `https://google.com/maps?q=${row.y},${row.x}` }
-                  target="_blank"
-                >
-                  <FontAwesomeIcon icon={ faGlobe } />
+                <a href={`https://google.com/maps?q=${row.y},${row.x}`} target="_blank">
+                  <FontAwesomeIcon icon={faGlobe} />
                 </a>
-              ) }
+              )}
             </>
           );
         },
@@ -285,13 +275,16 @@ const PharmaciesList: React.FC = () => {
         width: '90px',
         render: (row: any): any => {
           return (
-            <span
-              style={ { color: row.active ? ColorEnum.Green : ColorEnum.Red } }
-            >
-              <FontAwesomeIcon icon={ row.active ? faCheck : faTimes } />
+            <span style={{ color: row.active ? ColorEnum.Green : ColorEnum.Red }}>
+              <FontAwesomeIcon icon={row.active ? faCheck : faTimes} />
             </span>
           );
         },
+        fieldLookup: 'active',
+        lookupFilter: [
+          { code: 0, name: 'غیرفعال' },
+          { code: 1, name: 'فعال' },
+        ],
       },
       { field: 'description', title: t('general.description'), type: 'string' },
     ];
@@ -308,10 +301,7 @@ const PharmaciesList: React.FC = () => {
     }
   };
 
-  const toggleConfirmHandler = async (
-    e: any,
-    row: PharmacyInterface
-  ): Promise<any> => {
+  const toggleConfirmHandler = async (e: any, row: PharmacyInterface): Promise<any> => {
     try {
       const confirmParams: ConfirmParams = {
         id: row.id,
@@ -435,218 +425,192 @@ const PharmaciesList: React.FC = () => {
   const editModal = (): JSX.Element => {
     return (
       <Dialog
-        open={ isOpenEditModal }
-        fullScreen={ fullScreen }
-        onClose={ toggleIsOpenSaveModalForm }
+        open={isOpenEditModal}
+        fullScreen={fullScreen}
+        onClose={toggleIsOpenSaveModalForm}
         fullWidth
       >
         <DialogTitle className="text-sm">
-          { state?.id === 0 ? t('action.create') : t('action.edit') }
+          {state?.id === 0 ? t('action.create') : t('action.edit')}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Grid container spacing={ 1 } className={ formContent }>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('pharmacy.name') }</label>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('pharmacy.name')}</label>
                   </Grid>
-                  <Grid item xs={ 12 }>
+                  <Grid item xs={12}>
                     <Input
                       required
                       className="w-100"
-                      value={ state?.name }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'name', value: e.target.value })
-                      }
+                      value={state?.name}
+                      onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('pharmacy.hix') }</label>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('pharmacy.hix')}</label>
                   </Grid>
 
-                  <Grid item xs={ 12 }>
+                  <Grid item xs={12}>
                     <Input
                       className="w-100"
-                      value={ state?.hix }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'hix', value: e.target.value })
-                      }
+                      value={state?.hix}
+                      onChange={(e): void => dispatch({ type: 'hix', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('pharmacy.gli') }</label>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('pharmacy.gli')}</label>
                   </Grid>
 
-                  <Grid item xs={ 12 }>
+                  <Grid item xs={12}>
                     <Input
                       className="w-100"
-
-                      value={ state?.gli }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'gli', value: e.target.value })
-                      }
+                      value={state?.gli}
+                      onChange={(e): void => dispatch({ type: 'gli', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('pharmacy.workTime') }</label>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('pharmacy.workTime')}</label>
                   </Grid>
-                  <Grid item xs={ 12 }>
+                  <Grid item xs={12}>
                     <DaroogDropdown
-                      defaultValue={ state?.workTime }
-                      data={ workTimeList }
+                      defaultValue={state?.workTime}
+                      data={workTimeList}
                       className="w-100"
-
-                      onChangeHandler={ (v): void => {
+                      onChangeHandler={(v): void => {
                         return dispatch({ type: 'workTime', value: v });
-                      } }
+                      }}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('general.address') }</label>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.address')}</label>
                   </Grid>
-                  <Grid item xs={ 12 }>
+                  <Grid item xs={12}>
                     <Input
-
                       required
                       className="w-100"
-                      value={ state?.address }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'address', value: e.target.value })
-                      }
+                      value={state?.address}
+                      onChange={(e): void => dispatch({ type: 'address', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('general.mobile') }</label>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.mobile')}</label>
                   </Grid>
-                  <Grid item xs={ 12 }>
+                  <Grid item xs={12}>
                     <Input
-
                       required
-                      label={ t('general.mobile') }
-                      value={ state?.mobile }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'mobile', value: e.target.value })
-                      }
+                      label={t('general.mobile')}
+                      value={state?.mobile}
+                      onChange={(e): void => dispatch({ type: 'mobile', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('general.phone') }</label>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.phone')}</label>
                   </Grid>
-                  <Grid item xs={ 12 }>
+                  <Grid item xs={12}>
                     <Input
                       className="w-100"
                       required
-                      label={ t('general.phone') }
-                      value={ state?.telphon }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'telphon', value: e.target.value })
-                      }
+                      label={t('general.phone')}
+                      value={state?.telphon}
+                      onChange={(e): void => dispatch({ type: 'telphon', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('general.website') }</label>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.website')}</label>
                   </Grid>
-                  <Grid item xs={ 12 }>
+                  <Grid item xs={12}>
                     <Input
                       className="w-100"
-                      value={ state?.webSite }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'webSite', value: e.target.value })
-                      }
+                      value={state?.webSite}
+                      onChange={(e): void => dispatch({ type: 'webSite', value: e.target.value })}
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={ 12 }>
-                <Grid container spacing={ 1 }>
-                  <Grid item xs={ 12 }>
-                    <label>{ t('general.email') }</label>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.email')}</label>
                   </Grid>
-                  <Grid item xs={ 12 }></Grid>
+                  <Grid item xs={12}></Grid>
                   <Input
                     className="w-100"
-
-                    value={ state?.email }
-                    onChange={ (e): void =>
-                      dispatch({ type: 'email', value: e.target.value })
-                    }
+                    value={state?.email}
+                    onChange={(e): void => dispatch({ type: 'email', value: e.target.value })}
                   />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={ 12 }>
-              <Grid container spacing={ 1 }>
-                <Grid item xs={ 12 }>
-                  <label>{ t('general.postalCode') }</label>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.postalCode')}</label>
                 </Grid>
-                <Grid item xs={ 12 }>
+                <Grid item xs={12}>
                   <Input
-
                     className="w-100"
-                    value={ state?.postalCode }
-                    onChange={ (e): void =>
-                      dispatch({ type: 'postalCode', value: e.target.value })
-                    }
+                    value={state?.postalCode}
+                    onChange={(e): void => dispatch({ type: 'postalCode', value: e.target.value })}
                   />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={ 12 }>
-              <Grid container spacing={ 1 }>
-                <Grid item xs={ 12 }>
-                  <label>{ t('general.description') }</label>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.description')}</label>
                 </Grid>
-                <Grid item xs={ 12 }>
+                <Grid item xs={12}>
                   <Input
                     className="w-100"
-                    value={ state?.description }
-                    onChange={ (e): void =>
-                      dispatch({ type: 'description', value: e.target.value })
-                    }
+                    value={state?.description}
+                    onChange={(e): void => dispatch({ type: 'description', value: e.target.value })}
                   />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={ 12 }>
-              <Grid container spacing={ 1 }>
-                <Grid item xs={ 12 }>
-                  <label>{ t('general.active') }</label>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.active')}</label>
                 </Grid>
-                <Grid item xs={ 12 }>
+                <Grid item xs={12}>
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={ state?.active }
-                        onChange={ (e): void =>
+                        checked={state?.active}
+                        onChange={(e): void =>
                           dispatch({
                             type: 'active',
                             value: e.target.checked,
@@ -654,76 +618,71 @@ const PharmaciesList: React.FC = () => {
                         }
                       />
                     }
-                    label=''
+                    label=""
                   />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={ 12 }>
-              <Grid container spacing={ 1 }>
-                <Grid item xs={ 12 }>
-                  <label>{ t('general.location') }</label>
+            <Grid item xs={12}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <label>{t('general.location')}</label>
                 </Grid>
 
-                <Grid item xs={ 12 }>
+                <Grid item xs={12}>
                   <CountryDivisionSelect
-                    countryDivisionID={ state.countryDivisionID }
-
-                    onSelectedHandler={ (id): void => {
+                    countryDivisionID={state.countryDivisionID}
+                    onSelectedHandler={(id): void => {
                       dispatch({ type: 'countryDivisionID', value: id });
-                    } }
+                    }}
                   />
                 </Grid>
               </Grid>
             </Grid>
             <br />
 
-            <Grid item xs={ 12 }>
-
-              <div style={ { overflow: 'hidden' } }>
+            <Grid item xs={12}>
+              <div style={{ overflow: 'hidden' }}>
                 <Map
-                  draggable={ true }
+                  draggable={true}
                   maxHeight="200px"
-                  defaultLatLng={ [state.x, state.y] }
-                  onClick={ (e: any): void => {
+                  defaultLatLng={[state.x, state.y]}
+                  onClick={(e: any): void => {
                     dispatch({ type: 'x', value: e.lngLat.lng });
                     dispatch({ type: 'y', value: e.lngLat.lat });
-                  } }
+                  }}
                 />
               </div>
-
             </Grid>
           </DialogContentText>
         </DialogContent>
         <Divider />
         <DialogActions>
-          <Grid container style={ { marginTop: 4, marginBottom: 4 } } xs={ 12 }>
-            <Grid container xs={ 12 }>
-              <Grid item xs={ 7 } sm={ 8 } />
-              <Grid item xs={ 2 } sm={ 2 }>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
+            <Grid container xs={12}>
+              <Grid item xs={7} sm={8} />
+              <Grid item xs={2} sm={2}>
                 <Button
                   type="submit"
-                  className={ cancelButtonDialog }
-                  onClick={ (): void => {
+                  className={cancelButtonDialog}
+                  onClick={(): void => {
                     dispatch({ type: 'reset' });
                     toggleIsOpenSaveModalForm();
-                  } }
+                  }}
                 >
-                  { t('general.cancel') }
+                  {t('general.cancel')}
                 </Button>
               </Grid>
-              <Grid item xs={ 3 } sm={ 2 }>
+              <Grid item xs={3} sm={2}>
                 <Button
                   type="submit"
-                  className={ submitBtn }
-                  onClick={ (e): void => {
+                  className={submitBtn}
+                  onClick={(e): void => {
                     e.preventDefault();
                     submitSave();
-                  } }
+                  }}
                 >
-                  { isLoadingSave
-                    ? t('general.pleaseWait')
-                    : t('general.save') }
+                  {isLoadingSave ? t('general.pleaseWait') : t('general.save')}
                 </Button>
               </Grid>
             </Grid>
@@ -745,20 +704,17 @@ const PharmaciesList: React.FC = () => {
   };
 
   const [showAddTransaction, setShowAddTransaction] = useState(false);
-  const toggleShowAddTransaction = (): void =>
-    setShowAddTransaction(!showAddTransaction);
+  const toggleShowAddTransaction = (): void => setShowAddTransaction(!showAddTransaction);
   const [pharmacyIdForTransaction, setPharmacyIdForTransaction] = useState(0);
-  const [pharmacyNameForTransaction, setPharmacyNameForTransaction] = useState(
-    ''
-  );
+  const [pharmacyNameForTransaction, setPharmacyNameForTransaction] = useState('');
   const addTransactionHandler = (event: any, rowData: any): void => {
     setPharmacyIdForTransaction(rowData.id);
     setPharmacyNameForTransaction(rowData.name);
     toggleShowAddTransaction();
   };
   const gotoDocsHandler = (event: any, rowData: any): void => {
-    history.push(`${routes.pharmacyDocs}?pharmacyId=${rowData.id}`)
-  }
+    history.push(`${routes.pharmacyDocs}?pharmacyId=${rowData.id}`);
+  };
 
   const actions: DataTableCustomActionInterface[] = [
     {
@@ -771,24 +727,18 @@ const PharmaciesList: React.FC = () => {
       action: toggleConfirmHandler,
     },
     {
-      icon: (): any => (
-        <FontAwesomeIcon icon={ faUserCog } color={ ColorEnum.DarkCyan } />
-      ),
+      icon: (): any => <FontAwesomeIcon icon={faUserCog} color={ColorEnum.DarkCyan} />,
       tooltip: t('action.impersonateThisPharmacy'),
       color: 'secondary',
       action: impersonateHandler,
     },
     {
-      icon: (): any => (
-        <FontAwesomeIcon icon={ faCopy } color={ ColorEnum.Purple } />
-      ),
+      icon: (): any => <FontAwesomeIcon icon={faCopy} color={ColorEnum.Purple} />,
       tooltip: t('file.docs'),
-      action: gotoDocsHandler
+      action: gotoDocsHandler,
     },
     {
-      icon: (): any => (
-        <FontAwesomeIcon icon={ faFileInvoiceDollar } color={ ColorEnum.Green } />
-      ),
+      icon: (): any => <FontAwesomeIcon icon={faFileInvoiceDollar} color={ColorEnum.Green} />,
       tooltip: t('accounting.addTransaction'),
       action: addTransactionHandler,
     },
@@ -796,40 +746,36 @@ const PharmaciesList: React.FC = () => {
 
   // @ts-ignore
   return (
-    <Container maxWidth="lg" className={ container }>
-      <Grid container spacing={ 0 }>
-        <Grid item xs={ 12 }>
-          <div>{ t('pharmacy.list') }</div>
+    <Container maxWidth="lg" className={container}>
+      <Grid container spacing={0}>
+        <Grid item xs={12}>
+          <div>{t('pharmacy.list')}</div>
           <Paper>
             <DataTable
-              tableRef={ ref }
-              columns={ tableColumns() }
-              addAction={ (): void => saveHandler(initialState) }
-              editAction={ (e: any, row: any): void => saveHandler(row) }
-              removeAction={ async (e: any, row: any): Promise<void> =>
-                await removeHandler(row)
-              }
-              customActions={ actions }
-              queryKey={ PharmacyEnum.GET_ALL }
-              queryCallback={ all }
-              urlAddress={ UrlAddress.getAllPharmacy }
-              initLoad={ false }
+              tableRef={ref}
+              columns={tableColumns()}
+              addAction={(): void => saveHandler(initialState)}
+              editAction={(e: any, row: any): void => saveHandler(row)}
+              removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
+              customActions={actions}
+              queryKey={PharmacyEnum.GET_ALL}
+              queryCallback={all}
+              urlAddress={UrlAddress.getAllPharmacy}
+              initLoad={false}
             />
-            { (isLoadingRemove || isLoadingConfirm || isLoadingSave) && (
-              <CircleLoading />
-            ) }
+            {(isLoadingRemove || isLoadingConfirm || isLoadingSave) && <CircleLoading />}
           </Paper>
         </Grid>
-        { isOpenEditModal && editModal() }
+        {isOpenEditModal && editModal()}
       </Grid>
-      <Grid container spacing={ 1 }>
-        <Grid item xs={ 1 }>
-          { showAddTransaction && (
+      <Grid container spacing={1}>
+        <Grid item xs={1}>
+          {showAddTransaction && (
             <AddTransactionModal
-              pharmacyId={ pharmacyIdForTransaction }
-              pharmacyName={ pharmacyNameForTransaction }
+              pharmacyId={pharmacyIdForTransaction}
+              pharmacyName={pharmacyNameForTransaction}
             />
-          ) }
+          )}
         </Grid>
       </Grid>
     </Container>

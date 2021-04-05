@@ -79,6 +79,7 @@ const DesktopCardContent = ({
   const currency = t('general.defaultCurrency');
 
   const {
+    exchangeId,
     viewExhcnage,
     basketCount,
     uBasketCount,
@@ -131,11 +132,15 @@ const DesktopCardContent = ({
   const [totalPriceB, setTotalPriceB] = useState<number>(0);
 
   React.useEffect(() => {
-    const basket1 = basketCount;
-    const basket2 = uBasketCount;
     setTotalPriceA(calcPrice(cartA));
     setTotalPriceB(calcPrice(cartB));
   }, [basketCount, uBasketCount]);
+
+  React.useEffect(() => {
+    if (item?.currentPharmacyIsA) {
+      if (item?.numberA) item.numberA = 'A' + exchangeId;
+    }
+  }, [exchangeId]);
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -393,12 +398,8 @@ const DesktopCardContent = ({
                     {!item.currentPharmacyIsA && t('exchange.otherSide') }
                   </>
                 }
-                body={
-                  <>
-                    { Convertor.thousandsSeperatorFa(totalPriceA) }
-                  </>
-                }
-                suffix={ t('general.defaultCurrency') }
+                body={<>{Convertor.thousandsSeperatorFa(totalPriceA)}</>}
+                suffix={t('general.defaultCurrency')}
               />
             </Grid>
           ) }
@@ -412,12 +413,8 @@ const DesktopCardContent = ({
                     {item.currentPharmacyIsA && t('exchange.otherSide') }
                   </>
                 }
-                body={
-                  <>
-                    { Convertor.thousandsSeperatorFa(totalPriceB) }
-                  </>
-                }
-                suffix={ t('general.defaultCurrency') }
+                body={<>{Convertor.thousandsSeperatorFa(totalPriceB)}</>}
+                suffix={t('general.defaultCurrency')}
               />
             </Grid>
           ) }
