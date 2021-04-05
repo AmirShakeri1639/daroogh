@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   makeStyles,
   Paper,
@@ -37,11 +37,12 @@ const useStyle = makeStyles((theme) =>
 interface CardContainerProps {
   item: PharmacyDrugSupplyList;
   removeHandler: (item: any) => void;
+  status: number
 }
 
 const CardContainer: React.FC<CardContainerProps> = (props) => {
   const { root, redTrash } = useStyle();
-  const { item, removeHandler } = props;
+  const { item, removeHandler, status } = props;
 
   const {
     cnt,
@@ -83,23 +84,29 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
           enName={''}
         />
       </Grid>
-      <Grid item xs={12} style={{ padding: '4px' }}>
-        {' '}
-        <Divider />
-      </Grid>
+      {
+        status == 1 &&
 
-      <Grid item xs={12}>
-        <Grid justify="flex-end" container spacing={0}>
-          <Grid item xs={2}>
-            <Button
-              onClick={(): void => itemRemoveHandler(value)}
-              style={{ color: 'red', fontSize: '14px' }}
-            >
-              حذف
-            </Button>
+        <Fragment>
+          <Grid item xs={12} style={{ padding: '4px' }}>
+            {' '}
+            <Divider />
           </Grid>
-        </Grid>
-      </Grid>
+
+          <Grid item xs={12}>
+            <Grid justify="flex-end" container spacing={0}>
+              <Grid item xs={2}>
+                <Button
+                  onClick={(): void => itemRemoveHandler(value)}
+                  style={{ color: 'red', fontSize: '14px' }}
+                >
+                  حذف
+            </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Fragment>
+      }
     </Paper>
   );
 };

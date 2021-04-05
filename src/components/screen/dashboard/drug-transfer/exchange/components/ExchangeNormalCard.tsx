@@ -162,17 +162,24 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
               {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
             </span>
           </Grid>
-          <Grid item xs={12}>
+          {lockedAction && (<Grid item xs={12}>
             <TextWithTitle
               title="موجودی عرضه شده"
               body={pharmacyDrug?.cnt}
               suffix="عدد"
             />
-          </Grid>
+          </Grid>)}
+          
           <Grid item xs={12}>
             <TextWithTitle
               title="تاریخ انقضا"
               body={getExpireDate(pharmacyDrug?.expireDate)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextWithTitle
+              title="هدیه"
+              body= {`${pharmacyDrug?.offer1} به ${pharmacyDrug?.offer2}`}
             />
           </Grid>
         </Grid>
