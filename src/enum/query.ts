@@ -22,7 +22,6 @@ export enum ReportsEnum {
   GET_BEST_PHARMACIES_LIST = 'getBestPharmaciesList',
 }
 
-
 export enum PharmacyEnum {
   GET_ALL = 'all',
   GET_MEMBERS = 'members',
@@ -30,7 +29,6 @@ export enum PharmacyEnum {
 
 export enum JobsEnum {
   GET_ALL = 'all',
-
 }
 
 export enum AccountingEnum {
@@ -76,5 +74,5 @@ export enum PrescriptionEnum {
 }
 
 export enum EmploymentApplicationEnum {
-  GET_ALL = 'getAllEmploymentApplications'
+  GET_ALL = 'getAllEmploymentApplications',
 }
