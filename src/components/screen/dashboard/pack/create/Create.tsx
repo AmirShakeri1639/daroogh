@@ -519,20 +519,22 @@ const Create: React.FC = () => {
 
       setIsLoading(false);
 
-      const optionsList = result.map((_item: any) => ({
-        item: {
-          value: _item.id,
-          label: getDrugName(_item),
-        },
-        el: (
-          <div>
-            <div>{getDrugName(_item)}</div>
-            <div className="text-muted txt-sm">{`${
-              _item.enName !== null ? `-${_item.enName}` : ''
-            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
-          </div>
-        ),
-      }));
+      const optionsList = result
+        .filter((_item: any) => _item.active === true)
+        .map((_item: any) => ({
+          item: {
+            value: _item.id,
+            label: getDrugName(_item),
+          },
+          el: (
+            <div>
+              <div>{getDrugName(_item)}</div>
+              <div className="text-muted txt-sm">{`${
+                _item.enName !== null ? `-${_item.enName}` : ''
+              }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
+            </div>
+          ),
+        }));
 
       setOptions(optionsList);
     } catch (e) {
