@@ -116,7 +116,8 @@ export default {
         noContent: 'محتوایی وجود ندارد',
         reject: 'عدم پذیرش',
         pay:'پرداخت',
-        code: 'کد تایید داروگ'
+        version: 'نسخه',
+        code: 'کد تایید داروگ',
       },
 
       pack: {
