@@ -15,6 +15,11 @@ class Validation {
     const regex = /^09\d{9}$/g;
     return regex.test(mobileNumber);
   }
+
+  isValidOtpCode(code: string): boolean {
+    const regex = /^\d{4}$/g;
+    return regex.test(code);
+  }
 }
 
 export default Validation;

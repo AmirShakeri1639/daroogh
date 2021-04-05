@@ -27,7 +27,8 @@ export default {
   login: '/login',
   registerPharmacyWithUser: `/register-pharmacy-with-user`,
   forgetPassword: '/forget-password',
-
+  otp: '/otp',
+  
   dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,
   transfer: `/${dashboard}/${exchange}/transfer`,

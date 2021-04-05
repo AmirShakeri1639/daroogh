@@ -19,7 +19,7 @@ import {
   Divider,
   Paper,
 } from '@material-ui/core';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react';
 import { faPlus, faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
@@ -186,6 +186,7 @@ const Create: React.FC = () => {
   const [isBackdropLoading, setIsBackdropLoading] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
   const [packTotalItems, setPackTotalItems] = useState<number>(0);
+  const [packStatus, setPackStatus] = useState<number>(0);
   const [packTotalPrice, setPackTotalPrice] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
@@ -269,10 +270,10 @@ const Create: React.FC = () => {
       isJalaliDate(convertedArray[0])
         ? [selectedDate.gy, selectedDate.gm - 1, selectedDate.gd]
         : [
-            Number(selectedYear),
-            Number(selectedMonth) - 1,
-            Number(selectedDay === '' ? monthMinimumLength : selectedDay),
-          ]
+          Number(selectedYear),
+          Number(selectedMonth) - 1,
+          Number(selectedDay === '' ? monthMinimumLength : selectedDay),
+        ]
     );
 
     const daysDiff = String(selectedDateMomentObject.diff(todayMomentObject, 'days'));
@@ -294,11 +295,11 @@ const Create: React.FC = () => {
     setIsoDate(
       isJalaliDate(convertedArray[0])
         ? `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
-            selectedDate.gd
-          )}T00:00:00Z`
+          selectedDate.gd
+        )}T00:00:00Z`
         : `${[Number(selectedYear), Number(selectedMonth) - 1, Number(selectedDay)].join(
-            '-'
-          )}T00:00:00Z`
+          '-'
+        )}T00:00:00Z`
     );
   };
 
@@ -378,9 +379,10 @@ const Create: React.FC = () => {
       try {
         setIsBackdropLoading(true);
         const result = await getPackDetail(packId !== undefined ? packId : _packId || 0);
-        const { pharmacyDrug } = result;
-
+        const { pharmacyDrug, status } = result;
+        console.log(result);
         setPackTotalItems(pharmacyDrug.length);
+        setPackStatus(status);
         setSelectedCategory(result.category !== null ? result.category.id : '-1');
         setDrugsPack([...mapApiDrugsToStandardDrugs(pharmacyDrug)]);
 
@@ -486,7 +488,7 @@ const Create: React.FC = () => {
       return drugsPack.map((item) => {
         return (
           <Grid item xs={12} md={4}>
-            <CardContainer item={item} removeHandler={removeHandler} />
+            <CardContainer status={packStatus} item={item}  removeHandler={removeHandler} />
           </Grid>
         );
       });
@@ -498,9 +500,8 @@ const Create: React.FC = () => {
   const memoContent = useMemo(() => contentHandler(), [drugsPack]);
 
   const getDrugName = (item: any): string => {
-    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
-      item.type !== null ? ` - ${item.type}` : ''
-    }`;
+    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${item.type !== null ? ` - ${item.type}` : ''
+      }`;
   };
 
   const searchDrugs = async (title: string): Promise<any> => {
@@ -527,9 +528,8 @@ const Create: React.FC = () => {
         el: (
           <div>
             <div>{getDrugName(_item)}</div>
-            <div className="text-muted txt-sm">{`${
-              _item.enName !== null ? `-${_item.enName}` : ''
-            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
+            <div className="text-muted txt-sm">{`${_item.enName !== null ? `-${_item.enName}` : ''
+              }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
           </div>
         ),
       }));
@@ -685,20 +685,24 @@ const Create: React.FC = () => {
             </Grid>
           </Grid>
         </Grid>
+        {packStatus == 1 && (
+          <Fragment>
+            <Hidden xsDown>
+              <Grid item xs={12} sm={12} md={4} xl={4}>
+                <Paper className={addButton} onClick={toggleIsOpenModal}>
+                  <FontAwesomeIcon icon={faPlus} size="2x" />
+                  <span>{t('pack.add')}</span>
+                </Paper>
+              </Grid>
+            </Hidden>
 
-        <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={4}>
-            <Paper className={addButton} onClick={toggleIsOpenModal}>
-              <FontAwesomeIcon icon={faPlus} size="2x" />
-              <span>{t('pack.add')}</span>
-            </Paper>
-          </Grid>
-        </Hidden>
-        <Hidden smUp>
-          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
-            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-          </Fab>
-        </Hidden>
+            <Hidden smUp>
+              <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+                <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+              </Fab>
+            </Hidden>
+          </Fragment>
+        )}
 
         {memoContent}
       </Grid>

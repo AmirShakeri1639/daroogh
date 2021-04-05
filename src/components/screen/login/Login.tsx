@@ -308,6 +308,11 @@ const Login: React.FC = (): JSX.Element => {
                 رمز عبور را فراموش کردم
               </Link>
             </Grid>
+            <Grid item xs={ 12 } className="no-padding">
+              <Link className="link" to="/otp">
+                درخواست رمز یک بار مصرف
+              </Link>
+            </Grid>
             <Grid item xs={ 12 }>
               <Link
                 className="link MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
