@@ -2,7 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
-        daroogLatin: 'Daroog',
+        daroogLatin: 'DarooG',
         emal: 'اعمال',
         systemTitle: 'سامانه الکترونیکی داروخانه',
         systemFullTitle: 'سامانه تبادلات دارویی داروگ',
