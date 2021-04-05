@@ -9,7 +9,7 @@ export default (e: any): void => {
     console.error(`Error in api callback: ${e.message ?? JSON.stringify(e)}`);
   }
   
-  if (e.response.data.status === 401) {
+  if (e.response?.data?.status === 401) {
     window.location.hash = routes.error401
   }
 };
