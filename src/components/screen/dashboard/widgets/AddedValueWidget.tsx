@@ -48,7 +48,6 @@ const AddedValueWidget: React.FC = () => {
     async function getCount(): Promise<any> {
       const result = await getAddedValue();
       setresult(result);
-      debugger;
       return result;
     }
 

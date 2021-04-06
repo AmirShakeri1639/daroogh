@@ -10,6 +10,10 @@ $radius: 1em;
   border-radius: $radius;
   height       : 8em;
   overflow     : hidden;
+
+  &:hover {
+    filter: contrast(1.5);
+  }
 }
 
 .statswidget-grid-container {
