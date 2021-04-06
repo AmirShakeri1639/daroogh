@@ -250,7 +250,6 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
     onSuccess: async (res: any) => {
       if (res) {
         if (!exchangeId || exchangeId === 0 || exchangeId !== res.data.exchangeId) {
-          console.log("exchangeId", res.data.exchangeId);
           setExchangeId(res.data.exchangeId);
         }
         setRecommendationMessage(res.data.recommendationMessage);
@@ -278,7 +277,10 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   const [_addPack1] = useMutation(addPack1, {
     onSuccess: async (res) => {
       if (res) {
-        if (!exchangeId || exchangeId === 0) setExchangeId(res.data.exchangeId);
+        if (!exchangeId || exchangeId === 0 || exchangeId !== res.data.exchangeId) {
+          setExchangeId(res.data.exchangeId);
+        }
+        // if (!exchangeId || exchangeId === 0) setExchangeId(res.data.exchangeId);
         setMessage(t('alert.successAddPack'));
         snackBarHandleClick();
 
