@@ -21,6 +21,7 @@ import {
   faStar as solidStar,
   faStarHalfAlt,
   faMedal,
+  faLock
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
@@ -640,7 +641,7 @@ const DesktopCardContent = ({
         <>
           <Paper className={ isSmallDevice ? mobileCardRoot : cardRoot }>
             <Grid container alignItems="center" spacing={ 1 }>
-              <Grid item xs={ 10 }>
+              <Grid item xs={ item.lockSuggestion? 9 : 10 }>
                 <Typography
                   variant="h5"
                   component="h5"
@@ -683,7 +684,17 @@ const DesktopCardContent = ({
                   </>
                 }
               </Grid>
+              {item.lockSuggestion && (
+                <Grid item xs={1} style={{color: ColorEnum.GOLD}}>
+                  <FontAwesomeIcon icon={ faLock } size="lg" />
+                </Grid>
+              )}
             </Grid>
+            {full && item.lockSuggestion && (item.state === 2 || item.state === 12) && (
+              <Grid item xs={12} style={{border:`2px dotted ${ColorEnum.DeepBlue}` , padding:4 , textAlign:'center'}}>
+                <span style={{color:ColorEnum.Red , fontSize:12}}>{t('alerts.lockedEchangeAlert')}</span>
+              </Grid>
+            )}
             <Divider />
 
             <div className={ cardContent }>

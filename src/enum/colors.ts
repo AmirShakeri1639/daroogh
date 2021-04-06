@@ -33,7 +33,8 @@ export enum ColorEnum {
   NotConfirmed = '#ffe1e1',
   DeepBlue ='#1d0d50',
   LiteBack = '#4625b205',
-  Borders = '#f80501'
+  Borders = '#f80501',
+  LiteGray ='#dbdedf',
 }
 
 export const CardColors = [
