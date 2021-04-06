@@ -2,7 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
-        daroogLatin: 'Daroog',
+        daroogLatin: 'DarooG',
         emal: 'اعمال',
         systemTitle: 'سامانه الکترونیکی داروخانه',
         systemFullTitle: 'سامانه تبادلات دارویی داروگ',
@@ -115,8 +115,12 @@ export default {
         defaultCurrency: 'تومان',
         noContent: 'محتوایی وجود ندارد',
         reject: 'عدم پذیرش',
-        pay:'پرداخت'
+        pay: 'پرداخت',
+        code: 'کد تایید داروگ',
+        systemy: 'سیستمی',
+        version: 'نسخه',
       },
+
       pack: {
         pack: 'پک',
         title: 'عنوان پک',
@@ -174,6 +178,10 @@ export default {
         _404_desc:
           'صفحه‌ای که به دنبالش بودید پیدا نشد. ' +
           'اگر با کلیک روی لینکی به این صفحه آمده‌اید لطفا به پشتیبانی اطلاع دهید.',
+        _401: 'خطای دسترسی',
+        _401_desc:
+          'شما مجوز دسترسی به این صفحه را ندارید!' +
+          'اگر فکر می‌کنید اشتباهی پیش آمده، لطفا با پشتیبانی تماس بگیرید.',
       },
       login: {
         login: 'ورود',
@@ -193,6 +201,10 @@ export default {
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
+        getOtp: 'دریافت کلمه عبور یک بار مصرف',
+        otp: 'کد ورود به سامانه داروگ',
+        sendCode: 'ارسال کد تایید',
+        sendPhone: 'ارسال شماره همراه',
       },
       user: {
         role: 'نقش',
@@ -492,7 +504,7 @@ export default {
         debtor: 'بدهکار',
         enterAmount: 'مبلغ را وارد کنید.',
         code: 'کد تراکنش',
-        exchangeAmount: 'مبلغ تراکنش'
+        exchangeAmount: 'مبلغ تراکنش',
       },
       reports: {
         reports: 'گزارشات',
@@ -533,7 +545,7 @@ export default {
         suggestedWorkShift: 'شیفت پیشنهادی',
         pharmaceuticalSoftwareSkill: 'تسلط به نرم‌افزارهای دارویی',
         computerSkill: 'میزان تسلط به کامپیوتر',
-        foreignLanguagesSkill: 'آشنایی با زبان خارجی',
+        foreignLanguagesSkill: 'آشنایی با زبان های خارجی',
         education: 'میزان تحصیلات',
         suggestedJobPosition: 'سمت پیشنهادی',
         guarantee: 'وثیقه',
@@ -715,7 +727,8 @@ export default {
         PrescriptionAlert:
           'با درج نام محصول مورد نیاز یا بارگذاری تصویر نسخه،به داروخانه های سراسر کشور یا محدوده درخواستی خود این امکان را می‌دهید تا در صورت موجودی از طریق پیامک و یا مشاهده در نرم افزار و سایت داروگ به شما اطلاع بدهند.',
         SelectCategoryAlert: 'ابتدا دسته بندی را انتخاب نمایید',
-        DebotAlert:'بدهی شما بیشتر از سقف مجاز می باشد و امکان تبادل مقدور نیست.  لطفا نسبت به تسویه و پرداخت بدهی اقدام نمایید',
+        DebotAlert:
+          'بدهی شما بیشتر از سقف مجاز می باشد و امکان تبادل مقدور نیست.  لطفا نسبت به تسویه و پرداخت بدهی اقدام نمایید',
       },
 
       widget: {

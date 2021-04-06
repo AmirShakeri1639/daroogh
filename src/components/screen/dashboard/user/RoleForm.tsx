@@ -59,8 +59,6 @@ const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
     style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: '100%',
       minWidth: 'unset'
     },
   },
@@ -107,10 +105,13 @@ const RoleForm: React.FC<RoleFormProps> = ({
           .filter((item: any) => item.id !== 1)
           .map((item: any) => {
             return (
-              <MenuItem key={item.id} value={item.id}>
+              <Grid container item xs={12}>
+                <MenuItem key={item.id} value={item.id}>
                 <Checkbox checked={selectedRoles.indexOf(item.id) !== -1} />
                 <ListItemText primary={item.name} />
               </MenuItem>
+              </Grid>
+              
             );
           })
       );

@@ -18,6 +18,7 @@ const jobSearch = 'job-search';
 const prescription = 'prescription';
 const job = 'job';
 const fda = `/${dashboard}/fda`;
+const error = `/${dashboard}/error`;
 
 const pharmacyRoutes = {
   pharmacyMessage: `/${dashboard}/pharmacy/messages`,
@@ -28,7 +29,8 @@ export default {
   login: '/login',
   registerPharmacyWithUser: `/register-pharmacy-with-user`,
   forgetPassword: '/forget-password',
-
+  otp: '/otp',
+  
   dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,
   transfer: `/${dashboard}/${exchange}/transfer`,
@@ -88,4 +90,6 @@ export default {
   ...pharmacyRoutes,
 
   fda_exchangeList: `${fda}/exchange-list`,
+
+  error401: `${error}/401`,
 };

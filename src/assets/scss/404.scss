@@ -1,28 +1,7 @@
 @import "fonts";
+@import "error";
 
-.body-404 {
-  min-height     : 90vh;
-  display        : flex;
-  align-items    : center;
-  justify-content: center;
-
-  h1 {
-    font-family: 'Vazir', cursive;
-    font-size  : 3em;
-    text-align : center;
-    opacity    : .8;
-    order      : 1;
-
-    small {
-      display: block;
-    }
-
-    p {
-      font-size: medium;
-      padding  : 0 2em;
-    }
-  }
-
+.body-error {
   .site {
     display                : -webkit-box;
     display                : -webkit-flex;
@@ -39,7 +18,6 @@
     -ms-flex-pack          : center;
     justify-content        : center;
   }
-
 
   .sketch {
     position : relative;
@@ -71,24 +49,6 @@
     animation : bluee 3s linear infinite, opacityBlue 5s linear alternate infinite;
   }
 
-  .btn {
-    padding      : .5em 3em;
-    font-family  : 'VazirBold';
-    font-size    : large;
-    border-radius: 2em;
-    border       : 2px solid gray;
-    cursor       : pointer;
-    box-shadow   : 1px 1px 5px #ccc;
-    transition   : all .4s ease-in-out;
-
-    &:hover {
-      color       : #3a6508;
-      background  : #DEEC9C;
-      border-color: #a1ba30;
-      box-shadow  : 1px 1px 5px #cddc39;
-    }
-  }
-
   @media only screen and (min-width: 780px) {
     .site {
       flex-direction: row;
@@ -110,7 +70,6 @@
       order: 1;
     }
   }
-
 
   @keyframes bluee {
     0% {
