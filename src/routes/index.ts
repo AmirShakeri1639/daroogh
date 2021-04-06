@@ -21,7 +21,8 @@ const fda = `/${dashboard}/fda`;
 const error = `/${dashboard}/error`;
 
 const pharmacyRoutes = {
-  pharmacyMessage: `/${dashboard}/pharmacy/messages`
+  pharmacyMessage: `/${dashboard}/pharmacy/messages`,
+  surveyList: `/${dashboard}/pharmacy/surveyList`,
 };
 
 export default {
@@ -44,7 +45,7 @@ export default {
 
   prescription: `/${dashboard}/${peopleSection}/prescription`,
   jobApplication: `/${dashboard}/${peopleSection}/employmentApplication`,
-  
+
   drugCategoryfavoriteList: `/${dashboard}/${favorite}/drug-category`,
 
   createPharmacy: `/${dashboard}/${pharmacy}/create`,
@@ -77,12 +78,13 @@ export default {
   jobSearchList: `/${dashboard}/${jobSearch}/list`,
 
   prescriptionList: `/${dashboard}/${prescription}/list`,
-  
+
   fileUrl: `${api.baseUrl}/File/GetFile?key=`,
-  
+
   profile: `/${dashboard}/${user}/profile`,
   settings: `/${dashboard}/settings`,
   settingsAi: `/${dashboard}/settingsAi`,
+  report1: `/${dashboard}/report1`,
   jobsList: `/${dashboard}/${job}/list`,
 
   ...pharmacyRoutes,

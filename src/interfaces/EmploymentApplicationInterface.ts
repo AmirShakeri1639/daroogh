@@ -47,6 +47,8 @@ export interface EmploymentApplicationInterface {
   sendDate: string;
   cancelDate: string;
 }
+
+
 export interface EmploymentApplicationDataInterface {
   name: string;
   family: string;

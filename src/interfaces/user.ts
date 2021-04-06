@@ -30,6 +30,7 @@ export class CountryDivision {
 export class Question {
   public id: number = 0;
   public question1?: string = '';
+  public title?: string = '';
   public barom: number = 0;
   public sort: number = 0;
   public type: number = 0;
@@ -37,17 +38,36 @@ export class Question {
   public _date: string = '';
   public _userid: number = 0;
   public surveyAnswer?: string[] = [];
+  public questionOptions?: QuestionOptions[] = [];
+}
+
+export class QuestionOptions {
+  public id: number = 0;
+  public title?: string = '';
 }
 
 export class SurveyAnswer {
   public id: number = 0;
   public surveyID: number = 0;
   public questionID: number = 0;
+  public optionID: number = 0;
   public answer: number = 0;
   public barom: number = 0;
   public _date: string = '';
+  public descriptiveAnswer: string = '';
   public _userid: number = 0;
   public question: Question = new Question();
+  public survey: string[] = [];
+}
+
+export class QuestionGroup {
+  public id: number = 0;
+  public title: string = '';
+  public isSystem: boolean = true;
+  public active: boolean = true;
+
+  public _userid: number = 0;
+  public question: Question[] = [];
   public survey: string[] = [];
 }
 
@@ -61,6 +81,19 @@ export class Survey {
   public exchange?: string[] = [];
   public pharmacy?: string[] = [];
   public surveyAnswer?: SurveyAnswer = new SurveyAnswer();
+  public questionGroup?: QuestionGroup = new QuestionGroup();
+}
+export class SurveyList {
+  public id: number = 0;
+  public pharmacyID: number = 0;
+  public exchangeID: number = 0;
+  public description?: string = '';
+  public _date: string = '';
+  public _userid: number = 0;
+  public exchange?: string[] = [];
+  public pharmacy?: string[] = [];
+  public surveyAnswer?: SurveyAnswer[] = [];
+  public questionGroup?: QuestionGroup = new QuestionGroup();
 }
 
 export class Exchange {

@@ -6,6 +6,7 @@ export interface ViewExchangeInterface {
   canceller: any;
   currentPharmacyIsA?: boolean;
   numberA?: string;
+  surveyID?: number;
   numberB?: string;
   expireDateA?: string;
   expireDateB?: string;

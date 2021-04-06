@@ -48,6 +48,7 @@ import { useHistory } from 'react-router-dom';
 import routes from 'routes';
 import Survey from '../Survey';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
+import SurveyComponent from '../../pharmacy/survey/SurveyComponent';
 
 interface Props {
   item?: ViewExchangeInterface;
@@ -578,9 +579,9 @@ const DesktopCardContent = ({
     const history = useHistory();
     const { survey } = routes;
     return (
-      <Grid container xs={ 12 } direction="row-reverse" style={ { display: 'flex' } }>
-        {item.needSurvey && (
-          <div style={ { float: 'right' } }>
+      <Grid container xs={12} direction="row-reverse" style={{ display: 'flex' }}>
+        {(item.needSurvey || item.surveyID) && (
+          <div style={{ float: 'right' }}>
             <Button
               title={ t('survey.participate') }
               variant="text"
@@ -764,16 +765,25 @@ const DesktopCardContent = ({
               ) }
             </Grid>
           </>
-        ) }
-      {showSurvey && (
-        <Survey
-          exchangeIdProp={ item.id }
-          onClose={ (): void => {
-            setShowSurveyLoading(false);
-            setShowSurvey(false);
-          } }
-        />
-      ) }
+        )}
+      {showSurvey &&
+        (item.surveyID ? (
+          <SurveyComponent
+            exchangeNumber={item.numberA}
+            onClose={(): void => {
+              setShowSurveyLoading(false);
+              setShowSurvey(false);
+            }}
+          />
+        ) : (
+          <Survey
+            exchangeIdProp={item.id}
+            onClose={(): void => {
+              setShowSurveyLoading(false);
+              setShowSurvey(false);
+            }}
+          />
+        ))}
     </>
   );
 };

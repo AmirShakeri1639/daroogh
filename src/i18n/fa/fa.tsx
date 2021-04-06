@@ -506,6 +506,10 @@ export default {
         code: 'کد تراکنش',
         exchangeAmount: 'مبلغ تراکنش',
       },
+      reports: {
+        reports: 'گزارشات',
+        report1: 'گزارش یک',
+      },
       countryDivision: {
         province: 'استان',
         city: 'شهر',
@@ -630,6 +634,7 @@ export default {
       },
       survey: {
         survey: 'نظرسنجی',
+        surveyList: 'لیست نظرسنجی',
         widget: 'ابزارک نظرسنجی',
         participate: 'شرکت در نظرسنجی',
       },
