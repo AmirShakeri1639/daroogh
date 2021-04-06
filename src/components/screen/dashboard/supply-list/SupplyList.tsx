@@ -417,7 +417,7 @@ const SupplyList: React.FC = () => {
       setIsLoading(false);
 
       const optionsList = result
-        .filter((_item: any) => _item.active === true)
+        //.filter((_item: any) => _item.active === true)
         .map((_item: any) => ({
           item: {
             value: _item.id,
