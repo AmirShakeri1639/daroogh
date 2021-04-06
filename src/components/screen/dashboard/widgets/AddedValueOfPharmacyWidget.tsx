@@ -55,7 +55,6 @@ const AddedValueOfPharmacyWidget: React.FC = () => {
     async function getCount(): Promise<any> {
       const result = await getAddedValueOfPharmacy();
       setresult(result);
-      debugger;
       return result;
     }
 

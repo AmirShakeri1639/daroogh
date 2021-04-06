@@ -269,7 +269,7 @@ export default {
         addJobApplication: 'افزودن درخواست کار',
         listPrescription: 'لیست نسخه ها',
         jobApplication: 'درخواست کار',
-        listJobApplication: 'لیست درخواست کار',
+        listJobApplication: 'لیست درخواست های کار ثبت شده توسط شما',
         cancelDateText: 'کنسل شده در تاریخ',
         detail: 'جزییات',
         noAnswer: 'پاسخی وجود ندارد',
