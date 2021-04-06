@@ -65,6 +65,7 @@ interface Props {
   showActions?: boolean;
   cartA?: AllPharmacyDrugInterface[];
   cartB?: AllPharmacyDrugInterface[];
+  inExchange?: boolean;
 }
 
 // @ts-ignore
@@ -75,6 +76,7 @@ const DesktopCardContent = ({
   showActions = false,
   cartA = [],
   cartB = [],
+  inExchange = false,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { l } = Convertor;
@@ -139,7 +141,7 @@ const DesktopCardContent = ({
   }, [basketCount, uBasketCount]);
 
   React.useEffect(() => {
-    if (item?.currentPharmacyIsA) {
+    if (inExchange && item?.currentPharmacyIsA && exchangeId !== 0) {
       if (item?.numberA) item.numberA = 'A' + exchangeId;
     }
   }, [exchangeId]);
