@@ -100,8 +100,10 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
             <Divider />
           </Grid>
           <Grid item container style={{height:36 , display:'flex' , alignItems:'center' , paddingLeft:8, paddingRight:8}} xs={12}>
+
             <Grid xs={6}>
-              <a
+              {resumeFileKey && (
+                <a
                 style={{color:'gray' , textDecoration:'none' }}
                 onClick={(e: any): any => {
                   e.stopPropagation();
@@ -111,6 +113,8 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
               >
                 {t('peopleSection.resumeDownload')}
               </a>
+              )}
+              
             </Grid>
             <Grid xs={6} style={{display:'flex', flexDirection:'row-reverse'}}>
               {!cancelDate && (
@@ -118,7 +122,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                   onClick={(): Promise<any> => removeHandler(id)}
                   style={{ color: 'green', fontSize: '14px' }}
                 >
-                  حذف
+                  لغو این درخواست
                 </Button>
               )}
             </Grid>

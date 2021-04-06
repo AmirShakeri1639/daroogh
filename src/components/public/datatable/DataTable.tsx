@@ -278,8 +278,14 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         data={(query): any =>
           new Promise((resolve, reject) => {
             let url = UrlAddress.baseUrl + urlAddress;
-
-            url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`;
+            if (url.includes('?'))
+              url += `&$top=${query.pageSize}&$skip=${
+                query.page * query.pageSize
+              }`;
+            else
+              url += `?&$top=${query.pageSize}&$skip=${
+                query.page * query.pageSize
+              }`;
 
             if (otherQueryString) {
               url += `&${otherQueryString}`;
@@ -313,7 +319,9 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
               }
             }
             if (query.orderBy) {
-              url += `&$orderby=${query.orderBy.field?.toString()} ${query.orderDirection}`;
+              url += `&$orderby=${query.orderBy.field?.toString()} ${
+                query.orderDirection
+              }`;
             } else {
               if (columns.findIndex((c: any) => c.field === 'id') !== -1) {
                 url += `&$orderby=id desc`;
@@ -321,40 +329,42 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
             }
             const user = localStorage.getItem('user') || '{}';
             const { token } = JSON.parse(user);
-            fetch(url, {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`,
-              },
-            })
-              .then((response) => response.json())
-              .then((result) => {
-                // result.items.forEach((a: any) => {
-                //   if (a.sendDate)
-                //     a.sendDate = moment(a.sendDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-                // })
-                resolve({
-                  data: result.items,
-                  page: query.page,
-                  totalCount: result.count,
-                });
+
+            if (urlAddress)
+              fetch(url, {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+                },
               })
-              .catch(
-                async (error: any): Promise<any> => {
-                  await sweetAlert({
-                    type: 'error',
-                    text:
-                      'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
-                  });
+                .then((response) => response.json())
+                .then((result) => {
+                  // result.items.forEach((a: any) => {
+                  //   if (a.sendDate)
+                  //     a.sendDate = moment(a.sendDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+                  // })
                   resolve({
-                    data: [],
-                    page: 0,
-                    totalCount: 0,
+                    data: result.items,
+                    page: query.page,
+                    totalCount: result.count,
                   });
-                }
-              );
+                })
+                .catch(
+                  async (error: any): Promise<any> => {
+                    await sweetAlert({
+                      type: 'error',
+                      text:
+                        'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
+                    });
+                    resolve({
+                      data: [],
+                      page: 0,
+                      totalCount: 0,
+                    });
+                  }
+                );
           })
         }
         detailPanel={

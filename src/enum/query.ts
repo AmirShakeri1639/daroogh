@@ -13,6 +13,10 @@ export enum MessageQueryEnum {
   GET_USER_MESSAGES = 'getUserMessages',
   GET_PHARMACY_MESSAGE = 'getPharmacyMessage',
 }
+export enum SurveyQueryEnum {
+  GET_ALL_Survey = 'AllSurvey',
+  DETAIL_BY_EXCHANGE_NUMBER = 'detailByExchangeNumber',
+}
 
 export enum DrugEnum {
   GET_ALL = 'all',
@@ -22,7 +26,6 @@ export enum ReportsEnum {
   GET_BEST_PHARMACIES_LIST = 'getBestPharmaciesList',
 }
 
-
 export enum PharmacyEnum {
   GET_ALL = 'all',
   GET_MEMBERS = 'members',
@@ -30,7 +33,6 @@ export enum PharmacyEnum {
 
 export enum JobsEnum {
   GET_ALL = 'all',
-
 }
 
 export enum AccountingEnum {
@@ -76,5 +78,5 @@ export enum PrescriptionEnum {
 }
 
 export enum EmploymentApplicationEnum {
-  GET_ALL = 'getAllEmploymentApplications'
+  GET_ALL = 'getAllEmploymentApplications',
 }

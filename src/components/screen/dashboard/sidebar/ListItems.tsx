@@ -44,6 +44,7 @@ import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
 import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
+import SurveyComponent from '../pharmacy/survey/SurveyComponent';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -111,8 +112,10 @@ const {
   prescriptionList,
   settings,
   settingsAi,
+  report1,
   jobsList,
   pharmacyMessage,
+  surveyList,
   fda_exchangeList,
 } = routes;
 
@@ -124,6 +127,7 @@ const isOpenPageOfThisGroup = (item: string): boolean => {
 const ListItems: React.FC = () => {
   const [isOpenExchange, setIsOpenExchange] = useState<boolean>(true);
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
+  const [isOpenReports, setIsOpenReports] = useState<boolean>(false);
   const [isOpenUserMenu, setIsOpenUserMenu] = useState<boolean>(false);
   const [isopenFavoriteList, setIsopenFavoriteList] = useState(isOpenPageOfThisGroup('favorite'));
   const { activePageHandler: setActivePage } = useContext(Context);
@@ -411,6 +415,29 @@ const ListItems: React.FC = () => {
             <ListItemText primary={t('settingsAi.settingsAi')} />
           </Link>
         </List>
+
+        <ListItem
+          button
+          className={linkWrapper}
+          onClick={(): void => setIsOpenReports((val) => !val)}
+        >
+          <ListItemIcon>
+            <AccountBalanceIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('reports.reports')} />
+          {isOpenReports ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isOpenReports} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={report1} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('reports.report1')} />
+            </Link>
+          </List>
+        </Collapse>
+
         {/* <ListItem
           button
           onClick={(): void => setIsOpenExchangeManagement((val) => !val)}
@@ -608,6 +635,14 @@ const ListItems: React.FC = () => {
               <MessageIcon />
             </ListItemIcon>
             <ListItemText primary={t('message.message')} />
+          </Link>
+        </List>
+        <List component="div" className={linkWrapper}>
+          <Link to={surveyList} className={notNested}>
+            <ListItemIcon>
+              <MessageIcon />
+            </ListItemIcon>
+            <ListItemText primary={t('survey.surveyList')} />
           </Link>
         </List>
 

@@ -53,11 +53,11 @@ export interface DataTableProps {
   onSelectedValues?: () => void;
   multiple?: boolean | false;
   selection?: boolean | false;
-  queryKey: string;
+  queryKey?: string;
   editUser?: any;
   pageSize?: number;
   onRowClick?: (e: any, data: any) => any;
-  queryCallback: (
+  queryCallback?: (
     pageNumber: number,
     pageSize: number,
     searchableColumns: DataTableColumns[],
