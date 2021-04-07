@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext ,useState } from 'react';
 import {
   createStyles,
   Paper,
@@ -8,6 +8,10 @@ import {
   Button,
   Hidden,
   useMediaQuery,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle
 } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import CardHeader from './CardHeader';
@@ -19,6 +23,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setTransferStart } from '../../../../../redux/actions';
 import routes from '../../../../../routes';
+import AllPharmacyDrugsViwer from '../AllPharmacyDrugsViwer';
 
 
 
@@ -87,9 +92,9 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     button:{
       display:'flex',
       flexDirection:'row-reverse',
-      position:'absolute',
-      bottom: 8,
-      right: 8
+      // position:'absolute',
+      // bottom: 8,
+      // right: 8
     }
   })
 );
@@ -118,6 +123,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     star,
     warranty,
     notSendExchangeID,
+    pharmacyKey,
   } = data;
 
   const {
@@ -152,8 +158,9 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
     transferStart(notSendExchangeID);
     dispatch(setTransferStart());
   };
+  const [showExchangeTree, setShowExchangeTree] = useState(false);
 
-  return (
+  return (<>
     <Paper className={paper}>
       <Grid container spacing={0}>
         <CardHeader
@@ -222,8 +229,46 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (
               : t('general.tabadol')}
           </Button>
         </Grid>
+        <Grid item xs={6}>
+          <Button
+            type="button"
+            variant='outlined'
+            onClick={(): void => {
+              setShowExchangeTree(true);
+            }}
+          >
+              نمایش تمام اقلام
+          </Button>
+        </Grid>
       </Grid>
     </Paper>
+    <Dialog
+    open={showExchangeTree}
+    fullScreen={false}
+    fullWidth={true}
+    onClose={() => setShowExchangeTree(false)}
+  >
+    <DialogTitle className="text-sm">{t('exchange.allPharmacyDrugs')}</DialogTitle>
+    <DialogContent>
+        <AllPharmacyDrugsViwer pharmacyId={data.pharmacyKey}/>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={() => setShowExchangeTree(false)} color="primary">
+        بستن
+      </Button>
+      <Button
+            type="button"
+            
+            onClick={transferStartHandler}
+          >
+            {notSendExchangeID !== null
+              ? t('exchange.continue')
+              : t('general.tabadol')}
+          </Button>
+
+    </DialogActions>
+  </Dialog></>
+
   );
 };
 

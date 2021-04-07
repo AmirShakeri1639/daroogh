@@ -335,6 +335,7 @@ export default {
         exchangeViewWith: 'مشاهده توسط',
         exchangeViewWithAutomaticConfermedAlert: 'به علت عدم تغییر سبد توسط',
         exchangeTree: 'درخت تبادل',
+        allPharmacyDrugs:'تمام داروهای این داروخانه',
         expirationDate: 'تاریخ انقضای تبادل',
         expirationCompletionDate: 'تاریخ انقضا/تکمیل',
         GOLD: 'کاربر طلایی',
