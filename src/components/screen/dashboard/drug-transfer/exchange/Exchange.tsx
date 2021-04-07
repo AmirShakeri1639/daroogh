@@ -133,8 +133,8 @@ const Exchange: React.FC<ReduxProps> = (props) => {
       <Hidden smDown>
         {(viewExhcnage === undefined ||
           viewExhcnage.state === 1 ||
-          viewExhcnage.state === 2 ||
-          (viewExhcnage.state === 12 && !viewExhcnage.lockSuggestion)) && (
+          (viewExhcnage.state === 2 && !viewExhcnage.lockSuggestion && !viewExhcnage.currentPharmacyIsA) ||
+          (viewExhcnage.state === 12 && !viewExhcnage.lockSuggestion && !viewExhcnage.currentPharmacyIsA)) && (
           <>
             <Grid container item spacing={1}>
               <Grid item xs={12}>
