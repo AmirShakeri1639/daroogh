@@ -14,16 +14,11 @@ import MapCluster from '../../public/map/MapCluster';
 import ExChangeChart from './exChange/ExChangeChart';
 import BestPharmaciesList from './pharmacy/bestPharmaciesList';
 import AllWidgets from './widgets/AllWidgets';
-// @ts-ignore
-// import { Steps, Hints } from 'intro.js-react';
-
 import 'intro.js/introjs.css';
-// import 'intro.js/themes/introjs-modern.css';
 import 'intro.js/introjs-rtl.css';
 import introJs from 'intro.js';
 import './style.css';
 import { checkVersion, clearMyCache, showWhatsNew } from 'utils';
-import ExchangeWithFavoritesWidget from './widgets/ExchangeWithFavoritesWidget';
 import AddedValueOfPharmacyWidget from './widgets/AddedValueOfPharmacyWidget';
 import AddedValueWidget from './widgets/AddedValueWidget';
 
