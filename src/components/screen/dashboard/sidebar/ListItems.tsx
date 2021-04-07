@@ -138,7 +138,7 @@ const ListItems: React.FC = () => {
   const { spacing3 } = useClasses();
 
   const { userData, roles } = new JwtData();
-  const rolesArray = roles();
+  var rolesArray = roles();
 
   const preventDefault = (event: React.SyntheticEvent): any => event.preventDefault();
 
@@ -669,7 +669,9 @@ const ListItems: React.FC = () => {
       </div>
     );
   };
-
+  if (!Array.isArray(rolesArray)) {
+    rolesArray = [rolesArray]
+  }
   return (
     <div style={{ paddingBottom: '2em' }}>
       {rolesArray && rolesArray?.length > 0 && (

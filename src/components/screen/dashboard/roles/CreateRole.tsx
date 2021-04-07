@@ -1,4 +1,4 @@
-import React, { useReducer, Fragment } from 'react';
+import React, { useReducer, Fragment, useState } from 'react';
 import {
   Grid,
   Paper,
@@ -28,6 +28,7 @@ import { NewRoleData } from '../../../../interfaces';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { RoleType } from 'enum';
 import styled from 'styled-components';
+import { BackDrop } from 'components/public';
 
 const initialState = new NewRoleData();
 
@@ -143,7 +144,7 @@ const STGrid = styled((props) => <Grid {...props} />)`
 
 const CreateRole: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
+  const [isOpenBackDrop, setIsOpenBackDrop] = useState(false);
   const ref = useDataTableRef();
   const { t } = useTranslation();
 
@@ -237,16 +238,19 @@ const CreateRole: React.FC = () => {
   const editRoleHandler = async (event: any, row: NewRoleData): Promise<any> => {
     const { id } = row;
     try {
+      setIsOpenBackDrop(true);
       const result = await getRoleById(Number(id));
       dispatch({ type: 'reset' });
       dispatch({ type: 'name', value: result.name });
       dispatch({ type: 'id', value: result.id });
+      dispatch({ type: 'type', value: result.type });
       for (const item of result.permissionItemes) {
         dispatch({ type: 'addPermissions', value: item });
       }
     } catch (e) {
       errorHandler(e);
     }
+    setIsOpenBackDrop(false);
   };
 
   const submitRole = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -278,8 +282,6 @@ const CreateRole: React.FC = () => {
           <Paper className={root}>
             <DataTable
               ref={ref}
-              queryKey={RoleQueryEnum.GET_ALL_ROLES}
-              queryCallback={getAllRoles}
               urlAddress={UrlAddress.getAllRole}
               columns={tableColumns()}
               isLoading={isLoadingRemoveRole}
@@ -339,7 +341,7 @@ const CreateRole: React.FC = () => {
                   </STFormControl>
                 </STGrid>
 
-                <Grid item xs={6} sm={3} md={2}>
+                <Grid item xs={6} sm={3} md={2} xl={1}>
                   <FormControl>
                     <Button type="submit" variant="contained" color="primary" className={addButton}>
                       {newRoleLoading
@@ -350,21 +352,24 @@ const CreateRole: React.FC = () => {
                     </Button>
                   </FormControl>
                 </Grid>
+
+                {state.id !== 0 && (
+                  <Grid item xs={6} sm={4} lg={2} xl={1}>
+                    <FormControl>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="secondary"
+                        className={cancelButton}
+                        onClick={(): void => dispatch({ type: 'reset' })}
+                      >
+                        {t('user.cancel-edit-eole')}
+                      </Button>
+                    </FormControl>
+                  </Grid>
+                )}
               </Grid>
 
-              {state.id !== 0 && (
-                <FormControl>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    className={cancelButton}
-                    onClick={(): void => dispatch({ type: 'reset' })}
-                  >
-                    {t('user.cancel-edit-eole')}
-                  </Button>
-                </FormControl>
-              )}
               <Permissions
                 permissionItems={permissionItemsData ?? []}
                 className={useClasses()}
@@ -377,6 +382,8 @@ const CreateRole: React.FC = () => {
           </div>
         </Paper>
       </Grid>
+
+      <BackDrop isOpen={isOpenBackDrop} />
     </Container>
   );
 };

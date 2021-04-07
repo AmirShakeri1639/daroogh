@@ -29,9 +29,7 @@ const MessagesList: React.FC = () => {
   const [sendDate, setSendDate] = useState<string>('');
   const [expireDate, setExpireDate] = useState<string>('');
   const [type, setType] = useState<any>();
-  const [isOpenModalOfMessage, setIsOpenModalOfMessage] = useState<boolean>(
-    false
-  );
+  const [isOpenModalOfMessage, setIsOpenModalOfMessage] = useState<boolean>(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const { getAllMessages, readMessage } = new Message();
@@ -74,8 +72,7 @@ const MessagesList: React.FC = () => {
     ];
   };
 
-  const toggleIsOpenModalOfMessage = (): any =>
-    setIsOpenModalOfMessage((v) => !v);
+  const toggleIsOpenModalOfMessage = (): any => setIsOpenModalOfMessage((v) => !v);
 
   const onRowClickHandler = async (rowData: any): Promise<void> => {
     const {
@@ -111,14 +108,10 @@ const MessagesList: React.FC = () => {
         <Grid item xs={12}>
           <Paper>
             <DataTable
-              queryKey={MessageQueryEnum.GET_ALL_MESSAGES}
-              queryCallback={getAllMessages}
               urlAddress={UrlAddress.getAllMessage}
               addAction={addNewMessage}
               columns={tableColumns()}
-              onRowClick={(event: any, rowData: any): Promise<void> =>
-                onRowClickHandler(rowData)
-              }
+              onRowClick={(event: any, rowData: any): Promise<void> => onRowClickHandler(rowData)}
             />
           </Paper>
         </Grid>
@@ -128,11 +121,7 @@ const MessagesList: React.FC = () => {
         <MessageForm onSubmit={addNewMessage} />
       </Modal>
 
-      <Dialog
-        open={isOpenModalOfMessage}
-        onClose={toggleIsOpenModalOfMessage}
-        fullWidth
-      >
+      <Dialog open={isOpenModalOfMessage} onClose={toggleIsOpenModalOfMessage} fullWidth>
         <DialogTitle>{t('message.detail')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
