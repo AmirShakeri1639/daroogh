@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       margin: theme.spacing(1),
     },
+    button:{
+      width: '100%'
+    }
   })
 );
 
@@ -288,10 +291,10 @@ const Login: React.FC = (): JSX.Element => {
                 />
               }
             </Grid>
-            <Grid item xs={ 12 } className="no-padding">
+            <Grid item xs={ 12 }>
               <Button
                 type="submit"
-                className="button"
+                className="button fullButton"
                 variant="contained"
                 disabled={ isLoading }
               >
@@ -313,9 +316,24 @@ const Login: React.FC = (): JSX.Element => {
                 ورود با رمز یک بار مصرف
               </Link>
             </Grid>
+            <Grid item xs={ 12 } className="no-padding">
+              <div className="textRegister" to="/otp">
+                حساب کاربری ندارید؟
+              </div>
+            </Grid>
+            <Grid item xs={ 12 } >
+              <Link
+                className="link MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root fullButton"
+                to="/otp"
+              >
+                <Typography variant="button">
+                  همین حالا ثبت نام کنید
+                </Typography>
+              </Link>
+            </Grid>
             <Grid item xs={ 12 }>
               <Link
-                className="link MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root"
+                className="link MuiButton-outlined MuiButton-outlinedPrimary MuiButton-root fullButton"
                 to="/register-pharmacy-with-user"
               >
                 <Typography variant="button">
