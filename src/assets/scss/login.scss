@@ -53,6 +53,19 @@ $general-radius  : 3em;
   color: #03a9f4;
 }
 
+
+.fullButton {
+  width: 100%;
+  text-align: center;
+  margin: 0;
+ }
+
+.textRegister {
+  display        : table;
+  margin         : 1em auto 0.1em auto;
+  font-size: 20px;
+  }
+
 .button {
   border-radius   : $general-radius;
   display         : flex;
