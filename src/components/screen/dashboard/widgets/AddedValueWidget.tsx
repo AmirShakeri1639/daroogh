@@ -69,6 +69,7 @@ const AddedValueWidget: React.FC = () => {
       borderRadius:15,
       border:'1px solid white',
       zIndex:2,
+      minHeight:116
       
     }}>
         <Grid container style={{ padding: 16 }}>
@@ -94,13 +95,13 @@ const AddedValueWidget: React.FC = () => {
             <span>&nbsp;&nbsp;</span>
             <span className={suffixC}>{t('general.defaultCurrency')}</span>
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <span className={titleC}>{'پورسانت پرداخت شده'}</span>
             <span className={titleC}>:&nbsp;&nbsp;</span>
             <span className={textC}>{thousandsSeperator(result?.sumOfCommissionAmount)}</span>
             <span>&nbsp;&nbsp;</span>
             <span className={suffixC}>{t('general.defaultCurrency')}</span>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Grid>
     </Grid>

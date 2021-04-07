@@ -77,6 +77,8 @@ const AddedValueOfPharmacyWidget: React.FC = () => {
       borderRadius:15,
       border:'1px solid white',
       zIndex:2,
+      minHeight:116
+
     }}>
         <Grid container style={{ padding: 16 }}>
           
