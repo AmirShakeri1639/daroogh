@@ -52,7 +52,7 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'removePermissions':
       return {
         ...state,
-        permissions: [...action.value],
+        permissionItemes: [...action.value],
       };
     case 'type':
       return {
