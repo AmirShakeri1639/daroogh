@@ -30,6 +30,11 @@
     cursor       : pointer;
     box-shadow   : 1px 1px 5px #ccc;
     transition   : all .4s ease-in-out;
+
+    &:hover {
+      color: white;
+      background: #888;
+    }
   }
 
   .btn-green:hover {
