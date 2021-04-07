@@ -424,6 +424,7 @@ export default {
         long: 'طول جغرافیایی',
         lat: 'عرض جغرافیایی',
         location: 'مکان',
+        chooseLocationOnMap: 'انتخاب مکان روی نقشه',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
