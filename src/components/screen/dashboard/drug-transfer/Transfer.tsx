@@ -233,7 +233,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             switch (res.state) {
               case 2:
                 setMessageOfExchangeState(
-                  'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
+                  res.lockSuggestion ? 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید.':
+                  'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست پیشنهادی شما را ویرایش نماید.'
                 );
                 break;
               case 3:
