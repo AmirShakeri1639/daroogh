@@ -390,7 +390,7 @@ const Profile: React.FC = () => {
                   </Grid>
                   <Grid item xs={ 12 } sm={ 6 }>
                     <TextField
-                      error={ state.nationalCode.length < 10 && showError }
+                      error={ state.nationalCode?.length < 10 && showError }
                       label={ t('user.nationalCode') }
                       required
                       type="text"

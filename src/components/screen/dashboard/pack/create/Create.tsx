@@ -51,8 +51,6 @@ const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
 `;
 
-const { packsList } = routes;
-
 const { seerchDrugInCategory } = new Drug();
 
 const { getAllCategories } = new Category();
@@ -181,7 +179,6 @@ const Create: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
   const [isoDate, setIsoDate] = useState<string>('');
-  const [isLoadingSave, setIsLoadingSave] = useState<boolean>(false);
   const [temporaryDrugs, setTemporaryDrugs] = useState<PharmacyDrugSupplyList[]>([]);
   const [isBackdropLoading, setIsBackdropLoading] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
@@ -223,7 +220,7 @@ const Create: React.FC = () => {
     cancelButton,
     fieldset,
     fab,
-    fab2,
+
     formContainer,
   } = useStyle();
 
@@ -251,7 +248,7 @@ const Create: React.FC = () => {
 
   const isJalaliDate = (num: number): boolean => num < 2000;
 
-  const calculatDateDiference = (): void => {
+  const calculateDateDifference = (): void => {
     const date = new Date();
     const todayMomentObject = moment([date.getFullYear(), date.getMonth(), date.getDate()]);
 
@@ -305,7 +302,7 @@ const Create: React.FC = () => {
 
   useEffect(() => {
     if (selectedYear !== '' && selectedYear.length === 4 && selectedMonth !== '') {
-      calculatDateDiference();
+      calculateDateDifference();
     }
   }, [selectedDay, selectedMonth, selectedYear]);
 
@@ -378,9 +375,11 @@ const Create: React.FC = () => {
     if (packId !== undefined || _packId !== undefined) {
       try {
         setIsBackdropLoading(true);
+
         const result = await getPackDetail(packId !== undefined ? packId : _packId || 0);
+
         const { pharmacyDrug, status } = result;
-        console.log(result);
+
         setPackTotalItems(pharmacyDrug.length);
         setPackStatus(status);
         setSelectedCategory(result.category !== null ? result.category.id : '-1');
@@ -405,6 +404,9 @@ const Create: React.FC = () => {
     onSuccess: async (data) => {
       if (packId === undefined) {
         setSelectedCategory('');
+      }
+      if (storedPackId === null) {
+        setStoredPackId(data.data.packID);
       }
       setIsBackdropLoading(false);
 
@@ -521,21 +523,20 @@ const Create: React.FC = () => {
 
       setIsLoading(false);
 
-      const optionsList = result
-        .map((_item: any) => ({
-          item: {
-            value: _item.id,
-            label: getDrugName(_item),
-          },
-          el: (
-            <div>
-              <div>{getDrugName(_item)}</div>
-              <div className="text-muted txt-sm">{`${
-                _item.enName !== null ? `-${_item.enName}` : ''
-              }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
-            </div>
-          ),
-        }));
+      const optionsList = result.map((_item: any) => ({
+        item: {
+          value: _item.id,
+          label: getDrugName(_item),
+        },
+        el: (
+          <div>
+            <div>{getDrugName(_item)}</div>
+            <div className="text-muted txt-sm">{`${
+              _item.enName !== null ? `-${_item.enName}` : ''
+            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
+          </div>
+        ),
+      }));
 
       setOptions(optionsList);
     } catch (e) {
@@ -635,8 +636,9 @@ const Create: React.FC = () => {
     <MaterialContainer>
       <StyledGrid>
         <span>
-          ابتدا یک دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید . اقلامی که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر
-          قابل تغییر توسط طرف مقابل عرضه میشود{' '}
+          ابتدا یک دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید . اقلامی
+          که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر قابل تغییر توسط طرف مقابل
+          عرضه میشود{' '}
         </span>
       </StyledGrid>
       <Grid container spacing={3} alignItems="center">
@@ -955,7 +957,7 @@ const Create: React.FC = () => {
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
           selectedDateHandler={(e): void => {
-            // calculatDateDiference(e, '/');
+            // calculateDateDifference(e, '/');
             setSelectedDate(e);
 
             toggleIsOpenDatePicker();
