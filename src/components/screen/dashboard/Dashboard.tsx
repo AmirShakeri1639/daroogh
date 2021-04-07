@@ -223,13 +223,10 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   };
 
   useEffect(() => {
-
-    console.log(userData)
     setLoggedInUser(userData);
   }, [avatarChanged]);
 
   useEffect(() => {
-
     async function getIsIndebtPharmacy(): Promise<void> {
       await handleIsIndebtPharmacy();
     }
@@ -278,20 +275,24 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     );
     const body = (
       <>
-      <span style={{ marginRight: 5 }}>
-        {t('alerts.DebotAlert')}
-      </span>
+        <span style={{ marginRight: 5 }}>{t('alerts.DebotAlert')}</span>
       </>
-      
     );
     element = (
       <>
-        
         {title}
         {body}
-        <Button onClick={()=> {history.push(accountingInfo)}} type="button" variant="outlined" style={{marginRight:16, color:'white'}}> {t('general.pay')}
-                </Button>
-
+        <Button
+          onClick={() => {
+            history.push(accountingInfo);
+          }}
+          type="button"
+          variant="outlined"
+          style={{ marginRight: 16, color: 'white' }}
+        >
+          {' '}
+          {t('general.pay')}
+        </Button>
       </>
     );
     return element;
@@ -363,7 +364,9 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <span style={{ color: '#6B4ECC', fontSize: 'small' }}>
-                     {loggedInUser?.pharmacyName != null ? t('pharmacy.pharmacy') +' ' + loggedInUser?.pharmacyName : ''}
+                    {loggedInUser?.pharmacyName != null
+                      ? t('pharmacy.pharmacy') + ' ' + loggedInUser?.pharmacyName
+                      : ''}
                   </span>
                 </Grid>
                 <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -407,13 +410,20 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 {' '}
                 <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b>
                 <span style={{ fontSize: 10, marginRight: 2 }}>{t('general.defaultCurrency')}</span>
-                {debtValueState > 0 && (<>
-                  <span style ={{marginLeft:8}}> بدهکار</span>
-                  <Button onClick={()=> {history.push(accountingInfo)}} type="button" variant="outlined">
-                  {t('general.pay')}
-                </Button>
-                </>)}
-                
+                {debtValueState > 0 && (
+                  <>
+                    <span style={{ marginLeft: 8 }}> بدهکار</span>
+                    <Button
+                      onClick={() => {
+                        history.push(accountingInfo);
+                      }}
+                      type="button"
+                      variant="outlined"
+                    >
+                      {t('general.pay')}
+                    </Button>
+                  </>
+                )}
               </span>
             </div>
           </StyledMenu>
