@@ -211,7 +211,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-
+  const { userData } = new JwtData();
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {
       const res = await isIndebtPharmacy();
@@ -223,16 +223,19 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   };
 
   useEffect(() => {
-    const { userData } = new JwtData();
+
+    console.log(userData)
     setLoggedInUser(userData);
   }, [avatarChanged]);
 
   useEffect(() => {
+
     async function getIsIndebtPharmacy(): Promise<void> {
       await handleIsIndebtPharmacy();
     }
-
-    getIsIndebtPharmacy();
+    if (userData.pharmacyName != null) {
+      getIsIndebtPharmacy();
+    }
   }, []);
 
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
@@ -360,7 +363,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <span style={{ color: '#6B4ECC', fontSize: 'small' }}>
-                    {t('pharmacy.pharmacy')} {loggedInUser?.pharmacyName}
+                     {loggedInUser?.pharmacyName != null ? t('pharmacy.pharmacy') +' ' + loggedInUser?.pharmacyName : ''}
                   </span>
                 </Grid>
                 <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
