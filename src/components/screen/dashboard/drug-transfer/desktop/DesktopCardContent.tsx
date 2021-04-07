@@ -692,7 +692,7 @@ const DesktopCardContent = ({
                 </Grid>
               )}
             </Grid>
-            {full && item.lockSuggestion && (item.state === 2 || item.state === 12) && (
+            { item.lockSuggestion && (item.state === 2 || item.state === 12) && (
               <Grid item xs={12} style={{border:`2px dotted ${ColorEnum.DeepBlue}` , padding:4 , textAlign:'center'}}>
                 <span style={{color:ColorEnum.Red , fontSize:12}}>{t('alerts.lockedEchangeAlert')}</span>
               </Grid>
