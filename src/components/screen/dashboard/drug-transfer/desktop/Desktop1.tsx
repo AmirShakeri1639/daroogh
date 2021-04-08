@@ -290,7 +290,6 @@ const Desktop1: React.FC = () => {
                 full={false}
                 showActions={true}
                 onCardClick={cardClickHandler}
-                onShowSurveyClick={removeScrollListener}
               ></DesktopCardContent>
             </Grid>
           ))}

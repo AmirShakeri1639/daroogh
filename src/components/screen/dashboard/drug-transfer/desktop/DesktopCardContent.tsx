@@ -63,7 +63,6 @@ interface Props {
 const DesktopCardContent = ({
   item = ViewExchangeInitialState,
   onCardClick,
-  onShowSurveyClick,
   full = true,
   showActions = false,
   cartA = [],
