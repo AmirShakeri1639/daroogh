@@ -481,6 +481,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 error={ state?.password?.length < 3 && showError }
                 label={ t('login.password') }
                 required
+                helperText={ t('user.passwordHelperText') }
                 autoComplete="new-password"
                 type={ state.isVisiblePassword ? 'text' : 'password' }
                 className={ formItem }
