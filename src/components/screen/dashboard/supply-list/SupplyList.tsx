@@ -18,7 +18,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { Modal, BackDrop, AutoComplete } from '../../../public';
+import { BackDrop, AutoComplete } from '../../../public';
 import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -40,6 +40,7 @@ import jalaali from 'jalaali-js';
 import { DrugType } from '../../../../enum/pharmacyDrug';
 import { ListOptions } from '../../../public/auto-complete/AutoComplete';
 import styled from 'styled-components';
+import CDialog from 'components/public/dialog/Dialog';
 
 const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
@@ -599,10 +600,12 @@ const SupplyList: React.FC = () => {
         </Grid>
       </Container>
 
-      <Dialog
+      <CDialog
         fullScreen={fullScreen}
-        open={isOpenModalOfNewList}
-        onClose={toggleIsOpenModalOfNewList}
+        isOpen={isOpenModalOfNewList}
+        onClose={(): void => setIsOpenModalOfNewList(false)}
+        onOpen={(): void => setIsOpenModalOfNewList(true)}
+        formHandler={formHandler}
         fullWidth
       >
         <DialogTitle className="text-sm">افزودن به لیست عرضه</DialogTitle>
@@ -840,28 +843,9 @@ const SupplyList: React.FC = () => {
                 <span>صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته نشود</span>
               </label>
             </Grid>
-
-            <Grid container xs={12}>
-              <Grid item xs={7} sm={8} />
-              <Grid item xs={2} sm={2}>
-                <Button type="button" onClick={toggleIsOpenModalOfNewList} className={cancelButton}>
-                  {t('general.close')}
-                </Button>
-              </Grid>
-              <Grid item xs={3} sm={2}>
-                <Button
-                  className={submitBtn}
-                  type="button"
-                  disabled={isLoadingSave}
-                  onClick={formHandler}
-                >
-                  {isLoadingSave ? t('general.pleaseWait') : t('general.submit')}
-                </Button>
-              </Grid>
-            </Grid>
           </Grid>
         </DialogActions>
-      </Dialog>
+      </CDialog>
       <BackDrop isOpen={isOpenBackDrop} />
     </>
   );
