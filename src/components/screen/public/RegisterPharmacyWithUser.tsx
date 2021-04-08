@@ -13,7 +13,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 import Pharmacy from '../../../services/api/Pharmacy';
-import { LabelValue, PharmacyWithUserInterface } from '../../../interfaces';
+import { LabelValue } from '../../../interfaces';
 import { queryCache, useMutation } from 'react-query';
 import { ActionInterface } from '../../../interfaces';
 import { useTranslation } from 'react-i18next';
@@ -333,6 +333,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
       address,
       telphon,
       countryDivisionID,
+      x, y,
     } = pharmacy;
 
     return !(
@@ -345,6 +346,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
         address.trim().length < 3 ||
         telphon.trim().length < 8 ||
         !isValidBirthDate ||
+        x == '' || y == '' ||
         // user
         name.trim().length < 2 ||
         family.trim().length < 2 ||
@@ -460,7 +462,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={ 12 } sm={ 6 }>
+            {/* <Grid item xs={ 12 } sm={ 6 }>
               <TextField
                 error={ state.user.userName.length < 3 && showError }
                 label={ t('login.username') }
@@ -473,12 +475,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
                   dispatch({ type: 'user.userName', value: e.target.value })
                 }
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={ 12 } sm={ 6 }>
               <TextField
                 error={ state?.password?.length < 3 && showError }
                 label={ t('login.password') }
                 required
+                helperText={ t('user.passwordHelperText') }
                 autoComplete="new-password"
                 type={ state.isVisiblePassword ? 'text' : 'password' }
                 className={ formItem }
@@ -508,8 +511,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
                         { state.isVisiblePassword ? (
                           <FontAwesomeIcon icon={ faEye } />
                         ) : (
-                            <FontAwesomeIcon icon={ faEyeSlash } />
-                          ) }
+                          <FontAwesomeIcon icon={ faEyeSlash } />
+                        ) }
                       </IconButton>
                     </InputAdornment>
                   ),
@@ -618,9 +621,10 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 className={ formItem }
                 variant="outlined"
                 value={ state.pharmacy.mobile }
-                onChange={ (e): void =>
+                onChange={ (e): void => {
                   dispatch({ type: 'pharmacy.mobile', value: e.target.value })
-                }
+                  dispatch({ type: 'user.userName', value: e.target.value })
+                } }
               />
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
@@ -711,16 +715,29 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 } }
               />
             </Grid>
-            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
-              <CountryDivisionSelect
-                error={ state.pharmacy.countryDivisionID == -1 && showError }
-                label={ t('general.location') }
-                onSelectedHandler={ (id): void => {
-                  dispatch({ type: 'pharmacy.countryDivisionID', value: id });
-                } }
-              />
+            <Grid item xs={ 12 }>
+              <Grid xs={ 12 } sm={ 6 } md={ 4 }>
+                <CountryDivisionSelect
+                  error={ state.pharmacy.countryDivisionID == -1 && showError }
+                  label={ `${t('general.location')} *` }
+                  onSelectedHandler={ (id): void => {
+                    dispatch({ type: 'pharmacy.countryDivisionID', value: id });
+                  } }
+                />
+              </Grid>
             </Grid>
             <Grid item xs={ 12 }>
+              <Typography
+                component="p"
+                style={ {
+                  padding: '1em 0',
+                  color:
+                    (state.pharmacy.x == '' || state.pharmacy.y == '') &&
+                      showError ? 'red' : 'rgba(0, 0, 0, 0.87)'
+                } }
+              >
+                { t('pharmacy.chooseLocationOnMap') } *
+              </Typography>
               <div
                 style={ {
                   overflow: 'hidden',
@@ -750,8 +767,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
               { isLoadingNewUser ? (
                 t('general.pleaseWait')
               ) : (
-                  <span>{ t('action.register') }</span>
-                ) }
+                <span>{ t('action.register') }</span>
+              ) }
             </Button>
           </Grid>
         </form>

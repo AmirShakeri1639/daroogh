@@ -2,9 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import 'assets/scss/401.scss';
 import { Link } from 'react-router-dom';
+import { logoutUser } from 'utils';
+import { Button } from '@material-ui/core';
 
 const Error401: React.FC = () => {
   const { t } = useTranslation()
+  const exitBtnClick = (e: any): void => {
+    logoutUser();
+  }
 
   return (
     <div className="body-error">
@@ -19,6 +24,11 @@ const Error401: React.FC = () => {
         <Link to="/">
           <button className="btn btn-purple">{ t('general.home') }</button>
         </Link>
+      </div>
+      <div>
+        <Button onClick={ exitBtnClick }>
+          <button className="btn">{ t('login.exit') }</button>
+        </Button>
       </div>
     </div>
   )

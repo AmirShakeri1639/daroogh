@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  Button as MaterialButton,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
+import { Button as MaterialButton, createStyles, makeStyles } from '@material-ui/core';
 import { ButtonPropsInterface } from '../../../interfaces/component';
-import { green } from '@material-ui/core/colors';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -18,39 +13,23 @@ const useClasses = makeStyles((theme) =>
     redButton: {
       background: theme.palette.redLinearGradient.main,
     },
-    greenButton: {
-      background: theme.palette.greenLinearGradient.main,
-    },
     bluegreenButton: {
-      backgroundImage:
-        'linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)',
+      backgroundImage: 'linear-gradient(90deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)',
     },
     button: {
       color: '#fff',
       border: 'none',
     },
+    newGreenBtn: {
+      backgroundColor: '#5ABC55',
+    },
   })
 );
 
 const Button: React.FC<ButtonPropsInterface> = (props) => {
-  const {
-    type,
-    children,
-    variant,
-    className,
-    color,
-    onClick,
-    disabled,
-  } = props;
+  const { type, children, variant, className, color, onClick, disabled } = props;
 
-  const {
-    blueButton,
-    pinkButton,
-    button,
-    redButton,
-    greenButton,
-    bluegreenButton,
-  } = useClasses();
+  const { blueButton, pinkButton, button, redButton, bluegreenButton, newGreenBtn } = useClasses();
 
   return (
     <MaterialButton
@@ -66,7 +45,7 @@ const Button: React.FC<ButtonPropsInterface> = (props) => {
           ? redButton
           : color === 'bluegreen'
           ? bluegreenButton
-          : greenButton
+          : newGreenBtn
       } ${button}`}
       variant={variant}
       onClick={onClick}

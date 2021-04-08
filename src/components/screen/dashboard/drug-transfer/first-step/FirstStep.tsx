@@ -399,7 +399,7 @@ const FirstStep: React.FC = () => {
                 className="w-100"
                 loadingText={t('general.loading')}
                 options={searchOptions}
-                placeholder="جستجو (نام دارو٬ دسته دارویی٬ نام ژنریک) "
+                placeholder="جستجو ( نام محصول٬ نام ژنریک یا نام انگلیسی ) "
                 multiple={isMultipleSelection}
                 onItemSelected={(arrayList: any[]): void => {
                   if (arrayList.length > 0) {

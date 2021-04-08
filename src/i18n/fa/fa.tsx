@@ -228,6 +228,7 @@ export default {
         'edit-user': 'ویرایش کاربر',
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
+        passwordHelperText: 'گذرواژه شامل حروف انگلیسی اعداد و حداقل ۸ کاراکتر باشد.',
         admin: 'ادمین',
         goldUser: 'کاربر طلایی',
         silverUser: 'کاربر نقره ای',
@@ -335,6 +336,7 @@ export default {
         exchangeViewWith: 'مشاهده توسط',
         exchangeViewWithAutomaticConfermedAlert: 'به علت عدم تغییر سبد توسط',
         exchangeTree: 'درخت تبادل',
+        allPharmacyDrugs:'تمام داروهای این داروخانه',
         expirationDate: 'تاریخ انقضای تبادل',
         expirationCompletionDate: 'تاریخ انقضا/تکمیل',
         GOLD: 'کاربر طلایی',
@@ -424,6 +426,7 @@ export default {
         long: 'طول جغرافیایی',
         lat: 'عرض جغرافیایی',
         location: 'مکان',
+        chooseLocationOnMap: 'انتخاب مکان روی نقشه',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
@@ -714,7 +717,7 @@ export default {
         CreatePackAlert:
           'داروساز عزیز٬یک دسته بندی را میتوانید به صورت پک ثبت نمایید. در تبادل پک ها، داروخانه مقابل حق انتخاب دارو و تعداد را ندارد و موظف است کل اقلام پک را با تعداد ثبت شده انتخاب نماید.',
         supplylistsAlert:
-          'دارو ساز عزیز٬ نام محصولات یا نام دسته بندی آن را در کادر پایین جست و جو نمایید. همچنین گزینه ی فیلتر به شما امکان جستجو پیشرفته را می دهد.',
+          'دارو ساز عزیز٬ نام محصولات یا نام جنریک و یا نام انگلیسی آن را در کادر پایین جست و جو نمایید. همچنین گزینه ی فیلتر به شما امکان جستجو پیشرفته را می دهد.',
         ExchangeAlertPart1: 'داروساز عزیز٬ ابتدا از تب ( ',
         ExchangeAlertPart2: 'انتخاب از لیست داروخانه مقابل ',
         ExchangeAlertPart3:

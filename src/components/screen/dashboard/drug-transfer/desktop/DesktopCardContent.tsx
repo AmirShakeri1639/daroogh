@@ -52,8 +52,6 @@ interface Props {
     | ((id: number | undefined, state: number | undefined, exNumber: string | undefined) => void)
     | void
     | any;
-
-  onShowSurveyClick?: void | any;
   full?: boolean;
   showActions?: boolean;
   cartA?: AllPharmacyDrugInterface[];
@@ -583,9 +581,6 @@ const DesktopCardContent = ({
                 // history.push(`${survey}?exchangeId=${item.id}`);
                 setShowSurveyLoading(true);
                 setShowSurvey(true);
-                // setTimeout(() => {
-                //   onShowSurveyClick();
-                // }, 100);
               }}
             >
               {t('survey.survey')}
@@ -635,7 +630,7 @@ const DesktopCardContent = ({
         <>
           <Paper className={isSmallDevice ? mobileCardRoot : cardRoot}>
             <Grid container alignItems="center" spacing={1}>
-              <Grid item xs={item.lockSuggestion ? 9 : 10}>
+              <Grid item xs={(item.lockSuggestion && (item.state === 2 || item.state==12)) ? 9 : 10}>
                 <Typography
                   variant="h5"
                   component="h5"
@@ -675,13 +670,14 @@ const DesktopCardContent = ({
                   </>
                 )}
               </Grid>
-              {item.lockSuggestion && (
+              {item.lockSuggestion && (item.state === 2 || item.state==12) && (
                 <Grid item xs={1} style={{ color: ColorEnum.GOLD }}>
                   <FontAwesomeIcon icon={faLock} size="lg" />
                 </Grid>
               )}
             </Grid>
-            {full && item.lockSuggestion && (item.state === 2 || item.state === 12) && (
+            {full && differenceMessage && (item.state === 2 || item.state==12)  && item.lockSuggestion && !item.currentPharmacyIsA && (
+
               <Grid
                 item
                 xs={12}
@@ -741,9 +737,10 @@ const DesktopCardContent = ({
         </>
       )}
       {isSmallDevice &&
-        full &&
-        (item.state === 1 || item.state === 2 || (item.state === 12 && !item.lockSuggestion)) && (
+        full 
+         && (
           <>
+          
             <Grid container xs={12} spacing={0} style={{ background: 'white', padding: 4 }}>
               <Grid item xs={12} spacing={0}>
                 <MobileDiffViwer
@@ -753,7 +750,7 @@ const DesktopCardContent = ({
                   is3PercentOk={is3PercentOk}
                 />
               </Grid>
-              {differenceMessage && (
+              {differenceMessage && (item.state === 1 || item.state==12)  && !item.lockSuggestion && (
                 <Grid
                   item
                   xs={12}
@@ -775,6 +772,21 @@ const DesktopCardContent = ({
                   })}
                 </Grid>
               )}
+              {differenceMessage && (item.state === 1 || item.state==12)  && item.lockSuggestion && !item.currentPharmacyIsA && (
+              <Grid
+                item
+                xs={12}
+                style={{
+                  border: `2px dotted ${ColorEnum.DeepBlue}`,
+                  padding: 4,
+                  textAlign: 'center',
+                }}
+              >
+                <span style={{ color: ColorEnum.Red, fontSize: 12 }}>
+                  {t('alerts.lockedEchangeAlert')}
+                </span>
+              </Grid>
+            )}
             </Grid>
           </>
         )}
