@@ -20,6 +20,8 @@ export default {
         enter: 'اینتر',
         male: 'مرد',
         female: 'زن',
+        mr: 'آقای',
+        ms: 'خانم',
         action: 'کار',
         dashboard: 'داشبورد',
         records: 'سوابق',
