@@ -596,11 +596,7 @@ const SupplyList: React.FC = () => {
       //@ts-ignore
       state.drugID = selectedDrug?.value;
       await _savePharmacyDrug(state);
-<<<<<<< HEAD
-      setCalculatedValue(-1);
-=======
       setCalculatedValue(0)
->>>>>>> 3805150cc8f1967b57755c7c21bff3ba55751f46
     } catch (e) {
       errorHandler(e);
     }
