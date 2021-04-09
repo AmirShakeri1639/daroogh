@@ -238,7 +238,11 @@ const SupplyList: React.FC = () => {
     id: -1,
     genericName: '',
   });
+<<<<<<< HEAD
   const [calculatedValue, setCalculatedValue] = useState<number>(-1);
+=======
+  const [calculatedValue , setCalculatedValue] = useState<number>(0);
+>>>>>>> 3805150cc8f1967b57755c7c21bff3ba55751f46
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
@@ -592,7 +596,11 @@ const SupplyList: React.FC = () => {
       //@ts-ignore
       state.drugID = selectedDrug?.value;
       await _savePharmacyDrug(state);
+<<<<<<< HEAD
       setCalculatedValue(-1);
+=======
+      setCalculatedValue(0)
+>>>>>>> 3805150cc8f1967b57755c7c21bff3ba55751f46
     } catch (e) {
       errorHandler(e);
     }
@@ -641,18 +649,20 @@ const SupplyList: React.FC = () => {
 
       <CDialog
         fullScreen={fullScreen}
-        fullWidth={true}
         isOpen={isOpenCalculator}
         onCloseAlternate={(): void => setIsOpenCalculator(false)}
         onOpenAltenate={(): void => setIsOpenCalculator(true)}
         modalAlt={true}
         hideAll={false}
         hideSubmit={true}
-        canceleButtonTitle="درج نتیجه محاسبه"
+        // canceleButtonTitle="درج نتیجه محاسبه"
         // formHandler={(): void => setIsOpenCalculator(false)}
       >
-        <DialogContent>
-          <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
+        <DialogContent >
+         <div style={{display:'flex', justifyContent:'center', minWidth:300}}>
+                    <Calculator setCalculatedValue={selectedCalculaterValueHandler}/>
+
+         </div>
         </DialogContent>
       </CDialog>
 
@@ -661,7 +671,7 @@ const SupplyList: React.FC = () => {
         isOpen={isOpenModalOfNewList}
         onClose={(): void => {
           setIsOpenModalOfNewList(false);
-          setCalculatedValue(-1);
+          setCalculatedValue(0);
           resetValues();
           setSelectedDrug(null);
         }}
@@ -715,7 +725,7 @@ const SupplyList: React.FC = () => {
                   <Input
                     placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
                     numberFormat
-                    value={calculatedValue === -1 ? state?.amount : calculatedValue}
+                    value={calculatedValue === 0 ?  state?.amount : calculatedValue}
                     className="w-100"
                     valueLimit={(value) => {
                       if (value.value > 0 || value.value === '') {
@@ -725,8 +735,11 @@ const SupplyList: React.FC = () => {
                     label={t('general.price')}
                     onChange={(e): void => {
                       dispatch({ type: 'amount', value: e });
-                      setCalculatedValue(-1);
-                    }}
+                      setCalculatedValue(0)
+
+                    }
+                    
+                  }
                   />
                 </Grid>
                 <Grid item xs={3}>
