@@ -1,14 +1,6 @@
 import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPills,
-  faBoxes,
-  faMoneyBillWave,
-  faCalendarTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import {DrugInterface, InitialNewUserInterface, NewUserData, UserLoginInterface  } from '../../../../../interfaces';
-import { TextLine } from '../../../../public';
+import { NewUserData  } from '../../../../../interfaces';
 import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { ColorEnum } from 'enum';
@@ -47,12 +39,11 @@ const Detail: React.FC<NewUserData> = (props) => {
     family,
     email,
     mobile,
-    birthDate,
-    id,
     nationalCode,
-    pharmacyID,
     active,
-    userName } = props;
+    userName,
+    gender,
+  } = props;
   const { paper, container } = useStyle();
 
   const { t } = useTranslation();
@@ -108,6 +99,14 @@ const Detail: React.FC<NewUserData> = (props) => {
                     <TextWithTitle
                       title='وضعیت کاربر'
                       body={active ? 'فعال' : 'غیرفعال'}
+                    />
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <TextWithTitle
+                      title={ t('general.gender') }
+                      body={ gender == 0
+                        ? t('general.male')
+                        : gender == 1 ? t('general.female') : t('general.unknown') }
                     />
                   </Grid>
                 </Grid>
