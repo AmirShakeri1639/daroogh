@@ -27,3 +27,4 @@ export {
   clearMyCache,
   showWhatsNew,
 } from './checkVersion';
+export { default as printElem } from './printElem';

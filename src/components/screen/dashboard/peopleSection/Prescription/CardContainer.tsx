@@ -17,15 +17,8 @@ import {
 import { MaterialContainer, Modal } from '../../../../public';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  FavoriteDrugInterface,
-  PrescriptionDataInterface,
-} from '../../../../../interfaces';
-import {
-  faCalendarTimes,
-  faEdit,
-  faTrashAlt,
-} from '@fortawesome/free-regular-svg-icons';
+import { FavoriteDrugInterface, PrescriptionDataInterface } from '../../../../../interfaces';
+import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { ColorEnum, TextMessage } from '../../../../../enum';
 import { BackDrop, TextLine } from '../../../../public';
 import { useClasses } from '../../classes';
@@ -34,6 +27,7 @@ import { useQuery } from 'react-query';
 import { Prescription as presApi } from '../../../../../services/api';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { useLocation } from 'react-router-dom';
+import CDialog from 'components/public/dialog/Dialog';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -77,10 +71,13 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
   };
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  useEffect(() => {
+  const toggleById = (): void => {
     if (props.data.id.toString() == params.get('q')) {
       toggleIsOpenModal();
     }
+  };
+  useEffect(() => {
+    toggleById()
   }, []);
   const {
     cardContent,
@@ -120,10 +117,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
     }
   };
   const hasAnswer =
-    !cancelDate &&
-    data &&
-    data.prescriptionResponse &&
-    data.prescriptionResponse.length != 0;
+    !cancelDate && data && data.prescriptionResponse && data.prescriptionResponse.length != 0;
 
   return (
     <Paper
@@ -147,9 +141,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
         </Grid>
         <Grid container>
           {!cancelDate &&
-            (!data ||
-              !data.prescriptionResponse ||
-              !data.prescriptionResponse.length) && (
+            (!data || !data.prescriptionResponse || !data.prescriptionResponse.length) && (
               <Grid item xs={12}>
                 <Grid justify="flex-end" container spacing={0}>
                   <Grid item xs={2}>
@@ -167,10 +159,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
             <Grid item xs={12}>
               <Grid justify="flex-end" container spacing={0}>
                 <Grid item xs={4}>
-                  <Button
-                    onClick={toggleIsOpenModal}
-                    style={{ color: 'green', fontSize: '14px' }}
-                  >
+                  <Button onClick={toggleIsOpenModal} style={{ color: 'green', fontSize: '14px' }}>
                     مشاهده {data.prescriptionResponse.length} پاسخ
                   </Button>
                 </Grid>
@@ -181,19 +170,19 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
             <Grid item xs={12} className={spacingVertical1}>
               <TextWithTitle
                 title={'کنسل شده در تاریخ : '}
-                body={moment(cancelDate, 'YYYY/MM/DD')
-                  .locale('fa')
-                  .format('YYYY/MM/DD')}
+                body={moment(cancelDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD')}
               />
             </Grid>
           )}
         </Grid>
       </Grid>
-      <Dialog
+      <CDialog
         fullScreen={fullScreen}
-        fullWidth={true}
-        open={isOpenModal}
-        onClose={toggleIsOpenModal}
+        isOpen={isOpenModal}
+        onClose={(): void => setIsOpenModal(false)}
+        onOpen={(): void => toggleById()}
+        fullWidth
+        hideSubmit={true}
       >
         <DialogTitle>
           <span style={{ fontSize: 12 }}>پاسخ ها</span>
@@ -209,10 +198,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
                       borderRight: '2px solid #f80501',
                     }}
                   >
-                    <TextWithTitle
-                      title="نام داروخانه"
-                      body={rec.pharmacy.name}
-                    />
+                    <TextWithTitle title="نام داروخانه" body={rec.pharmacy.name} />
                     <TextWithTitle title="نشانی" body={rec.pharmacy.address} />
 
                     <TextWithTitle title="تلفن" body={rec.pharmacy.telphon} />
@@ -229,12 +215,7 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
               ))}
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button color="default" onClick={toggleIsOpenModal}>
-            {'بستن'}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </CDialog>
 
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>

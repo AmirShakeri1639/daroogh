@@ -54,6 +54,7 @@ import RoleForm from '../user/RoleForm';
 import CardContainer from './user/CardContainer';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { debounce } from 'lodash';
+import CDialog from 'components/public/dialog/Dialog';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -593,8 +594,6 @@ const UsersList: React.FC = () => {
           </Grid>
         );
         //}
-
-       
       });
     }
 
@@ -642,7 +641,6 @@ const UsersList: React.FC = () => {
     setPage(data);
   };
 
- 
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current);
     // console.log(result.items);
@@ -671,7 +669,6 @@ const UsersList: React.FC = () => {
     desktop: 1280,
   };
   const handleScroll = (e: any): any => {
-  
     const el = e.target;
     const pixelsBeforeEnd = 200;
     const checkDevice =
@@ -749,7 +746,14 @@ const UsersList: React.FC = () => {
         {true && <CircleBackdropLoading isOpen={isLoading} />}
       </Grid>
 
-      <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal} fullWidth>
+      <CDialog
+        fullScreen={fullScreen}
+        isOpen={isOpenRoleModal}
+        onClose={(): void => setIsOpenRoleModal(false)}
+        onOpen={(): void => setIsOpenRoleModal(true)}
+        fullWidth
+        hideSubmit={true}
+      >
         <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -768,11 +772,14 @@ const UsersList: React.FC = () => {
             </Grid>
           </DialogContentText>
         </DialogContent>
-      </Dialog>
-      <Dialog
-        open={isOpenModalOfCreateUser}
+      </CDialog>
+      <CDialog
         fullScreen={fullScreen}
-        onClose={toggleIsOpenModalOfUser}
+        isOpen={isOpenModalOfCreateUser}
+        onClose={(): void => setIsOpenModalOfCreateUser(false)}
+        onOpenAltenate={(): void => setIsOpenModalOfCreateUser(true)}
+        modalAlt={true}
+        formHandler={formHandler}
         fullWidth
       >
         <DialogTitle className="text-sm">
@@ -973,36 +980,7 @@ const UsersList: React.FC = () => {
           </DialogContentText>
         </DialogContent>
         <Divider />
-        <DialogActions>
-          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
-            <Grid container xs={12}>
-              <Grid item xs={7} sm={8} />
-              <Grid item xs={2} sm={2}>
-                <Button
-                  type="button"
-                  className={cancelButton}
-                  onClick={(): void => {
-                    dispatch({ type: 'reset' });
-                    toggleIsOpenModalOfUser();
-                  }}
-                >
-                  {t('general.close')}
-                </Button>
-              </Grid>
-              <Grid item xs={3} sm={2}>
-                <Button
-                  type="submit"
-                  disabled={isLoadingNewUser}
-                  className={submitBtn}
-                  onClick={formHandler}
-                >
-                  {isLoadingNewUser ? t('general.pleaseWait') : t('general.submit')}
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-        </DialogActions>
-      </Dialog>
+      </CDialog>
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker} zIndex={2000}>
         <DateTimePicker
           selectedDateHandler={(e): void => {

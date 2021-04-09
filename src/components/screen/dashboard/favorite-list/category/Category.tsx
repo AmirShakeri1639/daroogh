@@ -34,6 +34,7 @@ import {
   Category as CategoryApi,
 } from '../../../../../services/api';
 import { errorHandler, successSweetAlert } from '../../../../../utils';
+import CDialog from 'components/public/dialog/Dialog';
 
 const { getFavoriteList, saveFavoriteList } = new Favorite();
 
@@ -276,10 +277,11 @@ const Category: React.FC = () => {
         </Hidden>
       </Grid>
 
-      <Dialog
-        open={isOpenModal}
-        fullScreen={fullScreen}
-        onClose={toggleIsOpenModal}
+      <CDialog
+        isOpen={isOpenModal}
+        onClose={(): void => setIsOpenModal(false)}
+        onOpen={(): void => setIsOpenModal(true)}
+        formHandler={formHandler}
         fullWidth
       >
         <DialogTitle className="text-sm">{t('drug.category')}</DialogTitle>
@@ -321,7 +323,7 @@ const Category: React.FC = () => {
           </DialogContentText>
         </DialogContent>
         <Divider />
-        <DialogActions>
+        {/* <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
             <Grid container xs={12}>
               <Grid item xs={7} sm={8} />
@@ -346,8 +348,8 @@ const Category: React.FC = () => {
               </Grid>
             </Grid>
           </Grid>
-        </DialogActions>
-      </Dialog>
+        </DialogActions> */}
+      </CDialog>
     </MaterialContainer>
   );
 };
