@@ -10,15 +10,18 @@ const StyledApp = styled.div`
   width: 100%;
   max-width: 320px;
 `
-
-export const Calculator: FunctionComponent = () => {
+interface Props {
+  setCalculatedValue : (value:number) => void;
+}
+export const Calculator: React.FC<Props> = (props) =>{
   // Calculator's states
+  const {setCalculatedValue} = props;
   const [memory, setMemory] = useState<number>(0)
   const [result, setResult] = useState<number>(0)
   const [waitingForOperand, setWaitingForOperand] = useState<boolean>(true)
   const [pendingOperator, setPendingOperator] = useState<Operator>()
   const [display, setDisplay] = useState<string>('0')
-
+  setCalculatedValue(Math.floor(Number(display)));
   const calculate = (rightOperand: number, pendingOperator: Operator): boolean => {
     let newResult = result
 
@@ -66,6 +69,7 @@ export const Calculator: FunctionComponent = () => {
     }
 
     setDisplay(newDisplay)
+
   }
 
   const onPointButtonClick = () => {
@@ -92,6 +96,7 @@ export const Calculator: FunctionComponent = () => {
       }
     } else {
       setResult(operand)
+
     }
 
     setPendingOperator(operator)
@@ -128,6 +133,7 @@ export const Calculator: FunctionComponent = () => {
   const onAllClearButtonClick = () => {
     setMemory(0)
     setResult(0)
+    setCalculatedValue(0)
     setPendingOperator(undefined)
     setDisplay('0')
     setWaitingForOperand(true)
