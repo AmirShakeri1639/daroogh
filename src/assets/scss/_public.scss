@@ -99,6 +99,16 @@ input[type='number'] {
   padding  : 0 .5em;
 }
 
+@media print {
+  .print-hide {
+    display: none !important;
+  }
+
+  .Mui-selected {
+    border-bottom: 2px solid #444 !important;
+  }
+}
+
 @media (max-width: 600px) {
   .version-small {
     margin-right: -36px
