@@ -94,10 +94,11 @@ const style = makeStyles((theme) =>
 interface Props {
   exchangeIdProp?: number | string;
   onClose?: (surveyId: number | undefined) => void;
+  redirect?: boolean;
 }
 
 const Survey: React.FC<Props> = (props) => {
-  const { exchangeIdProp, onClose } = props;
+  const { exchangeIdProp, onClose, redirect = true } = props;
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { questionHeader } = style();
   const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
@@ -144,7 +145,7 @@ const Survey: React.FC<Props> = (props) => {
           type: 'success',
           text: res.message,
         });
-        history.push(desktop);
+        if (redirect) history.push(desktop);
       }
     },
   });

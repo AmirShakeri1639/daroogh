@@ -36,6 +36,8 @@ import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
 import { useParams } from 'react-router-dom';
 import { DrugType } from '../../../../../enum/pharmacyDrug';
+import Calculator from '../../calculator/Calculator';
+
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
@@ -48,6 +50,7 @@ import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
 import { ColorEnum } from 'enum';
 import CDialog from 'components/public/dialog/Dialog';
+import { setConstantValue } from 'typescript';
 
 const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
@@ -212,6 +215,7 @@ const Create: React.FC = () => {
   const [drugsPack, setDrugsPack] = useState<PharmacyDrugSupplyList[]>([]);
   const [storedPackId, setStoredPackId] = useState<number | null>(null);
   const [showError, setShowError] = useState(false);
+  const [calculatedValue, setCalculatedValue] = useState<number>(0);
 
   const theme = useTheme();
 
@@ -220,6 +224,14 @@ const Create: React.FC = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { t } = useTranslation();
+
+  const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
+  const toggleIsOpenCalculator = (): void => {
+    setIsOpenCalculator((v) => !v);
+    if (isOpenCalculator) {
+      window.history.back();
+    }
+  };
 
   const { packId } = useParams() as { packId: string };
 
@@ -623,6 +635,9 @@ const Create: React.FC = () => {
     return data;
   };
 
+  const selectedCalculaterValueHandler = (v: number): void => {
+    setCalculatedValue(v);
+  };
   const formHandler = async (): Promise<any> => {
     try {
       if (!isValidInputs() || selectedCategory === '' || isWrongDate || !hasMinimumDate) {
@@ -643,6 +658,7 @@ const Create: React.FC = () => {
       ];
 
       await submition(data);
+      setCalculatedValue(0);
     } catch (e) {
       errorHandler(e);
     }
@@ -731,11 +747,36 @@ const Create: React.FC = () => {
 
         {memoContent}
       </Grid>
+
+      <CDialog
+        fullScreen={fullScreen}
+        isOpen={isOpenCalculator}
+        onCloseAlternate={(): void => setIsOpenCalculator(false)}
+        onOpenAltenate={(): void => setIsOpenCalculator(true)}
+        modalAlt={true}
+        hideAll={false}
+        hideSubmit={true}
+        // canceleButtonTitle="درج نتیجه محاسبه"
+        // formHandler={(): void => setIsOpenCalculator(false)}
+      >
+        <DialogContent>
+          <div style={{ display: 'flex', justifyContent: 'center', minWidth: 300 }}>
+            <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
+          </div>
+        </DialogContent>
+      </CDialog>
+
       <CDialog
         fullScreen={fullScreen}
         isOpen={isOpenModal}
-        onClose={(): void => setIsOpenModal(false)}
-        onOpen={(): void => setIsOpenModal(true)}
+        onClose={(): void => {
+          setIsOpenModal(false);
+          setCalculatedValue(0);
+        }}
+        onOpen={(): void => {
+          setIsOpenModal(true);
+          setCalculatedValue(0);
+        }}
         formHandler={formHandler}
         fullWidth
       >
@@ -778,16 +819,21 @@ const Create: React.FC = () => {
                   <Input
                     placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
                     numberFormat
-                    value={amount}
+                    value={calculatedValue === 0 ? amount : calculatedValue}
                     className="w-100"
                     label={t('general.price')}
                     onChange={(e): void => {
                       setAmount(e);
+                      setCalculatedValue(0);
                     }}
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button onClick={(): void => {}}>
+                  <Button
+                    onClick={(): void => {
+                      toggleIsOpenCalculator();
+                    }}
+                  >
                     <FontAwesomeIcon
                       style={{ color: ColorEnum.DeepBlue, margin: 4 }}
                       icon={faCalculator}

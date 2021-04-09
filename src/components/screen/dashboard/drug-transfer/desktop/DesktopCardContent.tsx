@@ -802,6 +802,7 @@ const DesktopCardContent = ({
         ) : (
           <Survey
             exchangeIdProp={item.id}
+            redirect={false}
             onClose={(e: number | undefined): void => {
               setShowSurveyLoading(false);
               setShowSurvey(false);

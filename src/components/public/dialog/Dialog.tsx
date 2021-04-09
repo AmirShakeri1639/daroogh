@@ -41,7 +41,7 @@ interface Props {
   hideSubmit?: boolean;
   modalAlt?: boolean;
   hideAll?: boolean;
-  canceleButtonTitle? : string;
+  canceleButtonTitle?: string;
 }
 
 const modalQueryString = '?modal=true';
@@ -64,14 +64,21 @@ const CDialog: React.FC<Props> = ({
   modalAlt,
   canceleButtonTitle,
 }) => {
+  const hasModalAlt = (): boolean => {
+    return window.location.hash.endsWith(modalAltQueryString);
+  };
+
+  const hasModal = (): boolean => {
+    return window.location.hash.endsWith(modalQueryString);
+  };
+
   useEffect(() => {
     const onHashChange = (): void => {
       if (!hasModal() && !hasModalAlt() && !isUndefined(onClose)) {
         onClose();
       } else if (!hasModalAlt() && !isUndefined(onCloseAlternate)) {
         onCloseAlternate();
-      }
-       else if (hasModal() && !isUndefined(onOpen)) {
+      } else if (hasModal() && !isUndefined(onOpen)) {
         onOpen();
       } else if (!isUndefined(onOpenAltenate) && hasModalAlt()) {
         onOpenAltenate();
@@ -92,13 +99,7 @@ const CDialog: React.FC<Props> = ({
       }
     }
   }, [isOpen]);
-  const hasModal = (): boolean => {
-    return window.location.hash.endsWith(modalQueryString);
-  };
 
-  const hasModalAlt = (): boolean => {
-    return window.location.hash.endsWith(modalAltQueryString);
-  };
   const onCloseHandler = (): void => {
     if (!isUndefined(onClose)) {
       onClose();
