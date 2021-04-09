@@ -108,6 +108,7 @@ export interface CardPropsInterface {
 
 export interface CardContainerRelatedPharmacyDrugsInterface {
   data: PharmacyDrugInterface;
+  isFull? : boolean;
 }
 
 export interface CardHeaderInterface {
@@ -216,6 +217,9 @@ export interface TextWithTitlePropsInterface {
   title: string | React.ReactNode;
   body: string | React.ReactNode;
   suffix?: string | React.ReactNode;
+  isSmal?:boolean ;
+  dateSuffix? : string | React.ReactNode;
+  showDateSuffix?:boolean;
 }
 
 export interface BackDropPropsInterface {

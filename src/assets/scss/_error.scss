@@ -1,0 +1,54 @@
+.body-error {
+  min-height     : 100vh;
+  background     : white;
+  display        : flex;
+  align-items    : center;
+  justify-content: center;
+
+  h1 {
+    font-family: 'Vazir', cursive;
+    font-size  : 3em;
+    text-align : center;
+    opacity    : .8;
+  }
+
+  small {
+    display: block;
+  }
+
+  p {
+    font-size: medium;
+    padding  : 0 2em;
+  }
+
+  .btn {
+    padding      : .5em 3em;
+    font-family  : 'VazirBold';
+    font-size    : large;
+    border-radius: 2em;
+    border       : 2px solid gray;
+    cursor       : pointer;
+    box-shadow   : 1px 1px 5px #ccc;
+    transition   : all .4s ease-in-out;
+
+    &:hover {
+      color: white;
+      background: #888;
+    }
+  }
+
+  .btn-green:hover {
+    color       : #3a6508;
+    background  : #DEEC9C;
+    border-color: #a1ba30;
+    box-shadow  : 1px 1px 5px #cddc39;
+  }
+
+  .btn-purple:hover {
+    color       : #5d0865;
+    background  : #e3a6f2;
+    border-color: #a159a3;
+    box-shadow  : 1px 1px 5px #9c27b0;
+  }
+
+}

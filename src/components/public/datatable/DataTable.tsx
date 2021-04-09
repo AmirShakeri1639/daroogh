@@ -1,10 +1,4 @@
-import React, {
-  createRef,
-  useImperativeHandle,
-  useState,
-  forwardRef,
-  useEffect,
-} from 'react';
+import React, { createRef, useImperativeHandle, useState, forwardRef, useEffect } from 'react';
 import MaterialTable, { MTableToolbar } from 'material-table';
 import { DataTableProps } from '../../../interfaces';
 import { usePaginatedQuery, useQueryCache } from 'react-query';
@@ -73,15 +67,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Transition = React.forwardRef<
-  TransitionProps,
-  { children?: React.ReactElement<any, any> }
->((props, ref) => <Slide direction="up" ref={ref} {...props} />);
+const Transition = React.forwardRef<TransitionProps, { children?: React.ReactElement<any, any> }>(
+  (props, ref) => <Slide direction="up" ref={ref} {...props} />
+);
 
-const DataTable: React.ForwardRefRenderFunction<
-  CountdownHandle,
-  DataTableProps
-> = (props, forwardedRef) => {
+const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (
+  props,
+  forwardedRef
+) => {
   const { table, closeButton } = useStyles();
   const [page, setPage] = useState<number>(0);
   const [searchText, setSearchText] = useState<string>('');
@@ -238,10 +231,7 @@ const DataTable: React.ForwardRefRenderFunction<
       fullWidth={true}
     >
       <AppBar>
-        <Toolbar
-          variant="dense"
-          style={{ backgroundColor: 'rgb(164, 191, 226)' }}
-        >
+        <Toolbar variant="dense" style={{ backgroundColor: 'rgb(164, 191, 226)' }}>
           <DialogTitle
             disableTypography
             style={{
@@ -278,12 +268,8 @@ const DataTable: React.ForwardRefRenderFunction<
         tableRef={tableRef}
         localization={localization}
         icons={{
-          PreviousPage: forwardRef((props, ref) => (
-            <ChevronRight {...props} ref={ref} />
-          )),
-          NextPage: forwardRef((props, ref) => (
-            <ChevronLeft {...props} ref={ref} />
-          )),
+          PreviousPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+          NextPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
         }}
         components={{
           Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
@@ -302,16 +288,14 @@ const DataTable: React.ForwardRefRenderFunction<
               }`;
 
             if (otherQueryString) {
-              url += `&${otherQueryString}`
+              url += `&${otherQueryString}`;
             }
 
             if (defaultFilter) {
               url += `&$filter= ${defaultFilter}`;
             }
 
-            const qFilter = query.filters.filter(
-              (x) => x.value.fieldValue !== ''
-            );
+            const qFilter = query.filters.filter((x) => x.value.fieldValue !== '');
             qFilter.forEach((x: any, i: number) => {
               if (i === 0) url += defaultFilter ? ' and ' : '&$filter=';
               const openP = i === 0 ? '(' : '';
@@ -325,10 +309,7 @@ const DataTable: React.ForwardRefRenderFunction<
             if (query.search && query.search !== '') {
               const columnsFilter = columns.filter((x: any) => x.searchable);
               if (columnsFilter.length > 0) {
-                url +=
-                  defaultFilter || query.filters.length > 0
-                    ? ' and '
-                    : '&$filter=';
+                url += defaultFilter || query.filters.length > 0 ? ' and ' : '&$filter=';
                 columnsFilter.forEach((x: DataTableColumns, i: number) => {
                   const openP = i === 0 ? '(' : '';
                   const closeP = i === columnsFilter.length - 1 ? ')' : '';

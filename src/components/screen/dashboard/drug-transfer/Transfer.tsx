@@ -63,6 +63,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [is3PercentOk, setIs3PercentOk] = React.useState(true);
   const [eid, setEid] = useState<number | string | undefined>(0);
   const [lockedAction, setLockedAction] = React.useState(true);
+  const [fireDesctopScroll, setFireDesctopScroll] = React.useState(true);
 
   const { viewExchangeId, exchangeState } = props;
 
@@ -215,7 +216,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             setBasketCount(newItemsB);
             setSelectedPharmacyForTransfer(res.pharmacyKeyB);
           }
-
         }
 
         if (res !== undefined) {
@@ -233,7 +233,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             switch (res.state) {
               case 2:
                 setMessageOfExchangeState(
-                  'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست شما را در صورت قفل نبودن ویرایش نماید.'
+                  res.lockSuggestion ? 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید.':
+                  'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست پیشنهادی شما را ویرایش نماید.'
                 );
                 break;
               case 3:
@@ -363,6 +364,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setIs3PercentOk,
     lockedAction,
     setLockedAction,
+    fireDesctopScroll,
+    setFireDesctopScroll,
   });
 
   return (

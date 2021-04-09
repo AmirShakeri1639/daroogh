@@ -6,12 +6,15 @@ import {
   makeStyles,
   withStyles,
   Checkbox,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import Utils from 'components/public/utility/Utils';
 import { AllPharmacyDrugInterface } from 'interfaces';
-import moment from 'jalali-moment';
+
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import drug from '../../../../../../assets/images/drug.png';
@@ -32,18 +35,10 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
   basketCount,
   uBasketCount,
   lockedAction , handleChange,counterButtonFunc} = props;
-  const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-    const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
-    const fromDate = new Date(eDate);
-    const today = new Date();
+  
 
-    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
-
-    const res = `${faDate}`;
-
-    return res;
-  };
+  const theme = useTheme();
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const GreenCheckbox = withStyles({
     root: {
@@ -162,17 +157,26 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
               {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
             </span>
           </Grid>
-          <Grid item xs={12}>
+          {lockedAction && (<Grid item xs={12}>
             <TextWithTitle
-              title="موجودی عرضه شده"
+              title="عرضه شده"
               body={pharmacyDrug?.cnt}
               suffix="عدد"
+            />
+          </Grid>)}
+          
+          <Grid item xs={12}>
+            <TextWithTitle
+              title="انقضا"
+              body={Utils.getExpireDate(pharmacyDrug?.expireDate)}
+              dateSuffix = {Utils.getExpireDays(pharmacyDrug?.expireDate)}
+              // showDateSuffix = {!isSmallDevice}
             />
           </Grid>
           <Grid item xs={12}>
             <TextWithTitle
-              title="تاریخ انقضا"
-              body={getExpireDate(pharmacyDrug?.expireDate)}
+              title="هدیه"
+              body= {`${pharmacyDrug?.offer1} به ${pharmacyDrug?.offer2}`}
             />
           </Grid>
         </Grid>

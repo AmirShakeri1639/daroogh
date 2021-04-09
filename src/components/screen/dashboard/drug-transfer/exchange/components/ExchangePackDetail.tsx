@@ -30,21 +30,8 @@ interface Props {
   item: AllPharmacyDrugInterface;
 }
 const ExchangePackDetail: React.FC<Props> = (props) => {
-  const {
-    item
-  } = props;
-  const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-    const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
-    const fromDate = new Date(eDate);
-    const today = new Date();
-
-    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
-
-    const res = `${faDate}`;
-
-    return res;
-  };
+  const { item } = props;
+  
   const { t } = useTranslation();
   const GreenCheckbox = withStyles({
     root: {
@@ -69,8 +56,7 @@ const ExchangePackDetail: React.FC<Props> = (props) => {
       root: {
         flexGrow: 1,
         padding: '0 !important',
-        marginLeft:8,
-        marginRight:8,
+        margin: 2,
       },
       verticalAlign: {
         display: 'flex',
@@ -139,12 +125,16 @@ const ExchangePackDetail: React.FC<Props> = (props) => {
           display: 'flex',
         },
       },
-    horzintalLine: {
-      marginRight: 3,
-      marginLeft: 3,
-      fontSize: 18,
-      color: 'silver',
-    },
+      horzintalLine: {
+        marginRight: 3,
+        marginLeft: 3,
+        fontSize: 18,
+        color: 'silver',
+      },
+      itemContainer: {
+        padding: 2,
+        border: `1px solid ${ColorEnum.LiteGray}`,
+      },
     })
   );
 
@@ -160,49 +150,57 @@ const ExchangePackDetail: React.FC<Props> = (props) => {
     colLeftIcon,
     ulDetailPack,
     horzintalLine,
-    containerDetailPack
+    containerDetailPack,
+    itemContainer
   } = useStyle();
 
   return (
     <div className={root}>
-        <Grid container item spacing={0} style={{ padding: 2 }}>
-          <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
-            <span style={{ marginRight: 5, fontSize: 12,color:`${ColorEnum.DeepBlue}`,
- }}>
-              {item.drug.name}
-              {item.drug.enName && `(${item.drug.enName})`}
-            </span>
-          </Grid>
-          <Grid item xs={8} style={{ textAlign: 'left', fontSize: 11 }}>
-            <ul className={ulDetailPack}>
-              <li className={colLeftIcon}>
-                <span>تاریخ انقضا: </span>
-                {getExpireDate(item.expireDate)}
-              </li>
-              <Hidden smDown>
-                <span className={horzintalLine}>|</span>
-              </Hidden>
-              <li className={colLeftIcon}>
-                <span>قیمت واحد: </span>
-                {Utils.numberWithCommas(item.amount)} تومان
-              </li>
-              <Hidden smDown>
-                <span className={horzintalLine}>|</span>
-              </Hidden>
-              <li className={colLeftIcon}>
-                <span>تعداد در این پک: </span>
-                {item.cnt} عدد
-              </li>
-              <Hidden smDown>
-                <span className={horzintalLine}>|</span>
-              </Hidden>
-              <li className={colLeftIcon}>
-                <span>قیمت کل: </span>
-                {Utils.numberWithCommas(item.amount * item.cnt)} تومان
-              </li>
-            </ul>
-          </Grid>
+      <Grid container item spacing={0} className={itemContainer}>
+        <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
+          <span style={{ marginRight: 5, fontSize: 12, color: `${ColorEnum.DeepBlue}` }}>
+            {item.drug.name}
+            {item.drug.enName && `(${item.drug.enName})`}
+          </span>
         </Grid>
+        <Grid item xs={8} style={{ textAlign: 'left', fontSize: 11 }}>
+          <ul className={ulDetailPack}>
+            <li className={colLeftIcon}>
+              <span>انقضا:</span>
+              {Utils.getExpireDate(item.expireDate)}
+            </li>
+            <Hidden smDown>
+              <span className={horzintalLine}>|</span>
+            </Hidden>
+            <li className={colLeftIcon}>
+              <span>قیمت واحد: </span>
+              {Utils.numberWithCommas(item.amount)} تومان
+            </li>
+            <Hidden smDown>
+              <span className={horzintalLine}>|</span>
+            </Hidden>
+            <li className={colLeftIcon}>
+              <span>هدیه:</span>
+              {`${item.offer1} به ${item.offer2}`}
+            </li>
+
+            <Hidden smDown>
+              <span className={horzintalLine}>|</span>
+            </Hidden>
+            <li className={colLeftIcon}>
+              <span>تعداد: </span>
+              {item.cnt}
+            </li>
+            <Hidden smDown>
+              <span className={horzintalLine}>|</span>
+            </Hidden>
+            <li className={colLeftIcon}>
+              <span>قیمت کل: </span>
+              {Utils.numberWithCommas(item.amount * item.cnt)} تومان
+            </li>
+          </ul>
+        </Grid>
+      </Grid>
     </div>
   );
 };

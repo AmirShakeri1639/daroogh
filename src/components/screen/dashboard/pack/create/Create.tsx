@@ -19,8 +19,8 @@ import {
   Divider,
   Paper,
 } from '@material-ui/core';
-import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { faPlus, faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react';
+import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
@@ -36,24 +36,27 @@ import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
 import { useParams } from 'react-router-dom';
 import { DrugType } from '../../../../../enum/pharmacyDrug';
+import Calculator from '../../calculator/Calculator'
+
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
 import routes from '../../../../../routes';
-import { SearchDrugInCategory } from '../../../../../interfaces/search';
+import { SearchDrugInCategory, SearchDrugInMultiCategory } from '../../../../../interfaces/search';
 import { PackCreation } from 'model/pack';
 import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
+import { ColorEnum } from 'enum';
+import CDialog from 'components/public/dialog/Dialog';
+import { setConstantValue } from 'typescript';
 
 const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
 `;
 
-const { packsList } = routes;
-
-const { seerchDrugInCategory } = new Drug();
+const { searchDrugInMultipleCategory } = new Drug();
 
 const { getAllCategories } = new Category();
 
@@ -154,6 +157,21 @@ const useStyle = makeStyles((theme) =>
       paddingTop: '8px',
       margin: theme.spacing(3),
     },
+    sectionContainer: {
+      background: ColorEnum.LiteBack,
+      borderLeft: `1px solid ${ColorEnum.Borders}`,
+      padding: 4,
+      display: 'flex',
+      alignContent: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: 8,
+    },
+    input: {
+      width: 80,
+      marginLeft: 8,
+      marginRight: 8,
+    },
   })
 );
 
@@ -181,11 +199,11 @@ const Create: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
   const [isoDate, setIsoDate] = useState<string>('');
-  const [isLoadingSave, setIsLoadingSave] = useState<boolean>(false);
   const [temporaryDrugs, setTemporaryDrugs] = useState<PharmacyDrugSupplyList[]>([]);
   const [isBackdropLoading, setIsBackdropLoading] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
   const [packTotalItems, setPackTotalItems] = useState<number>(0);
+  const [packStatus, setPackStatus] = useState<number>(1);
   const [packTotalPrice, setPackTotalPrice] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
@@ -197,6 +215,7 @@ const Create: React.FC = () => {
   const [drugsPack, setDrugsPack] = useState<PharmacyDrugSupplyList[]>([]);
   const [storedPackId, setStoredPackId] = useState<number | null>(null);
   const [showError, setShowError] = useState(false);
+  const [calculatedValue , setCalculatedValue] = useState<number>(0);
 
   const theme = useTheme();
 
@@ -205,6 +224,16 @@ const Create: React.FC = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { t } = useTranslation();
+
+  const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
+  const toggleIsOpenCalculator = (): void => {
+    
+    setIsOpenCalculator((v) => !v);
+    if (isOpenCalculator) {
+      window.history.back();
+    }
+  };
+
 
   const { packId } = useParams() as { packId: string };
 
@@ -222,7 +251,8 @@ const Create: React.FC = () => {
     cancelButton,
     fieldset,
     fab,
-    fab2,
+    sectionContainer,
+    input,
     formContainer,
   } = useStyle();
 
@@ -250,7 +280,7 @@ const Create: React.FC = () => {
 
   const isJalaliDate = (num: number): boolean => num < 2000;
 
-  const calculatDateDiference = (): void => {
+  const calculateDateDifference = (): void => {
     const date = new Date();
     const todayMomentObject = moment([date.getFullYear(), date.getMonth(), date.getDate()]);
 
@@ -304,7 +334,7 @@ const Create: React.FC = () => {
 
   useEffect(() => {
     if (selectedYear !== '' && selectedYear.length === 4 && selectedMonth !== '') {
-      calculatDateDiference();
+      calculateDateDifference();
     }
   }, [selectedDay, selectedMonth, selectedYear]);
 
@@ -377,10 +407,13 @@ const Create: React.FC = () => {
     if (packId !== undefined || _packId !== undefined) {
       try {
         setIsBackdropLoading(true);
+
         const result = await getPackDetail(packId !== undefined ? packId : _packId || 0);
-        const { pharmacyDrug } = result;
+
+        const { pharmacyDrug, status } = result;
 
         setPackTotalItems(pharmacyDrug.length);
+        setPackStatus(status);
         setSelectedCategory(result.category !== null ? result.category.id : '-1');
         setDrugsPack([...mapApiDrugsToStandardDrugs(pharmacyDrug)]);
 
@@ -403,6 +436,9 @@ const Create: React.FC = () => {
     onSuccess: async (data) => {
       if (packId === undefined) {
         setSelectedCategory('');
+      }
+      if (storedPackId === null) {
+        setStoredPackId(data.data.packID);
       }
       setIsBackdropLoading(false);
 
@@ -486,7 +522,7 @@ const Create: React.FC = () => {
       return drugsPack.map((item) => {
         return (
           <Grid item xs={12} md={4}>
-            <CardContainer item={item} removeHandler={removeHandler} />
+            <CardContainer status={packStatus} item={item} removeHandler={removeHandler} />
           </Grid>
         );
       });
@@ -509,13 +545,16 @@ const Create: React.FC = () => {
         return;
       }
       setIsLoading(true);
-      const data: SearchDrugInCategory = {
+      const data: SearchDrugInMultiCategory = {
+        categoryId: 0,
         name: title,
       };
+
       if (selectedCategory !== '-1' && !isUndefined(selectedCategory)) {
-        data.categoryId = selectedCategory;
+        data.categoryId = Number(selectedCategory);
       }
-      const result = await seerchDrugInCategory(data);
+
+      const result = await searchDrugInMultipleCategory(data);
 
       setIsLoading(false);
 
@@ -597,7 +636,11 @@ const Create: React.FC = () => {
 
     return data;
   };
+  
+  const selectedCalculaterValueHandler = (v:number):void=>{
+    setCalculatedValue(v);
 
+}
   const formHandler = async (): Promise<any> => {
     try {
       if (!isValidInputs() || selectedCategory === '' || isWrongDate || !hasMinimumDate) {
@@ -618,6 +661,7 @@ const Create: React.FC = () => {
       ];
 
       await submition(data);
+      setCalculatedValue(0)
     } catch (e) {
       errorHandler(e);
     }
@@ -632,9 +676,9 @@ const Create: React.FC = () => {
     <MaterialContainer>
       <StyledGrid>
         <span>
-          ابتدا یک دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید و در
-          نهایت ثبت نمایید. اقلامی که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر
-          قابل تغییر توسط طرف مقابل عرضه میشود{' '}
+          ابتدا یک دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید . اقلامی
+          که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر قابل تغییر توسط طرف مقابل
+          عرضه میشود{' '}
         </span>
       </StyledGrid>
       <Grid container spacing={3} alignItems="center">
@@ -685,29 +729,64 @@ const Create: React.FC = () => {
             </Grid>
           </Grid>
         </Grid>
+        {packStatus == 1 && (
+          <Fragment>
+            <Hidden xsDown>
+              <Grid item xs={12} sm={12} md={4} xl={4}>
+                <Paper className={addButton} onClick={toggleIsOpenModal}>
+                  <FontAwesomeIcon icon={faPlus} size="2x" />
+                  <span>{t('pack.add')}</span>
+                </Paper>
+              </Grid>
+            </Hidden>
 
-        <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={4}>
-            <Paper className={addButton} onClick={toggleIsOpenModal}>
-              <FontAwesomeIcon icon={faPlus} size="2x" />
-              <span>{t('pack.add')}</span>
-            </Paper>
-          </Grid>
-        </Hidden>
-        <Hidden smUp>
-          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
-            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
-          </Fab>
-        </Hidden>
+            <Hidden smUp>
+              <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
+                <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+              </Fab>
+            </Hidden>
+          </Fragment>
+        )}
 
         {memoContent}
       </Grid>
-      <Dialog fullScreen={fullScreen} open={isOpenModal} onClose={toggleIsOpenModal} fullWidth>
+
+      <CDialog
+        fullScreen={fullScreen}
+        isOpen={isOpenCalculator}
+        onCloseAlternate={(): void => setIsOpenCalculator(false)}
+        onOpenAltenate={(): void => setIsOpenCalculator(true)}
+        modalAlt={true}
+        hideAll={false}
+        hideSubmit={true}
+        // canceleButtonTitle="درج نتیجه محاسبه"
+        // formHandler={(): void => setIsOpenCalculator(false)}
+      >
+        <DialogContent>
+          <div style={{ display: 'flex', justifyContent: 'center', minWidth: 300 }}>
+            <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
+          </div>
+        </DialogContent>
+      </CDialog>
+
+
+      <CDialog
+        fullScreen={fullScreen}
+        isOpen={isOpenModal}
+        onClose={(): void => {setIsOpenModal(false);
+          setCalculatedValue(0)
+        }}
+        onOpen={(): void => {setIsOpenModal(true);
+          setCalculatedValue(0)
+        }}
+        formHandler={formHandler}
+        fullWidth
+      >
         <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
+            <Grid container spacing={3} direction="column">
+              <Grid item xs={12} className={sectionContainer}>
                 <AutoComplete
                   ref={autoCompleteRef}
                   isLoading={isLoading}
@@ -721,95 +800,89 @@ const Create: React.FC = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.number')}</label>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Input
-                      numberFormat
-                      className="w-100"
-                      label={`${t('general.number')} ${t('drug.drug')}`}
-                      onChange={(e): void => {
-                        setNumber(e);
-                      }}
-                      value={number}
-                    />
-                  </Grid>
-                </Grid>
+              <Grid item container xs={12} className={sectionContainer}>
+                <Input
+                  placeholder={`${t('general.number')}`}
+                  numberFormat
+                  className="w-100"
+                  label={`${t('general.number')} ${t('drug.drug')}`}
+                  onChange={(e): void => {
+                    setNumber(e);
+                  }}
+                  value={number}
+                />
               </Grid>
 
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label htmlFor="">{`${t('general.pricePerUnit')} (${t(
-                      'general.defaultCurrency'
-                    )})`}</label>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Input
-                      numberFormat
-                      value={amount}
+              <Grid item container xs={12} className={sectionContainer}>
+                <Grid xs={12} item>
+                  <span className="text-danger txt-xs">{t('alerts.priceTypeAlert')}</span>
+                </Grid>
+                <Grid item xs={9}>
+                  <Input
+                    placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
+                    numberFormat
+                    value={calculatedValue === 0? amount : calculatedValue }
                       className="w-100"
                       label={t('general.price')}
                       onChange={(e): void => {
                         setAmount(e);
+                        setCalculatedValue(0)
                       }}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <Button onClick={(): void => {
+                       toggleIsOpenCalculator()
+                  }}>
+                    <FontAwesomeIcon
+                      style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                      icon={faCalculator}
                     />
-                  </Grid>
+                    {t('general.calculating')}
+                  </Button>
                 </Grid>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} className={sectionContainer}>
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item xs={12}>
-                    <span>هدیه</span>
-                    <span className="text-succes txt-xs">
-                      (داروسازان می توانند هدیه ای در قبال محصول خود به داروساز مقابل بدهند)
-                    </span>
+                    <span className="text-danger txt-xs">{t('alerts.offerDescriptions')}</span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
-                    <GridCenter item xs={1}>
-                      <span>به ازای</span>
-                    </GridCenter>
-                    <GridCenter item xs={2} className="w-100">
-                      <Input
-                        type="number"
-                        value={offer2}
-                        placeholder="تعداد"
-                        onChange={(e): void => {
-                          const val = e.target.value;
-                          if (Number(val) >= 1 || Number(offer2) >= 1) {
-                            setOffer2(e.target.value);
-                          }
-                        }}
-                      />
-                    </GridCenter>
-                    <GridCenter xs={1}>
-                      <span>تا</span>
-                    </GridCenter>
-                    <Grid item xs={2}>
-                      <Input
-                        type="number"
-                        value={offer1}
-                        placeholder="تعداد"
-                        onChange={(e): void => {
-                          const val = e.target.value;
-                          if (Number(val) >= 1 || Number(offer1) >= 1) {
-                            setOffer1(e.target.value);
-                          }
-                        }}
-                      />
-                    </Grid>
-                    <GridCenter xs={1}>{t('general.gift')}</GridCenter>
+                    <span>به ازای</span>
+
+                    <Input
+                      className={input}
+                      type="number"
+                      value={offer2}
+                      placeholder="تعداد"
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (Number(val) >= 1 || Number(offer2) >= 1) {
+                          setOffer2(e.target.value);
+                        }
+                      }}
+                    />
+                    <span>تا</span>
+
+                    <Input
+                      className={input}
+                      type="number"
+                      value={offer1}
+                      placeholder="تعداد"
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (Number(val) >= 1 || Number(offer1) >= 1) {
+                          setOffer1(e.target.value);
+                        }
+                      }}
+                    />
+                    {t('general.gift')}
                   </Grid>
                 </Grid>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
@@ -890,21 +963,32 @@ const Create: React.FC = () => {
                 </Grid>
                 <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
+
+              {/* <Grid item xs={12}>
+              <Input
+                className="w-100"
+                label={t('general.barcode')}
+                value={state?.batchNO}
+                onChange={(e): void =>
+                  dispatch({ type: 'batchNO', value: e.target.value })
+                }
+              />
+            </Grid> */}
+
+              {comissionPercent !== '' && (
+                <Grid item xs={12}>
+                  {`پورسانت: ${comissionPercent}%`}
+                </Grid>
+              )}
+
+              {daroogRecommendation !== '' && (
+                <Grid item xs={12}>
+                  <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
+                    <span>{daroogRecommendation}</span>
+                  </FieldSetLegend>
+                </Grid>
+              )}
             </Grid>
-
-            {comissionPercent !== '' && (
-              <Grid item xs={12}>
-                {`پورسانت: ${comissionPercent}%`}
-              </Grid>
-            )}
-
-            {daroogRecommendation !== '' && (
-              <Grid item xs={12}>
-                <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
-                  <span>{daroogRecommendation}</span>
-                </FieldSetLegend>
-              </Grid>
-            )}
           </DialogContentText>
         </DialogContent>
         <Divider />
@@ -921,7 +1005,7 @@ const Create: React.FC = () => {
                 <span>صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته نشود</span>
               </label>
             </Grid>
-
+            {/* 
             <Grid container xs={12}>
               <Grid item xs={7} sm={8} />
               <Grid item xs={2} sm={2}>
@@ -939,17 +1023,17 @@ const Create: React.FC = () => {
                   {isBackdropLoading ? t('general.pleaseWait') : t('general.add')}
                 </Button>
               </Grid>
-            </Grid>
+</Grid>*/}
           </Grid>
         </DialogActions>
-      </Dialog>
+      </CDialog>
 
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DatePicker
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
           selectedDateHandler={(e): void => {
-            // calculatDateDiference(e, '/');
+            // calculateDateDifference(e, '/');
             setSelectedDate(e);
 
             toggleIsOpenDatePicker();

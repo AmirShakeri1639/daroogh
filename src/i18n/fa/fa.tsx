@@ -2,7 +2,9 @@ export default {
   fa: {
     translation: {
       general: {
-        daroogLatin: 'Daroog',
+        calculator: 'ماشین حساب',
+        calculating: 'محاسبه',
+        daroogLatin: 'DarooG',
         emal: 'اعمال',
         systemTitle: 'سامانه الکترونیکی داروخانه',
         systemFullTitle: 'سامانه تبادلات دارویی داروگ',
@@ -115,8 +117,15 @@ export default {
         defaultCurrency: 'تومان',
         noContent: 'محتوایی وجود ندارد',
         reject: 'عدم پذیرش',
-        pay:'پرداخت'
+        pay: 'پرداخت',
+        code: 'کد تایید داروگ',
+        systemy: 'سیستمی',
+        version: 'نسخه',
+        print: 'چاپ',
+        category: 'دسته بندی',
+        noOne: 'هیچ کدام',
       },
+
       pack: {
         pack: 'پک',
         title: 'عنوان پک',
@@ -174,11 +183,15 @@ export default {
         _404_desc:
           'صفحه‌ای که به دنبالش بودید پیدا نشد. ' +
           'اگر با کلیک روی لینکی به این صفحه آمده‌اید لطفا به پشتیبانی اطلاع دهید.',
+        _401: 'خطای دسترسی',
+        _401_desc:
+          'شما مجوز دسترسی به این صفحه را ندارید!' +
+          'اگر فکر می‌کنید اشتباهی پیش آمده، لطفا با پشتیبانی تماس بگیرید.',
       },
       login: {
         login: 'ورود',
         exit: 'خروج',
-        'sign-out': 'خروج از حساب کاربری',
+        signOut: 'خروج از حساب کاربری',
         'login-sub': 'وارد حساب کاربری خود شوید',
         'forgot-password': 'رمز عبور را فراموش کرده‌اید؟',
         'sign-up': 'عضویت',
@@ -186,13 +199,17 @@ export default {
         register: 'ثبت نام',
         'register-sub': 'حساب کاربری خود را ایجاد کنید',
         'create-account': 'ایجاد حساب کاربری',
-        username: 'نام کاربری',
+        username: 'نام کاربری / شماره همراه',
         password: 'گذرواژه',
         successful: 'ورود موفقیت آمیز بود. خوش آمدید!',
         failed: 'ورود موفقیت آمیز نبود. نام کاربری و گذرواژه خود را بررسی کنید.',
         registerPharmacyWithUser: 'درخواست ایجاد داروخانه',
         getNewPassword: 'دریافت کلمه عبور جدید',
         send: 'ارسال',
+        getOtp: 'دریافت کلمه عبور یک بار مصرف',
+        otp: 'کد ورود به سامانه داروگ',
+        sendCode: 'ارسال کد تایید',
+        sendPhone: 'ارسال شماره همراه',
       },
       user: {
         role: 'نقش',
@@ -216,6 +233,7 @@ export default {
         'edit-user': 'ویرایش کاربر',
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
+        passwordHelperText: 'گذرواژه شامل حروف انگلیسی اعداد و حداقل ۸ کاراکتر باشد.',
         admin: 'ادمین',
         goldUser: 'کاربر طلایی',
         silverUser: 'کاربر نقره ای',
@@ -257,7 +275,7 @@ export default {
         addJobApplication: 'افزودن درخواست کار',
         listPrescription: 'لیست نسخه ها',
         jobApplication: 'درخواست کار',
-        listJobApplication: 'لیست درخواست کار',
+        listJobApplication: 'لیست درخواست های کار ثبت شده توسط شما',
         cancelDateText: 'کنسل شده در تاریخ',
         detail: 'جزییات',
         noAnswer: 'پاسخی وجود ندارد',
@@ -265,7 +283,7 @@ export default {
         maritalStatus: 'وضعیت تاهل',
         readingPrescriptionCertificate: 'گواهی نسخه خوانی',
         gradeOfReadingPrescriptionCertificate: 'نمره مدرک نسخه خوانی',
-        workExperienceYear: 'سابقه کار',
+        workExperienceYear: 'سابقه کار به ماه',
         suggestedWorkShift: 'شیفت پیشنهادی',
         pharmaceuticalSoftwareSkill: 'تسلط به نرم افزارهای دارویی',
         computerSkill: 'میزان تسلط به کامپیوتر',
@@ -323,6 +341,7 @@ export default {
         exchangeViewWith: 'مشاهده توسط',
         exchangeViewWithAutomaticConfermedAlert: 'به علت عدم تغییر سبد توسط',
         exchangeTree: 'درخت تبادل',
+        allPharmacyDrugs: 'تمام داروهای این داروخانه',
         expirationDate: 'تاریخ انقضای تبادل',
         expirationCompletionDate: 'تاریخ انقضا/تکمیل',
         GOLD: 'کاربر طلایی',
@@ -412,6 +431,7 @@ export default {
         long: 'طول جغرافیایی',
         lat: 'عرض جغرافیایی',
         location: 'مکان',
+        chooseLocationOnMap: 'انتخاب مکان روی نقشه',
       },
       PharmacyTypeEnum: {
         NONGOVERNMENTAL: 'خصوصی',
@@ -452,7 +472,7 @@ export default {
         // 9
         CONFIRMA_AND_B_PAYMENTB: 'در انتظار پرداخت (طرف اول هستید)',
         // 10
-        CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
+        CONFIRMALL_AND_PAYMENTALL: 'تبادل انجام شده',
         // 11
         NOSEND_FORB: 'ارسال نشده',
         // 12
@@ -470,7 +490,7 @@ export default {
         // 18
         CONFIRMA_AND_B_PAYMENTA_FORB: 'در انتظار پرداخت (طرف دوم هستید)',
         // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
-        CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
+        CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل انجام شده',
         // 20
         CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
       },
@@ -492,7 +512,7 @@ export default {
         debtor: 'بدهکار',
         enterAmount: 'مبلغ را وارد کنید.',
         code: 'کد تراکنش',
-        exchangeAmount: 'مبلغ تراکنش'
+        exchangeAmount: 'مبلغ تراکنش',
       },
       reports: {
         reports: 'گزارشات',
@@ -528,14 +548,14 @@ export default {
       employment: {
         application: 'درخواست کاریابی',
         applications: 'درخواست‌های کاریابی',
-        workExperience: 'سابقه کار',
+        workExperience: 'سابقه کار به ماه',
         resume: 'رزومه',
         readingPrescriptionCertificate: 'گواهی نسخه خوانی',
         gradeOfReadingPrescriptionCertificate: 'نمره مدرک نسخه خوانی',
         suggestedWorkShift: 'شیفت پیشنهادی',
         pharmaceuticalSoftwareSkill: 'تسلط به نرم‌افزارهای دارویی',
         computerSkill: 'میزان تسلط به کامپیوتر',
-        foreignLanguagesSkill: 'آشنایی با زبان خارجی',
+        foreignLanguagesSkill: 'آشنایی با زبان های خارجی',
         education: 'میزان تحصیلات',
         suggestedJobPosition: 'سمت پیشنهادی',
         guarantee: 'وثیقه',
@@ -637,7 +657,7 @@ export default {
         foreignLanguagesSkill: 'سطح زبان انگلیسی',
         jobPosition: 'موقعیت شغلی',
         list: 'لیست فرصت های شغلی',
-        minWorkExperienceYear: 'حداقل سابقه کار',
+        minWorkExperienceYear: 'حداقل سابقه کار به ماه',
         minGradeOfReadingPrescriptionCertificate: 'نمره گواهی نسخه خوانی',
         pharmaceuticalSoftwareSkill: 'توانایی کار با نرم افزار',
         computerSkill: 'توانایی کار با کامپیوتر',
@@ -702,9 +722,9 @@ export default {
 
       alerts: {
         CreatePackAlert:
-          'داروساز عزیز٬ از یک تا سه دسته بندی را میتوانید به صورت پک ثبت نمایید. در تبادل پک ها، داروخانه مقابل حق انتخاب دارو و تعداد را ندارد و موظف است کل اقلام پک را با تعداد ثبت شده انتخاب نماید.',
+          'داروساز عزیز٬یک دسته بندی را میتوانید به صورت پک ثبت نمایید. در تبادل پک ها، داروخانه مقابل حق انتخاب دارو و تعداد را ندارد و موظف است کل اقلام پک را با تعداد ثبت شده انتخاب نماید.',
         supplylistsAlert:
-          'دارو ساز عزیز٬ نام محصولات یا نام دسته بندی آن را در کادر پایین جست و جو نمایید. همچنین گزینه ی فیلتر به شما امکان جستجو پیشرفته را می دهد.',
+          'دارو ساز عزیز٬ نام محصولات یا نام جنریک و یا نام انگلیسی آن را در کادر پایین جست و جو نمایید. همچنین گزینه ی فیلتر به شما امکان جستجو پیشرفته را می دهد.',
         ExchangeAlertPart1: 'داروساز عزیز٬ ابتدا از تب ( ',
         ExchangeAlertPart2: 'انتخاب از لیست داروخانه مقابل ',
         ExchangeAlertPart3:
@@ -717,7 +737,13 @@ export default {
         PrescriptionAlert:
           'با درج نام محصول مورد نیاز یا بارگذاری تصویر نسخه،به داروخانه های سراسر کشور یا محدوده درخواستی خود این امکان را می‌دهید تا در صورت موجودی از طریق پیامک و یا مشاهده در نرم افزار و سایت داروگ به شما اطلاع بدهند.',
         SelectCategoryAlert: 'ابتدا دسته بندی را انتخاب نمایید',
-        DebotAlert:'بدهی شما بیشتر از سقف مجاز می باشد و امکان تبادل مقدور نیست.  لطفا نسبت به تسویه و پرداخت بدهی اقدام نمایید',
+        DebotAlert:
+          'بدهی شما بیشتر از سقف مجاز می باشد و امکان تبادل مقدور نیست.  لطفا نسبت به تسویه و پرداخت بدهی اقدام نمایید',
+        lockedEchangeAlert:
+          'تبادل توسط طرف مقابل قفل شده است. شما تنها میتوانید این تبادل را قبول یا رد کنید و نمیتوانید محصولات موجود در سبدها را ویرایش نمایید',
+        offerDescriptions: 'داروسازان می توانند هدیه ای در قبال محصول خود به داروساز مقابل بدهند',
+        priceTypeAlert:
+          'در داروگ قیمت ها بر اساس کوچکترین واحد هر محصول محاسبه میشود. به عنوان مثال ۱ عدد قرص استامینوفن. جهت انجام محاسبات لازم میتوانید از دکمه محاسبه استفاده نمایید',
       },
 
       widget: {

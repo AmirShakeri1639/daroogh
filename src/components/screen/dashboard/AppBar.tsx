@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import {
   Toolbar,
   AppBar,
@@ -24,7 +24,7 @@ import NotificationMenu from './appbar/NotificationMenu';
 import UserMenu from './appbar/UserMenu';
 import { useQuery } from 'react-query';
 import { connect, ConnectedProps } from 'react-redux';
-import { sweetAlert } from '../../../utils';
+import { JwtData, sweetAlert } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faUserCircle,
@@ -37,7 +37,7 @@ const drawerWidth = 240;
 const { getUserMessages } = new Message();
 
 const isTrial = true;
-
+const { userData } = new JwtData();
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -258,6 +258,13 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
     });
   };
 
+  const [version, setVersion] = useState('')
+  useEffect(() => {
+    setVersion(
+      localStorage.getItem('version') ?? ''
+    )
+  }, [])
+
   return (
     <AppBar elevation={0} position="absolute" className={appBar}>
       <Toolbar className={isTrial ? trialToolbar : toolbar}>
@@ -288,74 +295,81 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
             push(dashboard);
           }}
         >
-          <Hidden smDown>
+          <Hidden xsDown>
             {/* {t('general.dashboard')} */}
-            <span>{t('general.daroogLatin')} - </span>
             <span>{t('general.daroog')}</span>
             <span style={{ fontSize: 14, marginRight: 5 }}>
               ({t('general.systemTitle')})
+              <span style={{ fontSize: 14, marginRight: 8 }}>{t('general.daroogLatin')}</span>
             </span>
           </Hidden>
+          {version &&
+            <span className="version-small">
+              {t('general.version')} &nbsp;
+              {version}
+            </span>
+          }
         </Typography>
+        {userData.pharmacyName != null && (
+          <Fragment>
+            <Tooltip
+              style={{
+                background: '#95D061',
+                borderRadius: '30px',
+                padding: '0px 4px 0px 24px',
+              }}
+              title={String(t('exchange.create'))}
+            >
+              <div>
+                <span>
+                  <IconButton
+                    edge="end"
+                    style={{ color: ColorEnum.White }}
+                    onClick={newTransferHandler}
+                  >
+                    <FontAwesomeIcon size="xs" icon={faPlusSquare} />
+                    <Hidden smDown>
+                      <span style={{ fontSize: 14, paddingRight: 6 }}>
+                        {t('exchange.create', {
+                          var: _transfer.isStarted ? t('general.again.0') : '',
+                        })}
+                      </span>
+                    </Hidden>
+                  </IconButton>
+                </span>
+                <span></span>
+              </div>
+            </Tooltip>
 
-        <Tooltip
-          style={{
-            background: '#95D061',
-            borderRadius: '30px',
-            padding: '0px 4px 0px 24px',
-          }}
-          title={String(t('exchange.create'))}
-        >
-          <div>
-            <span>
+            <Tooltip title="کیف پول">
               <IconButton
                 edge="end"
-                style={{ color: ColorEnum.White }}
-                onClick={newTransferHandler}
+                onClick={(e: any): void => setcreditAnchorEl(e.currentTarget)}
+                style={{
+                  color: `${!debtValueState
+                    ? 'white'
+                    : debtValueState >= 0
+                      ? '#f95e5e'
+                      : '#72fd72'
+                    }`,
+                }}
               >
-                <FontAwesomeIcon size="xs" icon={faPlusSquare} />
-                <Hidden smDown>
-                  <span style={{ fontSize: 14, paddingRight: 6 }}>
-                    {t('exchange.create', {
-                      var: _transfer.isStarted ? t('general.again.0') : '',
-                    })}
-                  </span>
-                </Hidden>
+                <CreditCardIcon />
+                {debtValueState && (
+                  <Hidden smDown>
+                    <span style={{ fontSize: 14 }}>
+                      {' '}
+                      <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b>
+                      <span style={{ fontSize: 10, marginRight: 2 }}>
+                        {t('general.defaultCurrency')}
+                      </span>
+                    </span>
+                  </Hidden>
+                )}
               </IconButton>
-            </span>
-            <span></span>
-          </div>
-        </Tooltip>
-
-        <Tooltip title="کیف پول">
-          <IconButton
-            edge="end"
-            onClick={(e: any): void => setcreditAnchorEl(e.currentTarget)}
-            style={{
-              color: `${
-                !debtValueState
-                  ? 'white'
-                  : debtValueState >= 0
-                  ? '#f95e5e'
-                  : '#72fd72'
-              }`,
-            }}
-          >
-            <CreditCardIcon />
-            {debtValueState && (
-              <Hidden smDown>
-                <span style={{ fontSize: 14 }}>
-                  {' '}
-                  <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b>
-                  <span style={{ fontSize: 10, marginRight: 2 }}>
-                    {t('general.defaultCurrency')}
-                  </span>
-                </span>
-              </Hidden>
-            )}
-          </IconButton>
-        </Tooltip>
-
+            </Tooltip>
+          </Fragment>
+        )}
         {showButtons && (
           <>
             <IconButton

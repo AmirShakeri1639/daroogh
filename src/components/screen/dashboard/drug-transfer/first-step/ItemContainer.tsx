@@ -1,10 +1,13 @@
 import React from 'react';
 import { ItemContainerPropsInterface } from '../../../../../interfaces';
-import { Box, createStyles, Divider, Grid, Hidden, useMediaQuery } from '@material-ui/core';
+import { Box, createStyles, Divider, Grid, Hidden, useMediaQuery,Theme } from '@material-ui/core';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Convertor from '../../../../../utils/Convertor';
 import { ColorEnum } from 'enum';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import { useTranslation } from 'react-i18next';
+import Utils from 'components/public/utility/Utils';
 
 
 
@@ -12,64 +15,56 @@ const { convertISOTime,thousandsSeperator } = Convertor;
 
 const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
 
+  const theme = useTheme();
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('xs'));
   const useStyle = makeStyles((theme) =>
   createStyles({
     box: {
-      backgroundColor: '#fcfdfc',
-      width: '100%',
-      padding: '4px 0px',
-      margin: '2px 0px'
+      backgroundColor: ColorEnum.LiteBack,
+      paddingLeft: 16,
+      borderLeft:`2px solid ${ColorEnum.Borders}` ,
+      margin:4,
     },
-    detailContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      '& > svg': {
-        color: '#9f9ea0',
-      },
-      '& span': {
-        marginLeft: '5px',
-      },
+    titleContainer: {
+     
     },
     detailText:{
-      color:ColorEnum.DeepBlue,
-      fontSize:`${fullScreen?'10px':'13px'}`
+      color:'black',
+      fontSize:`${isSmallDevice?'10px':'13px'}`
     }
   })
 );
+  const {t} = useTranslation();
 
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { offer1, offer2, drugGenericName ,price,expireDate } = props;
 
-  const { box,detailText, detailContainer } = useStyle();
+  const { box,detailText, titleContainer } = useStyle();
+
 
   return (
-    <Box component="div" className={box}>
-      <Grid container spacing={0}>
-        <Grid item xs={8}  md={7} lg={7}  className={detailContainer}>
-          <span className={detailText}>{drugGenericName}</span>
+    <Grid container className={box}>
+        <Grid item xs={12} className={titleContainer}>
+        <span className={detailText}>{drugGenericName}</span>
         </Grid>
-
-        <Grid item xs={4} md={5} lg={5} >
-          <Grid container spacing={1} alignItems="flex-end">
-
-            <Hidden xsDown>
-              <Grid item xs={4} className={detailContainer}>
-                <span className={detailText}>{`${offer1} به ${offer2}`}</span>
-              </Grid>
-            </Hidden>
-
-            <Grid item xs={6} md={4} lg={4} className={detailContainer}>
-              <span className={detailText}>{convertISOTime(expireDate) }</span>
-            </Grid>
-            <Grid item xs={6} md={4} lg={4} className={detailContainer}>
-              <span className={detailText}>{thousandsSeperator(price) }</span>
-            </Grid>
+        <Grid xs={12} item container>
+          <Grid xs={4}>
+              <TextWithTitle isSmal={true} title={t('general.gift')} body={`${offer1} به ${offer2}`} />
           </Grid>
+          <Grid xs={4}>
+          <TextWithTitle isSmal={true} title='انقضا' body={convertISOTime(expireDate) } dateSuffix={Utils.getExpireDays(expireDate)} showDateSuffix={!isSmallDevice} />
+
+            </Grid>
+            <Grid xs={4}>
+            <TextWithTitle isSmal={true} title={t('general.price')} body={thousandsSeperator(price) } suffix={t('general.defaultCurrency')}/>
+
+            </Grid>
         </Grid>
-      </Grid>
-    </Box>
+        <Grid xs={12}>
+                  <Divider/>
+
+        </Grid>
+    </Grid>
   );
 };
 

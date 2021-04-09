@@ -36,6 +36,7 @@ import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoadi
 import SearchBar from 'material-ui-search-bar';
 import { TrendingUpRounded } from '@material-ui/icons';
 import { debounce } from 'lodash';
+import CDialog from 'components/public/dialog/Dialog';
 
 interface Props {
   full?: boolean;
@@ -89,7 +90,14 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       descriptions,
     } = detailsItem;
     return (
-      <Dialog open={isOpenDetails} fullScreen={fullScreen} fullWidth maxWidth="md">
+      <CDialog
+        fullScreen={fullScreen}
+        fullWidth
+        isOpen={isOpenDetails}
+        onClose={(): void => setIsOpenDetails(false)}
+        onOpen={(): void => setIsOpenDetails(true)}
+        hideSubmit={true}
+      >
         <DialogTitle>{t('employment.application')}</DialogTitle>
         <Divider />
         <DialogContent>
@@ -231,18 +239,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Button
-            variant="outlined"
-            color="secondary"
-            onClick={(): void => {
-              setIsOpenDetails(false);
-            }}
-          >
-            {t('general.ok')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      </CDialog>
     );
   };
 
@@ -375,7 +372,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
       },
     }
   );
-  
+
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
   const setPageRef = (data: number) => {
@@ -383,7 +380,6 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     setPage(data);
   };
 
-  
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await all(pageRef.current, 10, [], searchRef.current);
     //console.log(result.items);
@@ -413,7 +409,6 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     desktop: 1280,
   };
   const handleScroll = (e: any): any => {
-  
     const el = e.target;
     const pixelsBeforeEnd = 200;
     const checkDevice =
@@ -452,7 +447,6 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
             />
           </Grid>
         );
-    
       });
     }
 
@@ -461,9 +455,9 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
   return (
     <Container maxWidth="lg" className={container}>
       <Grid item xs={12}>
-          <span>{t('employment.applications')}</span>
-        </Grid>
-     
+        <span>{t('employment.applications')}</span>
+      </Grid>
+
       {false && (
         <DataTable
           tableRef={ref}
@@ -490,7 +484,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         </Grid>
       )}
       <Grid container spacing={3}>
-      {true && contentGenerator()}
+        {true && contentGenerator()}
       </Grid>
       {true && <CircleBackdropLoading isOpen={isLoading} />}
     </Container>

@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { ViewExchangeInterface } from '../../../../../interfaces';
 import { useClasses } from '../../classes';
 import { DaroogTabPanel, TextLine } from '../../../../public';
-import { Convertor, isNullOrEmpty } from '../../../../../utils';
+import { Convertor, isNullOrEmpty, printElem } from '../../../../../utils';
 import { ColorEnum } from '../../../../../enum';
 import moment from 'jalali-moment';
 import {
@@ -148,15 +148,15 @@ const ExCalculator: React.FC<Props> = (props) => {
         totalPrice += i.amount * (i.currentCnt ? i.currentCnt : i.cnt);
 
         return (
-          <TableRow key={i.drug.name}>
-            <TableCell scope="row" className={darkText}>
-              {i.drug.name}
+          <TableRow key={ i.drug.name }>
+            <TableCell scope="row" className={ darkText }>
+              { i.drug.name }
             </TableCell>
-            <TableCell align="center" className={darkText}>
-              {i.currentCnt ? i.currentCnt : i.cnt}
+            <TableCell align="center" className={ darkText }>
+              { i.currentCnt ? i.currentCnt : i.cnt }
             </TableCell>
-            <TableCell align="center" className={darkText}>
-              {Convertor.thousandsSeperatorFa(i.amount)}
+            <TableCell align="center" className={ darkText }>
+              { Convertor.thousandsSeperatorFa(i.amount) }
             </TableCell>
           </TableRow>
         );
@@ -168,23 +168,23 @@ const ExCalculator: React.FC<Props> = (props) => {
       <>
         {card && card.length > 0 && (
           <>
-            <TableContainer component={Paper} className={darkText}>
+            <TableContainer component={ Paper } className={ darkText }>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center" className={darkText}>
-                      {t('drug.drug')}
+                    <TableCell align="center" className={ darkText }>
+                      { t('drug.drug') }
                     </TableCell>
-                    <TableCell align="center" className={darkText}>
-                      {t('general.number')}
+                    <TableCell align="center" className={ darkText }>
+                      { t('general.number') }
                     </TableCell>
-                    <TableCell align="center" className={darkText}>
-                      {t('general.price')} {t('general.unit')} ({t('general.defaultCurrency')})
+                    <TableCell align="center" className={ darkText }>
+                      { t('general.price') } { t('general.unit') } ({ t('general.defaultCurrency') })
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {card.map((row) => {
+                  { card.map((row) => {
                     if (row.packID !== null && row.packDetails && row.packDetails.length > 0) {
                       return row.packDetails.map((i: any) => {
                         return makeRow(i);
@@ -192,53 +192,53 @@ const ExCalculator: React.FC<Props> = (props) => {
                     } else {
                       return makeRow(row);
                     }
-                  })}
-                  {((exchange.currentPharmacyIsA && you) ||
+                  }) }
+                  { ((exchange.currentPharmacyIsA && you) ||
                     (!exchange.currentPharmacyIsA && !you)) &&
                     ((): any => {
                       // totalPriceA = totalPrice;
                       exchange.totalPriceA = totalPrice;
-                    })()}
-                  {((!exchange.currentPharmacyIsA && you) ||
+                    })() }
+                  { ((!exchange.currentPharmacyIsA && you) ||
                     (exchange.currentPharmacyIsA && !you)) &&
                     ((): any => {
                       // totalPriceB = totalPrice;
                       exchange.totalPriceB = totalPrice;
-                    })()}
+                    })() }
                 </TableBody>
               </Table>
             </TableContainer>
-            {/* setDifferenceCheckOutput() */}
+            {/* setDifferenceCheckOutput() */ }
           </>
-        )}
-        <div className={spacing3}>&nbsp;</div>
+        ) }
+        <div className={ spacing3 }>&nbsp;</div>
         {!isNullOrEmpty(totalCount) && (
-          <Grid item xs={12} className={spacingVertical3}>
+          <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
-              backColor={ColorEnum.White}
-              rightText={<>{t('general.number')}</>}
-              leftText={l(totalCount)}
+              backColor={ ColorEnum.White }
+              rightText={ <>{ t('general.number') }</> }
+              leftText={ l(totalCount) }
             />
           </Grid>
-        )}
+        ) }
         {!isNullOrEmpty(totalPrice) && (
-          <Grid item xs={12} className={spacingVertical3}>
+          <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
-              backColor={ColorEnum.White}
-              rightText={<>{t('exchange.totalPrice')}</>}
-              leftText={Convertor.thousandsSeperatorFa(totalPrice)}
+              backColor={ ColorEnum.White }
+              rightText={ <>{ t('exchange.totalPrice') }</> }
+              leftText={ Convertor.thousandsSeperatorFa(totalPrice) }
             />
           </Grid>
-        )}
+        ) }
         {!isNullOrEmpty(totalPourcentage) && totalPourcentage > 0 && (
-          <Grid item xs={12} className={spacingVertical3}>
+          <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
-              backColor={ColorEnum.White}
-              rightText={<>{t('exchange.commission')}</>}
-              leftText={Convertor.thousandsSeperatorFa(totalPourcentage)}
+              backColor={ ColorEnum.White }
+              rightText={ <>{ t('exchange.commission') }</> }
+              leftText={ Convertor.thousandsSeperatorFa(totalPourcentage) }
             />
           </Grid>
-        )}
+        ) }
       </>
     );
   };
@@ -246,39 +246,39 @@ const ExCalculator: React.FC<Props> = (props) => {
   const CalcContent = (): JSX.Element => {
     return (
       <Grid container>
-        {/* separate data */}
-        <Grid item xs={12}>
+        {/* separate data */ }
+        <Grid item xs={ 12 }>
           <Tabs
-            value={currentTabIndex}
+            value={ currentTabIndex }
             indicatorColor="primary"
             textColor="primary"
-            onChange={handleChange}
+            onChange={ handleChange }
             centered
           >
-            <Tab label={pharmacyNameA ?? t('exchange.you')} />
-            <Tab label={pharmacyNameB ?? t('exchange.otherSide')} />
+            <Tab label={ pharmacyNameA ?? t('exchange.you') } />
+            <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
           </Tabs>
           <SwipeableViews
             enableMouseEvents
-            index={currentTabIndex}
-            onChangeIndex={(index: number): void => setCurrentTabIndex(index)}
+            index={ currentTabIndex }
+            onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
           >
-            <DaroogTabPanel value={currentTabIndex} index={0}>
-              {getOneSideData(true)}
+            <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+              { getOneSideData(true) }
             </DaroogTabPanel>
-            <DaroogTabPanel value={currentTabIndex} index={1}>
-              {getOneSideData(false)}
+            <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+              { getOneSideData(false) }
             </DaroogTabPanel>
           </SwipeableViews>
         </Grid>
         <Divider />
-        {/* common data */}
-        <Grid item xs={12}>
-          {!isNullOrEmpty(exchange?.sendDate) && (
-            <Grid item xs={12} className={spacingVertical3}>
+        {/* common data */ }
+        <Grid item xs={ 12 }>
+          { !isNullOrEmpty(exchange?.sendDate) && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
               <TextLine
-                backColor={ColorEnum.White}
-                rightText={<>{t('exchange.sendDate')}</>}
+                backColor={ ColorEnum.White }
+                rightText={ <>{ t('exchange.sendDate') }</> }
                 leftText={
                   exchange?.sendDate == null
                     ? ''
@@ -286,47 +286,67 @@ const ExCalculator: React.FC<Props> = (props) => {
                 }
               />
             </Grid>
-          )}
-          {!isNullOrEmpty(expireDate) && (
-            <Grid item xs={12} className={spacingVertical3}>
+          ) }
+          { !isNullOrEmpty(expireDate) && (
+            <Grid item xs={ 12 } className={ spacingVertical3 }>
               <TextLine
-                backColor={ColorEnum.White}
-                rightText={<>{expireDateText}</>}
-                leftText={expireDate == null ? '' : expireDate}
+                backColor={ ColorEnum.White }
+                rightText={ <>{ expireDateText }</> }
+                leftText={ expireDate == null ? '' : expireDate }
               />
             </Grid>
-          )}
+          ) }
         </Grid>
       </Grid>
     );
   };
 
+  const printBill = () => {
+    const dialogActions = document.getElementById('dialogActions')
+    const dialogActionsDisplay = dialogActions?.style.display
+    console.log('dialogActionsDisplay', dialogActionsDisplay)
+    window.print()
+    // printElem('billContainer', t('exchange.exCalculator'))
+  }
+
   const [dialogOpen, setDialogOpen] = useState(true);
   return (
     <>
       {full ? (
-        <Dialog open={dialogOpen} fullScreen={fullScreen} fullWidth={true}>
-          <DialogTitle>{t('exchange.exCalculator')}</DialogTitle>
+        <Dialog
+          open={ dialogOpen }
+          fullScreen={ fullScreen }
+          fullWidth={ true }
+          id='billContainer'
+        >
+          <DialogTitle>{ t('exchange.exCalculator') }</DialogTitle>
           <Divider />
-          <DialogContent className={darkText}>
+          <DialogContent className={ darkText }>
             <CalcContent />
           </DialogContent>
-          <DialogActions>
+          <DialogActions className="print-hide">
+            <Button
+              variant="outlined"
+              color="default"
+              onClick={ printBill }
+            >
+              { t('general.print') }
+            </Button>
             <Button
               variant="outlined"
               color="primary"
-              onClick={(): void => {
+              onClick={ (): void => {
                 setDialogOpen(false);
                 if (onClose) onClose();
-              }}
+              } }
             >
-              {t('general.ok')}
+              { t('general.ok') }
             </Button>
           </DialogActions>
         </Dialog>
       ) : (
         <CalcContent />
-      )}
+      ) }
     </>
   );
 };

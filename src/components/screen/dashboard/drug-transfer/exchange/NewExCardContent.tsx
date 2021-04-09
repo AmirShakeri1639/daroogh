@@ -249,7 +249,9 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   const [_addDrug1] = useMutation(addDrug1, {
     onSuccess: async (res: any) => {
       if (res) {
-        if (!exchangeId || exchangeId === 0) setExchangeId(res.data.exchangeId);
+        if (!exchangeId || exchangeId === 0 || exchangeId !== res.data.exchangeId) {
+          setExchangeId(res.data.exchangeId);
+        }
         setRecommendationMessage(res.data.recommendationMessage);
         setMessage(t('alert.successAddDrug'));
         snackBarHandleClick();
@@ -275,7 +277,10 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
   const [_addPack1] = useMutation(addPack1, {
     onSuccess: async (res) => {
       if (res) {
-        if (!exchangeId || exchangeId === 0) setExchangeId(res.data.exchangeId);
+        if (!exchangeId || exchangeId === 0 || exchangeId !== res.data.exchangeId) {
+          setExchangeId(res.data.exchangeId);
+        }
+        // if (!exchangeId || exchangeId === 0) setExchangeId(res.data.exchangeId);
         setMessage(t('alert.successAddPack'));
         snackBarHandleClick();
 
@@ -638,7 +643,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
       </div>
     ) : (
       <>
-        <span style={{ fontSize: 13 }}>تعداد اقلام انتخاب شده: </span>
+        <span style={{ fontSize: 13 }}>اقلام انتخابی : </span>
         <span style={{ fontSize: 17, fontWeight: 'bold', color: 'green' }}>
           {pharmacyDrug?.currentCnt}
         </span>

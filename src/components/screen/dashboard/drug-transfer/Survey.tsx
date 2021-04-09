@@ -93,11 +93,12 @@ const style = makeStyles((theme) =>
 
 interface Props {
   exchangeIdProp?: number | string;
-  onClose?: () => void;
+  onClose?: (surveyId: number | undefined) => void;
+  redirect?: boolean;
 }
 
 const Survey: React.FC<Props> = (props) => {
-  const { exchangeIdProp, onClose } = props;
+  const { exchangeIdProp, onClose, redirect = true } = props;
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { questionHeader } = style();
   const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
@@ -109,9 +110,9 @@ const Survey: React.FC<Props> = (props) => {
   const handleBackQuestion = (): any => {
     setActiveQuestionStep((prevActiveStep) => prevActiveStep - 1);
   };
-  const [getQuestions, setQuestions] = useState<
-    GetQuestionGroupOfExchangeInterface | undefined
-  >(undefined);
+  const [getQuestions, setQuestions] = useState<GetQuestionGroupOfExchangeInterface | undefined>(
+    undefined
+  );
 
   const [questionGroupId, serQuestionGroupId] = useState<number>(0);
 
@@ -129,7 +130,7 @@ const Survey: React.FC<Props> = (props) => {
       : params.exchangeId == null
       ? 0
       : +params.exchangeId;
-    // setExchangeId(xId);
+    setExchangeId(xId);
     (async (): Promise<void> => {
       await handleGetQuestionGroupOfExchange(xId);
     })();
@@ -137,38 +138,37 @@ const Survey: React.FC<Props> = (props) => {
 
   const { saveSurvey, getQuestionGroupOfExchange } = new PharmacyDrug();
 
-  const [_saveSurvey, { isLoading: isLoadingSaveSurvey }] = useMutation(
-    saveSurvey,
-    {
-      onSuccess: async (res: any) => {
-        if (res) {
-          await sweetAlert({
-            type: 'success',
-            text: res.message,
-          });
-          history.push(desktop);
-        }
-      },
-    }
-  );
+  const [_saveSurvey, { isLoading: isLoadingSaveSurvey }] = useMutation(saveSurvey, {
+    onSuccess: async (res: any) => {
+      if (res) {
+        await sweetAlert({
+          type: 'success',
+          text: res.message,
+        });
+        if (redirect) history.push(desktop);
+      }
+    },
+  });
 
   const handleSaveSurvey = async (): Promise<any> => {
     try {
-      if (params.exchangeId === null) return;
+      if (!exchangeId) return;
       var input = surveyInput;
-      input.exchangeID = +params.exchangeId;
+      input.exchangeID = exchangeId;
       input.questionGroupID = questionGroupId;
-      await _saveSurvey(input);
-      if (onClose) onClose();
+      let surveyId: number | undefined = undefined;
+      const res = await _saveSurvey(input);
+      if (res) {
+        surveyId = res.data.surveyId;
+      }
+      if (onClose) onClose(surveyId);
     } catch (e) {
       errorHandler(e);
     }
     setOpenSurvayModal(false);
   };
 
-  const handleGetQuestionGroupOfExchange = async (
-    xId: number
-  ): Promise<any> => {
+  const handleGetQuestionGroupOfExchange = async (xId: number): Promise<any> => {
     try {
       if (xId === 0) return;
       const res = await getQuestionGroupOfExchange(xId); // for Test = 10180
@@ -194,41 +194,33 @@ const Survey: React.FC<Props> = (props) => {
             defaultValue={'1'}
             style={{ display: 'grid', direction: 'ltr' }}
           >
-            {question.questionOptions.map(
-              (item: QuestionOptions, index: number) => {
-                return (
-                  <FormControlLabel
-                    value={item.id.toString()}
-                    checked={
-                      surveyInput.surveyAnswer.findIndex(
-                        (x) => x.optionID === item.id
-                      ) !== -1
+            {question.questionOptions.map((item: QuestionOptions, index: number) => {
+              return (
+                <FormControlLabel
+                  value={item.id.toString()}
+                  checked={surveyInput.surveyAnswer.findIndex((x) => x.optionID === item.id) !== -1}
+                  control={<Radio color="primary" />}
+                  label={item.title}
+                  labelPlacement="start"
+                  onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
+                    const i = input.surveyAnswer.findIndex((x) => x.questionID === item.questionID);
+                    if (i === -1)
+                      input.surveyAnswer.push({
+                        questionID: question.id,
+                        optionID: item.id,
+                      });
+                    else {
+                      input.surveyAnswer.splice(i, 1);
+                      input.surveyAnswer.push({
+                        questionID: question.id,
+                        optionID: item.id,
+                      });
                     }
-                    control={<Radio color="primary" />}
-                    label={item.title}
-                    labelPlacement="start"
-                    onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
-                      const i = input.surveyAnswer.findIndex(
-                        (x) => x.questionID === item.questionID
-                      );
-                      if (i === -1)
-                        input.surveyAnswer.push({
-                          questionID: question.id,
-                          optionID: item.id,
-                        });
-                      else {
-                        input.surveyAnswer.splice(i, 1);
-                        input.surveyAnswer.push({
-                          questionID: question.id,
-                          optionID: item.id,
-                        });
-                      }
-                      setSurveyInput({ ...input });
-                    }}
-                  />
-                );
-              }
-            )}
+                    setSurveyInput({ ...input });
+                  }}
+                />
+              );
+            })}
           </RadioGroup>
         );
         break;
@@ -236,16 +228,10 @@ const Survey: React.FC<Props> = (props) => {
         element = (
           <div style={{ textAlign: 'center' }}>
             <Rating
-              value={
-                surveyInput.surveyAnswer.find(
-                  (x) => x.questionID === question.id
-                )?.barom
-              }
+              value={surveyInput.surveyAnswer.find((x) => x.questionID === question.id)?.barom}
               precision={1}
               onChange={(event: any, newValue: any): any => {
-                const i = input.surveyAnswer.findIndex(
-                  (x) => x.questionID === question.id
-                );
+                const i = input.surveyAnswer.findIndex((x) => x.questionID === question.id);
                 if (i !== -1) {
                   input.surveyAnswer.splice(i, 1);
                 }
@@ -268,83 +254,69 @@ const Survey: React.FC<Props> = (props) => {
             defaultValue={'1'}
             style={{ width: '100%', display: 'grid', direction: 'ltr' }}
           >
-            {question.questionOptions.map(
-              (item: QuestionOptions, index: number) => {
-                return (
-                  <FormControlLabel
-                    value={item.id.toString()}
-                    checked={
-                      surveyInput.surveyAnswer.findIndex(
-                        (x) => x.optionID === item.id
-                      ) !== -1
+            {question.questionOptions.map((item: QuestionOptions, index: number) => {
+              return (
+                <FormControlLabel
+                  value={item.id.toString()}
+                  checked={surveyInput.surveyAnswer.findIndex((x) => x.optionID === item.id) !== -1}
+                  control={<Radio color="primary" />}
+                  label={item.title}
+                  labelPlacement="start"
+                  onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
+                    const i = input.surveyAnswer.findIndex((x) => x.questionID === item.questionID);
+                    if (i === -1)
+                      input.surveyAnswer.push({
+                        questionID: question.id,
+                        optionID: item.id,
+                      });
+                    else {
+                      input.surveyAnswer.splice(i, 1);
+                      input.surveyAnswer.push({
+                        questionID: question.id,
+                        optionID: item.id,
+                      });
                     }
-                    control={<Radio color="primary" />}
-                    label={item.title}
-                    labelPlacement="start"
-                    onChange={(e: React.ChangeEvent<{}>, checked: boolean) => {
-                      const i = input.surveyAnswer.findIndex(
-                        (x) => x.questionID === item.questionID
-                      );
-                      if (i === -1)
-                        input.surveyAnswer.push({
-                          questionID: question.id,
-                          optionID: item.id,
-                        });
-                      else {
-                        input.surveyAnswer.splice(i, 1);
-                        input.surveyAnswer.push({
-                          questionID: question.id,
-                          optionID: item.id,
-                        });
-                      }
-                      setSurveyInput({ ...input });
-                    }}
-                  />
-                );
-              }
-            )}
+                    setSurveyInput({ ...input });
+                  }}
+                />
+              );
+            })}
           </RadioGroup>
         );
         break;
       case 4:
         element = (
           <>
-            {question.questionOptions.map(
-              (item: QuestionOptions, index: number) => {
-                return (
-                  <FormControlLabel
-                    key={index}
-                    style={{ width: '100%' }}
-                    control={
-                      <Checkbox
-                        checked={
-                          surveyInput.surveyAnswer.findIndex(
-                            (x) => x.optionID === item.id
-                          ) !== -1
-                        }
-                        value={item.id}
-                        onChange={(
-                          event: React.ChangeEvent<HTMLInputElement>
-                        ): any => {
-                          const i = input.surveyAnswer.findIndex(
-                            (x) => x.optionID === +event.target.value
-                          );
-                          if (i === -1)
-                            input.surveyAnswer.push({
-                              questionID: question.id,
-                              optionID: item.id,
-                            });
-                          else input.surveyAnswer.splice(i, 1);
-                          setSurveyInput({ ...input });
-                        }}
-                        color="primary"
-                      />
-                    }
-                    label={item.title}
-                  />
-                );
-              }
-            )}
+            {question.questionOptions.map((item: QuestionOptions, index: number) => {
+              return (
+                <FormControlLabel
+                  key={index}
+                  style={{ width: '100%' }}
+                  control={
+                    <Checkbox
+                      checked={
+                        surveyInput.surveyAnswer.findIndex((x) => x.optionID === item.id) !== -1
+                      }
+                      value={item.id}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>): any => {
+                        const i = input.surveyAnswer.findIndex(
+                          (x) => x.optionID === +event.target.value
+                        );
+                        if (i === -1)
+                          input.surveyAnswer.push({
+                            questionID: question.id,
+                            optionID: item.id,
+                          });
+                        else input.surveyAnswer.splice(i, 1);
+                        setSurveyInput({ ...input });
+                      }}
+                      color="primary"
+                    />
+                  }
+                  label={item.title}
+                />
+              );
+            })}
           </>
         );
         break;
@@ -353,19 +325,16 @@ const Survey: React.FC<Props> = (props) => {
           <TextField
             label="توضیحات"
             required
-            style={{ width: '100%'}}
+            style={{ width: '100%' }}
             multiline={true}
             rows={5}
             size="small"
             variant="outlined"
             value={
-              surveyInput.surveyAnswer.find((x) => x.questionID === question.id)
-                ?.descriptiveAnswer
+              surveyInput.surveyAnswer.find((x) => x.questionID === question.id)?.descriptiveAnswer
             }
             onChange={(e: any): void => {
-              const i = input.surveyAnswer.findIndex(
-                (x) => x.questionID === question.id
-              );
+              const i = input.surveyAnswer.findIndex((x) => x.questionID === question.id);
               if (i !== -1) {
                 input.surveyAnswer.splice(i, 1);
               }
@@ -381,9 +350,7 @@ const Survey: React.FC<Props> = (props) => {
         break;
     }
     return (
-      <div style={{ height: 250, maxHeight: 250, width: '100٪', maxWidth: '100%' }}>
-        {element}
-      </div>
+      <div style={{ height: 250, maxHeight: 250, width: '100٪', maxWidth: '100%' }}>{element}</div>
     );
   };
 
@@ -397,9 +364,7 @@ const Survey: React.FC<Props> = (props) => {
         setOpenSurvayModal(false);
       }}
     >
-      <DialogTitle
-        style={{ borderBottom: '1px silver solid', textAlign: 'center' }}
-      >
+      <DialogTitle style={{ borderBottom: '1px silver solid', textAlign: 'center' }}>
         {'ثبت نظر (نظرسنجی)'}
       </DialogTitle>
       <DialogContent>
@@ -428,16 +393,10 @@ const Survey: React.FC<Props> = (props) => {
                   <MatButton
                     size="small"
                     onClick={handleNextQuestion}
-                    disabled={
-                      activeQuestionStep === getQuestions.question.length - 1
-                    }
+                    disabled={activeQuestionStep === getQuestions.question.length - 1}
                   >
                     بعدی
-                    {theme.direction === 'rtl' ? (
-                      <KeyboardArrowLeft />
-                    ) : (
-                      <KeyboardArrowRight />
-                    )}
+                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                   </MatButton>
                 }
                 backButton={
@@ -446,11 +405,7 @@ const Survey: React.FC<Props> = (props) => {
                     onClick={handleBackQuestion}
                     disabled={activeQuestionStep === 0}
                   >
-                    {theme.direction === 'rtl' ? (
-                      <KeyboardArrowRight />
-                    ) : (
-                      <KeyboardArrowLeft />
-                    )}
+                    {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
                     قبلی
                   </MatButton>
                 }
@@ -467,7 +422,7 @@ const Survey: React.FC<Props> = (props) => {
               color="secondary"
               onClick={() => {
                 setOpenSurvayModal(false);
-                if (onClose) onClose();
+                if (onClose) onClose(undefined);
                 // history.push(desktop);
               }}
             >

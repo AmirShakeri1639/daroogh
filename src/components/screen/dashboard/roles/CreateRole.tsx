@@ -1,4 +1,4 @@
-import React, { useReducer, Fragment } from 'react';
+import React, { useReducer, Fragment, useState } from 'react';
 import {
   Grid,
   Paper,
@@ -9,13 +9,15 @@ import {
   FormControl,
   Button,
   Divider,
+  MenuItem,
+  Select,
 } from '@material-ui/core';
 import Role from '../../../../services/api/Role';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { makeStyles } from '@material-ui/core/styles';
 import { ActionInterface, TableColumnInterface } from '../../../../interfaces';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { errorHandler, successSweetAlert } from '../../../../utils';
+import { errorHandler, errorSweetAlert, successSweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import Permissions from './Permissions';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -24,18 +26,11 @@ import { RoleQueryEnum } from '../../../../enum/query';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { NewRoleData } from '../../../../interfaces';
 import { UrlAddress } from '../../../../enum/UrlAddress';
+import { RoleType } from 'enum';
+import styled from 'styled-components';
+import { BackDrop } from 'components/public';
 
-interface ReducerInitialStateInterface {
-  id: number;
-  name: string;
-  permissions: string[];
-}
-
-const initialState: ReducerInitialStateInterface = {
-  id: 0,
-  name: '',
-  permissions: [],
-};
+const initialState = new NewRoleData();
 
 function reducer(state = initialState, action: ActionInterface): any {
   switch (action.type) {
@@ -52,12 +47,17 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'addPermissions':
       return {
         ...state,
-        permissions: [...state.permissions, action.value],
+        permissionItemes: [...state.permissionItemes, action.value],
       };
     case 'removePermissions':
       return {
         ...state,
-        permissions: [...action.value],
+        permissionItemes: [...action.value],
+      };
+    case 'type':
+      return {
+        ...state,
+        type: action.value,
       };
     case 'reset':
       return initialState;
@@ -107,10 +107,10 @@ const useClasses = makeStyles((theme) =>
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
     },
-    formBody: {
-      display: 'flex',
-      alignItems: 'center',
-    },
+    // formBody: {
+    //   display: 'flex',
+    //   alignItems: 'center',
+    // },
     addButton: {
       background: theme.palette.blueLinearGradient.main,
     },
@@ -125,10 +125,34 @@ const useClasses = makeStyles((theme) =>
   })
 );
 
+type MenuOptions = {
+  val: string | number;
+  text: string;
+};
+
+const STFormControl = styled((props) => <FormControl {...props} />)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  width: 100%;
+`;
+
+const STGrid = styled((props) => <Grid {...props} />)`
+  display: flex;
+`;
+
 const CreateRole: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [isOpenBackDrop, setIsOpenBackDrop] = useState(false);
   const ref = useDataTableRef();
   const { t } = useTranslation();
+
+  const RoleArray: MenuOptions[] = [
+    { val: RoleType.OTHER, text: t('JobPositionType.Other') },
+    { val: RoleType.PHARMACY, text: t('pharmacy.pharmacy') },
+    { val: RoleType.SYSTEM, text: t('general.systemy') },
+  ];
 
   const {
     getAllRolePermissionItems,
@@ -145,23 +169,17 @@ const CreateRole: React.FC = () => {
     getAllRolePermissionItems
   );
 
-  const [_removeRoleById, { isLoading: isLoadingRemoveRole }] = useMutation(
-    removeRoleById,
-    {
-      onSuccess: async (data) => {
-        ref.current?.loadItems();
-        await queryCache.invalidateQueries(RoleQueryEnum.GET_ALL_ROLES);
-        await successSweetAlert(
-          data.message || t('alert.successfulRemoveTextMessage')
-        );
-      },
-    }
-  );
+  const [_removeRoleById, { isLoading: isLoadingRemoveRole }] = useMutation(removeRoleById, {
+    onSuccess: async (data) => {
+      ref.current?.loadItems();
+      await queryCache.invalidateQueries(RoleQueryEnum.GET_ALL_ROLES);
+      await successSweetAlert(data.message || t('alert.successfulRemoveTextMessage'));
+    },
+  });
 
-  const [_saveNewRole, { isLoading: newRoleLoading }] = useMutation(
-    saveNewRole,
-    {
-      onSuccess: async () => {
+  const [_saveNewRole, { isLoading: newRoleLoading }] = useMutation(saveNewRole, {
+    onSuccess: async (data: any): Promise<void> => {
+      if (data !== undefined) {
         ref.current?.loadItems();
         await queryCache.invalidateQueries(RoleQueryEnum.GET_ALL_ROLES);
         await successSweetAlert(
@@ -170,9 +188,13 @@ const CreateRole: React.FC = () => {
             : t('alert.successfulEditTextMessage')
         );
         dispatch({ type: 'reset' });
-      },
-    }
-  );
+      }
+    },
+    onError: async (data: any): Promise<void> => {
+      const { message } = data;
+      await errorSweetAlert(message);
+    },
+  });
 
   const {
     root,
@@ -181,7 +203,6 @@ const CreateRole: React.FC = () => {
     formTitle,
     formContainer,
     formControl,
-    formBody,
     addButton,
     cancelButton,
   } = useClasses();
@@ -214,47 +235,44 @@ const CreateRole: React.FC = () => {
     }
   };
 
-  const editRoleHandler = async (
-    event: any,
-    row: NewRoleData
-  ): Promise<any> => {
+  const editRoleHandler = async (event: any, row: NewRoleData): Promise<any> => {
     const { id } = row;
     try {
+      setIsOpenBackDrop(true);
       const result = await getRoleById(Number(id));
       dispatch({ type: 'reset' });
       dispatch({ type: 'name', value: result.name });
       dispatch({ type: 'id', value: result.id });
+      dispatch({ type: 'type', value: result.type });
       for (const item of result.permissionItemes) {
         dispatch({ type: 'addPermissions', value: item });
       }
     } catch (e) {
       errorHandler(e);
     }
+    setIsOpenBackDrop(false);
   };
 
-  const submitRole = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<any> => {
+  const submitRole = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    if (state.name.trim().length < 1 || state.permissions.length === 0) {
+    if (state.name.trim().length < 1 || state.permissionItemes.length === 0) {
       return;
     }
-    try {
-      await _saveNewRole({
-        id: state.id,
-        name: state.name,
-        permissionItemes: state.permissions,
-      });
-      dispatch({ type: 'reset' });
-    } catch (e) {
-      errorHandler(e);
-    }
+
+    await _saveNewRole({
+      id: state.id,
+      name: state.name,
+      permissionItemes: state.permissionItemes,
+      type: state.type,
+    });
   };
 
-  const roleTitleHandler = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ): Promise<any> => {
+  const roleTitleHandler = async (e: React.ChangeEvent<HTMLInputElement>): Promise<any> => {
     dispatch({ type: 'name', value: e.target.value });
+  };
+
+  const handleClickMenu = (event: React.ChangeEvent<{ value: unknown }>) => {
+    dispatch({ type: 'type', value: Number(event.target.value) });
   };
 
   return (
@@ -264,8 +282,6 @@ const CreateRole: React.FC = () => {
           <Paper className={root}>
             <DataTable
               ref={ref}
-              queryKey={RoleQueryEnum.GET_ALL_ROLES}
-              queryCallback={getAllRoles}
               urlAddress={UrlAddress.getAllRole}
               columns={tableColumns()}
               isLoading={isLoadingRemoveRole}
@@ -278,11 +294,7 @@ const CreateRole: React.FC = () => {
 
       <Grid item xs={12}>
         <Paper className={formPaper}>
-          <Typography
-            variant="h6"
-            component="h6"
-            className={`${formTitle} txt-md`}
-          >
+          <Typography variant="h6" component="h6" className={`${formTitle} txt-md`}>
             {state.id === 0 ? (
               <Fragment>
                 <AddCircleOutlineIcon />
@@ -298,48 +310,68 @@ const CreateRole: React.FC = () => {
           <Divider />
           <div className={formContainer}>
             <form autoComplete="off" onSubmit={submitRole}>
-              <div className={formBody}>
-                <FormControl className={formControl}>
-                  <TextField
-                    required
-                    id="role-name"
-                    label="عنوان نقش"
-                    variant="outlined"
-                    size="small"
-                    value={state.name}
-                    onChange={roleTitleHandler}
-                  />
-                </FormControl>
-                <FormControl>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    className={addButton}
-                  >
-                    {newRoleLoading
-                      ? t('general.pleaseWait')
-                      : state.id === 0
-                      ? t('user.create-new-role')
-                      : t('user.edit-role')}
-                  </Button>
-                </FormControl>
-                {state.id !== 0 && (
-                  <FormControl>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="secondary"
-                      className={cancelButton}
-                      onClick={(): void => dispatch({ type: 'reset' })}
+              <Grid container alignItems="center" spacing={1}>
+                <Grid item xs={12} sm={4} md={3}>
+                  <FormControl className={`${formControl} w-100`}>
+                    <TextField
+                      required
+                      id="role-name"
+                      label="عنوان نقش"
+                      variant="outlined"
+                      size="small"
+                      value={state.name}
+                      onChange={roleTitleHandler}
+                    />
+                  </FormControl>
+                </Grid>
+                <STGrid item xs={6} sm={5} md={3}>
+                  <STFormControl>
+                    <span>نوع نقش</span>
+                    <Select
+                      labelId="role-menu-label"
+                      id="role-menu"
+                      onChange={handleClickMenu}
+                      value={state.type}
+                      style={{ width: 100, marginRight: 10 }}
                     >
-                      {t('user.cancel-edit-eole')}
+                      {React.Children.toArray(
+                        RoleArray.map((item) => <MenuItem value={item.val}>{item.text}</MenuItem>)
+                      )}
+                    </Select>
+                  </STFormControl>
+                </STGrid>
+
+                <Grid item xs={6} sm={3} md={2} xl={1}>
+                  <FormControl>
+                    <Button type="submit" variant="contained" color="primary" className={addButton}>
+                      {newRoleLoading
+                        ? t('general.pleaseWait')
+                        : state.id === 0
+                        ? t('user.create-new-role')
+                        : t('user.edit-role')}
                     </Button>
                   </FormControl>
+                </Grid>
+
+                {state.id !== 0 && (
+                  <Grid item xs={6} sm={4} lg={2} xl={1}>
+                    <FormControl>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="secondary"
+                        className={cancelButton}
+                        onClick={(): void => dispatch({ type: 'reset' })}
+                      >
+                        {t('user.cancel-edit-eole')}
+                      </Button>
+                    </FormControl>
+                  </Grid>
                 )}
-              </div>
+              </Grid>
+
               <Permissions
-                permissionItems={permissionItemsData}
+                permissionItems={permissionItemsData ?? []}
                 className={useClasses()}
                 reducer={{
                   state,
@@ -350,6 +382,8 @@ const CreateRole: React.FC = () => {
           </div>
         </Paper>
       </Grid>
+
+      <BackDrop isOpen={isOpenBackDrop} />
     </Container>
   );
 };

@@ -23,7 +23,7 @@ const useStyle = makeStyles((theme) =>
     },
     textC: {
       color: 'white',
-      fontSize: '1.2em',
+      fontSize: '12px',
       verticalAlign: 'middle',
       lineHeight: '20px',
     },
@@ -48,7 +48,6 @@ const AddedValueWidget: React.FC = () => {
     async function getCount(): Promise<any> {
       const result = await getAddedValue();
       setresult(result);
-      debugger;
       return result;
     }
 
@@ -56,48 +55,57 @@ const AddedValueWidget: React.FC = () => {
   }, []);
 
   return (
-    <div
-      className="statswidget-container"
-      style={{
-        backgroundColor: 'blueviolet',
-        color: 'white',
-      }}
-    >
-      <Grid container>
-        <Grid item container xs={12}>
-          <Grid container style={{ padding: '8px' }}>
-            <Grid item xs={12}>
-              <span className={titleC}>{'مجموع ارزش (قیمت به ریال) داروهای منقضی شده'}</span>
-              <span className={titleC}>:&nbsp;</span>
-              <span className={textC}>{thousandsSeperator(result?.sumOfExpired)}</span>
-              <span>&nbsp;</span>
-              <span className={suffixC}>{'ریال'}</span>
-            </Grid>
-            <Grid item xs={12}>
-              <span className={titleC}>{'مجموع ارزش داروهای مازاد باقیمانده'}</span>
-              <span className={titleC}>:&nbsp;</span>
-              <span className={textC}>{thousandsSeperator(result?.sumOfRemainSurplusDrugs)}</span>
-              <span>&nbsp;</span>
-              <span className={suffixC}>{'ریال'}</span>
-            </Grid>
-            <Grid item xs={12}>
-              <span className={titleC}>{'مجموع ارزش داروهای تبادل شده'}</span>
-              <span className={titleC}>:&nbsp;</span>
-              <span className={textC}>{thousandsSeperator(result?.sumOfExchanged)}</span>
-              <span>&nbsp;</span>
-              <span className={suffixC}>{'ریال'}</span>
-            </Grid>
-            <Grid item xs={12}>
-              <span className={titleC}>{'مجموع پورسانت پرداخت شده'}</span>
-              <span className={titleC}>:&nbsp;</span>
-              <span className={textC}>{thousandsSeperator(result?.sumOfCommissionAmount)}</span>
-              <span>&nbsp;</span>
-              <span className={suffixC}>{'ریال'}</span>
-            </Grid>
+    <>
+      
+  
+    <Grid container spacing={0}>
+      <Grid item xs={12}>
+            <span className={titleC} style={{background:'green' , borderRadius:'5px 5px 0px 0px' , padding:8}}>آمار داروخانه های کل کشور</span>
           </Grid>
+      <Grid item container xs={12} 
+    style={{
+      backgroundColor: 'green',
+      color: 'white',
+      borderRadius:15,
+      border:'1px solid white',
+      zIndex:2,
+      minHeight:116
+      
+    }}>
+        <Grid container style={{ padding: 16 }}>
+          
+          <Grid item xs={12}>
+            <span className={titleC}>{'ارزش  داروهای منقضی شده'}</span>
+            <span className={titleC}>:&nbsp;&nbsp;</span>
+            <span className={textC}>{thousandsSeperator(result?.sumOfExpired)}</span>
+            <span>&nbsp;&nbsp;</span>
+            <span className={suffixC}>{t('general.defaultCurrency')}</span>
+          </Grid>
+          <Grid item xs={12}>
+            <span className={titleC}>{'ارزش داروهای مازاد باقیمانده'}</span>
+            <span className={titleC}>:&nbsp;&nbsp;</span>
+            <span className={textC}>{thousandsSeperator(result?.sumOfRemainSurplusDrugs)}</span>
+            <span>&nbsp;&nbsp;</span>
+            <span className={suffixC}>{t('general.defaultCurrency')}</span>
+          </Grid>
+          <Grid item xs={12}>
+            <span className={titleC}>{'ارزش داروهای تبادل شده'}</span>
+            <span className={titleC}>:&nbsp;&nbsp;</span>
+            <span className={textC}>{thousandsSeperator(result?.sumOfExchanged)}</span>
+            <span>&nbsp;&nbsp;</span>
+            <span className={suffixC}>{t('general.defaultCurrency')}</span>
+          </Grid>
+          {/* <Grid item xs={12}>
+            <span className={titleC}>{'پورسانت پرداخت شده'}</span>
+            <span className={titleC}>:&nbsp;&nbsp;</span>
+            <span className={textC}>{thousandsSeperator(result?.sumOfCommissionAmount)}</span>
+            <span>&nbsp;&nbsp;</span>
+            <span className={suffixC}>{t('general.defaultCurrency')}</span>
+          </Grid> */}
         </Grid>
       </Grid>
-    </div>
+    </Grid>
+    </>
   );
 };
 

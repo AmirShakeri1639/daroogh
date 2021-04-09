@@ -3,9 +3,6 @@ import MobileDiffViwer from './MobileDiffViwer';
 
 import {
   Button,
-  Card,
-  CardContent,
-  Container,
   Dialog,
   DialogContent,
   DialogActions,
@@ -19,22 +16,16 @@ import {
 } from '@material-ui/core';
 import { useClasses } from '../../classes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSun, faStar } from '@fortawesome/free-regular-svg-icons';
+import { faStar } from '@fortawesome/free-regular-svg-icons';
 import {
   faStar as solidStar,
   faStarHalfAlt,
   faMedal,
-  faVoteYea,
+  faLock,
 } from '@fortawesome/free-solid-svg-icons';
 import moment from 'jalali-moment';
 import { useTranslation } from 'react-i18next';
-import {
-  CardColors,
-  ColorEnum,
-  ExchangeStateEnum,
-  UserColors,
-  UserGrades,
-} from '../../../../../enum';
+import { CardColors, ColorEnum, ExchangeStateEnum, UserGrades } from '../../../../../enum';
 import { Convertor, isNullOrEmpty } from '../../../../../utils';
 import {
   getExpireDate,
@@ -65,6 +56,7 @@ interface Props {
   showActions?: boolean;
   cartA?: AllPharmacyDrugInterface[];
   cartB?: AllPharmacyDrugInterface[];
+  inExchange?: boolean;
 }
 
 // @ts-ignore
@@ -75,17 +67,20 @@ const DesktopCardContent = ({
   showActions = false,
   cartA = [],
   cartB = [],
+  inExchange = false,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { l } = Convertor;
   const currency = t('general.defaultCurrency');
 
   const {
+    exchangeId,
     viewExhcnage,
     basketCount,
     uBasketCount,
     is3PercentOk,
     setIs3PercentOk,
+    setFireDesctopScroll,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   if (item.id === 0) {
     item =
@@ -129,18 +124,19 @@ const DesktopCardContent = ({
       : 0;
   };
 
-  // const totalPriceA = calcPrice(cartA);
-  // const totalPriceB = calcPrice(cartB);
-
   const [totalPriceA, setTotalPriceA] = useState<number>(0);
   const [totalPriceB, setTotalPriceB] = useState<number>(0);
 
   React.useEffect(() => {
-    const basket1 = basketCount;
-    const basket2 = uBasketCount;
     setTotalPriceA(calcPrice(cartA));
     setTotalPriceB(calcPrice(cartB));
   }, [basketCount, uBasketCount]);
+
+  React.useEffect(() => {
+    if (inExchange && item?.currentPharmacyIsA && exchangeId !== 0) {
+      if (item?.numberA) item.numberA = 'A' + exchangeId;
+    }
+  }, [exchangeId]);
 
   let pharmacyKey: string = '';
   let pharmacyGrade: UserGrades = UserGrades.PLATINUM;
@@ -313,11 +309,14 @@ const DesktopCardContent = ({
         <Grid container className={cardTop}>
           <Grid item container xs={6} className={rowRight}>
             <Grid item xs={12} className={rowRight}>
-              <div>
-                {item.currentPharmacyIsA
-                  ? `${item.pharmacyProvinceB}، ${item.pharmacyCityB}`
-                  : `${item.pharmacyProvinceA}، ${item.pharmacyCityA}`}
-              </div>
+              {item &&
+                (item.currentPharmacyIsA ? item.pharmacyProvinceB : item.pharmacyProvinceA) && (
+                  <div>
+                    {item.currentPharmacyIsA
+                      ? `${item.pharmacyProvinceB}، ${item.pharmacyCityB}`
+                      : `${item.pharmacyProvinceA}، ${item.pharmacyCityA}`}
+                  </div>
+                )}
             </Grid>
           </Grid>
 
@@ -336,7 +335,7 @@ const DesktopCardContent = ({
               className={rowLeft}
               style={{ direction: 'ltr', color: ColorEnum.GOLD }}
             >
-              {stars()}
+              {star !== 0 && stars()}
             </Grid>
           </Grid>
           <Grid item xs={12} style={{ padding: '2px' }}>
@@ -389,11 +388,7 @@ const DesktopCardContent = ({
                     {!item.currentPharmacyIsA && t('exchange.otherSide')}
                   </>
                 }
-                body={
-                  <>
-                    { Convertor.thousandsSeperatorFa(totalPriceA) }
-                  </>
-                }
+                body={<>{Convertor.thousandsSeperatorFa(totalPriceA)}</>}
                 suffix={t('general.defaultCurrency')}
               />
             </Grid>
@@ -408,11 +403,7 @@ const DesktopCardContent = ({
                     {item.currentPharmacyIsA && t('exchange.otherSide')}
                   </>
                 }
-                body={
-                  <>
-                    { Convertor.thousandsSeperatorFa(totalPriceB) }
-                  </>
-                }
+                body={<>{Convertor.thousandsSeperatorFa(totalPriceB)}</>}
                 suffix={t('general.defaultCurrency')}
               />
             </Grid>
@@ -638,7 +629,7 @@ const DesktopCardContent = ({
         <>
           <Paper className={isSmallDevice ? mobileCardRoot : cardRoot}>
             <Grid container alignItems="center" spacing={1}>
-              <Grid item xs={10}>
+              <Grid item xs={(item.lockSuggestion && (item.state === 2 || item.state==12)) ? 9 : 10}>
                 <Typography
                   variant="h5"
                   component="h5"
@@ -667,14 +658,39 @@ const DesktopCardContent = ({
                 </Typography>
               </Grid>
               <Grid container xs={2}>
-                <Grid item xs={12}>
-                  <span className="txt-xs">کد تبادل</span>
-                </Grid>
-                <Grid item xs={12}>
-                  {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
-                </Grid>
+                {item && (item?.currentPharmacyIsA ? item?.numberA : item?.numberB) && (
+                  <>
+                    <Grid item xs={12}>
+                      <span className="txt-xs">کد تبادل</span>
+                    </Grid>
+                    <Grid item xs={12}>
+                      {item?.currentPharmacyIsA ? item?.numberA : item?.numberB}
+                    </Grid>
+                  </>
+                )}
               </Grid>
+              {item.lockSuggestion && (item.state === 2 || item.state==12) && (
+                <Grid item xs={1} style={{ color: ColorEnum.GOLD }}>
+                  <FontAwesomeIcon icon={faLock} size="lg" />
+                </Grid>
+              )}
             </Grid>
+            {full && differenceMessage && (item.state === 2 || item.state==12)  && item.lockSuggestion && !item.currentPharmacyIsA && (
+
+              <Grid
+                item
+                xs={12}
+                style={{
+                  border: `2px dotted ${ColorEnum.DeepBlue}`,
+                  padding: 4,
+                  textAlign: 'center',
+                }}
+              >
+                <span style={{ color: ColorEnum.Red, fontSize: 12 }}>
+                  {t('alerts.lockedEchangeAlert')}
+                </span>
+              </Grid>
+            )}
             <Divider />
 
             <div className={cardContent}>
@@ -682,7 +698,6 @@ const DesktopCardContent = ({
                 {item && (
                   <>
                     <ExchangeInfo />
-
                     <Divider style={{ marginBottom: 8 }} />
                     {showActions && <CardActions />}
                   </>
@@ -721,9 +736,10 @@ const DesktopCardContent = ({
         </>
       )}
       {isSmallDevice &&
-        full &&
-        (item.state === 1 || item.state === 2 || (item.state === 12 && !item.lockSuggestion)) && (
+        full 
+         && (
           <>
+          
             <Grid container xs={12} spacing={0} style={{ background: 'white', padding: 4 }}>
               <Grid item xs={12} spacing={0}>
                 <MobileDiffViwer
@@ -733,7 +749,7 @@ const DesktopCardContent = ({
                   is3PercentOk={is3PercentOk}
                 />
               </Grid>
-              {differenceMessage && (
+              {differenceMessage && (item.state === 1 || item.state==12)  && !item.lockSuggestion && (
                 <Grid
                   item
                   xs={12}
@@ -755,6 +771,21 @@ const DesktopCardContent = ({
                   })}
                 </Grid>
               )}
+              {differenceMessage && (item.state === 1 || item.state==12)  && item.lockSuggestion && !item.currentPharmacyIsA && (
+              <Grid
+                item
+                xs={12}
+                style={{
+                  border: `2px dotted ${ColorEnum.DeepBlue}`,
+                  padding: 4,
+                  textAlign: 'center',
+                }}
+              >
+                <span style={{ color: ColorEnum.Red, fontSize: 12 }}>
+                  {t('alerts.lockedEchangeAlert')}
+                </span>
+              </Grid>
+            )}
             </Grid>
           </>
         )}
@@ -765,14 +796,17 @@ const DesktopCardContent = ({
             onClose={(): void => {
               setShowSurveyLoading(false);
               setShowSurvey(false);
+              // setFireDesctopScroll(true);
             }}
           />
         ) : (
           <Survey
             exchangeIdProp={item.id}
-            onClose={(): void => {
+            redirect={false}
+            onClose={(e: number | undefined): void => {
               setShowSurveyLoading(false);
               setShowSurvey(false);
+              item.surveyID = e;
             }}
           />
         ))}

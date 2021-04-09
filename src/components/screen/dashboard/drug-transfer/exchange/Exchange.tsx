@@ -133,39 +133,38 @@ const Exchange: React.FC<ReduxProps> = (props) => {
       <Hidden smDown>
         {(viewExhcnage === undefined ||
           viewExhcnage.state === 1 ||
-          viewExhcnage.state === 2 ||
-          (viewExhcnage.state === 12 && !viewExhcnage.lockSuggestion)) && (
+          (viewExhcnage.state === 2 && !viewExhcnage.lockSuggestion && !viewExhcnage.currentPharmacyIsA) ||
+          (viewExhcnage.state === 12 && !viewExhcnage.lockSuggestion && !viewExhcnage.currentPharmacyIsA)) && (
           <>
             <Grid container item spacing={1}>
-            <Grid item xs={12} >
-              <span>{t('alerts.ExchangeAlertPart1')}</span>
-              <span style={{ fontSize: 15, color: `${ColorEnum.DeepBlue}` , fontStyle:'italic' }}>
-                {t('alerts.ExchangeAlertPart2')}
-              </span>
-              <span>{t('alerts.ExchangeAlertPart3')}</span>
-              <span style={{ fontSize: 15, color: `${ColorEnum.DeepBlue}` , fontStyle:'italic' }}>
-                {t('alerts.ExchangeAlertPart4')}
-              </span>
-              <span>{t('alerts.ExchangeAlertPart5')}</span>
-            </Grid>
-            <Grid item xs={12}>
-              <span style={{ fontSize: 15, color: '#cc0606' }}>
-                {t('alerts.ExchangeAlertPart6')}
-              </span>
-            </Grid>
+              <Grid item xs={12}>
+                <span>{t('alerts.ExchangeAlertPart1')}</span>
+                <span style={{ fontSize: 15, color: `${ColorEnum.DeepBlue}`, fontStyle: 'italic' }}>
+                  {t('alerts.ExchangeAlertPart2')}
+                </span>
+                <span>{t('alerts.ExchangeAlertPart3')}</span>
+                <span style={{ fontSize: 15, color: `${ColorEnum.DeepBlue}`, fontStyle: 'italic' }}>
+                  {t('alerts.ExchangeAlertPart4')}
+                </span>
+                <span>{t('alerts.ExchangeAlertPart5')}</span>
+              </Grid>
+              <Grid item xs={12}>
+                <span style={{ fontSize: 15, color: '#cc0606' }}>
+                  {t('alerts.ExchangeAlertPart6')}
+                </span>
+              </Grid>
 
-            <Grid item xs={12} style={{ padding: 2 }}>
-              <Divider />
+              <Grid item xs={12} style={{ padding: 2 }}>
+                <Divider />
+              </Grid>
             </Grid>
-            </Grid>
-            
           </>
         )}
       </Hidden>
 
       <Grid item xs={12} sm={4} md={4}>
         <Grid container className={stickyRecommendation}>
-          <DesktopCardContent item={viewExhcnage} />
+          <DesktopCardContent item={viewExhcnage} inExchange={true} />
           {exchangeStateCode !== 1 && (
             <span
               style={{

@@ -246,7 +246,7 @@ const CounterButton: React.FC<ExCardContentProps> = (
     </div>
   ) : (
     <>
-      <span style={{ fontSize: 13 }}>تعداد اقلام انتخاب شده: </span>
+      <span style={{ fontSize: 13 }}>اقلام انتخابی : </span>
       <span style={{ fontSize: 17, fontWeight: 'bold', color: 'green' }}>
         {pharmacyDrug?.currentCnt}
       </span>
