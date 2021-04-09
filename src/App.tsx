@@ -364,10 +364,11 @@ const App = (): JSX.Element => {
 
             <Route
               render={ (e): any => {
+                if (e.location.pathname === '/') return
                 if (!Object.values(routes).some(
                   i => e.location.pathname.startsWith(i)
                 )) {
-                  return <Error404 />;
+                  return <Error404 />
                 }
               } }
             />
