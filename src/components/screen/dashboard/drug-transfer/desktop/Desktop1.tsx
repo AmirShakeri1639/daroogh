@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ViewExchangeInterface, LabelValue } from '../../../../../interfaces';
-import { Container, Grid, useMediaQuery, useTheme } from '@material-ui/core';
+import {
+  Container,
+  createStyles,
+  Grid,
+  makeStyles,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import DesktopToolbox from './DesktopToolbox';
 import { useTranslation } from 'react-i18next';
 import { Exchange } from '../../../../../services/api';
@@ -31,7 +38,28 @@ const screenWidth = {
   desktop: 1280,
 };
 
+const useStyle = makeStyles((theme) =>
+  createStyles({
+    desktopDiv: {
+      overflowY: 'auto',
+      overflowX: 'hidden',
+      minHeight: 'calc(100vh - 75px)',
+      maxHeight: 'calc(100vh - 75px)',
+      padding: 5,
+      borderRadius: 10,
+      boxShadow: 'rgba(0,0,0,0.8) 0 0 10px',
+    },
+    container: {
+      padding: 0,
+      paddingRight: 5,
+      paddingLeft: 5,
+      maxWidth: '99%',
+    },
+  })
+);
+
 const Desktop1: React.FC = () => {
+  const { desktopDiv, container } = useStyle();
   const { getDashboard } = new Exchange();
   const { t } = useTranslation();
   const history = useHistory();
@@ -129,7 +157,26 @@ const Desktop1: React.FC = () => {
     refetch();
   }, [queryFilter]);
 
+  const screenWidth = {
+    xs: 0,
+    sm: 600,
+    md: 960,
+    lg: 1280,
+    xl: 1920,
+    tablet: 640,
+    laptop: 1024,
+    desktop: 1280,
+  };
+
+  const [onScroll, setOnScroll] = React.useState<boolean>(true);
+  const onScrollRef = React.useRef(onScroll);
+  const setOnScrollRef = (data: boolean) => {
+    onScrollRef.current = data;
+    setOnScroll(data);
+  };
+
   const handleScroll = (e: any): any => {
+    // if(!onScrollRef.current) return;
     const el = e.target;
     const pixelsBeforeEnd = 200;
     const checkDevice =
@@ -148,14 +195,27 @@ const Desktop1: React.FC = () => {
     }
   };
 
-  React.useEffect(() => {
-    document.addEventListener('scroll', debounce(handleScroll, 100), {
-      capture: true,
-    });
-    return (): void => {
-      document.removeEventListener('scroll', debounce(handleScroll, 100), {
+  const addScrollListener = (): void => {
+    document
+      .getElementById('desktop-div')
+      ?.addEventListener('scroll', debounce(handleScroll, 100), {
         capture: true,
       });
+  };
+
+  const removeScrollListener = (): void => {
+    setOnScrollRef(false);
+    document
+      .getElementById('desktop-div')
+      ?.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      });
+  };
+
+  React.useEffect(() => {
+    addScrollListener();
+    return (): void => {
+      removeScrollListener();
     };
   }, []);
 
@@ -243,23 +303,25 @@ const Desktop1: React.FC = () => {
   };
 
   return (
-    <Container>
-      <Grid item={true} xs={12}>
-        <Grid container spacing={2}>
-          <Grid item={true} xs={12}>
-            <DesktopToolbox
-              filterList={stateFilterList}
-              onFilterChanged={filterChanged}
-              onSortSelected={sortSelected}
-            />
+    <Container className={container}>
+      <div id="desktop-div" className={desktopDiv}>
+        <Grid item={true} xs={12}>
+          <Grid container spacing={2}>
+            <Grid item={true} xs={12}>
+              <DesktopToolbox
+                filterList={stateFilterList}
+                onFilterChanged={filterChanged}
+                onSortSelected={sortSelected}
+              />
+            </Grid>
           </Grid>
-        </Grid>
 
-        <Grid container spacing={3}>
-          {<CardListGenerator />}
+          <Grid container spacing={3}>
+            {<CardListGenerator />}
+          </Grid>
+          <CircleBackdropLoading isOpen={loading} />
         </Grid>
-        <CircleBackdropLoading isOpen={loading} />
-      </Grid>
+      </div>
     </Container>
   );
 };

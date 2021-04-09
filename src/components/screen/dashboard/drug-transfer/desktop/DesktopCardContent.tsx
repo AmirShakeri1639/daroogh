@@ -80,6 +80,7 @@ const DesktopCardContent = ({
     uBasketCount,
     is3PercentOk,
     setIs3PercentOk,
+    setFireDesctopScroll,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext);
   if (item.id === 0) {
     item =
@@ -795,14 +796,16 @@ const DesktopCardContent = ({
             onClose={(): void => {
               setShowSurveyLoading(false);
               setShowSurvey(false);
+              // setFireDesctopScroll(true);
             }}
           />
         ) : (
           <Survey
             exchangeIdProp={item.id}
-            onClose={(): void => {
+            onClose={(e: number | undefined): void => {
               setShowSurveyLoading(false);
               setShowSurvey(false);
+              item.surveyID = e;
             }}
           />
         ))}
