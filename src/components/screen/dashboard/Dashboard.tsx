@@ -140,6 +140,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
+    background: ColorEnum.mainBack,
   },
   userContainer: {
     display: 'flex',
