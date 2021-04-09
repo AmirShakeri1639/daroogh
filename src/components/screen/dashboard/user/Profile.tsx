@@ -455,7 +455,6 @@ const Profile: React.FC = () => {
                       label={ t('user.notifActive') }
                     />
                   </Grid>
-                  { console.log('pharmacy:', pharmacy) }
                   { pharmacy &&
                     <div style={ { color: ColorEnum.Gray, width: '100%' } }>
                       <div className={ spacing3 }></div>
