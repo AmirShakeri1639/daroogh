@@ -9,4 +9,5 @@ export class NewPharmacyUserData {
   public birthDate: string = '';
   public smsActive: boolean = false;
   public notifActive: boolean = false;
+  public gender: number = 0;
 }
