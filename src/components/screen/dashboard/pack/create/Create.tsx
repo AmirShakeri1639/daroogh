@@ -36,7 +36,7 @@ import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
 import { useParams } from 'react-router-dom';
 import { DrugType } from '../../../../../enum/pharmacyDrug';
-import Calculator from '../../calculator/Calculator'
+import Calculator from '../../calculator/Calculator';
 
 // @ts-ignore
 import jalaali from 'jalaali-js';
@@ -215,7 +215,7 @@ const Create: React.FC = () => {
   const [drugsPack, setDrugsPack] = useState<PharmacyDrugSupplyList[]>([]);
   const [storedPackId, setStoredPackId] = useState<number | null>(null);
   const [showError, setShowError] = useState(false);
-  const [calculatedValue , setCalculatedValue] = useState<number>(0);
+  const [calculatedValue, setCalculatedValue] = useState<number>(0);
 
   const theme = useTheme();
 
@@ -227,13 +227,11 @@ const Create: React.FC = () => {
 
   const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
   const toggleIsOpenCalculator = (): void => {
-    
     setIsOpenCalculator((v) => !v);
     if (isOpenCalculator) {
       window.history.back();
     }
   };
-
 
   const { packId } = useParams() as { packId: string };
 
@@ -636,11 +634,10 @@ const Create: React.FC = () => {
 
     return data;
   };
-  
-  const selectedCalculaterValueHandler = (v:number):void=>{
-    setCalculatedValue(v);
 
-}
+  const selectedCalculaterValueHandler = (v: number): void => {
+    setCalculatedValue(v);
+  };
   const formHandler = async (): Promise<any> => {
     try {
       if (!isValidInputs() || selectedCategory === '' || isWrongDate || !hasMinimumDate) {
@@ -661,7 +658,7 @@ const Create: React.FC = () => {
       ];
 
       await submition(data);
-      setCalculatedValue(0)
+      setCalculatedValue(0);
     } catch (e) {
       errorHandler(e);
     }
@@ -769,15 +766,16 @@ const Create: React.FC = () => {
         </DialogContent>
       </CDialog>
 
-
       <CDialog
         fullScreen={fullScreen}
         isOpen={isOpenModal}
-        onClose={(): void => {setIsOpenModal(false);
-          setCalculatedValue(0)
+        onClose={(): void => {
+          setIsOpenModal(false);
+          setCalculatedValue(0);
         }}
-        onOpen={(): void => {setIsOpenModal(true);
-          setCalculatedValue(0)
+        onOpen={(): void => {
+          setIsOpenModal(true);
+          setCalculatedValue(0);
         }}
         formHandler={formHandler}
         fullWidth
@@ -821,19 +819,21 @@ const Create: React.FC = () => {
                   <Input
                     placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
                     numberFormat
-                    value={calculatedValue === 0? amount : calculatedValue }
-                      className="w-100"
-                      label={t('general.price')}
-                      onChange={(e): void => {
-                        setAmount(e);
-                        setCalculatedValue(0)
-                      }}
+                    value={calculatedValue === 0 ? amount : calculatedValue}
+                    className="w-100"
+                    label={t('general.price')}
+                    onChange={(e): void => {
+                      setAmount(e);
+                      setCalculatedValue(0);
+                    }}
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button onClick={(): void => {
-                       toggleIsOpenCalculator()
-                  }}>
+                  <Button
+                    onClick={(): void => {
+                      toggleIsOpenCalculator();
+                    }}
+                  >
                     <FontAwesomeIcon
                       style={{ color: ColorEnum.DeepBlue, margin: 4 }}
                       icon={faCalculator}
