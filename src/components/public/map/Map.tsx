@@ -66,7 +66,6 @@ const Map: React.FC<Props> = (props) => {
   }, [])
 
   useEffect(() => {
-    console.log('%cinUSE effect of map', 'background: #fea; padding: 20px')
     const initializeMap = (setMap: any, mapContainer: any): any => {
       const defPos = pos ?? defaultLatLng ?? LATLNG
       const map = new mapboxgl.Map({
