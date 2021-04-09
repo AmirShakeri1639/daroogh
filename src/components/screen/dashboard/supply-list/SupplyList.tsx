@@ -42,8 +42,7 @@ import { ListOptions } from '../../../public/auto-complete/AutoComplete';
 import styled from 'styled-components';
 import CDialog from 'components/public/dialog/Dialog';
 import { ColorEnum } from 'enum';
-import Calculator from '../calculator/Calculator'
-import { Console } from 'console';
+import Calculator from '../calculator/Calculator';
 
 const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
@@ -184,10 +183,10 @@ const useStyle = makeStyles((theme) =>
       justifyContent: 'center',
       marginTop: 8,
     },
-    input:{
-      width:80,
-      marginLeft:8,
-      marginRight:8,
+    input: {
+      width: 80,
+      marginLeft: 8,
+      marginRight: 8,
     },
   })
 );
@@ -219,8 +218,6 @@ const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} 
   }
 `;
 
-
-
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
@@ -241,7 +238,7 @@ const SupplyList: React.FC = () => {
     id: -1,
     genericName: '',
   });
-  const [calculatedValue , setCalculatedValue] = useState<number>(-1);
+  const [calculatedValue, setCalculatedValue] = useState<number>(-1);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
@@ -258,16 +255,21 @@ const SupplyList: React.FC = () => {
   const { t } = useTranslation();
   const queryCache = useQueryCache();
 
+  const resetValues = () => {
+    dispatch({ type: 'reset' });
+    setSelectedDay('');
+    setSelectedMonth('');
+    setSelectedYear('s');
+  };
+
   const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
   const toggleIsOpenCalculator = (): void => {
-    
     setIsOpenCalculator((v) => !v);
     if (isOpenCalculator) {
       window.history.back();
     }
   };
   const [selectedPrice, setSelectedPrice] = useState<number>(0);
-
 
   const {
     contentContainer,
@@ -541,13 +543,10 @@ const SupplyList: React.FC = () => {
 
   const memoItems = useMemo(() => displayHandler(), [data, filteredItems]);
 
-  const calculatorFormHandler = async (): Promise<any> => {
+  const selectedCalculaterValueHandler = (v: number): void => {
+    setCalculatedValue(v);
   };
 
-  const selectedCalculaterValueHandler = (v:number):void=>{
-      setCalculatedValue(v);
-
-  }
   const formHandler = async (): Promise<any> => {
     try {
       if (
@@ -593,11 +592,13 @@ const SupplyList: React.FC = () => {
       //@ts-ignore
       state.drugID = selectedDrug?.value;
       await _savePharmacyDrug(state);
-      setCalculatedValue(-1)
+      setCalculatedValue(-1);
     } catch (e) {
       errorHandler(e);
     }
   };
+
+  const autoCompleteRef = useRef<any>();
 
   return (
     <>
@@ -649,20 +650,25 @@ const SupplyList: React.FC = () => {
         hideSubmit={true}
         canceleButtonTitle="درج نتیجه محاسبه"
         // formHandler={(): void => setIsOpenCalculator(false)}
-
       >
         <DialogContent>
-          <Calculator setCalculatedValue={selectedCalculaterValueHandler}/>
+          <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
         </DialogContent>
       </CDialog>
 
       <CDialog
         fullScreen={fullScreen}
         isOpen={isOpenModalOfNewList}
-        onClose={(): void =>{ setIsOpenModalOfNewList(false)
-                            setCalculatedValue(-1)}}
-        onOpen={(): void => {setIsOpenModalOfNewList(true)
-          setCalculatedValue(-1)}}
+        onClose={(): void => {
+          setIsOpenModalOfNewList(false);
+          setCalculatedValue(-1);
+          resetValues();
+          setSelectedDrug(null);
+        }}
+        onOpen={(): void => {
+          setIsOpenModalOfNewList(true);
+          setCalculatedValue(-1);
+        }}
         formHandler={formHandler}
         fullWidth
       >
@@ -673,7 +679,7 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <AutoComplete
                   disable={state?.id !== 0}
-                  ref={useRef()}
+                  ref={autoCompleteRef}
                   isLoading={isLoading}
                   onChange={debounce((e) => searchDrugs(e.target.value), 500)}
                   loadingText={t('general.loading')}
@@ -703,13 +709,13 @@ const SupplyList: React.FC = () => {
 
               <Grid item container xs={12} className={sectionContainer}>
                 <Grid xs={12} item>
-                <span className="text-danger txt-xs">{t('alerts.priceTypeAlert')}</span>
+                  <span className="text-danger txt-xs">{t('alerts.priceTypeAlert')}</span>
                 </Grid>
                 <Grid item xs={9}>
                   <Input
                     placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
                     numberFormat
-                    value={calculatedValue === -1 ?  state?.amount : calculatedValue}
+                    value={calculatedValue === -1 ? state?.amount : calculatedValue}
                     className="w-100"
                     valueLimit={(value) => {
                       if (value.value > 0 || value.value === '') {
@@ -719,17 +725,16 @@ const SupplyList: React.FC = () => {
                     label={t('general.price')}
                     onChange={(e): void => {
                       dispatch({ type: 'amount', value: e });
-                      setCalculatedValue(-1)
-
-                    }
-                    
-                  }
+                      setCalculatedValue(-1);
+                    }}
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button onClick={(): void => {
-                    toggleIsOpenCalculator()
-                  }}>
+                  <Button
+                    onClick={(): void => {
+                      toggleIsOpenCalculator();
+                    }}
+                  >
                     <FontAwesomeIcon
                       style={{ color: ColorEnum.DeepBlue, margin: 4 }}
                       icon={faCalculator}
@@ -742,52 +747,43 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item xs={12}>
-                    <span className="text-danger txt-xs">{t('alerts.offerDescriptions')}
-                    </span>
+                    <span className="text-danger txt-xs">{t('alerts.offerDescriptions')}</span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
-                      <span>به ازای</span>
+                    <span>به ازای</span>
 
-                      
-                      <Input
-                        type="number"
-                        className= {input}
-                        value={state?.offer2}
-                        placeholder="تعداد"
-                        onChange={(e): void => {
-                          const val = e.target.value;
-                          if (Number(val) >= 1 || Number(state?.offer2) >= 1) {
-                            dispatch({
-                              type: 'offer2',
-                              value: val,
-                            });
-                          }
-                        }}
-                      />
-                      <span>تا</span>
-
-                        
-
-
-                    
-                      <Input
-                        type="number"
-                        className= {input}
-
-                        value={state?.offer1}
-                        placeholder="تعداد"
-                        onChange={(e): void => {
-                          const val = e.target.value;
-                          if (Number(val) >= 1 || Number(state?.offer1) >= 1) {
-                            dispatch({
-                              type: 'offer1',
-                              value: val,
-                            });
-                          }
-                        }}
-                      />
-                      {t('general.gift')}
-                    
+                    <Input
+                      type="number"
+                      className={input}
+                      value={state?.offer2}
+                      placeholder="تعداد"
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (Number(val) >= 1 || Number(state?.offer2) >= 1) {
+                          dispatch({
+                            type: 'offer2',
+                            value: val,
+                          });
+                        }
+                      }}
+                    />
+                    <span>تا</span>
+                    <Input
+                      type="number"
+                      className={input}
+                      value={state?.offer1}
+                      placeholder="تعداد"
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (Number(val) >= 1 || Number(state?.offer1) >= 1) {
+                          dispatch({
+                            type: 'offer1',
+                            value: val,
+                          });
+                        }
+                      }}
+                    />
+                    {t('general.gift')}
                   </Grid>
                 </Grid>
               </Grid>
