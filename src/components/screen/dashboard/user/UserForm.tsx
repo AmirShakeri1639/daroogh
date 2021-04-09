@@ -6,6 +6,10 @@ import {
   TextField,
   FormControlLabel,
   Switch,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { ActionInterface } from '../../../../interfaces';
@@ -73,6 +77,7 @@ const initialState = {
   active: false,
   smsActive: true,
   notifActive: true,
+  gender: 0,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -138,6 +143,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         notifActive: value,
       };
+    case 'gender':
+      return {
+        ...state,
+        gender: value,
+      };
     case 'user':
       return value;
     case 'reset':
@@ -148,6 +158,7 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 const UserForm: React.FC<UserDataProps> = (props) => {
+  console.log('Userdata props: ', props)
   const [state, dispatch] = useReducer(reducer, initialState);
   const [showError, setShowError] = useState<boolean>(false);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
@@ -227,6 +238,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       active: state.active,
       smsActive: state.smsActive,
       notifActive: state.notifActive,
+      gender: state.gender,
     };
     await _saveNewUser(data);
   };
@@ -262,50 +274,50 @@ const UserForm: React.FC<UserDataProps> = (props) => {
 
   return (
     <>
-      <form autoComplete="off" className={formContainer} onSubmit={formHandler}>
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={6} xl={3}>
+      <form autoComplete="off" className={ formContainer } onSubmit={ formHandler }>
+        <Grid container spacing={ 1 }>
+          <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
-              error={state.name.trim().length < 2 && showError}
+              error={ state.name.trim().length < 2 && showError }
               label="نام کاربر"
               size="small"
               className="w-100"
               variant="outlined"
-              value={state.name}
-              onChange={(e): void =>
+              value={ state.name }
+              onChange={ (e): void =>
                 dispatch({ type: 'name', value: e.target.value })
               }
             />
           </Grid>
-          <Grid item xs={12} sm={6} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
               className="w-100"
-              error={state.family.trim().length < 2 && showError}
+              error={ state.family.trim().length < 2 && showError }
               label="نام خانوادگی کاربر"
               size="small"
               variant="outlined"
-              value={state.family}
-              onChange={(e): void =>
+              value={ state.family }
+              onChange={ (e): void =>
                 dispatch({ type: 'family', value: e.target.value })
               }
             />
           </Grid>
-          <Grid item xs={12} sm={6} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
               className="w-100"
-              error={state.mobile.trim().length < 11 && showError}
+              error={ state.mobile.trim().length < 11 && showError }
               label="موبایل"
               type="number"
               size="small"
               variant="outlined"
-              value={state.mobile}
-              onChange={(e): void =>
+              value={ state.mobile }
+              onChange={ (e): void =>
                 dispatch({ type: 'mobile', value: e.target.value })
               }
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
               error={
                 state?.email?.length > 0 &&
@@ -317,45 +329,45 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               type="email"
               size="small"
               variant="outlined"
-              value={state.email}
-              onChange={(e): void =>
+              value={ state.email }
+              onChange={ (e): void =>
                 dispatch({ type: 'email', value: e.target.value })
               }
             />
           </Grid>
-          <Grid item xs={12} sm={6} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
-              error={state?.userName?.length < 1 && showError}
+              error={ state?.userName?.length < 1 && showError }
               label="نام کاربری"
               size="small"
               className="w-100"
               variant="outlined"
               autoComplete="off"
-              value={state.userName}
-              onChange={(e): void =>
+              value={ state.userName }
+              onChange={ (e): void =>
                 dispatch({ type: 'userName', value: e.target.value })
               }
             />
           </Grid>
 
-          {isVisibleField('password') && (
-            <Grid item xs={12} sm={6} xl={3}>
+          { isVisibleField('password') && (
+            <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
               <TextField
-                error={state?.password?.length < 3 && showError}
+                error={ state?.password?.length < 3 && showError }
                 label="کلمه عبور"
                 className="w-100"
                 autoComplete="new-password"
                 type="password"
                 size="small"
                 variant="outlined"
-                value={state.password}
-                onChange={(e): void =>
+                value={ state.password }
+                onChange={ (e): void =>
                   dispatch({ type: 'password', value: e.target.value })
                 }
               />
             </Grid>
-          )}
-          <Grid item xs={12} sm={6} xl={3}>
+          ) }
+          <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
               error={
                 state?.nationalCode !== '' &&
@@ -367,59 +379,59 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               type="text"
               size="small"
               variant="outlined"
-              value={state.nationalCode}
-              onChange={(e): void =>
+              value={ state.nationalCode }
+              onChange={ (e): void =>
                 dispatch({ type: 'nationalCode', value: e.target.value })
               }
             />
           </Grid>
-          <Grid item xs={12} sm={6} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
               label="تاریخ تولد"
-              inputProps={{
+              inputProps={ {
                 readOnly: true,
-              }}
+              } }
               className="w-100"
               type="text"
               size="small"
               variant="outlined"
-              value={state?.birthDate}
-              onClick={toggleIsOpenDatePicker}
+              value={ state?.birthDate }
+              onClick={ toggleIsOpenDatePicker }
             />
           </Grid>
-          <Grid item xs={12} sm={6} xl={3}>
+          <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <Autocomplete
-              loading={isLoading}
+              loading={ isLoading }
               id="pharmacyList"
-              noOptionsText={t('general.noData')}
-              loadingText={t('general.loading')}
-              options={options}
-              value={state?.pharmacyID}
-              onChange={(event, value, reason): void => {
+              noOptionsText={ t('general.noData') }
+              loadingText={ t('general.loading') }
+              options={ options }
+              value={ state?.pharmacyID }
+              onChange={ (event, value, reason): void => {
                 dispatch({ type: 'pharmacyID', value });
-              }}
-              onInputChange={debounce(
+              } }
+              onInputChange={ debounce(
                 (e, newValue) => searchPharmacyByName(newValue),
                 500
-              )}
-              getOptionLabel={(option: any) => option.name ?? ''}
+              ) }
+              getOptionLabel={ (option: any) => option.name ?? '' }
               openOnFocus
-              renderInput={(params) => (
+              renderInput={ (params) => (
                 <TextField
-                  {...params}
+                  { ...params }
                   size="small"
-                  label={t('pharmacy.name')}
+                  label={ t('pharmacy.name') }
                   variant="outlined"
                 />
-              )}
+              ) }
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={ 12 } sm={ 6 }>
             <FormControlLabel
               control={
                 <Switch
-                  checked={state.active}
-                  onChange={(e): void =>
+                  checked={ state.active }
+                  onChange={ (e): void =>
                     dispatch({
                       type: 'active',
                       value: e.target.checked,
@@ -427,18 +439,44 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                   }
                 />
               }
-              label={`${t('user.user')} ${
-                state.active ? t('general.active') : t('general.deActive')
-              }`}
+              label={ `${t('user.user')} ${state.active ? t('general.active') : t('general.deActive')
+                }` }
             />
           </Grid>
-
-          <Grid item xs={12}>
+          <Grid item xs={ 12 } sm={ 6 }>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">
+                { t('general.gender') }
+              </FormLabel>
+              <RadioGroup
+                row
+                name="gender"
+                value={ state.gender }
+                onChange={ (e: any): void =>
+                  dispatch({ type: 'gender', value: e.target.value })
+                }
+              >
+                <FormControlLabel
+                  value="0"
+                  checked={ state.gender == 0 }
+                  control={ <Radio /> }
+                  label={ t('GenderType.Male') }
+                />
+                <FormControlLabel
+                  value="1"
+                  checked={ state.gender == 1 }
+                  control={ <Radio /> }
+                  label={ t('GenderType.Female') }
+                />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid item xs={ 12 } sm={ 6 }>
             <FormControlLabel
               control={
                 <Switch
-                  checked={state.smsActive}
-                  onChange={(e): void =>
+                  checked={ state.smsActive }
+                  onChange={ (e): void =>
                     dispatch({
                       type: 'smsActive',
                       value: e.target.checked,
@@ -446,16 +484,16 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                   }
                 />
               }
-              label={t('user.smsActive')}
+              label={ t('user.smsActive') }
             />
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={ 12 } sm={ 6 }>
             <FormControlLabel
               control={
                 <Switch
-                  checked={state.notifActive}
-                  onChange={(e): void =>
+                  checked={ state.notifActive }
+                  onChange={ (e): void =>
                     dispatch({
                       type: 'notifActive',
                       value: e.target.checked,
@@ -463,18 +501,18 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                   }
                 />
               }
-              label={t('user.notifActive')}
+              label={ t('user.notifActive') }
             />
           </Grid>
 
-          <Grid container spacing={1} className={buttonContainer}>
-            <Grid item xs={12}>
+          <Grid container spacing={ 1 } className={ buttonContainer }>
+            <Grid item xs={ 12 }>
               <Button
                 type="submit"
                 color="secondary"
                 variant="contained"
-                className={cancelButton}
-                onClick={(): void => {
+                className={ cancelButton }
+                onClick={ (): void => {
                   dispatch({ type: 'reset' });
                   setShowError(false);
                   if (onCancel) {
@@ -482,29 +520,29 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                   } else {
                     window.history.go(-1);
                   }
-                }}
+                } }
               >
-                {t('general.cancel')}
+                { t('general.cancel') }
               </Button>
               <Button
                 type="submit"
                 variant="contained"
                 color="primary"
-                className={addButton}
+                className={ addButton }
               >
-                {isLoadingNewUser ? t('general.pleaseWait') : t('action.save')}
+                { isLoadingNewUser ? t('general.pleaseWait') : t('action.save') }
               </Button>
             </Grid>
           </Grid>
         </Grid>
       </form>
 
-      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
+      <Modal open={ isOpenDatePicker } toggle={ toggleIsOpenDatePicker }>
         <DateTimePicker
-          selectedDateHandler={(e): void => {
+          selectedDateHandler={ (e): void => {
             dispatch({ type: 'birthDate', value: e });
             toggleIsOpenDatePicker();
-          }}
+          } }
         />
       </Modal>
     </>

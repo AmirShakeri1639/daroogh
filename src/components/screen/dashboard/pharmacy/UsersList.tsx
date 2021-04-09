@@ -27,9 +27,11 @@ import {
   Switch,
   Fab,
   Paper,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from '@material-ui/core';
 import Input from '../../../public/input/Input';
-import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   ActionInterface,
@@ -172,6 +174,7 @@ const initialState: NewPharmacyUserData = {
   birthDate: '',
   smsActive: false,
   notifActive: false,
+  gender: 0,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -228,6 +231,11 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         notifActive: value,
+      };
+    case 'gender':
+      return {
+        ...state,
+        gender: value,
       };
     case 'reset':
       return initialState;
@@ -334,11 +342,7 @@ const UsersList: React.FC = () => {
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
   const {
-    createUserBtn,
-    buttonContainer,
     formContent,
-    cancelButton,
-    submitBtn,
     userRoleIcon,
     fab,
     searchIconButton,
@@ -378,6 +382,7 @@ const UsersList: React.FC = () => {
       roleUser: selectedRoles.map((item) => ({ roleID: item })),
       smsActive: state.smsActive,
       notifActive: state.notifActive,
+      gender: state.gender,
     };
 
     await _addPharmacyUser(data);
@@ -412,6 +417,15 @@ const UsersList: React.FC = () => {
         searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
+      },
+      {
+        field: 'gender',
+        title: t('general.gender'),
+        type: 'number',
+        render: (row: any): any => 
+          row.gender == 0 
+            ? t('general.male') 
+            : row.gender == 1 ? t('general.female') : t('general.unknown')
       },
       {
         field: 'email',
@@ -493,6 +507,7 @@ const UsersList: React.FC = () => {
       userName,
       smsActive,
       notifActive,
+      gender,
     } = user;
 
     await _editUser({
@@ -508,6 +523,7 @@ const UsersList: React.FC = () => {
       pharmacyID,
       smsActive,
       notifActive,
+      gender,
     });
   };
 
@@ -527,6 +543,7 @@ const UsersList: React.FC = () => {
       pharmacyID,
       smsActive,
       notifActive,
+      gender,
     } = row;
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'family', value: family });
@@ -539,6 +556,7 @@ const UsersList: React.FC = () => {
     dispatch({ type: 'active', value: active });
     dispatch({ type: 'smsActive', value: smsActive });
     dispatch({ type: 'notifActive', value: notifActive });
+    dispatch({ type: 'gender', value: gender });
     dispatch({
       type: 'pharmacyID',
       value: { id: pharmacyID, name: pharmacyName },
@@ -618,7 +636,6 @@ const UsersList: React.FC = () => {
   };
   const { isLoading, data, isFetched } = useQuery(
     UserQueryEnum.GET_ALL_USERS,
-
     () => getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
@@ -627,7 +644,6 @@ const UsersList: React.FC = () => {
           setNoDataRef(true);
         } else {
           //console.log(result.items);
-
           setListRef(result.items);
         }
       },
@@ -976,6 +992,34 @@ const UsersList: React.FC = () => {
                   label={t('user.notifActive')}
                 />
               </Grid>
+            </Grid>
+            <Grid xs={ 12 }>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">
+                  { t('general.gender') }
+                </FormLabel>
+                <RadioGroup
+                  row
+                  name="gender"
+                  value={ state.gender }
+                  onChange={ (e: any): void =>
+                    dispatch({ type: 'gender', value: e.target.value })
+                  }
+                >
+                  <FormControlLabel
+                    value="0"
+                    checked={ state.gender == 0 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Male') }
+                  />
+                  <FormControlLabel
+                    value="1"
+                    checked={ state.gender == 1 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Female') }
+                  />
+                </RadioGroup>
+              </FormControl>
             </Grid>
           </DialogContentText>
         </DialogContent>
