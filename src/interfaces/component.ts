@@ -218,6 +218,8 @@ export interface TextWithTitlePropsInterface {
   body: string | React.ReactNode;
   suffix?: string | React.ReactNode;
   isSmal?:boolean ;
+  dateSuffix? : string | React.ReactNode;
+  showDateSuffix?:boolean;
 }
 
 export interface BackDropPropsInterface {
