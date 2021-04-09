@@ -41,6 +41,7 @@ interface Props {
   hideSubmit?: boolean;
   modalAlt?: boolean;
   hideAll?: boolean;
+  canceleButtonTitle? : string;
 }
 
 const modalQueryString = '?modal=true';
@@ -61,6 +62,7 @@ const CDialog: React.FC<Props> = ({
   hideSubmit,
   hideAll,
   modalAlt,
+  canceleButtonTitle,
 }) => {
   useEffect(() => {
     const onHashChange = (): void => {
@@ -121,7 +123,7 @@ const CDialog: React.FC<Props> = ({
             <Grid item xs={7} sm={8} />
             <Grid item xs={2} sm={2}>
               <StyledButton type="button" onClick={onCloseHandler} className={cancelButton}>
-                {t('general.close')}
+                {canceleButtonTitle ? canceleButtonTitle : t('general.close')}
               </StyledButton>
             </Grid>
             <Grid item xs={3} sm={2}>

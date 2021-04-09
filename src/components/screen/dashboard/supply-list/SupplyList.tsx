@@ -42,6 +42,8 @@ import { ListOptions } from '../../../public/auto-complete/AutoComplete';
 import styled from 'styled-components';
 import CDialog from 'components/public/dialog/Dialog';
 import { ColorEnum } from 'enum';
+import Calculator from '../calculator/Calculator'
+import { Console } from 'console';
 
 const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
@@ -217,6 +219,8 @@ const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} 
   }
 `;
 
+
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
@@ -237,6 +241,7 @@ const SupplyList: React.FC = () => {
     id: -1,
     genericName: '',
   });
+  const [calculatedValue , setCalculatedValue] = useState<number>(-1);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
@@ -252,6 +257,17 @@ const SupplyList: React.FC = () => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const queryCache = useQueryCache();
+
+  const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
+  const toggleIsOpenCalculator = (): void => {
+    
+    setIsOpenCalculator((v) => !v);
+    if (isOpenCalculator) {
+      window.history.back();
+    }
+  };
+  const [selectedPrice, setSelectedPrice] = useState<number>(0);
+
 
   const {
     contentContainer,
@@ -525,6 +541,13 @@ const SupplyList: React.FC = () => {
 
   const memoItems = useMemo(() => displayHandler(), [data, filteredItems]);
 
+  const calculatorFormHandler = async (): Promise<any> => {
+  };
+
+  const selectedCalculaterValueHandler = (v:number):void=>{
+      setCalculatedValue(v);
+
+  }
   const formHandler = async (): Promise<any> => {
     try {
       if (
@@ -570,6 +593,7 @@ const SupplyList: React.FC = () => {
       //@ts-ignore
       state.drugID = selectedDrug?.value;
       await _savePharmacyDrug(state);
+      setCalculatedValue(-1)
     } catch (e) {
       errorHandler(e);
     }
@@ -616,9 +640,29 @@ const SupplyList: React.FC = () => {
 
       <CDialog
         fullScreen={fullScreen}
+        fullWidth={true}
+        isOpen={isOpenCalculator}
+        onCloseAlternate={(): void => setIsOpenCalculator(false)}
+        onOpenAltenate={(): void => setIsOpenCalculator(true)}
+        modalAlt={true}
+        hideAll={false}
+        hideSubmit={true}
+        canceleButtonTitle="درج نتیجه محاسبه"
+        // formHandler={(): void => setIsOpenCalculator(false)}
+
+      >
+        <DialogContent>
+          <Calculator setCalculatedValue={selectedCalculaterValueHandler}/>
+        </DialogContent>
+      </CDialog>
+
+      <CDialog
+        fullScreen={fullScreen}
         isOpen={isOpenModalOfNewList}
-        onClose={(): void => setIsOpenModalOfNewList(false)}
-        onOpen={(): void => setIsOpenModalOfNewList(true)}
+        onClose={(): void =>{ setIsOpenModalOfNewList(false)
+                            setCalculatedValue(-1)}}
+        onOpen={(): void => {setIsOpenModalOfNewList(true)
+          setCalculatedValue(-1)}}
         formHandler={formHandler}
         fullWidth
       >
@@ -665,7 +709,7 @@ const SupplyList: React.FC = () => {
                   <Input
                     placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
                     numberFormat
-                    value={state?.amount}
+                    value={calculatedValue === -1 ?  state?.amount : calculatedValue}
                     className="w-100"
                     valueLimit={(value) => {
                       if (value.value > 0 || value.value === '') {
@@ -673,11 +717,19 @@ const SupplyList: React.FC = () => {
                       }
                     }}
                     label={t('general.price')}
-                    onChange={(e): void => dispatch({ type: 'amount', value: e })}
+                    onChange={(e): void => {
+                      dispatch({ type: 'amount', value: e });
+                      setCalculatedValue(-1)
+
+                    }
+                    
+                  }
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button onClick={(): void => {}}>
+                  <Button onClick={(): void => {
+                    toggleIsOpenCalculator()
+                  }}>
                     <FontAwesomeIcon
                       style={{ color: ColorEnum.DeepBlue, margin: 4 }}
                       icon={faCalculator}
