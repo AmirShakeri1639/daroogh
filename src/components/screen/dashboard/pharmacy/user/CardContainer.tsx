@@ -8,10 +8,7 @@ import {
   Button,
 } from '@material-ui/core';
 import Detail from './Detail';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { UserInterface, NewUserData } from '../../../../../interfaces';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { TextMessage } from '../../../../../enum';
+import { UserInterface } from '../../../../../interfaces';
 import { BackDrop } from '../../../../public';
 
 const useStyle = makeStyles((theme) =>
@@ -43,6 +40,7 @@ const CardContainer: React.FC<UserInterface> = (props) => {
     pharmacyID,
     userName,
     active,
+    gender,
   } = data;
 
   return (
@@ -59,15 +57,14 @@ const CardContainer: React.FC<UserInterface> = (props) => {
           birthDate={birthDate}
           active={active}
           pharmacyID={pharmacyID}
+          gender={gender}
         />
       </Grid>
       <Grid item xs={12} style={{ padding: '4px' }}>
         {' '}
         <Divider />
       </Grid>
-
       <Grid item xs={12}  container spacing={0} justify="flex-end">
-     
         <Button
           onClick={(): void => editRoleHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
