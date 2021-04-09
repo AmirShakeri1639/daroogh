@@ -82,7 +82,7 @@ export default {
   fileUrl: `${api.baseUrl}/File/GetFile?key=`,
 
   profile: `/${dashboard}/${user}/profile`,
-  settings: `/${dashboard}/settings`,
+  settings: `/${dashboard}/site-settings`,
   settingsAi: `/${dashboard}/settingsAi`,
   report1: `/${dashboard}/report1`,
   jobsList: `/${dashboard}/${job}/list`,
