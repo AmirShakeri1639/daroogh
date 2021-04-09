@@ -119,6 +119,7 @@ export default {
         code: 'کد تایید داروگ',
         systemy: 'سیستمی',
         version: 'نسخه',
+        print: 'چاپ',
       },
 
       pack: {
