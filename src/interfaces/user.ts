@@ -340,6 +340,7 @@ export class NewUserData {
   // public pharmacy: Pharmacy = new Pharmacy();
   // public message: Message[] = [new Message()];
   // public roleUser: UserRole[] = [new UserRole()];
+  public gender?: number = 0;
 }
 
 export interface InitialNewUserInterface {
@@ -355,6 +356,7 @@ export interface InitialNewUserInterface {
   birthDate: string;
   smsActive: boolean;
   notifActive: boolean;
+  gender?: number;
 }
 
 export interface ChangeUserPasswordInterface {

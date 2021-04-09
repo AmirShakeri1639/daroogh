@@ -104,7 +104,8 @@ const initialState: NewUserData = {
   active: false,
   smsActive: true,
   notifActive: true,
-};
+  gender: 0
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -175,6 +176,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         active: value,
       };
+    case 'gender':
+      return {
+        ...state,
+        gender: value,
+      }
     case 'reset':
       return initialState;
     default:
@@ -265,6 +271,15 @@ const UsersList: React.FC = () => {
         cellStyle: { textAlign: 'right' },
       },
       {
+        field: 'gender',
+        title: t('general.gender'),
+        type: 'number',
+        render: (row: any): any => 
+          row.gender == 0 
+            ? t('general.male') 
+            : row.gender == 1 ? t('general.female') : t('general.unknown')
+      },
+      {
         field: 'email',
         title: 'ایمیل',
         searchable: true,
@@ -349,6 +364,7 @@ const UsersList: React.FC = () => {
       userName,
       smsActive,
       notifActive,
+      gender,
     } = user;
 
     await _editUser({
@@ -364,6 +380,7 @@ const UsersList: React.FC = () => {
       pharmacyID,
       smsActive,
       notifActive,
+      gender,
     });
   };
 
@@ -384,6 +401,7 @@ const UsersList: React.FC = () => {
       pharmacyID,
       smsActive,
       notifActive,
+      gender,
     } = row;
 
     dispatch({ type: 'name', value: name });
@@ -397,6 +415,7 @@ const UsersList: React.FC = () => {
     dispatch({ type: 'active', value: active });
     dispatch({ type: 'smsActive', value: smsActive });
     dispatch({ type: 'notifActive', value: notifActive });
+    dispatch({ type: 'gender', value: gender });
     dispatch({
       type: 'pharmacyID',
       value: { id: pharmacyID, name: pharmacyName },
