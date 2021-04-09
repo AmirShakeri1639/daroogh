@@ -27,7 +27,7 @@ const Error401: React.FC = () => {
       </div>
       <div>
         <Button onClick={ exitBtnClick }>
-          <button className="btn">{ t('login.exit') }</button>
+          <button className="btn">{ t('login.signOut') }</button>
         </Button>
       </div>
     </div>
