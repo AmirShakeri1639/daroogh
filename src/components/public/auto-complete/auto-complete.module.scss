@@ -65,8 +65,11 @@ $borderRadius: 4px;
       cursor: pointer;
       padding: 5px;
       &:hover {
-        background-color: rgb(235, 235, 235);
+        background-color: rgb(211, 211, 211) !important;
         transition: background-color 0.2s ease;
+      }
+      &:nth-child(even) {
+        background-color: #f2f2f2;
       }
     }
   }
