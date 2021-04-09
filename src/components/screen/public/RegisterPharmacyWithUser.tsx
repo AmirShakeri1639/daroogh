@@ -11,6 +11,11 @@ import {
   createStyles,
   InputAdornment,
   IconButton,
+  FormControl,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
 } from '@material-ui/core';
 import Pharmacy from '../../../services/api/Pharmacy';
 import { LabelValue } from '../../../interfaces';
@@ -35,6 +40,7 @@ import {
   faEye, faEyeSlash,
 } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
+import { User } from 'services/api';
 
 const initialState = {
   pharmacy: {
@@ -68,6 +74,7 @@ const initialState = {
     birthDateMonth: '',
     birthDateDay: '',
     isValidBirthDate: true,
+    gender: 0,
   },
   isVisiblePassword: false,
 };
@@ -242,6 +249,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         user: { ...state.user, birthDate: value },
       };
+    case 'user.gender':
+      return {
+        ...state,
+        user: { ...state.user, gender: value },
+      }
     case 'user.isValidBirthDate':
       return {
         ...state,
@@ -389,6 +401,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             email: state.pharmacy.email,
             userName: state.user.userName,
             nationalCode: state.user.nationalCode,
+            gender: state.user.gender,
             password: state.user.password,
             birthDate: state.user.birthDate,
           },
@@ -546,19 +559,34 @@ const RegisterPharmacyWithUser: React.FC = () => {
                   dispatch({ type: 'user.birthDate', value: value });
                 } }
               />
-
-              {/* <TextField
-                error={ state.user.birthDate === '' && showError }
-                label={ t('user.birthDate') }
-                inputProps={ {
-                  readOnly: true,
-                } }
-                type="text"
-                variant="outlined"
-                className={ formItem }
-                value={ state.user.birthDate }
-                onClick={ toggleIsOpenDatePicker }
-              /> */}
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">
+                  { t('general.gender') }
+                </FormLabel>
+                <RadioGroup
+                  row
+                  name="gender" 
+                  value={state.user.gender}
+                  onChange={ (e: any): void => 
+                    dispatch({ type: 'user.gender', value: e.target.value })
+                  }
+                >
+                  <FormControlLabel 
+                    value="0"
+                    checked={state.user.gender == 0}
+                    control={ <Radio /> } 
+                    label={ t('GenderType.Male') } 
+                  />
+                  <FormControlLabel 
+                    value="1" 
+                    checked={state.user.gender == 1}
+                    control={ <Radio /> } 
+                    label={ t('GenderType.Female') } 
+                  />
+                </RadioGroup>
+              </FormControl>
             </Grid>
           </Grid>
           <div className={ spacing3 }></div>

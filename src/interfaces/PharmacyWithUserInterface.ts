@@ -33,5 +33,6 @@ export interface PharmacyWithUserInterface {
     birthDateMonth?: string | null;
     birthDateDay?: string | null;
     isValidBirthDate?: boolean;
+    gender?: number | null;
   };
 }
