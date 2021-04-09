@@ -108,7 +108,9 @@ const {
   prescriptionList,
   settings,
   settingsAi,
-  report1,
+  selectedDrugs,
+  favoriteDrugs,
+  surplusDrugs,
   jobsList,
   pharmacyMessage,
   surveyList,
@@ -345,14 +347,30 @@ const ListItems: React.FC = () => {
           <ListItemText primary={ t('reports.reports') } />
           { isOpenReports ? <ExpandLess /> : <ExpandMore /> }
         </ListItem>
-        <Collapse in={ isOpenReports || isOpenMainList('report1') } timeout="auto" unmountOnExit>
-          <List component="div" className={ linkWrapper }>
-            { getListItem({
-              Icon: ReceiptIcon,
-              text: t('reports.report1'),
-              selected: isOpenPageOfThisGroup('report1'),
-              link: report1,
-            }) }
+        <Collapse in={isOpenReports} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            <Link to={surplusDrugs} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('reports.SurplusDrugsForm')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={favoriteDrugs} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('reports.FavoriteDrugsForm')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={selectedDrugs} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('reports.SelectedDrugsForm')} />
+            </Link>
           </List>
         </Collapse>
       </div>

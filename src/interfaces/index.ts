@@ -9,7 +9,7 @@ export interface RreportSearch {
   fromDate: any;
   toDate: any;
   geoCode: string;
-  remainExpDaysFromMinDate: number;
+  remainExpDaysFromMinDate?: number;
 }
 export interface LoginInitialStateInterface {
   username: string;
