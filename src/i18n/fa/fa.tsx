@@ -2,8 +2,8 @@ export default {
   fa: {
     translation: {
       general: {
-        calculator:'ماشین حساب',
-        calculating:'محاسبه',
+        calculator: 'ماشین حساب',
+        calculating: 'محاسبه',
         daroogLatin: 'DarooG',
         emal: 'اعمال',
         systemTitle: 'سامانه الکترونیکی داروخانه',
@@ -122,6 +122,8 @@ export default {
         systemy: 'سیستمی',
         version: 'نسخه',
         print: 'چاپ',
+        category: 'دسته بندی',
+        noOne: 'هیچ کدام',
       },
 
       pack: {
@@ -339,7 +341,7 @@ export default {
         exchangeViewWith: 'مشاهده توسط',
         exchangeViewWithAutomaticConfermedAlert: 'به علت عدم تغییر سبد توسط',
         exchangeTree: 'درخت تبادل',
-        allPharmacyDrugs:'تمام داروهای این داروخانه',
+        allPharmacyDrugs: 'تمام داروهای این داروخانه',
         expirationDate: 'تاریخ انقضای تبادل',
         expirationCompletionDate: 'تاریخ انقضا/تکمیل',
         GOLD: 'کاربر طلایی',
