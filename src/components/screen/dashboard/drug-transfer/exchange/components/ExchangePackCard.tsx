@@ -40,18 +40,7 @@ const ExchangePackCard: React.FC<Props> = (props) => {
     handleChange,
     // counterButtonFunc
   } = props;
-  const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-    const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
-    const fromDate = new Date(eDate);
-    const today = new Date();
-
-    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
-
-    const res = `${faDate}`;
-
-    return res;
-  };
+  
   const { t } = useTranslation();
   const GreenCheckbox = withStyles({
     root: {

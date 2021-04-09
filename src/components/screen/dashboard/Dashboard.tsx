@@ -373,7 +373,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                   <IconButton edge="start" color="inherit" onClick={(): void => logoutUser()}>
                     {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
                     <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
-                      {t('login.exit')}
+                      {t('login.signOut')}
                     </span>
                   </IconButton>
                 </Grid>

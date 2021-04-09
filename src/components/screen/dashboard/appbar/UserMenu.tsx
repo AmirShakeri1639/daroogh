@@ -64,7 +64,7 @@ const UserMenu: React.FC = () => {
         <ListItemIcon>
           <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
         </ListItemIcon>
-        {t('login.sign-out')}
+        {t('login.signOut')}
       </MenuItem>
     </Menu>
   );

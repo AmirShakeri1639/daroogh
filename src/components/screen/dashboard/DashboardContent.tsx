@@ -225,7 +225,7 @@ const DashboardContent: React.FC<any> = () => {
                 variant="fullWidth"
                 aria-label="full width tabs example"
               >
-                <Tab label="داروخانه های برتر روزانه " />
+                <Tab label="داروخانه های برتر روزانه و نیمه وقت " />
                 <Tab label="داروخانه های برتر شبانه روزی" />
               </Tabs>
               <div style={{ marginTop: '5px' }}>
