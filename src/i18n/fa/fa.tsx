@@ -186,7 +186,7 @@ export default {
       login: {
         login: 'ورود',
         exit: 'خروج',
-        'sign-out': 'خروج از حساب کاربری',
+        signOut: 'خروج از حساب کاربری',
         'login-sub': 'وارد حساب کاربری خود شوید',
         'forgot-password': 'رمز عبور را فراموش کرده‌اید؟',
         'sign-up': 'عضویت',
