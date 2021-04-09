@@ -1,6 +1,6 @@
 import { CircleLoading, EmptyContent, MaterialContainer } from 'components/public';
 import { SurveyQueryEnum } from 'enum';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from 'react-query';
 import { Survey } from 'services/api';
 import { default as MatButton } from '@material-ui/core/Button';
@@ -19,6 +19,7 @@ import {
   Grid,
 } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
+import DrugTransferContext, { TransferDrugContextInterface } from '../../drug-transfer/Context';
 
 const { detailByExchangeNumber } = new Survey();
 

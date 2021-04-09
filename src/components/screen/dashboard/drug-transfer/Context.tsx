@@ -40,7 +40,8 @@ export interface TransferDrugContextInterface {
   setIs3PercentOk: (v: boolean) => void;
   lockedAction: boolean;
   setLockedAction: (value: boolean) => void;
-
+  fireDesctopScroll: boolean;
+  setFireDesctopScroll: (value: boolean) => void;
 }
 
 const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
@@ -81,6 +82,8 @@ const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   setIs3PercentOk: () => true,
   lockedAction: true,
   setLockedAction: () => true,
+  fireDesctopScroll: true,
+  setFireDesctopScroll: () => true,
 });
 
 export default DrugTransferContext;
