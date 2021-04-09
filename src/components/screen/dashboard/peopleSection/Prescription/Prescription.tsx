@@ -34,6 +34,7 @@ import CardContainer from './CardContainer';
 import { PrescriptionSendInterface } from '../../../../../interfaces/PrescriptionInterface';
 import { ActionInterface } from '../../../../../interfaces';
 import { useLocation } from 'react-router';
+import CDialog from 'components/public/dialog/Dialog';
 
 const { getPrescriptionOfUser, send, cancel } = new presApi();
 
@@ -262,12 +263,14 @@ const Prescription: React.FC = (props) => {
 
         {contentGenerator()}
       </Grid>
-      <Dialog
+      <CDialog
         fullScreen={fullScreen}
-        fullWidth={true}
-        open={isOpenModal}
-        onClose={toggleIsOpenModal}
-        aria-labelledby="alert-dialog-title"
+        isOpen={isOpenModal}
+        onClose={(): void => setIsOpenModal(false)}
+        onOpenAltenate={(): void => setIsOpenModal(true)}
+        modalAlt={true}
+        formHandler={formHandler}
+        fullWidth  aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{'نسخه'}</DialogTitle>
@@ -373,21 +376,7 @@ const Prescription: React.FC = (props) => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Grid item xs={12} className={buttonContainer}>
-            <Button color="default" onClick={toggleIsOpenModal}>
-              {t('general.cancel')}
-            </Button>
-            <Button
-              color="primary"
-              onClick={formHandler}
-              disabled={isLoadingSaveData}
-            >
-              {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
-            </Button>
-          </Grid>
-        </DialogActions>
-      </Dialog>
+             </CDialog>
     </MaterialContainer>
   );
 };

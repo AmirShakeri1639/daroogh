@@ -27,12 +27,7 @@ interface RoleFormProps {
   roleType?: RoleType;
 }
 
-const {
-  getRolesOfUser,
-  getAllRoles,
-  addUserToRole,
-  removeUserFromRole,
-} = new Role();
+const { getRolesOfUser, getAllRoles, addUserToRole, removeUserFromRole } = new Role();
 
 const { getUserById } = new User();
 
@@ -59,22 +54,16 @@ const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
     style: {
-      minWidth: 'unset'
+      minWidth: 'unset',
     },
   },
 };
 
-const RoleForm: React.FC<RoleFormProps> = ({
-  userId,
-  toggleForm,
-  roleType,
-}) => {
+const RoleForm: React.FC<RoleFormProps> = ({ userId, toggleForm, roleType }) => {
   const [selectedRoles, setSelectedRoles] = useState<string[] | number[]>([]);
   const [isOpenBackDrop, setIsOpenBackDrop] = useState(false);
 
-  const { data: userData } = useQuery(UserQueryEnum.GET_USER_BY_ID, () =>
-    getUserById(userId)
-  );
+  const { data: userData } = useQuery(UserQueryEnum.GET_USER_BY_ID, () => getUserById(userId));
 
   const { root, cancelButton, buttonContainer, roleInput } = useClasses();
 
@@ -90,11 +79,9 @@ const RoleForm: React.FC<RoleFormProps> = ({
     }
   }, [roleData]);
 
-  const {
-    isLoading: roleListLoading,
-    data: roleListData,
-  } = useQuery(RoleQueryEnum.GET_ALL_ROLES, () =>
-    getAllRoles(roleType ? roleType : undefined)
+  const { isLoading: roleListLoading, data: roleListData } = useQuery(
+    RoleQueryEnum.GET_ALL_ROLES,
+    () => getAllRoles(roleType ? roleType : undefined)
   );
 
   const rolesListGenerator = (): any => {
@@ -107,11 +94,10 @@ const RoleForm: React.FC<RoleFormProps> = ({
             return (
               <Grid container item xs={12}>
                 <MenuItem key={item.id} value={item.id}>
-                <Checkbox checked={selectedRoles.indexOf(item.id) !== -1} />
-                <ListItemText primary={item.name} />
-              </MenuItem>
+                  <Checkbox checked={selectedRoles.indexOf(item.id) !== -1} />
+                  <ListItemText primary={item.name} />
+                </MenuItem>
               </Grid>
-              
             );
           })
       );
@@ -142,9 +128,7 @@ const RoleForm: React.FC<RoleFormProps> = ({
     }
   };
 
-  const handleChange = async (
-    event: React.ChangeEvent<{ value: unknown }>
-  ): Promise<any> => {
+  const handleChange = async (event: React.ChangeEvent<{ value: unknown }>): Promise<any> => {
     const currentLength = event?.target?.value?.length;
     setIsOpenBackDrop(true);
     if (selectedRoles.length > currentLength) {
@@ -194,17 +178,6 @@ const RoleForm: React.FC<RoleFormProps> = ({
                   {rolesListGenerator()}
                 </Select>
               </FormControl>
-            </Grid>
-
-            <Grid item xs={12} className={buttonContainer}>
-              <Button
-                color="pink"
-                type="button"
-                onClick={toggleForm}
-                className={cancelButton}
-              >
-                {t('general.close')}
-              </Button>
             </Grid>
           </Grid>
         </form>
