@@ -49,6 +49,7 @@ import {
 import { EmploymentApplicationDataInterface } from 'interfaces/EmploymentApplicationInterface';
 import { useClasses } from '../../classes';
 import zIndex from '@material-ui/core/styles/zIndex';
+import CDialog from 'components/public/dialog/Dialog';
 
 const { currentUserEmploymentApplications, cancel, save } = new applications();
 
@@ -314,9 +315,7 @@ const EmploymentApplication: React.FC = () => {
       return data.items.map((item: any) => {
         if (item !== null) {
           return (
-
             <Grid item xs={12} sm={6} md={4} key={item.id}>
-
               <CardContainer data={item} formHandler={removeHandler} />
             </Grid>
           );
@@ -349,7 +348,13 @@ const EmploymentApplication: React.FC = () => {
   };
 
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
+  const toggleIsOpenDatePicker = (): void => {
+    
+    setIsOpenDatePicker((v) => !v);
+    if (isOpenDatePicker) {
+      window.history.back();
+    }
+  };
   const [selectedDate, setSelectedDate] = useState<string>('');
 
   return (
@@ -375,34 +380,38 @@ const EmploymentApplication: React.FC = () => {
             </Hidden>
             {contentGenerator()}
           </Grid>
-
         </Grid>
-
       </Grid>
-      <Dialog 
-      fullScreen={false}
-      fullWidth={false}
-      open={isOpenDatePicker}
-       onClose={toggleIsOpenDatePicker}>
+      <CDialog
+        fullScreen={false}
+        fullWidth={false}
+        isOpen={isOpenDatePicker}
+        onCloseAlternate={(): void => setIsOpenDatePicker(false)}
+        onOpenAltenate={(): void => setIsOpenDatePicker(true)}
+        modalAlt={true}
+        hideAll={true}
+      >
         <DialogContent>
-        <DatePicker
-          // minimumDate={utils('fa').getToday()}
-          // dateTypeIsSelectable
-          selectedDateHandler={(e): void => {
-            // calculateDateDifference(e, '/');
-            setSelectedDate(e);
+          <DatePicker
+            // minimumDate={utils('fa').getToday()}
+            // dateTypeIsSelectable
+            selectedDateHandler={(e): void => {
+              // calculateDateDifference(e, '/');
+              setSelectedDate(e);
 
-            toggleIsOpenDatePicker();
-          }}
-        />
+              toggleIsOpenDatePicker();
+            }}
+          />
         </DialogContent>
-      </Dialog>
-   
-      <Dialog
+      </CDialog>
+
+      <CDialog
         fullScreen={fullScreen}
+        isOpen={isOpenModal}
+        onClose={(): void => setIsOpenModal(false)}
+        onOpen={(): void => setIsOpenModal(true)}
+        formHandler={formHandler}
         fullWidth={true}
-        open={isOpenModal}
-        onClose={toggleIsOpenModal}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -437,7 +446,7 @@ const EmploymentApplication: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <TextField
-                onClick={():void=>{
+                onClick={(): void => {
                   setIsOpenDatePicker(true);
                 }}
                 fullWidth
@@ -846,21 +855,7 @@ const EmploymentApplication: React.FC = () => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Grid item xs={12} className={buttonContainer}>
-            <Button color="default" onClick={toggleIsOpenModal}>
-              {t('general.cancel')}
-            </Button>
-            <Button color="primary" onClick={formHandler} disabled={isLoadingSaveData}>
-              {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
-            </Button>
-          </Grid>
-        </DialogActions>
-      </Dialog>
-
-      
-
-
+      </CDialog>
     </Container>
   );
 };

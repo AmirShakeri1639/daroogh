@@ -46,6 +46,7 @@ import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
+import CDialog from 'components/public/dialog/Dialog';
 
 const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
@@ -710,7 +711,14 @@ const Create: React.FC = () => {
 
         {memoContent}
       </Grid>
-      <Dialog fullScreen={fullScreen} open={isOpenModal} onClose={toggleIsOpenModal} fullWidth>
+      <CDialog
+        fullScreen={fullScreen}
+        isOpen={isOpenModal}
+        onClose={(): void => setIsOpenModal(false)}
+        onOpen={(): void => setIsOpenModal(true)}
+        formHandler={formHandler}
+        fullWidth
+      >
         <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -929,7 +937,7 @@ const Create: React.FC = () => {
                 <span>صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته نشود</span>
               </label>
             </Grid>
-
+            {/* 
             <Grid container xs={12}>
               <Grid item xs={7} sm={8} />
               <Grid item xs={2} sm={2}>
@@ -947,10 +955,10 @@ const Create: React.FC = () => {
                   {isBackdropLoading ? t('general.pleaseWait') : t('general.add')}
                 </Button>
               </Grid>
-            </Grid>
+</Grid>*/}
           </Grid>
         </DialogActions>
-      </Dialog>
+      </CDialog>
 
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DatePicker
