@@ -668,7 +668,7 @@ const SupplyList: React.FC = () => {
         }}
         onOpen={(): void => {
           setIsOpenModalOfNewList(true);
-          setCalculatedValue(-1);
+           setCalculatedValue(0);
         }}
         formHandler={formHandler}
         fullWidth

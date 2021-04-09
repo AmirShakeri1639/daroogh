@@ -518,7 +518,9 @@ export default {
       },
       reports: {
         reports: 'گزارشات',
-        report1: 'گزارش یک',
+        SurplusDrugsForm: 'گزارش داروهای مازاد',
+        FavoriteDrugsForm: 'گزارش داروهای مورد علاقه داروخانه‌ها',
+        SelectedDrugsForm: 'گزارش داروهای انتخاب شده در تبادل',
       },
       countryDivision: {
         province: 'استان',
