@@ -27,13 +27,21 @@ interface Props {
   defaultLatLng?: [number, number];
   maxHeight?: string;
   draggable: boolean;
+  getGeoLocation?: boolean;
 }
 
 const Map: React.FC<Props> = (props) => {
-  const { onClick, maxHeight = '400px', defaultLatLng, draggable } = props;
+  const {
+    onClick,
+    maxHeight = '400px',
+    defaultLatLng,
+    draggable,
+    getGeoLocation = false,
+  } = props;
+  const LATLNG: [number, number] = [59.526950363917827, 36.321029857543529]
   const { container } = useStyle();
 
-  const [map, setMap] = useState(null);
+  const [map, setMap] = useState<any>(null);
   const mapContainer = useRef(null);
 
   mapboxgl.accessToken =
@@ -44,28 +52,57 @@ const Map: React.FC<Props> = (props) => {
   //   true // Lazy load the plugin
   // );
 
+  const [pos, setPos] = useState<[number, number] | undefined>(undefined)
   useEffect(() => {
+    async function getLoc() {
+      if (window.navigator.geolocation) {
+        await navigator.geolocation.getCurrentPosition((position) => {
+          setPos([position.coords.longitude, position.coords.latitude])
+        })
+      }
+    }
+
+    getLoc()
+  }, [])
+
+  useEffect(() => {
+    console.log('%cinUSE effect of map', 'background: #fea; padding: 20px')
     const initializeMap = (setMap: any, mapContainer: any): any => {
+      const defPos = pos ?? defaultLatLng ?? LATLNG
       const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
-        center: defaultLatLng?.length
-          ? defaultLatLng
-          : [59.526950363917827, 36.321029857543529],
+        center: defPos,
         zoom: 14,
       });
 
-      map.addControl(new mapboxgl.NavigationControl());
-      map.addControl(
-        new mapboxgl.GeolocateControl({
-          positionOptions: {
-            enableHighAccuracy: true,
-          },
-          trackUserLocation: true,
-        })
-      );
       let marker: any;
-      if (defaultLatLng && defaultLatLng.length) {
+
+      map.addControl(new mapboxgl.NavigationControl());
+      const geolocate = new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        trackUserLocation: true,
+      })
+      map.addControl(geolocate);
+
+      if (getGeoLocation && pos) {
+        if (onClick) {
+          onClick({ lngLat: {
+            lat: pos[1],
+            lng: pos[0]
+          }})
+        }
+        if (marker) marker.remove()
+        marker = new mapboxgl.Marker({
+          draggable: draggable,
+        })
+          .setLngLat(pos)
+          .addTo(map)
+      }
+
+      if (!getGeoLocation && defaultLatLng && defaultLatLng.length) {
         marker = new mapboxgl.Marker({
           draggable: draggable,
         })
@@ -100,7 +137,8 @@ const Map: React.FC<Props> = (props) => {
     };
 
     if (!map) initializeMap(setMap, mapContainer);
-  }, [map]);
+
+  }, [map, pos]);
 
   return (
     <div

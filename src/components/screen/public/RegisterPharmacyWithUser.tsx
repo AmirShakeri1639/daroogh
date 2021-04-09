@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import {
   Container,
   TextField,
@@ -285,7 +285,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
   } = useClasses();
 
   const [workTimeList, setWorkTimeList] = useState(new Array<LabelValue>());
-  React.useEffect(() => {
+  useEffect(() => {
     const wtList: LabelValue[] = [];
     for (const wt in WorkTimeEnum) {
       if (parseInt(wt) >= 0)
@@ -745,6 +745,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
               >
                 <Map
                   draggable={ true }
+                  getGeoLocation={ true }
                   onClick={ (e: any): void => {
                     dispatch({ type: 'pharmacy.x', value: e.lngLat.lng });
                     dispatch({ type: 'pharmacy.y', value: e.lngLat.lat });
