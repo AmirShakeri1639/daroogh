@@ -278,7 +278,7 @@ export default {
         maritalStatus: 'وضعیت تاهل',
         readingPrescriptionCertificate: 'گواهی نسخه خوانی',
         gradeOfReadingPrescriptionCertificate: 'نمره مدرک نسخه خوانی',
-        workExperienceYear: 'سابقه کار',
+        workExperienceYear: 'سابقه کار به ماه',
         suggestedWorkShift: 'شیفت پیشنهادی',
         pharmaceuticalSoftwareSkill: 'تسلط به نرم افزارهای دارویی',
         computerSkill: 'میزان تسلط به کامپیوتر',
@@ -467,7 +467,7 @@ export default {
         // 9
         CONFIRMA_AND_B_PAYMENTB: 'در انتظار پرداخت (طرف اول هستید)',
         // 10
-        CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
+        CONFIRMALL_AND_PAYMENTALL: 'تبادل انجام شده',
         // 11
         NOSEND_FORB: 'ارسال نشده',
         // 12
@@ -485,7 +485,7 @@ export default {
         // 18
         CONFIRMA_AND_B_PAYMENTA_FORB: 'در انتظار پرداخت (طرف دوم هستید)',
         // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
-        CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
+        CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل انجام شده',
         // 20
         CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
       },
@@ -541,7 +541,7 @@ export default {
       employment: {
         application: 'درخواست کاریابی',
         applications: 'درخواست‌های کاریابی',
-        workExperience: 'سابقه کار',
+        workExperience: 'سابقه کار به ماه',
         resume: 'رزومه',
         readingPrescriptionCertificate: 'گواهی نسخه خوانی',
         gradeOfReadingPrescriptionCertificate: 'نمره مدرک نسخه خوانی',
@@ -650,7 +650,7 @@ export default {
         foreignLanguagesSkill: 'سطح زبان انگلیسی',
         jobPosition: 'موقعیت شغلی',
         list: 'لیست فرصت های شغلی',
-        minWorkExperienceYear: 'حداقل سابقه کار',
+        minWorkExperienceYear: 'حداقل سابقه کار به ماه',
         minGradeOfReadingPrescriptionCertificate: 'نمره گواهی نسخه خوانی',
         pharmaceuticalSoftwareSkill: 'توانایی کار با نرم افزار',
         computerSkill: 'توانایی کار با کامپیوتر',

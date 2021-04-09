@@ -39,6 +39,7 @@ import { useDispatch } from 'react-redux';
 import { setTransferEnd } from 'redux/actions';
 import { ListOptions } from 'components/public/auto-complete/AutoComplete';
 import { useLocation } from 'react-router';
+import { ColorEnum } from 'enum';
 
 const { getRelatedPharmacyDrug, getFavoritePharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
@@ -133,6 +134,16 @@ const useStyle = makeStyles((theme) =>
         padding: 5,
       },
     },
+    filterButton:{
+      color:`${ColorEnum.White} !important`,
+      fontSize:14,
+      width:80,
+      height:36,
+      margin:4,
+      background:`${ColorEnum.Green} !important`,
+      borderRadius:4
+
+    }
   })
 );
 
@@ -295,6 +306,7 @@ const FirstStep: React.FC = () => {
     divider,
     noContent,
     buttonWrapper,
+    filterButton
   } = useStyle();
 
   const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
@@ -387,7 +399,7 @@ const FirstStep: React.FC = () => {
 
           <Grid item xs={12}>
             <div className={searchContainer}>
-              <Button onClick={(): void => setIsOpenDrawer(true)}>
+              <Button className= {filterButton}  onClick={(): void => setIsOpenDrawer(true)}>
                 <FilterListIcon fontSize="small" />
                 {t('general.filter')}
               </Button>

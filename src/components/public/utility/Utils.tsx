@@ -1,4 +1,5 @@
 import moment from 'moment';
+
 import {default as mom} from 'jalali-moment';
 
 export default class Utils {
@@ -9,6 +10,23 @@ export default class Utils {
   static getDifferenceInDays = (date1: any, date2: any): number => {
     const diffInMs = Math.abs(date2 - date1);
     return Math.ceil(diffInMs / (1000 * 60 * 60 * 24));
+  };
+
+  static getExpireDate = (date: any): string => {
+    const faDate = mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    const res = `${faDate}`;
+    return res;
+  };
+
+  static getExpireDays = (date: any): string => {
+    const faDate = mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+    const eDate = mom.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
+    const fromDate = new Date(eDate);
+    const today = new Date();
+    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
+
+    const res = `${differenceInDays}`;
+    return res;
   };
 
   static getPersianDate = (date: any, withTime = false): string | null => {
@@ -37,18 +55,18 @@ export default class Utils {
     else return null;
   }
 
-  static getExpireDate = (date: any): string => {
-    const faDate = mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-    const eDate = mom.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
-    const fromDate = new Date(eDate);
-    const today = new Date();
+  // static getExpireDate = (date: any): string => {
+  //   const faDate = mom(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
+  //   const eDate = mom.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
+  //   const fromDate = new Date(eDate);
+  //   const today = new Date();
 
-    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
+  //   const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
 
-    const res = `${faDate} (${differenceInDays} روز)`;
+  //   const res = `${faDate} (${differenceInDays} روز)`;
 
-    return res;
-  };
+  //   return res;
+  // };
 
   static newGuid = (): string => {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
