@@ -20,7 +20,7 @@ import {
   Paper,
 } from '@material-ui/core';
 import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react';
-import { faPlus, faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave, faSpinner,faCalculator } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
@@ -46,6 +46,7 @@ import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
+import { ColorEnum } from 'enum';
 
 const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
@@ -75,7 +76,7 @@ const useStyle = makeStyles((theme) =>
       },
     },
     addButton: {
-      minHeight: 212,
+      minHeight: 175,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -152,6 +153,23 @@ const useStyle = makeStyles((theme) =>
       paddingTop: '8px',
       margin: theme.spacing(3),
     },
+    sectionContainer:{
+      background:ColorEnum.LiteBack,
+      borderLeft:`1px solid ${ColorEnum.Borders}`,
+      padding:4,
+      display:'flex',
+      alignContent:'center',
+      alignItems:'center',
+      justifyContent:'center',
+      marginTop: 8,
+
+
+    },
+    input:{
+      width:80,
+      marginLeft:8,
+      marginRight:8,
+    },
   })
 );
 
@@ -220,7 +238,8 @@ const Create: React.FC = () => {
     cancelButton,
     fieldset,
     fab,
-
+    sectionContainer,
+    input,
     formContainer,
   } = useStyle();
 
@@ -714,8 +733,8 @@ const Create: React.FC = () => {
         <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
+          <Grid container spacing={3} direction="column" >
+              <Grid item xs={12} className={sectionContainer}>
                 <AutoComplete
                   ref={autoCompleteRef}
                   isLoading={isLoading}
@@ -729,62 +748,58 @@ const Create: React.FC = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.number')}</label>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Input
-                      numberFormat
+              <Grid item container xs={12} className={sectionContainer}>
+                <Input
+                  
+                  placeholder={`${t('general.number')}`}
+                  numberFormat
                       className="w-100"
                       label={`${t('general.number')} ${t('drug.drug')}`}
                       onChange={(e): void => {
                         setNumber(e);
                       }}
-                      value={number}
-                    />
-                  </Grid>
-                </Grid>
+                      value={number} />
               </Grid>
 
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label htmlFor="">{`${t('general.pricePerUnit')} (${t(
-                      'general.defaultCurrency'
-                    )})`}</label>
-                  </Grid>
-
-                  <Grid item xs={12}>
-                    <Input
-                      numberFormat
-                      value={amount}
+              <Grid item container xs={12} className={sectionContainer}>
+                <Grid xs={12} item>
+                <span className="text-danger txt-xs">{t('alerts.priceTypeAlert')}</span>
+                </Grid>
+                <Grid item xs={9}>
+                  <Input
+                    placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
+                    numberFormat
+                    value={amount}
                       className="w-100"
                       label={t('general.price')}
                       onChange={(e): void => {
                         setAmount(e);
                       }}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <Button onClick={(): void => {}}>
+                    <FontAwesomeIcon
+                      style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                      icon={faCalculator}
                     />
-                  </Grid>
+                    {t('general.calculating')}
+                  </Button>
                 </Grid>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={12} className={sectionContainer}>
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item xs={12}>
-                    <span>هدیه</span>
-                    <span className="text-succes txt-xs">
-                      (داروسازان می توانند هدیه ای در قبال محصول خود به داروساز مقابل بدهند)
+                    <span className="text-danger txt-xs">{t('alerts.offerDescriptions')}
                     </span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
-                    <GridCenter item xs={1}>
                       <span>به ازای</span>
-                    </GridCenter>
-                    <GridCenter item xs={2} className="w-100">
+
+                      
                       <Input
+                        className= {input}
                         type="number"
                         value={offer2}
                         placeholder="تعداد"
@@ -794,13 +809,16 @@ const Create: React.FC = () => {
                             setOffer2(e.target.value);
                           }
                         }}
+
                       />
-                    </GridCenter>
-                    <GridCenter xs={1}>
                       <span>تا</span>
-                    </GridCenter>
-                    <Grid item xs={2}>
+
+                        
+
+
+                    
                       <Input
+                        className= {input}
                         type="number"
                         value={offer1}
                         placeholder="تعداد"
@@ -809,15 +827,14 @@ const Create: React.FC = () => {
                           if (Number(val) >= 1 || Number(offer1) >= 1) {
                             setOffer1(e.target.value);
                           }
-                        }}
-                      />
-                    </Grid>
-                    <GridCenter xs={1}>{t('general.gift')}</GridCenter>
+                        }}                      />
+                      {t('general.gift')}
+                    
                   </Grid>
                 </Grid>
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
@@ -861,6 +878,7 @@ const Create: React.FC = () => {
                           setSelectedMonth(e.target.value);
                         }
                       }}
+
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
@@ -898,21 +916,32 @@ const Create: React.FC = () => {
                 </Grid>
                 <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
+
+              {/* <Grid item xs={12}>
+              <Input
+                className="w-100"
+                label={t('general.barcode')}
+                value={state?.batchNO}
+                onChange={(e): void =>
+                  dispatch({ type: 'batchNO', value: e.target.value })
+                }
+              />
+            </Grid> */}
+
+              {comissionPercent !== '' && (
+                <Grid item xs={12}>
+                  {`پورسانت: ${comissionPercent}%`}
+                </Grid>
+              )}
+
+              {daroogRecommendation !== '' && (
+                <Grid item xs={12}>
+                  <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
+                    <span>{daroogRecommendation}</span>
+                  </FieldSetLegend>
+                </Grid>
+              )}
             </Grid>
-
-            {comissionPercent !== '' && (
-              <Grid item xs={12}>
-                {`پورسانت: ${comissionPercent}%`}
-              </Grid>
-            )}
-
-            {daroogRecommendation !== '' && (
-              <Grid item xs={12}>
-                <FieldSetLegend className={fieldset} legend="پیشنهاد داروگ">
-                  <span>{daroogRecommendation}</span>
-                </FieldSetLegend>
-              </Grid>
-            )}
           </DialogContentText>
         </DialogContent>
         <Divider />
