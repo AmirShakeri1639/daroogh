@@ -20,7 +20,7 @@ import {
   Paper,
 } from '@material-ui/core';
 import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react';
-import { faPlus, faSave, faSpinner,faCalculator } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
@@ -42,7 +42,7 @@ import Calculator from '../../calculator/Calculator'
 import jalaali from 'jalaali-js';
 import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
 import routes from '../../../../../routes';
-import { SearchDrugInCategory } from '../../../../../interfaces/search';
+import { SearchDrugInCategory, SearchDrugInMultiCategory } from '../../../../../interfaces/search';
 import { PackCreation } from 'model/pack';
 import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
@@ -56,7 +56,7 @@ const GridCenter = styled((props) => <Grid item {...props} />)`
   text-align: center;
 `;
 
-const { seerchDrugInCategory } = new Drug();
+const { searchDrugInMultipleCategory } = new Drug();
 
 const { getAllCategories } = new Category();
 
@@ -157,22 +157,20 @@ const useStyle = makeStyles((theme) =>
       paddingTop: '8px',
       margin: theme.spacing(3),
     },
-    sectionContainer:{
-      background:ColorEnum.LiteBack,
-      borderLeft:`1px solid ${ColorEnum.Borders}`,
-      padding:4,
-      display:'flex',
-      alignContent:'center',
-      alignItems:'center',
-      justifyContent:'center',
+    sectionContainer: {
+      background: ColorEnum.LiteBack,
+      borderLeft: `1px solid ${ColorEnum.Borders}`,
+      padding: 4,
+      display: 'flex',
+      alignContent: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
       marginTop: 8,
-
-
     },
-    input:{
-      width:80,
-      marginLeft:8,
-      marginRight:8,
+    input: {
+      width: 80,
+      marginLeft: 8,
+      marginRight: 8,
     },
   })
 );
@@ -547,13 +545,16 @@ const Create: React.FC = () => {
         return;
       }
       setIsLoading(true);
-      const data: SearchDrugInCategory = {
+      const data: SearchDrugInMultiCategory = {
+        categoryId: 0,
         name: title,
       };
+
       if (selectedCategory !== '-1' && !isUndefined(selectedCategory)) {
-        data.categoryId = selectedCategory;
+        data.categoryId = Number(selectedCategory);
       }
-      const result = await seerchDrugInCategory(data);
+
+      const result = await searchDrugInMultipleCategory(data);
 
       setIsLoading(false);
 
@@ -784,7 +785,7 @@ const Create: React.FC = () => {
         <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
         <DialogContent>
           <DialogContentText>
-          <Grid container spacing={3} direction="column" >
+            <Grid container spacing={3} direction="column">
               <Grid item xs={12} className={sectionContainer}>
                 <AutoComplete
                   ref={autoCompleteRef}
@@ -801,20 +802,20 @@ const Create: React.FC = () => {
 
               <Grid item container xs={12} className={sectionContainer}>
                 <Input
-                  
                   placeholder={`${t('general.number')}`}
                   numberFormat
-                      className="w-100"
-                      label={`${t('general.number')} ${t('drug.drug')}`}
-                      onChange={(e): void => {
-                        setNumber(e);
-                      }}
-                      value={number} />
+                  className="w-100"
+                  label={`${t('general.number')} ${t('drug.drug')}`}
+                  onChange={(e): void => {
+                    setNumber(e);
+                  }}
+                  value={number}
+                />
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
                 <Grid xs={12} item>
-                <span className="text-danger txt-xs">{t('alerts.priceTypeAlert')}</span>
+                  <span className="text-danger txt-xs">{t('alerts.priceTypeAlert')}</span>
                 </Grid>
                 <Grid item xs={9}>
                   <Input
@@ -845,45 +846,38 @@ const Create: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item xs={12}>
-                    <span className="text-danger txt-xs">{t('alerts.offerDescriptions')}
-                    </span>
+                    <span className="text-danger txt-xs">{t('alerts.offerDescriptions')}</span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
-                      <span>به ازای</span>
+                    <span>به ازای</span>
 
-                      
-                      <Input
-                        className= {input}
-                        type="number"
-                        value={offer2}
-                        placeholder="تعداد"
-                        onChange={(e): void => {
-                          const val = e.target.value;
-                          if (Number(val) >= 1 || Number(offer2) >= 1) {
-                            setOffer2(e.target.value);
-                          }
-                        }}
+                    <Input
+                      className={input}
+                      type="number"
+                      value={offer2}
+                      placeholder="تعداد"
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (Number(val) >= 1 || Number(offer2) >= 1) {
+                          setOffer2(e.target.value);
+                        }
+                      }}
+                    />
+                    <span>تا</span>
 
-                      />
-                      <span>تا</span>
-
-                        
-
-
-                    
-                      <Input
-                        className= {input}
-                        type="number"
-                        value={offer1}
-                        placeholder="تعداد"
-                        onChange={(e): void => {
-                          const val = e.target.value;
-                          if (Number(val) >= 1 || Number(offer1) >= 1) {
-                            setOffer1(e.target.value);
-                          }
-                        }}                      />
-                      {t('general.gift')}
-                    
+                    <Input
+                      className={input}
+                      type="number"
+                      value={offer1}
+                      placeholder="تعداد"
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (Number(val) >= 1 || Number(offer1) >= 1) {
+                          setOffer1(e.target.value);
+                        }
+                      }}
+                    />
+                    {t('general.gift')}
                   </Grid>
                 </Grid>
               </Grid>
@@ -932,7 +926,6 @@ const Create: React.FC = () => {
                           setSelectedMonth(e.target.value);
                         }
                       }}
-
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}

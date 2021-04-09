@@ -26,3 +26,9 @@ export interface SearchDrugInCategory {
   searchType?: SearchTypeEnum;
   count?: number | string;
 }
+
+export interface SearchDrugInMultiCategory extends Omit<SearchDrugInCategory, 'categoryId'> {
+  categoryId: number;
+  secondCategory?: number;
+  thirdCategory?: number;
+}

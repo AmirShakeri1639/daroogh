@@ -1,9 +1,9 @@
 import Api from './Api';
 import { errorHandler } from '../../utils';
 import { DrugInterface } from '../../interfaces';
-import { SearchDrugInCategory } from '../../interfaces/search';
+import { SearchDrugInCategory, SearchDrugInMultiCategory } from '../../interfaces/search';
 import { SearchTypeEnum } from '../../enum';
-import { isUndefined } from 'lodash';
+import { isUndefined, omit } from 'lodash';
 
 class Drug extends Api {
   readonly urls = {
@@ -61,11 +61,7 @@ class Drug extends Api {
     }
   };
 
-  searchDrug = async (
-    name: string,
-    searchType: string = '',
-    count = 100
-  ): Promise<any> => {
+  searchDrug = async (name: string, searchType: string = '', count = 100): Promise<any> => {
     const result = await this.getData(
       `/Search/SearchMedicalDrug?name=${name}&searchType=${searchType}&count=${count}`
     );
@@ -73,14 +69,25 @@ class Drug extends Api {
   };
 
   seerchDrugInCategory = async (data: SearchDrugInCategory): Promise<any> => {
-    let queryString = `/Search/SearchDrugInCategory?name=${data.name ??
-      ''}&searchType=${data.searchType ??
-      SearchTypeEnum.CONTAINS}&count=${data.count ?? 99}`;
+    let queryString = `/Search/SearchDrugInCategory?name=${data.name ?? ''}&searchType=${
+      data.searchType ?? SearchTypeEnum.CONTAINS
+    }&count=${data.count ?? 99}`;
     if (!isUndefined(data.categoryId)) {
       queryString += `&categoryId=${data.categoryId}`;
     }
-    const result = await this.getData(queryString);
+    const result = await this.postData(queryString);
 
+    return result.data;
+  };
+
+  searchDrugInMultipleCategory = async (data: SearchDrugInMultiCategory): Promise<any> => {
+    const queryString = `/Search/SearchDrugInMultiCategory?name=${data.name ?? ''}&searchType=${
+      data.searchType ?? SearchTypeEnum.CONTAINS
+    }&count=${data.count ?? 99}&categoryId1=${data.categoryId}${
+      !!data.secondCategory ? `&categoryId2=${data.secondCategory}` : ''
+    }${!!data.thirdCategory ? `&categoryId3=${data.thirdCategory}` : ''}`;
+
+    const result = await this.postData(queryString);
     return result.data;
   };
 }
