@@ -112,7 +112,9 @@ const {
   prescriptionList,
   settings,
   settingsAi,
-  report1,
+  selectedDrugs,
+  favoriteDrugs,
+  surplusDrugs,
   jobsList,
   pharmacyMessage,
   surveyList,
@@ -429,11 +431,27 @@ const ListItems: React.FC = () => {
         </ListItem>
         <Collapse in={isOpenReports} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
-            <Link to={report1} className={nested}>
+            <Link to={surplusDrugs} className={nested}>
               <ListItemIcon>
                 <ReceiptIcon />
               </ListItemIcon>
-              <ListItemText primary={t('reports.report1')} />
+              <ListItemText primary={t('reports.SurplusDrugsForm')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={favoriteDrugs} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('reports.FavoriteDrugsForm')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={selectedDrugs} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('reports.SelectedDrugsForm')} />
             </Link>
           </List>
         </Collapse>
