@@ -49,8 +49,6 @@ const useClasses = makeStyles((theme) =>
   })
 );
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
     style: {
@@ -86,14 +84,14 @@ const RoleForm: React.FC<RoleFormProps> = ({ userId, toggleForm, roleType }) => 
 
   const rolesListGenerator = (): any => {
     if (roleListData !== undefined && !roleListLoading) {
-      return (
+      return React.Children.toArray(
         roleListData.items
           // filter role of 'all-users' from array
           .filter((item: any) => item.id !== 1)
           .map((item: any) => {
             return (
               <Grid container item xs={12}>
-                <MenuItem key={item.id} value={item.id}>
+                <MenuItem value={item.id}>
                   <Checkbox checked={selectedRoles.indexOf(item.id) !== -1} />
                   <ListItemText primary={item.name} />
                 </MenuItem>
@@ -178,6 +176,12 @@ const RoleForm: React.FC<RoleFormProps> = ({ userId, toggleForm, roleType }) => 
                   {rolesListGenerator()}
                 </Select>
               </FormControl>
+            </Grid>
+
+            <Grid item xs={12} className={buttonContainer}>
+              <Button color="pink" type="button" onClick={toggleForm} className={cancelButton}>
+                {t('general.close')}
+              </Button>
             </Grid>
           </Grid>
         </form>
