@@ -75,7 +75,7 @@ const useStyle = makeStyles((theme) =>
       },
     },
     addButton: {
-      minHeight: 175,
+      minHeight: 212,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
