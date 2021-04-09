@@ -29,7 +29,6 @@ const initialState: RreportSearch = {
   fromDate: new DateObject(),
   toDate: new DateObject(),
   geoCode: '',
-  remainExpDaysFromMinDate: 0,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -50,12 +49,6 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         geoCode: value,
       };
-    case 'remainExpDaysFromMinDate':
-      return {
-        ...state,
-        remainExpDaysFromMinDate: value,
-      };
-
     default:
       console.error('Action type not defined');
   }
@@ -221,9 +214,7 @@ const FavoriteDrugsForm: React.FC = () => {
         .format('YYYY/MM/DD')}&toDate=${state.toDate
         .convert('gregorian')
         .setLocale('en')
-        .format('YYYY/MM/DD')}&geoCode=${state.geoCode}&remainExpDaysFromMinDate=${
-        state.remainExpDaysFromMinDate
-      }`
+        .format('YYYY/MM/DD')}&geoCode=${state.geoCode}`
     );
   };
 
@@ -281,22 +272,6 @@ const FavoriteDrugsForm: React.FC = () => {
                       </option>
                     ))}
                   </TextField>
-                </Grid>
-                <Grid item xs={6} md={3}>
-                  <TextField
-                    label={'تعداد روز باقیمانده به انقضای دارو'}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e: any): void => {
-                      dispatch({
-                        type: 'remainExpDaysFromMinDate',
-                        value: e.target.value,
-                      });
-                    }}
-                    variant="outlined"
-                    value={state.remainExpDaysFromMinDate}
-                  />
                 </Grid>
                 <Grid
                   item
