@@ -1,21 +1,23 @@
-import { createStyles, Dialog, DialogActions, Grid, makeStyles } from '@material-ui/core';
+import { Button, createStyles, Dialog, DialogActions, Grid, makeStyles } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { isUndefined } from 'lodash';
-import { Button } from '..';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { ColorEnum } from 'enum';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     cancelButton: {
-      color: '#fff',
       fontSize: 10,
-      float: 'right',
+      width: 85,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
     submitBtn: {
-      color: '#fff',
       fontSize: 10,
-      float: 'right',
+      width: 85,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
   })
 );
@@ -120,25 +122,21 @@ const CDialog: React.FC<Props> = ({
       {children}
       {!hideAll && (
         <DialogActions>
-          <Grid container xs={12}>
-            <Grid item xs={7} sm={8} />
-            <Grid item xs={2} sm={2}>
-              <StyledButton type="button" onClick={onCloseHandler} className={cancelButton}>
-                {canceleButtonTitle ? canceleButtonTitle : t('general.close')}
-              </StyledButton>
-            </Grid>
-            <Grid item xs={3} sm={2}>
-              {!hideSubmit && (
-                <StyledButton
-                  className={submitBtn}
-                  type="button"
-                  disabled={isLoading ?? false}
-                  onClick={formHandler}
-                >
-                  {isLoading ?? false ? t('general.pleaseWait') : t('general.submit')}
-                </StyledButton>
-              )}
-            </Grid>
+          <Grid container xs={12} direction="row-reverse">
+            {!hideSubmit && (
+              <Button
+                variant="outlined"
+                className={submitBtn}
+                type="button"
+                disabled={isLoading ?? false}
+                onClick={formHandler}
+              >
+                {isLoading ?? false ? t('general.pleaseWait') : t('general.submit')}
+              </Button>
+            )}
+            <Button variant="outlined" onClick={onCloseHandler} className={cancelButton}>
+              {canceleButtonTitle ? canceleButtonTitle : t('general.close')}
+            </Button>
           </Grid>
         </DialogActions>
       )}
