@@ -24,7 +24,7 @@ const useStyle = makeStyles((theme) =>
       '& .drug-container': {
         padding: '0 6px',
         borderLeft: `2px solid ${ColorEnum.Borders}`,
-        minHeghit : '40px',
+        height : '48px',
         backgroundColor: ColorEnum.LiteBack,
         paddingTop: '8px',
         marginBottom: theme.spacing(1),

@@ -126,14 +126,14 @@ const isOpenPageOfThisGroup = (item: string): boolean => {
   const location = window.location.hash;
   // const regex = new RegExp(`/${item}(\/|$)`, 'gi');
   // return regex.test(location);
-  return location.includes(item)
+  return location.includes(item);
 };
 
 const isOpenMainList = (item: string): boolean => {
   return window.location.href.includes(item);
 };
 
-const StyledListItem = styled((props) => <ListItem { ...props } />)`
+const StyledListItem = styled((props) => <ListItem {...props} />)`
   padding-right: 0;
   padding-left: 0;
 `;
@@ -167,12 +167,12 @@ const ListItems: React.FC = () => {
   const getListItem = (params: ListItemInterface): JSX.Element => {
     const Icon = params.Icon;
     return (
-      <StyledListItem selected={ params.selected }>
-        <Link to={ params.link } className={ params.isNested ? nested : notNested }>
+      <StyledListItem selected={params.selected}>
+        <Link to={params.link} className={params.isNested ? nested : notNested}>
           <ListItemIcon>
-            <Icon { ...params.props } />
+            <Icon {...params.props} />
           </ListItemIcon>
-          <ListItemText primary={ params.text } />
+          <ListItemText primary={params.text} />
         </Link>
       </StyledListItem>
     );
@@ -180,16 +180,16 @@ const ListItems: React.FC = () => {
 
   const fdaMenu = (): JSX.Element => {
     return (
-      <div className={ menuContainer }>
-        <h3 className={ spacing3 }>{ t('fda.fda') }</h3>
+      <div className={menuContainer}>
+        <h3 className={spacing3}>{t('fda.fda')}</h3>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: CategoryIcon,
             link: fda_exchangeList,
             text: t('fda.exchanges'),
             selected: isOpenPageOfThisGroup('fda/exchange-list'),
-          }) }
+          })}
         </List>
       </div>
     );
@@ -197,11 +197,11 @@ const ListItems: React.FC = () => {
 
   const publicMenu = (): JSX.Element => {
     return (
-      <div className={ menuContainer }>
-        <h3 className={ spacing3 }>{ t('general.peopleSection') }</h3>
+      <div className={menuContainer}>
+        <h3 className={spacing3}>{t('general.peopleSection')}</h3>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: FontAwesomeIcon,
             text: t('peopleSection.prescription'),
             link: prescription,
@@ -210,11 +210,11 @@ const ListItems: React.FC = () => {
               icon: faFileMedical,
               size: 'lg',
             },
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: FontAwesomeIcon,
             text: t('peopleSection.jobApplication'),
             link: jobApplication,
@@ -223,7 +223,7 @@ const ListItems: React.FC = () => {
               icon: faBars,
               size: 'lg',
             },
-          }) }
+          })}
         </List>
       </div>
     );
@@ -231,29 +231,29 @@ const ListItems: React.FC = () => {
 
   const adminMenu = (): JSX.Element => {
     return (
-      <div className={ menuContainer }>
-        <h3 className={ spacing3 }>{ t('user.admin') }</h3>
+      <div className={menuContainer}>
+        <h3 className={spacing3}>{t('user.admin')}</h3>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: ContactMailTwoToneIcon,
             text: t('user.roles'),
             selected: isOpenPageOfThisGroup('role'),
             link: createRole,
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: GroupTwoToneIcon,
             link: usersList,
             text: t('user.user'),
             selected: isOpenPageOfThisGroup('user'),
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: FontAwesomeIcon,
             text: t('jobSearch.jobSearch'),
             link: jobSearchList,
@@ -262,56 +262,56 @@ const ListItems: React.FC = () => {
               icon: faUserMd,
               size: 'lg',
             },
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: EnhancedEncryption,
             text: t('drug.drug'),
             link: drugsList,
             selected: isOpenPageOfThisGroup(drugsList),
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: AddToPhotosIcon,
             text: t('category.categories'),
             selected: isOpenPageOfThisGroup(categoryList),
             link: categoryList,
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: Business,
             text: t('pharmacy.pharmacies'),
             selected: isOpenPageOfThisGroup(pharmaciesList),
             link: pharmaciesList,
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: MessageIcon,
             text: t('message.message'),
             selected: isOpenPageOfThisGroup('message'),
             link: messagesList,
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: ContactPhoneIcon,
             text: t('exchange.exchangeManagement'),
             selected: isOpenPageOfThisGroup('exchangemanagement'),
             link: exchangeManagementList,
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: FontAwesomeIcon,
             text: t('settings.settings'),
             selected: isOpenPageOfThisGroup('site-settings'),
@@ -320,11 +320,11 @@ const ListItems: React.FC = () => {
               icon: faCog,
               size: 'lg',
             },
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: FontAwesomeIcon,
             text: t('settingsAi.settingsAi'),
             selected: isOpenPageOfThisGroup('settingsAi'),
@@ -333,19 +333,19 @@ const ListItems: React.FC = () => {
               icon: faCog,
               size: 'lg',
             },
-          }) }
+          })}
         </List>
 
         <ListItem
           button
-          className={ linkWrapper }
-          onClick={ (): void => setIsOpenReports((val) => !val) }
+          className={linkWrapper}
+          onClick={(): void => setIsOpenReports((val) => !val)}
         >
           <ListItemIcon>
             <AccountBalanceIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('reports.reports') } />
-          { isOpenReports ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('reports.reports')} />
+          {isOpenReports ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
         <Collapse in={isOpenReports} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
@@ -379,41 +379,41 @@ const ListItems: React.FC = () => {
 
   const pharmacyMenu = (): JSX.Element => {
     return (
-      <div className={ menuContainer }>
-        <h3 className={ spacing3 }>{ t('pharmacy.pharmacy') }</h3>
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+      <div className={menuContainer}>
+        <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3>
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: DashboardIcon,
             text: t('general.pishkhan'),
             selected: window.location.hash === '#/dashboard',
             link: dashboard,
-          }) }
+          })}
         </List>
 
         <ListItem
           button
-          className={ linkWrapper }
-          onClick={ (): void => setIsOpenExchange((val) => !val) }
+          className={linkWrapper}
+          onClick={(): void => setIsOpenExchange((val) => !val)}
         >
           <ListItemIcon>
             <CategoryIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('fda.exchanges') } />
-          { isOpenExchange ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('fda.exchanges')} />
+          {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenExchange || isOpenMainList('') } timeout="auto" unmountOnExit>
-          <List component="div" className={ linkWrapper }>
-            { getListItem({
+        <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            {getListItem({
               Icon: AppsIcon,
               text: `${t('general.submit')} ${t('exchange.products')}`,
               selected: isOpenPageOfThisGroup('exchange/supply-list'),
               link: supplyList,
               isNested: true,
-            }) }
+            })}
           </List>
 
-          <List component="div" className={ linkWrapper }>
-            { getListItem({
+          <List component="div" className={linkWrapper}>
+            {getListItem({
               Icon: FontAwesomeIcon,
               text: t('pack.submitPacks'),
               selected: isOpenPageOfThisGroup('pack/list'),
@@ -423,41 +423,41 @@ const ListItems: React.FC = () => {
                 icon: faBars,
                 size: 'lg',
               },
-            }) }
+            })}
           </List>
 
-          <List component="div" className={ linkWrapper }>
-            { getListItem({
+          <List component="div" className={linkWrapper}>
+            {getListItem({
               Icon: AddToPhotosIcon,
               text: `${t('general.start')} ${t('exchange.exchange')}`,
               selected: isOpenPageOfThisGroup('exchange/transfer'),
               link: transfer,
               isNested: true,
-            }) }
+            })}
           </List>
 
-          <List component="div" className={ linkWrapper }>
-            { getListItem({
+          <List component="div" className={linkWrapper}>
+            {getListItem({
               Icon: InboxIcon,
               text: t('general.records'),
               selected: isOpenPageOfThisGroup('exchange/desktop'),
               link: desktop,
               isNested: true,
-            }) }
+            })}
           </List>
         </Collapse>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: Bookmark,
             text: t('general.yourFavorite'),
             selected: isOpenPageOfThisGroup('favorite/drug'),
             link: drugFavoriteList,
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: FontAwesomeIcon,
             text: t('prescription.peoplePrescription'),
             selected: isOpenPageOfThisGroup('prescription/list'),
@@ -466,11 +466,11 @@ const ListItems: React.FC = () => {
               icon: faFileMedical,
               size: 'lg',
             },
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: FontAwesomeIcon,
             text: t('jobs.employment'),
             selected: isOpenPageOfThisGroup('job/list'),
@@ -479,11 +479,11 @@ const ListItems: React.FC = () => {
               icon: faHandshake,
               size: 'lg',
             },
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: FontAwesomeIcon,
             text: t('user.users-list'),
             selected: isOpenPageOfThisGroup('pharmacy/users'),
@@ -492,59 +492,59 @@ const ListItems: React.FC = () => {
               icon: faUser,
               size: 'lg',
             },
-          }) }
+          })}
         </List>
 
         <ListItem
           button
-          className={ linkWrapper }
-          onClick={ (): void => setIsOpenAccounting((val) => !val) }
+          className={linkWrapper}
+          onClick={(): void => setIsOpenAccounting((val) => !val)}
         >
           <ListItemIcon>
             <AccountBalanceIcon />
           </ListItemIcon>
-          <ListItemText primary={ t('accounting.accounting') } />
-          { isOpenAccounting ? <ExpandLess /> : <ExpandMore /> }
+          <ListItemText primary={t('accounting.accounting')} />
+          {isOpenAccounting ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={ isOpenAccounting || isOpenMainList('finance') } timeout="auto" unmountOnExit>
-          <List component="div" className={ linkWrapper }>
-            { getListItem({
+        <Collapse in={isOpenAccounting || isOpenMainList('finance')} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
+            {getListItem({
               Icon: ReceiptIcon,
               text: t('accounting.transactions'),
               selected: isOpenPageOfThisGroup('finance/transactions'),
               link: transactions,
               isNested: true,
-            }) }
+            })}
           </List>
 
-          <List component="div" className={ linkWrapper }>
-            { getListItem({
+          <List component="div" className={linkWrapper}>
+            {getListItem({
               Icon: ReceiptIcon,
               text: t('accounting.accountingForPayment'),
               selected: isOpenPageOfThisGroup('finance/accountingInfo'),
               link: accountingInfo,
               isNested: true,
-            }) }
+            })}
           </List>
         </Collapse>
 
-        <List component="div" className={ linkWrapper }>
-          { getListItem({
+        <List component="div" className={linkWrapper}>
+          {getListItem({
             Icon: MessageIcon,
             text: t('message.message'),
             selected: isOpenPageOfThisGroup('pharmacy/messages'),
             link: pharmacyMessage,
-          }) }
+          })}
         </List>
 
-        <List component="div" className={ linkWrapper }>
+        {/* <List component="div" className={ linkWrapper }>
           { getListItem({
             Icon: MessageIcon,
             text: t('survey.surveyList'),
             selected: isOpenPageOfThisGroup('pharmacy/surveyList'),
             link: surveyList,
           }) }
-        </List>
+        </List> */}
       </div>
     );
   };
@@ -554,18 +554,18 @@ const ListItems: React.FC = () => {
   }
 
   return (
-    <div className="daroog-sidebar" style={ { paddingBottom: '2em' } }>
+    <div className="daroog-sidebar" style={{ paddingBottom: '2em' }}>
       {rolesArray && rolesArray?.length > 0 && (
         <>
-          {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu() }
+          {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
           {(rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 ||
             rolesArray?.some((item: any) => GetValuesOfEnum(PharmacyRoleEnum).includes(item))) &&
-            pharmacyMenu() }
-          {!(rolesArray?.indexOf(RolesEnum.PUBLIC) >= 0) && publicMenu() }
+            pharmacyMenu()}
+          {!(rolesArray?.indexOf(RolesEnum.PUBLIC) >= 0) && publicMenu()}
           {(rolesArray?.indexOf(RolesEnum.FDA) >= 0 || rolesArray?.indexOf(RolesEnum.ADMIN) >= 0) &&
-            fdaMenu() }
+            fdaMenu()}
         </>
-      ) }
+      )}
     </div>
   );
 };
