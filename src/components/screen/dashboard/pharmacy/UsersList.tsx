@@ -27,9 +27,11 @@ import {
   Switch,
   Fab,
   Paper,
+  FormLabel,
+  RadioGroup,
+  Radio,
 } from '@material-ui/core';
 import Input from '../../../public/input/Input';
-import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   ActionInterface,
@@ -54,6 +56,7 @@ import RoleForm from '../user/RoleForm';
 import CardContainer from './user/CardContainer';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { debounce } from 'lodash';
+import CDialog from 'components/public/dialog/Dialog';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -171,6 +174,7 @@ const initialState: NewPharmacyUserData = {
   birthDate: '',
   smsActive: false,
   notifActive: false,
+  gender: 0,
 };
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -227,6 +231,11 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         notifActive: value,
+      };
+    case 'gender':
+      return {
+        ...state,
+        gender: value,
       };
     case 'reset':
       return initialState;
@@ -333,11 +342,7 @@ const UsersList: React.FC = () => {
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
   const {
-    createUserBtn,
-    buttonContainer,
     formContent,
-    cancelButton,
-    submitBtn,
     userRoleIcon,
     fab,
     searchIconButton,
@@ -377,6 +382,7 @@ const UsersList: React.FC = () => {
       roleUser: selectedRoles.map((item) => ({ roleID: item })),
       smsActive: state.smsActive,
       notifActive: state.notifActive,
+      gender: state.gender,
     };
 
     await _addPharmacyUser(data);
@@ -411,6 +417,15 @@ const UsersList: React.FC = () => {
         searchable: true,
         type: 'string',
         cellStyle: { textAlign: 'right' },
+      },
+      {
+        field: 'gender',
+        title: t('general.gender'),
+        type: 'number',
+        render: (row: any): any => 
+          row.gender == 0 
+            ? t('general.male') 
+            : row.gender == 1 ? t('general.female') : t('general.unknown')
       },
       {
         field: 'email',
@@ -492,6 +507,7 @@ const UsersList: React.FC = () => {
       userName,
       smsActive,
       notifActive,
+      gender,
     } = user;
 
     await _editUser({
@@ -507,6 +523,7 @@ const UsersList: React.FC = () => {
       pharmacyID,
       smsActive,
       notifActive,
+      gender,
     });
   };
 
@@ -526,6 +543,7 @@ const UsersList: React.FC = () => {
       pharmacyID,
       smsActive,
       notifActive,
+      gender,
     } = row;
     dispatch({ type: 'name', value: name });
     dispatch({ type: 'family', value: family });
@@ -538,6 +556,7 @@ const UsersList: React.FC = () => {
     dispatch({ type: 'active', value: active });
     dispatch({ type: 'smsActive', value: smsActive });
     dispatch({ type: 'notifActive', value: notifActive });
+    dispatch({ type: 'gender', value: gender });
     dispatch({
       type: 'pharmacyID',
       value: { id: pharmacyID, name: pharmacyName },
@@ -593,8 +612,6 @@ const UsersList: React.FC = () => {
           </Grid>
         );
         //}
-
-       
       });
     }
 
@@ -619,7 +636,6 @@ const UsersList: React.FC = () => {
   };
   const { isLoading, data, isFetched } = useQuery(
     UserQueryEnum.GET_ALL_USERS,
-
     () => getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
@@ -628,7 +644,6 @@ const UsersList: React.FC = () => {
           setNoDataRef(true);
         } else {
           //console.log(result.items);
-
           setListRef(result.items);
         }
       },
@@ -642,7 +657,6 @@ const UsersList: React.FC = () => {
     setPage(data);
   };
 
- 
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current);
     // console.log(result.items);
@@ -671,7 +685,6 @@ const UsersList: React.FC = () => {
     desktop: 1280,
   };
   const handleScroll = (e: any): any => {
-  
     const el = e.target;
     const pixelsBeforeEnd = 200;
     const checkDevice =
@@ -749,7 +762,14 @@ const UsersList: React.FC = () => {
         {true && <CircleBackdropLoading isOpen={isLoading} />}
       </Grid>
 
-      <Dialog open={isOpenRoleModal} onClose={toggleIsOpenRoleModal} fullWidth>
+      <CDialog
+        fullScreen={fullScreen}
+        isOpen={isOpenRoleModal}
+        onClose={(): void => setIsOpenRoleModal(false)}
+        onOpen={(): void => setIsOpenRoleModal(true)}
+        fullWidth
+        hideSubmit={true}
+      >
         <DialogTitle className="text-sm">{t('user.edit-role')}</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -768,11 +788,14 @@ const UsersList: React.FC = () => {
             </Grid>
           </DialogContentText>
         </DialogContent>
-      </Dialog>
-      <Dialog
-        open={isOpenModalOfCreateUser}
+      </CDialog>
+      <CDialog
         fullScreen={fullScreen}
-        onClose={toggleIsOpenModalOfUser}
+        isOpen={isOpenModalOfCreateUser}
+        onClose={(): void => setIsOpenModalOfCreateUser(false)}
+        onOpenAltenate={(): void => setIsOpenModalOfCreateUser(true)}
+        modalAlt={true}
+        formHandler={formHandler}
         fullWidth
       >
         <DialogTitle className="text-sm">
@@ -970,39 +993,38 @@ const UsersList: React.FC = () => {
                 />
               </Grid>
             </Grid>
+            <Grid xs={ 12 }>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">
+                  { t('general.gender') }
+                </FormLabel>
+                <RadioGroup
+                  row
+                  name="gender"
+                  value={ state.gender }
+                  onChange={ (e: any): void =>
+                    dispatch({ type: 'gender', value: e.target.value })
+                  }
+                >
+                  <FormControlLabel
+                    value="0"
+                    checked={ state.gender == 0 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Male') }
+                  />
+                  <FormControlLabel
+                    value="1"
+                    checked={ state.gender == 1 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Female') }
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
           </DialogContentText>
         </DialogContent>
         <Divider />
-        <DialogActions>
-          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
-            <Grid container xs={12}>
-              <Grid item xs={7} sm={8} />
-              <Grid item xs={2} sm={2}>
-                <Button
-                  type="button"
-                  className={cancelButton}
-                  onClick={(): void => {
-                    dispatch({ type: 'reset' });
-                    toggleIsOpenModalOfUser();
-                  }}
-                >
-                  {t('general.close')}
-                </Button>
-              </Grid>
-              <Grid item xs={3} sm={2}>
-                <Button
-                  type="submit"
-                  disabled={isLoadingNewUser}
-                  className={submitBtn}
-                  onClick={formHandler}
-                >
-                  {isLoadingNewUser ? t('general.pleaseWait') : t('general.submit')}
-                </Button>
-              </Grid>
-            </Grid>
-          </Grid>
-        </DialogActions>
-      </Dialog>
+      </CDialog>
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker} zIndex={2000}>
         <DateTimePicker
           selectedDateHandler={(e): void => {

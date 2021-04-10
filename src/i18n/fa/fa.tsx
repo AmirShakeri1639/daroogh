@@ -2,6 +2,8 @@ export default {
   fa: {
     translation: {
       general: {
+        calculator: 'ماشین حساب',
+        calculating: 'محاسبه',
         daroogLatin: 'DarooG',
         emal: 'اعمال',
         systemTitle: 'سامانه الکترونیکی داروخانه',
@@ -18,6 +20,8 @@ export default {
         enter: 'اینتر',
         male: 'مرد',
         female: 'زن',
+        mr: 'آقای',
+        ms: 'خانم',
         action: 'کار',
         dashboard: 'داشبورد',
         records: 'سوابق',
@@ -119,6 +123,9 @@ export default {
         code: 'کد تایید داروگ',
         systemy: 'سیستمی',
         version: 'نسخه',
+        print: 'چاپ',
+        category: 'دسته بندی',
+        noOne: 'هیچ کدام',
       },
 
       pack: {
@@ -186,7 +193,7 @@ export default {
       login: {
         login: 'ورود',
         exit: 'خروج',
-        'sign-out': 'خروج از حساب کاربری',
+        signOut: 'خروج از حساب کاربری',
         'login-sub': 'وارد حساب کاربری خود شوید',
         'forgot-password': 'رمز عبور را فراموش کرده‌اید؟',
         'sign-up': 'عضویت',
@@ -278,7 +285,7 @@ export default {
         maritalStatus: 'وضعیت تاهل',
         readingPrescriptionCertificate: 'گواهی نسخه خوانی',
         gradeOfReadingPrescriptionCertificate: 'نمره مدرک نسخه خوانی',
-        workExperienceYear: 'سابقه کار',
+        workExperienceYear: 'سابقه کار به ماه',
         suggestedWorkShift: 'شیفت پیشنهادی',
         pharmaceuticalSoftwareSkill: 'تسلط به نرم افزارهای دارویی',
         computerSkill: 'میزان تسلط به کامپیوتر',
@@ -336,7 +343,7 @@ export default {
         exchangeViewWith: 'مشاهده توسط',
         exchangeViewWithAutomaticConfermedAlert: 'به علت عدم تغییر سبد توسط',
         exchangeTree: 'درخت تبادل',
-        allPharmacyDrugs:'تمام داروهای این داروخانه',
+        allPharmacyDrugs: 'تمام داروهای این داروخانه',
         expirationDate: 'تاریخ انقضای تبادل',
         expirationCompletionDate: 'تاریخ انقضا/تکمیل',
         GOLD: 'کاربر طلایی',
@@ -467,7 +474,7 @@ export default {
         // 9
         CONFIRMA_AND_B_PAYMENTB: 'در انتظار پرداخت (طرف اول هستید)',
         // 10
-        CONFIRMALL_AND_PAYMENTALL: 'تبادل کامل شده',
+        CONFIRMALL_AND_PAYMENTALL: 'تبادل انجام شده',
         // 11
         NOSEND_FORB: 'ارسال نشده',
         // 12
@@ -485,7 +492,7 @@ export default {
         // 18
         CONFIRMA_AND_B_PAYMENTA_FORB: 'در انتظار پرداخت (طرف دوم هستید)',
         // 19 - 'تائید طرفین و در انتظار پرداخت طرف مقابل',
-        CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل کامل شده',
+        CONFIRMA_AND_B_PAYMENTB_FORB: 'تبادل انجام شده',
         // 20
         CONFIRMALL_AND_PAYMENTALL_FORB: 'تبادل کامل شده',
       },
@@ -511,7 +518,9 @@ export default {
       },
       reports: {
         reports: 'گزارشات',
-        report1: 'گزارش یک',
+        SurplusDrugsForm: 'گزارش داروهای مازاد',
+        FavoriteDrugsForm: 'گزارش داروهای مورد علاقه داروخانه‌ها',
+        SelectedDrugsForm: 'گزارش داروهای انتخاب شده در تبادل',
       },
       countryDivision: {
         province: 'استان',
@@ -541,7 +550,7 @@ export default {
       employment: {
         application: 'درخواست کاریابی',
         applications: 'درخواست‌های کاریابی',
-        workExperience: 'سابقه کار',
+        workExperience: 'سابقه کار به ماه',
         resume: 'رزومه',
         readingPrescriptionCertificate: 'گواهی نسخه خوانی',
         gradeOfReadingPrescriptionCertificate: 'نمره مدرک نسخه خوانی',
@@ -650,7 +659,7 @@ export default {
         foreignLanguagesSkill: 'سطح زبان انگلیسی',
         jobPosition: 'موقعیت شغلی',
         list: 'لیست فرصت های شغلی',
-        minWorkExperienceYear: 'حداقل سابقه کار',
+        minWorkExperienceYear: 'حداقل سابقه کار به ماه',
         minGradeOfReadingPrescriptionCertificate: 'نمره گواهی نسخه خوانی',
         pharmaceuticalSoftwareSkill: 'توانایی کار با نرم افزار',
         computerSkill: 'توانایی کار با کامپیوتر',
@@ -732,7 +741,11 @@ export default {
         SelectCategoryAlert: 'ابتدا دسته بندی را انتخاب نمایید',
         DebotAlert:
           'بدهی شما بیشتر از سقف مجاز می باشد و امکان تبادل مقدور نیست.  لطفا نسبت به تسویه و پرداخت بدهی اقدام نمایید',
-          lockedEchangeAlert:'تبادل توسط طرف مقابل قفل شده است. شما تنها میتوانید این تبادل را قبول یا رد کنید و نمیتوانید محصولات موجود در سبدها را ویرایش نمایید'
+        lockedEchangeAlert:
+          'تبادل توسط طرف مقابل قفل شده است. شما تنها میتوانید این تبادل را قبول یا رد کنید و نمیتوانید محصولات موجود در سبدها را ویرایش نمایید',
+        offerDescriptions: 'داروسازان می توانند هدیه ای در قبال محصول خود به داروساز مقابل بدهند',
+        priceTypeAlert:
+          'در داروگ قیمت ها بر اساس کوچکترین واحد هر محصول محاسبه میشود. به عنوان مثال ۱ عدد قرص استامینوفن. جهت انجام محاسبات لازم میتوانید از دکمه محاسبه استفاده نمایید',
       },
 
       widget: {

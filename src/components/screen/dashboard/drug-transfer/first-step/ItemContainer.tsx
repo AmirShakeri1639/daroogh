@@ -1,12 +1,13 @@
 import React from 'react';
 import { ItemContainerPropsInterface } from '../../../../../interfaces';
-import { Box, createStyles, Divider, Grid, Hidden, useMediaQuery } from '@material-ui/core';
+import { Box, createStyles, Divider, Grid, Hidden, useMediaQuery,Theme } from '@material-ui/core';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Convertor from '../../../../../utils/Convertor';
 import { ColorEnum } from 'enum';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { useTranslation } from 'react-i18next';
+import Utils from 'components/public/utility/Utils';
 
 
 
@@ -14,6 +15,8 @@ const { convertISOTime,thousandsSeperator } = Convertor;
 
 const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
 
+  const theme = useTheme();
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('xs'));
   const useStyle = makeStyles((theme) =>
   createStyles({
     box: {
@@ -26,18 +29,18 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
      
     },
     detailText:{
-      color:ColorEnum.DeepBlue,
-      fontSize:`${fullScreen?'10px':'13px'}`
+      color:'black',
+      fontSize:`${isSmallDevice?'10px':'13px'}`
     }
   })
 );
   const {t} = useTranslation();
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
 
   const { offer1, offer2, drugGenericName ,price,expireDate } = props;
 
   const { box,detailText, titleContainer } = useStyle();
+
 
   return (
     <Grid container className={box}>
@@ -49,7 +52,7 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
               <TextWithTitle isSmal={true} title={t('general.gift')} body={`${offer1} به ${offer2}`} />
           </Grid>
           <Grid xs={4}>
-          <TextWithTitle isSmal={true} title='انقضا' body={convertISOTime(expireDate) } />
+          <TextWithTitle isSmal={true} title='انقضا' body={convertISOTime(expireDate) } dateSuffix={Utils.getExpireDays(expireDate)} showDateSuffix={!isSmallDevice} />
 
             </Grid>
             <Grid xs={4}>

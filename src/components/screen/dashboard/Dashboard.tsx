@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Avatar, Button, Grid, List } from '@material-ui/core';
@@ -140,6 +140,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
+    background: ColorEnum.mainBack,
   },
   userContainer: {
     display: 'flex',
@@ -298,11 +299,16 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     return element;
   };
 
-  const avatar = (): any => {
-    return localStorage.getItem('avatar') ?? avatarPic;
-  };
+  const { accountingInfo, fileUrl } = routes;
 
-  const { accountingInfo } = routes;
+  const avatar = useMemo(() => {
+    return (
+      !loggedInUser || !loggedInUser?.imageKey
+        ? avatarPic
+        : `${fileUrl}${loggedInUser?.imageKey}`
+    )
+  }, [loggedInUser])
+
   const history = useHistory();
   return (
     <Context.Provider value={contextInitialValues()}>
@@ -350,7 +356,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                         }
                       }}
                     />
-                    <Avatar alt={t('user.user')} className={classes.largeAvatar} src={avatar()} />
+                    <Avatar alt={t('user.user')} className={classes.largeAvatar} src={avatar} />
                   </label>
                 </>
               </Grid>
@@ -373,7 +379,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                   <IconButton edge="start" color="inherit" onClick={(): void => logoutUser()}>
                     {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
                     <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
-                      {t('login.exit')}
+                      {t('login.signOut')}
                     </span>
                   </IconButton>
                 </Grid>

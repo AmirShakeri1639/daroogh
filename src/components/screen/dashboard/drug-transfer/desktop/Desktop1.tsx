@@ -46,20 +46,13 @@ const useStyle = makeStyles((theme) =>
       minHeight: 'calc(100vh - 75px)',
       maxHeight: 'calc(100vh - 75px)',
       padding: 5,
-      borderRadius: 10,
-      boxShadow: 'rgba(0,0,0,0.8) 0 0 10px',
-    },
-    container: {
-      padding: 0,
-      paddingRight: 5,
-      paddingLeft: 5,
-      maxWidth: '99%',
-    },
+      
+    }
   })
 );
 
 const Desktop1: React.FC = () => {
-  const { desktopDiv, container } = useStyle();
+  const { desktopDiv } = useStyle();
   const { getDashboard } = new Exchange();
   const { t } = useTranslation();
   const history = useHistory();
@@ -303,7 +296,7 @@ const Desktop1: React.FC = () => {
   };
 
   return (
-    <Container className={container}>
+    <Container >
       <div id="desktop-div" className={desktopDiv}>
         <Grid item={true} xs={12}>
           <Grid container spacing={2}>

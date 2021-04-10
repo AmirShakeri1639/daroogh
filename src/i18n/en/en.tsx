@@ -40,7 +40,7 @@ export default {
       login: {
         login: 'Login',
         exit: 'Exit',
-        'sign-out': 'Sign out',
+        signOut: 'Sign out',
         'login-sub': 'Sign In to your account',
         'forgot-password': 'Forgot password?',
         'sign-up': 'Sign Up',

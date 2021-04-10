@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
 import styled from 'styled-components';
+import CDialog from 'components/public/dialog/Dialog';
 
 const { getFavoriteList, saveFavoriteList } = new Favorite();
 
@@ -95,9 +96,7 @@ const AutoCompleteGrid = styled((props) => <Grid {...props} item xs={12} />)`
 const DrugTab: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [drugSearchOptions, setDrugSearchOptions] = useState<any[]>([]);
-  const [categoryDrugSearchOptions, setCategoryDrugSearchOptions] = useState<
-    any[]
-  >([]);
+  const [categoryDrugSearchOptions, setCategoryDrugSearchOptions] = useState<any[]>([]);
   const [drugName, setDrugName] = useState<string>('');
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -122,22 +121,19 @@ const DrugTab: React.FC = () => {
     getFavoriteList
   );
 
-  const [_saveFavoriteList, { isLoading: isLoadingSaveData }] = useMutation(
-    saveFavoriteList,
-    {
-      onSuccess: async (data) => {
-        const { message } = data;
-        queryCache.invalidateQueries(PharmacyDrugEnum.GET_FAVORITE_LIST);
-        if (isOpenModal) {
-          toggleIsOpenModal();
-        }
+  const [_saveFavoriteList, { isLoading: isLoadingSaveData }] = useMutation(saveFavoriteList, {
+    onSuccess: async (data) => {
+      const { message } = data;
+      queryCache.invalidateQueries(PharmacyDrugEnum.GET_FAVORITE_LIST);
+      if (isOpenModal) {
+        toggleIsOpenModal();
+      }
 
-        setDrugName('');
+      setDrugName('');
 
-        await successSweetAlert(message);
-      },
-    }
-  );
+      await successSweetAlert(message);
+    },
+  });
 
   const drugSearch = async (title: string): Promise<any> => {
     try {
@@ -242,10 +238,11 @@ const DrugTab: React.FC = () => {
         </Hidden>
       </Grid>
 
-      <Dialog
-        open={isOpenModal}
-        fullScreen={fullScreen}
-        onClose={toggleIsOpenModal}
+      <CDialog
+        isOpen={isOpenModal}
+        onClose={(): void => setIsOpenModal(false)}
+        onOpen={(): void => setIsOpenModal(true)}
+        formHandler={formHandler}
         fullWidth
       >
         <DialogContent>
@@ -260,16 +257,14 @@ const DrugTab: React.FC = () => {
                   className="w-100"
                   placeholder={t('drug.name')}
                   options={drugSearchOptions}
-                  onItemSelected={(item): void =>
-                    setDrugName(String(item[0].value))
-                  }
+                  onItemSelected={(item): void => setDrugName(String(item[0].value))}
                 />
               </AutoCompleteGrid>
             </Grid>
           </Grid>
         </DialogContent>
         <Divider />
-        <DialogActions>
+        {/* <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
             <Grid container xs={12}>
               <Grid item xs={6} sm={6} />
@@ -297,8 +292,8 @@ const DrugTab: React.FC = () => {
               </Grid>
             </Grid>
           </Grid>
-        </DialogActions>
-      </Dialog>
+        </DialogActions> */}
+      </CDialog>
     </MaterialContainer>
   );
 };

@@ -1,21 +1,23 @@
-import { createStyles, Dialog, DialogActions, Grid, makeStyles } from '@material-ui/core';
+import { Button, createStyles, Dialog, DialogActions, Grid, makeStyles } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { isUndefined } from 'lodash';
-import { Button } from '..';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { ColorEnum } from 'enum';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     cancelButton: {
-      color: '#fff',
       fontSize: 10,
-      float: 'right',
+      width: 85,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
     submitBtn: {
-      color: '#fff',
       fontSize: 10,
-      float: 'right',
+      width: 85,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
   })
 );
@@ -31,14 +33,21 @@ interface Props {
   isOpen: boolean;
   fullWidth?: boolean;
   onOpen?: () => void;
+  onOpenAltenate?: () => void;
   onClose?: () => void;
+  onCloseAlternate?: () => void;
   fullScreen?: boolean;
   actionBody?: React.ReactNode;
   isLoading?: boolean;
   formHandler?: () => Promise<void>;
+  hideSubmit?: boolean;
+  modalAlt?: boolean;
+  hideAll?: boolean;
+  canceleButtonTitle?: string;
 }
 
 const modalQueryString = '?modal=true';
+const modalAltQueryString = '?modalAlt=true';
 
 // CDialog => Custom Dialog
 const CDialog: React.FC<Props> = ({
@@ -46,17 +55,35 @@ const CDialog: React.FC<Props> = ({
   fullWidth,
   fullScreen,
   onOpen,
+  onOpenAltenate,
   onClose,
+  onCloseAlternate,
   children,
   isLoading,
   formHandler,
+  hideSubmit,
+  hideAll,
+  modalAlt,
+  canceleButtonTitle,
 }) => {
+  const hasModalAlt = (): boolean => {
+    return window.location.hash.endsWith(modalAltQueryString);
+  };
+
+  const hasModal = (): boolean => {
+    return window.location.hash.endsWith(modalQueryString);
+  };
+
   useEffect(() => {
     const onHashChange = (): void => {
-      if (!window.location.hash.endsWith(modalQueryString) && !isUndefined(onClose)) {
+      if (!hasModal() && !hasModalAlt() && !isUndefined(onClose)) {
         onClose();
-      } else if (window.location.hash.endsWith(modalQueryString) && !isUndefined(onOpen)) {
+      } else if (!hasModalAlt() && !isUndefined(onCloseAlternate)) {
+        onCloseAlternate();
+      } else if (hasModal() && !isUndefined(onOpen)) {
         onOpen();
+      } else if (!isUndefined(onOpenAltenate) && hasModalAlt()) {
+        onOpenAltenate();
       }
     };
 
@@ -66,8 +93,12 @@ const CDialog: React.FC<Props> = ({
   }, []);
 
   useEffect(() => {
-    if (isOpen && !window.location.hash.includes(modalQueryString)) {
-      window.location.hash = `${window.location.hash}${modalQueryString}`;
+    if (isOpen) {
+      if (!modalAlt && !hasModal()) {
+        window.location.hash = `${window.location.hash}${modalQueryString}`;
+      } else if (modalAlt && !hasModalAlt()) {
+        window.location.hash = `${window.location.hash}${modalAltQueryString}`;
+      }
     }
   }, [isOpen]);
 
@@ -89,26 +120,26 @@ const CDialog: React.FC<Props> = ({
       fullScreen={fullScreen}
     >
       {children}
-      <DialogActions>
-        <Grid container xs={12}>
-          <Grid item xs={7} sm={8} />
-          <Grid item xs={2} sm={2}>
-            <StyledButton type="button" onClick={onCloseHandler} className={cancelButton}>
-              {t('general.close')}
-            </StyledButton>
+      {!hideAll && (
+        <DialogActions>
+          <Grid container xs={12} direction="row-reverse">
+            {!hideSubmit && (
+              <Button
+                variant="outlined"
+                className={submitBtn}
+                type="button"
+                disabled={isLoading ?? false}
+                onClick={formHandler}
+              >
+                {isLoading ?? false ? t('general.pleaseWait') : t('general.submit')}
+              </Button>
+            )}
+            <Button variant="outlined" onClick={onCloseHandler} className={cancelButton}>
+              {canceleButtonTitle ? canceleButtonTitle : t('general.close')}
+            </Button>
           </Grid>
-          <Grid item xs={3} sm={2}>
-            <StyledButton
-              className={submitBtn}
-              type="button"
-              disabled={isLoading ?? false}
-              onClick={formHandler}
-            >
-              {isLoading ?? false ? t('general.pleaseWait') : t('general.submit')}
-            </StyledButton>
-          </Grid>
-        </Grid>
-      </DialogActions>
+        </DialogActions>
+      )}
     </Dialog>
   );
 };

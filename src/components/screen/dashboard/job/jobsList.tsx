@@ -78,6 +78,7 @@ import { CountryDivisionSelect } from '../../../public/country-division/CountryD
 import { StateType, WorkShiftType, SkillLevel, JobPositionType, EducationLevel } from 'enum/Job';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { debounce } from 'lodash';
+import CDialog from 'components/public/dialog/Dialog';
 
 const initialState: JobInterface = {
   id: 0,
@@ -466,8 +467,8 @@ const JobsList: React.FC = () => {
   //   return state.name && state.name.trim().length > 0;
   // };
 
-  const submitSave = async (el: any): Promise<any> => {
-    el.preventDefault();
+  const submitSave = async (): Promise<any> => {
+    //el.preventDefault();
 
     const {
       id,
@@ -638,7 +639,7 @@ const JobsList: React.FC = () => {
       },
     }
   );
-  
+
   const [page, setPage] = useState<number>(0);
   const pageRef = React.useRef(page);
   const setPageRef = (data: number) => {
@@ -650,7 +651,6 @@ const JobsList: React.FC = () => {
     const result = await all(pageRef.current, 10);
     console.log(result.items);
     if (result == undefined || result.items.length == 0) {
-     
       setNoDataRef(true);
     } else {
       setListRef(result.items);
@@ -675,7 +675,6 @@ const JobsList: React.FC = () => {
     desktop: 1280,
   };
   const handleScroll = (e: any): any => {
-  
     const el = e.target;
     const pixelsBeforeEnd = 200;
     const checkDevice =
@@ -702,11 +701,13 @@ const JobsList: React.FC = () => {
 
   const editModal = (): JSX.Element => {
     return (
-      <Dialog
-        open={isOpenEditModal}
+      <CDialog
         fullScreen={fullScreen}
         fullWidth
-        onClose={toggleIsOpenSaveModalForm}
+        isOpen={isOpenEditModal}
+        onClose={(): void => setIsOpenSaveModal(false)}
+        onOpen={(): void => setIsOpenSaveModal(true)}
+        formHandler={submitSave}
       >
         <DialogTitle className="text-sm">
           {state?.id === 0 ? t('action.create') : t('action.edit')}
@@ -1011,7 +1012,7 @@ const JobsList: React.FC = () => {
           </DialogContentText>
         </DialogContent>
         <Divider />
-        <DialogActions>
+        {/* <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
             <Grid container xs={12}>
               <Grid item xs={7} sm={8} />
@@ -1041,8 +1042,8 @@ const JobsList: React.FC = () => {
               </Grid>
             </Grid>
           </Grid>
-        </DialogActions>
-      </Dialog>
+        </DialogActions> */}
+      </CDialog>
     );
   };
 

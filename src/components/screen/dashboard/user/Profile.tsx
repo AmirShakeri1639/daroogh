@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ActionInterface, ProfileInterface } from '../../../../interfaces';
-import { User } from '../../../../services/api';
+import { Pharmacy, User } from '../../../../services/api';
 import { ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
 import {
@@ -17,6 +17,7 @@ import { useMutation } from 'react-query';
 import changeProfilePic from '../user/changeProfilePic';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import { ColorEnum } from 'enum';
 
 
 export const useClasses = makeStyles((theme) => createStyles({
@@ -220,10 +221,14 @@ const Profile: React.FC = () => {
 
   const { profile, saveNewUser } = new User();
 
+  const [pharmacy, setPharmacy] = useState<any>()
   useEffect(() => {
     async function getProfile(): Promise<any> {
       const data = await profile();
       dispatch({ type: 'full', value: data });
+      const { get } = new Pharmacy()
+      const result = await get(data.pharmacyID)
+      setPharmacy(result)
     }
 
     getProfile();
@@ -323,11 +328,12 @@ const Profile: React.FC = () => {
                       error={ state.name.length < 2 && showError }
                       label={ t('general.name') }
                       required
+                      disabled
                       variant="outlined"
                       value={ state.name }
                       className={ formItem }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'name', value: e.target.value })
+                      onChange={ (e): void => { }
+                        // dispatch({ type: 'name', value: e.target.value })
                       }
                     />
                   </Grid>
@@ -336,11 +342,12 @@ const Profile: React.FC = () => {
                       error={ state.family.length < 2 && showError }
                       label={ t('general.family') }
                       required
+                      disabled
                       variant="outlined"
                       value={ state.family }
                       className={ formItem }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'family', value: e.target.value })
+                      onChange={ (e): void => { }
+                        // dispatch({ type: 'family', value: e.target.value })
                       }
                     />
                   </Grid>
@@ -350,11 +357,12 @@ const Profile: React.FC = () => {
                       label={ t('general.mobile') }
                       type="number"
                       required
+                      disabled
                       className={ formItem }
                       variant="outlined"
                       value={ state.mobile }
-                      onChange={ (e): void =>
-                        dispatch({ type: 'mobile', value: e.target.value })
+                      onChange={ (e): void => { }
+                        // dispatch({ type: 'mobile', value: e.target.value })
                       }
                     />
                   </Grid>
@@ -447,8 +455,30 @@ const Profile: React.FC = () => {
                       label={ t('user.notifActive') }
                     />
                   </Grid>
+                  { pharmacy &&
+                    <div style={ { color: ColorEnum.Gray, width: '100%' } }>
+                      <div className={ spacing3 }></div>
+                      <Divider style={ { width: '100%' } } />
+                      <Grid item xs={ 12 }>
+                        <h3>
+                          { t('pharmacy.pharmacy') }
+                        </h3>
+                        <p>
+                          <b>{ pharmacy.name }</b>
+                        </p>
+                        <p>
+                          <b>{ t('general.phone') }:</b><br />
+                          { pharmacy.telphon }
+                        </p>
+                        <p>
+                          <b>{ t('general.address') }:</b><br />
+                          { pharmacy.address }
+                        </p>
+                      </Grid>
+                    </div>
+                  }
                   <div className={ spacing1 }>&nbsp;</div>
-                  <Divider />
+                  <Divider style={ { width: '100%' } } />
                   {/* //////// SUBMIT //////////// */ }
                   <Grid item xs={ 12 } className={ spacing3 }>
                     <Button
@@ -461,8 +491,8 @@ const Profile: React.FC = () => {
                       { isLoadingNewUser ? (
                         t('general.pleaseWait')
                       ) : (
-                          <span>{ t('action.register') }</span>
-                        ) }
+                        <span>{ t('action.register') }</span>
+                      ) }
                     </Button>
                   </Grid>
                 </Grid>

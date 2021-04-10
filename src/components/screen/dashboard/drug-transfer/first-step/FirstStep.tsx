@@ -8,12 +8,19 @@ import {
   Divider,
   Typography,
   Hidden,
+  FormControl,
+  InputLabel,
+  Checkbox,
+  ListItemText,
+  Select,
+  Input as MTInput,
+  MenuItem,
 } from '@material-ui/core';
 import { debounce } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
-import { PharmacyDrug } from 'services/api';
+import { Category, PharmacyDrug } from 'services/api';
 import { PharmacyDrugEnum } from 'enum/query';
 import { CircleLoading, EmptyContent } from 'components/public';
 import CardContainer from './CardContainer';
@@ -27,7 +34,6 @@ import {
   Switch,
   Button,
   Input,
-  ReactSelect,
   AutoComplete,
 } from 'components/public';
 import CloseIcon from '@material-ui/icons/Close';
@@ -39,9 +45,12 @@ import { useDispatch } from 'react-redux';
 import { setTransferEnd } from 'redux/actions';
 import { ListOptions } from 'components/public/auto-complete/AutoComplete';
 import { useLocation } from 'react-router';
+import { ColorEnum } from 'enum';
+import { CategoryQueryEnum } from 'enum/query';
 
 const { getRelatedPharmacyDrug, getFavoritePharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
+const { getAllCategories } = new Category();
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -133,10 +142,31 @@ const useStyle = makeStyles((theme) =>
         padding: 5,
       },
     },
+    filterButton: {
+      color: `${ColorEnum.White} !important`,
+      fontSize: 14,
+      width: 80,
+      height: 36,
+      margin: 4,
+      background: `${ColorEnum.Green} !important`,
+      borderRadius: 4,
+    },
   })
 );
 
 const isMultipleSelection = true;
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+      minWidth: 'unset',
+    },
+  },
+};
 
 const FirstStep: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
@@ -153,6 +183,8 @@ const FirstStep: React.FC = () => {
   const [remainingExpireDays, setRemainingExpireDays] = useState<string>('');
   const [isInSearchMode, setIsInSearchMode] = useState<boolean>(false);
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
+  const [drugsCategory, setDrugsCategory] = useState<any[]>([]);
+  const [selectedDrugsCategory, setSelectedDrugsCategory] = useState('-1');
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -178,8 +210,8 @@ const FirstStep: React.FC = () => {
       item.searchHistoryItems = drugsIdsArray as { drugID: number }[];
     }
 
-    if (searchedCategory !== undefined) {
-      item.categoryId = searchedCategory?.value as number;
+    if (selectedDrugsCategory !== '-1') {
+      item.categoryId = (selectedDrugsCategory as unknown) as number;
     }
 
     if (maxDistance !== null) {
@@ -223,6 +255,31 @@ const FirstStep: React.FC = () => {
     }
     setIsLoading(false);
   }
+
+  const getDrugsCategory = async (): Promise<void> => {
+    try {
+      const maximumAvailableDrag = 99;
+      const result = await getAllCategories(0, maximumAvailableDrag);
+      const { items } = result;
+      setDrugsCategory(items);
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpenDrawer && drugsCategory.length === 0) {
+      getDrugsCategory();
+    }
+  }, [isOpenDrawer]);
+
+  const { isLoading: isLoadingCategory, data: categoriesData } = useQuery(
+    CategoryQueryEnum.GET_ALL_CATEGORIES,
+    () => getAllCategories(0, 99),
+    {
+      enabled: isOpenDrawer,
+    }
+  );
 
   useEffect(() => {
     dispatch(setTransferEnd());
@@ -271,20 +328,6 @@ const FirstStep: React.FC = () => {
     }
   };
 
-  const categorySearch = async (title: string): Promise<any> => {
-    if (title.length < 2) {
-      return;
-    }
-    try {
-      const result = await searchCategory(title);
-
-      const options = sanitizeReactSelect(result, 'id', 'name');
-      setCategoryOptions(options);
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
-
   const {
     searchContainer,
     drawerContainer,
@@ -295,6 +338,7 @@ const FirstStep: React.FC = () => {
     divider,
     noContent,
     buttonWrapper,
+    filterButton,
   } = useStyle();
 
   const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
@@ -375,19 +419,33 @@ const FirstStep: React.FC = () => {
     data,
   ]);
 
+  const drugsListGenerator = (): any => {
+    if (!isLoadingCategory && categoriesData !== undefined) {
+      return React.Children.toArray(
+        categoriesData.items.map((item: any) => {
+          return <MenuItem value={item.id}>{item.name}</MenuItem>;
+        })
+      );
+    }
+    return <MenuItem />;
+  };
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>): void => {
+    setSelectedDrugsCategory(event.target.value as string);
+  };
+
   return (
     <>
       <Grid item xs={12}>
         <Grid container spacing={2}>
           <Hidden xsDown>
-            <Grid item xs={12} style={{marginTop:16}}>
+            <Grid item xs={12} style={{ marginTop: 16 }}>
               <span>{t('alerts.supplylistsAlert')}</span>
             </Grid>
           </Hidden>
-
           <Grid item xs={12}>
             <div className={searchContainer}>
-              <Button onClick={(): void => setIsOpenDrawer(true)}>
+              <Button className={filterButton} onClick={(): void => setIsOpenDrawer(true)}>
                 <FilterListIcon fontSize="small" />
                 {t('general.filter')}
               </Button>
@@ -412,7 +470,6 @@ const FirstStep: React.FC = () => {
               />
             </div>
           </Grid>
-
           {memoContent}
         </Grid>
       </Grid>
@@ -436,17 +493,18 @@ const FirstStep: React.FC = () => {
                 افزودن دسته بندی به جست و جو
               </AccordionSummary>
               <AccordionDetails>
-                <div id="react-select">
-                  <ReactSelect
-                    onChange={(e): void => {
-                      setSearchedCategory(e);
-                    }}
-                    onInputChange={debounce(categorySearch, 250)}
-                    options={categoryOptions}
-                    value={searchedCategory}
-                    noOptionsMessage={t('general.noData')}
-                  />
-                </div>
+                <FormControl variant="outlined" style={{ width: 500 }}>
+                  <InputLabel id="drugs-list-id">{t('general.category')}</InputLabel>
+                  <Select
+                    labelId="drugs-list-id"
+                    id="drugs-list"
+                    value={selectedDrugsCategory}
+                    onChange={handleChange}
+                  >
+                    <MenuItem value="-1">{t('general.noOne')}</MenuItem>
+                    {drugsListGenerator()}
+                  </Select>
+                </FormControl>
               </AccordionDetails>
             </Accordion>
 
@@ -487,19 +545,6 @@ const FirstStep: React.FC = () => {
                 className={`${monthInput} w-100`}
                 onChange={(e): any => setMaxDistance(Number(e))}
               />
-              {/* <div id="slider-container">
-                <Slider
-                  defaultValue={60}
-                  getAriaValueText={valuetext}
-                  aria-labelledby="discrete-slider"
-                  valueLabelDisplay="auto"
-                  step={60}
-                  marks
-                  min={60}
-                  max={3000}
-                  onChange={(e, val): any => setMaxDistance(Number(val))}
-                />
-              </div> */}
             </div>
 
             <Divider className={divider} />

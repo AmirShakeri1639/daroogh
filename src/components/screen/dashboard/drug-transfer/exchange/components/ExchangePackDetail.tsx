@@ -31,18 +31,7 @@ interface Props {
 }
 const ExchangePackDetail: React.FC<Props> = (props) => {
   const { item } = props;
-  const getExpireDate = (date: any): string => {
-    const faDate = moment(date, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-    const eDate = moment.from(faDate, 'fa', 'YYYY/MM/DD').format('YYYY/MM/DD');
-    const fromDate = new Date(eDate);
-    const today = new Date();
-
-    const differenceInDays = Utils.getDifferenceInDays(today, fromDate);
-
-    const res = `${faDate}`;
-
-    return res;
-  };
+  
   const { t } = useTranslation();
   const GreenCheckbox = withStyles({
     root: {
@@ -178,7 +167,7 @@ const ExchangePackDetail: React.FC<Props> = (props) => {
           <ul className={ulDetailPack}>
             <li className={colLeftIcon}>
               <span>انقضا:</span>
-              {getExpireDate(item.expireDate)}
+              {Utils.getExpireDate(item.expireDate)}
             </li>
             <Hidden smDown>
               <span className={horzintalLine}>|</span>

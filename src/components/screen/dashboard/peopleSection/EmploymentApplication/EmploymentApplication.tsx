@@ -19,6 +19,8 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
+import { utils } from 'react-modern-calendar-datepicker';
+
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import {
@@ -28,7 +30,7 @@ import {
   CountryDivision,
   EmploymentApplication as applications,
 } from '../../../../../services/api';
-import { MaterialContainer, Modal } from '../../../../public';
+import { DatePicker, MaterialContainer, Modal } from '../../../../public';
 import { errorHandler, successSweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -46,6 +48,8 @@ import {
 } from './EnumsList';
 import { EmploymentApplicationDataInterface } from 'interfaces/EmploymentApplicationInterface';
 import { useClasses } from '../../classes';
+import zIndex from '@material-ui/core/styles/zIndex';
+import CDialog from 'components/public/dialog/Dialog';
 
 const { currentUserEmploymentApplications, cancel, save } = new applications();
 
@@ -311,9 +315,7 @@ const EmploymentApplication: React.FC = () => {
       return data.items.map((item: any) => {
         if (item !== null) {
           return (
-
             <Grid item xs={12} sm={6} md={4} key={item.id}>
-
               <CardContainer data={item} formHandler={removeHandler} />
             </Grid>
           );
@@ -345,6 +347,16 @@ const EmploymentApplication: React.FC = () => {
     })();
   };
 
+  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
+  const toggleIsOpenDatePicker = (): void => {
+    
+    setIsOpenDatePicker((v) => !v);
+    if (isOpenDatePicker) {
+      window.history.back();
+    }
+  };
+  const [selectedDate, setSelectedDate] = useState<string>('');
+
   return (
     <Container maxWidth="lg" className={container}>
       <Grid item xs={12}>
@@ -368,15 +380,38 @@ const EmploymentApplication: React.FC = () => {
             </Hidden>
             {contentGenerator()}
           </Grid>
-
         </Grid>
-
       </Grid>
-      <Dialog
+      <CDialog
+        fullScreen={false}
+        fullWidth={false}
+        isOpen={isOpenDatePicker}
+        onCloseAlternate={(): void => setIsOpenDatePicker(false)}
+        onOpenAltenate={(): void => setIsOpenDatePicker(true)}
+        modalAlt={true}
+        hideAll={true}
+      >
+        <DialogContent>
+          <DatePicker
+            // minimumDate={utils('fa').getToday()}
+            // dateTypeIsSelectable
+            selectedDateHandler={(e): void => {
+              // calculateDateDifference(e, '/');
+              setSelectedDate(e);
+
+              toggleIsOpenDatePicker();
+            }}
+          />
+        </DialogContent>
+      </CDialog>
+
+      <CDialog
         fullScreen={fullScreen}
+        isOpen={isOpenModal}
+        onClose={(): void => setIsOpenModal(false)}
+        onOpen={(): void => setIsOpenModal(true)}
+        formHandler={formHandler}
         fullWidth={true}
-        open={isOpenModal}
-        onClose={toggleIsOpenModal}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -411,6 +446,9 @@ const EmploymentApplication: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
               <TextField
+                onClick={(): void => {
+                  setIsOpenDatePicker(true);
+                }}
                 fullWidth
                 label={t('peopleSection.birthDate')}
                 InputLabelProps={{
@@ -418,7 +456,7 @@ const EmploymentApplication: React.FC = () => {
                   required: true,
                 }}
                 variant="outlined"
-                value={state.birthDate}
+                value={selectedDate}
                 onChange={(e): void => dispatch({ type: 'birthDate', value: e.target.value })}
               />
             </Grid>
@@ -700,7 +738,7 @@ const EmploymentApplication: React.FC = () => {
               <TextField
                 fullWidth
                 select
-                label={t('peopleSection.ostan')}
+                label={t('peopleSection.city')}
                 SelectProps={{
                   native: true,
                   required: true,
@@ -817,17 +855,7 @@ const EmploymentApplication: React.FC = () => {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
-          <Grid item xs={12} className={buttonContainer}>
-            <Button color="default" onClick={toggleIsOpenModal}>
-              {t('general.cancel')}
-            </Button>
-            <Button color="primary" onClick={formHandler} disabled={isLoadingSaveData}>
-              {isLoadingSaveData ? t('general.pleaseWait') : t('general.add')}
-            </Button>
-          </Grid>
-        </DialogActions>
-      </Dialog>
+      </CDialog>
     </Container>
   );
 };
