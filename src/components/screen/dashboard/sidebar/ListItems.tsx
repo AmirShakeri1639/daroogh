@@ -537,14 +537,14 @@ const ListItems: React.FC = () => {
           }) }
         </List>
 
-        <List component="div" className={ linkWrapper }>
+        {/* <List component="div" className={ linkWrapper }>
           { getListItem({
             Icon: MessageIcon,
             text: t('survey.surveyList'),
             selected: isOpenPageOfThisGroup('pharmacy/surveyList'),
             link: surveyList,
           }) }
-        </List>
+        </List> */}
       </div>
     );
   };
