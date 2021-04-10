@@ -640,7 +640,7 @@ const SupplyList: React.FC = () => {
       </Container>
 
       <CDialog
-        fullScreen={fullScreen}
+        fullWidth={fullScreen}
         isOpen={isOpenCalculator}
         onCloseAlternate={(): void => setIsOpenCalculator(false)}
         onOpenAltenate={(): void => setIsOpenCalculator(true)}
@@ -651,7 +651,7 @@ const SupplyList: React.FC = () => {
         // formHandler={(): void => setIsOpenCalculator(false)}
       >
         <DialogContent>
-          <div style={{ display: 'flex', justifyContent: 'center', minWidth: 300 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignContent:'center', minWidth:`${fullScreen? '0px': '300px'}`}}>
             <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
           </div>
         </DialogContent>
