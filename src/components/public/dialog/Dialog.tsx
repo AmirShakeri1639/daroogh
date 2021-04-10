@@ -10,14 +10,14 @@ const useStyle = makeStyles((theme) =>
     cancelButton: {
       fontSize: 10,
       width: 85,
-      margin:4,
-      border: `1px solid ${ColorEnum.DeepBlue}`
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
     submitBtn: {
       fontSize: 10,
       width: 85,
-      margin:4,
-      border: `1px solid ${ColorEnum.DeepBlue}` 
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
   })
 );
@@ -123,24 +123,20 @@ const CDialog: React.FC<Props> = ({
       {!hideAll && (
         <DialogActions>
           <Grid container xs={12} direction="row-reverse">
-            
-              <Button variant="outlined" onClick={onCloseHandler}
-               className={cancelButton}>
-                {canceleButtonTitle ? canceleButtonTitle : t('general.close')}
-              </Button>
-            
-              {!hideSubmit && (
-                <Button 
+            {!hideSubmit && (
+              <Button
                 variant="outlined"
-                  className={submitBtn}
-                  type="button"
-                  disabled={isLoading ?? false}
-                  onClick={formHandler}
-                >
-                  {isLoading ?? false ? t('general.pleaseWait') : t('general.submit')}
-                </Button>
-              )}
-           
+                className={submitBtn}
+                type="button"
+                disabled={isLoading ?? false}
+                onClick={formHandler}
+              >
+                {isLoading ?? false ? t('general.pleaseWait') : t('general.submit')}
+              </Button>
+            )}
+            <Button variant="outlined" onClick={onCloseHandler} className={cancelButton}>
+              {canceleButtonTitle ? canceleButtonTitle : t('general.close')}
+            </Button>
           </Grid>
         </DialogActions>
       )}
