@@ -385,38 +385,50 @@ const RegisterPharmacyWithUser: React.FC = () => {
     );
   };
 
-  const saveFiles = async (id: number | string): Promise<any> => {
-    debugger
-    try {
-      console.log('ID:', id)
-      const { addFile } = new Pharmacy(id)
-      let msg = ''
-      if (state.file1) {
-        msg = await addFile({
+  const saveFiles = async (key: number | string): Promise<any> => {
+    const { addFileGeneral } = new Pharmacy()
+    const msg = []
+    let temp: any
+    if (state.file1) {
+      try {
+        temp = await addFileGeneral({
           fileTypeID: 1,
-          pharmacyId: id,
+          pharmacyKey: key,
           file: state.file1
         })
+        msg.push(`${t('file.type.nationalCard')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(`${t('file.type.nationalCard')}: ${e.message}`)
+        errorHandler(e)
       }
-      if (state.file2) {
-        msg = await addFile({
+    }
+    if (state.file2) {
+      try {
+        temp = await addFileGeneral({
           fileTypeID: 2,
-          pharmacyId: id,
+          pharmacyKey: key,
           file: state.file2
         })
+        msg.push(`${t('file.type.establishLicense')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(`${t('file.type.establishLicense')}: ${e.message}`)
+        errorHandler(e)
       }
-      if (state.file3) {
-        msg = await addFile({
+    }
+    if (state.file3) {
+      try {
+        temp = await addFileGeneral({
           fileTypeID: 3,
-          pharmacyId: id,
+          pharmacyKey: key,
           file: state.file3
         })
+        msg.push(`${t('file.type.healThMinistryLicense')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(`${t('file.type.healThMinistryLicense')}: ${e.message}`)
+        errorHandler(e)
       }
-      return msg
-    } catch (e) {
-      errorHandler(e)
-      return t('error.saveFile')
     }
+    return msg
   }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
@@ -457,14 +469,19 @@ const RegisterPharmacyWithUser: React.FC = () => {
           },
         });
         if (regResult !== undefined) {
-          console.log('%creg result:', 'color: #249; background: yellow; padding: 2em;', regResult)
-          const filesSaved = await saveFiles(regResult.data.pharmacyId)
+          const filesSaved = await saveFiles(regResult.data.pharmacyKey)
           await sweetAlert({
             type: 'success',
             html: <>
               { regResult.data.message || t('alert.successfulSave') }
               <br />
-              { filesSaved }
+              { filesSaved.map((i: any): any => {
+                return (
+                  <>
+                    { i } <br />
+                  </>
+                )
+              }) }
             </>,
           })
           dispatch({ type: 'reset' });
