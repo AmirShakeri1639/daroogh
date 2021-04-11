@@ -16,6 +16,7 @@ const StyledIndicatorList = styled.div`
   justify-content: space-between;
   margin-bottom: 0.25em;
   min-height: 1em;
+  direction: ltr;
 `
 
 const StyledExpression = styled.span`
