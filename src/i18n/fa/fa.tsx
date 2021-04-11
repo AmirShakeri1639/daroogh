@@ -270,6 +270,8 @@ export default {
         newDrug: 'داروی جدید',
         SuppliedDrugsList: 'لیست محصولات ثبت شده توسط شما',
         latinName: 'نام لاتین',
+        product:'محصول',
+        newProduct:'محصول جدید'
       },
       peopleSection: {
         prescription: 'نسخه',

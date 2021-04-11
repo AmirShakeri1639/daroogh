@@ -257,7 +257,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 break;
               case 4 || 9:
                 setMessageOfExchangeState(
-                  'تبادل کامل شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
+                  'تبادل انجام شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
                 );
                 break;
               case 5:
@@ -271,7 +271,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 break;
               case 8 || 10:
                 setMessageOfExchangeState(
-                  'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+                  'این تبادل انجام شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
                 );
                 break;
 
@@ -290,7 +290,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 break;
               case 4 || 8:
                 setMessageOfExchangeState(
-                  'تبادل کامل شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
+                  'تبادل انجام شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
                 );
                 break;
               case 6:
@@ -304,7 +304,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 break;
               case 9 || 10:
                 setMessageOfExchangeState(
-                  'این تبادل کامل شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+                  'این تبادل انجام شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
                 );
                 break;
               default:
