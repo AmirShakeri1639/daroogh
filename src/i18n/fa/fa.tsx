@@ -180,6 +180,7 @@ export default {
         'fill-requireds': 'لطفا مقادیر لازم را وارد کنید.',
         'loading-data': 'خطایی در دریافت اطلاعات به وجود آمد.',
         save: 'خطایی در ذخیره اطلاعات رخ داد.',
+        saveFile: 'خطایی در ذخیره فایل(ها) رخ داد',
         remove: 'خطایی در حذف اطلاعات پیش آمد.',
         _404: 'ای بابا! اینجا کجاست؟!',
         _404_desc:
@@ -766,6 +767,11 @@ export default {
         fileType: 'نوع فایل',
         add: 'افزودن',
         addToPharmacy: 'افزودن فایل به داروخانه',
+        type: {
+          nationalCard: 'کارت ملی',
+          establishLicense: 'مجوز تاسیس',
+          healThMinistryLicense: 'مجوز وزارت بهداشت',
+        }
       },
     },
   },

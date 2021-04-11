@@ -1,6 +1,11 @@
 import Api from './Api'
 import { errorHandler } from "../../utils";
-import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface, FileForPharmacyInterface } from '../../interfaces';
+import {
+  PharmacyInterface,
+  ConfirmParams,
+  FileForPharmacyInterface, 
+  FileForPharmacyGeneralInterface
+} from '../../interfaces';
 
 class Pharmacy extends Api {
   pharmacyId: number | string = 0
@@ -15,6 +20,7 @@ class Pharmacy extends Api {
     files: `/Pharmacy/GetFiles`,
     removeFile: '/Pharmacy/RemoveFile',
     addFile: '/Pharmacy/AddFile',
+    addFileGeneral: '/Pharmacy/AddFileGeneral',
   }
 
   constructor(pharmacyId: number | string = 0) {
@@ -106,12 +112,27 @@ class Pharmacy extends Api {
     const {
       fileTypeID, pharmacyId, file
     } = data
+
     const result = await this.postFormData(
       `${this.urls.addFile}?fileTypeId=${fileTypeID}&pharmacyId=${pharmacyId}`,
       { file: file }
     )
     return result.data
   }
+
+  addFileGeneral = async (data: FileForPharmacyGeneralInterface): Promise<any> => {
+    const {
+      fileTypeID, pharmacyKey, file
+    } = data
+
+    const result = await this.postFormData(
+      this.urls.addFileGeneral +
+      `?fileTypeId=${fileTypeID}&pharmacyKey=${pharmacyKey}`,
+      { file: file }
+    )
+    return result.data
+  }
+
 }
 
 export default Pharmacy;

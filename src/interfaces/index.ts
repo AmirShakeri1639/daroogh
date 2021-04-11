@@ -67,7 +67,8 @@ export type { CategoryInterface } from './CategoryInterface';
 export type { 
   PharmacyInterface,
   PharmacyFileInterface,
-  FileForPharmacyInterface
+  FileForPharmacyInterface,
+  FileForPharmacyGeneralInterface,
 } from './PharmacyInterface';
 export type { LabelValue } from './LabelValue';
 export type { ConfirmParams } from './ConfirmParams';
