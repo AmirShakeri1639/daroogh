@@ -59,6 +59,7 @@ const initialState = {
     countryDivisionID: -1,
     x: '',
     y: '',
+    pharmacyFile: []
   },
   user: {
     id: 0,

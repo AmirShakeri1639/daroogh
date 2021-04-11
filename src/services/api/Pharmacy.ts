@@ -34,8 +34,12 @@ class Pharmacy extends Api {
     }
   }
 
-  register = async (data: PharmacyWithUserInterface): Promise<any> => {
+  register = async (data: any): Promise<any> => {
     try {
+      // const result = await this.postFormData(
+      //   this.urls.register,
+      //   data
+      // )
       const result = await this.postJsonData(
         this.urls.register,
         data
