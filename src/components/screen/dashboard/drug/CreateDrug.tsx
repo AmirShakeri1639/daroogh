@@ -185,7 +185,7 @@ const CreateDrug: React.FC = () => {
               component="h6"
               className={`${formTitle} txt-md`}
             >
-              {t('drug.newDrug')}
+              {t('drug.newProduct')}
             </Typography>
           </div>
           <Divider />
@@ -204,7 +204,7 @@ const CreateDrug: React.FC = () => {
                   <TextField
                     required
                     variant="outlined"
-                    label={t('drug.name')}
+                    label={t('drug.product')}
                     value={state.name}
                     onChange={(e): void =>
                       dispatch({ type: 'name', value: e.target.value })

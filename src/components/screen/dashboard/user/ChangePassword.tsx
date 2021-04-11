@@ -18,6 +18,8 @@ import User from '../../../../services/api/User';
 import { Alert } from '../../../public/alert/Alert';
 import { errorHandler } from '../../../../utils';
 import { SnackbarInterface } from '../../../../interfaces/MaterialUI';
+import { ColorEnum } from 'enum';
+import { borderRadius } from 'react-select/src/theme';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -41,8 +43,9 @@ const useClasses = makeStyles((theme) =>
       },
     },
     button: {
-      background: theme.palette.blueLinearGradient.main,
-      color: '#000',
+      width:90,
+      border:`1px solid ${ColorEnum.DeepBlue}`,
+      borderRadius:4
     },
     div: {
       padding: theme.spacing(2),
@@ -177,7 +180,7 @@ const ChangeUserPassword: React.FC = () => {
                     />
                   </Grid>
 
-                  <Grid item>
+                  <Grid item xs={12} sm={4} md={3} style={{display:'flex' , flexDirection:'row-reverse'}}>
                     <Button type="submit" className={button}>
                       {isLoading ? t('general.pleaseWait') : t('general.confirm')}
                     </Button>

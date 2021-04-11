@@ -175,9 +175,9 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#54bc54 ',
     },
     sectionContainer: {
-       background: '#fafafa',
+      background: '#fafafa',
       borderLeft: `1px solid ${ColorEnum.Borders}`,
-      
+
       display: 'flex',
       alignContent: 'center',
       alignItems: 'center',
@@ -652,7 +652,14 @@ const SupplyList: React.FC = () => {
         // formHandler={(): void => setIsOpenCalculator(false)}
       >
         <DialogContent>
-        <div style={{ display: 'flex', justifyContent: 'center', alignContent:'center', minWidth:`${fullScreen? '0px': '300px'}`}}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignContent: 'center',
+              minWidth: `${fullScreen ? '0px' : '300px'}`,
+            }}
+          >
             <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
           </div>
         </DialogContent>
@@ -669,7 +676,7 @@ const SupplyList: React.FC = () => {
         }}
         onOpen={(): void => {
           setIsOpenModalOfNewList(true);
-           setCalculatedValue(0);
+          setCalculatedValue(0);
         }}
         formHandler={formHandler}
         fullWidth
@@ -711,7 +718,9 @@ const SupplyList: React.FC = () => {
 
               <Grid item container xs={12} className={sectionContainer}>
                 <Grid xs={12} item>
-                  <span style={{color:'#17A2B8' , fontSize:12}}>{t('alerts.priceTypeAlert')}</span>
+                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                    {t('alerts.priceTypeAlert')}
+                  </span>
                 </Grid>
                 <Grid item xs={9}>
                   <Input
@@ -749,7 +758,9 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item xs={12}>
-                    <span style={{color:'#17A2B8' , fontSize:12}}>{t('alerts.offerDescriptions')}</span>
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      {t('alerts.offerDescriptions')}
+                    </span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
                     <span>به ازای</span>
@@ -794,7 +805,9 @@ const SupplyList: React.FC = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
-                    <span style={{color:'#17A2B8' , fontSize:10}}>(وارد کردن روز اجباری نیست)</span>
+                    <span style={{ color: '#17A2B8', fontSize: 10 }}>
+                      (وارد کردن روز اجباری نیست)
+                    </span>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -903,7 +916,7 @@ const SupplyList: React.FC = () => {
                   checked={isCheckedNewItem}
                   onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
                 />
-                <span>صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته نشود</span>
+                <span>{t('alerts.reloadModalToEnterNewDrug')}</span>
               </label>
             </Grid>
           </Grid>
