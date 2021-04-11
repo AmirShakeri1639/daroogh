@@ -4,7 +4,7 @@ export interface ViewExchangeInterface {
   id: number;
   state: number;
   canceller: any;
-  currentPharmacyIsA?: boolean;
+  currentPharmacyIsA: boolean;
   numberA?: string;
   surveyID?: number;
   numberB?: string;
@@ -64,6 +64,7 @@ export interface CardInfo {
   offer2: number;
   pharmacyDrugID: number;
   confirmed?: boolean;
+  currentPharmacyIsA: boolean;
 }
 
 export interface CardDrugInfo {
