@@ -301,8 +301,17 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
 
   const { accountingInfo, fileUrl } = routes;
 
-  const avatar = useMemo(() => {
-    return (
+  // const avatar = useMemo(() => {
+  //   return (
+  //     !loggedInUser || !loggedInUser?.imageKey
+  //       ? avatarPic
+  //       : `${fileUrl}${loggedInUser?.imageKey}`
+  //   )
+  // }, [loggedInUser])
+
+  const [avatar, setAvatar] = useState<any>(avatarPic)
+  useEffect(() => {
+    setAvatar(
       !loggedInUser || !loggedInUser?.imageKey
         ? avatarPic
         : `${fileUrl}${loggedInUser?.imageKey}`

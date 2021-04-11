@@ -42,43 +42,6 @@ import {
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { User } from 'services/api';
 
-const initialState = {
-  pharmacy: {
-    id: 0,
-    name: '',
-    description: '',
-    hix: '',
-    gli: '',
-    workTime: WorkTimeEnum.FULL_TIME,
-    address: '',
-    mobile: '',
-    telphon: '',
-    webSite: '',
-    email: '',
-    postalCode: '',
-    countryDivisionID: -1,
-    x: '',
-    y: '',
-  },
-  user: {
-    id: 0,
-    name: '',
-    family: '',
-    mobile: '',
-    email: '',
-    userName: '',
-    password: '',
-    nationalCode: '',
-    birthDate: '',
-    birthDateYear: '',
-    birthDateMonth: '',
-    birthDateDay: '',
-    isValidBirthDate: true,
-    gender: 0,
-  },
-  isVisiblePassword: false,
-};
-
 export const useClasses = makeStyles((theme) => createStyles({
   parent: {
     paddingTop: theme.spacing(2),
@@ -122,6 +85,49 @@ export const useClasses = makeStyles((theme) => createStyles({
     margin: 'auto'
   },
 }));
+
+const initialState = {
+  pharmacy: {
+    id: 0,
+    name: '',
+    description: '',
+    hix: '',
+    gli: '',
+    workTime: WorkTimeEnum.FULL_TIME,
+    address: '',
+    mobile: '',
+    telphon: '',
+    webSite: '',
+    email: '',
+    postalCode: '',
+    countryDivisionID: -1,
+    x: '',
+    y: '',
+  },
+  user: {
+    id: 0,
+    name: '',
+    family: '',
+    mobile: '',
+    email: '',
+    userName: '',
+    password: '',
+    nationalCode: '',
+    birthDate: '',
+    birthDateYear: '',
+    birthDateMonth: '',
+    birthDateDay: '',
+    isValidBirthDate: true,
+    gender: 0,
+  },
+  isVisiblePassword: false,
+  // nationcal card
+  file1: null,
+  // establish license
+  file2: null,
+  // health ministry license
+  file3: null,
+};
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -264,6 +270,22 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         isVisiblePassword: value,
       }
+    // FILE -------------------
+    case 'file1':
+      return {
+        ...state,
+        file1: value
+      }
+    case 'file2':
+      return {
+        ...state,
+        file2: value
+      }
+    case 'file3':
+      return {
+        ...state,
+        file3: value
+      }
     case 'reset':
       return initialState;
     default:
@@ -314,12 +336,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      await queryCache.invalidateQueries('pharmaciesList');
-      await sweetAlert({
-        type: 'success',
-        text: data.message || t('alert.successfulSave'),
-      });
-      dispatch({ type: 'reset' });
     },
     // onError: async () => {
     //   await sweetAlert({
@@ -369,6 +385,52 @@ const RegisterPharmacyWithUser: React.FC = () => {
     );
   };
 
+  const saveFiles = async (key: number | string): Promise<any> => {
+    const { addFileGeneral } = new Pharmacy()
+    const msg = []
+    let temp: any
+    if (state.file1) {
+      try {
+        temp = await addFileGeneral({
+          fileTypeID: 1,
+          pharmacyKey: key,
+          file: state.file1
+        })
+        msg.push(`${t('file.type.nationalCard')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(`${t('file.type.nationalCard')}: ${e.message}`)
+        errorHandler(e)
+      }
+    }
+    if (state.file2) {
+      try {
+        temp = await addFileGeneral({
+          fileTypeID: 2,
+          pharmacyKey: key,
+          file: state.file2
+        })
+        msg.push(`${t('file.type.establishLicense')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(`${t('file.type.establishLicense')}: ${e.message}`)
+        errorHandler(e)
+      }
+    }
+    if (state.file3) {
+      try {
+        temp = await addFileGeneral({
+          fileTypeID: 3,
+          pharmacyKey: key,
+          file: state.file3
+        })
+        msg.push(`${t('file.type.healThMinistryLicense')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(`${t('file.type.healThMinistryLicense')}: ${e.message}`)
+        errorHandler(e)
+      }
+    }
+    return msg
+  }
+
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
@@ -407,6 +469,22 @@ const RegisterPharmacyWithUser: React.FC = () => {
           },
         });
         if (regResult !== undefined) {
+          const filesSaved = await saveFiles(regResult.data.pharmacyKey)
+          await sweetAlert({
+            type: 'success',
+            html: <>
+              { regResult.data.message || t('alert.successfulSave') }
+              <br />
+              { filesSaved.map((i: any): any => {
+                return (
+                  <>
+                    { i } <br />
+                  </>
+                )
+              }) }
+            </>,
+          })
+          dispatch({ type: 'reset' });
           history.push(routes.login);
         }
       } catch (e) {
@@ -436,7 +514,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
         </div>
         <Divider />
         <form autoComplete="off" className={ rootFull } onSubmit={ submit }>
-          {/* ////////////////////// USER ///////////////////// */ }
+
+          {/* //////////////////////   USER   ///////////////////// */ }
+
           <Grid container spacing={ 3 }>
             <Grid item xs={ 12 }>
               <div className={ titleContainer }>
@@ -567,23 +647,23 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 </FormLabel>
                 <RadioGroup
                   row
-                  name="gender" 
-                  value={state.user.gender}
-                  onChange={ (e: any): void => 
+                  name="gender"
+                  value={ state.user.gender }
+                  onChange={ (e: any): void =>
                     dispatch({ type: 'user.gender', value: e.target.value })
                   }
                 >
-                  <FormControlLabel 
+                  <FormControlLabel
                     value="0"
-                    checked={state.user.gender == 0}
-                    control={ <Radio /> } 
-                    label={ t('GenderType.Male') } 
+                    checked={ state.user.gender == 0 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Male') }
                   />
-                  <FormControlLabel 
-                    value="1" 
-                    checked={state.user.gender == 1}
-                    control={ <Radio /> } 
-                    label={ t('GenderType.Female') } 
+                  <FormControlLabel
+                    value="1"
+                    checked={ state.user.gender == 1 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Female') }
                   />
                 </RadioGroup>
               </FormControl>
@@ -591,7 +671,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
           </Grid>
           <div className={ spacing3 }></div>
           <Divider />
-          {/* ////////////////////// PHARMACY ///////////////////// */ }
+
+          {/* //////////////////////   PHARMACY   ///////////////////// */ }
+
           <Grid container spacing={ 3 }>
             <Grid item xs={ 12 }>
               <div className={ titleContainer }>
@@ -780,6 +862,71 @@ const RegisterPharmacyWithUser: React.FC = () => {
                   } }
                 />
               </div>
+            </Grid>
+          </Grid>
+          <div className={ spacing1 }>&nbsp;</div>
+          <Divider />
+
+          {/* //////////////////////   FILES   ///////////////////// */ }
+
+          <Grid container spacing={ 3 } className={ rootFull }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" className={ `${formTitle} txt-md` }>
+                  <h3>{ t('file.docs') }</h3>
+                </Typography>
+              </div>
+            </Grid>
+            <Grid item xs={ 12 }>
+              <h4>
+                { t('file.type.nationalCard') }
+              </h4>
+              <input
+                type='file'
+                id='nationalCardUpload'
+                accept="image/jpeg, image/png, application/pdf"
+                name='nationalCardUpload'
+                onChange={ (e: any): void => {
+                  e.preventDefault()
+                  if (e.target.files.length > 0) {
+                    dispatch({ type: 'file1', value: e.target.files[0] })
+                  }
+                } }
+              />
+            </Grid>
+            <Grid item xs={ 12 }>
+              <h4>
+                { t('file.type.establishLicense') }
+              </h4>
+              <input
+                type='file'
+                id='establishLicenseUpload'
+                accept="image/jpeg, image/png, application/pdf"
+                name='establishLicenseUpload'
+                onChange={ (e: any): void => {
+                  e.preventDefault()
+                  if (e.target.files.length > 0) {
+                    dispatch({ type: 'file2', value: e.target.files[0] })
+                  }
+                } }
+              />
+            </Grid>
+            <Grid item xs={ 12 }>
+              <h4>
+                { t('file.type.healThMinistryLicense') }
+              </h4>
+              <input
+                type='file'
+                id='healThMinistryLicenseUpload'
+                accept="image/jpeg, image/png, application/pdf"
+                name='healThMinistryLicenseUpload'
+                onChange={ (e: any): void => {
+                  e.preventDefault()
+                  if (e.target.files.length > 0) {
+                    dispatch({ type: 'file3', value: e.target.files[0] })
+                  }
+                } }
+              />
             </Grid>
           </Grid>
           <div className={ spacing1 }>&nbsp;</div>
