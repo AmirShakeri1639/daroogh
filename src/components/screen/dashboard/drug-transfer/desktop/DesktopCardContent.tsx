@@ -422,9 +422,7 @@ const DesktopCardContent = ({
                 <Divider />
               </Grid>
 
-              {(item.state === 1 ||
-                item.state === 2 ||
-                (item.state === 12 && !item.lockSuggestion)) && (
+              
                 <Grid container item xs={12}>
                   {/* <Grid item xs={12}>
                     <div
@@ -483,7 +481,7 @@ const DesktopCardContent = ({
                       is3PercentOk={is3PercentOk}
                     />
                   </Grid>
-                  {differenceMessage && (item.state === 1 || ((item.state===2 || item.state===12) && !item.lockSuggestion)) && !is3PercentOk && (
+                  {differenceMessage && (item.state === 1 || ((item.state===2 || item.state===12) && !item.lockSuggestion && !item.currentPharmacyIsA)) && !is3PercentOk && (
                     <Grid
                       item
                       xs={12}
@@ -506,7 +504,7 @@ const DesktopCardContent = ({
                     </Grid>
                   )}
                 </Grid>
-              )}
+             
             </>
           )}
         </Grid>
@@ -750,7 +748,7 @@ const DesktopCardContent = ({
                 />
               </Grid>
             
-              {differenceMessage && (item.state === 1 || ((item.state==2 || item.state==12) && !item.lockSuggestion)) && !is3PercentOk && (
+              {differenceMessage && (item.state === 1 || ((item.state===2 || item.state===12) && !item.lockSuggestion && !item.currentPharmacyIsA)) && !is3PercentOk && (
                 <Grid
                   item
                   xs={12}
