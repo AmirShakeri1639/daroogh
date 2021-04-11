@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ActionInterface, ProfileInterface } from '../../../../interfaces';
-import { Pharmacy, User } from '../../../../services/api';
+import { User } from '../../../../services/api';
 import { ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
 import {
@@ -221,14 +221,10 @@ const Profile: React.FC = () => {
 
   const { profile, saveNewUser } = new User();
 
-  const [pharmacy, setPharmacy] = useState<any>()
   useEffect(() => {
     async function getProfile(): Promise<any> {
       const data = await profile();
       dispatch({ type: 'full', value: data });
-      const { get } = new Pharmacy()
-      const result = await get(data.pharmacyID)
-      setPharmacy(result)
     }
 
     getProfile();
@@ -455,28 +451,26 @@ const Profile: React.FC = () => {
                       label={ t('user.notifActive') }
                     />
                   </Grid>
-                  { pharmacy &&
-                    <div style={ { color: ColorEnum.Gray, width: '100%' } }>
-                      <div className={ spacing3 }></div>
-                      <Divider style={ { width: '100%' } } />
-                      <Grid item xs={ 12 }>
-                        <h3>
-                          { t('pharmacy.pharmacy') }
-                        </h3>
-                        <p>
-                          <b>{ pharmacy.name }</b>
-                        </p>
-                        <p>
-                          <b>{ t('general.phone') }:</b><br />
-                          { pharmacy.telphon }
-                        </p>
-                        <p>
-                          <b>{ t('general.address') }:</b><br />
-                          { pharmacy.address }
-                        </p>
-                      </Grid>
-                    </div>
-                  }
+                  <div style={ { color: ColorEnum.Gray, width: '100%' } }>
+                    <div className={ spacing3 }></div>
+                    <Divider style={ { width: '100%' } } />
+                    <Grid item xs={ 12 }>
+                      <h3>
+                        { t('pharmacy.pharmacy') }
+                      </h3>
+                      <p>
+                        <b>{ state.pharmacyName }</b>
+                      </p>
+                      <p>
+                        <b>{ t('general.phone') }:</b><br />
+                        { state.pharmacyTelphon }
+                      </p>
+                      <p>
+                        <b>{ t('general.address') }:</b><br />
+                        { state.pharmacyAddress }
+                      </p>
+                    </Grid>
+                  </div>
                   <div className={ spacing1 }>&nbsp;</div>
                   <Divider style={ { width: '100%' } } />
                   {/* //////// SUBMIT //////////// */ }

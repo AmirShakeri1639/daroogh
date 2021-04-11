@@ -12,7 +12,7 @@ import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrug
 import FourthStep from './fourth-step/FourthStep';
 import { TransferPropsInterface } from '../../../../interfaces/component';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
-import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
+import { CardInfo, ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -108,6 +108,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
           if (res.cartA !== undefined) {
             res.cartA.forEach((item) => {
+              if (
+                !res?.currentPharmacyIsA &&
+                item.confirmed !== undefined &&
+                item.confirmed === false
+              )
+                return;
               basketA.push({
                 packDetails: [],
                 id: item.pharmacyDrugID,
@@ -132,6 +138,12 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
           }
           if (res.cartB !== undefined) {
             res.cartB.forEach((item) => {
+              if (
+                !res?.currentPharmacyIsA &&
+                item.confirmed !== undefined &&
+                item.confirmed === false
+              )
+                return;
               basketB.push({
                 packDetails: [],
                 id: item.pharmacyDrugID,
@@ -233,8 +245,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             switch (res.state) {
               case 2:
                 setMessageOfExchangeState(
-                  res.lockSuggestion ? 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید.':
-                  'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست پیشنهادی شما را ویرایش نماید.'
+                  res.lockSuggestion
+                    ? 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید.'
+                    : 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست پیشنهادی شما را ویرایش نماید.'
                 );
                 break;
               case 3:

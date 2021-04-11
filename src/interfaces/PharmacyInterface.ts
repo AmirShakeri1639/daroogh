@@ -32,3 +32,9 @@ export interface FileForPharmacyInterface {
   pharmacyId: number | string
   file: any
 }
+
+export interface FileForPharmacyGeneralInterface {
+  fileTypeID: number | string
+  pharmacyKey: number | string
+  file: any
+}
