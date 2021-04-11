@@ -422,9 +422,8 @@ const DesktopCardContent = ({
                 <Divider />
               </Grid>
 
-              
-                <Grid container item xs={12}>
-                  {/* <Grid item xs={12}>
+              <Grid container item xs={12}>
+                {/* <Grid item xs={12}>
                     <div
                       className={scaleContainer}
                       style={{ minHeight: `${diffPercent * 0.75 + 85}px` }}
@@ -473,15 +472,20 @@ const DesktopCardContent = ({
                       </div>
                     </div>
                   </Grid> */}
-                  <Grid item xs={12} spacing={0}>
-                    <MobileDiffViwer
-                      percentage={diffPercent}
-                      otherAmount={`${item.currentPharmacyIsA ? totalPriceB : totalPriceA}`}
-                      yourAmount={`${item.currentPharmacyIsA ? totalPriceA : totalPriceB}`}
-                      is3PercentOk={is3PercentOk}
-                    />
-                  </Grid>
-                  {differenceMessage && (item.state === 1 || ((item.state===2 || item.state===12) && !item.lockSuggestion && !item.currentPharmacyIsA)) && !is3PercentOk && (
+                <Grid item xs={12} spacing={0}>
+                  <MobileDiffViwer
+                    percentage={diffPercent}
+                    otherAmount={`${item.currentPharmacyIsA ? totalPriceB : totalPriceA}`}
+                    yourAmount={`${item.currentPharmacyIsA ? totalPriceA : totalPriceB}`}
+                    is3PercentOk={is3PercentOk}
+                  />
+                </Grid>
+                {differenceMessage &&
+                  (item.state === 1 ||
+                    ((item.state === 2 || item.state === 12) &&
+                      !item.lockSuggestion &&
+                      !item.currentPharmacyIsA)) &&
+                  !is3PercentOk && (
                     <Grid
                       item
                       xs={12}
@@ -503,8 +507,7 @@ const DesktopCardContent = ({
                       })}
                     </Grid>
                   )}
-                </Grid>
-             
+              </Grid>
             </>
           )}
         </Grid>
@@ -627,7 +630,10 @@ const DesktopCardContent = ({
         <>
           <Paper className={isSmallDevice ? mobileCardRoot : cardRoot}>
             <Grid container alignItems="center" spacing={1}>
-              <Grid item xs={(item.lockSuggestion && (item.state === 2 || item.state==12)) ? 9 : 10}>
+              <Grid
+                item
+                xs={item.lockSuggestion && (item.state === 2 || item.state == 12) ? 9 : 10}
+              >
                 <Typography
                   variant="h5"
                   component="h5"
@@ -667,28 +673,31 @@ const DesktopCardContent = ({
                   </>
                 )}
               </Grid>
-              {item.lockSuggestion && (item.state === 2 || item.state==12) && (
+              {item.lockSuggestion && (item.state === 2 || item.state == 12) && (
                 <Grid item xs={1} style={{ color: ColorEnum.GOLD }}>
                   <FontAwesomeIcon icon={faLock} size="lg" />
                 </Grid>
               )}
             </Grid>
-            {full && differenceMessage && (item.state === 2 || item.state==12)  && item.lockSuggestion && !item.currentPharmacyIsA && (
-
-              <Grid
-                item
-                xs={12}
-                style={{
-                  border: `2px dotted ${ColorEnum.DeepBlue}`,
-                  padding: 4,
-                  textAlign: 'center',
-                }}
-              >
-                <span style={{ color: ColorEnum.Red, fontSize: 12 }}>
-                  {t('alerts.lockedEchangeAlert')}
-                </span>
-              </Grid>
-            )}
+            {full &&
+              differenceMessage &&
+              (item.state === 2 || item.state == 12) &&
+              item.lockSuggestion &&
+              !item.currentPharmacyIsA && (
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    border: `2px dotted ${ColorEnum.DeepBlue}`,
+                    padding: 4,
+                    textAlign: 'center',
+                  }}
+                >
+                  <span style={{ color: ColorEnum.Red, fontSize: 12 }}>
+                    {t('alerts.lockedEchangeAlert')}
+                  </span>
+                </Grid>
+              )}
             <Divider />
 
             <div className={cardContent}>
@@ -696,8 +705,12 @@ const DesktopCardContent = ({
                 {item && (
                   <>
                     <ExchangeInfo />
-                    <Divider style={{ marginBottom: 8 }} />
-                    {showActions && <CardActions />}
+                    {showActions && (
+                      <>
+                        <Divider style={{ marginBottom: 8 }} />
+                        <CardActions />
+                      </>
+                    )}
                   </>
                 )}
               </>
@@ -733,22 +746,24 @@ const DesktopCardContent = ({
           </Dialog>
         </>
       )}
-      {isSmallDevice &&
-        full 
-         && (
-          <>
-          
-            <Grid container xs={12} spacing={0} style={{ background: 'white', padding: 4 }}>
-              <Grid item xs={12} spacing={0}>
-                <MobileDiffViwer
-                  percentage={diffPercent}
-                  otherAmount={`${item.currentPharmacyIsA ? totalPriceB : totalPriceA}`}
-                  yourAmount={`${item.currentPharmacyIsA ? totalPriceA : totalPriceB}`}
-                  is3PercentOk={is3PercentOk}
-                />
-              </Grid>
-            
-              {differenceMessage && (item.state === 1 || ((item.state===2 || item.state===12) && !item.lockSuggestion && !item.currentPharmacyIsA)) && !is3PercentOk && (
+      {isSmallDevice && full && (
+        <>
+          <Grid container xs={12} spacing={0} style={{ background: 'white', padding: 4 }}>
+            <Grid item xs={12} spacing={0}>
+              <MobileDiffViwer
+                percentage={diffPercent}
+                otherAmount={`${item.currentPharmacyIsA ? totalPriceB : totalPriceA}`}
+                yourAmount={`${item.currentPharmacyIsA ? totalPriceA : totalPriceB}`}
+                is3PercentOk={is3PercentOk}
+              />
+            </Grid>
+
+            {differenceMessage &&
+              (item.state === 1 ||
+                ((item.state === 2 || item.state === 12) &&
+                  !item.lockSuggestion &&
+                  !item.currentPharmacyIsA)) &&
+              !is3PercentOk && (
                 <Grid
                   item
                   xs={12}
@@ -770,24 +785,27 @@ const DesktopCardContent = ({
                   })}
                 </Grid>
               )}
-              {differenceMessage && (item.state === 2 || item.state==12)  && item.lockSuggestion && !item.currentPharmacyIsA && (
-              <Grid
-                item
-                xs={12}
-                style={{
-                  border: `2px dotted ${ColorEnum.DeepBlue}`,
-                  padding: 4,
-                  textAlign: 'center',
-                }}
-              >
-                <span style={{ color: ColorEnum.Red, fontSize: 12 }}>
-                  {t('alerts.lockedEchangeAlert')}
-                </span>
-              </Grid>
-            )}
-            </Grid>
-          </>
-        )}
+            {differenceMessage &&
+              (item.state === 2 || item.state == 12) &&
+              item.lockSuggestion &&
+              !item.currentPharmacyIsA && (
+                <Grid
+                  item
+                  xs={12}
+                  style={{
+                    border: `2px dotted ${ColorEnum.DeepBlue}`,
+                    padding: 4,
+                    textAlign: 'center',
+                  }}
+                >
+                  <span style={{ color: ColorEnum.Red, fontSize: 12 }}>
+                    {t('alerts.lockedEchangeAlert')}
+                  </span>
+                </Grid>
+              )}
+          </Grid>
+        </>
+      )}
       {showSurvey &&
         (item.surveyID ? (
           <SurveyComponent
