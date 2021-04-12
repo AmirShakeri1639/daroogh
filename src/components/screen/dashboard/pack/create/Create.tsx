@@ -25,7 +25,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
 import { Category, Comission, Drug, Pack } from '../../../../../services/api';
-import { AutoComplete, BackDrop, DatePicker, MaterialContainer, Modal } from '../../../../public';
+import {
+  AutoComplete,
+  autoCompleteItems,
+  BackDrop,
+  DatePicker,
+  MaterialContainer,
+  Modal,
+} from '../../../../public';
 import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
@@ -556,20 +563,7 @@ const Create: React.FC = () => {
 
       setIsLoading(false);
 
-      const optionsList = result.map((_item: any) => ({
-        item: {
-          value: _item.id,
-          label: getDrugName(_item),
-        },
-        el: (
-          <div>
-            <div>{getDrugName(_item)}</div>
-            <div className="text-muted txt-sm">{`${
-              _item.enName !== null ? `-${_item.enName}` : ''
-            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
-          </div>
-        ),
-      }));
+      const optionsList = autoCompleteItems(result);
 
       setOptions(optionsList);
     } catch (e) {
@@ -578,10 +572,10 @@ const Create: React.FC = () => {
   };
 
   const itemsGenerator = (): JSX.Element[] => {
-    return categories.map((item , index) => {
+    return categories.map((item, index) => {
       const { id, name } = item;
       return (
-        <MenuItem style={{background:`${index % 2 === 0 ? '#ededed':'' }`}} key={id} value={id}>
+        <MenuItem style={{ background: `${index % 2 === 0 ? '#ededed' : ''}` }} key={id} value={id}>
           {name}
         </MenuItem>
       );
