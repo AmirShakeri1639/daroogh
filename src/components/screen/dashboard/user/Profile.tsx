@@ -11,8 +11,10 @@ import { ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
 import {
   errorHandler,
-  errorSweetAlert, successSweetAlert, warningSweetAlert
-} from '../../../../utils';
+  tError,
+  tWarn,
+  tSuccess,
+} from 'utils';
 import { useMutation } from 'react-query';
 import changeProfilePic from '../user/changeProfilePic';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -235,7 +237,7 @@ const Profile: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
     }
   })
 
@@ -271,11 +273,11 @@ const Profile: React.FC = () => {
           smsActive, notifActive,
         });
       } catch (e) {
-        await errorSweetAlert(t('error.save'));
+        tError(t('error.save'));
         errorHandler(e);
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'));
+      tWarn(t('alert.fillFormCarefully'));
       setShowError(true);
     }
   };
