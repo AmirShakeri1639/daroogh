@@ -349,7 +349,6 @@ const EmploymentApplication: React.FC = () => {
 
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const toggleIsOpenDatePicker = (): void => {
-    
     setIsOpenDatePicker((v) => !v);
     if (isOpenDatePicker) {
       window.history.back();
@@ -408,7 +407,10 @@ const EmploymentApplication: React.FC = () => {
       <CDialog
         fullScreen={fullScreen}
         isOpen={isOpenModal}
-        onClose={(): void => setIsOpenModal(false)}
+        onClose={(): void => {
+          setIsOpenModal(false);
+          setIsOpenDatePicker(false);
+        }}
         onOpen={(): void => setIsOpenModal(true)}
         formHandler={formHandler}
         fullWidth={true}
@@ -535,7 +537,7 @@ const EmploymentApplication: React.FC = () => {
                   shrink: true,
                 }}
                 variant="outlined"
-                value={state.gradeOfReadingPrescriptionCertificate}
+                value={state.gradeOfReadingPrescriptionCertificate === 0 ? '' :state.gradeOfReadingPrescriptionCertificate}
                 onChange={(e): void =>
                   dispatch({
                     type: 'gradeOfReadingPrescriptionCertificate',
@@ -554,7 +556,7 @@ const EmploymentApplication: React.FC = () => {
                   required: true,
                 }}
                 variant="outlined"
-                value={state.workExperienceYear}
+                value={state.workExperienceYear === 0 ? '' : state.workExperienceYear}
                 onChange={(e): void =>
                   dispatch({
                     type: 'workExperienceYear',
@@ -796,6 +798,7 @@ const EmploymentApplication: React.FC = () => {
                   shrink: true,
                   required: true,
                 }}
+                
                 variant="outlined"
                 value={state.landlinePhone}
                 onChange={(e): void => dispatch({ type: 'landlinePhone', value: e.target.value })}
