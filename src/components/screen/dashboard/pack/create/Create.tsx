@@ -25,7 +25,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
 import { Category, Comission, Drug, Pack } from '../../../../../services/api';
-import { AutoComplete, BackDrop, DatePicker, MaterialContainer, Modal } from '../../../../public';
+import {
+  AutoComplete,
+  autoCompleteItems,
+  BackDrop,
+  DatePicker,
+  MaterialContainer,
+  Modal,
+} from '../../../../public';
 import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
@@ -80,7 +87,7 @@ const useStyle = makeStyles((theme) =>
       },
     },
     addButton: {
-      minHeight: 175,
+      minHeight: 220,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -178,7 +185,7 @@ const useStyle = makeStyles((theme) =>
 const monthMinimumLength = 28;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32;
+const dayIsValid = (day: number): boolean => day < 32 || day>0;
 
 const StyledGrid = styled((props: any) => <Grid {...props} item xs={12} spacing={3} />)`
   margin: 24px 24px 0px 0px;
@@ -556,20 +563,7 @@ const Create: React.FC = () => {
 
       setIsLoading(false);
 
-      const optionsList = result.map((_item: any) => ({
-        item: {
-          value: _item.id,
-          label: getDrugName(_item),
-        },
-        el: (
-          <div>
-            <div>{getDrugName(_item)}</div>
-            <div className="text-muted txt-sm">{`${
-              _item.enName !== null ? `-${_item.enName}` : ''
-            }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
-          </div>
-        ),
-      }));
+      const optionsList = autoCompleteItems(result);
 
       setOptions(optionsList);
     } catch (e) {
@@ -578,10 +572,10 @@ const Create: React.FC = () => {
   };
 
   const itemsGenerator = (): JSX.Element[] => {
-    return categories.map((item , index) => {
+    return categories.map((item, index) => {
       const { id, name } = item;
       return (
-        <MenuItem style={{background:`${index % 2 === 0 ? '#ededed':'' }`}} key={id} value={id}>
+        <MenuItem style={{ background: `${index % 2 === 0 ? '#ededed' : ''}` }} key={id} value={id}>
           {name}
         </MenuItem>
       );
@@ -729,7 +723,7 @@ const Create: React.FC = () => {
         {packStatus == 1 && (
           <Fragment>
             <Hidden xsDown>
-              <Grid item xs={12} sm={12} md={4} xl={4}>
+              <Grid item xs={12}  md={4}>
                 <Paper className={addButton} onClick={toggleIsOpenModal}>
                   <FontAwesomeIcon icon={faPlus} size="2x" />
                   <span>{t('pack.add')}</span>
@@ -899,9 +893,9 @@ const Create: React.FC = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
-                    <span style={{ color: '#17A2B8', fontSize: 10 }}>
+                    {/* <span style={{ color: '#17A2B8', fontSize: 10 }}>
                       (وارد کردن روز اجباری نیست)
-                    </span>
+                    </span> */}
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -910,9 +904,10 @@ const Create: React.FC = () => {
                       ref={dayRef}
                       label={t('general.day')}
                       value={selectedDay}
-                      error={!dayIsValid(Number(selectedDay))}
+                      error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                       type="number"
-                      placeholder={'22'}
+                      required
+                      // placeholder={'22'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
@@ -932,7 +927,7 @@ const Create: React.FC = () => {
                       value={selectedMonth}
                       label={t('general.month')}
                       required
-                      placeholder={'08'}
+                      // placeholder={'08'}
                       type="number"
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
                       onChange={(e): void => {
@@ -952,7 +947,7 @@ const Create: React.FC = () => {
                       type="number"
                       label={t('general.year')}
                       error={selectedYear === '' && showError}
-                      placeholder={'1401/2022'}
+                      // placeholder={'1401/2022'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedYear.length < 4 || val.length < 4) {

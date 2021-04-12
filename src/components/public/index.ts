@@ -22,3 +22,4 @@ export { default as ReactSelect } from './react-select/ReactSelect';
 export { default as Input } from './input/Input';
 export { default as StatsWidget } from './widget/StatsWidget';
 export { default as EmptyContent } from './empty-content/EmptyContent';
+export { default as autoCompleteItems } from './autocomplete-items/autoCompleteItems';
