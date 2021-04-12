@@ -221,7 +221,7 @@ const App = (): JSX.Element => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer rtl={ true } />
       <Router>
         <Switch>
           <Suspense fallback={ <LoadingComponent /> }>

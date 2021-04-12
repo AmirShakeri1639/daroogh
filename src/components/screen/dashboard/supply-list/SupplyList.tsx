@@ -7,7 +7,6 @@ import {
   Container,
   Hidden,
   Fab,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -37,16 +36,11 @@ import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 // @ts-ignore
 import jalaali from 'jalaali-js';
-import { DrugType } from '../../../../enum/pharmacyDrug';
 import { ListOptions } from '../../../public/auto-complete/AutoComplete';
 import styled from 'styled-components';
 import CDialog from 'components/public/dialog/Dialog';
 import { ColorEnum } from 'enum';
 import Calculator from '../calculator/Calculator';
-
-const GridCenter = styled((props) => <Grid item {...props} />)`
-  text-align: center;
-`;
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -201,7 +195,7 @@ const { getComissionAndRecommendation } = new Comission();
 const { numberWithZero, convertISOTime } = Convertor;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32 || day>0;
+const dayIsValid = (day: number): boolean => day < 32 || day > 0;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
@@ -246,7 +240,6 @@ const SupplyList: React.FC = () => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
   const [isWrongDate, setIsWrongDate] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
   const [showError, setShowError] = useState(false);
 
@@ -256,7 +249,7 @@ const SupplyList: React.FC = () => {
   const { t } = useTranslation();
   const queryCache = useQueryCache();
 
-  const resetValues = () => {
+  const resetValues = (): void => {
     dispatch({ type: 'reset' });
     setSelectedDay('');
     setSelectedMonth('');
@@ -270,22 +263,17 @@ const SupplyList: React.FC = () => {
       window.history.back();
     }
   };
-  const [selectedPrice, setSelectedPrice] = useState<number>(0);
 
   const {
     contentContainer,
     blankCard,
-    modalContainer,
     expireDate,
     fieldset,
-    buttonContainer,
-    cancelButton,
-    submitBtn,
     formContent,
+    input,
     label,
     fab,
     sectionContainer,
-    input,
   } = useStyle();
 
   useEffectOnce(() => {
@@ -299,6 +287,8 @@ const SupplyList: React.FC = () => {
     })();
   });
 
+  const containerRef = useRef<any>();
+  console.log(containerRef);
   useEffect(() => {
     (async (): Promise<any> => {
       try {
@@ -682,7 +672,7 @@ const SupplyList: React.FC = () => {
         fullWidth
       >
         <DialogTitle className="text-sm">افزودن به لیست عرضه</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ height: 'calc(100vh - 50px)' }}>
           <DialogContentText>
             <Grid container spacing={3} direction="column" className={formContent}>
               <Grid item xs={12} className={sectionContainer}>
