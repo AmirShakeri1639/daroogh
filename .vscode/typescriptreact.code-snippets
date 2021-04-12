@@ -1,0 +1,24 @@
+{
+  "TypeScript React Function Component": {
+    "prefix": "rcomp",
+    "body": [
+      "import React, { FC } from 'react';",
+      "",
+      "interface Props {",
+      "\t$1",
+      "}",
+      "",
+      "export const ${TM_FILENAME/[.].*/$1/}: FC<Props> = (props) => {",
+      "\treturn ${2:<div>$3</div>}",
+      "};",
+      "",
+      "export default ${TM_FILENAME/[.].*/$1/};"
+    ],
+    "description": "React Function Component in TypeScript"
+  },
+  "Log to console": {
+    "prefix": "lg",
+    "body": ["console.log(` ==> $1 ==> `, $1)"],
+    "description": "Log output to the console"
+  }
+}
