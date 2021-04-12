@@ -80,7 +80,7 @@ const useStyle = makeStyles((theme) =>
       },
     },
     addButton: {
-      minHeight: 175,
+      minHeight: 220,
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'center',
@@ -729,7 +729,7 @@ const Create: React.FC = () => {
         {packStatus == 1 && (
           <Fragment>
             <Hidden xsDown>
-              <Grid item xs={12} sm={12} md={4} xl={4}>
+              <Grid item xs={12}  md={4}>
                 <Paper className={addButton} onClick={toggleIsOpenModal}>
                   <FontAwesomeIcon icon={faPlus} size="2x" />
                   <span>{t('pack.add')}</span>
