@@ -578,10 +578,10 @@ const Create: React.FC = () => {
   };
 
   const itemsGenerator = (): JSX.Element[] => {
-    return categories.map((item) => {
+    return categories.map((item , index) => {
       const { id, name } = item;
       return (
-        <MenuItem key={id} value={id}>
+        <MenuItem style={{background:`${index % 2 === 0 ? '#ededed':'' }`}} key={id} value={id}>
           {name}
         </MenuItem>
       );

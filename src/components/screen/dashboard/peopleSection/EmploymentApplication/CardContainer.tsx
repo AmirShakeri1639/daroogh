@@ -48,7 +48,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
 
     setIsOpenModal((v) => !v);
   };
-  const { faIcons, spacingVertical1, paper } = useClasses();
+  const { paper } = useClasses();
   const { data, formHandler } = props;
 
   const { sendDate, suggestedJobPositionStr, id, resumeFileKey, cancelDate } = data;
@@ -60,7 +60,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
   };
 
   return (
-    <Paper elevation={1}>
+    <Paper elevation={1} style={{ paddingBottom: 4 }}>
       <Grid container xs={12} spacing={0}>
         <Grid
           item
@@ -99,32 +99,53 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
           <Grid item xs={12}>
             <Divider />
           </Grid>
-          <Grid item container style={{height:36 , display:'flex' , alignItems:'center' , paddingLeft:8, paddingRight:8}} xs={12}>
-
+          <Grid
+            item
+            container
+            style={{
+              height: 36,
+              display: 'flex',
+              alignItems: 'center',
+              paddingLeft: 8,
+              paddingRight: 8,
+            }}
+            xs={12}
+          >
             <Grid xs={6}>
               {resumeFileKey && (
                 <a
-                style={{color:'gray' , textDecoration:'none' }}
-                onClick={(e: any): any => {
-                  e.stopPropagation();
-                }}
-                download=""
-                href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
-              >
-                {t('peopleSection.resumeDownload')}
-              </a>
+                  style={{ color: 'gray', textDecoration: 'none' }}
+                  onClick={(e: any): any => {
+                    e.stopPropagation();
+                  }}
+                  download=""
+                  href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
+                >
+                  {t('peopleSection.resumeDownload')}
+                </a>
               )}
-              
             </Grid>
-            <Grid xs={6} style={{display:'flex', flexDirection:'row-reverse'}}>
+            <Grid xs={12} style={{ display: 'flex', flexDirection: 'row-reverse' }}>
               {!cancelDate && (
                 <Button
                   onClick={(): Promise<any> => removeHandler(id)}
-                  style={{ color: 'green', fontSize: '14px' }}
+                  style={{ color: 'red', fontSize: '12px', margin: 2 }}
                 >
-                  لغو این درخواست
+                  حذف درخواست
                 </Button>
               )}
+              <Button
+                onClick={toggleIsOpenModal}
+                style={{ color: 'green', fontSize: '12px', margin: 2 }}
+              >
+                جزئیات
+              </Button>
+              <Button
+                onClick={toggleIsOpenModal}
+                style={{ color: 'green', fontSize: '12px', margin: 2 }}
+              >
+                ویرایش
+              </Button>
             </Grid>
           </Grid>
         </Grid>
