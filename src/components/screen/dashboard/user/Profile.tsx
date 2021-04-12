@@ -451,26 +451,32 @@ const Profile: React.FC = () => {
                       label={ t('user.notifActive') }
                     />
                   </Grid>
-                  <div style={ { color: ColorEnum.Gray, width: '100%' } }>
-                    <div className={ spacing3 }></div>
-                    <Divider style={ { width: '100%' } } />
-                    <Grid item xs={ 12 }>
-                      <h3>
-                        { t('pharmacy.pharmacy') }
-                      </h3>
-                      <p>
-                        <b>{ state.pharmacyName }</b>
-                      </p>
-                      <p>
-                        <b>{ t('general.phone') }:</b><br />
-                        { state.pharmacyTelphon }
-                      </p>
-                      <p>
-                        <b>{ t('general.address') }:</b><br />
-                        { state.pharmacyAddress }
-                      </p>
-                    </Grid>
-                  </div>
+                  { state.pharmacyName &&
+                    <div style={ { color: ColorEnum.Gray, width: '100%' } }>
+                      <div className={ spacing3 }></div>
+                      <Divider style={ { width: '100%' } } />
+                      <Grid item xs={ 12 }>
+                        <h3>
+                          { t('pharmacy.pharmacy') }
+                        </h3>
+                        <p>
+                          <b>{ state.pharmacyName }</b>
+                        </p>
+                        { state.pharmacyTelphon &&
+                          <p>
+                            <b>{ t('general.phone') }:</b><br />
+                            { state.pharmacyTelphon }
+                          </p>
+                        }
+                        { state.pharmacyAddress &&
+                          <p>
+                            <b>{ t('general.address') }:</b><br />
+                            { state.pharmacyAddress }
+                          </p>
+                        }
+                      </Grid>
+                    </div>
+                  }
                   <div className={ spacing1 }>&nbsp;</div>
                   <Divider style={ { width: '100%' } } />
                   {/* //////// SUBMIT //////////// */ }
