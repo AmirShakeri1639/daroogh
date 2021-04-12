@@ -13,6 +13,7 @@ class JwtData {
     currentPharmacyKey: '',
     imageKey: '',
     pharmacyName: '',
+    gender: 0,
   };
 
   parsedToken: any = {
@@ -46,7 +47,8 @@ class JwtData {
         token: userFromStorageJSON.token,
         imageKey: userFromStorageJSON.imageKey,
         pharmacyName: userFromStorageJSON.pharmacyName,
-        currentPharmacyKey: userFromStorageJSON.currentPharmacyKey
+        currentPharmacyKey: userFromStorageJSON.currentPharmacyKey,
+        gender: userFromStorageJSON.gender,
       };
       this.parsedToken = this.parseJwt(this.userData.token);
       this.userData.userId = this.parsedToken[TokenUserId] ?? 0;
