@@ -195,7 +195,7 @@ const { getComissionAndRecommendation } = new Comission();
 const { numberWithZero, convertISOTime } = Convertor;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32;
+const dayIsValid = (day: number): boolean => day < 32 || day>0;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
@@ -806,13 +806,14 @@ const SupplyList: React.FC = () => {
                       type="number"
                       value={selectedDay}
                       placeholder={'22'}
+                      required
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
                         }
                       }}
-                      error={Number(selectedDay) > 31}
+                      error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
@@ -821,7 +822,7 @@ const SupplyList: React.FC = () => {
                       type="number"
                       value={selectedMonth}
                       label={t('general.month')}
-                      required
+                      // required
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
                       placeholder={'08'}
                       onChange={(e): void => {
@@ -839,7 +840,7 @@ const SupplyList: React.FC = () => {
                       value={selectedYear}
                       required
                       error={selectedYear === '' && showError}
-                      placeholder={'1401/2022'}
+                      // placeholder={'1401/2022'}
                       label={t('general.year')}
                       onChange={(e): void => {
                         const val = e.target.value;
