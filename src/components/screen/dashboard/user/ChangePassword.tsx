@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import {
   Box,
   Container,
   createStyles,
   Grid,
-  TextField,
   Paper,
   Button,
   Typography,
@@ -19,7 +18,8 @@ import { Alert } from '../../../public/alert/Alert';
 import { errorHandler } from '../../../../utils';
 import { SnackbarInterface } from '../../../../interfaces/MaterialUI';
 import { ColorEnum } from 'enum';
-import { borderRadius } from 'react-select/src/theme';
+import PasswordInput from './PasswordInput';
+import { useMediaQueryWithTheme } from 'hooks';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -43,15 +43,54 @@ const useClasses = makeStyles((theme) =>
       },
     },
     button: {
-      width:90,
-      border:`1px solid ${ColorEnum.DeepBlue}`,
-      borderRadius:4
+      width: 90,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
+      borderRadius: 4,
     },
     div: {
       padding: theme.spacing(2),
     },
   })
 );
+
+type Action = {
+  type: string;
+};
+
+type InitialData = {
+  showCurrentPassword: boolean;
+  showNewPassword: boolean;
+  showRepeatNewPassword: boolean;
+};
+
+const initialData = {
+  showCurrentPassword: false,
+  showNewPassword: false,
+  showRepeatNewPassword: false,
+};
+
+const reducer = (state: typeof initialData, action: Action): any => {
+  switch (action.type) {
+    case 'firstPassword':
+      return {
+        ...state,
+        showCurrentPassword: !state.showCurrentPassword,
+      };
+    case 'secondPassword':
+      return {
+        ...state,
+        showNewPassword: !state.showNewPassword,
+      };
+    case 'thirdPassword':
+      return {
+        ...state,
+        showRepeatNewPassword: !state.showRepeatNewPassword,
+      };
+    default:
+      console.log(` ==> action.type ==> `, action.type);
+  }
+};
+
 const ChangeUserPassword: React.FC = () => {
   const [oldPassword, setOldPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
@@ -64,6 +103,9 @@ const ChangeUserPassword: React.FC = () => {
   const [showError, setShowError] = useState<boolean>(false);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const { container, box, button, paper, div } = useClasses();
+  const [state, dispatch] = useReducer(reducer, initialData);
+
+  const isSmallScreen = useMediaQueryWithTheme('down', 'sm');
 
   const { t } = useTranslation();
   const { changeUserPassword } = new User();
@@ -135,52 +177,51 @@ const ChangeUserPassword: React.FC = () => {
               <div className={div}>
                 <Grid container spacing={1}>
                   <Grid item xs={12} sm={4} md={3}>
-                    <TextField
+                    <PasswordInput
                       error={oldPassword.trim().length < 1 && showError}
-                      type="password"
-                      variant="outlined"
-                      size="small"
-                      className="w-100"
-                      label="کلمه عبور فعلی"
                       value={oldPassword}
-                      onChange={(e): void => {
-                        setOldPassword(e.target.value);
-                      }}
+                      onChange={(e): void => setOldPassword(e.target.value)}
+                      label={t('settings.currentPassword')}
+                      onClickIcon={(): void => dispatch({ type: 'firstPassword' })}
+                      isVisiblePassword={state.showCurrentPassword}
                     />
                   </Grid>
                   <Grid item xs={12} sm={4} md={3}>
-                    <TextField
+                    <PasswordInput
                       error={
                         (newPassword.trim().length < 1 || newPassword !== repeatNewPassword) &&
                         showError
                       }
-                      type="password"
-                      className="w-100"
-                      size="small"
-                      variant="outlined"
-                      label="کلمه عبور جدید"
                       value={newPassword}
                       onChange={(e): void => setNewPassword(e.target.value)}
+                      label={t('settings.newPassword')}
+                      onClickIcon={(): void => dispatch({ type: 'secondPassword' })}
+                      isVisiblePassword={state.showNewPassword}
                     />
                   </Grid>
                   <Grid item xs={12} sm={4} md={3}>
-                    <TextField
+                    <PasswordInput
                       error={
                         (repeatNewPassword.trim().length < 1 ||
                           newPassword !== repeatNewPassword) &&
                         showError
                       }
-                      type="password"
-                      className="w-100"
-                      size="small"
-                      variant="outlined"
-                      label="تکرار کلمه عبور جدید"
                       value={repeatNewPassword}
                       onChange={(e): void => setRepeatNewPassword(e.target.value)}
+                      label={t('settings.repeatPassword', { var: t('general.new') })}
+                      onClickIcon={(): void => dispatch({ type: 'thirdPassword' })}
+                      isVisiblePassword={state.showRepeatNewPassword}
                     />
                   </Grid>
 
-                  <Grid item xs={12} sm={4} md={3} style={{display:'flex' , flexDirection:'row-reverse'}}>
+                  <Grid
+                    item
+                    xs={12}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row-reverse',
+                    }}
+                  >
                     <Button type="submit" className={button}>
                       {isLoading ? t('general.pleaseWait') : t('general.confirm')}
                     </Button>
