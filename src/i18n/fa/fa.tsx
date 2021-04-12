@@ -127,6 +127,7 @@ export default {
         category: 'دسته بندی',
         noOne: 'هیچ کدام',
         new: 'جدید',
+        dr: 'دکتر',
       },
 
       pack: {
