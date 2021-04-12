@@ -44,6 +44,8 @@ interface Props {
   modalAlt?: boolean;
   hideAll?: boolean;
   canceleButtonTitle?: string;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 const modalQueryString = '?modal=true';
@@ -61,6 +63,8 @@ const CDialog: React.FC<Props> = ({
   children,
   isLoading,
   formHandler,
+  style,
+  className,
   hideSubmit,
   hideAll,
   modalAlt,
@@ -118,6 +122,8 @@ const CDialog: React.FC<Props> = ({
       fullWidth={fullWidth ?? false}
       onClose={onCloseHandler}
       fullScreen={fullScreen}
+      style={style ?? undefined}
+      className={className ?? ''}
     >
       {children}
       {!hideAll && (
