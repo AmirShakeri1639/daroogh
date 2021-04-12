@@ -11,8 +11,10 @@ import { ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
 import {
   errorHandler,
-  errorSweetAlert, successSweetAlert, warningSweetAlert
-} from '../../../../utils';
+  tError,
+  tWarn,
+  tSuccess,
+} from 'utils';
 import { useMutation } from 'react-query';
 import changeProfilePic from '../user/changeProfilePic';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -235,7 +237,7 @@ const Profile: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
     }
   })
 
@@ -271,11 +273,11 @@ const Profile: React.FC = () => {
           smsActive, notifActive,
         });
       } catch (e) {
-        await errorSweetAlert(t('error.save'));
+        tError(t('error.save'));
         errorHandler(e);
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'));
+      tWarn(t('alert.fillFormCarefully'));
       setShowError(true);
     }
   };
@@ -451,26 +453,32 @@ const Profile: React.FC = () => {
                       label={ t('user.notifActive') }
                     />
                   </Grid>
-                  <div style={ { color: ColorEnum.Gray, width: '100%' } }>
-                    <div className={ spacing3 }></div>
-                    <Divider style={ { width: '100%' } } />
-                    <Grid item xs={ 12 }>
-                      <h3>
-                        { t('pharmacy.pharmacy') }
-                      </h3>
-                      <p>
-                        <b>{ state.pharmacyName }</b>
-                      </p>
-                      <p>
-                        <b>{ t('general.phone') }:</b><br />
-                        { state.pharmacyTelphon }
-                      </p>
-                      <p>
-                        <b>{ t('general.address') }:</b><br />
-                        { state.pharmacyAddress }
-                      </p>
-                    </Grid>
-                  </div>
+                  { state.pharmacyName &&
+                    <div style={ { color: ColorEnum.Gray, width: '100%' } }>
+                      <div className={ spacing3 }></div>
+                      <Divider style={ { width: '100%' } } />
+                      <Grid item xs={ 12 }>
+                        <h3>
+                          { t('pharmacy.pharmacy') }
+                        </h3>
+                        <p>
+                          <b>{ state.pharmacyName }</b>
+                        </p>
+                        { state.pharmacyTelphon &&
+                          <p>
+                            <b>{ t('general.phone') }:</b><br />
+                            { state.pharmacyTelphon }
+                          </p>
+                        }
+                        { state.pharmacyAddress &&
+                          <p>
+                            <b>{ t('general.address') }:</b><br />
+                            { state.pharmacyAddress }
+                          </p>
+                        }
+                      </Grid>
+                    </div>
+                  }
                   <div className={ spacing1 }>&nbsp;</div>
                   <Divider style={ { width: '100%' } } />
                   {/* //////// SUBMIT //////////// */ }
