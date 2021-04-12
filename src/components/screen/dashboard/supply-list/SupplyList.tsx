@@ -195,7 +195,7 @@ const { getComissionAndRecommendation } = new Comission();
 const { numberWithZero, convertISOTime } = Convertor;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32 || day>0;
+const dayIsValid = (day: number): boolean => day < 32 || day > 0;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
@@ -270,6 +270,7 @@ const SupplyList: React.FC = () => {
     expireDate,
     fieldset,
     formContent,
+    input,
     label,
     fab,
     sectionContainer,
