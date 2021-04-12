@@ -9,7 +9,7 @@ import { ActionInterface, SettingsInterface } from '../../../../interfaces';
 import { Settings } from '../../../../services/api';
 import {
   errorHandler,
-  errorSweetAlert, successSweetAlert, warningSweetAlert
+  tError, tSuccess,
 } from '../../../../utils';
 import { useMutation } from 'react-query';
 
@@ -201,7 +201,7 @@ const SettingsForm: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
     }
   })
 
@@ -224,7 +224,7 @@ const SettingsForm: React.FC = () => {
         debtTimeAllow, ticketExireDuration, surveyTime, drugExpireDay,
       });
     } catch (e) {
-      await errorSweetAlert(t('error.save'));
+      tError(t('error.save'));
       errorHandler(e);
     }
   };
