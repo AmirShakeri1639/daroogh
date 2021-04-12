@@ -4,14 +4,21 @@ export { default as Validation } from './validation';
 export { default as history } from './history';
 export { default as logoutUser } from './logout';
 export {
+  tSimple,
+  tInfo,
+  tSuccess,
+  tWarn,
+  tError,
+} from './toast';
+export {
   default as sweetAlert,
   errorSweetAlert,
   infoSweetAlert,
   successSweetAlert,
   warningSweetAlert,
 } from './sweetAlert';
-export { 
-  default as jalali ,
+export {
+  default as jalali,
   today,
   getJalaliDate,
 } from './jalali';
@@ -22,8 +29,8 @@ export { isNullOrEmpty } from './isNullOrEmpty';
 export { EncrDecrService } from './EncrDecrService';
 export { default as Impersonation } from './Impersonation';
 export { isAdmin } from './roles';
-export { 
-  default as checkVersion, 
+export {
+  default as checkVersion,
   clearMyCache,
   showWhatsNew,
 } from './checkVersion';

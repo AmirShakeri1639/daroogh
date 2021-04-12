@@ -11,6 +11,7 @@ import { isAdmin } from './utils';
 import Appbar from './components/screen/dashboard/AppBar';
 import ReactGA from 'react-ga';
 import { createBrowserHistory } from 'history';
+import { ToastContainer } from 'react-toastify';
 
 const Login = lazy(() => import('./components/screen/login/Login'));
 const Dashboard = lazy(() => import('./components/screen/dashboard/Dashboard'));
@@ -220,6 +221,7 @@ const App = (): JSX.Element => {
 
   return (
     <>
+      <ToastContainer />
       <Router>
         <Switch>
           <Suspense fallback={ <LoadingComponent /> }>
@@ -349,14 +351,14 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={ settingsAi }>
               <Dashboard component={ <SettingsAiForm /> } />
             </PrivateRoute>
-            <PrivateRoute exact path={surplusDrugs}>
-              <Dashboard component={<SurplusDrugsForm />} />
+            <PrivateRoute exact path={ surplusDrugs }>
+              <Dashboard component={ <SurplusDrugsForm /> } />
             </PrivateRoute>
-            <PrivateRoute exact path={favoriteDrugs}>
-              <Dashboard component={<FavoriteDrugsForm />} />
+            <PrivateRoute exact path={ favoriteDrugs }>
+              <Dashboard component={ <FavoriteDrugsForm /> } />
             </PrivateRoute>
-            <PrivateRoute exact path={selectedDrugs}>
-              <Dashboard component={<SelectedDrugsForm />} />
+            <PrivateRoute exact path={ selectedDrugs }>
+              <Dashboard component={ <SelectedDrugsForm /> } />
             </PrivateRoute>
 
             <PrivateRoute path={ jobsList }>
@@ -365,8 +367,8 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={ pharmacyMessage }>
               <Dashboard component={ <PharmacyMessage /> } />
             </PrivateRoute>
-            <PrivateRoute path={surveyList}>
-              <Dashboard component={<SurveyComponent />} />
+            <PrivateRoute path={ surveyList }>
+              <Dashboard component={ <SurveyComponent /> } />
             </PrivateRoute>
 
             <PrivateRoute exact path={ fda_exchangeList }>
