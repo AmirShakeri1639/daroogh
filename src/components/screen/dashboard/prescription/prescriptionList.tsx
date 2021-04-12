@@ -305,6 +305,7 @@ const PrescriptionList: React.FC = () => {
       warningSweetAlert(t('prescription.cantEdit'));
     }
   };
+
   const detailHandler = (row: any): void => {
     setFileKeyToShow(row.fileKey);
     setIsOpenPicture(true);
@@ -328,8 +329,10 @@ const PrescriptionList: React.FC = () => {
       errorHandler(e);
     }
   };
+
   const [list, setList] = useState<any>([]);
   const listRef = React.useRef(list);
+
   const setListRef = (data: any, refresh: boolean = false) => {
     if (!refresh) {
       listRef.current = listRef.current.concat(data);
@@ -340,11 +343,13 @@ const PrescriptionList: React.FC = () => {
   };
   const [search, setSearch] = useState<string>('');
   const searchRef = React.useRef(search);
+
   const setSearchRef = (data: any) => {
     searchRef.current = data;
     setSearch(data);
     getCardList(true);
   };
+
   const { data, isFetched } = useQuery(
     PrescriptionEnum.GET_LIST,
 
@@ -452,7 +457,7 @@ const PrescriptionList: React.FC = () => {
         isOpen={isOpenEditModal}
         onClose={(): void => setIsOpenSaveModal(false)}
         onOpen={(): void => setIsOpenSaveModal(true)}
-        formHandler = {submitSave}
+        formHandler={submitSave}
         hideSubmit={currentItem.state !== PrescriptionResponseStateEnum.Waiting}
       >
         <DialogTitle>
@@ -537,7 +542,6 @@ const PrescriptionList: React.FC = () => {
           </Grid>
         </DialogContent>
         <Divider />
-     
       </CDialog>
     );
   };
@@ -572,7 +576,7 @@ const PrescriptionList: React.FC = () => {
       </Grid>
       {<CircleBackdropLoading isOpen={isLoading} />}
       {isLoading && <CircleLoading />}
-      {isOpenEditModal && editModal()}
+      {isOpenEditModal && <></>}
       {isOpenPicture && pictureDialog(fileKeyToShow)}
     </Container>
   );
