@@ -1,11 +1,8 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import {
   Button,
   createStyles,
-  Dialog,
-  DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Fab,
   Grid,
@@ -17,23 +14,15 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { useMutation, useQuery, useQueryCache } from 'react-query';
-import { PharmacyDrugEnum } from '../../../../../enum';
-import {
-  Favorite,
-  Drug as DrugApi,
-  Search,
-  CountryDivision,
-  Prescription as presApi,
-} from '../../../../../services/api';
-import { MaterialContainer, Modal } from '../../../../public';
+import { useMutation, useQuery } from 'react-query';
+import { CountryDivision, Prescription as presApi } from '../../../../../services/api';
+import { MaterialContainer } from '../../../../public';
 import { errorHandler, successSweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
 import { PrescriptionSendInterface } from '../../../../../interfaces/PrescriptionInterface';
 import { ActionInterface } from '../../../../../interfaces';
-import { useLocation } from 'react-router';
 import CDialog from 'components/public/dialog/Dialog';
 
 const { getPrescriptionOfUser, send, cancel } = new presApi();
@@ -142,7 +131,7 @@ const Prescription: React.FC = (props) => {
 
   const { t } = useTranslation();
 
-  const { addButton, buttonContainer, input, fab } = useStyle();
+  const { addButton, input, fab } = useStyle();
 
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -165,7 +154,7 @@ const Prescription: React.FC = (props) => {
     })();
   }, []);
 
-  const [_send, { isLoading: isLoadingSaveData }] = useMutation(send, {
+  const [_send] = useMutation(send, {
     onSuccess: async (data) => {
       const { message } = data;
       if (isOpenModal) {
@@ -175,6 +164,7 @@ const Prescription: React.FC = (props) => {
       await successSweetAlert(message);
     },
   });
+
   const [_cancel, { isLoading: isLoadingCancelData }] = useMutation(cancel, {
     onSuccess: async (data) => {
       const { message } = data;
@@ -193,6 +183,7 @@ const Prescription: React.FC = (props) => {
       errorHandler(e);
     }
   };
+
   const removeHandler = async (id: any): Promise<any> => {
     try {
       await _cancel(id).then((rec) => refetch());
@@ -219,7 +210,9 @@ const Prescription: React.FC = (props) => {
     return null;
   };
 
-  const changeprovince = (e: any): void => {
+  const memoContent = useMemo(() => contentGenerator(), [data]);
+
+  const changeProvince = (e: any): void => {
     const val = e.target.value as string;
     dispatch({ type: 'contryDivisionCode', value: e.target.value });
     setSelectedProvince(val);
@@ -242,7 +235,7 @@ const Prescription: React.FC = (props) => {
     <MaterialContainer>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-            {t('alerts.PrescriptionAlert')}
+          {t('alerts.PrescriptionAlert')}
         </Grid>
         <Grid item xs={12}>
           <h3>{t('peopleSection.listPrescription')}</h3>
@@ -261,7 +254,7 @@ const Prescription: React.FC = (props) => {
           </Fab>
         </Hidden>
 
-        {contentGenerator()}
+        {memoContent}
       </Grid>
       <CDialog
         fullScreen={fullScreen}
@@ -270,7 +263,8 @@ const Prescription: React.FC = (props) => {
         onOpenAltenate={(): void => setIsOpenModal(true)}
         modalAlt={true}
         formHandler={formHandler}
-        fullWidth  aria-labelledby="alert-dialog-title"
+        fullWidth
+        aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">{'نسخه'}</DialogTitle>
@@ -288,9 +282,7 @@ const Prescription: React.FC = (props) => {
                 }}
                 variant="outlined"
                 value={state.comment}
-                onChange={(e): void =>
-                  dispatch({ type: 'comment', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'comment', value: e.target.value })}
               />
             </Grid>
             <Grid item xs={12}>
@@ -305,9 +297,7 @@ const Prescription: React.FC = (props) => {
                 }}
                 variant="outlined"
                 value={state.duration}
-                onChange={(e): void =>
-                  dispatch({ type: 'duration', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'duration', value: e.target.value })}
               >
                 {durations.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -323,7 +313,7 @@ const Prescription: React.FC = (props) => {
                 fullWidth
                 style={{ margin: 8 }}
                 label="استان"
-                onChange={changeprovince}
+                onChange={changeProvince}
                 SelectProps={{
                   native: true,
                 }}
@@ -364,8 +354,7 @@ const Prescription: React.FC = (props) => {
                 multiple
                 type="file"
                 onChange={(e): void => {
-                  if (e.target.files)
-                    dispatch({ type: 'file', value: e.target.files[0] });
+                  if (e.target.files) dispatch({ type: 'file', value: e.target.files[0] });
                 }}
               />
               <label htmlFor="contained-button-file">
@@ -376,7 +365,7 @@ const Prescription: React.FC = (props) => {
             </Grid>
           </Grid>
         </DialogContent>
-             </CDialog>
+      </CDialog>
     </MaterialContainer>
   );
 };
