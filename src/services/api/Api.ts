@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { api } from '../../config/default.json';
 import { DefaultAxiosConfigInterface } from '../../interfaces';
-import { errorHandler, errorSweetAlert } from '../../utils';
+import { errorHandler, tError } from 'utils';
 
 const axiosInstance = axios.create({
   baseURL: api.baseUrl,
@@ -25,7 +25,7 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
   if (status === 401) {
     (async (): Promise<any> => {
       const message = error?.response?.data?.message;
-      await errorSweetAlert(
+      tError(
         message === undefined
           ? 'شما مجوز دسترسی به این صفحه را ندارید!'
           : message
@@ -33,12 +33,12 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
     })();
   } else if (status === 404) {
     (async (): Promise<any> => {
-      await errorSweetAlert('پیدا نشد! - 404');
+      tError('پیدا نشد! - 404');
     })();
   } else if (status === 500) {
     (async (): Promise<any> => {
       const message = error?.response?.data?.message;
-      await errorSweetAlert(
+      tError(
         message === undefined ? 'خطایی رخ داده است.' : message
       );
     })();

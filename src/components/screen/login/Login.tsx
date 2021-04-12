@@ -161,7 +161,6 @@ const Login: React.FC = (): JSX.Element => {
       ) {
         setIsValidRecaptcha(false)
       }
-      tError(t('alert.errorUserNamePassword'));
     },
   });
 
