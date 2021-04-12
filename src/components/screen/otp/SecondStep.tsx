@@ -118,7 +118,7 @@ const SecondStep: React.FC = () => {
       <Grid container className={ grid }>
         <Grid item xs={ 12 } >
           <h2>
-            { t('general.systemFullTitle') }
+            { t('general.systemTitle') }
           </h2>
         </Grid>
         <hr style={ {

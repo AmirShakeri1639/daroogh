@@ -126,6 +126,7 @@ export default {
         print: 'چاپ',
         category: 'دسته بندی',
         noOne: 'هیچ کدام',
+        new: 'جدید',
       },
 
       pack: {
@@ -180,6 +181,7 @@ export default {
         'fill-requireds': 'لطفا مقادیر لازم را وارد کنید.',
         'loading-data': 'خطایی در دریافت اطلاعات به وجود آمد.',
         save: 'خطایی در ذخیره اطلاعات رخ داد.',
+        saveFile: 'خطایی در ذخیره فایل(ها) رخ داد',
         remove: 'خطایی در حذف اطلاعات پیش آمد.',
         _404: 'ای بابا! اینجا کجاست؟!',
         _404_desc:
@@ -270,6 +272,8 @@ export default {
         newDrug: 'داروی جدید',
         SuppliedDrugsList: 'لیست محصولات ثبت شده توسط شما',
         latinName: 'نام لاتین',
+        product: 'محصول',
+        newProduct: 'محصول جدید',
       },
       peopleSection: {
         prescription: 'نسخه',
@@ -567,7 +571,10 @@ export default {
       settings: {
         settings: 'تنظیمات',
 
-        password: 'رمز عبور',
+        password: 'کلمه عبور',
+        currentPassword: 'کلمه عبور فعلی',
+        repeatPassword: 'تکرار کلمه عبور {{var}}',
+        newPassword: 'کلمه عبور جدید',
         passwordMinLength: 'حداقل طول مجاز رمز عبور',
         passwordRequiredLetter: 'استفاده از حروف در رمز عبور اجباری است',
         passwordRequiredSymbol: 'استفاده از علائم در رمز عبور اجباری است',
@@ -746,6 +753,7 @@ export default {
         offerDescriptions: 'داروسازان می توانند هدیه ای در قبال محصول خود به داروساز مقابل بدهند',
         priceTypeAlert:
           'در داروگ قیمت ها بر اساس کوچکترین واحد هر محصول محاسبه میشود. به عنوان مثال ۱ عدد قرص استامینوفن. جهت انجام محاسبات لازم میتوانید از دکمه محاسبه استفاده نمایید',
+        reloadModalToEnterNewDrug: 'این صفحه بعد از افزودن محصول٬ جهت افزودن محصول جدید باز بماند',
       },
 
       widget: {
@@ -763,6 +771,11 @@ export default {
         fileType: 'نوع فایل',
         add: 'افزودن',
         addToPharmacy: 'افزودن فایل به داروخانه',
+        type: {
+          nationalCard: 'کارت ملی',
+          establishLicense: 'مجوز تاسیس',
+          healThMinistryLicense: 'مجوز وزارت بهداشت',
+        },
       },
     },
   },

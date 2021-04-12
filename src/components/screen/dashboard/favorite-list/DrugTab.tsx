@@ -6,8 +6,6 @@ import {
   Hidden,
   makeStyles,
   Paper,
-  Dialog,
-  DialogActions,
   DialogContent,
   useMediaQuery,
   useTheme,
@@ -18,7 +16,7 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { PharmacyDrugEnum } from '../../../../enum';
 import { debounce, remove } from 'lodash';
 import { Favorite, Drug as DrugApi, Search } from '../../../../services/api';
-import { MaterialContainer, Button, AutoComplete } from '../../../public';
+import { MaterialContainer, AutoComplete, autoCompleteItems } from '../../../public';
 import { errorHandler, successSweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -96,10 +94,9 @@ const AutoCompleteGrid = styled((props) => <Grid {...props} item xs={12} />)`
 const DrugTab: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [drugSearchOptions, setDrugSearchOptions] = useState<any[]>([]);
-  const [categoryDrugSearchOptions, setCategoryDrugSearchOptions] = useState<any[]>([]);
   const [drugName, setDrugName] = useState<string>('');
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const { t } = useTranslation();
 
   const {
@@ -142,15 +139,8 @@ const DrugTab: React.FC = () => {
       }
 
       const result = await searchDrug(title);
-      const items = result.map((i: any) => ({
-        value: i.id,
-        label: `${i.name} (${i.genericName})`,
-      }));
 
-      const options = items.map((item: any) => ({
-        el: <div>{item.label}</div>,
-        item,
-      }));
+      const options = autoCompleteItems(result);
 
       setDrugSearchOptions(options);
     } catch (e) {

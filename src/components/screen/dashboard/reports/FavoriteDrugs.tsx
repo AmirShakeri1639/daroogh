@@ -219,7 +219,6 @@ const FavoriteDrugsForm: React.FC = () => {
   };
 
   if (url) ref.current?.onQueryChange();
-  debugger;
   return (
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>

@@ -175,9 +175,9 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#54bc54 ',
     },
     sectionContainer: {
-       background: '#fafafa',
+      background: '#fafafa',
       borderLeft: `1px solid ${ColorEnum.Borders}`,
-      
+
       display: 'flex',
       alignContent: 'center',
       alignItems: 'center',
@@ -201,7 +201,7 @@ const { getComissionAndRecommendation } = new Comission();
 const { numberWithZero, convertISOTime } = Convertor;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32;
+const dayIsValid = (day: number): boolean => day < 32 || day>0;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
@@ -652,7 +652,14 @@ const SupplyList: React.FC = () => {
         // formHandler={(): void => setIsOpenCalculator(false)}
       >
         <DialogContent>
-        <div style={{ display: 'flex', justifyContent: 'center', alignContent:'center', minWidth:`${fullScreen? '0px': '300px'}`}}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignContent: 'center',
+              minWidth: `${fullScreen ? '0px' : '300px'}`,
+            }}
+          >
             <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
           </div>
         </DialogContent>
@@ -669,7 +676,7 @@ const SupplyList: React.FC = () => {
         }}
         onOpen={(): void => {
           setIsOpenModalOfNewList(true);
-           setCalculatedValue(0);
+          setCalculatedValue(0);
         }}
         formHandler={formHandler}
         fullWidth
@@ -711,7 +718,9 @@ const SupplyList: React.FC = () => {
 
               <Grid item container xs={12} className={sectionContainer}>
                 <Grid xs={12} item>
-                  <span style={{color:'#17A2B8' , fontSize:12}}>{t('alerts.priceTypeAlert')}</span>
+                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                    {t('alerts.priceTypeAlert')}
+                  </span>
                 </Grid>
                 <Grid item xs={9}>
                   <Input
@@ -749,7 +758,9 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item xs={12}>
-                    <span style={{color:'#17A2B8' , fontSize:12}}>{t('alerts.offerDescriptions')}</span>
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      {t('alerts.offerDescriptions')}
+                    </span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
                     <span>به ازای</span>
@@ -794,7 +805,9 @@ const SupplyList: React.FC = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
                     <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
-                    <span style={{color:'#17A2B8' , fontSize:10}}>(وارد کردن روز اجباری نیست)</span>
+                    <span style={{ color: '#17A2B8', fontSize: 10 }}>
+                      (وارد کردن روز اجباری نیست)
+                    </span>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -804,13 +817,14 @@ const SupplyList: React.FC = () => {
                       type="number"
                       value={selectedDay}
                       placeholder={'22'}
+                      required
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
                         }
                       }}
-                      error={Number(selectedDay) > 31}
+                      error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
@@ -819,7 +833,7 @@ const SupplyList: React.FC = () => {
                       type="number"
                       value={selectedMonth}
                       label={t('general.month')}
-                      required
+                      // required
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
                       placeholder={'08'}
                       onChange={(e): void => {
@@ -837,7 +851,7 @@ const SupplyList: React.FC = () => {
                       value={selectedYear}
                       required
                       error={selectedYear === '' && showError}
-                      placeholder={'1401/2022'}
+                      // placeholder={'1401/2022'}
                       label={t('general.year')}
                       onChange={(e): void => {
                         const val = e.target.value;
@@ -903,7 +917,7 @@ const SupplyList: React.FC = () => {
                   checked={isCheckedNewItem}
                   onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
                 />
-                <span>صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته نشود</span>
+                <span>{t('alerts.reloadModalToEnterNewDrug')}</span>
               </label>
             </Grid>
           </Grid>

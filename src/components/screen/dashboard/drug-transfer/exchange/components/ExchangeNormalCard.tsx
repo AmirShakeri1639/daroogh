@@ -10,10 +10,10 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
+import ShowOffer from 'components/public/offer-show/ShowOffer';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import Utils from 'components/public/utility/Utils';
 import { AllPharmacyDrugInterface } from 'interfaces';
-
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,12 +30,16 @@ interface Props {
   counterButtonFunc: JSX.Element;
 }
 const ExchangeNormalCard: React.FC<Props> = (props) => {
-  const { pharmacyDrug,totalAmount,
+  const {
+    pharmacyDrug,
+    totalAmount,
     activeStep,
-  basketCount,
-  uBasketCount,
-  lockedAction , handleChange,counterButtonFunc} = props;
-  
+    basketCount,
+    uBasketCount,
+    lockedAction,
+    handleChange,
+    counterButtonFunc,
+  } = props;
 
   const theme = useTheme();
   const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
@@ -66,7 +70,7 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
         alignContent: 'center',
         alignItems: 'center',
         textAlign: 'left',
-        padding:16
+        padding: 16,
       },
       verticalAlign: {
         display: 'flex',
@@ -88,64 +92,51 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
       avatarContainer: {
         display: 'flex',
         verticalAlign: 'middle',
-         alignContent: 'center',
-         alignItems: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
         justifyContent: 'center',
       },
-      detailsHolder:{
+      detailsHolder: {
         borderLeft: '1px solid #f80501',
-        paddingLeft:8
+        paddingLeft: 8,
       },
-      checkBoxContainer:{
+      checkBoxContainer: {
         display: 'flex',
         // verticalAlign: 'middle',
         //  alignContent: 'center',
         //  alignItems: 'center',
         // justifyContent: 'right',
-        flexDirection:'row-reverse'
-      }
+        flexDirection: 'row-reverse',
+      },
     })
   );
 
-  const { root, avatar, avatarContainer,detailsHolder,checkBoxContainer } = useStyle();
+  const { root, avatar, avatarContainer, detailsHolder, checkBoxContainer } = useStyle();
 
   return (
     <Grid container item xs={12} spacing={0} className={root}>
       <Grid item container xs={12}>
-         
-        
-        <Grid item xs={11} style={{paddingLeft:16}} >
-          <span style={{ fontSize: 17, color: '#1d0d50' }}>
-            {pharmacyDrug?.drug.name}
-          </span>
+        <Grid item xs={11} style={{ paddingLeft: 16 }}>
+          <span style={{ fontSize: 17, color: '#1d0d50' }}>{pharmacyDrug?.drug.name}</span>
         </Grid>
         {lockedAction && (
           <Grid item xs={1} className={checkBoxContainer}>
-        <GreenCheckbox
-                  checked={
-                    activeStep === 1
-                      ? basketCount.findIndex(
-                          (x) => x.id == pharmacyDrug?.id
-                        ) !== -1
-                      : uBasketCount.findIndex(
-                          (x) => x.id == pharmacyDrug?.id
-                        ) !== -1
-                  }
-                  onChange={handleChange}
-                  name={pharmacyDrug?.id.toString()}
-                  disabled={!lockedAction}
-                />
-        </Grid>
+            <GreenCheckbox
+              checked={
+                activeStep === 1
+                  ? basketCount.findIndex((x) => x.id == pharmacyDrug?.id) !== -1
+                  : uBasketCount.findIndex((x) => x.id == pharmacyDrug?.id) !== -1
+              }
+              onChange={handleChange}
+              name={pharmacyDrug?.id.toString()}
+              disabled={!lockedAction}
+            />
+          </Grid>
         )}
-        
       </Grid>
-      <Grid item container xs={6} sm={6} >
+      <Grid item container xs={6} sm={6}>
         <Hidden smDown>
-          <Grid
-            item
-            xs={2}
-            className={avatarContainer}
-          >
+          <Grid item xs={2} className={avatarContainer}>
             <img src={drug} className={avatar} width="40" height="80" />
           </Grid>
         </Hidden>
@@ -157,71 +148,57 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
               {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
             </span>
           </Grid>
-          {lockedAction && (<Grid item xs={12}>
-            <TextWithTitle
-              title="عرضه شده"
-              body={pharmacyDrug?.cnt}
-              suffix="عدد"
-            />
-          </Grid>)}
-          
+          {lockedAction && (
+            <Grid item xs={12}>
+              <TextWithTitle title="عرضه شده" body={pharmacyDrug?.cnt} suffix="عدد" />
+            </Grid>
+          )}
+
           <Grid item xs={12}>
             <TextWithTitle
               title="انقضا"
               body={Utils.getExpireDate(pharmacyDrug?.expireDate)}
-              dateSuffix = {Utils.getExpireDays(pharmacyDrug?.expireDate)}
+              dateSuffix={Utils.getExpireDays(pharmacyDrug?.expireDate)}
               // showDateSuffix = {!isSmallDevice}
             />
           </Grid>
           <Grid item xs={12}>
-            <TextWithTitle
-              title="هدیه"
-              body= {`${pharmacyDrug?.offer1} به ${pharmacyDrug?.offer2}`}
-            />
+            <ShowOffer offer1={pharmacyDrug?.offer1} offer2={pharmacyDrug?.offer2} />
           </Grid>
         </Grid>
       </Grid>
-      <Grid item container xs={6} sm={6}  >
+      <Grid item container xs={6} sm={6}>
         <Grid item xs={12} className={detailsHolder}>
           <Grid item xs={12}>
-          <span style={{ fontSize: 13 }}>قیمت واحد: </span>
-                    <span
-                      style={{
-                        fontSize: 17,
-                        fontWeight: 'bold',
-                        color: 'green',
-                      }}
-                    >
-                      {Utils.numberWithCommas(pharmacyDrug?.amount)}
-                    </span>
-                    <span style={{ fontSize: 11, marginRight: 5 }}>
-                      {t('general.defaultCurrency')}
-                    </span>
-
+            <span style={{ fontSize: 13 }}>قیمت واحد: </span>
+            <span
+              style={{
+                fontSize: 17,
+                fontWeight: 'bold',
+                color: 'green',
+              }}
+            >
+              {Utils.numberWithCommas(pharmacyDrug?.amount)}
+            </span>
+            <span style={{ fontSize: 11, marginRight: 5 }}>{t('general.defaultCurrency')}</span>
           </Grid>
           <Grid item xs={12}>
-          {pharmacyDrug && counterButtonFunc}
+            {pharmacyDrug && counterButtonFunc}
           </Grid>
           <Grid item xs={12}>
-          <span style={{ fontSize: 13 }}>جمع اقلام؛</span>
-                    <span
-                      style={{
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        color: '1d0d50',
-                      }}
-                    >
-                      <label id={'lbl_' + pharmacyDrug?.id}>
-                        {totalAmount}
-                      </label>
-                    </span>
-                    <span style={{ fontSize: 11, marginRight: 5 }}>
-                      {t('general.defaultCurrency')}
-                    </span>
-                 
+            <span style={{ fontSize: 13 }}>جمع اقلام؛</span>
+            <span
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '1d0d50',
+              }}
+            >
+              <label id={'lbl_' + pharmacyDrug?.id}>{totalAmount}</label>
+            </span>
+            <span style={{ fontSize: 11, marginRight: 5 }}>{t('general.defaultCurrency')}</span>
           </Grid>
         </Grid>
-        
       </Grid>
     </Grid>
   );

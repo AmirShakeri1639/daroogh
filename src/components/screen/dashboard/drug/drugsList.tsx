@@ -172,7 +172,7 @@ const DrugsList: React.FC = () => {
       },
       {
         field: 'name',
-        title: t('drug.name'),
+        title: t('drug.product'),
         searchable: true,
         type: 'string',
       },
@@ -348,7 +348,7 @@ const DrugsList: React.FC = () => {
               <Grid item xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <label>{t('drug.name')}</label>
+                    <label>{t('drug.product')}</label>
                   </Grid>
                   <Grid item xs={12}>
                     <Input

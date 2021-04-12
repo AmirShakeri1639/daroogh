@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   systemTitle: {
     textAlign: 'right',
     display: 'block',
-    fontSize: 'large',
+    fontSize: '12px',
     width: '100%',
     color: '#4625B2',
   },
@@ -149,7 +149,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   largeSpacing: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   divider: {
     backgroundColor: '#9585C9',
@@ -301,8 +301,17 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
 
   const { accountingInfo, fileUrl } = routes;
 
-  const avatar = useMemo(() => {
-    return (
+  // const avatar = useMemo(() => {
+  //   return (
+  //     !loggedInUser || !loggedInUser?.imageKey
+  //       ? avatarPic
+  //       : `${fileUrl}${loggedInUser?.imageKey}`
+  //   )
+  // }, [loggedInUser])
+
+  const [avatar, setAvatar] = useState<any>(avatarPic)
+  useEffect(() => {
+    setAvatar(
       !loggedInUser || !loggedInUser?.imageKey
         ? avatarPic
         : `${fileUrl}${loggedInUser?.imageKey}`
@@ -363,7 +372,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
               <Grid item xs={9}>
                 <Grid item xs={12}>
                   <Link to={profile} className={classes.simpleLink}>
-                    <span style={{ color: '#4625B2', fontSize: 'large' }}>
+                    <span style={{ color: '#4625B2', fontSize: '12px' }}>
                       {loggedInUser?.name} {loggedInUser?.family}
                     </span>
                   </Link>
@@ -378,7 +387,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <IconButton edge="start" color="inherit" onClick={(): void => logoutUser()}>
                     {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
-                    <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
+                    <span style={{ color: ColorEnum.Red, fontSize: 'small' }}>
                       {t('login.signOut')}
                     </span>
                   </IconButton>
