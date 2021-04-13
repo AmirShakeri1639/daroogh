@@ -114,7 +114,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
             <Grid xs={6}>
               {resumeFileKey && (
                 <a
-                  style={{ color: 'gray', textDecoration: 'none' }}
+                  style={{ color: 'blue', fontSize: '12px', textDecoration: 'none' }}
                   onClick={(e: any): any => {
                     e.stopPropagation();
                   }}
@@ -129,20 +129,17 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
               {!cancelDate && (
                 <Button
                   onClick={(): Promise<any> => removeHandler(id)}
-                  style={{ color: 'red', fontSize: '12px', margin: 2 }}
+                  style={{ color: 'red', fontSize: '12px' }}
                 >
-                  حذف درخواست
+                  حذف
                 </Button>
               )}
-              <Button
-                onClick={toggleIsOpenModal}
-                style={{ color: 'green', fontSize: '12px', margin: 2 }}
-              >
+              <Button onClick={toggleIsOpenModal} style={{ color: 'green', fontSize: '12px' }}>
                 جزئیات
               </Button>
               <Button
                 onClick={(): void => toggleEditModal(data)}
-                style={{ color: 'green', fontSize: '12px', margin: 2 }}
+                style={{ color: 'green', fontSize: '12px' }}
               >
                 ویرایش
               </Button>
