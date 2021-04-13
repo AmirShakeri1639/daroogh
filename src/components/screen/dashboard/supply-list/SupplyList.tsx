@@ -169,8 +169,8 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#54bc54 ',
     },
     sectionContainer: {
-      background: '#fafafa',
-      borderLeft: `1px solid ${ColorEnum.Borders}`,
+      background: 'white',
+      borderLeft: `3px solid ${ColorEnum.DeepBlue}`,
 
       display: 'flex',
       alignContent: 'center',
@@ -794,9 +794,11 @@ const SupplyList: React.FC = () => {
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
+                    <span style={{ marginBottom: 8, marginLeft: 6 }}>
+                      {t('general.expireDate')}
+                    </span>
                     <span style={{ color: '#17A2B8', fontSize: 10 }}>
-                      (وارد کردن روز اجباری نیست)
+                      ( سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد )
                     </span>
                   </Grid>
                 </Grid>
@@ -806,15 +808,15 @@ const SupplyList: React.FC = () => {
                       label={t('general.day')}
                       type="number"
                       value={selectedDay}
-                      placeholder={'22'}
+                      // placeholder={'22'}
                       required
+                      error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
                         }
                       }}
-                      error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
@@ -825,7 +827,7 @@ const SupplyList: React.FC = () => {
                       label={t('general.month')}
                       // required
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
-                      placeholder={'08'}
+                      // placeholder={'08'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedMonth.length < 2 || val.length < 2) {
@@ -866,7 +868,6 @@ const SupplyList: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
               {/* <Grid item xs={12}>
