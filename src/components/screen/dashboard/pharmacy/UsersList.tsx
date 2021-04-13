@@ -39,7 +39,7 @@ import {
   TableColumnInterface,
 } from '../../../../interfaces';
 import { RoleType, TextMessage } from '../../../../enum';
-import { errorHandler, errorSweetAlert, successSweetAlert, sweetAlert } from '../../../../utils';
+import { errorHandler, errorSweetAlert, successSweetAlert, sweetAlert, tError } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -366,8 +366,13 @@ const UsersList: React.FC = () => {
   };
 
   const formHandler = async (): Promise<any> => {
+
     if (inputValuesValidation()) {
       setShowError(true);
+      return;
+    }
+    if (selectedRoles.length == 0) {
+      tError("لطفا حداقل یک نقش را انتخاب نمایید.")
       return;
     }
     const data: any = {

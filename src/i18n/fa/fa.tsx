@@ -127,6 +127,7 @@ export default {
         category: 'دسته بندی',
         noOne: 'هیچ کدام',
         new: 'جدید',
+        dr: 'دکتر',
       },
 
       pack: {
@@ -274,6 +275,7 @@ export default {
         latinName: 'نام لاتین',
         product: 'محصول',
         newProduct: 'محصول جدید',
+        productsDatabase: 'دیتابیس محصولات',
       },
       peopleSection: {
         prescription: 'نسخه',
@@ -318,12 +320,15 @@ export default {
       },
       message: {
         message: 'پیام',
+        messagesForYou: 'پیام های دریافتی',
         messagesList: 'لیست پیام ها',
         createMessage: 'ایجاد پیام',
         profile: 'پروفایل',
         sms: 'پیامک',
         notification: 'ناتیفیکیشن',
         detail: 'جزییات پیام',
+        allMessages: 'سوابق کلیه پیام ها',
+        daroogMessagesList: 'لیست پیام های دریافتی از  طرف داروگ',
       },
       category: {
         category: 'دسته‌بندی',
@@ -331,6 +336,7 @@ export default {
         list: 'لیست دسته‌بندی',
         'edit-category': 'ویرایش دسته بندی',
         'new-category': 'ایجاد دسته بندی',
+        categoriesDatabase: 'دیتابیس دسته بندی ها',
       },
       exchange: {
         create: 'شروع {{var}} تبادل',

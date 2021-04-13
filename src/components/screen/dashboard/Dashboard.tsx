@@ -197,6 +197,7 @@ const StyledMenu = withStyles({
 ));
 
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
+  const { t } = useTranslation();
   const [activePage, setActivePage] = useState<string>('dashboard');
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
   const [creditAnchorEl, setcreditAnchorEl] = React.useState(null);
@@ -206,12 +207,12 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
   const [avatarChanged, setAvatarChanged] = useState<any>();
+  const [mrMs, setMrMs] = useState(t('general.dr') + ' ')
 
   const { profile } = routes;
 
   const classes = useStyles();
 
-  const { t } = useTranslation();
   const { userData } = new JwtData();
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {
@@ -234,6 +235,10 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     if (userData.pharmacyName != null) {
       getIsIndebtPharmacy();
     }
+    const nameTitle = userData?.gender == 0
+      ? t('general.mr')
+      : userData?.gender == 1 ? t('general.ms') : ''
+    setMrMs(`${nameTitle} ${t('general.dr')} `)
   }, []);
 
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
@@ -373,6 +378,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                 <Grid item xs={ 12 }>
                   <Link to={ profile } className={ classes.simpleLink }>
                     <span style={ { color: '#4625B2', fontSize: '12px' } }>
+                      { mrMs }
                       { loggedInUser?.name } { loggedInUser?.family }
                     </span>
                   </Link>

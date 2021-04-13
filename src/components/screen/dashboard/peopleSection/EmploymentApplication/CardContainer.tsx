@@ -49,7 +49,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
     setIsOpenModal((v) => !v);
   };
   const { paper } = useClasses();
-  const { data, formHandler } = props;
+  const { data, formHandler, toggleEditModal } = props;
 
   const { sendDate, suggestedJobPositionStr, id, resumeFileKey, cancelDate } = data;
 
@@ -111,10 +111,10 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
             }}
             xs={12}
           >
-            <Grid xs={6}>
+            <Grid xs={5}>
               {resumeFileKey && (
                 <a
-                  style={{ color: 'gray', textDecoration: 'none' }}
+                  style={{ color: 'blue', textDecoration: 'none', fontSize: 12 }}
                   onClick={(e: any): any => {
                     e.stopPropagation();
                   }}
@@ -125,13 +125,13 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                 </a>
               )}
             </Grid>
-            <Grid xs={12} style={{ display: 'flex', flexDirection: 'row-reverse' }}>
+            <Grid xs={7} style={{ display: 'flex', flexDirection: 'row-reverse' }}>
               {!cancelDate && (
                 <Button
                   onClick={(): Promise<any> => removeHandler(id)}
                   style={{ color: 'red', fontSize: '12px', margin: 2 }}
                 >
-                  حذف درخواست
+                  حذف
                 </Button>
               )}
               <Button
@@ -141,7 +141,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                 جزئیات
               </Button>
               <Button
-                onClick={toggleIsOpenModal}
+                onClick={(): void => toggleEditModal(data)}
                 style={{ color: 'green', fontSize: '12px', margin: 2 }}
               >
                 ویرایش

@@ -1,8 +1,4 @@
-import {
-  CircleLoading,
-  EmptyContent,
-  MaterialContainer,
-} from 'components/public';
+import { CircleLoading, EmptyContent, MaterialContainer } from 'components/public';
 import { MessageQueryEnum } from 'enum';
 import React, { useEffect, useState } from 'react';
 import { useQuery, useQueryCache } from 'react-query';
@@ -10,6 +6,7 @@ import { Message } from 'services/api';
 import { debounce } from 'lodash';
 import { MessageBox } from './MessageBox';
 import { Message as MessageModel } from 'interfaces';
+import { useTranslation } from 'react-i18next';
 
 const { getUserMessages } = new Message();
 
@@ -42,16 +39,15 @@ const PharmacyMessage: React.FC = () => {
     () => getUserMessages(false, 0, currentPage * 10),
     { keepPreviousData: true }
   );
+  const { t } = useTranslation();
 
   return (
     <MaterialContainer>
       <div id="container" style={{ margin: 8 }}>
-        <h3>پیام های کاربر</h3>
+        <h3>{t('message.daroogMessagesList')}</h3>
         {data !== undefined && data.items.length > 0 ? (
           React.Children.toArray(
-            data.items.map((item: MessageModel) => (
-              <MessageBox message={item} />
-            ))
+            data.items.map((item: MessageModel) => <MessageBox message={item} />)
           )
         ) : isLoading ? (
           <CircleLoading />

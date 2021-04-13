@@ -7,7 +7,6 @@ import {
   Container,
   Hidden,
   Fab,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -37,16 +36,11 @@ import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 // @ts-ignore
 import jalaali from 'jalaali-js';
-import { DrugType } from '../../../../enum/pharmacyDrug';
 import { ListOptions } from '../../../public/auto-complete/AutoComplete';
 import styled from 'styled-components';
 import CDialog from 'components/public/dialog/Dialog';
 import { ColorEnum } from 'enum';
 import Calculator from '../calculator/Calculator';
-
-const GridCenter = styled((props) => <Grid item {...props} />)`
-  text-align: center;
-`;
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -175,8 +169,8 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#54bc54 ',
     },
     sectionContainer: {
-      background: '#fafafa',
-      borderLeft: `1px solid ${ColorEnum.Borders}`,
+      background: 'white',
+      borderLeft: `3px solid ${ColorEnum.DeepBlue}`,
 
       display: 'flex',
       alignContent: 'center',
@@ -201,7 +195,7 @@ const { getComissionAndRecommendation } = new Comission();
 const { numberWithZero, convertISOTime } = Convertor;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32 || day>0;
+const dayIsValid = (day: number): boolean => day < 32 || day > 0;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
@@ -246,7 +240,6 @@ const SupplyList: React.FC = () => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
   const [isWrongDate, setIsWrongDate] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
   const [showError, setShowError] = useState(false);
 
@@ -256,7 +249,7 @@ const SupplyList: React.FC = () => {
   const { t } = useTranslation();
   const queryCache = useQueryCache();
 
-  const resetValues = () => {
+  const resetValues = (): void => {
     dispatch({ type: 'reset' });
     setSelectedDay('');
     setSelectedMonth('');
@@ -270,22 +263,17 @@ const SupplyList: React.FC = () => {
       window.history.back();
     }
   };
-  const [selectedPrice, setSelectedPrice] = useState<number>(0);
 
   const {
     contentContainer,
     blankCard,
-    modalContainer,
     expireDate,
     fieldset,
-    buttonContainer,
-    cancelButton,
-    submitBtn,
     formContent,
+    input,
     label,
     fab,
     sectionContainer,
-    input,
   } = useStyle();
 
   useEffectOnce(() => {
@@ -299,6 +287,8 @@ const SupplyList: React.FC = () => {
     })();
   });
 
+  const containerRef = useRef<any>();
+  console.log(containerRef);
   useEffect(() => {
     (async (): Promise<any> => {
       try {
@@ -682,7 +672,7 @@ const SupplyList: React.FC = () => {
         fullWidth
       >
         <DialogTitle className="text-sm">افزودن به لیست عرضه</DialogTitle>
-        <DialogContent>
+        <DialogContent style={{ height: 'calc(100vh - 50px)' }}>
           <DialogContentText>
             <Grid container spacing={3} direction="column" className={formContent}>
               <Grid item xs={12} className={sectionContainer}>
@@ -804,9 +794,11 @@ const SupplyList: React.FC = () => {
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
+                    <span style={{ marginBottom: 8, marginLeft: 6 }}>
+                      {t('general.expireDate')}
+                    </span>
                     <span style={{ color: '#17A2B8', fontSize: 10 }}>
-                      (وارد کردن روز اجباری نیست)
+                      ( سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد )
                     </span>
                   </Grid>
                 </Grid>
@@ -816,15 +808,15 @@ const SupplyList: React.FC = () => {
                       label={t('general.day')}
                       type="number"
                       value={selectedDay}
-                      placeholder={'22'}
+                      // placeholder={'22'}
                       required
+                      error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
                         }
                       }}
-                      error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                     />
                   </Grid>
                   {/* <span style={{ alignSelf: 'center' }}>/</span> */}
@@ -835,7 +827,7 @@ const SupplyList: React.FC = () => {
                       label={t('general.month')}
                       // required
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
-                      placeholder={'08'}
+                      // placeholder={'08'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedMonth.length < 2 || val.length < 2) {
@@ -876,7 +868,6 @@ const SupplyList: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
               {/* <Grid item xs={12}>

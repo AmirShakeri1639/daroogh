@@ -90,12 +90,10 @@ const RoleForm: React.FC<RoleFormProps> = ({ userId, toggleForm, roleType }) => 
           .filter((item: any) => item.id !== 1)
           .map((item: any) => {
             return (
-              <Grid container item xs={12}>
-                <MenuItem value={item.id}>
-                  <Checkbox checked={selectedRoles.indexOf(item.id) !== -1} />
-                  <ListItemText primary={item.name} />
-                </MenuItem>
-              </Grid>
+              <MenuItem value={item.id}>
+                <Checkbox checked={selectedRoles.indexOf(item.id) !== -1} />
+                <ListItemText primary={item.name} />
+              </MenuItem>
             );
           })
       );
@@ -178,11 +176,7 @@ const RoleForm: React.FC<RoleFormProps> = ({ userId, toggleForm, roleType }) => 
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} className={buttonContainer}>
-              <Button color="pink" type="button" onClick={toggleForm} className={cancelButton}>
-                {t('general.close')}
-              </Button>
-            </Grid>
+
           </Grid>
         </form>
       </div>

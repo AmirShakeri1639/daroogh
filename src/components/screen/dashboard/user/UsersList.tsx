@@ -19,10 +19,7 @@ import {
 import { TextMessage } from '../../../../enum';
 import { errorHandler, successSweetAlert, sweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
-import {
-  InitialNewUserInterface,
-  NewUserData,
-} from '../../../../interfaces/user';
+import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTag } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
@@ -104,8 +101,8 @@ const initialState: NewUserData = {
   active: false,
   smsActive: true,
   notifActive: true,
-  gender: 0
-}
+  gender: 0,
+};
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -180,7 +177,7 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         gender: value,
-      }
+      };
     case 'reset':
       return initialState;
     default:
@@ -206,16 +203,13 @@ const UsersList: React.FC = () => {
 
   const queryCache = useQueryCache();
 
-  const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(
-    removeUser,
-    {
-      onSuccess: async () => {
-        ref.current?.onQueryChange();
-        await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-        await successSweetAlert(t('alert.successfulRemoveTextMessage'));
-      },
-    }
-  );
+  const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(removeUser, {
+    onSuccess: async () => {
+      ref.current?.onQueryChange();
+      await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+      await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+    },
+  });
 
   const [_disableUser, { reset: resetDisableUser }] = useMutation(disableUser, {
     onSuccess: async () => {
@@ -224,17 +218,14 @@ const UsersList: React.FC = () => {
     },
   });
 
-  const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(
-    saveNewUser,
-    {
-      onSuccess: async () => {
-        ref.current?.onQueryChange();
-        dispatch({ type: 'reset' });
-        queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-        await successSweetAlert(t('alert.successfulEditTextMessage'));
-      },
-    }
-  );
+  const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(saveNewUser, {
+    onSuccess: async () => {
+      ref.current?.onQueryChange();
+      dispatch({ type: 'reset' });
+      queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
+      await successSweetAlert(t('alert.successfulEditTextMessage'));
+    },
+  });
 
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
@@ -274,10 +265,12 @@ const UsersList: React.FC = () => {
         field: 'gender',
         title: t('general.gender'),
         type: 'number',
-        render: (row: any): any => 
-          row.gender == 0 
-            ? t('general.male') 
-            : row.gender == 1 ? t('general.female') : t('general.unknown')
+        render: (row: any): any =>
+          row.gender == 0
+            ? t('general.male')
+            : row.gender == 1
+            ? t('general.female')
+            : t('general.unknown'),
       },
       {
         field: 'email',
@@ -317,10 +310,7 @@ const UsersList: React.FC = () => {
     ];
   };
 
-  const removeUserHandler = async (
-    e: any,
-    userRow: NewUserData
-  ): Promise<any> => {
+  const removeUserHandler = async (e: any, userRow: NewUserData): Promise<any> => {
     try {
       if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
         await _removeUser(userRow.id);
@@ -346,9 +336,7 @@ const UsersList: React.FC = () => {
     }
   };
 
-  const enableUserHandler = async (
-    user: InitialNewUserInterface
-  ): Promise<any> => {
+  const enableUserHandler = async (user: InitialNewUserInterface): Promise<any> => {
     if (!window.confirm(t('alert.enableTextAlert'))) {
       return;
     }
@@ -386,7 +374,7 @@ const UsersList: React.FC = () => {
 
   const editUserHandler = (e: any, row: any): void => {
     toggleIsOpenSaveModalForm();
-    console.log(232);
+
     const {
       name,
       family,
@@ -430,9 +418,7 @@ const UsersList: React.FC = () => {
 
   const customDataTableActions: DataTableCustomActionInterface[] = [
     {
-      icon: (): any => (
-        <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />
-      ),
+      icon: (): any => <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />,
       tooltip: 'نقش کاربر',
       action: (event: any, rowData: any): void => editRoleHandler(rowData),
     },
@@ -456,8 +442,6 @@ const UsersList: React.FC = () => {
         addAction={addUserHandler}
         editUser={enableUserHandler}
         removeAction={removeUserHandler}
-        queryKey={UserQueryEnum.GET_ALL_USERS}
-        queryCallback={getAllUsers}
         initLoad={false}
         isLoading={isLoadingRemoveUser || isLoadingEditUser}
         pageSize={10}
@@ -480,10 +464,7 @@ const UsersList: React.FC = () => {
           <Divider />
 
           <CardContent>
-            <RoleForm
-              userId={idOfSelectedUser}
-              toggleForm={toggleIsOpenRoleModal}
-            />
+            <RoleForm userId={idOfSelectedUser} toggleForm={toggleIsOpenRoleModal} />
           </CardContent>
         </Card>
       </Modal>

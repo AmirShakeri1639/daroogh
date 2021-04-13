@@ -15,6 +15,7 @@ import {
   Select,
   Input as MTInput,
   MenuItem,
+  Chip,
 } from '@material-ui/core';
 import { debounce } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -37,7 +38,7 @@ import {
   AutoComplete,
 } from 'components/public';
 import CloseIcon from '@material-ui/icons/Close';
-import { errorHandler, sanitizeReactSelect } from 'utils';
+import { errorHandler } from 'utils';
 import Search from 'services/api/Search';
 import { SelectOption } from 'interfaces';
 import { AdvancedSearchInterface } from 'interfaces/search';
@@ -147,7 +148,7 @@ const useStyle = makeStyles((theme) =>
       fontSize: 14,
       width: 80,
       height: 36,
-      margin: 4,
+      marginRight: 16,
       background: `${ColorEnum.Green} !important`,
       borderRadius: 4,
     },
@@ -156,18 +157,6 @@ const useStyle = makeStyles((theme) =>
 
 const isMultipleSelection = true;
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-      minWidth: 'unset',
-    },
-  },
-};
-
 const FirstStep: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const [isCheckedJustOffer, setIsCheckedJustOffer] = useState<boolean>(false);
@@ -175,7 +164,7 @@ const FirstStep: React.FC = () => {
   const [selectedProvince, setSelectedProvince] = useState<string>('-2');
   const [searchOptions, setSearchOptions] = useState<object[] | undefined>(undefined);
   const [searchedDrugs, setSearchedDrugs] = useState<ListOptions[]>([]);
-  const [searchedDrugsReesult, setSearchedDrugsReesult] = useState<any>(null);
+  const [searchedDrugsResult, setSearchedDrugsResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchedCategory, setSearchedCategory] = useState<SelectOption | undefined>(undefined);
   const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(undefined);
@@ -249,7 +238,7 @@ const FirstStep: React.FC = () => {
         })
       );
 
-      setSearchedDrugsReesult(result);
+      setSearchedDrugsResult(result);
     } catch (e) {
       errorHandler(e);
     }
@@ -365,7 +354,7 @@ const FirstStep: React.FC = () => {
     let items = [];
 
     if (isInSearchMode) {
-      if (searchedDrugsReesult === null || searchedDrugsReesult.length === 0) {
+      if (searchedDrugsResult === null || searchedDrugsResult.length === 0) {
         return (
           <div className={`${noContent} w-100`}>
             <EmptyContent />
@@ -376,6 +365,7 @@ const FirstStep: React.FC = () => {
               onClick={(): void => {
                 setSearchedDrugs([]);
                 setIsInSearchMode(false);
+                setSelectedDrugsCategory('-1');
               }}
             >
               نمایش کارت ها بدون فیلتر
@@ -384,7 +374,7 @@ const FirstStep: React.FC = () => {
         );
       } else {
         items = React.Children.toArray(
-          searchedDrugsReesult.map((d: PharmacyDrugInterface) => {
+          searchedDrugsResult.map((d: PharmacyDrugInterface) => {
             return (
               <>
                 <Grid item xs={12} sm={6} lg={6}>
@@ -438,11 +428,9 @@ const FirstStep: React.FC = () => {
     <>
       <Grid item xs={12}>
         <Grid container spacing={2}>
-          <Hidden xsDown>
-            <Grid item xs={12} style={{ marginTop: 16 }}>
-              <span>{t('alerts.supplylistsAlert')}</span>
-            </Grid>
-          </Hidden>
+          <Grid item xs={12} style={{ marginTop: 16 }}>
+            <span>{t('alerts.supplylistsAlert')}</span>
+          </Grid>
           <Grid item xs={12}>
             <div className={searchContainer}>
               <Button className={filterButton} onClick={(): void => setIsOpenDrawer(true)}>
@@ -469,6 +457,20 @@ const FirstStep: React.FC = () => {
                 }}
               />
             </div>
+          </Grid>
+
+          <Grid item xs={12}>
+            {selectedDrugsCategory !== '-1' && isInSearchMode && (
+              <Chip
+                label={`${t('general.category')}:
+                ${drugsCategory.find((item) => item.id == selectedDrugsCategory).name}`}
+                onDelete={(): void => {
+                  setIsInSearchMode(false);
+                  setSelectedDrugsCategory('-1');
+                }}
+                color="default"
+              />
+            )}
           </Grid>
           {memoContent}
         </Grid>

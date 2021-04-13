@@ -105,6 +105,11 @@ input[type='number'] {
   }
 }
 
+.Toastify__toast {
+  font-family: Vazir;
+  border-radius: .3em;
+}
+
 @media print {
   .print-hide {
     display: none !important;

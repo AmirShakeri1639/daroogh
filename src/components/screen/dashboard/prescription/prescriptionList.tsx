@@ -576,7 +576,7 @@ const PrescriptionList: React.FC = () => {
       </Grid>
       {<CircleBackdropLoading isOpen={isLoading} />}
       {isLoading && <CircleLoading />}
-      {isOpenEditModal && <></>}
+      {isOpenEditModal && editModal()}
       {isOpenPicture && pictureDialog(fileKeyToShow)}
     </Container>
   );

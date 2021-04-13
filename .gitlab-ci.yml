@@ -5,6 +5,7 @@ stages:
 build_solution:
   stage: build
   only:
+    - beta
     - main
   script:
     - "npm i"
@@ -14,15 +15,22 @@ build_solution:
     paths:
       - build
 
+deploy_beta:
+  stage: deploy
+  only:
+    - beta
+  script:
+    - "cp ./build/* C:/daroog/tabadol/beta-front/ -force -recurse"
+  environment:
+    name: staging
+    url: http://beta.daroog.org
+    
 deploy_daroog:
   stage: deploy
   only:
     - main
   script:
     - "cp ./build/* C:/daroog/tabadol/front/ -force -recurse"
-  cache:
-    paths:
-      - node_modules/
   environment:
     name: staging
     url: http://tabadol.daroog.org

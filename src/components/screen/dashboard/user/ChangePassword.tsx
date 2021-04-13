@@ -43,7 +43,8 @@ const useClasses = makeStyles((theme) =>
       },
     },
     button: {
-      width: 90,
+      padding: theme.spacing(1, 2),
+      width: 120,
       border: `1px solid ${ColorEnum.DeepBlue}`,
       borderRadius: 4,
     },
@@ -63,7 +64,7 @@ type InitialData = {
   showRepeatNewPassword: boolean;
 };
 
-const initialData = {
+const initialData: InitialData = {
   showCurrentPassword: false,
   showNewPassword: false,
   showRepeatNewPassword: false,

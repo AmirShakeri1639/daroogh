@@ -268,7 +268,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: EnhancedEncryption,
-            text: t('drug.drug'),
+            text: t('drug.productsDatabase'),
             link: drugsList,
             selected: isOpenPageOfThisGroup(drugsList),
           })}
@@ -277,7 +277,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: AddToPhotosIcon,
-            text: t('category.categories'),
+            text: t('category.categoriesDatabase'),
             selected: isOpenPageOfThisGroup(categoryList),
             link: categoryList,
           })}
@@ -295,7 +295,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: MessageIcon,
-            text: t('message.message'),
+            text: t('message.allMessages'),
             selected: isOpenPageOfThisGroup('message'),
             link: messagesList,
           })}
@@ -381,15 +381,6 @@ const ListItems: React.FC = () => {
     return (
       <div className={menuContainer}>
         <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3>
-        <List component="div" className={linkWrapper}>
-          {getListItem({
-            Icon: DashboardIcon,
-            text: t('general.pishkhan'),
-            selected: window.location.hash === '#/dashboard',
-            link: dashboard,
-          })}
-        </List>
-
         <ListItem
           button
           className={linkWrapper}
@@ -531,7 +522,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: MessageIcon,
-            text: t('message.message'),
+            text: t('message.messagesForYou'),
             selected: isOpenPageOfThisGroup('pharmacy/messages'),
             link: pharmacyMessage,
           })}
@@ -557,6 +548,16 @@ const ListItems: React.FC = () => {
     <div className="daroog-sidebar" style={{ paddingBottom: '2em' }}>
       {rolesArray && rolesArray?.length > 0 && (
         <>
+          <div className={menuContainer}>
+            <List component="div" className={linkWrapper}>
+              {getListItem({
+                Icon: DashboardIcon,
+                text: t('general.pishkhan'),
+                selected: window.location.hash === '#/dashboard',
+                link: dashboard,
+              })}
+            </List>
+          </div>
           {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
           {(rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 ||
             rolesArray?.some((item: any) => GetValuesOfEnum(PharmacyRoleEnum).includes(item))) &&
