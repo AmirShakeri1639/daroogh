@@ -11,7 +11,7 @@ const MapCluster = () => {
   const { data } = useQuery('getExchangeCount', getExchangeCount);
   const mapRef = useRef(null);
   const definedmax = 30;
-  const count =  data && data.length
+  const count = data && data.length;
   const max =
     data &&
     data.length &&
@@ -21,36 +21,35 @@ const MapCluster = () => {
         return o.item2;
       })
     );
-    
 
-    function interpolateColor(color1, color2, factor) {
-      if (arguments.length < 3) { 
-          factor = 0.5; 
-      }
-      var result = color1.slice();
-      for (var i = 0; i < 3; i++) {
-          result[i] = Math.round(result[i] + factor * (color2[i] - color1[i]));
-      }
-      return result;
-  };
+  function interpolateColor(color1, color2, factor) {
+    if (arguments.length < 3) {
+      factor = 0.5;
+    }
+    var result = color1.slice();
+    for (var i = 0; i < 3; i++) {
+      result[i] = Math.round(result[i] + factor * (color2[i] - color1[i]));
+    }
+    return result;
+  }
   // My function to interpolate between two colors completely, returning an array
   function interpolateColors(color1, color2, steps) {
-      var stepFactor = 1 / (steps - 1),
-          interpolatedColorArray = [];
-  
-      color1 = color1.match(/\d+/g).map(Number);
-      color2 = color2.match(/\d+/g).map(Number);
-  
-      for(var i = 0; i < steps; i++) {
-          interpolatedColorArray.push(interpolateColor(color1, color2, stepFactor * i));
-      }
-  
-      return interpolatedColorArray;
-  }
-  
-  var colors = interpolateColors("rgb(255, 0, 0)", "rgb(0, 0, 255)", count)
+    var stepFactor = 1 / (steps - 1),
+      interpolatedColorArray = [];
 
-  console.log('colors' , `rgb(${colors[0]})`)
+    color1 = color1.match(/\d+/g).map(Number);
+    color2 = color2.match(/\d+/g).map(Number);
+
+    for (var i = 0; i < steps; i++) {
+      interpolatedColorArray.push(interpolateColor(color1, color2, stepFactor * i));
+    }
+
+    return interpolatedColorArray;
+  }
+
+  var colors = interpolateColors('rgb(255, 0, 0)', 'rgb(0, 0, 255)', count);
+
+  console.log('colors', `rgb(${colors[0]})`);
 
   return (
     <MapContainer
@@ -59,7 +58,7 @@ const MapCluster = () => {
       zoom={5}
       scrollWheelZoom={false}
       preferCanvas={false}
-      zoomControl={false}
+      zoomControl={true}
       dragging={false}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -78,7 +77,6 @@ const MapCluster = () => {
               fillColor={`rgb(${colors[index]})`}
               color={`rgb(${colors[index]})`}
               fillOpacity="0.7"
-              
               radius={(definedmax / max) * entry.item2 * 2000}
             >
               <Popup>

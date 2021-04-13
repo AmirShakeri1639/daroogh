@@ -14,6 +14,7 @@ import './i18n';
 import './assets/scss/main.scss';
 import './scrollbar.css';
 import './public-style.css';
+import './crisp.css'
 
 const queryCache = new QueryCache({
   defaultConfig: {
@@ -22,6 +23,7 @@ const queryCache = new QueryCache({
     },
   },
 });
+
 
 const { store: _store, persistor } = store();
 
@@ -43,3 +45,6 @@ ReactDOM.render(
 );
 
 serviceWorker.register();
+
+
+
