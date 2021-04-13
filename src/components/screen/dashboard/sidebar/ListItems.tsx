@@ -557,6 +557,15 @@ const ListItems: React.FC = () => {
     <div className="daroog-sidebar" style={{ paddingBottom: '2em' }}>
       {rolesArray && rolesArray?.length > 0 && (
         <>
+          <div className={menuContainer}>
+            <List component="div" className={linkWrapper}>
+              {getListItem({
+                Icon: DashboardIcon,
+                text: t('general.pishkhan'),
+                selected: window.location.hash === '#/dashboard',
+                link: dashboard,
+              })}
+            </List></div>
           {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
           {(rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 ||
             rolesArray?.some((item: any) => GetValuesOfEnum(PharmacyRoleEnum).includes(item))) &&

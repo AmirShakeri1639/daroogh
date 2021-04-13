@@ -24,6 +24,7 @@ const queryCache = new QueryCache({
   },
 });
 
+
 const { store: _store, persistor } = store();
 
 ReactDOM.render(
@@ -45,14 +46,5 @@ ReactDOM.render(
 
 serviceWorker.register();
 
-(window as any).$crisp = [];
-(window as any).CRISP_WEBSITE_ID = 'ab43d0bb-c5a4-48c4-ac43-af2ff652c4fa';
 
-(function () {
-  var d = document;
-  var s = d.createElement('script');
 
-  s.src = 'https://client.crisp.chat/l.js';
-  s.async = true;
-  d.getElementsByTagName('head')[0].appendChild(s);
-})();

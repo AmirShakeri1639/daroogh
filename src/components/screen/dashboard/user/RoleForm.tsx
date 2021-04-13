@@ -178,11 +178,7 @@ const RoleForm: React.FC<RoleFormProps> = ({ userId, toggleForm, roleType }) => 
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} className={buttonContainer}>
-              <Button color="pink" type="button" onClick={toggleForm} className={cancelButton}>
-                {t('general.close')}
-              </Button>
-            </Grid>
+
           </Grid>
         </form>
       </div>
