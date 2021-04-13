@@ -320,6 +320,7 @@ export default {
       },
       message: {
         message: 'پیام',
+        messagesForYou: 'پیام های دریافتی',
         messagesList: 'لیست پیام ها',
         createMessage: 'ایجاد پیام',
         profile: 'پروفایل',
@@ -327,6 +328,7 @@ export default {
         notification: 'ناتیفیکیشن',
         detail: 'جزییات پیام',
         allMessages: 'سوابق کلیه پیام ها',
+        daroogMessagesList: 'لیست پیام های دریافتی از  طرف داروگ',
       },
       category: {
         category: 'دسته‌بندی',

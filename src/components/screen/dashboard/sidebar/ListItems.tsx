@@ -522,7 +522,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: MessageIcon,
-            text: t('message.message'),
+            text: t('message.messagesForYou'),
             selected: isOpenPageOfThisGroup('pharmacy/messages'),
             link: pharmacyMessage,
           })}
@@ -556,7 +556,8 @@ const ListItems: React.FC = () => {
                 selected: window.location.hash === '#/dashboard',
                 link: dashboard,
               })}
-            </List></div>
+            </List>
+          </div>
           {rolesArray?.indexOf(RolesEnum.ADMIN) >= 0 && adminMenu()}
           {(rolesArray?.indexOf(RolesEnum.PHARMACY) >= 0 ||
             rolesArray?.some((item: any) => GetValuesOfEnum(PharmacyRoleEnum).includes(item))) &&
