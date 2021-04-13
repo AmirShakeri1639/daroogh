@@ -195,7 +195,7 @@ const Login: React.FC = (): JSX.Element => {
     dispatch({ type: 'username', value: e.target.value });
   const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>): void =>
     dispatch({ type: 'password', value: e.target.value });
-
+  (window as any).$crisp = [];
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
