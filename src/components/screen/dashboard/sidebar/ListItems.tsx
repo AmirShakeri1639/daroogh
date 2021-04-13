@@ -381,15 +381,6 @@ const ListItems: React.FC = () => {
     return (
       <div className={menuContainer}>
         <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3>
-        <List component="div" className={linkWrapper}>
-          {getListItem({
-            Icon: DashboardIcon,
-            text: t('general.pishkhan'),
-            selected: window.location.hash === '#/dashboard',
-            link: dashboard,
-          })}
-        </List>
-
         <ListItem
           button
           className={linkWrapper}
