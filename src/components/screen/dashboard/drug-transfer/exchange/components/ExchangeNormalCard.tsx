@@ -13,6 +13,7 @@ import { green } from '@material-ui/core/colors';
 import ShowOffer from 'components/public/offer-show/ShowOffer';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import Utils from 'components/public/utility/Utils';
+import { ColorEnum } from 'enum';
 import { AllPharmacyDrugInterface } from 'interfaces';
 
 import React from 'react';
@@ -108,16 +109,49 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
         // justifyContent: 'right',
         flexDirection: 'row-reverse',
       },
+      drugContainer: {
+        padding: 4,
+        borderLeft: `2px solid ${ColorEnum.Borders}`,
+        height: '52px',
+        backgroundColor: ColorEnum.LiteBack,
+        marginBottom: theme.spacing(1),
+      },
     })
   );
 
-  const { root, avatar, avatarContainer, detailsHolder, checkBoxContainer } = useStyle();
+  const {
+    root,
+    avatar,
+    avatarContainer,
+    detailsHolder,
+    checkBoxContainer,
+    drugContainer,
+  } = useStyle();
 
   return (
     <Grid container item xs={12} spacing={0} className={root}>
-      <Grid item container xs={12}>
-        <Grid item xs={11} style={{ paddingLeft: 16 }}>
-          <span style={{ fontSize: 17, color: '#1d0d50' }}>{pharmacyDrug?.drug.name}</span>
+      <Grid item container xs={12} className={drugContainer}>
+        <Grid
+          item
+          xs={11}
+          direction="column"
+          spacing={0}
+          alignContent="center"
+          style={{ paddingLeft: 16 }}
+        >
+          <div
+            style={{
+              width: '100%',
+              fontSize: `${isSmallDevice ? '13px' : '17px'}`,
+              color: '#1d0d50',
+            }}
+          >
+            {pharmacyDrug?.drug.name}
+          </div>
+          <div style={{ width: '100%', fontSize: `${isSmallDevice ? '10px' : '12px'}` }}>
+            {pharmacyDrug?.drug.genericName}
+            {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
+          </div>
         </Grid>
         {lockedAction && (
           <Grid item xs={1} className={checkBoxContainer}>
@@ -142,12 +176,6 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
         </Hidden>
 
         <Grid item container sm={10} xs={12} className={detailsHolder}>
-          <Grid item xs={12}>
-            <span style={{ fontSize: 12 }}>
-              {pharmacyDrug?.drug.genericName}
-              {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
-            </span>
-          </Grid>
           {lockedAction && (
             <Grid item xs={12}>
               <TextWithTitle title="عرضه شده" body={pharmacyDrug?.cnt} suffix="عدد" />
@@ -170,33 +198,33 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
       <Grid item container xs={6} sm={6}>
         <Grid item xs={12} className={detailsHolder}>
           <Grid item xs={12}>
-            <span style={{ fontSize: 13 }}>قیمت واحد: </span>
+            <span style={{ fontSize: 12 }}>قیمت واحد: </span>
             <span
               style={{
-                fontSize: 17,
+                fontSize: 15,
                 fontWeight: 'bold',
                 color: 'green',
               }}
             >
               {Utils.numberWithCommas(pharmacyDrug?.amount)}
             </span>
-            <span style={{ fontSize: 11, marginRight: 5 }}>{t('general.defaultCurrency')}</span>
+            <span style={{ fontSize: 10, marginRight: 5 }}>{t('general.defaultCurrency')}</span>
           </Grid>
           <Grid item xs={12}>
             {pharmacyDrug && counterButtonFunc}
           </Grid>
           <Grid item xs={12}>
-            <span style={{ fontSize: 13 }}>جمع اقلام؛</span>
+            <span style={{ fontSize: 12 }}>جمع اقلام؛</span>
             <span
               style={{
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: 'bold',
                 color: '1d0d50',
               }}
             >
               <label id={'lbl_' + pharmacyDrug?.id}>{totalAmount}</label>
             </span>
-            <span style={{ fontSize: 11, marginRight: 5 }}>{t('general.defaultCurrency')}</span>
+            <span style={{ fontSize: 10, marginRight: 5 }}>{t('general.defaultCurrency')}</span>
           </Grid>
         </Grid>
       </Grid>
