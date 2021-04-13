@@ -275,6 +275,7 @@ export default {
         latinName: 'نام لاتین',
         product: 'محصول',
         newProduct: 'محصول جدید',
+        productsDatabase: 'دیتابیس محصولات',
       },
       peopleSection: {
         prescription: 'نسخه',
@@ -325,6 +326,7 @@ export default {
         sms: 'پیامک',
         notification: 'ناتیفیکیشن',
         detail: 'جزییات پیام',
+        allMessages: 'سوابق کلیه پیام ها',
       },
       category: {
         category: 'دسته‌بندی',
@@ -332,6 +334,7 @@ export default {
         list: 'لیست دسته‌بندی',
         'edit-category': 'ویرایش دسته بندی',
         'new-category': 'ایجاد دسته بندی',
+        categoriesDatabase: 'دیتابیس دسته بندی ها',
       },
       exchange: {
         create: 'شروع {{var}} تبادل',

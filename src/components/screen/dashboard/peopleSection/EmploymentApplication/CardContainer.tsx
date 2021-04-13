@@ -49,7 +49,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
     setIsOpenModal((v) => !v);
   };
   const { paper } = useClasses();
-  const { data, formHandler } = props;
+  const { data, formHandler, toggleEditModal } = props;
 
   const { sendDate, suggestedJobPositionStr, id, resumeFileKey, cancelDate } = data;
 
@@ -141,7 +141,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                 جزئیات
               </Button>
               <Button
-                onClick={toggleIsOpenModal}
+                onClick={(): void => toggleEditModal(data)}
                 style={{ color: 'green', fontSize: '12px', margin: 2 }}
               >
                 ویرایش

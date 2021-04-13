@@ -50,6 +50,7 @@ export interface EmploymentApplicationInterface {
 
 
 export interface EmploymentApplicationDataInterface {
+  id: number;
   name: string;
   family: string;
   birthDate: string;
@@ -78,4 +79,5 @@ export interface EmploymentApplicationDataInterface {
 export interface EmpApplicationDataInterface {
   data: EmpAppInterface;
   formHandler: (item: number) => Promise<any>;
+  toggleEditModal: (item: any) => void;
 }

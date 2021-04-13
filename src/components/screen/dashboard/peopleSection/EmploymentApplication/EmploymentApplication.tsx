@@ -31,7 +31,7 @@ import {
   EmploymentApplication as applications,
 } from '../../../../../services/api';
 import { DatePicker, MaterialContainer, Modal } from '../../../../public';
-import { errorHandler, successSweetAlert } from '../../../../../utils';
+import { errorHandler, successSweetAlert, tError } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
@@ -94,21 +94,22 @@ const useStyle = makeStyles((theme) =>
 );
 
 const initialState: EmploymentApplicationDataInterface = {
+  id: 0,
   name: '',
   family: '',
   birthDate: '',
   email: '',
-  gender: 0,
-  maritalStatus: 0,
+  gender: -1,
+  maritalStatus: -1,
   hasReadingPrescriptionCertificate: false,
   gradeOfReadingPrescriptionCertificate: 0,
   workExperienceYear: 0,
-  suggestedWorkShift: 0,
-  pharmaceuticalSoftwareSkill: 0,
-  computerSkill: 0,
-  foreignLanguagesSkill: 0,
-  suggestedJobPosition: 0,
-  education: 0,
+  suggestedWorkShift: -1,
+  pharmaceuticalSoftwareSkill: -1,
+  computerSkill: -1,
+  foreignLanguagesSkill: -1,
+  suggestedJobPosition: -1,
+  education: -1,
   hasGuarantee: false,
   countryDivisionCode: '',
   previousWorkplace: '',
@@ -122,6 +123,11 @@ const initialState: EmploymentApplicationDataInterface = {
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
   switch (action.type) {
+    case 'id':
+      return {
+        ...state,
+        id: value,
+      };
     case 'name':
       return {
         ...state,
@@ -239,7 +245,7 @@ function reducer(state = initialState, action: ActionInterface): any {
       };
 
     default:
-      console.error('Action type not defined');
+      console.error(action.type + ' not defined');
   }
 }
 const EmploymentApplication: React.FC = () => {
@@ -259,6 +265,70 @@ const EmploymentApplication: React.FC = () => {
     'currentUserEmploymentApplications',
     currentUserEmploymentApplications
   );
+
+  const saveHandler = (item: EmploymentApplicationDataInterface): void => {
+    toggleIsOpenModal();
+    const {
+      id,
+      name,
+      family,
+      birthDate,
+      email,
+      gender,
+      maritalStatus,
+      hasReadingPrescriptionCertificate,
+      gradeOfReadingPrescriptionCertificate,
+      workExperienceYear,
+      suggestedWorkShift,
+      pharmaceuticalSoftwareSkill,
+      computerSkill,
+      foreignLanguagesSkill,
+      suggestedJobPosition,
+      education,
+      hasGuarantee,
+      countryDivisionCode,
+      previousWorkplace,
+      previousWorkplacePhone,
+      landlinePhone,
+      file,
+      address,
+      descriptions,
+    } = item;
+    dispatch({ type: 'id', value: id });
+    dispatch({ type: 'name', value: name });
+    dispatch({ type: 'family', value: family });
+    dispatch({ type: 'birthDate', value: birthDate });
+    dispatch({ type: 'email', value: email });
+    dispatch({ type: 'maritalStatus', value: maritalStatus });
+    dispatch({ type: 'gender', value: gender });
+    dispatch({
+      type: 'hasReadingPrescriptionCertificate',
+      value: hasReadingPrescriptionCertificate,
+    });
+    dispatch({
+      type: 'gradeOfReadingPrescriptionCertificate',
+      value: gradeOfReadingPrescriptionCertificate,
+    });
+    dispatch({ type: 'suggestedJobPosition', value: suggestedJobPosition });
+    dispatch({ type: 'suggestedWorkShift', value: suggestedWorkShift });
+    dispatch({
+      type: 'pharmaceuticalSoftwareSkill',
+      value: pharmaceuticalSoftwareSkill,
+    });
+    dispatch({ type: 'computerSkill', value: computerSkill });
+    dispatch({ type: 'foreignLanguagesSkill', value: foreignLanguagesSkill });
+    dispatch({ type: 'hasGuarantee', value: hasGuarantee });
+    dispatch({ type: 'workExperienceYear', value: workExperienceYear });
+    dispatch({ type: 'descriptions', value: descriptions });
+    dispatch({ type: 'education', value: education });
+    dispatch({ type: 'countryDivisionCode', value: countryDivisionCode });
+    dispatch({ type: 'previousWorkplace', value: previousWorkplace });
+    dispatch({ type: 'previousWorkplacePhone', value: previousWorkplacePhone });
+    dispatch({ type: 'landlinePhone', value: landlinePhone });
+    dispatch({ type: 'file', value: file });
+    dispatch({ type: 'address', value: address });
+
+  };
 
   useEffect(() => {
     (async (): Promise<any> => {
@@ -296,10 +366,59 @@ const EmploymentApplication: React.FC = () => {
   });
 
   const formHandler = async (): Promise<any> => {
-    try {
-      await _save(state).then((rec) => refetch());
-    } catch (e) {
-      errorHandler(e);
+    var message = "";
+    if (state.name == "") {
+      message = t('peopleSection.name');
+    } else if (state.family == "") {
+      message = t('peopleSection.family');
+    } else if (state.birtdate == "") {
+      message = t('peopleSection.birtdate');
+    } else if (state.gender == -1) {
+      message = t('peopleSection.gender');
+    } else if (state.workExperienceYear == "") {
+      message = t('peopleSection.workExperienceYear');
+    } else if (state.pharmaceuticalSoftwareSkill == -1) {
+      message = t('peopleSection.pharmaceuticalSoftwareSkill');
+    }
+    else if (state.computerSkill == -1) {
+      message = t('peopleSection.computerSkill');
+    }
+    else if (state.foreignLanguagesSkill == -1) {
+      message = t('peopleSection.foreignLanguagesSkill');
+    }
+    else if (state.suggestedJobPosition == -1) {
+      message = t('peopleSection.suggestedJobPosition');
+    }
+    else if (state.education == -1) {
+      message = t('peopleSection.education');
+    }
+    else if (state.countryDivisionCode == "") {
+      message = t('peopleSection.countryDivisionCode');
+    }
+    else if (state.landlinePhone == "") {
+      message = t('peopleSection.landlinePhone');
+    }
+    else if (state.address == "") {
+      message = t('peopleSection.address');
+    }
+    else if (state.descriptions == "") {
+      message = t('peopleSection.descriptions');
+    }
+    if (message != "") {
+      tError("لطفا " + "مقادیر اجباری" + " را وارد نمایید")
+    }
+    else if (state.hasReadingPrescriptionCertificate
+      && state.gradeOfReadingPrescriptionCertificate == "") {
+      tError("لطفا " + t('peopleSection.gradeOfReadingPrescriptionCertificate') + " را وارد نمایید")
+    }
+    else {
+
+      try {
+
+        await _save(state).then((rec) => refetch());
+      } catch (e) {
+        errorHandler(e);
+      }
     }
   };
   const removeHandler = async (id: any): Promise<any> => {
@@ -316,7 +435,7 @@ const EmploymentApplication: React.FC = () => {
         if (item !== null) {
           return (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
-              <CardContainer data={item} formHandler={removeHandler} />
+              <CardContainer data={item} formHandler={removeHandler} toggleEditModal={saveHandler} />
             </Grid>
           );
         }
@@ -366,7 +485,7 @@ const EmploymentApplication: React.FC = () => {
           <Grid container spacing={3} className={contentContainer}>
             <Hidden xsDown>
               <Grid item xs={12} sm={6} md={4} xl={4}>
-                <Paper className={addButton} onClick={toggleIsOpenModal}>
+                <Paper className={addButton} onClick={(): void => saveHandler(initialState)}>
                   <FontAwesomeIcon icon={faPlus} size="2x" />
                   <span>{t('peopleSection.addJobApplication')}</span>
                 </Paper>
@@ -426,10 +545,11 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.name')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
+
                 }}
                 variant="outlined"
                 value={state.name}
+                required
                 onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
               />
             </Grid>
@@ -441,6 +561,7 @@ const EmploymentApplication: React.FC = () => {
                   shrink: true,
                   required: true,
                 }}
+                required
                 variant="outlined"
                 value={state.family}
                 onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
@@ -455,8 +576,9 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.birthDate')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
+
                 }}
+                required
                 variant="outlined"
                 value={selectedDate}
                 onChange={(e): void => dispatch({ type: 'birthDate', value: e.target.value })}
@@ -482,10 +604,14 @@ const EmploymentApplication: React.FC = () => {
                 SelectProps={{
                   native: true,
                 }}
+                required
                 variant="outlined"
                 value={state.gender}
                 onChange={(e): void => dispatch({ type: 'gender', value: e.target.value })}
               >
+                <option key="-1" value="">
+
+                </option>
                 {genders.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -502,9 +628,13 @@ const EmploymentApplication: React.FC = () => {
                   native: true,
                 }}
                 variant="outlined"
+                required
                 value={state.maritalStatus}
                 onChange={(e): void => dispatch({ type: 'maritalStatus', value: e.target.value })}
               >
+                <option key="-1" value="">
+
+                </option>
                 {maritalStatuses.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -516,11 +646,12 @@ const EmploymentApplication: React.FC = () => {
               <FormControlLabel
                 control={
                   <Checkbox
-                    onChange={(e): void =>
+                    onChange={(e): void => {
                       dispatch({
                         type: 'hasReadingPrescriptionCertificate',
-                        value: e.target.value,
+                        value: e.target.checked,
                       })
+                    }
                     }
                     value={state.hasReadingPrescriptionCertificate}
                   />
@@ -537,7 +668,7 @@ const EmploymentApplication: React.FC = () => {
                   shrink: true,
                 }}
                 variant="outlined"
-                value={state.gradeOfReadingPrescriptionCertificate === 0 ? '' :state.gradeOfReadingPrescriptionCertificate}
+                value={state.gradeOfReadingPrescriptionCertificate === 0 ? '' : state.gradeOfReadingPrescriptionCertificate}
                 onChange={(e): void =>
                   dispatch({
                     type: 'gradeOfReadingPrescriptionCertificate',
@@ -553,8 +684,9 @@ const EmploymentApplication: React.FC = () => {
                 type="number"
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
+
                 }}
+                required
                 variant="outlined"
                 value={state.workExperienceYear === 0 ? '' : state.workExperienceYear}
                 onChange={(e): void =>
@@ -574,6 +706,7 @@ const EmploymentApplication: React.FC = () => {
                   native: true,
                 }}
                 variant="outlined"
+                required
                 value={state.suggestedWorkShift}
                 onChange={(e): void =>
                   dispatch({
@@ -582,6 +715,8 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
+                <option key="-1" value="">
+                </option>
                 {suggestedWorkShifts.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -597,6 +732,7 @@ const EmploymentApplication: React.FC = () => {
                 SelectProps={{
                   native: true,
                 }}
+                required
                 variant="outlined"
                 value={state.pharmaceuticalSoftwareSkill}
                 onChange={(e): void =>
@@ -606,6 +742,8 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
+                <option key="-1" value="">
+                </option>
                 {pharmaceuticalSoftwareSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -621,10 +759,13 @@ const EmploymentApplication: React.FC = () => {
                 SelectProps={{
                   native: true,
                 }}
+                required
                 variant="outlined"
                 value={state.computerSkill}
                 onChange={(e): void => dispatch({ type: 'computerSkill', value: e.target.value })}
               >
+                <option key="-1" value="">
+                </option>
                 {computerSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -648,7 +789,10 @@ const EmploymentApplication: React.FC = () => {
                     value: e.target.value,
                   })
                 }
+                required
               >
+                <option key="-1" value="">
+                </option>
                 {foreignLanguagesSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -664,6 +808,7 @@ const EmploymentApplication: React.FC = () => {
                 SelectProps={{
                   native: true,
                 }}
+                required
                 variant="outlined"
                 value={state.suggestedJobPosition}
                 onChange={(e): void =>
@@ -673,6 +818,8 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
+                <option key="-1" value="">
+                </option>
                 {suggestedJobPositions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -688,10 +835,13 @@ const EmploymentApplication: React.FC = () => {
                 SelectProps={{
                   native: true,
                 }}
+                required
                 variant="outlined"
                 value={state.education}
                 onChange={(e): void => dispatch({ type: 'education', value: e.target.value })}
               >
+                <option key="-1" value="">
+                </option>
                 {educations.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -707,7 +857,7 @@ const EmploymentApplication: React.FC = () => {
                     onChange={(e): void =>
                       dispatch({
                         type: 'hasGuarantee',
-                        value: e.target.value,
+                        value: e.target.checked,
                       })
                     }
                     value={state.hasGuarantee}
@@ -724,8 +874,9 @@ const EmploymentApplication: React.FC = () => {
                 onChange={changeprovince}
                 SelectProps={{
                   native: true,
-                  required: true,
+
                 }}
+                required
                 variant="outlined"
                 value={state.countryDivisionCode}
               >
@@ -743,9 +894,10 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.city')}
                 SelectProps={{
                   native: true,
-                  required: true,
+
                 }}
                 variant="outlined"
+                required
               >
                 {cityList.map((option) => (
                   <option key={option.code} value={option.code}>
@@ -796,9 +948,9 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.landlinePhone')}
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
+
                 }}
-                
+                required
                 variant="outlined"
                 value={state.landlinePhone}
                 onChange={(e): void => dispatch({ type: 'landlinePhone', value: e.target.value })}

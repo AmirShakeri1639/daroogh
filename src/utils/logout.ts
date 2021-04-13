@@ -6,6 +6,8 @@ export default (): void => {
     if (impersonation.currentToken === impersonation.mainToken) {
       localStorage.clear();
       window.location.href = '#/login';
+      window.location.reload();
+
     } else {
       impersonation.changeTokenToMain();
       window.location.reload();
