@@ -268,7 +268,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: EnhancedEncryption,
-            text: t('drug.drug'),
+            text: t('drug.productsDatabase'),
             link: drugsList,
             selected: isOpenPageOfThisGroup(drugsList),
           })}
@@ -277,7 +277,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: AddToPhotosIcon,
-            text: t('category.categories'),
+            text: t('category.categoriesDatabase'),
             selected: isOpenPageOfThisGroup(categoryList),
             link: categoryList,
           })}
@@ -295,7 +295,7 @@ const ListItems: React.FC = () => {
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: MessageIcon,
-            text: t('message.message'),
+            text: t('message.allMessages'),
             selected: isOpenPageOfThisGroup('message'),
             link: messagesList,
           })}
