@@ -5,7 +5,7 @@ stages:
 build_solution:
   stage: build
   only:
-    - dev
+    - beta
     - main
   script:
     - "npm i"
@@ -18,7 +18,7 @@ build_solution:
 deploy_beta:
   stage: deploy
   only:
-    - dev
+    - beta
   script:
     - "cp ./build/* C:/daroog/tabadol/beta-front/ -force -recurse"
   environment:
