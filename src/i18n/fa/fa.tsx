@@ -772,7 +772,7 @@ export default {
         Survey: 'نظرسنجی',
         EmploymentApplication: 'درخواست کاریابی',
         Prescription: 'نسخه مردمی',
-        FavoriteListCount: 'سبد علاقمندی',
+        FavoriteListCount: 'سبد علاقمندی برای شما',
       },
       file: {
         file: 'فایل',
