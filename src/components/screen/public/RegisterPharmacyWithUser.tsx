@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import Pharmacy from '../../../services/api/Pharmacy';
 import { LabelValue } from '../../../interfaces';
-import { queryCache, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { ActionInterface } from '../../../interfaces';
 import { useTranslation } from 'react-i18next';
 import {
@@ -40,7 +40,7 @@ import {
   faEye, faEyeSlash,
 } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
-import { User } from 'services/api';
+import Uploader from 'components/public/uploader/uploader';
 
 export const useClasses = makeStyles((theme) => createStyles({
   parent: {
@@ -899,17 +899,15 @@ const RegisterPharmacyWithUser: React.FC = () => {
               >
                 { t('file.type.nationalCard') } *
               </h4>
-              <input
-                type='file'
-                id='nationalCardUpload'
-                accept="image/jpeg, image/png, application/pdf"
-                name='nationalCardUpload'
-                onChange={ (e: any): void => {
-                  e.preventDefault()
-                  if (e.target.files.length > 0) {
-                    dispatch({ type: 'file1', value: e.target.files[0] })
-                  }
-                } }
+              <Uploader
+                keyId="file1"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file1', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file1', value: null })
+                }
               />
             </Grid>
             <Grid item xs={ 12 }>
@@ -924,17 +922,15 @@ const RegisterPharmacyWithUser: React.FC = () => {
               >
                 { t('file.type.establishLicense') } *
               </h4>
-              <input
-                type='file'
-                id='establishLicenseUpload'
-                accept="image/jpeg, image/png, application/pdf"
-                name='establishLicenseUpload'
-                onChange={ (e: any): void => {
-                  e.preventDefault()
-                  if (e.target.files.length > 0) {
-                    dispatch({ type: 'file2', value: e.target.files[0] })
-                  }
-                } }
+              <Uploader
+                key="file2"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file2', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file2', value: null })
+                }
               />
             </Grid>
             <Grid item xs={ 12 }>
@@ -949,17 +945,15 @@ const RegisterPharmacyWithUser: React.FC = () => {
               >
                 { t('file.type.healThMinistryLicense') } *
               </h4>
-              <input
-                type='file'
-                id='healThMinistryLicenseUpload'
-                accept="image/jpeg, image/png, application/pdf"
-                name='healThMinistryLicenseUpload'
-                onChange={ (e: any): void => {
-                  e.preventDefault()
-                  if (e.target.files.length > 0) {
-                    dispatch({ type: 'file3', value: e.target.files[0] })
-                  }
-                } }
+              <Uploader
+                keyId="file3"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file3', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file3', value: null })
+                }
               />
             </Grid>
           </Grid>
