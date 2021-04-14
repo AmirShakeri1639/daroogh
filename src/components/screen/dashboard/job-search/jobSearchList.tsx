@@ -166,6 +166,9 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('general.mobile')} body={mobile} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextWithTitle title={t('general.landlinePhone')} body={landlinePhone} />
             </Grid>
 

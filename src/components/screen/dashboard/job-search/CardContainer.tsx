@@ -23,6 +23,7 @@ const useStyle = makeStyles((theme) =>
       padding: '5px 15px',
       borderRadius: '4px',
       textDecoration: 'none',
+      marginRight: '8px',
     },
   })
 );
@@ -33,7 +34,7 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
   const { t } = useTranslation();
   const { data, cancelHandler, detailHandler } = props;
 
-  const { id, genderStr, name, family, mobile, workExperienceYear } = data;
+  const { id, genderStr, name, family, mobile, workExperienceYear, resumeFileKey } = data;
 
   return (
     <Paper className={root} elevation={1}>
@@ -53,7 +54,7 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
       </Grid>
 
       <Grid item xs={12} container spacing={0} justify="flex-end">
-        <Grid xs={4} style={{ flex: '1 1 auto', marginTop: '4px' }}>
+        <Grid xs={8} style={{ flex: '1 1 auto', marginTop: '4px' }}>
           <a
             className={callButton}
             onClick={(e: any): any => {
@@ -63,8 +64,20 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
           >
             تماس
           </a>
+          {resumeFileKey && (
+            <a
+              className={callButton}
+              onClick={(e: any): any => {
+                e.stopPropagation();
+              }}
+              download=""
+              href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
+            >
+              دانلود رزومه
+            </a>
+          )}
         </Grid>
-        <Grid xs={8} justify="flex-end" style={{ display: 'flex' }}>
+        <Grid xs={4} justify="flex-end" style={{ display: 'flex' }}>
           <Button
             onClick={(): void => detailHandler(data)}
             style={{ color: 'red', fontSize: '11px' }}
