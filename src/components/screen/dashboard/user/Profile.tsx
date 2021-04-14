@@ -329,7 +329,7 @@ const Profile: React.FC = () => {
                       variant="outlined"
                       value={ state.name }
                       className={ formItem }
-                      onChange={ (e): void => { }
+                      onChange={ (e): void =>
                         dispatch({ type: 'name', value: e.target.value })
                       }
                     />
@@ -342,7 +342,7 @@ const Profile: React.FC = () => {
                       variant="outlined"
                       value={ state.family }
                       className={ formItem }
-                      onChange={ (e): void => { }
+                      onChange={ (e): void =>
                         dispatch({ type: 'family', value: e.target.value })
                       }
                     />
