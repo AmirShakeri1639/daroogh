@@ -247,6 +247,7 @@ const SupplyList: React.FC = () => {
 
   const monthRef = useRef<any>();
   const yearRef = useRef<any>();
+  const batchRef = useRef<any>();
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
@@ -865,6 +866,9 @@ const SupplyList: React.FC = () => {
                         if (selectedYear.length < 4 || val.length < 4) {
                           setSelectedYear(val);
                         }
+                        if (val.length === 4) {
+                          batchRef.current.focus();
+                        }
                       }}
                     />
                   </Grid>
@@ -895,6 +899,7 @@ const SupplyList: React.FC = () => {
                   <Grid item xs={12}>
                     <Input
                       required
+                      ref={batchRef}
                       error={state?.batchNO === '' && showError}
                       className="w-100"
                       label={t('general.batchNumber')}
