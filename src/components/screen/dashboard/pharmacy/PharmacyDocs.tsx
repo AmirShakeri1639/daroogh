@@ -16,6 +16,7 @@ import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { PictureDialog } from 'components/public';
+import Uploader from 'components/public/uploader/uploader';
 
 const initialState: FileForPharmacyInterface = {
   fileTypeID: 1,
@@ -233,20 +234,17 @@ const PharmacyDocs: React.FC<Props> = (props) => {
               />
             </Grid>
             <Grid item xs={ 12 }>
-              <label style={ { cursor: 'pointer' } }>
-                <input
-                  type='file'
-                  id='fileUpload'
-                  accept="image/jpeg, image/png, application/pdf"
-                  name='fileUpload'
-                  onChange={ (e: any): void => {
-                    e.preventDefault()
-                    if (e.target.files.length > 0) {
-                      dispatch({ type: 'file', value: e.target.files[0] })
-                    }
-                  } }
-                />
-              </label>
+              <Uploader
+                keyId="file1"
+                accept="image/jpeg, image/png, application/pdf"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file', value: null })
+                }
+              />
             </Grid>
           </Grid>
         </DialogContent>

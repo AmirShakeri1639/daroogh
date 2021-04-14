@@ -784,7 +784,7 @@ export default {
           healThMinistryLicense: 'مجوز وزارت بهداشت',
         },
         noFileSelected: 'فایلی انتخاب نشده است',
-        get: 'ریافت فایل',
+        get: 'دریافت فایل',
         save: 'ذخیره',
         delete: 'حذف',
       },
