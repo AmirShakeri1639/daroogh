@@ -72,10 +72,9 @@ const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 const useStyle = makeStyles((theme) =>
   createStyles({
     fieldset: {
-      borderColor: '#f5f5f5',
+      borderColor: ColorEnum.DeepBlue,
       borderRadius: 10,
-      color: '#6d6d6d',
-      marginTop: 20,
+      color: 'red',
       '& legend': {
         color: '#7e7e7e',
       },
@@ -924,7 +923,7 @@ const Create: React.FC = () => {
 
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
                     <span style={{ marginBottom: 8, marginLeft: 6 }}>
                       {t('general.expireDate')}
                     </span>
@@ -1021,7 +1020,7 @@ const Create: React.FC = () => {
 
               {comissionPercent !== '' && (
                 <Grid item xs={12}>
-                  {`پورسانت: ${comissionPercent}%`}
+                  <h3>{`پورسانت: ${comissionPercent}%`}</h3>
                 </Grid>
               )}
 
