@@ -17,26 +17,8 @@ interface RTLProps {
 }
 
 function RTL(props: RTLProps): JSX.Element {
-  return <StylesProvider jss={jss}>{props.children}</StylesProvider>;
+  return <StylesProvider jss={ jss }>{ props.children }</StylesProvider>;
 }
-
-const vazirFont = {
-  fontFamily: 'Vazir',
-  fontWeight: 'normal',
-  src: `url(${Vazir}) format(woff)`,
-};
-
-const vazirFontNumber = {
-  fontFamily: 'VazirNumber',
-  fontWeight: 'normal',
-  src: `url(${VazirFDMedium}) format(woff)`,
-};
-
-const vazirBold = {
-  fontFamily: 'VazirBold',
-  fontWeight: 'normal',
-  src: `url(${VazirBold}) format(woff)`,
-};
 
 export const theme = createMuiTheme({
   direction: 'rtl',
@@ -63,14 +45,7 @@ export const theme = createMuiTheme({
     },
   },
   typography: {
-    fontFamily: 'Vazir',
-  },
-  overrides: {
-    MuiCssBaseline: {
-      '@global': {
-        '@font-face': [vazirFont, vazirBold, vazirFontNumber],
-      },
-    },
+    fontFamily: ['Vazir', 'VazirBold', 'VazirFontNumber'].join(","),
   },
 });
 
