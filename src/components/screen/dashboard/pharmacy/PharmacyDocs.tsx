@@ -10,7 +10,7 @@ import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { useMutation, useQueryCache } from 'react-query';
-import { errorHandler, isNullOrEmpty, successSweetAlert, warningSweetAlert } from 'utils';
+import { errorHandler, isNullOrEmpty, tSuccess, tWarn } from 'utils';
 import { ActionInterface, FileForPharmacyInterface, LabelValue } from 'interfaces';
 import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -153,7 +153,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
     onSuccess: async () => {
       ref.current?.onQueryChange()
       await queryCache.invalidateQueries(pharmacy.urls.files)
-      await successSweetAlert(t('alert.successfulDelete'))
+      tSuccess(t('alert.successfulDelete'))
     },
   })
   const removeHandler = async (item: any): Promise<any> => {
@@ -171,7 +171,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
     onSuccess: async () => {
       ref.current?.onQueryChange()
       await queryCache.invalidateQueries(pharmacy.urls.files)
-      await successSweetAlert(t('alert.successfulSave'))
+      tSuccess(t('alert.successfulSave'))
       dispatch({ type: 'reset' })
     },
   })
@@ -205,7 +205,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
         errorHandler(e)
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'))
+      tWarn(t('alert.fillFormCarefully'))
     }
   }
 
