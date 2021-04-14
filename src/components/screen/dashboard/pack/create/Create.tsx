@@ -246,6 +246,7 @@ const Create: React.FC = () => {
 
   const monthRef = useRef<HTMLInputElement>();
   const yearRef = useRef<HTMLInputElement>();
+  const batchRef = useRef<HTMLInputElement>();
 
   const {
     addButton,
@@ -995,6 +996,9 @@ const Create: React.FC = () => {
                         if (selectedYear.length < 4 || val.length < 4) {
                           setSelectedYear(e.target.value);
                         }
+                        if (val.length === 4) {
+                          batchRef?.current?.focus();
+                        }
                       }}
                     />
                   </Grid>
@@ -1025,6 +1029,7 @@ const Create: React.FC = () => {
                   <Grid item xs={12}>
                     <Input
                       required
+                      ref={batchRef}
                       error={barcode === '' && showError}
                       className="w-100"
                       label={t('general.batchNumber')}
