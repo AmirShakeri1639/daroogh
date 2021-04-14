@@ -346,7 +346,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
   });
 
   const isFormValid = (): boolean => {
-    const { pharmacy, user } = state;
+    const {
+      pharmacy,
+      user,
+      file1,
+      file2,
+      file3
+    } = state;
     const {
       name,
       family,
@@ -380,7 +386,11 @@ const RegisterPharmacyWithUser: React.FC = () => {
         family.trim().length < 2 ||
         userName.trim().length < 3 ||
         nationalCode.length !== 10 ||
-        password.length < 3
+        password.length < 3 ||
+        // files
+        file1 == null ||
+        file2 == null ||
+        file3 == null
       )
     );
   };
@@ -878,8 +888,16 @@ const RegisterPharmacyWithUser: React.FC = () => {
               </div>
             </Grid>
             <Grid item xs={ 12 }>
-              <h4>
-                { t('file.type.nationalCard') }
+              <h4
+                style={ {
+                  padding: '1em 0',
+                  color:
+                    state.file1 == null && showError
+                      ? 'red'
+                      : 'rgba(0, 0, 0, 0.87)'
+                } }
+              >
+                { t('file.type.nationalCard') } *
               </h4>
               <input
                 type='file'
@@ -895,8 +913,16 @@ const RegisterPharmacyWithUser: React.FC = () => {
               />
             </Grid>
             <Grid item xs={ 12 }>
-              <h4>
-                { t('file.type.establishLicense') }
+              <h4
+                style={ {
+                  padding: '1em 0',
+                  color:
+                    state.file2 == null && showError
+                      ? 'red'
+                      : 'rgba(0, 0, 0, 0.87)'
+                } }
+              >
+                { t('file.type.establishLicense') } *
               </h4>
               <input
                 type='file'
@@ -912,8 +938,16 @@ const RegisterPharmacyWithUser: React.FC = () => {
               />
             </Grid>
             <Grid item xs={ 12 }>
-              <h4>
-                { t('file.type.healThMinistryLicense') }
+              <h4
+                style={ {
+                  padding: '1em 0',
+                  color:
+                    state.file3 == null && showError
+                      ? 'red'
+                      : 'rgba(0, 0, 0, 0.87)'
+                } }
+              >
+                { t('file.type.healThMinistryLicense') } *
               </h4>
               <input
                 type='file'
