@@ -30,7 +30,8 @@ import {
   CountryDivision,
   EmploymentApplication as applications,
 } from '../../../../../services/api';
-import { DatePicker, MaterialContainer, Modal } from '../../../../public';
+import { MaterialContainer, Modal } from '../../../../public';
+import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { errorHandler, successSweetAlert, tError } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -90,6 +91,11 @@ const useStyle = makeStyles((theme) =>
     },
     contentContainer: {
       marginTop: 15,
+    },
+    datePicker: {
+      '& .rmdp-container': {
+        display: 'block !important',
+      },
     },
   })
 );
@@ -258,7 +264,7 @@ const EmploymentApplication: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { addButton, input, fab, buttonContainer, contentContainer } = useStyle();
+  const { addButton, input, fab, buttonContainer, contentContainer, datePicker } = useStyle();
   const { container } = useClasses();
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -366,6 +372,7 @@ const EmploymentApplication: React.FC = () => {
   });
 
   const formHandler = async (): Promise<any> => {
+    console.log(state);
     var message = '';
     if (state.name == '') {
       message = t('peopleSection.name');
@@ -506,7 +513,7 @@ const EmploymentApplication: React.FC = () => {
         hideAll={true}
       >
         <DialogContent>
-          <DatePicker
+          {/* <DatePicker
             // minimumDate={utils('fa').getToday()}
             // dateTypeIsSelectable
             selectedDateHandler={(e): void => {
@@ -515,7 +522,7 @@ const EmploymentApplication: React.FC = () => {
 
               toggleIsOpenDatePicker();
             }}
-          />
+          /> */}
         </DialogContent>
       </CDialog>
 
@@ -562,8 +569,8 @@ const EmploymentApplication: React.FC = () => {
                 onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <TextField
+            <Grid item xs={12} sm={12} md={6} lg={6} className={datePicker}>
+              {/* <TextField
                 onClick={(): void => {
                   setIsOpenDatePicker(true);
                 }}
@@ -576,6 +583,17 @@ const EmploymentApplication: React.FC = () => {
                 variant="outlined"
                 value={selectedDate}
                 onChange={(e): void => dispatch({ type: 'birthDate', value: e.target.value })}
+              /> */}
+              <DatePicker
+                value={state.birthDate}
+                required
+                calendar="persian"
+                locale="fa"
+                type="custom"
+                render={<DateComponent label={t('peopleSection.birthDate') + '*'} />}
+                onChange={(e: any): void => {
+                  dispatch({ type: 'birthDate', value: e });
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -942,7 +960,7 @@ const EmploymentApplication: React.FC = () => {
 
             <Grid alignContent="center" item xs={12} sm={12} md={12} lg={12}>
               <Uploader
-                showSaveClick={false}
+                showSaveClick={true}
                 getFile={(e) => {
                   if (e) {
                     dispatch({ type: 'file', value: e });
@@ -994,6 +1012,7 @@ const EmploymentApplication: React.FC = () => {
                 margin="normal"
                 InputLabelProps={{
                   shrink: true,
+                  required: true,
                 }}
                 variant="outlined"
                 value={state.descriptions}
@@ -1006,5 +1025,18 @@ const EmploymentApplication: React.FC = () => {
     </Container>
   );
 };
-
+const DateComponent: React.FC<any> = (props) => {
+  return (
+    <TextField
+      fullWidth
+      label={props.label}
+      onClick={props.openCalendar}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      variant="outlined"
+      value={props.stringDate}
+    />
+  );
+};
 export default EmploymentApplication;
