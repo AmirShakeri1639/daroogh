@@ -2,29 +2,35 @@
   src: url('../fonts/Vazir.woff') format('woff');
   font-family: Vazir;
   font-weight: normal;
+  font-display: swap;
 }
 
 @font-face {
   src: url('../fonts/Vazir-Bold.woff') format('woff');
   font-family: VazirBold;
+  font-display: swap;
 }
 
 @font-face {
   src: url('../fonts/Vazir-Light.woff') format('woff');
   font-family: VazirLight;
+  font-display: swap;
 }
 
 @font-face {
   src: url('../fonts/Vazir-Medium.woff') format('woff');
   font-family: VazirMedium;
+  font-display: swap;
 }
 
 @font-face {
   src: url('../fonts/Vazir-Medium-FD-WOL.woff') format('woff');
   font-family: VazirMediumDigit;
+  font-display: swap;
 }
 
 @font-face {
   src: url('../fonts/Vazir-Thin-FD-WOL.woff') format('woff');
   font-family: VazirThinDigit;
+  font-display: swap;
 }
