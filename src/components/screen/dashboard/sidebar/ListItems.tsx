@@ -252,7 +252,7 @@ const ListItems: React.FC = () => {
           })}
         </List>
 
-        <List component="div" className={linkWrapper}>
+        {/* <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: FontAwesomeIcon,
             text: t('jobSearch.jobSearch'),
@@ -263,7 +263,7 @@ const ListItems: React.FC = () => {
               size: 'lg',
             },
           })}
-        </List>
+        </List> */}
 
         <List component="div" className={linkWrapper}>
           {getListItem({

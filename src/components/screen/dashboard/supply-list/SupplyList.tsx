@@ -870,16 +870,14 @@ const SupplyList: React.FC = () => {
                 </Grid>
               </Grid>
 
-              {/* <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('general.barcode')}
-                value={state?.batchNO}
-                onChange={(e): void =>
-                  dispatch({ type: 'batchNO', value: e.target.value })
-                }
-              />
-            </Grid> */}
+              <Grid item xs={12}>
+                <Input
+                  className="w-100"
+                  label={t('general.barcode')}
+                  value={state?.batchNO}
+                  onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
+                />
+              </Grid>
 
               {comissionPercent !== '' && (
                 <Grid item xs={12}>

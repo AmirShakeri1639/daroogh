@@ -78,6 +78,7 @@ export default {
         to: 'به',
         number: 'تعداد',
         barcode: 'بارکد',
+        batchNumber: 'Batch Number (بچ نامبر)',
         submit: 'ثبت',
         comment: 'شرح',
         sort: 'مرتب سازی',
