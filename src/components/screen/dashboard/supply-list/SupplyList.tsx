@@ -129,9 +129,9 @@ const useStyle = makeStyles((theme) =>
       alignItems: 'center',
     },
     fieldset: {
-      borderColor: '#f5f5f5',
+      borderColor: ColorEnum.DeepBlue,
       borderRadius: 10,
-      color: '#6d6d6d',
+      color: 'red',
       '& legend': {
         color: '#7e7e7e',
       },
@@ -889,7 +889,7 @@ const SupplyList: React.FC = () => {
 
               {comissionPercent !== '' && (
                 <Grid item xs={12}>
-                  {`پورسانت: ${comissionPercent}%`}
+                  <h3>{`پورسانت: ${comissionPercent}%`}</h3>
                 </Grid>
               )}
 
