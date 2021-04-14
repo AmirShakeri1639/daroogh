@@ -869,16 +869,14 @@ const SupplyList: React.FC = () => {
                 <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
-              {/* <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('general.barcode')}
-                value={state?.batchNO}
-                onChange={(e): void =>
-                  dispatch({ type: 'batchNO', value: e.target.value })
-                }
-              />
-            </Grid> */}
+              <Grid item xs={12}>
+                <Input
+                  className="w-100"
+                  label={t('general.barcode')}
+                  value={state?.batchNO}
+                  onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
+                />
+              </Grid>
 
               {comissionPercent !== '' && (
                 <Grid item xs={12}>

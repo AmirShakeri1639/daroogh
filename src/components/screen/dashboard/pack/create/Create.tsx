@@ -18,6 +18,8 @@ import {
   useTheme,
   Divider,
   Paper,
+  Checkbox,
+  ListItemText,
 } from '@material-ui/core';
 import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react';
 import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
@@ -42,26 +44,18 @@ import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
 import { useParams } from 'react-router-dom';
-import { DrugType } from '../../../../../enum/pharmacyDrug';
 import Calculator from '../../calculator/Calculator';
 
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
-import routes from '../../../../../routes';
-import { SearchDrugInCategory, SearchDrugInMultiCategory } from '../../../../../interfaces/search';
+import { SearchDrugInMultiCategory } from '../../../../../interfaces/search';
 import { PackCreation } from 'model/pack';
-import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
 import { ColorEnum } from 'enum';
 import CDialog from 'components/public/dialog/Dialog';
-import { setConstantValue } from 'typescript';
-
-const GridCenter = styled((props) => <Grid item {...props} />)`
-  text-align: center;
-`;
 
 const { searchDrugInMultipleCategory } = new Drug();
 
@@ -185,17 +179,23 @@ const useStyle = makeStyles((theme) =>
 const monthMinimumLength = 28;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32 || day>0;
+const dayIsValid = (day: number): boolean => day < 32 || day > 0;
 
 const StyledGrid = styled((props: any) => <Grid {...props} item xs={12} spacing={3} />)`
   margin: 24px 24px 0px 0px;
+`;
+
+const STMenuItem = styled((props) => <MenuItem {...props} />)`
+  &:nth-child(odd) {
+    background-color: #ededed;
+  }
 `;
 
 const Create: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('-1');
+  const [selectedCategory, setSelectedCategory] = useState<number[]>([]);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [amount, setAmount] = useState<string>('');
@@ -252,8 +252,6 @@ const Create: React.FC = () => {
     addButton,
     expireDate,
     label,
-    submitBtn,
-    cancelButton,
     fieldset,
     fab,
     sectionContainer,
@@ -375,8 +373,7 @@ const Create: React.FC = () => {
   }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
-    console.log('category', selectedCategory);
-    if (selectedCategory === '-1') {
+    if (selectedCategory.length === 0) {
       warningSweetAlert(t('alerts.SelectCategoryAlert'));
     } else {
       if (isOpenModal) {
@@ -408,6 +405,16 @@ const Create: React.FC = () => {
     return totalPrice;
   };
 
+  const mergeCategories = (items: number[]): void => {
+    const categories = items.map((item, index) => {
+      if (!!!item && index > 0) {
+        return item;
+      }
+      return item;
+    });
+    setSelectedCategory(categories);
+  };
+
   async function getPackDrugs(_packId?: number): Promise<any> {
     if (packId !== undefined || _packId !== undefined) {
       try {
@@ -415,11 +422,11 @@ const Create: React.FC = () => {
 
         const result = await getPackDetail(packId !== undefined ? packId : _packId || 0);
 
-        const { pharmacyDrug, status } = result;
+        const { pharmacyDrug, status, categoryID, categoryID2, categoryID3 } = result;
 
         setPackTotalItems(pharmacyDrug.length);
         setPackStatus(status);
-        setSelectedCategory(result.category !== null ? result.category.id : '-1');
+        mergeCategories([categoryID, categoryID2, categoryID3]);
         setDrugsPack([...mapApiDrugsToStandardDrugs(pharmacyDrug)]);
 
         setPackTotalPrice(getTotalPrice(pharmacyDrug));
@@ -440,7 +447,7 @@ const Create: React.FC = () => {
   const [_savePack] = useMutation(savePack, {
     onSuccess: async (data) => {
       if (packId === undefined) {
-        setSelectedCategory('');
+        setSelectedCategory([]);
       }
       if (storedPackId === null) {
         setStoredPackId(data.data.packID);
@@ -478,16 +485,24 @@ const Create: React.FC = () => {
   const submition = async (data: any): Promise<void> => {
     const packData: PackCreation = {
       id: packId !== undefined ? packId : storedPackId !== null ? storedPackId : 0,
-      categoryID: selectedCategory,
+      categoryID: selectedCategory[0],
       // name: packTitle,
       name: '',
       pharmacyDrug: data as PharmacyDrugSupplyList[],
     };
 
-    if (selectedCategory === '-1') {
+    // TODO: This if block should be removed
+    if (selectedCategory.length === 0) {
       delete packData.categoryID;
     }
 
+    if (!!selectedCategory[1]) {
+      packData.categoryID2 = selectedCategory[1];
+    }
+
+    if (!!selectedCategory[2]) {
+      packData.categoryID3 = selectedCategory[2];
+    }
     await _savePack(packData);
   };
 
@@ -555,8 +570,10 @@ const Create: React.FC = () => {
         name: title,
       };
 
-      if (selectedCategory !== '-1' && !isUndefined(selectedCategory)) {
-        data.categoryId = Number(selectedCategory);
+      if (selectedCategory.length !== 0 && !isUndefined(selectedCategory)) {
+        data.categoryId = Number(selectedCategory[0]);
+        data.secondCategory = Number(selectedCategory[1]) ?? '';
+        data.thirdCategory = Number(selectedCategory[2]) ?? '';
       }
 
       const result = await searchDrugInMultipleCategory(data);
@@ -572,12 +589,16 @@ const Create: React.FC = () => {
   };
 
   const itemsGenerator = (): JSX.Element[] => {
-    return categories.map((item, index) => {
+    return categories.map((item) => {
       const { id, name } = item;
       return (
-        <MenuItem style={{ background: `${index % 2 === 0 ? '#ededed' : ''}` }} key={id} value={id}>
-          {name}
-        </MenuItem>
+        <STMenuItem key={id} value={id}>
+          <Checkbox
+            disabled={selectedCategory.length === 3 && !selectedCategory.includes(id)}
+            checked={selectedCategory.includes(id)}
+          />
+          <ListItemText primary={name} />
+        </STMenuItem>
       );
     });
   };
@@ -632,9 +653,10 @@ const Create: React.FC = () => {
   const selectedCalculaterValueHandler = (v: number): void => {
     setCalculatedValue(v);
   };
+
   const formHandler = async (): Promise<any> => {
     try {
-      if (!isValidInputs() || selectedCategory === '' || isWrongDate || !hasMinimumDate) {
+      if (!isValidInputs() || selectedCategory.length === 0 || isWrongDate || !hasMinimumDate) {
         setShowError(true);
         return;
       }
@@ -663,6 +685,13 @@ const Create: React.FC = () => {
     setPackTotalPrice(getTotalPrice(temporaryDrugs));
   }, [temporaryDrugs]);
 
+  const handleChange = async (event: React.ChangeEvent<{ value: unknown }>): Promise<any> => {
+    const currentValue = event.target.value as number[];
+    if (selectedCategory.length < 3 || currentValue.length < 3) {
+      setSelectedCategory(currentValue);
+    }
+  };
+
   return (
     <MaterialContainer>
       <StyledGrid>
@@ -686,9 +715,15 @@ const Create: React.FC = () => {
                       label={t('pack.category')}
                       placeholder={t('pack.category')}
                       className="w-100"
+                      multiple
                       value={selectedCategory}
-                      onChange={(e): void => {
-                        setSelectedCategory(e.target.value as string);
+                      onChange={handleChange}
+                      renderValue={(selected: any): string => {
+                        const items = categories
+                          .filter((item: any) => selected.indexOf(item.id) !== -1)
+                          .map((item: any) => item.name);
+
+                        return ((items as string[]) ?? []).join(', ');
                       }}
                       disabled={drugsPack.length > 0}
                     >
@@ -723,7 +758,7 @@ const Create: React.FC = () => {
         {packStatus == 1 && (
           <Fragment>
             <Hidden xsDown>
-              <Grid item xs={12}  md={4}>
+              <Grid item xs={12} md={4}>
                 <Paper className={addButton} onClick={toggleIsOpenModal}>
                   <FontAwesomeIcon icon={faPlus} size="2x" />
                   <span>{t('pack.add')}</span>
@@ -750,8 +785,6 @@ const Create: React.FC = () => {
         modalAlt={true}
         hideAll={false}
         hideSubmit={true}
-        // canceleButtonTitle="درج نتیجه محاسبه"
-        // formHandler={(): void => setIsOpenCalculator(false)}
       >
         <DialogContent>
           <div
