@@ -244,9 +244,8 @@ const Create: React.FC = () => {
 
   const autoCompleteRef = useRef<any>(null);
 
-  const dayRef = useRef<HTMLInputElement>();
   const monthRef = useRef<HTMLInputElement>();
-  const yearRef = useRef();
+  const yearRef = useRef<HTMLInputElement>();
 
   const {
     addButton,
@@ -945,7 +944,6 @@ const Create: React.FC = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={4} sm={3}>
                     <Input
-                      ref={dayRef}
                       label={t('general.day')}
                       value={selectedDay}
                       error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
@@ -956,15 +954,13 @@ const Create: React.FC = () => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
-                          if (selectedDay.length === 2) {
-                            // TODO: under development
-                            monthRef?.current?.focus();
-                          }
+                        }
+                        if (val.length === 2) {
+                          monthRef?.current?.focus();
                         }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       ref={monthRef}
@@ -979,10 +975,12 @@ const Create: React.FC = () => {
                         if (selectedMonth.length < 2 || val.length < 2) {
                           setSelectedMonth(e.target.value);
                         }
+                        if (val.length === 2) {
+                          yearRef?.current?.focus();
+                        }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       ref={yearRef}
@@ -1018,7 +1016,7 @@ const Create: React.FC = () => {
               </Grid>
 
               <Grid item xs={12} className={sectionContainer}>
-                <Grid container xs={12}>
+                <Grid container>
                   <Grid item xs={12} style={{ marginBottom: 8 }}>
                     <span style={{ color: '#17A2B8', fontSize: 12 }}>
                       وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
