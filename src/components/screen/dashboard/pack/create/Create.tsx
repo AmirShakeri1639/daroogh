@@ -722,7 +722,7 @@ const Create: React.FC = () => {
                           .filter((item: any) => selected.indexOf(item.id) !== -1)
                           .map((item: any) => item.name);
 
-                        return ((items as string[]) ?? []).join(', ');
+                        return ((items as string[]) ?? []).join(' - ');
                       }}
                       disabled={drugsPack.length > 0}
                     >
@@ -819,18 +819,25 @@ const Create: React.FC = () => {
         <DialogContent>
           <DialogContentText>
             <Grid container spacing={3} direction="column">
-              <Grid item xs={12} className={sectionContainer}>
-                <AutoComplete
-                  ref={autoCompleteRef}
-                  isLoading={isLoading}
-                  options={options}
-                  className="w-100"
-                  placeholder={t('drug.name')}
-                  loadingText={t('general.loading')}
-                  onChange={debounce((e) => searchDrugs(e.target.value), 500)}
-                  onItemSelected={(item): void => setSelectedDrug(item[0])}
-                  defaultSelectedItem=""
-                />
+              <Grid item container xs={12} className={sectionContainer}>
+                <Grid item xs={12}>
+                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                    {t('alerts.searchProduct')}
+                  </span>
+                </Grid>
+                <Grid item xs={12}>
+                  <AutoComplete
+                    ref={autoCompleteRef}
+                    isLoading={isLoading}
+                    options={options}
+                    className="w-100"
+                    placeholder={t('drug.productName')}
+                    loadingText={t('general.loading')}
+                    onChange={debounce((e) => searchDrugs(e.target.value), 500)}
+                    onItemSelected={(item): void => setSelectedDrug(item[0])}
+                    defaultSelectedItem=""
+                  />
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>

@@ -675,19 +675,26 @@ const SupplyList: React.FC = () => {
         <DialogContent style={{ height: 'calc(100vh - 50px)' }}>
           <DialogContentText>
             <Grid container spacing={3} direction="column" className={formContent}>
-              <Grid item xs={12} className={sectionContainer}>
-                <AutoComplete
-                  disable={state?.id !== 0}
-                  ref={autoCompleteRef}
-                  isLoading={isLoading}
-                  onChange={debounce((e) => searchDrugs(e.target.value), 500)}
-                  loadingText={t('general.loading')}
-                  className="w-100"
-                  placeholder={t('drug.name')}
-                  options={options}
-                  onItemSelected={(item: any[]): void => setSelectedDrug(item[0])}
-                  defaultSelectedItem={selectedDrug?.label}
-                />
+              <Grid item container xs={12} className={sectionContainer}>
+                <Grid item xs={12}>
+                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                    {t('alerts.searchProduct')}
+                  </span>
+                </Grid>
+                <Grid item xs={12}>
+                  <AutoComplete
+                    disable={state?.id !== 0}
+                    ref={autoCompleteRef}
+                    isLoading={isLoading}
+                    onChange={debounce((e) => searchDrugs(e.target.value), 500)}
+                    loadingText={t('general.loading')}
+                    className="w-100"
+                    placeholder={t('drug.productName')}
+                    options={options}
+                    onItemSelected={(item: any[]): void => setSelectedDrug(item[0])}
+                    defaultSelectedItem={selectedDrug?.label}
+                  />
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
