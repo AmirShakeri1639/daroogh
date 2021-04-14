@@ -245,6 +245,9 @@ const SupplyList: React.FC = () => {
 
   const theme = useTheme();
 
+  const monthRef = useRef<any>();
+  const yearRef = useRef<any>();
+
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const queryCache = useQueryCache();
@@ -288,7 +291,7 @@ const SupplyList: React.FC = () => {
   });
 
   const containerRef = useRef<any>();
-  console.log(containerRef);
+
   useEffect(() => {
     (async (): Promise<any> => {
       try {
@@ -590,7 +593,6 @@ const SupplyList: React.FC = () => {
   };
 
   const autoCompleteRef = useRef<any>();
-
   return (
     <>
       <Container>
@@ -823,13 +825,16 @@ const SupplyList: React.FC = () => {
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
                         }
+                        if (val.length === 2) {
+                          monthRef.current.focus();
+                        }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       type="number"
+                      ref={monthRef}
                       value={selectedMonth}
                       label={t('general.month')}
                       // required
@@ -840,13 +845,16 @@ const SupplyList: React.FC = () => {
                         if (selectedMonth.length < 2 || val.length < 2) {
                           setSelectedMonth(e.target.value);
                         }
+                        if (val.length === 2) {
+                          yearRef.current.focus();
+                        }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       type="number"
+                      ref={yearRef}
                       value={selectedYear}
                       required
                       error={selectedYear === '' && showError}
@@ -876,21 +884,24 @@ const SupplyList: React.FC = () => {
                   )}
                 </Grid>
               </Grid>
-              <Grid container className={sectionContainer} xs={12}>
-                <Grid item xs={12} style={{ marginBottom: 8 }}>
-                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
-                    وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
-                  </span>
-                </Grid>
-                <Grid item xs={12}>
-                  <Input
-                    required
-                    error={state?.batchNO === '' && showError}
-                    className="w-100"
-                    label={t('general.batchNumber')}
-                    value={state?.batchNO}
-                    onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
-                  />
+
+              <Grid item className={sectionContainer} xs={12}>
+                <Grid container>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
+                    </span>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      required
+                      error={state?.batchNO === '' && showError}
+                      className="w-100"
+                      label={t('general.batchNumber')}
+                      value={state?.batchNO}
+                      onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
 
