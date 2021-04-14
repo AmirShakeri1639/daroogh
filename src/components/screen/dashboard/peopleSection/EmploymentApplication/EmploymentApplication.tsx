@@ -50,6 +50,7 @@ import { EmploymentApplicationDataInterface } from 'interfaces/EmploymentApplica
 import { useClasses } from '../../classes';
 import zIndex from '@material-ui/core/styles/zIndex';
 import CDialog from 'components/public/dialog/Dialog';
+import Uploader from 'components/public/uploader/uploader';
 
 const { currentUserEmploymentApplications, cancel, save } = new applications();
 
@@ -957,8 +958,18 @@ const EmploymentApplication: React.FC = () => {
               />
             </Grid>
 
-            <Grid alignContent="center" item xs={12} sm={12} md={6} lg={6}>
-              <input
+            <Grid alignContent="center" item xs={12} sm={12} md={12} lg={12}>
+              <Uploader
+                showSaveClick={true}
+                getFile={(e) => {
+                  if (e) {
+                    dispatch({ type: 'file', value: e });
+                  }
+                }}
+                handleOnSave={(e) => {}}
+              />
+
+              {/* <input
                 accept="image/*"
                 className={input}
                 id="contained-button-file"
@@ -972,7 +983,7 @@ const EmploymentApplication: React.FC = () => {
                 <Button variant="contained" color="primary" component="span">
                   {t('peopleSection.resumeFile')}
                 </Button>
-              </label>
+              </label> */}
             </Grid>
 
             <Grid item xs={12}>

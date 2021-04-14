@@ -22,7 +22,6 @@ import {
   DialogContent,
   DialogTitle,
   DialogContentText,
- 
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
@@ -217,18 +216,15 @@ const CategoryList: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const [_saveNewCategory, { isLoading: isLoadingNewCategory }] = useMutation(
-    saveCategory,
-    {
-      onSuccess: async () => {
-        dispatch({ type: 'reset' });
-        await sweetAlert({
-          type: 'success',
-          text: t('alert.successfulCreateTextMessage'),
-        });
-      },
-    }
-  );
+  const [_saveNewCategory, { isLoading: isLoadingNewCategory }] = useMutation(saveCategory, {
+    onSuccess: async () => {
+      dispatch({ type: 'reset' });
+      await sweetAlert({
+        type: 'success',
+        text: t('alert.successfulCreateTextMessage'),
+      });
+    },
+  });
 
   const [
     _removeCategory,
@@ -239,19 +235,16 @@ const CategoryList: React.FC = () => {
     },
   });
 
-  const [_editCategory, { isLoading: loadingEditCategory }] = useMutation(
-    saveCategory,
-    {
-      onSuccess: async (data) => {
-        const { message } = data;
-        await sweetAlert({
-          type: 'success',
-          text: message,
-        });
-        ref.current?.onQueryChange();
-      },
-    }
-  );
+  const [_editCategory, { isLoading: loadingEditCategory }] = useMutation(saveCategory, {
+    onSuccess: async (data) => {
+      const { message } = data;
+      await sweetAlert({
+        type: 'success',
+        text: message,
+      });
+      ref.current?.onQueryChange();
+    },
+  });
 
   const onHandleEditRow = (row: CategoriesInterface): void => {
     toggleIsOpenSaveModalForm();
@@ -286,9 +279,7 @@ const CategoryList: React.FC = () => {
     }
   };
 
-  const submitSaveCategory = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<any> => {
+  const submitSaveCategory = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
 
     const { id, name, type } = state;
@@ -322,27 +313,31 @@ const CategoryList: React.FC = () => {
     root,
     formContainer,
     addButton,
-    label, formContent, cancelButton, submitBtn,
+    label,
+    formContent,
+    cancelButton,
+    submitBtn,
     formControl,
   } = useClasses();
-  const [TypeList, setTypeList] = useState(
-    new Array<LabelValue>()
-  );
+  const [TypeList, setTypeList] = useState(new Array<LabelValue>());
 
   React.useEffect(() => {
     const elList: LabelValue[] = [];
-    
-        elList.push({
-          label: "پزشکی",
-          value: 1,
-        }, {
-          label: "آرایشی بهداشتی",
-          value: 2,
-        });
-    
+
+    elList.push(
+      {
+        label: 'پزشکی',
+        value: 1,
+      },
+      {
+        label: 'آرایشی بهداشتی',
+        value: 2,
+      }
+    );
+
     setTypeList(elList);
   }, []);
-  const editModal = (): JSX.Element => {
+  const editModal = React.useMemo((): JSX.Element => {
     return (
       <Dialog
         open={isOpenEditModal}
@@ -362,15 +357,13 @@ const CategoryList: React.FC = () => {
                     <label>نام</label>
                   </Grid>
                   <Grid item xs={12}>
-                  <Input
-                    required
-                    className="w-100"
-                   value={state.name}
-                    onChange={(e): void =>
-                      dispatch({ type: 'name', value: e.target.value })
-                    }
-                  />
-                </Grid>
+                    <Input
+                      required
+                      className="w-100"
+                      value={state.name}
+                      onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
               <Grid item xs={12}>
@@ -380,18 +373,17 @@ const CategoryList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={12}>
-                  <DaroogDropdown
+                    <DaroogDropdown
                       defaultValue={state.type}
                       data={TypeList}
-                      className="w-100"                      
+                      className="w-100"
                       onChangeHandler={(v): void => {
                         return dispatch({ type: 'type', value: v });
                       }}
                     />
-                    
-                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
-            </Grid>
             </Grid>
           </DialogContentText>
         </DialogContent>
@@ -401,38 +393,33 @@ const CategoryList: React.FC = () => {
             <Grid container xs={12}>
               <Grid item xs={7} sm={7} />
               <Grid item xs={2} sm={2}>
-                   
-                    <Button
-                      type="submit"
-                       className={cancelButton}
-                      onClick={(): void => {
-                        dispatch({ type: 'reset' });
-                        toggleIsOpenSaveModalForm();
-                      }}
-                    >
-                      {t('general.cancel')}
-                    </Button>
-                    </Grid>
-                   
+                <Button
+                  type="submit"
+                  className={cancelButton}
+                  onClick={(): void => {
+                    dispatch({ type: 'reset' });
+                    toggleIsOpenSaveModalForm();
+                  }}
+                >
+                  {t('general.cancel')}
+                </Button>
+              </Grid>
 
               <Grid item xs={4} sm={3}>
-              <Button
-                      type="submit"
-                       className={submitBtn}
-                    >
-                      {loadingEditCategory || isLoadingNewCategory
-                        ? t('general.pleaseWait')
-                        : state.id > 0
-                        ? t('general.submit')
-                        : t('category.new-category')}
-                    </Button>
-                    </Grid>
+                <Button type="submit" className={submitBtn}>
+                  {loadingEditCategory || isLoadingNewCategory
+                    ? t('general.pleaseWait')
+                    : state.id > 0
+                    ? t('general.submit')
+                    : t('category.new-category')}
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </DialogActions>
       </Dialog>
     );
-  };
+  }, []);
   return (
     <Container maxWidth="lg" className={container}>
       <Grid container spacing={0}>
@@ -444,9 +431,7 @@ const CategoryList: React.FC = () => {
               columns={getColumns()}
               addAction={(): void => onHandleAddAction()}
               editAction={(e: any, row: any): void => onHandleEditRow(row)}
-              removeAction={async (e: any, row: any): Promise<void> =>
-                await onHandleRemoveRow(row)
-              }
+              removeAction={async (e: any, row: any): Promise<void> => await onHandleRemoveRow(row)}
               queryKey={CategoryQueryEnum.GET_ALL_CATEGORIES}
               queryCallback={getAllCategories}
               urlAddress={UrlAddress.getAllCategories}
@@ -455,7 +440,7 @@ const CategoryList: React.FC = () => {
             {isLoadingRemoveCategory && <CircleLoading />}
           </Paper>
         </Grid>
-        {isOpenEditModal && editModal()}
+        {isOpenEditModal && editModal}
       </Grid>
     </Container>
   );
