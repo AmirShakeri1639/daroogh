@@ -326,12 +326,11 @@ const Profile: React.FC = () => {
                       error={ state.name.length < 2 && showError }
                       label={ t('general.name') }
                       required
-                      disabled
                       variant="outlined"
                       value={ state.name }
                       className={ formItem }
-                      onChange={ (e): void => { }
-                        // dispatch({ type: 'name', value: e.target.value })
+                      onChange={ (e): void =>
+                        dispatch({ type: 'name', value: e.target.value })
                       }
                     />
                   </Grid>
@@ -340,12 +339,11 @@ const Profile: React.FC = () => {
                       error={ state.family.length < 2 && showError }
                       label={ t('general.family') }
                       required
-                      disabled
                       variant="outlined"
                       value={ state.family }
                       className={ formItem }
-                      onChange={ (e): void => { }
-                        // dispatch({ type: 'family', value: e.target.value })
+                      onChange={ (e): void =>
+                        dispatch({ type: 'family', value: e.target.value })
                       }
                     />
                   </Grid>

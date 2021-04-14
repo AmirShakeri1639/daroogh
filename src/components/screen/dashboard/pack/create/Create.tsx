@@ -165,8 +165,8 @@ const useStyle = makeStyles((theme) =>
       margin: theme.spacing(3),
     },
     sectionContainer: {
-      background: '#fafafa',
-      borderLeft: `1px solid ${ColorEnum.Borders}`,
+      background: 'white',
+      borderLeft: `3px solid ${ColorEnum.DeepBlue}`,
 
       display: 'flex',
       alignContent: 'center',
@@ -185,7 +185,7 @@ const useStyle = makeStyles((theme) =>
 const monthMinimumLength = 28;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32 || day>0;
+const dayIsValid = (day: number): boolean => day < 32 || day > 0;
 
 const StyledGrid = styled((props: any) => <Grid {...props} item xs={12} spacing={3} />)`
   margin: 24px 24px 0px 0px;
@@ -723,7 +723,7 @@ const Create: React.FC = () => {
         {packStatus == 1 && (
           <Fragment>
             <Hidden xsDown>
-              <Grid item xs={12}  md={4}>
+              <Grid item xs={12} md={4}>
                 <Paper className={addButton} onClick={toggleIsOpenModal}>
                   <FontAwesomeIcon icon={faPlus} size="2x" />
                   <span>{t('pack.add')}</span>
@@ -892,10 +892,12 @@ const Create: React.FC = () => {
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
-                    {/* <span style={{ color: '#17A2B8', fontSize: 10 }}>
-                      (وارد کردن روز اجباری نیست)
-                    </span> */}
+                    <span style={{ marginBottom: 8, marginLeft: 6 }}>
+                      {t('general.expireDate')}
+                    </span>
+                    <span style={{ color: '#17A2B8', fontSize: 10 }}>
+                      ( سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد )
+                    </span>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -971,7 +973,6 @@ const Create: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
               {/* <Grid item xs={12}>
