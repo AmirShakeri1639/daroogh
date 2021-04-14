@@ -37,6 +37,7 @@ import SearchBar from 'material-ui-search-bar';
 import { TrendingUpRounded } from '@material-ui/icons';
 import { debounce } from 'lodash';
 import CDialog from 'components/public/dialog/Dialog';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 
 interface Props {
   full?: boolean;
@@ -101,141 +102,99 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
         <DialogTitle>{t('employment.application')}</DialogTitle>
         <Divider />
         <DialogContent>
-          <Grid container>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('general.nameFamily')}</b>
-                <br />
-                {name} &nbsp; {family}
-              </Box>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('general.nameFamily')} body={`${name}  ${family}`} />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('general.gender')}</b>
-                <br />
-                {genderStr}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('general.gender')} body={genderStr} />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('general.maritalStatus')}</b>
-                <br />
-                {maritalStatusStr}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('general.maritalStatus')} body={maritalStatusStr} />
             </Grid>
-            <Grid item xs={12}>
-              <Divider />
+
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title={t('employment.readingPrescriptionCertificate')}
+                body={readingPrescriptionCertificateStr}
+              />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.readingPrescriptionCertificate')}</b>
-                <br />
-                {readingPrescriptionCertificateStr}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title={t('employment.gradeOfReadingPrescriptionCertificate')}
+                body={gradeOfReadingPrescriptionCertificate}
+              />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.gradeOfReadingPrescriptionCertificate')}</b>
-                <br />
-                {gradeOfReadingPrescriptionCertificate}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('employment.workExperience')} body={workExperienceYear} />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.workExperience')}</b>
-                <br />
-                {workExperienceYear}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title={t('employment.suggestedWorkShift')}
+                body={suggestedWorkShiftStr}
+              />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.suggestedWorkShift')}</b>
-                <br />
-                {suggestedWorkShiftStr}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title={t('employment.pharmaceuticalSoftwareSkill')}
+                body={pharmaceuticalSoftwareSkillStr}
+              />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.pharmaceuticalSoftwareSkill')}</b>
-                <br />
-                {pharmaceuticalSoftwareSkillStr}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('employment.computerSkill')} body={computerSkillStr} />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.computerSkill')}</b>
-                <br />
-                {computerSkillStr}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title={t('employment.foreignLanguagesSkill')}
+                body={foreignLanguagesSkillStr}
+              />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.foreignLanguagesSkill')}</b>
-                <br />
-                {foreignLanguagesSkillStr}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title={t('employment.suggestedJobPosition')}
+                body={suggestedJobPositionStr}
+              />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.suggestedJobPosition')}</b>
-                <br />
-                {suggestedJobPositionStr}
-              </Box>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('employment.education')} body={educationStr} />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.education')}</b>
-                <br />
-                {educationStr}
-              </Box>
+
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title={t('employment.guarantee')}
+                body={hasGuarantee ? 'دارد' : 'ندارد'}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('general.landlinePhone')} body={landlinePhone} />
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle title={t('employment.previousWorkplace')} body={previousWorkplace} />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextWithTitle
+                title={t('employment.previousWorkplacePhone')}
+                body={previousWorkplacePhone}
+              />
             </Grid>
             <Grid item xs={12}>
-              <Divider />
+              <TextWithTitle title={t('general.address')} body={address} />
             </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.guarantee')}</b>
-                <br />
-                {hasGuarantee ? 'دارد' : 'ندارد'}
-              </Box>
-            </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('general.landlinePhone')}</b>
-                <br />
-                {landlinePhone}
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={spacing1}>
-                <b>{t('general.address')}</b>
-                <br />
-                {address}
-              </Box>
-            </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.previousWorkplace')}</b>
-                <br />
-                {previousWorkplace}
-              </Box>
-            </Grid>
-            <Grid item xs={4}>
-              <Box className={spacing1}>
-                <b>{t('employment.previousWorkplacePhone')}</b>
-                <br />
-                {previousWorkplacePhone}
-              </Box>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-            <Grid item xs={12}>
-              <Box className={spacing1}>
-                <b>{t('general.descriptions')}</b>
-                <br />
-                {descriptions}
-              </Box>
+
+            <Grid xs={12}>
+              {/* {resumeFileKey && (
+                <a
+                  style={{ color: 'blue', textDecoration: 'none', fontSize: 12 }}
+                  onClick={(e: any): any => {
+                    e.stopPropagation();
+                  }}
+                  download=""
+                  href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
+                >
+                  {t('peopleSection.resumeDownload')}
+                </a>
+              )} */}
             </Grid>
           </Grid>
         </DialogContent>
