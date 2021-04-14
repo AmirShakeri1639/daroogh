@@ -72,10 +72,9 @@ const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 const useStyle = makeStyles((theme) =>
   createStyles({
     fieldset: {
-      borderColor: '#f5f5f5',
+      borderColor: ColorEnum.DeepBlue,
       borderRadius: 10,
-      color: '#6d6d6d',
-      marginTop: 20,
+      color: 'red',
       '& legend': {
         color: '#7e7e7e',
       },
@@ -202,6 +201,7 @@ const Create: React.FC = () => {
   const [number, setNumber] = useState<string | number>('');
   const [offer1, setOffer1] = useState<string>('');
   const [offer2, setOffer2] = useState<string>('');
+  const [barcode, setBarcode] = useState('');
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
@@ -275,6 +275,7 @@ const Create: React.FC = () => {
     setIsWrongDate(false);
     setShowError(false);
     setHasMinimumDate(true);
+    setBarcode('');
 
     if (autoCompleteRef && autoCompleteRef.current) {
       autoCompleteRef.current.setInputValue('');
@@ -670,6 +671,7 @@ const Create: React.FC = () => {
         {
           ...omit(getNewDrugData(), 'id'),
           drugID: getNewDrugData().drugID.value,
+          batchNO: barcode,
         },
       ];
 
@@ -696,9 +698,9 @@ const Create: React.FC = () => {
     <MaterialContainer>
       <StyledGrid>
         <span>
-          ابتدا یک دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید . اقلامی
-          که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر قابل تغییر توسط طرف مقابل
-          عرضه میشود{' '}
+          ابتدا یک تا سه دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید .
+          اقلامی که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر قابل تغییر توسط
+          طرف مقابل عرضه میشود{' '}
         </span>
       </StyledGrid>
       <Grid container spacing={3} alignItems="center">
@@ -723,7 +725,7 @@ const Create: React.FC = () => {
                           .filter((item: any) => selected.indexOf(item.id) !== -1)
                           .map((item: any) => item.name);
 
-                        return ((items as string[]) ?? []).join(', ');
+                        return ((items as string[]) ?? []).join(' - ');
                       }}
                       disabled={drugsPack.length > 0}
                     >
@@ -820,18 +822,25 @@ const Create: React.FC = () => {
         <DialogContent>
           <DialogContentText>
             <Grid container spacing={3} direction="column">
-              <Grid item xs={12} className={sectionContainer}>
-                <AutoComplete
-                  ref={autoCompleteRef}
-                  isLoading={isLoading}
-                  options={options}
-                  className="w-100"
-                  placeholder={t('drug.name')}
-                  loadingText={t('general.loading')}
-                  onChange={debounce((e) => searchDrugs(e.target.value), 500)}
-                  onItemSelected={(item): void => setSelectedDrug(item[0])}
-                  defaultSelectedItem=""
-                />
+              <Grid item container xs={12} className={sectionContainer}>
+                <Grid item xs={12}>
+                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                    {t('alerts.searchProduct')}
+                  </span>
+                </Grid>
+                <Grid item xs={12}>
+                  <AutoComplete
+                    ref={autoCompleteRef}
+                    isLoading={isLoading}
+                    options={options}
+                    className="w-100"
+                    placeholder={t('drug.productName')}
+                    loadingText={t('general.loading')}
+                    onChange={debounce((e) => searchDrugs(e.target.value), 500)}
+                    onItemSelected={(item): void => setSelectedDrug(item[0])}
+                    defaultSelectedItem=""
+                  />
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
@@ -924,7 +933,7 @@ const Create: React.FC = () => {
 
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
                     <span style={{ marginBottom: 8, marginLeft: 6 }}>
                       {t('general.expireDate')}
                     </span>
@@ -1008,20 +1017,29 @@ const Create: React.FC = () => {
                 </Grid>
               </Grid>
 
-              {/* <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('general.barcode')}
-                value={state?.batchNO}
-                onChange={(e): void =>
-                  dispatch({ type: 'batchNO', value: e.target.value })
-                }
-              />
-            </Grid> */}
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container xs={12}>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
+                    </span>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      required
+                      error={barcode === '' && showError}
+                      className="w-100"
+                      label={t('general.batchNumber')}
+                      value={barcode}
+                      onChange={(e): void => setBarcode(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
 
               {comissionPercent !== '' && (
                 <Grid item xs={12}>
-                  {`پورسانت: ${comissionPercent}%`}
+                  <h3>{`پورسانت: ${comissionPercent}%`}</h3>
                 </Grid>
               )}
 
@@ -1049,25 +1067,6 @@ const Create: React.FC = () => {
                 <span>{t('alerts.reloadModalToEnterNewDrug')}</span>
               </label>
             </Grid>
-            {/* 
-            <Grid container xs={12}>
-              <Grid item xs={7} sm={8} />
-              <Grid item xs={2} sm={2}>
-                <Button type="button" onClick={toggleIsOpenModal} className={cancelButton}>
-                  {t('general.close')}
-                </Button>
-              </Grid>
-              <Grid item xs={3} sm={2}>
-                <Button
-                  className={submitBtn}
-                  type="button"
-                  onClick={formHandler}
-                  disabled={isBackdropLoading}
-                >
-                  {isBackdropLoading ? t('general.pleaseWait') : t('general.add')}
-                </Button>
-              </Grid>
-</Grid>*/}
           </Grid>
         </DialogActions>
       </CDialog>
@@ -1077,9 +1076,7 @@ const Create: React.FC = () => {
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
           selectedDateHandler={(e): void => {
-            // calculateDateDifference(e, '/');
             setSelectedDate(e);
-
             toggleIsOpenDatePicker();
           }}
         />

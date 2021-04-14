@@ -22,7 +22,7 @@ const useStyle = makeStyles((theme) =>
       border: '1px solid rgba(0, 0, 0, 0.23)',
       padding: '5px 15px',
       borderRadius: '4px',
-      textDecoration: 'none'
+      textDecoration: 'none',
     },
   })
 );
@@ -71,12 +71,12 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
           >
             جزییات
           </Button>
-          <Button
+          {/* <Button
             onClick={(): Promise<any> => cancelHandler(data)}
             style={{ color: 'red', fontSize: '11px' }}
           >
             {t('general.reject')}
-          </Button>
+          </Button> */}
         </Grid>
       </Grid>
       <BackDrop isOpen={isOpenBackDrop} />
