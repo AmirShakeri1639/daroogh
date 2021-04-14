@@ -300,11 +300,11 @@ const JobsList: React.FC = () => {
     getList();
   };
   const [_cancel, { isLoading: isLoadingRemove }] = useMutation(cancel, {
-    onSuccess: async () => {
+    onSuccess: async (result) => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(JobsEnum.GET_ALL);
       resetListRef();
-      await successSweetAlert(t('alert.successfulDelete'));
+      await successSweetAlert(result.message);
     },
   });
 
