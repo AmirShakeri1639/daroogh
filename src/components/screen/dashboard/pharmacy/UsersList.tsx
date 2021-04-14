@@ -39,7 +39,13 @@ import {
   TableColumnInterface,
 } from '../../../../interfaces';
 import { RoleType, TextMessage } from '../../../../enum';
-import { errorHandler, errorSweetAlert, successSweetAlert, sweetAlert, tError } from '../../../../utils';
+import {
+  errorHandler,
+  errorSweetAlert,
+  successSweetAlert,
+  sweetAlert,
+  tError,
+} from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -366,13 +372,12 @@ const UsersList: React.FC = () => {
   };
 
   const formHandler = async (): Promise<any> => {
-
     if (inputValuesValidation()) {
       setShowError(true);
       return;
     }
     if (selectedRoles.length == 0) {
-      tError("لطفا حداقل یک نقش را انتخاب نمایید.")
+      tError('لطفا حداقل یک نقش را انتخاب نمایید.');
       return;
     }
     const data: any = {
@@ -427,10 +432,12 @@ const UsersList: React.FC = () => {
         field: 'gender',
         title: t('general.gender'),
         type: 'number',
-        render: (row: any): any => 
-          row.gender == 0 
-            ? t('general.male') 
-            : row.gender == 1 ? t('general.female') : t('general.unknown')
+        render: (row: any): any =>
+          row.gender == 0
+            ? t('general.male')
+            : row.gender == 1
+            ? t('general.female')
+            : t('general.unknown'),
       },
       {
         field: 'email',
@@ -737,7 +744,7 @@ const UsersList: React.FC = () => {
       )}
       <br />
 
-      {true && (
+      {/* {true && (
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
             <SearchBar
@@ -747,7 +754,7 @@ const UsersList: React.FC = () => {
             />
           </Grid>
         </Grid>
-      )}
+      )} */}
       <Grid container spacing={3} className={contentContainer}>
         <Hidden xsDown>
           <Grid item xs={12} sm={6} md={4}>
@@ -998,30 +1005,26 @@ const UsersList: React.FC = () => {
                 />
               </Grid>
             </Grid>
-            <Grid xs={ 12 }>
+            <Grid xs={12}>
               <FormControl component="fieldset">
-                <FormLabel component="legend">
-                  { t('general.gender') }
-                </FormLabel>
+                <FormLabel component="legend">{t('general.gender')}</FormLabel>
                 <RadioGroup
                   row
                   name="gender"
-                  value={ state.gender }
-                  onChange={ (e: any): void =>
-                    dispatch({ type: 'gender', value: e.target.value })
-                  }
+                  value={state.gender}
+                  onChange={(e: any): void => dispatch({ type: 'gender', value: e.target.value })}
                 >
                   <FormControlLabel
                     value="0"
-                    checked={ state.gender == 0 }
-                    control={ <Radio /> }
-                    label={ t('GenderType.Male') }
+                    checked={state.gender == 0}
+                    control={<Radio />}
+                    label={t('GenderType.Male')}
                   />
                   <FormControlLabel
                     value="1"
-                    checked={ state.gender == 1 }
-                    control={ <Radio /> }
-                    label={ t('GenderType.Female') }
+                    checked={state.gender == 1}
+                    control={<Radio />}
+                    label={t('GenderType.Female')}
                   />
                 </RadioGroup>
               </FormControl>
