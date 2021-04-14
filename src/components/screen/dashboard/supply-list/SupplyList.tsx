@@ -876,13 +876,13 @@ const SupplyList: React.FC = () => {
                   )}
                 </Grid>
               </Grid>
-              <Grid item container className={sectionContainer} xs={12}>
+              <Grid container className={sectionContainer} xs={12}>
                 <Grid item xs={12} style={{ marginBottom: 8 }}>
                   <span style={{ color: '#17A2B8', fontSize: 12 }}>
                     وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
                   </span>
                 </Grid>
-                <Grid xs={12}>
+                <Grid item xs={12}>
                   <Input
                     required
                     error={state?.batchNO === '' && showError}

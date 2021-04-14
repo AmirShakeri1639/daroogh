@@ -201,6 +201,7 @@ const Create: React.FC = () => {
   const [number, setNumber] = useState<string | number>('');
   const [offer1, setOffer1] = useState<string>('');
   const [offer2, setOffer2] = useState<string>('');
+  const [barcode, setBarcode] = useState('');
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
@@ -274,6 +275,7 @@ const Create: React.FC = () => {
     setIsWrongDate(false);
     setShowError(false);
     setHasMinimumDate(true);
+    setBarcode('');
 
     if (autoCompleteRef && autoCompleteRef.current) {
       autoCompleteRef.current.setInputValue('');
@@ -669,6 +671,7 @@ const Create: React.FC = () => {
         {
           ...omit(getNewDrugData(), 'id'),
           drugID: getNewDrugData().drugID.value,
+          batchNO: barcode,
         },
       ];
 
@@ -1014,16 +1017,25 @@ const Create: React.FC = () => {
                 </Grid>
               </Grid>
 
-              {/* <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('general.barcode')}
-                value={state?.batchNO}
-                onChange={(e): void =>
-                  dispatch({ type: 'batchNO', value: e.target.value })
-                }
-              />
-            </Grid> */}
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container xs={12}>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
+                    </span>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      required
+                      error={barcode === '' && showError}
+                      className="w-100"
+                      label={t('general.batchNumber')}
+                      value={barcode}
+                      onChange={(e): void => setBarcode(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
 
               {comissionPercent !== '' && (
                 <Grid item xs={12}>
@@ -1055,25 +1067,6 @@ const Create: React.FC = () => {
                 <span>{t('alerts.reloadModalToEnterNewDrug')}</span>
               </label>
             </Grid>
-            {/* 
-            <Grid container xs={12}>
-              <Grid item xs={7} sm={8} />
-              <Grid item xs={2} sm={2}>
-                <Button type="button" onClick={toggleIsOpenModal} className={cancelButton}>
-                  {t('general.close')}
-                </Button>
-              </Grid>
-              <Grid item xs={3} sm={2}>
-                <Button
-                  className={submitBtn}
-                  type="button"
-                  onClick={formHandler}
-                  disabled={isBackdropLoading}
-                >
-                  {isBackdropLoading ? t('general.pleaseWait') : t('general.add')}
-                </Button>
-              </Grid>
-</Grid>*/}
           </Grid>
         </DialogActions>
       </CDialog>
@@ -1083,9 +1076,7 @@ const Create: React.FC = () => {
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
           selectedDateHandler={(e): void => {
-            // calculateDateDifference(e, '/');
             setSelectedDate(e);
-
             toggleIsOpenDatePicker();
           }}
         />
