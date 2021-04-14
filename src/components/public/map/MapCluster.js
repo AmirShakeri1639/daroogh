@@ -9,15 +9,22 @@ const { getExchangeCount } = new Reports();
 const MapCluster = () => {
   const position = [32.167342, 53.460555];
   const { data } = useQuery('getExchangeCount', getExchangeCount);
-  const mapRef = useRef(null);
-  const definedmax = 30;
-  const count = data && data.length;
-  const max =
+
+  const sorted =
     data &&
     data.length &&
+    data.sort(function (a, b) {
+      return a.item2 - b.item2;
+    });
+  const definedmax = 40;
+
+  const count = sorted && sorted.length;
+  const max =
+    sorted &&
+    sorted.length &&
     Math.max.apply(
       Math,
-      data.map(function (o) {
+      sorted.map(function (o) {
         return o.item2;
       })
     );
@@ -47,9 +54,7 @@ const MapCluster = () => {
     return interpolatedColorArray;
   }
 
-  var colors = interpolateColors('rgb(255, 0, 0)', 'rgb(0, 0, 255)', count);
-
-  console.log('colors', `rgb(${colors[0]})`);
+  var colors = interpolateColors('rgb(0, 0, 255)', 'rgb(255, 0, 0)', count);
 
   return (
     <MapContainer
@@ -62,10 +67,10 @@ const MapCluster = () => {
       dragging={false}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {data &&
-        data &&
-        data.length &&
-        data.map((entry, index) => (
+      {sorted &&
+        sorted &&
+        sorted.length &&
+        sorted.map((entry, index) => (
           <div>
             {'zoneLabel'}
             <Circle
