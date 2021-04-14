@@ -2,7 +2,7 @@ import React, { forwardRef, ReactText, Ref, useCallback } from 'react';
 import { createStyles, makeStyles, TextField } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 
-const useStyle = makeStyles((theme) =>
+const useStyle = makeStyles(() =>
   createStyles({
     numberInput: {
       width: '100%',
@@ -58,7 +58,7 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
     valueLimit,
   } = props;
 
-  const inuptGenerator = useCallback((): JSX.Element => {
+  const inputGenerator = useCallback((): JSX.Element => {
     if (numberFormat) {
       return (
         <NumberFormat
@@ -77,7 +77,7 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
     }
     return (
       <TextField
-        ref={ref}
+        inputRef={ref}
         error={error}
         className={className || ''}
         type={type}
@@ -100,7 +100,7 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
     );
   }, [value, error]);
 
-  return inuptGenerator();
+  return inputGenerator();
 });
 
 Input.defaultProps = {
