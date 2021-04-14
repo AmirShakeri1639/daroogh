@@ -793,7 +793,7 @@ const SupplyList: React.FC = () => {
 
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
                     <span style={{ marginBottom: 8, marginLeft: 6 }}>
                       {t('general.expireDate')}
                     </span>
@@ -869,14 +869,22 @@ const SupplyList: React.FC = () => {
                   )}
                 </Grid>
               </Grid>
-
-              <Grid item xs={12}>
-                <Input
-                  className="w-100"
-                  label={t('general.barcode')}
-                  value={state?.batchNO}
-                  onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
-                />
+              <Grid item container className={sectionContainer} xs={12}>
+                <Grid item xs={12} style={{ marginBottom: 8 }}>
+                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                    وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
+                  </span>
+                </Grid>
+                <Grid xs={12}>
+                  <Input
+                    required
+                    error={state?.batchNO === '' && showError}
+                    className="w-100"
+                    label={t('general.batchNumber')}
+                    value={state?.batchNO}
+                    onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
+                  />
+                </Grid>
               </Grid>
 
               {comissionPercent !== '' && (
