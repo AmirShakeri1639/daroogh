@@ -3,13 +3,11 @@ import { StateType, WorkShiftType, EducationLevel, JobPositionType, SkillLevel }
 
 export interface JobApplicationInterface {
   id: number;
-  
+
   genderStr?: string;
- name?: string;
- family: string;
- mobile?:string;
- workExperienceYear?: number;
- 
-
+  name?: string;
+  family: string;
+  mobile?: string;
+  workExperienceYear?: number;
+  resumeFileKey?: string;
 }
-

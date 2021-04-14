@@ -12,11 +12,15 @@ class EmploymentApplication extends Api {
     detail: '/EmploymentApplication/detail',
   };
 
-  all = async (skip: number, top: number = 10, searchableColumns: DataTableColumns[] = [],
-    searchText: string = ""): Promise<any> => {
-      var filter = 'true';
-    if (searchText.trim() != "") {
-      filter = `(contains(cast(name,'Edm.String'),'${searchText}')or contains(cast(family,'Edm.String'),'${searchText}')or contains(cast(mobile,'Edm.String'),'${searchText}'))`
+  all = async (
+    skip: number,
+    top: number = 10,
+    searchableColumns: DataTableColumns[] = [],
+    searchText: string = ''
+  ): Promise<any> => {
+    var filter = 'true';
+    if (searchText.trim() != '') {
+      filter = `(contains(cast(name,'Edm.String'),'${searchText}')or contains(cast(family,'Edm.String'),'${searchText}')or contains(cast(mobile,'Edm.String'),'${searchText}'))`;
     }
     const result = await this.postJsonData(
       `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc&$filter=${filter}`
@@ -25,34 +29,32 @@ class EmploymentApplication extends Api {
   };
 
   save = async (data: EmploymentApplicationDataInterface): Promise<any> => {
-    const result = await this.postFormData(
-      `${this.urls.save}`,
-      {
-        gender: data.gender,
-        maritalStatus: data.maritalStatus,
-        hasReadingPrescriptionCertificate: data.hasReadingPrescriptionCertificate,
-        gradeOfReadingPrescriptionCertificate: data.gradeOfReadingPrescriptionCertificate,
-        workExperienceYear: data.workExperienceYear,
-        suggestedWorkShift: data.suggestedWorkShift,
-        pharmaceuticalSoftwareSkill: data.pharmaceuticalSoftwareSkill,
-        computerSkill: data.computerSkill,
-        foreignLanguagesSkill: data.foreignLanguagesSkill,
-        countryDivisionCode: data.countryDivisionCode,
-        hasGuarantee: data.hasGuarantee,
-        suggestedJobPosition: data.suggestedJobPosition,
-        education: data.education,
-        address: data.address,
-        landlinePhone: data.landlinePhone,
-        previousWorkplace: data.previousWorkplace,
-        previousWorkplacePhone: data.previousWorkplacePhone,
-        descriptions: data.descriptions,
-        'user.name': data.name,
-        'user.family': data.family,
-        'user.email': data.email,
-        'user.birthday': data.birthDate,
-        file: data.file,
-      }
-    );
+    const result = await this.postFormData(`${this.urls.save}`, {
+      id: data.id,
+      gender: data.gender,
+      maritalStatus: data.maritalStatus,
+      hasReadingPrescriptionCertificate: data.hasReadingPrescriptionCertificate,
+      gradeOfReadingPrescriptionCertificate: data.gradeOfReadingPrescriptionCertificate,
+      workExperienceYear: data.workExperienceYear,
+      suggestedWorkShift: data.suggestedWorkShift,
+      pharmaceuticalSoftwareSkill: data.pharmaceuticalSoftwareSkill,
+      computerSkill: data.computerSkill,
+      foreignLanguagesSkill: data.foreignLanguagesSkill,
+      countryDivisionCode: data.countryDivisionCode,
+      hasGuarantee: data.hasGuarantee,
+      suggestedJobPosition: data.suggestedJobPosition,
+      education: data.education,
+      address: data.address,
+      landlinePhone: data.landlinePhone,
+      previousWorkplace: data.previousWorkplace,
+      previousWorkplacePhone: data.previousWorkplacePhone,
+      descriptions: data.descriptions,
+      'user.name': data.name,
+      'user.family': data.family,
+      'user.email': data.email,
+      'user.birthday': data.birthDate,
+      file: data.file,
+    });
     return result.data;
   };
 
@@ -73,11 +75,9 @@ class EmploymentApplication extends Api {
   };
 
   notCanceledCount = async (): Promise<any> => {
-    const result = await this.postJsonData(
-      `${this.urls.notCanceled}`
-    );
+    const result = await this.postJsonData(`${this.urls.notCanceled}`);
     return result.data.items.length;
-  }
+  };
 
   cancel = async (id: number | string): Promise<any> => {
     const result = await this.postJsonData(`${this.urls.cancel}${id}`);
