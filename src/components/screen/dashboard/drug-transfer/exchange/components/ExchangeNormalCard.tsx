@@ -150,7 +150,7 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
           </div>
           <div style={{ width: '100%', fontSize: `${isSmallDevice ? '10px' : '12px'}` }}>
             {pharmacyDrug?.drug.genericName}
-            {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
+            {pharmacyDrug?.drug.enName && ` (${pharmacyDrug?.drug.enName})`}
           </div>
         </Grid>
         {lockedAction && (
