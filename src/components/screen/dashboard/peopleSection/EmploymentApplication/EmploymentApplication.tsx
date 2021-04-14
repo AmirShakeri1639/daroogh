@@ -328,7 +328,6 @@ const EmploymentApplication: React.FC = () => {
     dispatch({ type: 'landlinePhone', value: landlinePhone });
     dispatch({ type: 'file', value: file });
     dispatch({ type: 'address', value: address });
-
   };
 
   useEffect(() => {
@@ -367,55 +366,47 @@ const EmploymentApplication: React.FC = () => {
   });
 
   const formHandler = async (): Promise<any> => {
-    var message = "";
-    if (state.name == "") {
+    var message = '';
+    if (state.name == '') {
       message = t('peopleSection.name');
-    } else if (state.family == "") {
+    } else if (state.family == '') {
       message = t('peopleSection.family');
-    } else if (state.birtdate == "") {
+    } else if (state.birtdate == '') {
       message = t('peopleSection.birtdate');
     } else if (state.gender == -1) {
       message = t('peopleSection.gender');
-    } else if (state.workExperienceYear == "") {
+    } else if (state.workExperienceYear == '') {
       message = t('peopleSection.workExperienceYear');
     } else if (state.pharmaceuticalSoftwareSkill == -1) {
       message = t('peopleSection.pharmaceuticalSoftwareSkill');
-    }
-    else if (state.computerSkill == -1) {
+    } else if (state.computerSkill == -1) {
       message = t('peopleSection.computerSkill');
-    }
-    else if (state.foreignLanguagesSkill == -1) {
+    } else if (state.foreignLanguagesSkill == -1) {
       message = t('peopleSection.foreignLanguagesSkill');
-    }
-    else if (state.suggestedJobPosition == -1) {
+    } else if (state.suggestedJobPosition == -1) {
       message = t('peopleSection.suggestedJobPosition');
-    }
-    else if (state.education == -1) {
+    } else if (state.education == -1) {
       message = t('peopleSection.education');
-    }
-    else if (state.countryDivisionCode == "") {
+    } else if (state.countryDivisionCode == '') {
       message = t('peopleSection.countryDivisionCode');
-    }
-    else if (state.landlinePhone == "") {
+    } else if (state.landlinePhone == '') {
       message = t('peopleSection.landlinePhone');
-    }
-    else if (state.address == "") {
+    } else if (state.address == '') {
       message = t('peopleSection.address');
-    }
-    else if (state.descriptions == "") {
+    } else if (state.descriptions == '') {
       message = t('peopleSection.descriptions');
     }
-    if (message != "") {
-      tError("لطفا " + "مقادیر اجباری" + " را وارد نمایید")
-    }
-    else if (state.hasReadingPrescriptionCertificate
-      && state.gradeOfReadingPrescriptionCertificate == "") {
-      tError("لطفا " + t('peopleSection.gradeOfReadingPrescriptionCertificate') + " را وارد نمایید")
-    }
-    else {
-
+    if (message != '') {
+      tError('لطفا ' + 'مقادیر اجباری' + ' را وارد نمایید');
+    } else if (
+      state.hasReadingPrescriptionCertificate &&
+      state.gradeOfReadingPrescriptionCertificate == ''
+    ) {
+      tError(
+        'لطفا ' + t('peopleSection.gradeOfReadingPrescriptionCertificate') + ' را وارد نمایید'
+      );
+    } else {
       try {
-
         await _save(state).then((rec) => refetch());
       } catch (e) {
         errorHandler(e);
@@ -436,7 +427,11 @@ const EmploymentApplication: React.FC = () => {
         if (item !== null) {
           return (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
-              <CardContainer data={item} formHandler={removeHandler} toggleEditModal={saveHandler} />
+              <CardContainer
+                data={item}
+                formHandler={removeHandler}
+                toggleEditModal={saveHandler}
+              />
             </Grid>
           );
         }
@@ -546,7 +541,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.name')}
                 InputLabelProps={{
                   shrink: true,
-
                 }}
                 variant="outlined"
                 value={state.name}
@@ -577,7 +571,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.birthDate')}
                 InputLabelProps={{
                   shrink: true,
-
                 }}
                 required
                 variant="outlined"
@@ -610,9 +603,7 @@ const EmploymentApplication: React.FC = () => {
                 value={state.gender}
                 onChange={(e): void => dispatch({ type: 'gender', value: e.target.value })}
               >
-                <option key="-1" value="">
-
-                </option>
+                <option key="-1" value=""></option>
                 {genders.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -633,9 +624,7 @@ const EmploymentApplication: React.FC = () => {
                 value={state.maritalStatus}
                 onChange={(e): void => dispatch({ type: 'maritalStatus', value: e.target.value })}
               >
-                <option key="-1" value="">
-
-                </option>
+                <option key="-1" value=""></option>
                 {maritalStatuses.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -651,9 +640,8 @@ const EmploymentApplication: React.FC = () => {
                       dispatch({
                         type: 'hasReadingPrescriptionCertificate',
                         value: e.target.checked,
-                      })
-                    }
-                    }
+                      });
+                    }}
                     value={state.hasReadingPrescriptionCertificate}
                   />
                 }
@@ -669,7 +657,11 @@ const EmploymentApplication: React.FC = () => {
                   shrink: true,
                 }}
                 variant="outlined"
-                value={state.gradeOfReadingPrescriptionCertificate === 0 ? '' : state.gradeOfReadingPrescriptionCertificate}
+                value={
+                  state.gradeOfReadingPrescriptionCertificate === 0
+                    ? ''
+                    : state.gradeOfReadingPrescriptionCertificate
+                }
                 onChange={(e): void =>
                   dispatch({
                     type: 'gradeOfReadingPrescriptionCertificate',
@@ -685,7 +677,6 @@ const EmploymentApplication: React.FC = () => {
                 type="number"
                 InputLabelProps={{
                   shrink: true,
-
                 }}
                 required
                 variant="outlined"
@@ -716,8 +707,7 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {suggestedWorkShifts.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -743,8 +733,7 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {pharmaceuticalSoftwareSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -765,8 +754,7 @@ const EmploymentApplication: React.FC = () => {
                 value={state.computerSkill}
                 onChange={(e): void => dispatch({ type: 'computerSkill', value: e.target.value })}
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {computerSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -792,8 +780,7 @@ const EmploymentApplication: React.FC = () => {
                 }
                 required
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {foreignLanguagesSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -819,8 +806,7 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {suggestedJobPositions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -841,8 +827,7 @@ const EmploymentApplication: React.FC = () => {
                 value={state.education}
                 onChange={(e): void => dispatch({ type: 'education', value: e.target.value })}
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {educations.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -875,7 +860,6 @@ const EmploymentApplication: React.FC = () => {
                 onChange={changeprovince}
                 SelectProps={{
                   native: true,
-
                 }}
                 required
                 variant="outlined"
@@ -895,7 +879,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.city')}
                 SelectProps={{
                   native: true,
-
                 }}
                 variant="outlined"
                 required
@@ -949,7 +932,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.landlinePhone')}
                 InputLabelProps={{
                   shrink: true,
-
                 }}
                 required
                 variant="outlined"
@@ -960,7 +942,7 @@ const EmploymentApplication: React.FC = () => {
 
             <Grid alignContent="center" item xs={12} sm={12} md={12} lg={12}>
               <Uploader
-                showSaveClick={true}
+                showSaveClick={false}
                 getFile={(e) => {
                   if (e) {
                     dispatch({ type: 'file', value: e });
@@ -1012,7 +994,6 @@ const EmploymentApplication: React.FC = () => {
                 margin="normal"
                 InputLabelProps={{
                   shrink: true,
-                  required: true,
                 }}
                 variant="outlined"
                 value={state.descriptions}

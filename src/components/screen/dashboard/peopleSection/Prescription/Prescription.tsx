@@ -17,7 +17,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery } from 'react-query';
 import { CountryDivision, Prescription as presApi } from '../../../../../services/api';
 import { MaterialContainer } from '../../../../public';
-import { errorHandler, successSweetAlert } from '../../../../../utils';
+import { errorHandler, tSuccess } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
@@ -162,7 +162,7 @@ const Prescription: React.FC = (props) => {
         toggleIsOpenModal();
       }
 
-      await successSweetAlert(message);
+      tSuccess(message);
     },
   });
 
@@ -173,7 +173,7 @@ const Prescription: React.FC = (props) => {
         toggleIsOpenModal();
       }
 
-      await successSweetAlert(message);
+      tSuccess(message);
     },
   });
 

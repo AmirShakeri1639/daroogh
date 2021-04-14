@@ -772,7 +772,7 @@ export default {
         Survey: 'نظرسنجی',
         EmploymentApplication: 'درخواست کاریابی',
         Prescription: 'نسخه مردمی',
-        FavoriteListCount: 'سبد علاقمندی',
+        FavoriteListCount: 'سبد علاقمندی برای شما',
       },
       file: {
         file: 'فایل',
@@ -788,7 +788,7 @@ export default {
           healThMinistryLicense: 'مجوز وزارت بهداشت',
         },
         noFileSelected: 'فایلی انتخاب نشده است',
-        get: 'دریافت فایل',
+        get: 'انتخاب فایل',
         save: 'ذخیره',
         delete: 'حذف',
       },
