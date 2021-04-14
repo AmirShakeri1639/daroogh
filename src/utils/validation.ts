@@ -4,7 +4,7 @@ class Validation {
   isValidUserToken(token: string): boolean {
     const decodedJWT: any = jwt.decode(token);
     if (Math.floor(Date.now() / 1000) <= decodedJWT.exp) {
-      (window as any).CRISP_WEBSITE_ID = 'ab43d0bb-c5a4-48c4-ac43-af2ff652c4fa';
+      (window as any).CRISP_WEBSITE_ID = 'd13151c7-f239-458c-809c-276a5895fa58';
       return true;
     }
     // TODO: I must handle it later with unexpired token
