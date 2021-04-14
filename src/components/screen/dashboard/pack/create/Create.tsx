@@ -159,8 +159,8 @@ const useStyle = makeStyles((theme) =>
       margin: theme.spacing(3),
     },
     sectionContainer: {
-      background: '#fafafa',
-      borderLeft: `1px solid ${ColorEnum.Borders}`,
+      background: 'white',
+      borderLeft: `3px solid ${ColorEnum.DeepBlue}`,
 
       display: 'flex',
       alignContent: 'center',
@@ -925,10 +925,12 @@ const Create: React.FC = () => {
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
-                    {/* <span style={{ color: '#17A2B8', fontSize: 10 }}>
-                      (وارد کردن روز اجباری نیست)
-                    </span> */}
+                    <span style={{ marginBottom: 8, marginLeft: 6 }}>
+                      {t('general.expireDate')}
+                    </span>
+                    <span style={{ color: '#17A2B8', fontSize: 10 }}>
+                      ( سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد )
+                    </span>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -1004,7 +1006,6 @@ const Create: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
               {/* <Grid item xs={12}>

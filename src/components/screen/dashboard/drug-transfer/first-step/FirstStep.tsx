@@ -148,7 +148,7 @@ const useStyle = makeStyles((theme) =>
       fontSize: 14,
       width: 80,
       height: 36,
-      margin: 4,
+      marginRight: 16,
       background: `${ColorEnum.Green} !important`,
       borderRadius: 4,
     },
@@ -428,11 +428,9 @@ const FirstStep: React.FC = () => {
     <>
       <Grid item xs={12}>
         <Grid container spacing={2}>
-          <Hidden xsDown>
-            <Grid item xs={12} style={{ marginTop: 16 }}>
-              <span>{t('alerts.supplylistsAlert')}</span>
-            </Grid>
-          </Hidden>
+          <Grid item xs={12} style={{ marginTop: 16 }}>
+            <span>{t('alerts.supplylistsAlert')}</span>
+          </Grid>
           <Grid item xs={12}>
             <div className={searchContainer}>
               <Button className={filterButton} onClick={(): void => setIsOpenDrawer(true)}>
