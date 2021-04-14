@@ -1,5 +1,6 @@
-import { Button, createStyles, makeStyles, TextField } from '@material-ui/core';
 import React from 'react';
+import { Button, createStyles, makeStyles, TextField } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import noImage from '../../../assets/images/no-image.png';
 
 const useStyle = makeStyles((theme) =>
@@ -25,16 +26,25 @@ interface UploaderPI {
   getFile: (e: any) => void;
   handleOnSave?: (e: any) => void;
   onDelete?: () => void;
+  keyId?: string;
+  multiple?: boolean;
+  accept?: string;
 }
 
-const Uploader = (props: UploaderPI): JSX.Element => {
+const Uploader: React.FC<UploaderPI> = (props) => {
   const {
     getFile, handleOnSave, showSaveClick = false,
-    onDelete
+    onDelete,
+    keyId = '',
+    multiple = false,
+    accept = 'image/*',
   } = props;
+
+  const { t } = useTranslation()
   const { input, ulStyle } = useStyle();
   const [file, setFile] = React.useState<any>();
   const [fileName, setFileName] = React.useState<string>();
+
   return (
     <ul className={ ulStyle }>
       <li>
@@ -60,7 +70,7 @@ const Uploader = (props: UploaderPI): JSX.Element => {
             minWidth: 160,
           } }
           size="small"
-          defaultValue="فایلی انتخاب نشده است"
+          defaultValue={ t('file.noFileSelected') }
           value={ fileName }
           inputProps={ {
             readOnly: true,
@@ -70,25 +80,30 @@ const Uploader = (props: UploaderPI): JSX.Element => {
       </li>
       <li>
         <input
-          accept="image/*"
+          accept={ accept }
           className={ input }
-          id="contained-button-file"
-          multiple
+          key={ `contained-button-file_${keyId}` }
+          id={ `contained-button-file_${keyId}` }
+          multiple={ multiple }
           type="file"
           onChange={ (e): void => {
             if (e.target.files) {
+              getFile(
+                multiple
+                  ? e.target.files
+                  : e.target.files[0]
+              );
               let reader = new FileReader();
               reader.onload = (e) => {
                 setFile(e?.target?.result);
               };
               reader.readAsDataURL(e.target.files[0]);
-              getFile(e.target.files[0]);
               setFileName(e.target.files[0].name);
               e.target.value = '';
             }
           } }
         />
-        <label htmlFor="contained-button-file">
+        <label htmlFor={ `contained-button-file_${keyId}` }>
           <Button
             variant="contained"
             color="primary"
@@ -96,7 +111,7 @@ const Uploader = (props: UploaderPI): JSX.Element => {
             size="small"
             style={ { marginRight: 10 } }
           >
-            دریافت فایل
+            { t('file.get') }
           </Button>
         </label>
         <Button
@@ -107,11 +122,11 @@ const Uploader = (props: UploaderPI): JSX.Element => {
           size="small"
           onClick={ () => {
             setFile(null);
-            setFileName('فایلی انتخاب نشده است');
+            setFileName(t('file.noFileSelected'));
             if (onDelete) onDelete()
           } }
         >
-          حذف
+          { t('file.delete') }
         </Button>
         { showSaveClick && (
           <Button
@@ -123,7 +138,7 @@ const Uploader = (props: UploaderPI): JSX.Element => {
               if (handleOnSave) handleOnSave(file);
             } }
           >
-            ذخیره
+            { t('file.save') }
           </Button>
         ) }
       </li>
