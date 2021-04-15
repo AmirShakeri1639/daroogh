@@ -12,6 +12,7 @@ class Role extends Api {
     roleById: '/Roles/Detail/',
     addUserToRole: '/Roles/AddUserToRole',
     getRoleOfUser: '/Roles/GetRolesOfUser',
+    removeUserRoles: '/Roles/RemoveAllPharmacyRole',
   };
 
   getAllRoles = async (type?: RoleType): Promise<any> => {
@@ -40,9 +41,7 @@ class Role extends Api {
 
   removeRoleById = async (roleId: number | string): Promise<any> => {
     try {
-      const result = await this.postJsonData(
-        `${this.urls.removeRoleById}${roleId}`
-      );
+      const result = await this.postJsonData(`${this.urls.removeRoleById}${roleId}`);
       return result.data;
     } catch (e) {
       errorHandler(e);
@@ -82,9 +81,12 @@ class Role extends Api {
   };
 
   getRolesOfUser = async (userId: number | string): Promise<any> => {
-    const result = await this.postData(
-      `/Roles/GetRolesOfUser?userId=${userId}`
-    );
+    const result = await this.postData(`/Roles/GetRolesOfUser?userId=${userId}`);
+    return result.data;
+  };
+
+  removeUserRoles = async (userId: number | string): Promise<any> => {
+    const result = await this.postData(`/Roles/RemoveAllPharmacyRole?userId=${userId}`);
     return result.data;
   };
 }
