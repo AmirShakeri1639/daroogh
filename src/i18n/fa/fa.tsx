@@ -77,6 +77,7 @@ export default {
         offer: 'آفر',
         to: 'به',
         number: 'تعداد',
+        count: 'تعداد {{var}}',
         barcode: 'بارکد',
         batchNumber: 'Batch Number (بچ نامبر)',
         submit: 'ثبت',
