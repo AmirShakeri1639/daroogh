@@ -348,14 +348,15 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
         )}
         {showButtons && (
           <>
-            <IconButton edge="end" color="inherit" onClick={handleNotificationIconButton}>
-              <Badge
-                badgeContent={userMessages !== undefined ? userMessages.items.length : 0}
-                color="secondary"
-              >
-                <FontAwesomeIcon icon={faBell} />
-              </Badge>
-            </IconButton>
+            {userMessages !== undefined && userMessages.items.length !== 0 && (
+              <Tooltip title={String(t('general.notifications'))}>
+                <IconButton edge="end" color="inherit" onClick={handleNotificationIconButton}>
+                  <Badge badgeContent={userMessages.items.length} color="secondary">
+                    <FontAwesomeIcon icon={faBell} />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+            )}
 
             <IconButton
               edge="end"

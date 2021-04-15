@@ -142,6 +142,7 @@ export default {
         addDrug: 'اضافه کردن دارو',
         submitMyPacks: 'ثبت پک های من',
         submitPacks: 'ثبت پک ',
+        notifications: 'اعلان ها',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
