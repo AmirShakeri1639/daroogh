@@ -786,7 +786,7 @@ export default {
         type: {
           nationalCard: 'کارت ملی',
           establishLicense: 'مجوز تاسیس',
-          healThMinistryLicense: 'مجوز وزارت بهداشت',
+          healThMinistryLicense: 'کارت نظام پزشکی',
         },
         noFileSelected: 'فایلی انتخاب نشده است',
         get: 'انتخاب فایل',
