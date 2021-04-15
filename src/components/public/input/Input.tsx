@@ -35,6 +35,7 @@ interface InputProps {
   className?: any;
   helperText?: ReactText;
   valueLimit?: (obj: any) => any;
+  onBlur?: () => void;
 }
 
 const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref) => {
@@ -56,6 +57,7 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
     className,
     helperText,
     valueLimit,
+    onBlur,
   } = props;
 
   const inputGenerator = useCallback((): JSX.Element => {
@@ -92,6 +94,7 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
         dir={dir}
         required={required}
         onClick={onClick}
+        onBlur={onBlur ?? undefined}
         inputProps={{
           readOnly,
         }}

@@ -213,6 +213,15 @@ const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} 
   }
 `;
 
+const StyledTitle = styled.span`
+  color: #17a2bb;
+  font-size: 12px;
+`;
+
+const StyledDialogContent = styled((props) => <DialogContent {...props} />)`
+  scroll-behavior: smooth;
+`;
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
@@ -279,6 +288,13 @@ const SupplyList: React.FC = () => {
     fab,
     sectionContainer,
   } = useStyle();
+
+  useEffect(() => {
+    const el = document.getElementById('scrollable-content') as HTMLElement;
+    if (el !== null) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [comissionPercent, daroogRecommendation]);
 
   useEffectOnce(() => {
     (async (): Promise<any> => {
@@ -641,8 +657,6 @@ const SupplyList: React.FC = () => {
         modalAlt={true}
         hideAll={false}
         hideSubmit={true}
-        // canceleButtonTitle="درج نتیجه محاسبه"
-        // formHandler={(): void => setIsOpenCalculator(false)}
       >
         <DialogContent>
           <div
@@ -675,7 +689,7 @@ const SupplyList: React.FC = () => {
         fullWidth
       >
         <DialogTitle className="text-sm">افزودن به لیست عرضه</DialogTitle>
-        <DialogContent style={{ height: 'calc(100vh - 50px)' }}>
+        <StyledDialogContent id="scrollable-content">
           <DialogContentText>
             <Grid container spacing={3} direction="column" className={formContent}>
               <Grid item container xs={12} className={sectionContainer}>
@@ -700,27 +714,32 @@ const SupplyList: React.FC = () => {
                 </Grid>
               </Grid>
 
-              <Grid item container xs={12} className={sectionContainer}>
-                <Input
-                  numberFormat
-                  placeholder={`${t('general.number')}`}
-                  className="w-100"
-                  valueLimit={(value) => {
-                    if (value.value > 0 || value.value === '') {
-                      return value;
-                    }
-                  }}
-                  label={`${t('general.number')} ${t('drug.drug')}`}
-                  onChange={(e): void => dispatch({ type: 'cnt', value: e })}
-                  value={state?.cnt}
-                />
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      numberFormat
+                      placeholder={`${t('general.number')}`}
+                      className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
+                      label={`${t('general.number')} ${t('drug.drug')}`}
+                      onChange={(e): void => dispatch({ type: 'cnt', value: e })}
+                      value={state?.cnt}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
                 <Grid xs={12} item>
-                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
-                    {t('alerts.priceTypeAlert')}
-                  </span>
+                  <StyledTitle>{t('alerts.priceTypeAlert')}</StyledTitle>
                 </Grid>
                 <Grid item xs={9}>
                   <Input
@@ -741,11 +760,7 @@ const SupplyList: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button
-                    onClick={(): void => {
-                      toggleIsOpenCalculator();
-                    }}
-                  >
+                  <Button onClick={toggleIsOpenCalculator}>
                     <FontAwesomeIcon
                       style={{ color: ColorEnum.DeepBlue, margin: 4 }}
                       icon={faCalculator}
@@ -925,7 +940,7 @@ const SupplyList: React.FC = () => {
               )}
             </Grid>
           </DialogContentText>
-        </DialogContent>
+        </StyledDialogContent>
         <Divider />
         <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>

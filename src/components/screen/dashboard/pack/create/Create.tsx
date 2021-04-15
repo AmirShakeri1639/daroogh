@@ -69,6 +69,15 @@ const { numberWithZero, thousandsSeperatorFa } = Convertor;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
+const StyledTitle = styled.span`
+  color: #17a2bb;
+  font-size: 12px;
+`;
+
+const StyledDialogContent = styled((props) => <DialogContent {...props} />)`
+  scroll-behavior: smooth;
+`;
+
 const useStyle = makeStyles((theme) =>
   createStyles({
     fieldset: {
@@ -258,6 +267,13 @@ const Create: React.FC = () => {
     input,
     formContainer,
   } = useStyle();
+
+  useEffect(() => {
+    const el = document.getElementById('scrollable-content') as HTMLElement;
+    if (el !== null) {
+      el.scrollTop = el.scrollHeight;
+    }
+  }, [comissionPercent, daroogRecommendation]);
 
   const resetValues = (): void => {
     setAmount('');
@@ -819,7 +835,7 @@ const Create: React.FC = () => {
         fullWidth
       >
         <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
-        <DialogContent>
+        <StyledDialogContent id="scrollable-content">
           <DialogContentText>
             <Grid container spacing={3} direction="column">
               <Grid item container xs={12} className={sectionContainer}>
@@ -843,17 +859,24 @@ const Create: React.FC = () => {
                 </Grid>
               </Grid>
 
-              <Grid item container xs={12} className={sectionContainer}>
-                <Input
-                  placeholder={`${t('general.number')}`}
-                  numberFormat
-                  className="w-100"
-                  label={`${t('general.number')} ${t('drug.drug')}`}
-                  onChange={(e): void => {
-                    setNumber(e);
-                  }}
-                  value={number}
-                />
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      placeholder={`${t('general.number')}`}
+                      numberFormat
+                      className="w-100"
+                      label={`${t('general.number')} ${t('drug.drug')}`}
+                      onChange={(e): void => {
+                        setNumber(e);
+                      }}
+                      value={number}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
@@ -1055,7 +1078,7 @@ const Create: React.FC = () => {
               )}
             </Grid>
           </DialogContentText>
-        </DialogContent>
+        </StyledDialogContent>
         <Divider />
         <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
