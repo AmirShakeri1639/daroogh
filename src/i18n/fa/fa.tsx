@@ -789,7 +789,9 @@ export default {
         type: {
           nationalCard: 'کارت ملی',
           establishLicense: 'مجوز تاسیس',
-          healThMinistryLicense: 'مجوز وزارت بهداشت',
+          healThMinistryLicense: 'کارت نظام پزشکی',
+          ctoLicence: 'پروانه مسؤول فنی ویژه داروخانه‌های دولتی',
+          commitment: 'تعهدنامه ویژه داروخانه‌های بیمارستانی و دولتی',
         },
         noFileSelected: 'فایلی انتخاب نشده است',
         get: 'انتخاب فایل',
