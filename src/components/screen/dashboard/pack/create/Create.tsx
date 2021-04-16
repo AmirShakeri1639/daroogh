@@ -281,7 +281,7 @@ const Create: React.FC = () => {
         if (el.scrollTop === scrollHeight) {
           clearInterval(interval);
         }
-      });
+      }, 50);
     }
   }, [comissionPercent, daroogRecommendation]);
 
