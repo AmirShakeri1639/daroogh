@@ -271,7 +271,16 @@ const Create: React.FC = () => {
   useEffect(() => {
     const el = document.getElementById('scrollable-content') as HTMLElement;
     if (el !== null) {
-      el.scrollTop = el.scrollHeight;
+      const scrollHeight = el.scrollHeight;
+      const interval = setInterval(() => {
+        if (el.scrollTop < scrollHeight) {
+          el.scrollTop = el.scrollTop + 4;
+        }
+
+        if (el.scrollTop === scrollHeight) {
+          clearInterval(interval);
+        }
+      }, 50);
     }
   }, [comissionPercent, daroogRecommendation]);
 
