@@ -552,14 +552,9 @@ const Create: React.FC = () => {
     return [];
   };
 
-  const removeHandler = async (drug: any): Promise<void> => {
+  const removeHandler = async (drugId: number): Promise<void> => {
     if (window.confirm(t('alert.remove'))) {
-      console.log(drugsPack, drug);
-      remove(
-        drugsPack,
-        (item) =>
-          item.drugID.value === drug.id && item.cnt === drug.cnt && item.amount === drug.amount
-      );
+      remove(drugsPack, (item) => item.id === drugId);
       try {
         await submition(mapDrugsPackToApi(drugsPack));
         setDrugsPack([...drugsPack]);

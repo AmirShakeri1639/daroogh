@@ -38,12 +38,13 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
   const { item, removeHandler, status } = props;
 
   const {
+    id,
     cnt,
     expireDate,
     offer1,
     offer2,
     amount,
-    drugID: { value, label },
+    drugID: { label },
   } = item;
 
   const queryCache = useQueryCache();
@@ -60,11 +61,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
   });
 
   const itemRemoveHandler = (item: any): void => {
-    removeHandler({
-      id: item,
-      cnt,
-      amount,
-    });
+    removeHandler(item);
   };
 
   return (
@@ -91,7 +88,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
             <Grid justify="flex-end" container spacing={0}>
               <Grid item xs={2}>
                 <Button
-                  onClick={(): void => itemRemoveHandler(value)}
+                  onClick={(): void => itemRemoveHandler(id)}
                   style={{ color: 'red', fontSize: '14px' }}
                 >
                   حذف
