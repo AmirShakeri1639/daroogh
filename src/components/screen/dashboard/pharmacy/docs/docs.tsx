@@ -2,27 +2,27 @@ import React, { useEffect, useReducer, useState } from 'react';
 import {
   Button, Container,
   createStyles,
+  debounce,
   Dialog, DialogActions, DialogContent, DialogTitle,
   Divider, Grid, makeStyles, Paper, useMediaQuery, useTheme
 } from '@material-ui/core';
-import DataTable from 'components/public/datatable/DataTable';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../../classes';
-import useDataTableRef from 'hooks/useDataTableRef';
 import { DataTableColumns } from 'interfaces/DataTableColumns';
 import { FileType, Pharmacy } from 'services/api';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
-import { useMutation, useQueryCache } from 'react-query';
+import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { errorHandler, isNullOrEmpty, JwtData, tSuccess, tWarn } from 'utils';
 import { ActionInterface, FileForPharmacyInterface, LabelValue } from 'interfaces';
 import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { PictureDialog } from 'components/public';
+import CardContainer from 'components/public/card-container/CardContainer';
 import Uploader from 'components/public/uploader/uploader';
-import { ColorEnum } from 'enum';
+import { ColorEnum, screenWidth } from 'enum';
 
 export const useStyles = makeStyles((theme) =>
   createStyles({
@@ -103,7 +103,6 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
   }
 
   const { t } = useTranslation()
-  const ref = useDataTableRef()
   const queryCache = useQueryCache()
 
   const [pharmName, setPharmName] = useState(pharmacyName)
@@ -136,8 +135,8 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
   const [isSaveDialogOpen, setIsSaveDialogOpen] = useState(false)
   const [fileKeyToShow, setFileKeyToShow] = useState('')
   const [isOpenPicture, setIsOpenPicture] = useState(false)
-  const [fileName, setFileName] = useState()
-  const [fileTitle, setFileTitle] = useState()
+  const [fileName, setFileName] = useState('')
+  const [fileTitle, setFileTitle] = useState('')
 
   const { all: allFileTypes } = new FileType()
   const [fileTypes, setFileTypes] = useState<LabelValue[]>([])
@@ -170,60 +169,56 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
     )
   }
 
-  const tableColumns = (): DataTableColumns[] => {
-    return [
-      {
-        field: 'id',
-        title: t('general.id'),
-        type: 'number',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'fileName',
-        title: t('file.fileName'),
-        type: 'string',
-      },
-      {
-        field: 'fileTypeName',
-        title: t('file.fileType'),
-        type: 'string',
-      },
-      {
-        field: 'fileKey',
-        title: t('file.file'),
-        type: 'string',
-        render: (row: any): any => {
-          return (
-            <>
-              { !isNullOrEmpty(row.fileKey) &&
-                <Button onClick={ (): any => {
-                  setFileKeyToShow(row.fileKey)
-                  setIsOpenPicture(true)
-                  setFileName(row.fileName)
-                  setFileTitle(row.fileTypeName)
-                } }>
-                  <FontAwesomeIcon icon={ faImage } />
-                </Button>
-              }
-            </>
-          )
-        }
-      },
-    ]
-  }
+  const tableColumns = [
+    {
+      field: 'id',
+      title: t('general.id'),
+      type: 'number',
+      cellStyle: { textAlign: 'right' },
+    },
+    {
+      field: 'fileName',
+      title: t('file.fileName'),
+      type: 'string',
+    },
+    {
+      field: 'fileTypeName',
+      title: t('file.fileType'),
+      type: 'string',
+    },
+    {
+      field: 'fileKey',
+      title: t('file.file'),
+      type: 'string',
+      render: (row: any): any => {
+        return (
+          <>
+            { !isNullOrEmpty(row.fileKey) &&
+              <Button onClick={ (): any => {
+                setFileKeyToShow(row.fileKey)
+                setIsOpenPicture(true)
+                setFileName(row.fileName)
+                setFileTitle(row.fileTypeName)
+              } }>
+                <FontAwesomeIcon icon={ faImage } />
+              </Button>
+            }
+          </>
+        )
+      }
+    },
+  ]
 
   const [_remove, { isLoading: isLoadingRemove }] = useMutation(pharmacy.removeFile, {
     onSuccess: async () => {
-      ref.current?.onQueryChange()
-      await queryCache.invalidateQueries(pharmacy.urls.files)
+      await getCardList(true)
       tSuccess(t('alert.successfulDelete'))
     },
   })
-  const removeHandler = async (item: any): Promise<any> => {
+  const removeHandler = async (id: number | string): Promise<any> => {
     try {
       if (window.confirm(t('alert.remove'))) {
-        await _remove(item.id)
-        ref.current?.onQueryChange()
+        await _remove(id)
       }
     } catch (e) {
       errorHandler(e)
@@ -232,8 +227,7 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(pharmacy.addFile, {
     onSuccess: async () => {
-      ref.current?.onQueryChange()
-      await queryCache.invalidateQueries(pharmacy.urls.files)
+      await getCardList(true)
       tSuccess(t('alert.successfulSave'))
       dispatch({ type: 'reset' })
     },
@@ -263,13 +257,155 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
         })
         setIsSaveDialogOpen(false)
         dispatch({ type: 'reset' })
-        ref.current?.onQueryChange()
       } catch (e) {
         errorHandler(e)
       }
     } else {
       tWarn(t('alert.fillFormCarefully'))
     }
+  }
+
+  const [list, setList] = useState<any>([])
+  const listRef = React.useRef(list)
+
+  const setListRef = (data: any, refresh: boolean = false) => {
+    if (!refresh) {
+      listRef.current = listRef.current.concat(data)
+    } else {
+      listRef.current = data
+    }
+    setList(data)
+  }
+  const [search, setSearch] = useState<string>('')
+  const searchRef = React.useRef(search)
+
+  const setSearchRef = (data: any) => {
+    searchRef.current = data
+    setSearch(data)
+    getCardList(true)
+  }
+
+  const { data, isFetched } = useQuery(
+    pharmacy.urls.files,
+    () => pharmacy.files(pageRef.current, 10, [], searchRef.current),
+    {
+      onSuccess: (result) => {
+        console.log(result)
+        if (result == undefined || result.count == 0) {
+          setNoDataRef(true)
+        } else {
+          setListRef(result.items)
+        }
+      },
+    }
+  )
+
+  const [noData, setNoData] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(0)
+  const pageRef = React.useRef(page)
+  const setPageRef = (data: number) => {
+    pageRef.current = data
+    setPage(data)
+  }
+
+  const noDataRef = React.useRef(noData)
+  const setNoDataRef = (data: boolean) => {
+    noDataRef.current = data
+    setNoData(data)
+  }
+
+  async function getCardList(refresh: boolean = false): Promise<any> {
+    const result = await pharmacy.files(
+      pageRef.current, 10, [], searchRef.current
+    )
+    if (result == undefined || result.items.length == 0) {
+      setNoDataRef(true)
+    }
+    if (result != undefined) {
+      setListRef(result.items, refresh)
+      return result
+    }
+  }
+
+  const handleScroll = (e: any): any => {
+    const el = e.target
+    const pixelsBeforeEnd = 200
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight
+    if (!noDataRef.current && checkDevice) {
+      const currentpage = pageRef.current + 1
+      setPageRef(currentpage)
+      getCardList()
+    }
+  }
+
+  const [onScroll, setOnScroll] = React.useState<boolean>(true);
+  const onScrollRef = React.useRef(onScroll);
+  const setOnScrollRef = (data: boolean) => {
+    onScrollRef.current = data
+    setOnScroll(data)
+  }
+
+  const addScrollListener = (): void => {
+    document
+      .getElementById('data-list')
+      ?.addEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      })
+  }
+
+  const removeScrollListener = (): void => {
+    setOnScrollRef(false)
+    document
+      .getElementById('data-list')
+      ?.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      })
+  }
+
+  React.useEffect(() => {
+    addScrollListener()
+    return (): void => {
+      removeScrollListener()
+    }
+  }, [])
+
+  const detailHandler = (item: any): void => {
+    setFileKeyToShow(item.fileKey)
+    setFileName(item['file.fileName'])
+    setFileTitle(item['file.fileType'])
+    setIsOpenPicture(true)
+  }
+
+  const contentGenerator = (): JSX.Element[] => {
+    if (!isLoadingSave && list !== undefined && isFetched) {
+      return listRef.current.map((item: any) => {
+        return (
+          <Grid item xs={ 12 } sm={ 6 } md={ 4 }
+            key={ item.id }
+            style={ {
+              border: `${item.status === 1 ? '1px solid #ccc' : '0px solid #ff123'
+                }`,
+            } }
+          >
+            <CardContainer
+              itemId={ item.id }
+              data={ {
+                fileKey: item.fileKey,
+                'file.fileName': item.fileName,
+                'file.fileType': item.fileTypeName,
+              } }
+              removeHandler={ removeHandler }
+              detailHandler={ detailHandler }
+            />
+          </Grid>
+        )
+      })
+    }
+
+    return []
   }
 
   const saveModal = (): JSX.Element => {
@@ -350,24 +486,14 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
   }
 
   return (
-    <Container maxWidth="lg" className={ container }>
+    <Container maxWidth="lg" className={ container } id="data-list">
+      <h2>{ t('file.pharmacyDocs') } { pharmName }</h2>
       <Grid container spacing={ 0 }>
         <Grid item xs={ 12 }>
-          <div><b>{ t('file.pharmacyDocs') } { pharmName }</b></div>
           <Paper>
-            <DataTable
-              tableRef={ ref }
-              columns={ tableColumns() }
-              addAction={ (): void => saveHandler(initialState) }
-              removeAction={ async (e: any, row: any): Promise<void> =>
-                await removeHandler(row)
-              }
-              queryKey={ pharmacy.urls.files }
-              queryCallback={ pharmacy.files }
-              urlAddress={ pharmacy.urls.files }
-              otherQueryString={ `pharmacyId=${pharmacyId}` }
-              initLoad={ false }
-            />
+            <Grid container spacing={ 3 } className={ contentContainer }>
+              { contentGenerator() }
+            </Grid>
             { <CircleBackdropLoading isOpen={ isLoadingRemove || isLoadingSave } /> }
             { isSaveDialogOpen && saveModal() }
             { isOpenPicture && pictureDialog(fileKeyToShow, fileName, fileTitle) }

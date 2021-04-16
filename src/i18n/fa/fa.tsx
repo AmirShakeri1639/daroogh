@@ -130,6 +130,7 @@ export default {
         noOne: 'هیچ کدام',
         new: 'جدید',
         dr: 'دکتر',
+        view: 'مشاهده',
       },
 
       pack: {
