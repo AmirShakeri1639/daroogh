@@ -33,7 +33,7 @@ import {
   Search,
   Category as CategoryApi,
 } from '../../../../../services/api';
-import { errorHandler, successSweetAlert } from '../../../../../utils';
+import { errorHandler, tSuccess } from 'utils';
 import CDialog from 'components/public/dialog/Dialog';
 
 const { getFavoriteList, saveFavoriteList } = new Favorite();
@@ -165,7 +165,7 @@ const Category: React.FC = () => {
       setIsOpenBackdrop(false);
 
       setSelectedCategory([]);
-      await successSweetAlert(message);
+      tSuccess(message);
     },
   });
 

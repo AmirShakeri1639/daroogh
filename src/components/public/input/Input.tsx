@@ -64,41 +64,41 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
     if (numberFormat) {
       return (
         <NumberFormat
-          ref={ref}
+          ref={ ref }
           type="tel"
-          className={numberInput}
-          value={value}
-          placeholder={String(placeholder)}
+          className={ numberInput }
+          value={ value }
+          placeholder={ String(placeholder) }
           thousandSeparator
-          isAllowed={valueLimit}
+          isAllowed={ valueLimit }
           // @ts-ignore
-          onValueChange={(value): void => onChange(value?.value)}
-          customInput={TextField}
+          onValueChange={ (value): void => onChange(value?.value) }
+          customInput={ TextField }
         />
       );
     }
     return (
       <TextField
-        inputRef={ref}
-        error={error}
-        className={className || ''}
-        type={type}
-        value={value}
+        inputRef={ ref }
+        error={ error }
+        className={ className || '' }
+        type={ type }
+        value={ value }
         size="small"
-        helperText={helperText}
+        helperText={ helperText }
         variant="outlined"
-        rows={rows}
-        multiline={isMultiLine}
-        label={label}
-        placeholder={String(placeholder)}
-        dir={dir}
-        required={required}
-        onClick={onClick}
-        onBlur={onBlur ?? undefined}
-        inputProps={{
+        rows={ rows }
+        multiline={ isMultiLine }
+        label={ label }
+        placeholder={ String(placeholder) }
+        dir={ dir }
+        required={ required }
+        onClick={ onClick }
+        onBlur={ onBlur ?? undefined }
+        inputProps={ {
           readOnly,
-        }}
-        onChange={onChange}
+        } }
+        onChange={ onChange }
       />
     );
   }, [value, error]);

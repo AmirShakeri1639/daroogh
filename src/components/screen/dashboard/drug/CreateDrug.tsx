@@ -269,6 +269,7 @@ const CreateDrug: React.FC = () => {
                 >
                   <TextField
                     variant="outlined"
+                    className="no-farsi-number"
                     label={t('drug.enName')}
                     value={state.enName}
                     onChange={(e): void =>

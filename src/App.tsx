@@ -237,6 +237,7 @@ const App = (): JSX.Element => {
     <>
       <ToastContainer
         rtl={ true }
+        closeButton={ false }
         position="bottom-right"
       />
       <Router>

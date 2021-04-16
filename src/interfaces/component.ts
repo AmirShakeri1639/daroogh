@@ -221,6 +221,7 @@ export interface TextWithTitlePropsInterface {
   isSmal?: boolean;
   dateSuffix?: string | React.ReactNode;
   showDateSuffix?: boolean;
+  className?: string;
 }
 
 export interface BackDropPropsInterface {
