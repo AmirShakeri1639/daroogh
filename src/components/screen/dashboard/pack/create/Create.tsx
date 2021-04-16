@@ -56,6 +56,7 @@ import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
 import { ColorEnum } from 'enum';
 import CDialog from 'components/public/dialog/Dialog';
+import { CountryDivisionSelect } from 'components/public/country-division/CountryDivisionSelect';
 
 const { searchDrugInMultipleCategory } = new Drug();
 
@@ -551,9 +552,14 @@ const Create: React.FC = () => {
     return [];
   };
 
-  const removeHandler = async (drugId: number): Promise<void> => {
+  const removeHandler = async (drug: any): Promise<void> => {
     if (window.confirm(t('alert.remove'))) {
-      remove(drugsPack, (item) => item.drugID.value === drugId);
+      console.log(drugsPack, drug);
+      remove(
+        drugsPack,
+        (item) =>
+          item.drugID.value === drug.id && item.cnt === drug.cnt && item.amount === drug.amount
+      );
       try {
         await submition(mapDrugsPackToApi(drugsPack));
         setDrugsPack([...drugsPack]);

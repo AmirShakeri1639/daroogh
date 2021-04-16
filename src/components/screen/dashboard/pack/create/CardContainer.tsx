@@ -1,12 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import {
-  makeStyles,
-  Paper,
-  createStyles,
-  Grid,
-  Button,
-  Divider,
-} from '@material-ui/core';
+import { makeStyles, Paper, createStyles, Grid, Button, Divider } from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SupplyListCardContainer } from '../../../../../interfaces';
@@ -37,11 +30,11 @@ const useStyle = makeStyles((theme) =>
 interface CardContainerProps {
   item: PharmacyDrugSupplyList;
   removeHandler: (item: any) => void;
-  status: number
+  status: number;
 }
 
 const CardContainer: React.FC<CardContainerProps> = (props) => {
-  const { root, redTrash } = useStyle();
+  const { root } = useStyle();
   const { item, removeHandler, status } = props;
 
   const {
@@ -50,14 +43,14 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
     offer1,
     offer2,
     amount,
-    drugID: { value, label, d },
+    drugID: { value, label },
   } = item;
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
 
   const [_removePharmacyDrug] = useMutation(removePharmacyDrug, {
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
       await successSweetAlert(t('alert.successfulRemoveTextMessage'));
     },
@@ -67,13 +60,16 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
   });
 
   const itemRemoveHandler = (item: any): void => {
-    removeHandler(item);
+    removeHandler({
+      id: item,
+      cnt,
+      amount,
+    });
   };
 
   return (
     <Paper className={root} elevation={1}>
       <Grid container spacing={1}>
-     
         <Detail
           drugName={label}
           amount={Number(amount)}
@@ -84,9 +80,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
           enName={''}
         />
       </Grid>
-      {
-        status == 1 &&
-
+      {status == 1 && (
         <Fragment>
           <Grid item xs={12} style={{ padding: '4px' }}>
             {' '}
@@ -101,12 +95,12 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
                   style={{ color: 'red', fontSize: '14px' }}
                 >
                   حذف
-            </Button>
+                </Button>
               </Grid>
             </Grid>
           </Grid>
         </Fragment>
-      }
+      )}
     </Paper>
   );
 };
