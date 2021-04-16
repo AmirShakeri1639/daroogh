@@ -292,7 +292,16 @@ const SupplyList: React.FC = () => {
   useEffect(() => {
     const el = document.getElementById('scrollable-content') as HTMLElement;
     if (el !== null) {
-      el.scrollTop = el.scrollHeight;
+      const scrollHeight = el.scrollHeight;
+      const interval = setInterval(() => {
+        if (el.scrollTop < scrollHeight) {
+          el.scrollTop = el.scrollTop + 4;
+        }
+
+        if (el.scrollTop === scrollHeight) {
+          clearInterval(interval);
+        }
+      }, 50);
     }
   }, [comissionPercent, daroogRecommendation]);
 
@@ -610,6 +619,7 @@ const SupplyList: React.FC = () => {
   };
 
   const autoCompleteRef = useRef<any>();
+
   return (
     <>
       <Container>
@@ -709,7 +719,7 @@ const SupplyList: React.FC = () => {
                     placeholder={t('drug.productName')}
                     options={options}
                     onItemSelected={(item: any[]): void => setSelectedDrug(item[0])}
-                    defaultSelectedItem={selectedDrug?.label}
+                    defaultSelectedItem={state.id === 0 ? '' : selectedDrug?.label}
                   />
                 </Grid>
               </Grid>
