@@ -63,6 +63,7 @@ import CardContainer from './user/CardContainer';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { debounce } from 'lodash';
 import CDialog from 'components/public/dialog/Dialog';
+import { tSuccess } from 'utils/toast';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -261,7 +262,7 @@ const MenuProps = {
   },
 };
 
-const { getAllRoles } = new Role();
+const { getAllRoles, removeUserRoles } = new Role();
 
 const { addPharmacyUser } = new User();
 
@@ -581,6 +582,26 @@ const UsersList: React.FC = () => {
     toggleIsOpenRoleModal();
   };
 
+  const [_remove, { isLoading: isLoadingRemove }] = useMutation(removeUserRoles, {
+    onSuccess: async (result) => {
+      ref.current?.onQueryChange();
+
+      resetListRef();
+      tSuccess(result.message);
+    },
+  });
+
+  const removeAllRoles = async (row: any): Promise<any> => {
+    if (window.confirm('آیا از حدف همه نقش های کاربر مطمدن هستید؟')) {
+      try {
+        await _remove(row.id);
+        ref.current?.onQueryChange();
+      } catch (e) {
+        errorHandler(e);
+      }
+    }
+  };
+
   const customDataTAbleACtions: DataTableCustomActionInterface[] = [
     {
       icon: (): any => <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />,
@@ -620,7 +641,11 @@ const UsersList: React.FC = () => {
         //if (user !== null) {
         return (
           <Grid item xs={12} sm={6} md={4} key={item.id}>
-            <CardContainer data={item} editRoleHandler={editRoleHandler} />
+            <CardContainer
+              data={item}
+              editRoleHandler={editRoleHandler}
+              removeRolesHandler={removeAllRoles}
+            />
           </Grid>
         );
         //}

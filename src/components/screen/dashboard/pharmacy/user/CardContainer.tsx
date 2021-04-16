@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  makeStyles,
-  Paper,
-  createStyles,
-  Grid,
-  Divider,
-  Button,
-} from '@material-ui/core';
+import { makeStyles, Paper, createStyles, Grid, Divider, Button } from '@material-ui/core';
 import Detail from './Detail';
 import { UserInterface } from '../../../../../interfaces';
 import { BackDrop } from '../../../../public';
@@ -27,7 +20,7 @@ const CardContainer: React.FC<UserInterface> = (props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const { root } = useStyle();
 
-  const { data, editRoleHandler } = props;
+  const { data, editRoleHandler, removeRolesHandler } = props;
 
   const {
     name,
@@ -64,15 +57,21 @@ const CardContainer: React.FC<UserInterface> = (props) => {
         {' '}
         <Divider />
       </Grid>
-      <Grid item xs={12}  container spacing={0} justify="flex-end">
+      <Grid item xs={12} container spacing={0} justify="flex-end">
         <Button
           onClick={(): void => editRoleHandler(data)}
           style={{ color: 'red', fontSize: '14px' }}
         >
           ویرایش نقش
         </Button>
-        </Grid>
-      
+        <Button
+          onClick={(): void => removeRolesHandler(data)}
+          style={{ color: 'red', fontSize: '14px' }}
+        >
+          حذف همه نقش ها
+        </Button>
+      </Grid>
+
       <BackDrop isOpen={isOpenBackDrop} />
     </Paper>
   );
