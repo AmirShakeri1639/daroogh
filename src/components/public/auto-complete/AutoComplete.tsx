@@ -201,7 +201,7 @@ const AutoComplete: React.FC<Props & { ref: Ref<any> }> = forwardRef(
             type="text"
             onChange={_onChange}
             placeholder={placeholder ?? ''}
-            value={!!inputValue ? inputValue : defaultSelectedItem}
+            value={inputValue.length > 0 ? inputValue : defaultSelectedItem}
             className={`${style['input']} ${className ?? ''}`}
             disabled={disable ?? false}
           />
