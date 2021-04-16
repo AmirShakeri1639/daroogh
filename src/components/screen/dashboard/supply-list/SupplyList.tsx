@@ -289,21 +289,21 @@ const SupplyList: React.FC = () => {
     sectionContainer,
   } = useStyle();
 
-  useEffect(() => {
-    const el = document.getElementById('scrollable-content') as HTMLElement;
-    if (el !== null) {
-      const scrollHeight = el.scrollHeight;
-      const interval = setInterval(() => {
-        if (el.scrollTop < scrollHeight) {
-          el.scrollTop = el.scrollTop + 4;
-        }
+  // useEffect(() => {
+  //   const el = document.getElementById('scrollable-content') as HTMLElement;
+  //   if (el !== null) {
+  //     const scrollHeight = el.scrollHeight;
+  //     const interval = setInterval(() => {
+  //       if (el.scrollTop < scrollHeight) {
+  //         el.scrollTop = el.scrollTop + 4;
+  //       }
 
-        if (el.scrollTop === scrollHeight) {
-          clearInterval(interval);
-        }
-      }, 50);
-    }
-  }, [comissionPercent, daroogRecommendation]);
+  //       if (el.scrollTop === scrollHeight) {
+  //         clearInterval(interval);
+  //       }
+  //     }, 50);
+  //   }
+  // }, [comissionPercent, daroogRecommendation]);
 
   useEffectOnce(() => {
     (async (): Promise<any> => {
