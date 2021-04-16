@@ -160,7 +160,11 @@ const ExchangePackDetail: React.FC<Props> = (props) => {
         <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
           <span style={{ marginRight: 5, fontSize: 12, color: `${ColorEnum.DeepBlue}` }}>
             {item.drug.name}
-            {item.drug.enName && `(${item.drug.enName})`}
+            { item.drug.enName &&
+              <span className="no-farsi-number">
+                { item.drug.enName }
+              </span>
+            }
           </span>
         </Grid>
         <Grid item xs={8} style={{ textAlign: 'left', fontSize: 11 }}>

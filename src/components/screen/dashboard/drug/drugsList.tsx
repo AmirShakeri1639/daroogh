@@ -204,6 +204,13 @@ const DrugsList: React.FC = () => {
         title: t('drug.enName'),
         type: 'string',
         searchable: true,
+        render: (row: any): any => {
+          return (
+            <span className="no-farsi-number">
+              { row.enName }
+            </span>
+          )
+        }
       },
       {
         field: 'type',
@@ -470,7 +477,7 @@ const DrugsList: React.FC = () => {
                   </Grid>
                   <Grid item xs={ 12 }>
                     <Input
-                      className="w-100"
+                      className="w-100 no-farsi-number"
                       label={ t('drug.enName') }
                       value={ state.enName }
                       onChange={ (e): void => dispatch({ type: 'enName', value: e.target.value }) }

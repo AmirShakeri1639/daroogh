@@ -17,7 +17,7 @@ import { PharmacyDrugEnum } from '../../../../enum';
 import { debounce, remove } from 'lodash';
 import { Favorite, Drug as DrugApi, Search } from '../../../../services/api';
 import { MaterialContainer, AutoComplete, autoCompleteItems } from '../../../public';
-import { errorHandler, successSweetAlert } from '../../../../utils';
+import { errorHandler, tSuccess } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
@@ -128,7 +128,7 @@ const DrugTab: React.FC = () => {
 
       setDrugName('');
 
-      await successSweetAlert(message);
+      tSuccess(message);
     },
   });
 
