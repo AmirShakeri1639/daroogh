@@ -4,7 +4,10 @@ import React from 'react';
 import { TextWithTitlePropsInterface } from '../../../interfaces';
 
 const TextWithTitle: React.FC<TextWithTitlePropsInterface> = (props) => {
-  const { title, body, suffix ,isSmal,dateSuffix,showDateSuffix} = props;
+  const {
+    title, body, suffix, isSmal, dateSuffix, showDateSuffix,
+    className
+  } = props;
 
 
   const useStyle = makeStyles((theme) =>
@@ -38,7 +41,7 @@ const TextWithTitle: React.FC<TextWithTitlePropsInterface> = (props) => {
     <Grid container xs={12}>
       <span className={titleC}>{title}</span>
       <div className={titleC}>:&nbsp;</div>
-      <span className={textC}>{body}</span>
+      <span className={ `${textC} ${className || ''}` }>{ body }</span>
       {suffix && (
         <>
         <div>&nbsp;</div>

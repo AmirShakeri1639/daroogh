@@ -83,7 +83,13 @@ const getColumns = (): DataTableColumns[] => {
       field: 'drugEnName',
       type: 'string',
       headerStyle: { minWidth: 150 },
-      cellStyle: { textAlign: 'right' },
+      render: (row: any): any => {
+        return (
+          <span className="no-farsi-number">
+            { row.drugEnName }
+          </span>
+        )
+      }
     },
     {
       title: 'نوع دارو',

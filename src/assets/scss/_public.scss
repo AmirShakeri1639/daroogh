@@ -106,8 +106,12 @@ input[type='number'] {
 }
 
 .Toastify__toast {
-  font-family: Vazir;
+  font-family  : Vazir;
   border-radius: .3em;
+}
+
+.no-farsi-number, .no-farsi-number .MuiInputBase-root {
+  font-family: VazirFontNumber !important;
 }
 
 @media print {
