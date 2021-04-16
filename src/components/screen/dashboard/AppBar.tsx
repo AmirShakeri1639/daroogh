@@ -26,12 +26,7 @@ import { useQuery } from 'react-query';
 import { connect, ConnectedProps } from 'react-redux';
 import { JwtData, sweetAlert } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faUserCircle,
-  faBell,
-  faPlusSquare,
-  faBars,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUserCircle, faBell, faPlusSquare, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const drawerWidth = 240;
 const { getUserMessages } = new Message();
@@ -191,10 +186,7 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
-  showButtons,
-  transfer: _transfer,
-}) => {
+const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer: _transfer }) => {
   const {
     setIsOpenDrawer,
     isOpenDrawer,
@@ -217,25 +209,14 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
     }
   );
 
-  const {
-    trialToolbar,
-    toolbar,
-    appBar,
-    menuButton,
-    menuButtonHidden,
-    title,
-  } = useStyles();
+  const { trialToolbar, toolbar, appBar, menuButton, menuButtonHidden, title } = useStyles();
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
 
-  const handleUserIconButton = (
-    e: React.MouseEvent<HTMLButtonElement>
-  ): void => {
+  const handleUserIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
     setAnchorEl(e.currentTarget);
   };
 
-  const handleNotificationIconButton = (
-    e: React.MouseEvent<HTMLButtonElement>
-  ): void => {
+  const handleNotificationIconButton = (e: React.MouseEvent<HTMLButtonElement>): void => {
     setNotifEl(e.currentTarget);
   };
 
@@ -258,12 +239,10 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
     });
   };
 
-  const [version, setVersion] = useState('')
+  const [version, setVersion] = useState('');
   useEffect(() => {
-    setVersion(
-      localStorage.getItem('version') ?? ''
-    )
-  }, [])
+    setVersion(localStorage.getItem('version') ?? '');
+  }, []);
 
   return (
     <AppBar elevation={0} position="absolute" className={appBar}>
@@ -299,16 +278,16 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
             {/* {t('general.dashboard')} */}
             <span>{t('general.daroog')}</span>
             <span style={{ fontSize: 14, marginRight: 5 }}>
-              ({t('general.systemTitle')})
+              {`( ${t('general.systemTitle')} )`}
               <span style={{ fontSize: 14, marginRight: 8 }}>{t('general.daroogLatin')}</span>
             </span>
           </Hidden>
-          {version &&
+          {version && (
             <span className="version-small">
               {t('general.version')} &nbsp;
               {version}
             </span>
-          }
+          )}
         </Typography>
         {userData.pharmacyName != null && (
           <Fragment>
@@ -346,12 +325,9 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
                 edge="end"
                 onClick={(e: any): void => setcreditAnchorEl(e.currentTarget)}
                 style={{
-                  color: `${!debtValueState
-                    ? 'white'
-                    : debtValueState >= 0
-                      ? '#f95e5e'
-                      : '#72fd72'
-                    }`,
+                  color: `${
+                    !debtValueState ? 'white' : debtValueState >= 0 ? '#f95e5e' : '#72fd72'
+                  }`,
                 }}
               >
                 <CreditCardIcon />
@@ -372,20 +348,15 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
         )}
         {showButtons && (
           <>
-            <IconButton
-              edge="end"
-              color="inherit"
-              onClick={handleNotificationIconButton}
-            >
-              <Badge
-                badgeContent={
-                  userMessages !== undefined ? userMessages.items.length : 0
-                }
-                color="secondary"
-              >
-                <FontAwesomeIcon icon={faBell} />
-              </Badge>
-            </IconButton>
+            {userMessages !== undefined && userMessages.items.length !== 0 && (
+              <Tooltip title={String(t('general.notifications'))}>
+                <IconButton edge="end" color="inherit" onClick={handleNotificationIconButton}>
+                  <Badge badgeContent={userMessages.items.length} color="secondary">
+                    <FontAwesomeIcon icon={faBell} />
+                  </Badge>
+                </IconButton>
+              </Tooltip>
+            )}
 
             <IconButton
               edge="end"
@@ -402,9 +373,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({
 
         <UserMenu />
 
-        <NotificationMenu
-          messages={isLoadingUserMessages ? [] : userMessages?.items}
-        />
+        <NotificationMenu messages={isLoadingUserMessages ? [] : userMessages?.items} />
       </Toolbar>
     </AppBar>
   );
