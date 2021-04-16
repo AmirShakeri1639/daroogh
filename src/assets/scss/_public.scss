@@ -110,7 +110,17 @@ input[type='number'] {
   border-radius: .3em;
 }
 
-.no-farsi-number, .no-farsi-number .MuiInputBase-root {
+.Toastify__toast--success {
+  background   : #43A048;
+  padding-right: 1em;
+
+  .toast-success-message {
+    padding-right: 1em;
+  }
+}
+
+.no-farsi-number,
+.no-farsi-number .MuiInputBase-root {
   font-family: VazirFontNumber !important;
 }
 
