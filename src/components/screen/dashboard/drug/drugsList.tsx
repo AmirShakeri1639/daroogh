@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { errorHandler, successSweetAlert, warningSweetAlert } from '../../../../utils';
+import { errorHandler, tSuccess, tWarn } from 'utils';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import { useTranslation } from 'react-i18next';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
@@ -148,14 +148,14 @@ const DrugsList: React.FC = () => {
     onSuccess: async () => {
       ref.current?.loadItems();
       await queryCache.invalidateQueries('drugsList');
-      await successSweetAlert(t('alert.successfulDelete'));
+      tSuccess(t('alert.successfulDelete'));
     },
   });
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
     onSuccess: async () => {
       await queryCache.invalidateQueries('drugsList');
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       ref.current?.onQueryChange();
       dispatch({ type: 'reset' });
     },
@@ -188,8 +188,8 @@ const DrugsList: React.FC = () => {
         type: 'boolean',
         render: (row: any): any => {
           return (
-            <span style={{ color: row.active ? ColorEnum.Green : ColorEnum.Red }}>
-              <FontAwesomeIcon icon={row.active ? faCheck : faTimes} />
+            <span style={ { color: row.active ? ColorEnum.Green : ColorEnum.Red } }>
+              <FontAwesomeIcon icon={ row.active ? faCheck : faTimes } />
             </span>
           );
         },
@@ -243,7 +243,7 @@ const DrugsList: React.FC = () => {
   const toggleConfirmHandler = async (e: any, row: any): Promise<any> => {
     try {
       await toggleDrugActivationHandler(row);
-      ref.current?.loadItems();
+      ref.current?.onQueryChange();
       // ref.current?.onQueryChange();
     } catch (e) {
       errorHandler(e);
@@ -266,6 +266,7 @@ const DrugsList: React.FC = () => {
     try {
       if (window.confirm(t('alert.remove'))) {
         await _remove(userRow.id);
+        ref.current?.onQueryChange();
       }
     } catch (e) {
       errorHandler(e);
@@ -327,129 +328,129 @@ const DrugsList: React.FC = () => {
         errorHandler(e);
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'));
+      tWarn(t('alert.fillFormCarefully'));
     }
   };
 
   const editModal = (): JSX.Element => {
     return (
       <Dialog
-        open={isOpenEditModal}
-        fullScreen={fullScreen}
-        fullWidth={true}
-        onClose={toggleIsOpenSaveModalForm}
+        open={ isOpenEditModal }
+        fullScreen={ fullScreen }
+        fullWidth={ true }
+        onClose={ toggleIsOpenSaveModalForm }
       >
         <DialogTitle className="text-sm">
-          {state.id === 0 ? t('action.create') : t('action.edit')}
+          { state.id === 0 ? t('action.create') : t('action.edit') }
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Grid container spacing={1} className={formContent}>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.product')}</label>
+            <Grid container spacing={ 1 } className={ formContent }>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.product') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      value={state.name}
-                      onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
+                      value={ state.name }
+                      onChange={ (e): void => dispatch({ type: 'name', value: e.target.value }) }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.category')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.category') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state.categoryID}
-                      data={categories}
+                      defaultValue={ state.categoryID }
+                      data={ categories }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'categoryID', value: v });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.genericName')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.genericName') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('drug.genericName')}
-                      value={state.genericName}
-                      onChange={(e): void =>
+                      label={ t('drug.genericName') }
+                      value={ state.genericName }
+                      onChange={ (e): void =>
                         dispatch({ type: 'genericName', value: e.target.value })
                       }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.companyName')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.companyName') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('drug.companyName')}
-                      value={state.companyName}
-                      onChange={(e): void =>
+                      label={ t('drug.companyName') }
+                      value={ state.companyName }
+                      onChange={ (e): void =>
                         dispatch({ type: 'companyName', value: e.target.value })
                       }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.barcode')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.barcode') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('drug.barcode')}
-                      value={state.barcode}
-                      onChange={(e): void => dispatch({ type: 'barcode', value: e.target.value })}
+                      label={ t('drug.barcode') }
+                      value={ state.barcode }
+                      onChange={ (e): void => dispatch({ type: 'barcode', value: e.target.value }) }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.description')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.description') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('general.description')}
-                      value={state.description}
-                      onChange={(e): void =>
+                      label={ t('general.description') }
+                      value={ state.description }
+                      onChange={ (e): void =>
                         dispatch({ type: 'description', value: e.target.value })
                       }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={state.active}
-                          onChange={(e): void =>
+                          checked={ state.active }
+                          onChange={ (e): void =>
                             dispatch({
                               type: 'active',
                               value: e.target.checked,
@@ -457,40 +458,40 @@ const DrugsList: React.FC = () => {
                           }
                         />
                       }
-                      label={t('general.active')}
+                      label={ t('general.active') }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.enName')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.enName') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('drug.enName')}
-                      value={state.enName}
-                      onChange={(e): void => dispatch({ type: 'enName', value: e.target.value })}
+                      label={ t('drug.enName') }
+                      value={ state.enName }
+                      onChange={ (e): void => dispatch({ type: 'enName', value: e.target.value }) }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.type')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.type') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state.type}
-                      data={drugTypes}
+                      defaultValue={ state.type }
+                      data={ drugTypes }
                       className="w-100"
-                      label={t('general.type')}
-                      onChangeHandler={(v): void => {
+                      label={ t('general.type') }
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'type', value: v });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
@@ -500,32 +501,32 @@ const DrugsList: React.FC = () => {
         </DialogContent>
         <Divider />
         <DialogActions>
-          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
-            <Grid container xs={12}>
-              <Grid item xs={7} sm={8} />
-              <Grid item xs={2} sm={2}>
+          <Grid container style={ { marginTop: 4, marginBottom: 4 } } xs={ 12 }>
+            <Grid container xs={ 12 }>
+              <Grid item xs={ 7 } sm={ 8 } />
+              <Grid item xs={ 2 } sm={ 2 }>
                 <Button
                   type="submit"
-                  className={cancelButtonDialog}
-                  onClick={(): void => {
+                  className={ cancelButtonDialog }
+                  onClick={ (): void => {
                     dispatch({ type: 'reset' });
                     toggleIsOpenSaveModalForm();
-                  }}
+                  } }
                 >
-                  {t('general.cancel')}
+                  { t('general.cancel') }
                 </Button>
               </Grid>
-              <Grid item xs={3} sm={2}>
+              <Grid item xs={ 3 } sm={ 2 }>
                 <Button
                   type="submit"
                   color="primary"
-                  className={submitBtn}
-                  onClick={(e): void => {
+                  className={ submitBtn }
+                  onClick={ (e): void => {
                     e.preventDefault();
                     submitSave();
-                  }}
+                  } }
                 >
-                  {isLoadingSave ? t('general.pleaseWait') : t('general.save')}
+                  { isLoadingSave ? t('general.pleaseWait') : t('general.save') }
                 </Button>
               </Grid>
             </Grid>
@@ -537,27 +538,27 @@ const DrugsList: React.FC = () => {
 
   // @ts-ignore
   return (
-    <Container maxWidth="lg" className={container}>
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <div>{t('drug.list')}</div>
+    <Container maxWidth="lg" className={ container }>
+      <Grid container spacing={ 0 }>
+        <Grid item xs={ 12 }>
+          <div>{ t('drug.list') }</div>
           <Paper>
             <DataTable
-              tableRef={ref}
-              columns={tableColumns()}
-              addAction={(): void => saveHandler(initialState)}
-              editAction={(e: any, row: any): void => saveHandler(row)}
-              removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
-              customActions={actions}
-              queryKey={DrugEnum.GET_ALL}
-              queryCallback={all}
-              urlAddress={UrlAddress.getAllDrug}
-              initLoad={false}
+              tableRef={ ref }
+              columns={ tableColumns() }
+              addAction={ (): void => saveHandler(initialState) }
+              editAction={ (e: any, row: any): void => saveHandler(row) }
+              removeAction={ async (e: any, row: any): Promise<void> => await removeHandler(row) }
+              customActions={ actions }
+              queryKey={ DrugEnum.GET_ALL }
+              queryCallback={ all }
+              urlAddress={ UrlAddress.getAllDrug }
+              initLoad={ false }
             />
-            {isLoadingRemove && <CircleLoading />}
+            { isLoadingRemove && <CircleLoading /> }
           </Paper>
         </Grid>
-        {isOpenEditModal && editModal()}
+        { isOpenEditModal && editModal() }
       </Grid>
     </Container>
   );

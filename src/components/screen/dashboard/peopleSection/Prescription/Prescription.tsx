@@ -17,13 +17,14 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useMutation, useQuery } from 'react-query';
 import { CountryDivision, Prescription as presApi } from '../../../../../services/api';
 import { MaterialContainer } from '../../../../public';
-import { errorHandler, successSweetAlert } from '../../../../../utils';
+import { errorHandler, tSuccess } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
 import { PrescriptionSendInterface } from '../../../../../interfaces/PrescriptionInterface';
 import { ActionInterface } from '../../../../../interfaces';
 import CDialog from 'components/public/dialog/Dialog';
+import Uploader from 'components/public/uploader/uploader';
 
 const { getPrescriptionOfUser, send, cancel } = new presApi();
 
@@ -161,7 +162,7 @@ const Prescription: React.FC = (props) => {
         toggleIsOpenModal();
       }
 
-      await successSweetAlert(message);
+      tSuccess(message);
     },
   });
 
@@ -172,7 +173,7 @@ const Prescription: React.FC = (props) => {
         toggleIsOpenModal();
       }
 
-      await successSweetAlert(message);
+      tSuccess(message);
     },
   });
 
@@ -197,8 +198,8 @@ const Prescription: React.FC = (props) => {
       return data.items.map((item: any) => {
         if (item !== null) {
           return (
-            <Grid key={item.id} item xs={12} sm={12} md={4} xl={4}>
-              <CardContainer data={item} formHandler={removeHandler} />
+            <Grid key={ item.id } item xs={ 12 } sm={ 12 } md={ 4 } xl={ 4 }>
+              <CardContainer data={ item } formHandler={ removeHandler } />
             </Grid>
           );
         }
@@ -233,135 +234,130 @@ const Prescription: React.FC = (props) => {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <MaterialContainer>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          {t('alerts.PrescriptionAlert')}
+      <Grid container spacing={ 3 }>
+        <Grid item xs={ 12 }>
+          { t('alerts.PrescriptionAlert') }
         </Grid>
-        <Grid item xs={12}>
-          <h3>{t('peopleSection.listPrescription')}</h3>
+        <Grid item xs={ 12 }>
+          <h3>{ t('peopleSection.listPrescription') }</h3>
         </Grid>
         <Hidden xsDown>
-          <Grid item xs={12} sm={12} md={4} xl={4}>
-            <Paper className={addButton} onClick={toggleIsOpenModal}>
-              <FontAwesomeIcon icon={faPlus} size="2x" />
-              <span>{t('peopleSection.addPrescription')}</span>
+          <Grid item xs={ 12 } sm={ 12 } md={ 4 } xl={ 4 }>
+            <Paper className={ addButton } onClick={ toggleIsOpenModal }>
+              <FontAwesomeIcon icon={ faPlus } size="2x" />
+              <span>{ t('peopleSection.addPrescription') }</span>
             </Paper>
           </Grid>
         </Hidden>
         <Hidden smUp>
-          <Fab onClick={toggleIsOpenModal} className={fab} aria-label="add">
-            <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+          <Fab onClick={ toggleIsOpenModal } className={ fab } aria-label="add">
+            <FontAwesomeIcon size="2x" icon={ faPlus } color="white" />
           </Fab>
         </Hidden>
 
-        {memoContent}
+        { memoContent }
       </Grid>
       <CDialog
-        fullScreen={fullScreen}
-        isOpen={isOpenModal}
-        onClose={(): void => setIsOpenModal(false)}
-        onOpenAltenate={(): void => setIsOpenModal(true)}
-        modalAlt={true}
-        formHandler={formHandler}
+        fullScreen={ fullScreen }
+        isOpen={ isOpenModal }
+        onClose={ (): void => setIsOpenModal(false) }
+        onOpenAltenate={ (): void => setIsOpenModal(true) }
+        modalAlt={ true }
+        formHandler={ formHandler }
         fullWidth
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{'نسخه'}</DialogTitle>
-        <DialogContent style={{ backgroundColor: '#FAFAFA', width: '100%' }}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
+        <DialogTitle id="alert-dialog-title">{ 'نسخه' }</DialogTitle>
+        <DialogContent style={ { backgroundColor: '#FAFAFA', width: '100%' } }>
+          <Grid container spacing={ 1 }>
+            <Grid item xs={ 12 }>
               <TextField
                 id="outlined-full-width"
                 label="اسامی داروها یا توضیحات"
-                style={{ margin: 8 }}
+                style={ { margin: 8 } }
                 fullWidth
                 margin="normal"
-                InputLabelProps={{
+                InputLabelProps={ {
                   shrink: true,
-                }}
+                } }
                 variant="outlined"
-                value={state.comment}
-                onChange={(e): void => dispatch({ type: 'comment', value: e.target.value })}
+                value={ state.comment }
+                onChange={ (e): void => dispatch({ type: 'comment', value: e.target.value }) }
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <TextField
                 id="outlined-select-currency-native"
                 select
                 fullWidth
-                style={{ margin: 8 }}
+                style={ { margin: 8 } }
                 label="مدت اعتبار"
-                SelectProps={{
+                SelectProps={ {
                   native: true,
-                }}
+                } }
                 variant="outlined"
-                value={state.duration}
-                onChange={(e): void => dispatch({ type: 'duration', value: e.target.value })}
+                value={ state.duration }
+                onChange={ (e): void => dispatch({ type: 'duration', value: e.target.value }) }
               >
-                {durations.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                { durations.map((option) => (
+                  <option key={ option.value } value={ option.value }>
+                    {option.label }
                   </option>
-                ))}
+                )) }
               </TextField>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <TextField
                 id="outlined-select-currency-native"
                 select
                 fullWidth
-                style={{ margin: 8 }}
+                style={ { margin: 8 } }
                 label="استان"
-                onChange={changeProvince}
-                SelectProps={{
+                onChange={ changeProvince }
+                SelectProps={ {
                   native: true,
-                }}
+                } }
                 variant="outlined"
-                value={state.contryDivisionCode}
+                value={ state.contryDivisionCode }
               >
-                {provinceList.map((option) => (
-                  <option key={option.code} value={option.code}>
-                    {option.name}
+                { provinceList.map((option) => (
+                  <option key={ option.code } value={ option.code }>
+                    {option.name }
                   </option>
-                ))}
+                )) }
               </TextField>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <TextField
                 id="outlined-select-currency-native"
                 select
                 fullWidth
-                style={{ margin: 8 }}
+                style={ { margin: 8 } }
                 label="شهر"
-                SelectProps={{
+                SelectProps={ {
                   native: true,
-                }}
+                } }
                 variant="outlined"
               >
-                {cityList.map((option) => (
-                  <option key={option.code} value={option.code}>
-                    {option.name}
+                { cityList.map((option) => (
+                  <option key={ option.code } value={ option.code }>
+                    {option.name }
                   </option>
-                ))}
+                )) }
               </TextField>
             </Grid>
-            <Grid alignContent="center" item xs={12}>
-              <input
-                accept="image/*"
-                className={input}
-                id="contained-button-file"
-                multiple
-                type="file"
-                onChange={(e): void => {
-                  if (e.target.files) dispatch({ type: 'file', value: e.target.files[0] });
-                }}
+            <Grid alignContent="center" item xs={ 12 }>
+              <Uploader
+                keyId="file"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file', value: null })
+                }
               />
-              <label htmlFor="contained-button-file">
-                <Button variant="contained" color="primary" component="span">
-                  تصویر نسخه
-                </Button>
-              </label>
             </Grid>
           </Grid>
         </DialogContent>

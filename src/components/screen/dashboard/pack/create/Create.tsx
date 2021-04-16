@@ -69,6 +69,15 @@ const { numberWithZero, thousandsSeperatorFa } = Convertor;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
+const StyledTitle = styled.span`
+  color: #17a2bb;
+  font-size: 12px;
+`;
+
+const StyledDialogContent = styled((props) => <DialogContent {...props} />)`
+  scroll-behavior: smooth;
+`;
+
 const useStyle = makeStyles((theme) =>
   createStyles({
     fieldset: {
@@ -244,9 +253,9 @@ const Create: React.FC = () => {
 
   const autoCompleteRef = useRef<any>(null);
 
-  const dayRef = useRef<HTMLInputElement>();
   const monthRef = useRef<HTMLInputElement>();
-  const yearRef = useRef();
+  const yearRef = useRef<HTMLInputElement>();
+  const batchRef = useRef<HTMLInputElement>();
 
   const {
     addButton,
@@ -258,6 +267,22 @@ const Create: React.FC = () => {
     input,
     formContainer,
   } = useStyle();
+
+  useEffect(() => {
+    const el = document.getElementById('scrollable-content') as HTMLElement;
+    if (el !== null) {
+      const scrollHeight = el.scrollHeight;
+      const interval = setInterval(() => {
+        if (el.scrollTop < scrollHeight) {
+          el.scrollTop = el.scrollTop + 4;
+        }
+
+        if (el.scrollTop === scrollHeight) {
+          clearInterval(interval);
+        }
+      });
+    }
+  }, [comissionPercent, daroogRecommendation]);
 
   const resetValues = (): void => {
     setAmount('');
@@ -819,7 +844,7 @@ const Create: React.FC = () => {
         fullWidth
       >
         <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
-        <DialogContent>
+        <StyledDialogContent id="scrollable-content">
           <DialogContentText>
             <Grid container spacing={3} direction="column">
               <Grid item container xs={12} className={sectionContainer}>
@@ -843,17 +868,24 @@ const Create: React.FC = () => {
                 </Grid>
               </Grid>
 
-              <Grid item container xs={12} className={sectionContainer}>
-                <Input
-                  placeholder={`${t('general.number')}`}
-                  numberFormat
-                  className="w-100"
-                  label={`${t('general.number')} ${t('drug.drug')}`}
-                  onChange={(e): void => {
-                    setNumber(e);
-                  }}
-                  value={number}
-                />
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      placeholder={`${t('general.number')}`}
+                      numberFormat
+                      className="w-100"
+                      label={`${t('general.number')} ${t('drug.drug')}`}
+                      onChange={(e): void => {
+                        setNumber(e);
+                      }}
+                      value={number}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
@@ -945,7 +977,6 @@ const Create: React.FC = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={4} sm={3}>
                     <Input
-                      ref={dayRef}
                       label={t('general.day')}
                       value={selectedDay}
                       error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
@@ -956,15 +987,13 @@ const Create: React.FC = () => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
-                          if (selectedDay.length === 2) {
-                            // TODO: under development
-                            monthRef?.current?.focus();
-                          }
+                        }
+                        if (val.length === 2) {
+                          monthRef?.current?.focus();
                         }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       ref={monthRef}
@@ -979,10 +1008,12 @@ const Create: React.FC = () => {
                         if (selectedMonth.length < 2 || val.length < 2) {
                           setSelectedMonth(e.target.value);
                         }
+                        if (val.length === 2) {
+                          yearRef?.current?.focus();
+                        }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       ref={yearRef}
@@ -996,6 +1027,9 @@ const Create: React.FC = () => {
                         const val = e.target.value;
                         if (selectedYear.length < 4 || val.length < 4) {
                           setSelectedYear(e.target.value);
+                        }
+                        if (val.length === 4) {
+                          batchRef?.current?.focus();
                         }
                       }}
                     />
@@ -1018,7 +1052,7 @@ const Create: React.FC = () => {
               </Grid>
 
               <Grid item xs={12} className={sectionContainer}>
-                <Grid container xs={12}>
+                <Grid container>
                   <Grid item xs={12} style={{ marginBottom: 8 }}>
                     <span style={{ color: '#17A2B8', fontSize: 12 }}>
                       وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
@@ -1027,6 +1061,7 @@ const Create: React.FC = () => {
                   <Grid item xs={12}>
                     <Input
                       required
+                      ref={batchRef}
                       error={barcode === '' && showError}
                       className="w-100"
                       label={t('general.batchNumber')}
@@ -1052,7 +1087,7 @@ const Create: React.FC = () => {
               )}
             </Grid>
           </DialogContentText>
-        </DialogContent>
+        </StyledDialogContent>
         <Divider />
         <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>

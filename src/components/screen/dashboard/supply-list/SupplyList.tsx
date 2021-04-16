@@ -213,6 +213,15 @@ const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} 
   }
 `;
 
+const StyledTitle = styled.span`
+  color: #17a2bb;
+  font-size: 12px;
+`;
+
+const StyledDialogContent = styled((props) => <DialogContent {...props} />)`
+  scroll-behavior: smooth;
+`;
+
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
@@ -245,6 +254,10 @@ const SupplyList: React.FC = () => {
 
   const theme = useTheme();
 
+  const monthRef = useRef<any>();
+  const yearRef = useRef<any>();
+  const batchRef = useRef<any>();
+
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const queryCache = useQueryCache();
@@ -276,6 +289,22 @@ const SupplyList: React.FC = () => {
     sectionContainer,
   } = useStyle();
 
+  useEffect(() => {
+    const el = document.getElementById('scrollable-content') as HTMLElement;
+    if (el !== null) {
+      const scrollHeight = el.scrollHeight;
+      const interval = setInterval(() => {
+        if (el.scrollTop < scrollHeight) {
+          el.scrollTop = el.scrollTop + 4;
+        }
+
+        if (el.scrollTop === scrollHeight) {
+          clearInterval(interval);
+        }
+      }, 50);
+    }
+  }, [comissionPercent, daroogRecommendation]);
+
   useEffectOnce(() => {
     (async (): Promise<any> => {
       try {
@@ -288,7 +317,7 @@ const SupplyList: React.FC = () => {
   });
 
   const containerRef = useRef<any>();
-  console.log(containerRef);
+
   useEffect(() => {
     (async (): Promise<any> => {
       try {
@@ -638,8 +667,6 @@ const SupplyList: React.FC = () => {
         modalAlt={true}
         hideAll={false}
         hideSubmit={true}
-        // canceleButtonTitle="درج نتیجه محاسبه"
-        // formHandler={(): void => setIsOpenCalculator(false)}
       >
         <DialogContent>
           <div
@@ -672,7 +699,7 @@ const SupplyList: React.FC = () => {
         fullWidth
       >
         <DialogTitle className="text-sm">افزودن به لیست عرضه</DialogTitle>
-        <DialogContent style={{ height: 'calc(100vh - 50px)' }}>
+        <StyledDialogContent id="scrollable-content">
           <DialogContentText>
             <Grid container spacing={3} direction="column" className={formContent}>
               <Grid item container xs={12} className={sectionContainer}>
@@ -692,32 +719,37 @@ const SupplyList: React.FC = () => {
                     placeholder={t('drug.productName')}
                     options={options}
                     onItemSelected={(item: any[]): void => setSelectedDrug(item[0])}
-                    defaultSelectedItem={selectedDrug?.label}
+                    defaultSelectedItem={state.id === 0 ? '' : selectedDrug?.label}
                   />
                 </Grid>
               </Grid>
 
-              <Grid item container xs={12} className={sectionContainer}>
-                <Input
-                  numberFormat
-                  placeholder={`${t('general.number')}`}
-                  className="w-100"
-                  valueLimit={(value) => {
-                    if (value.value > 0 || value.value === '') {
-                      return value;
-                    }
-                  }}
-                  label={`${t('general.number')} ${t('drug.drug')}`}
-                  onChange={(e): void => dispatch({ type: 'cnt', value: e })}
-                  value={state?.cnt}
-                />
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      numberFormat
+                      placeholder={`${t('general.number')}`}
+                      className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
+                      label={`${t('general.number')} ${t('drug.drug')}`}
+                      onChange={(e): void => dispatch({ type: 'cnt', value: e })}
+                      value={state?.cnt}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
                 <Grid xs={12} item>
-                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
-                    {t('alerts.priceTypeAlert')}
-                  </span>
+                  <StyledTitle>{t('alerts.priceTypeAlert')}</StyledTitle>
                 </Grid>
                 <Grid item xs={9}>
                   <Input
@@ -738,11 +770,7 @@ const SupplyList: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button
-                    onClick={(): void => {
-                      toggleIsOpenCalculator();
-                    }}
-                  >
+                  <Button onClick={toggleIsOpenCalculator}>
                     <FontAwesomeIcon
                       style={{ color: ColorEnum.DeepBlue, margin: 4 }}
                       icon={faCalculator}
@@ -823,13 +851,16 @@ const SupplyList: React.FC = () => {
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
                         }
+                        if (val.length === 2) {
+                          monthRef.current.focus();
+                        }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       type="number"
+                      ref={monthRef}
                       value={selectedMonth}
                       label={t('general.month')}
                       // required
@@ -840,13 +871,16 @@ const SupplyList: React.FC = () => {
                         if (selectedMonth.length < 2 || val.length < 2) {
                           setSelectedMonth(e.target.value);
                         }
+                        if (val.length === 2) {
+                          yearRef.current.focus();
+                        }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       type="number"
+                      ref={yearRef}
                       value={selectedYear}
                       required
                       error={selectedYear === '' && showError}
@@ -856,6 +890,9 @@ const SupplyList: React.FC = () => {
                         const val = e.target.value;
                         if (selectedYear.length < 4 || val.length < 4) {
                           setSelectedYear(val);
+                        }
+                        if (val.length === 4) {
+                          batchRef.current.focus();
                         }
                       }}
                     />
@@ -876,21 +913,25 @@ const SupplyList: React.FC = () => {
                   )}
                 </Grid>
               </Grid>
-              <Grid container className={sectionContainer} xs={12}>
-                <Grid item xs={12} style={{ marginBottom: 8 }}>
-                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
-                    وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
-                  </span>
-                </Grid>
-                <Grid item xs={12}>
-                  <Input
-                    required
-                    error={state?.batchNO === '' && showError}
-                    className="w-100"
-                    label={t('general.batchNumber')}
-                    value={state?.batchNO}
-                    onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
-                  />
+
+              <Grid item className={sectionContainer} xs={12}>
+                <Grid container>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
+                    </span>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      required
+                      ref={batchRef}
+                      error={state?.batchNO === '' && showError}
+                      className="w-100"
+                      label={t('general.batchNumber')}
+                      value={state?.batchNO}
+                      onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
 
@@ -909,7 +950,7 @@ const SupplyList: React.FC = () => {
               )}
             </Grid>
           </DialogContentText>
-        </DialogContent>
+        </StyledDialogContent>
         <Divider />
         <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>

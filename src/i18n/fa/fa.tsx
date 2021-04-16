@@ -77,6 +77,7 @@ export default {
         offer: 'آفر',
         to: 'به',
         number: 'تعداد',
+        count: 'تعداد {{var}}',
         barcode: 'بارکد',
         batchNumber: 'Batch Number (بچ نامبر)',
         submit: 'ثبت',
@@ -141,6 +142,7 @@ export default {
         addDrug: 'اضافه کردن دارو',
         submitMyPacks: 'ثبت پک های من',
         submitPacks: 'ثبت پک ',
+        notifications: 'اعلان ها',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -151,7 +153,7 @@ export default {
         wrongDate: 'تاریخ اشتباه است',
         afterToday: 'تاریخ باید از امروز به بعد انتخاب شود',
         sendDate: 'تاریخ ارسال',
-        recieveDate: 'تاریخ درییافت',
+        recieveDate: 'تاریخ دریافت',
         minimumDate: 'تاریخ انتخابی باید حداقل برای {{day}} روز آینده باشد',
       },
       province: {
@@ -765,6 +767,8 @@ export default {
         reloadModalToEnterNewDrug: 'این صفحه بعد از افزودن محصول٬ جهت افزودن محصول جدید باز بماند',
         searchProduct:
           'برای جستجو حداقل سه کارکتر از نام یا نام ژنریک و یا نام انگلیسی محصول را وارد نمایید',
+        cantEditProfile:
+          'از آنجا که امکان ویرایش اطلاعات داروخانه توسط شما مقدور نمی باشد٬ در صورت نیاز میتوانید با پشتیبانی تماس بگیرید',
       },
 
       widget: {
@@ -772,7 +776,7 @@ export default {
         Survey: 'نظرسنجی',
         EmploymentApplication: 'درخواست کاریابی',
         Prescription: 'نسخه مردمی',
-        FavoriteListCount: 'سبد علاقمندی',
+        FavoriteListCount: 'سبد علاقمندی برای شما',
       },
       file: {
         file: 'فایل',
@@ -785,10 +789,12 @@ export default {
         type: {
           nationalCard: 'کارت ملی',
           establishLicense: 'مجوز تاسیس',
-          healThMinistryLicense: 'مجوز وزارت بهداشت',
+          healThMinistryLicense: 'کارت نظام پزشکی',
+          ctoLicence: 'پروانه مسؤول فنی ویژه داروخانه‌های دولتی',
+          commitment: 'تعهدنامه ویژه داروخانه‌های بیمارستانی و دولتی',
         },
         noFileSelected: 'فایلی انتخاب نشده است',
-        get: 'ریافت فایل',
+        get: 'انتخاب فایل',
         save: 'ذخیره',
         delete: 'حذف',
       },
