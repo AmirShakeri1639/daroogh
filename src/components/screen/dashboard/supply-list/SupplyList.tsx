@@ -31,7 +31,7 @@ import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useEffectOnce } from '../../../../hooks';
-import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
+import { Convertor, errorHandler, tSuccess } from 'utils';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 // @ts-ignore
@@ -387,7 +387,7 @@ const SupplyList: React.FC = () => {
         toggleIsOpenModalOfNewList();
         resetStates();
       }
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
     },
   });
