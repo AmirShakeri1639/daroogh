@@ -804,6 +804,11 @@ export default {
         delete: 'حذف',
         downloadCommitmentSample: 'دانلود فایل نمونه تعهدنامه',
         commitmentGuide: 'لطفا فایل نمونه را برای تعهدنامه دانلود نموده و تصویر آن را پس از پر کردن فرم ارسال فرمایید.',
+        state: {
+          None: 'در دست بررسی',
+          Confirmed: 'تایید',
+          UnConfirmed: 'عدم تایید',
+        }
       },
     },
   },

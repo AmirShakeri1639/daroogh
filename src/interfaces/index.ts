@@ -62,6 +62,12 @@ export interface PermissionItemsInterface {
   permissionItems: PermissionItemInterface[];
 }
 
+export interface CommandInterface {
+  title: string
+  method: (e: any) => void
+  color?: string
+}
+
 export type { DrugInterface } from './DrugInterface';
 export type { CategoryInterface } from './CategoryInterface';
 export type { 
