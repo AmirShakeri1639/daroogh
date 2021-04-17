@@ -844,7 +844,33 @@ const Create: React.FC = () => {
         formHandler={formHandler}
         fullWidth
       >
-        <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
+        <DialogTitle className="text-sm">
+          <Grid container>
+            <Grid item xs={12}>
+              <span style={{ fontSize: '12px !important' }}>افزودن محصول به این پک</span>
+            </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>{' '}
+            {comissionPercent !== '' && (
+              <Grid item xs={12}>
+                <Grid item xs={12}>
+                  <span
+                    style={{
+                      fontSize: '13px !important',
+                      color: 'white',
+                      background: 'green',
+                      textAlign: 'center',
+                    }}
+                  >{`پورسانت: ${comissionPercent}%`}</span>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+        </DialogTitle>{' '}
         <StyledDialogContent id="scrollable-content">
           <DialogContentText>
             <Grid container spacing={3} direction="column">
@@ -1073,11 +1099,11 @@ const Create: React.FC = () => {
                 </Grid>
               </Grid>
 
-              {comissionPercent !== '' && (
+              {/* {comissionPercent !== '' && (
                 <Grid item xs={12}>
                   <h3>{`پورسانت: ${comissionPercent}%`}</h3>
                 </Grid>
-              )}
+              )} */}
 
               {daroogRecommendation !== '' && (
                 <Grid item xs={12}>
