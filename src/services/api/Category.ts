@@ -16,6 +16,7 @@ class Category extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   }
 
@@ -25,6 +26,7 @@ class Category extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   }
 
@@ -37,6 +39,7 @@ class Category extends Api {
       return result.data;
     } catch(e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   }
 
@@ -46,6 +49,7 @@ class Category extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e)
+      return Promise.reject(e)
     }
   }
 }
