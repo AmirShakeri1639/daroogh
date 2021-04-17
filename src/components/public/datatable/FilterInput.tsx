@@ -10,18 +10,18 @@ import {
   MenuItem,
   Select,
   TextField,
-} from '@material-ui/core';
-import React, { useState } from 'react';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInterface';
-import Modal from '../modal/Modal';
-import DateTimePicker from '../datepicker/DatePicker';
-import { LookupFilter } from '../../../interfaces/DataTableColumns';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import Utils from '../utility/Utils';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import CloseIcon from '@material-ui/icons/Close';
-import { debug } from 'console';
+} from '@material-ui/core'
+import React, { useState } from 'react'
+import FilterListIcon from '@material-ui/icons/FilterList'
+import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInterface'
+import Modal from '../modal/Modal'
+import DateTimePicker from '../datepicker/DatePicker'
+import { LookupFilter } from '../../../interfaces/DataTableColumns'
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
+import Utils from '../utility/Utils'
+import DateRangeIcon from '@material-ui/icons/DateRange'
+import CloseIcon from '@material-ui/icons/Close'
+import { debug } from 'console'
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -34,18 +34,18 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: 15,
     },
   },
-}));
+}))
 
 interface FilterOptionInterface {
-  text: string;
-  value: string;
-  operator: string;
+  text: string
+  value: string
+  operator: string
 }
 
 const FilterInput: React.FC = (props: any): JSX.Element => {
-  const { formControl, dropDown } = useStyles();
-  const [value, setValue] = useState<string>('');
-  const [personName, setPersonName] = React.useState<LookupFilter[]>([]);
+  const { formControl, dropDown } = useStyles()
+  const [value, setValue] = useState<string>('')
+  const [personName, setPersonName] = React.useState<LookupFilter[]>([])
   const [filterOption, setFilterOption] = useState<FilterOptionInterface>({
     text: 'شبیه',
     value: '',
@@ -57,34 +57,35 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
         : props.columnDef.type !== 'boolean'
         ? `concat(cast(year(${props.columnDef.field}),Edm.String),concat('-',concat(cast(month(${props.columnDef.field}),Edm.String),concat('-',cast(day(${props.columnDef.field}),Edm.String))))) eq '$'`
         : `${props.columnDef.fieldLookup} in $`,
-  });
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  })
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
 
   const handleFilterClick = (event: any): void => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = (option: FilterOptionInterface, index: number): void => {
-    setAnchorEl(null);
-    setFilterOption(option);
-    setSelectedIndex(index);
-  };
+    setAnchorEl(null)
+    setFilterOption(option)
+    setSelectedIndex(index)
+  }
 
   const handleChange = (event: any, operator: any = undefined): void => {
-    let value = event;
-    setValue(value);
+    let value = event
+    setValue(value)
     if (props.columnDef.type === 'date') {
-      if (value !== '') value = Utils.convertShamsiToGeo(value, 'YYYY-MM-DD');
+      if (value !== '') value = Utils.convertShamsiToGeo(value, 'YYYY-MM-DD')
     }
     if (props.columnDef.type === 'boolean') {
-      value = '(' + value.map((x: string) => (x === 'فعال' ? true : false)).join(', ') + ')';
+      value = '(' + value.map((x: string) => (x === 'فعال' ? true : false)).join(', ') + ')'
+      if (value === '()') return
     }
     props.onFilterChanged(props.columnDef.tableData.id, {
       fieldValue: value,
       operator: operator ? operator.operator : filterOption.operator,
-    });
-  };
+    })
+  }
 
   const filterOptions = [
     {
@@ -132,7 +133,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
       value: '',
       operator: `endswith(cast(${props.columnDef.field},'Edm.String'),'$')`,
     },
-  ];
+  ]
 
   const filterOptionsString = [
     ...filterOptions.filter(
@@ -142,25 +143,25 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
         x.text !== 'کوچکتر مساوی' &&
         x.text !== 'کوچکتر'
     ),
-  ];
+  ]
 
   const handleEnumChange = (event: any) => {
-    const code = event.target.value as [];
+    const code = event.target.value as []
     const res = (props.columnDef.lookupFilter as LookupFilter[]).filter((x) =>
       code.includes(x.name as never)
-    );
-    setPersonName(code);
-    let fv = '()';
+    )
+    setPersonName(code)
+    let fv = '()'
     if (props.columnDef.type === 'boolean') {
-      fv = '(' + res.map((x) => (x.code === 1 ? true : false)).join(', ') + ')';
+      fv = '(' + res.map((x) => (x.code === 1 ? true : false)).join(', ') + ')'
     } else {
-      fv = '(' + res.map((x) => `'${x.code}'`).join(', ') + ')';
+      fv = '(' + res.map((x) => `'${x.code}'`).join(', ') + ')'
     }
     props.onFilterChanged(props.columnDef.tableData.id, {
       fieldValue: fv !== '()' ? fv : '',
       operator: filterOption.operator,
-    });
-  };
+    })
+  }
 
   const filterLookupOptions = [
     {
@@ -173,7 +174,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
       value: '',
       operator: `cast(${props.columnDef.fieldLookup},'Edm.String') ne $`,
     },
-  ];
+  ]
 
   const filterLookupBooleanOptions = [
     {
@@ -186,7 +187,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
       value: '',
       operator: `not(${props.columnDef.fieldLookup} in $)`,
     },
-  ];
+  ]
 
   const filterDateOptions = [
     {
@@ -214,10 +215,10 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
       value: '',
       operator: `${props.columnDef.field} le $`,
     },
-  ];
+  ]
 
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
+  const ITEM_HEIGHT = 48
+  const ITEM_PADDING_TOP = 8
   const MenuProps = {
     PaperProps: {
       style: {
@@ -225,51 +226,51 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
         width: 250,
       },
     },
-  };
+  }
 
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
+  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false)
+  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v)
 
   const filterOperatorMenu = React.useMemo((): JSX.Element[] => {
-    let option: { text: string; value: string; operator: string }[] = [];
+    let option: { text: string; value: string; operator: string }[] = []
     if (!props.columnDef.lookupFilter) {
       switch (props.columnDef.type) {
         case 'date':
-          option = filterDateOptions;
-          break;
+          option = filterDateOptions
+          break
         case 'string':
-          option = filterOptionsString;
-          break;
+          option = filterOptionsString
+          break
         default:
-          option = filterOptions;
-          break;
+          option = filterOptions
+          break
       }
     } else {
-      if (props.columnDef.type === 'boolean') option = filterLookupBooleanOptions;
-      else option = filterLookupOptions;
+      if (props.columnDef.type === 'boolean') option = filterLookupBooleanOptions
+      else option = filterLookupOptions
     }
     const res = option.map((option, index) => {
       return (
         <MenuItem
           selected={index === selectedIndex}
           onClick={(): any => {
-            handleClose(option, index);
+            handleClose(option, index)
             switch (props.columnDef.type) {
               case 'boolean':
-                if (personName) handleChange(personName, option);
-                break;
+                if (personName) handleChange(personName, option)
+                break
               default:
-                if (value) handleChange(value, option);
-                break;
+                if (value) handleChange(value, option)
+                break
             }
           }}
         >
           {option.text}
         </MenuItem>
-      );
-    });
-    return res;
-  }, [anchorEl]);
+      )
+    })
+    return res
+  }, [anchorEl])
 
   return (
     <div>
@@ -360,13 +361,13 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DateTimePicker
           selectedDateHandler={(e): void => {
-            handleChange(e);
-            toggleIsOpenDatePicker();
+            handleChange(e)
+            toggleIsOpenDatePicker()
           }}
         />
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default FilterInput;
+export default FilterInput
