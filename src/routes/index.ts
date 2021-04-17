@@ -21,8 +21,9 @@ const fda = `/${dashboard}/fda`;
 const error = `/${dashboard}/error`;
 
 const pharmacyRoutes = {
-  pharmacyMessage: `/${dashboard}/pharmacy/messages`,
-  surveyList: `/${dashboard}/pharmacy/surveyList`,
+  pharmacyMessage: `/${dashboard}/${pharmacy}/messages`,
+  surveyList: `/${dashboard}/${pharmacy}/surveyList`,
+  aPharmacyDocs: `/${dashboard}/${pharmacy}/current-pharmacy-docs`,
 };
 
 export default {
