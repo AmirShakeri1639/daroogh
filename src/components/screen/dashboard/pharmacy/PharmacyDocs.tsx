@@ -10,12 +10,13 @@ import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { useMutation, useQueryCache } from 'react-query';
-import { errorHandler, isNullOrEmpty, successSweetAlert, warningSweetAlert } from 'utils';
+import { errorHandler, isNullOrEmpty, tSuccess, tWarn } from 'utils';
 import { ActionInterface, FileForPharmacyInterface, LabelValue } from 'interfaces';
 import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
 import { PictureDialog } from 'components/public';
+import Uploader from 'components/public/uploader/uploader';
 
 const initialState: FileForPharmacyInterface = {
   fileTypeID: 1,
@@ -152,7 +153,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
     onSuccess: async () => {
       ref.current?.onQueryChange()
       await queryCache.invalidateQueries(pharmacy.urls.files)
-      await successSweetAlert(t('alert.successfulDelete'))
+      tSuccess(t('alert.successfulDelete'))
     },
   })
   const removeHandler = async (item: any): Promise<any> => {
@@ -170,7 +171,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
     onSuccess: async () => {
       ref.current?.onQueryChange()
       await queryCache.invalidateQueries(pharmacy.urls.files)
-      await successSweetAlert(t('alert.successfulSave'))
+      tSuccess(t('alert.successfulSave'))
       dispatch({ type: 'reset' })
     },
   })
@@ -204,7 +205,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
         errorHandler(e)
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'))
+      tWarn(t('alert.fillFormCarefully'))
     }
   }
 
@@ -233,20 +234,17 @@ const PharmacyDocs: React.FC<Props> = (props) => {
               />
             </Grid>
             <Grid item xs={ 12 }>
-              <label style={ { cursor: 'pointer' } }>
-                <input
-                  type='file'
-                  id='fileUpload'
-                  accept="image/jpeg, image/png, application/pdf"
-                  name='fileUpload'
-                  onChange={ (e: any): void => {
-                    e.preventDefault()
-                    if (e.target.files.length > 0) {
-                      dispatch({ type: 'file', value: e.target.files[0] })
-                    }
-                  } }
-                />
-              </label>
+              <Uploader
+                keyId="file1"
+                accept="image/jpeg, image/png, application/pdf"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file', value: null })
+                }
+              />
             </Grid>
           </Grid>
         </DialogContent>

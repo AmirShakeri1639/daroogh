@@ -20,6 +20,8 @@ export default {
         enter: 'اینتر',
         male: 'مرد',
         female: 'زن',
+        mr: 'آقای',
+        ms: 'خانم',
         action: 'کار',
         dashboard: 'داشبورد',
         records: 'سوابق',
@@ -75,7 +77,9 @@ export default {
         offer: 'آفر',
         to: 'به',
         number: 'تعداد',
+        count: 'تعداد {{var}}',
         barcode: 'بارکد',
+        batchNumber: 'Batch Number (بچ نامبر)',
         submit: 'ثبت',
         comment: 'شرح',
         sort: 'مرتب سازی',
@@ -124,6 +128,9 @@ export default {
         print: 'چاپ',
         category: 'دسته بندی',
         noOne: 'هیچ کدام',
+        new: 'جدید',
+        dr: 'دکتر',
+        view: 'مشاهده',
       },
 
       pack: {
@@ -136,6 +143,7 @@ export default {
         addDrug: 'اضافه کردن دارو',
         submitMyPacks: 'ثبت پک های من',
         submitPacks: 'ثبت پک ',
+        notifications: 'اعلان ها',
       },
       date: {
         minDateAsMonth: 'حداقل تاریخ به ماه',
@@ -146,7 +154,7 @@ export default {
         wrongDate: 'تاریخ اشتباه است',
         afterToday: 'تاریخ باید از امروز به بعد انتخاب شود',
         sendDate: 'تاریخ ارسال',
-        recieveDate: 'تاریخ درییافت',
+        recieveDate: 'تاریخ دریافت',
         minimumDate: 'تاریخ انتخابی باید حداقل برای {{day}} روز آینده باشد',
       },
       province: {
@@ -178,6 +186,7 @@ export default {
         'fill-requireds': 'لطفا مقادیر لازم را وارد کنید.',
         'loading-data': 'خطایی در دریافت اطلاعات به وجود آمد.',
         save: 'خطایی در ذخیره اطلاعات رخ داد.',
+        saveFile: 'خطایی در ذخیره فایل(ها) رخ داد',
         remove: 'خطایی در حذف اطلاعات پیش آمد.',
         _404: 'ای بابا! اینجا کجاست؟!',
         _404_desc:
@@ -268,6 +277,11 @@ export default {
         newDrug: 'داروی جدید',
         SuppliedDrugsList: 'لیست محصولات ثبت شده توسط شما',
         latinName: 'نام لاتین',
+        product: 'محصول',
+        productName: 'نام محصول',
+
+        newProduct: 'محصول جدید',
+        productsDatabase: 'دیتابیس محصولات',
       },
       peopleSection: {
         prescription: 'نسخه',
@@ -312,12 +326,15 @@ export default {
       },
       message: {
         message: 'پیام',
+        messagesForYou: 'پیام های دریافتی',
         messagesList: 'لیست پیام ها',
         createMessage: 'ایجاد پیام',
         profile: 'پروفایل',
         sms: 'پیامک',
         notification: 'ناتیفیکیشن',
         detail: 'جزییات پیام',
+        allMessages: 'سوابق کلیه پیام ها',
+        daroogMessagesList: 'لیست پیام های دریافتی از  طرف داروگ',
       },
       category: {
         category: 'دسته‌بندی',
@@ -325,6 +342,7 @@ export default {
         list: 'لیست دسته‌بندی',
         'edit-category': 'ویرایش دسته بندی',
         'new-category': 'ایجاد دسته بندی',
+        categoriesDatabase: 'دیتابیس دسته بندی ها',
       },
       exchange: {
         create: 'شروع {{var}} تبادل',
@@ -418,6 +436,9 @@ export default {
         province: 'استان',
         city: 'شهر',
         gli: 'GLN',
+        type: 'نوع داروخانه',
+        governmental: 'داروخانه دولتی',
+        nonGovernmental: 'داروخانه غیردولتی',
         workTime: 'ساعت کار',
         request: 'درخواست ایجاد',
         manager: 'مدیر داروخانه',
@@ -565,7 +586,10 @@ export default {
       settings: {
         settings: 'تنظیمات',
 
-        password: 'رمز عبور',
+        password: 'کلمه عبور',
+        currentPassword: 'کلمه عبور فعلی',
+        repeatPassword: 'تکرار کلمه عبور {{var}}',
+        newPassword: 'کلمه عبور جدید',
         passwordMinLength: 'حداقل طول مجاز رمز عبور',
         passwordRequiredLetter: 'استفاده از حروف در رمز عبور اجباری است',
         passwordRequiredSymbol: 'استفاده از علائم در رمز عبور اجباری است',
@@ -722,9 +746,9 @@ export default {
 
       alerts: {
         CreatePackAlert:
-          'داروساز عزیز٬یک دسته بندی را میتوانید به صورت پک ثبت نمایید. در تبادل پک ها، داروخانه مقابل حق انتخاب دارو و تعداد را ندارد و موظف است کل اقلام پک را با تعداد ثبت شده انتخاب نماید.',
+          'داروساز شما میتوانید محصولات موجود در یک تا سه دسته بندی را به صورت پک ثبت نمایید. در تبادل پک ها، داروخانه مقابل حق انتخاب دارو و تعداد را ندارد و موظف است کل اقلام پک را با تعداد ثبت شده انتخاب نماید.',
         supplylistsAlert:
-          'دارو ساز عزیز٬ نام محصولات یا نام جنریک و یا نام انگلیسی آن را در کادر پایین جست و جو نمایید. همچنین گزینه ی فیلتر به شما امکان جستجو پیشرفته را می دهد.',
+          'دارو ساز عزیز٬ نام محصولات یا نام ژنریک و یا نام انگلیسی آن را در کادر پایین جست و جو نمایید. همچنین گزینه ی فیلتر به شما امکان جستجو پیشرفته را می دهد.',
         ExchangeAlertPart1: 'داروساز عزیز٬ ابتدا از تب ( ',
         ExchangeAlertPart2: 'انتخاب از لیست داروخانه مقابل ',
         ExchangeAlertPart3:
@@ -744,6 +768,11 @@ export default {
         offerDescriptions: 'داروسازان می توانند هدیه ای در قبال محصول خود به داروساز مقابل بدهند',
         priceTypeAlert:
           'در داروگ قیمت ها بر اساس کوچکترین واحد هر محصول محاسبه میشود. به عنوان مثال ۱ عدد قرص استامینوفن. جهت انجام محاسبات لازم میتوانید از دکمه محاسبه استفاده نمایید',
+        reloadModalToEnterNewDrug: 'این صفحه بعد از افزودن محصول٬ جهت افزودن محصول جدید باز بماند',
+        searchProduct:
+          'برای جستجو حداقل سه کارکتر از نام یا نام ژنریک و یا نام انگلیسی محصول را وارد نمایید',
+        cantEditProfile:
+          'از آنجا که امکان ویرایش اطلاعات داروخانه توسط شما مقدور نمی باشد٬ در صورت نیاز میتوانید با پشتیبانی تماس بگیرید',
       },
 
       widget: {
@@ -751,7 +780,7 @@ export default {
         Survey: 'نظرسنجی',
         EmploymentApplication: 'درخواست کاریابی',
         Prescription: 'نسخه مردمی',
-        FavoriteListCount: 'سبد علاقمندی',
+        FavoriteListCount: 'سبد علاقمندی برای شما',
       },
       file: {
         file: 'فایل',
@@ -761,6 +790,17 @@ export default {
         fileType: 'نوع فایل',
         add: 'افزودن',
         addToPharmacy: 'افزودن فایل به داروخانه',
+        type: {
+          nationalCard: 'کارت ملی',
+          establishLicense: 'مجوز تاسیس',
+          healThMinistryLicense: 'کارت نظام پزشکی',
+          ctoLicense: 'پروانه مسؤول فنی ویژه داروخانه‌های دولتی',
+          commitment: 'تعهدنامه ویژه داروخانه‌های بیمارستانی و دولتی',
+        },
+        noFileSelected: 'فایلی انتخاب نشده است',
+        get: 'انتخاب فایل',
+        save: 'ذخیره',
+        delete: 'حذف',
       },
     },
   },

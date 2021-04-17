@@ -1,7 +1,10 @@
 import { User } from '../../../../services/api';
-import { errorSweetAlert, successSweetAlert } from '../../../../utils';
-import routes from '../../../../routes';
+import {
+  errorHandler,
+  tError
+} from 'utils';
 import { File } from '../../../../services/api';
+import { tSimple } from 'utils/toast';
 
 const saveToStorage = async (imageKey: string): Promise<any> => {
   const userDataFromStorage = localStorage.getItem('user');
@@ -14,10 +17,15 @@ const saveToStorage = async (imageKey: string): Promise<any> => {
 }
 
 const uploadProfilePic = async (userId: number | string, file: any): Promise<any> => {
-  const user = new User();
-  const response = await user.changeProfileImage(userId, file);
-  await saveToStorage(response.data.pictureFileKey);
-  return response.data.pictureFileKey;
+  try {
+    const user = new User();
+    const response = await user.changeProfileImage(userId, file);
+    await saveToStorage(response.data.pictureFileKey);
+    tSimple(response.message)
+    return response.data.pictureFileKey;
+  } catch (e) {
+    errorHandler(e)
+  }
 }
 
 const changeProfilePic = async (
@@ -30,7 +38,7 @@ const changeProfilePic = async (
   if (file.type.startsWith('image/')) {
     done = await uploadProfilePic(userId, file);
   } else {
-    errorSweetAlert('فایل انتخاب شده دارای فرمت تصویری مناسب نیست.');
+    tError('فایل انتخاب شده دارای فرمت تصویری مناسب نیست.');
   }
   return done;
 }

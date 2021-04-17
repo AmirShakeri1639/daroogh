@@ -4,3 +4,6 @@ test again
 test a commit message
 test runner 13.9.1
 test runner 13.9.1 again
+test runner beta
+test runner beta from terminal
+test runner for new beta branch instead of dev

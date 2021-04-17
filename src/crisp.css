@@ -1,0 +1,53 @@
+body
+  .crisp-client
+  .cc-kv6t[data-last-operator-face='false']
+  .cc-1xry
+  .cc-unoo
+  .cc-7doi
+  .cc-1iv2
+  .cc-15mo[data-is-ongoing='false'] {
+  width: 60px !important;
+  height: 60px !important;
+  top: 0px !important;
+  left: 0px !important;
+
+  background-image: url('assets/images/crisp.png') !important;
+}
+
+body .crisp-client .cc-kv6t .cc-7doi {
+  background-color: transparent !important;
+}
+/* @media only screen and (min-width: 600px) { */
+body .crisp-client .cc-kv6t[data-position-reverse='true'] .cc-1xry .cc-ge4v,
+.crisp-client .cc-kv6t[data-position-reverse='true'] .cc-1xry .cc-unoo {
+  left: 20px !important;
+  /* bottom: 32px !important; */
+}
+/* }
+@media only screen and (max-width: 599px) {
+  body .crisp-client .cc-kv6t[data-position-reverse='true'] .cc-1xry .cc-ge4v,
+  .crisp-client .cc-kv6t[data-position-reverse='true'] .cc-1xry .cc-unoo {
+    left: 180px !important;
+    top: 3px !important;
+    width: 32px !important;
+    height: 26px !important;
+  }
+} */
+
+body
+  .crisp-client
+  .cc-kv6t[data-full-view='true'][data-last-operator-face='false']
+  .cc-1xry
+  .cc-unoo
+  .cc-7doi
+  .cc-1iv2
+  .cc-15mo[data-is-ongoing='false'] {
+  width: 60px !important;
+  height: 60px !important;
+  top: 0px !important;
+  left: 0px !important;
+}
+
+body .crisp-client .cc-kv6t {
+  z-index: 1041 !important;
+}

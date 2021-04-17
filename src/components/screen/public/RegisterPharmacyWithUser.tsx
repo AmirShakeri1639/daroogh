@@ -16,17 +16,18 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Switch,
 } from '@material-ui/core';
 import Pharmacy from '../../../services/api/Pharmacy';
 import { LabelValue } from '../../../interfaces';
-import { queryCache, useMutation } from 'react-query';
+import { useMutation } from 'react-query';
 import { ActionInterface } from '../../../interfaces';
 import { useTranslation } from 'react-i18next';
 import {
   errorHandler,
   sweetAlert,
-  warningSweetAlert,
-} from '../../../utils';
+  tWarn,
+} from 'utils';
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown';
 import { ColorEnum, WorkTimeEnum } from '../../../enum';
 import Modal from '../../public/modal/Modal';
@@ -40,44 +41,7 @@ import {
   faEye, faEyeSlash,
 } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
-import { User } from 'services/api';
-
-const initialState = {
-  pharmacy: {
-    id: 0,
-    name: '',
-    description: '',
-    hix: '',
-    gli: '',
-    workTime: WorkTimeEnum.FULL_TIME,
-    address: '',
-    mobile: '',
-    telphon: '',
-    webSite: '',
-    email: '',
-    postalCode: '',
-    countryDivisionID: -1,
-    x: '',
-    y: '',
-  },
-  user: {
-    id: 0,
-    name: '',
-    family: '',
-    mobile: '',
-    email: '',
-    userName: '',
-    password: '',
-    nationalCode: '',
-    birthDate: '',
-    birthDateYear: '',
-    birthDateMonth: '',
-    birthDateDay: '',
-    isValidBirthDate: true,
-    gender: 0,
-  },
-  isVisiblePassword: false,
-};
+import Uploader from 'components/public/uploader/uploader';
 
 export const useClasses = makeStyles((theme) => createStyles({
   parent: {
@@ -122,6 +86,54 @@ export const useClasses = makeStyles((theme) => createStyles({
     margin: 'auto'
   },
 }));
+
+const initialState = {
+  pharmacy: {
+    id: 0,
+    name: '',
+    description: '',
+    hix: '',
+    gli: '',
+    workTime: WorkTimeEnum.FULL_TIME,
+    address: '',
+    mobile: '',
+    telphon: '',
+    webSite: '',
+    email: '',
+    postalCode: '',
+    countryDivisionID: -1,
+    x: '',
+    y: '',
+    type: 1,
+  },
+  user: {
+    id: 0,
+    name: '',
+    family: '',
+    mobile: '',
+    email: '',
+    userName: '',
+    password: '',
+    nationalCode: '',
+    birthDate: '',
+    birthDateYear: '',
+    birthDateMonth: '',
+    birthDateDay: '',
+    isValidBirthDate: true,
+    gender: 0,
+  },
+  isVisiblePassword: false,
+  // nationcal card
+  file1: null,
+  // establish license
+  file2: null,
+  // health ministry license
+  file3: null,
+  // ctoLicense
+  file4: null,
+  // commitment
+  file5: null,
+};
 
 function reducer(state = initialState, action: ActionInterface): any {
   const { value } = action;
@@ -203,6 +215,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         pharmacy: { ...state.pharmacy, y: value },
       };
+    case 'pharmacy.type':
+      return {
+        ...state,
+        pharmacy: { ...state.pharmacy, type: value },
+      };
     // USER -------------------
     case 'user.pharmacyID':
       return {
@@ -264,6 +281,32 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         isVisiblePassword: value,
       }
+    // FILE -------------------
+    case 'file1':
+      return {
+        ...state,
+        file1: value
+      }
+    case 'file2':
+      return {
+        ...state,
+        file2: value
+      }
+    case 'file3':
+      return {
+        ...state,
+        file3: value
+      }
+    case 'file4':
+      return {
+        ...state,
+        file4: value
+      }
+    case 'file5':
+      return {
+        ...state,
+        file5: value
+      }
     case 'reset':
       return initialState;
     default:
@@ -314,23 +357,19 @@ const RegisterPharmacyWithUser: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      await queryCache.invalidateQueries('pharmaciesList');
-      await sweetAlert({
-        type: 'success',
-        text: data.message || t('alert.successfulSave'),
-      });
-      dispatch({ type: 'reset' });
     },
-    // onError: async () => {
-    //   await sweetAlert({
-    //     type: 'error',
-    //     text: t('error.save'),
-    //   });
-    // },
   });
 
   const isFormValid = (): boolean => {
-    const { pharmacy, user } = state;
+    const {
+      pharmacy,
+      user,
+      file1,
+      file2,
+      file3,
+      file4,
+      file5,
+    } = state;
     const {
       name,
       family,
@@ -364,10 +403,98 @@ const RegisterPharmacyWithUser: React.FC = () => {
         family.trim().length < 2 ||
         userName.trim().length < 3 ||
         nationalCode.length !== 10 ||
-        password.length < 3
+        password.length < 3 ||
+        // files
+        file1 == null ||
+        file2 == null ||
+        file3 == null ||
+        (pharmacy.type == 2 && // Governmental pharmacy
+          (file4 == null || file5 == null)
+        )
       )
     );
   };
+
+  const saveFiles = async (key: number | string): Promise<any> => {
+    const { addFileGeneral } = new Pharmacy()
+    const msg = []
+    const errorMsg = (title: string = ''): JSX.Element => {
+      return (
+        <span style={ { color: 'red' } }>
+          { title }: { t('error.saveFile') }
+        </span>
+      )
+    }
+    let temp: any
+    if (state.file1) {
+      try {
+        temp = await addFileGeneral({
+          fileTypeID: 1,
+          pharmacyKey: key,
+          file: state.file1
+        })
+        msg.push(`${t('file.type.nationalCard')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(errorMsg(t('file.type.nationalCard')))
+        errorHandler(e)
+      }
+    }
+    if (state.file2) {
+      try {
+        temp = await addFileGeneral({
+          fileTypeID: 2,
+          pharmacyKey: key,
+          file: state.file2
+        })
+        msg.push(`${t('file.type.establishLicense')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(errorMsg(t('file.type.establishLicense')))
+        errorHandler(e)
+      }
+    }
+    if (state.file3) {
+      try {
+        temp = await addFileGeneral({
+          fileTypeID: 3,
+          pharmacyKey: key,
+          file: state.file3
+        })
+        msg.push(`${t('file.type.healThMinistryLicense')}: ${t('alert.done')}`)
+      } catch (e) {
+        msg.push(errorMsg(t('file.type.healThMinistryLicense')))
+        errorHandler(e)
+      }
+    }
+    if (state.pharmacy.type == 2) {
+      if (state.file4) {
+        try {
+          temp = await addFileGeneral({
+            fileTypeID: 4,
+            pharmacyKey: key,
+            file: state.file4
+          })
+          msg.push(`${t('file.type.ctoLicense')}: ${t('alert.done')}`)
+        } catch (e) {
+          msg.push(errorMsg(t('file.type.ctoLicense')))
+          errorHandler(e)
+        }
+      }
+      if (state.file5) {
+        try {
+          temp = await addFileGeneral({
+            fileTypeID: 5,
+            pharmacyKey: key,
+            file: state.file5
+          })
+          msg.push(`${t('file.type.commitment')}: ${t('alert.done')}`)
+        } catch (e) {
+          msg.push(errorMsg(t('file.type.commitment')))
+          errorHandler(e)
+        }
+      }
+    }
+    return msg
+  }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
@@ -392,6 +519,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             countryDivisionID: state.pharmacy.countryDivisionID,
             x: state.pharmacy.x,
             y: state.pharmacy.y,
+            type: state.pharmacy.type,
           },
           user: {
             id: 0,
@@ -407,6 +535,22 @@ const RegisterPharmacyWithUser: React.FC = () => {
           },
         });
         if (regResult !== undefined) {
+          const filesSaved = await saveFiles(regResult.data.pharmacyKey)
+          await sweetAlert({
+            type: 'success',
+            html: <>
+              { regResult.data.message || t('alert.successfulSave') }
+              <br />
+              { filesSaved.map((i: any): any => {
+                return (
+                  <>
+                    { i } <br />
+                  </>
+                )
+              }) }
+            </>,
+          })
+          dispatch({ type: 'reset' });
           history.push(routes.login);
         }
       } catch (e) {
@@ -417,7 +561,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
         errorHandler(e);
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'));
+      tWarn(t('alert.fillFormCarefully'));
       setShowError(true);
     }
   };
@@ -436,7 +580,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
         </div>
         <Divider />
         <form autoComplete="off" className={ rootFull } onSubmit={ submit }>
-          {/* ////////////////////// USER ///////////////////// */ }
+
+          {/* //////////////////////   USER   ///////////////////// */ }
+
           <Grid container spacing={ 3 }>
             <Grid item xs={ 12 }>
               <div className={ titleContainer }>
@@ -451,11 +597,11 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={ state.user.name.length < 2 && showError }
+                error={ state?.user?.name.length < 2 && showError }
                 label={ t('general.name') }
                 required
                 variant="outlined"
-                value={ state.user.name }
+                value={ state?.user?.name }
                 className={ formItem }
                 onChange={ (e): void =>
                   dispatch({ type: 'user.name', value: e.target.value })
@@ -464,12 +610,12 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={ state.user.family.length < 2 && showError }
+                error={ state?.user?.family.length < 2 && showError }
                 label={ t('user.family') }
                 required
                 className={ formItem }
                 variant="outlined"
-                value={ state.user.family }
+                value={ state?.user?.family }
                 onChange={ (e): void =>
                   dispatch({ type: 'user.family', value: e.target.value })
                 }
@@ -496,10 +642,10 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 required
                 helperText={ t('user.passwordHelperText') }
                 autoComplete="new-password"
-                type={ state.isVisiblePassword ? 'text' : 'password' }
+                type={ state?.isVisiblePassword ? 'text' : 'password' }
                 className={ formItem }
                 variant="outlined"
-                value={ state.user.password }
+                value={ state?.user.password }
                 onChange={ (e): void =>
                   dispatch({ type: 'user.password', value: e.target.value })
                 }
@@ -514,14 +660,14 @@ const RegisterPharmacyWithUser: React.FC = () => {
                       <IconButton
                         aria-label="toggle password visibility"
                         onClick={ (): void => {
-                          dispatch({ type: 'isVisiblePassword', value: !state.isVisiblePassword })
+                          dispatch({ type: 'isVisiblePassword', value: !state?.isVisiblePassword })
                         } }
                         onMouseDown={ (e: React.MouseEvent<HTMLButtonElement>): void => {
                           e.preventDefault();
                         } }
                         edge="end"
                       >
-                        { state.isVisiblePassword ? (
+                        { state?.isVisiblePassword ? (
                           <FontAwesomeIcon icon={ faEye } />
                         ) : (
                           <FontAwesomeIcon icon={ faEyeSlash } />
@@ -534,13 +680,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={ state.user.nationalCode.length < 10 && showError }
+                error={ state?.user.nationalCode.length < 10 && showError }
                 label={ t('user.nationalCode') }
                 required
                 type="text"
                 className={ formItem }
                 variant="outlined"
-                value={ state.user.nationalCode }
+                value={ state?.user.nationalCode }
                 onChange={ (e): void =>
                   dispatch({ type: 'user.nationalCode', value: e.target.value })
                 }
@@ -567,23 +713,23 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 </FormLabel>
                 <RadioGroup
                   row
-                  name="gender" 
-                  value={state.user.gender}
-                  onChange={ (e: any): void => 
+                  name="gender"
+                  value={ state?.user.gender }
+                  onChange={ (e: any): void =>
                     dispatch({ type: 'user.gender', value: e.target.value })
                   }
                 >
-                  <FormControlLabel 
+                  <FormControlLabel
                     value="0"
-                    checked={state.user.gender == 0}
-                    control={ <Radio /> } 
-                    label={ t('GenderType.Male') } 
+                    checked={ state?.user.gender == 0 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Male') }
                   />
-                  <FormControlLabel 
-                    value="1" 
-                    checked={state.user.gender == 1}
-                    control={ <Radio /> } 
-                    label={ t('GenderType.Female') } 
+                  <FormControlLabel
+                    value="1"
+                    checked={ state?.user.gender == 1 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Female') }
                   />
                 </RadioGroup>
               </FormControl>
@@ -591,7 +737,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
           </Grid>
           <div className={ spacing3 }></div>
           <Divider />
-          {/* ////////////////////// PHARMACY ///////////////////// */ }
+
+          {/* //////////////////////   PHARMACY   ///////////////////// */ }
+
           <Grid container spacing={ 3 }>
             <Grid item xs={ 12 }>
               <div className={ titleContainer }>
@@ -602,12 +750,12 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={ state.pharmacy.name.trim().length < 3 && showError }
+                error={ state?.pharmacy.name.trim().length < 3 && showError }
                 required
                 variant="outlined"
                 label={ t('pharmacy.name') }
                 className={ formItem }
-                value={ state.pharmacy.name }
+                value={ state?.pharmacy.name }
                 onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.name', value: e.target.value })
                 }
@@ -618,7 +766,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.description') }
-                value={ state.pharmacy.description }
+                value={ state?.pharmacy.description }
                 onChange={ (e): void =>
                   dispatch({
                     type: 'pharmacy.description',
@@ -629,12 +777,12 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 }>
               <TextField
-                error={ state.pharmacy.address.trim().length < 3 && showError }
+                error={ state?.pharmacy.address.trim().length < 3 && showError }
                 variant="outlined"
                 required
                 label={ t('general.address') }
                 className={ formItem }
-                value={ state.pharmacy.address }
+                value={ state?.pharmacy.address }
                 onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.address', value: e.target.value })
                 }
@@ -642,13 +790,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={ state.pharmacy.mobile.trim().length < 10 && showError }
+                error={ state?.pharmacy.mobile.trim().length < 10 && showError }
                 label={ t('general.mobile') }
                 type="number"
                 required
                 className={ formItem }
                 variant="outlined"
-                value={ state.pharmacy.mobile }
+                value={ state?.pharmacy.mobile }
                 onChange={ (e): void => {
                   dispatch({ type: 'pharmacy.mobile', value: e.target.value })
                   dispatch({ type: 'user.userName', value: e.target.value })
@@ -657,11 +805,11 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={ state.pharmacy.telphon.trim().length < 8 && showError }
+                error={ state?.pharmacy.telphon.trim().length < 8 && showError }
                 variant="outlined"
                 required
                 label={ t('general.phone') }
-                value={ state.pharmacy.telphon }
+                value={ state?.pharmacy.telphon }
                 className={ formItem }
                 onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.telphon', value: e.target.value })
@@ -673,7 +821,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.website') }
-                value={ state.pharmacy.webSite }
+                value={ state?.pharmacy.webSite }
                 onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.webSite', value: e.target.value })
                 }
@@ -682,15 +830,15 @@ const RegisterPharmacyWithUser: React.FC = () => {
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 error={
-                  state.pharmacy.email &&
-                  !emailRegex.test(state.pharmacy.email) &&
+                  state?.pharmacy.email &&
+                  !emailRegex.test(state?.pharmacy.email) &&
                   showError
                 }
                 label={ t('general.email') }
                 type="email"
                 className={ formItem }
                 variant="outlined"
-                value={ state.pharmacy.email }
+                value={ state?.pharmacy.email }
                 onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.email', value: e.target.value })
                 }
@@ -701,7 +849,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 variant="outlined"
                 className={ formItem }
                 label={ t('general.postalCode') }
-                value={ state.pharmacy.postalCode }
+                value={ state?.pharmacy.postalCode }
                 onChange={ (e): void =>
                   dispatch({
                     type: 'pharmacy.postalCode',
@@ -715,7 +863,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 variant="outlined"
                 label={ t('pharmacy.hix') }
                 className={ formItem }
-                value={ state.hix }
+                value={ state?.hix }
                 onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.hix', value: e.target.value })
                 }
@@ -726,10 +874,26 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 variant="outlined"
                 className={ formItem }
                 label={ t('pharmacy.gli') }
-                value={ state.gli }
+                value={ state?.gli }
                 onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.gli', value: e.target.value })
                 }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={ state?.pharmacy.type == 2 }
+                    onChange={ (e): void => {
+                      dispatch({
+                        type: 'pharmacy.type',
+                        value: e.target.checked ? 2 : 1,
+                      })
+                    } }
+                  />
+                }
+                label={ t('pharmacy.governmental') }
               />
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
@@ -746,8 +910,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
             <Grid item xs={ 12 }>
               <Grid xs={ 12 } sm={ 6 } md={ 4 }>
                 <CountryDivisionSelect
-                  error={ state.pharmacy.countryDivisionID == -1 && showError }
-                  label={ `${t('general.location')} *` }
+                  error={ state?.pharmacy.countryDivisionID == -1 && showError }
+                  label={ `${t('general.location')} * ` }
                   onSelectedHandler={ (id): void => {
                     dispatch({ type: 'pharmacy.countryDivisionID', value: id });
                   } }
@@ -760,7 +924,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 style={ {
                   padding: '1em 0',
                   color:
-                    (state.pharmacy.x == '' || state.pharmacy.y == '') &&
+                    (state?.pharmacy.x == '' || state?.pharmacy.y == '') &&
                       showError ? 'red' : 'rgba(0, 0, 0, 0.87)'
                 } }
               >
@@ -781,6 +945,139 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 />
               </div>
             </Grid>
+          </Grid>
+          <div className={ spacing1 }>&nbsp;</div>
+          <Divider />
+
+          {/* //////////////////////   FILES   ///////////////////// */ }
+
+          <Grid container spacing={ 3 } className={ rootFull }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" className={ `${formTitle} txt-md` }>
+                  <h3>{ t('file.docs') }</h3>
+                </Typography>
+              </div>
+            </Grid>
+            <Grid item xs={ 12 }>
+              <h4
+                style={ {
+                  padding: '1em 0',
+                  color:
+                    state?.file1 == null && showError
+                      ? 'red'
+                      : 'rgba(0, 0, 0, 0.87)'
+                } }
+              >
+                { t('file.type.nationalCard') } *
+              </h4>
+              <Uploader
+                keyId="file1"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file1', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file1', value: null })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 }>
+              <h4
+                style={ {
+                  padding: '1em 0',
+                  color:
+                    state?.file2 == null && showError
+                      ? 'red'
+                      : 'rgba(0, 0, 0, 0.87)'
+                } }
+              >
+                { t('file.type.establishLicense') } *
+              </h4>
+              <Uploader
+                key="file2"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file2', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file2', value: null })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 }>
+              <h4
+                style={ {
+                  padding: '1em 0',
+                  color:
+                    state?.file3 == null && showError
+                      ? 'red'
+                      : 'rgba(0, 0, 0, 0.87)'
+                } }
+              >
+                { t('file.type.healThMinistryLicense') } *
+              </h4>
+              <Uploader
+                keyId="file3"
+                showSaveClick={ false }
+                getFile={ (e) =>
+                  dispatch({ type: 'file3', value: e })
+                }
+                onDelete={ () =>
+                  dispatch({ type: 'file3', value: null })
+                }
+              />
+            </Grid>
+            { state?.pharmacy.type == 2 &&
+              <>
+                <Grid item xs={ 12 }>
+                  <h4
+                    style={ {
+                      padding: '1em 0',
+                      color:
+                        state?.file4 == null && showError
+                          ? 'red'
+                          : 'rgba(0, 0, 0, 0.87)'
+                    } }
+                  >
+                    { t('file.type.ctoLicense') } *
+                  </h4>
+                  <Uploader
+                    keyId="file4"
+                    showSaveClick={ false }
+                    getFile={ (e) =>
+                      dispatch({ type: 'file4', value: e })
+                    }
+                    onDelete={ () =>
+                      dispatch({ type: 'file4', value: null })
+                    }
+                  />
+                </Grid>
+                <Grid item xs={ 12 }>
+                  <h4
+                    style={ {
+                      padding: '1em 0',
+                      color:
+                        state?.file5 == null && showError
+                          ? 'red'
+                          : 'rgba(0, 0, 0, 0.87)'
+                    } }
+                  >
+                    { t('file.type.commitment') } *
+                  </h4>
+                  <Uploader
+                    keyId="file5"
+                    showSaveClick={ false }
+                    getFile={ (e) =>
+                      dispatch({ type: 'file5', value: e })
+                    }
+                    onDelete={ () =>
+                      dispatch({ type: 'file5', value: null })
+                    }
+                  />
+                </Grid>
+              </>
+            }
           </Grid>
           <div className={ spacing1 }>&nbsp;</div>
           <Divider />

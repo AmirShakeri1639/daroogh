@@ -40,26 +40,31 @@ const screenWidth = {
 
 const useStyle = makeStyles((theme) =>
   createStyles({
+    '@global': {
+      '*::-webkit-scrollbar': {
+        width: '0.1em',
+      },
+      '*::-webkit-scrollbar-track': {
+        '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
+      },
+      '*::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,.1)',
+        outline: '2px solid slategrey',
+      },
+    },
     desktopDiv: {
       overflowY: 'auto',
       overflowX: 'hidden',
       minHeight: 'calc(100vh - 75px)',
       maxHeight: 'calc(100vh - 75px)',
       padding: 5,
-      borderRadius: 10,
-      boxShadow: 'rgba(0,0,0,0.8) 0 0 10px',
-    },
-    container: {
-      padding: 0,
-      paddingRight: 5,
-      paddingLeft: 5,
-      maxWidth: '99%',
-    },
+      
+    }
   })
 );
 
 const Desktop1: React.FC = () => {
-  const { desktopDiv, container } = useStyle();
+  const { desktopDiv } = useStyle();
   const { getDashboard } = new Exchange();
   const { t } = useTranslation();
   const history = useHistory();
@@ -303,7 +308,7 @@ const Desktop1: React.FC = () => {
   };
 
   return (
-    <Container className={container}>
+    <Container >
       <div id="desktop-div" className={desktopDiv}>
         <Grid item={true} xs={12}>
           <Grid container spacing={2}>

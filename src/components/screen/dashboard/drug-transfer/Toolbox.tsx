@@ -13,17 +13,10 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import ShoppingBasketIcon from '@material-ui/icons/ShoppingBasket';
-import SortIcon from '@material-ui/icons/Sort';
-import ListIcon from '@material-ui/icons/List';
-import ViewComfyIcon from '@material-ui/icons/ViewComfy';
-import ViewStreamIcon from '@material-ui/icons/ViewStream';
 import DrugTransferContext, { TransferDrugContextInterface } from './Context';
-import Modal from '../../../public/modal/Modal';
 import ExCalculator from './exchange/ExCalculator';
 import { useTranslation } from 'react-i18next';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import CloseIcon from '@material-ui/icons/Close';
-import { default as MatButton } from '@material-ui/core/Button';
 import { useMutation } from 'react-query';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
 import sweetAlert from '../../../../utils/sweetAlert';
@@ -66,21 +59,14 @@ const styles = makeStyles((theme) =>
 );
 
 const ToolBox: React.FC = () => {
-  const { ul, icons,buttonContainer } = styles();
+  const { ul, icons, buttonContainer } = styles();
 
-  const {
-    basketCount,
-    setBasketCount,
-    uBasketCount,
-    setUbasketCount,
-    activeStep,
-    viewExhcnage,
-    exchangeId,
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+  const { viewExhcnage, exchangeId } = useContext<TransferDrugContextInterface>(
+    DrugTransferContext
+  );
 
   const [showExCalculator, setShowExCalculator] = useState(false);
-  const toggleShowExCalculator = (): void =>
-    setShowExCalculator(!showExCalculator);
+  const toggleShowExCalculator = (): void => setShowExCalculator(!showExCalculator);
   const { t } = useTranslation();
 
   const { desktop } = routes;
@@ -93,20 +79,17 @@ const ToolBox: React.FC = () => {
 
   const { removeExchange } = new PharmacyDrug();
 
-  const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(
-    removeExchange,
-    {
-      onSuccess: async (res) => {
-        if (res) {
-          await sweetAlert({
-            type: 'success',
-            text: res.message,
-          });
-          history.push(desktop);
-        }
-      },
-    }
-  );
+  const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
+    onSuccess: async (res) => {
+      if (res) {
+        await sweetAlert({
+          type: 'success',
+          text: res.message,
+        });
+        history.push(desktop);
+      }
+    },
+  });
 
   const handleRemoveExchange = async (): Promise<any> => {
     try {
@@ -119,46 +102,34 @@ const ToolBox: React.FC = () => {
 
   const exchangeModalRemove = (): JSX.Element => {
     return (
-      <Dialog
-      open={isRemoveExchangeModal}
-      onClose={toggleIsRemoveExchangeModalForm}
-    >
-      <DialogTitle className="text-sm">
-      حذف تبادل
-      </DialogTitle>
-      <DialogContent>
-      <span>آیا از حذف تبادل اطمینان دارید؟</span>
-
+      <Dialog open={isRemoveExchangeModal} onClose={toggleIsRemoveExchangeModalForm}>
+        <DialogTitle className="text-sm">حذف تبادل</DialogTitle>
+        <DialogContent>
+          <span>آیا از حذف تبادل اطمینان دارید؟</span>
         </DialogContent>
-        <Divider/>
+        <Divider />
         <DialogActions>
-        <Grid item xs={12} className={buttonContainer}>
-            <Button color="default"  onClick={async (): Promise<any> =>
-                    await handleRemoveExchange()
-                  }>
-                    بله
-            </Button>
+          <Grid item xs={12} className={buttonContainer}>
             <Button
-              color="primary"
-              onClick={toggleIsRemoveExchangeModalForm}
+              color="default"
+              onClick={async (): Promise<any> => await handleRemoveExchange()}
             >
+              بله
+            </Button>
+            <Button color="primary" onClick={toggleIsRemoveExchangeModalForm}>
               خیر
             </Button>
           </Grid>
         </DialogActions>
-        
-        </Dialog>
-      );
+      </Dialog>
+    );
   };
 
   const exchangeCalculator = (): JSX.Element => {
     return (
       <>
         {showExCalculator && (
-          <ExCalculator
-            exchange={viewExhcnage}
-            onClose={toggleShowExCalculator}
-          />
+          <ExCalculator exchange={viewExhcnage} onClose={toggleShowExCalculator} />
         )}
       </>
     );
@@ -174,7 +145,7 @@ const ToolBox: React.FC = () => {
                 setShowExCalculator(!showExCalculator);
               }}
             >
-                              <ShoppingBasketIcon className={icons} />
+              <ShoppingBasketIcon className={icons} />
               {/* <Badge
                 badgeContent={
                   activeStep === 1
@@ -220,17 +191,15 @@ const ToolBox: React.FC = () => {
             </IconButton>
           </Tooltip>
         </li>
-        {viewExhcnage &&
-          viewExhcnage.currentPharmacyIsA &&
-          viewExhcnage.state == 1 && (
-            <li>
-              <Tooltip title="حذف تبادل">
-                <IconButton onClick={toggleIsRemoveExchangeModalForm}>
-                  <DeleteForeverIcon className={icons} />
-                </IconButton>
-              </Tooltip>
-            </li>
-          )}
+        {viewExhcnage && viewExhcnage.currentPharmacyIsA && viewExhcnage.state == 1 && (
+          <li>
+            <Tooltip title="حذف تبادل">
+              <IconButton onClick={toggleIsRemoveExchangeModalForm}>
+                <DeleteForeverIcon className={icons} />
+              </IconButton>
+            </Tooltip>
+          </li>
+        )}
         {/* <li>
           <Tooltip title="مرتب سازی">
             <SortIcon className={icons} />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Avatar, Button, Grid, List } from '@material-ui/core';
@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   systemTitle: {
     textAlign: 'right',
     display: 'block',
-    fontSize: 'large',
+    fontSize: '12px',
     width: '100%',
     color: '#4625B2',
   },
@@ -140,6 +140,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
+    background: ColorEnum.mainBack,
   },
   userContainer: {
     display: 'flex',
@@ -148,7 +149,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   largeSpacing: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   divider: {
     backgroundColor: '#9585C9',
@@ -181,21 +182,22 @@ const StyledMenu = withStyles({
   },
 })((props: MenuProps) => (
   <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
+    elevation={ 0 }
+    getContentAnchorEl={ null }
+    anchorOrigin={ {
       vertical: 'bottom',
       horizontal: 'center',
-    }}
-    transformOrigin={{
+    } }
+    transformOrigin={ {
       vertical: 'top',
       horizontal: 'center',
-    }}
-    {...props}
+    } }
+    { ...props }
   />
 ));
 
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
+  const { t } = useTranslation();
   const [activePage, setActivePage] = useState<string>('dashboard');
   const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
   const [creditAnchorEl, setcreditAnchorEl] = React.useState(null);
@@ -205,12 +207,12 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
   const [avatarChanged, setAvatarChanged] = useState<any>();
+  const [mrMs, setMrMs] = useState(t('general.dr') + ' ')
 
   const { profile } = routes;
 
   const classes = useStyles();
 
-  const { t } = useTranslation();
   const { userData } = new JwtData();
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {
@@ -233,6 +235,10 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     if (userData.pharmacyName != null) {
       getIsIndebtPharmacy();
     }
+    const nameTitle = userData?.gender == 0
+      ? t('general.mr')
+      : userData?.gender == 1 ? t('general.ms') : ''
+    setMrMs(`${nameTitle} ${t('general.dr')} `)
   }, []);
 
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
@@ -270,74 +276,88 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     const { name, family } = JSON.parse(user);
     const title = (
       <span>
-        {name} {family} عزیز ،
+        {name } {family } عزیز ،
       </span>
     );
     const body = (
       <>
-        <span style={{ marginRight: 5 }}>{t('alerts.DebotAlert')}</span>
+        <span style={ { marginRight: 5 } }>{ t('alerts.DebotAlert') }</span>
       </>
     );
     element = (
       <>
-        {title}
-        {body}
+        {title }
+        {body }
         <Button
-          onClick={() => {
+          onClick={ () => {
             history.push(accountingInfo);
-          }}
+          } }
           type="button"
           variant="outlined"
-          style={{ marginRight: 16, color: 'white' }}
+          style={ { marginRight: 16, color: 'white' } }
         >
-          {' '}
-          {t('general.pay')}
+          { ' ' }
+          { t('general.pay') }
         </Button>
       </>
     );
     return element;
   };
 
-  const avatar = (): any => {
-    return localStorage.getItem('avatar') ?? avatarPic;
-  };
+  const { accountingInfo, fileUrl } = routes;
 
-  const { accountingInfo } = routes;
+  // const avatar = useMemo(() => {
+  //   return (
+  //     !loggedInUser || !loggedInUser?.imageKey
+  //       ? avatarPic
+  //       : `${fileUrl}${loggedInUser?.imageKey}`
+  //   )
+  // }, [loggedInUser])
+
+  const [avatar, setAvatar] = useState<any>(avatarPic)
+  useEffect(() => {
+    setAvatar(
+      !loggedInUser || !loggedInUser?.imageKey
+        ? avatarPic
+        : `${fileUrl}${loggedInUser?.imageKey}`
+    )
+  }, [loggedInUser])
+
   const history = useHistory();
   return (
-    <Context.Provider value={contextInitialValues()}>
-      <div className={classes.root}>
+    <Context.Provider value={ contextInitialValues() }>
+      <div className={ classes.root }>
         <Appbar />
 
-        <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
-          <div className={classes.drawerBackground}>
-            <div className={classes.toolbarIcon}>
-              <div className={classes.headerHolder}>
-                <div className={classes.logoTypeHolder}>
-                  <img className={classes.logoType} src="logotype.svg" />
-                  <span className={classes.systemTitle} style={{ textAlign: 'right' }}>
-                    {t('general.systemTitle')}
+        <MaterialDrawer onClose={ toggleIsOpenDrawer } isOpen={ isOpenDrawer }>
+          <div className={ classes.drawerBackground }>
+            <div className={ classes.toolbarIcon }>
+              <div className={ classes.headerHolder }>
+                <div className={ classes.logoTypeHolder }>
+                  <img className={ classes.logoType } src="logotype.svg" />
+                  <span className={ classes.systemTitle } style={ { textAlign: 'right' } }>
+                    { t('general.systemTitle') }
                   </span>
                 </div>
-                <IconButton className={classes.roundicon} onClick={handleDrawerClose}>
+                <IconButton className={ classes.roundicon } onClick={ handleDrawerClose }>
                   <ChevronRightIcon />
                 </IconButton>
               </div>
             </div>
 
-            <Divider className={classes.divider} />
+            <Divider className={ classes.divider } />
 
-            <Grid container className={classes.largeSpacing}>
-              <Grid item xs={3}>
+            <Grid container className={ classes.largeSpacing }>
+              <Grid item xs={ 3 }>
                 <>
-                  <label style={{ cursor: 'pointer' }}>
+                  <label style={ { cursor: 'pointer' } }>
                     <input
                       type="file"
-                      style={{ display: 'none' }}
+                      style={ { display: 'none' } }
                       id="profilePicUpload"
                       accept="image/jpeg"
                       name="profilePicUpload"
-                      onChange={(e: any): void => {
+                      onChange={ (e: any): void => {
                         e.preventDefault();
                         if (e.target.files.length > 0) {
                           changeProfilePic(loggedInUser?.userId, e.target.files[0]).then(
@@ -348,86 +368,87 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                             }
                           );
                         }
-                      }}
+                      } }
                     />
-                    <Avatar alt={t('user.user')} className={classes.largeAvatar} src={avatar()} />
+                    <Avatar alt={ t('user.user') } className={ classes.largeAvatar } src={ avatar } />
                   </label>
                 </>
               </Grid>
-              <Grid item xs={9}>
-                <Grid item xs={12}>
-                  <Link to={profile} className={classes.simpleLink}>
-                    <span style={{ color: '#4625B2', fontSize: 'large' }}>
-                      {loggedInUser?.name} {loggedInUser?.family}
+              <Grid item xs={ 9 }>
+                <Grid item xs={ 12 }>
+                  <Link to={ profile } className={ classes.simpleLink }>
+                    <span style={ { color: '#4625B2', fontSize: '12px' } }>
+                      { mrMs }
+                      { loggedInUser?.name } { loggedInUser?.family }
                     </span>
                   </Link>
                 </Grid>
-                <Grid item xs={12}>
-                  <span style={{ color: '#6B4ECC', fontSize: 'small' }}>
-                    {loggedInUser?.pharmacyName != null
+                <Grid item xs={ 12 }>
+                  <span style={ { color: '#6B4ECC', fontSize: 'small' } }>
+                    { loggedInUser?.pharmacyName != null
                       ? t('pharmacy.pharmacy') + ' ' + loggedInUser?.pharmacyName
-                      : ''}
+                      : '' }
                   </span>
                 </Grid>
-                <Grid item xs={12} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <IconButton edge="start" color="inherit" onClick={(): void => logoutUser()}>
-                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */}
-                    <span style={{ color: ColorEnum.Red, fontSize: 'medium' }}>
-                      {t('login.signOut')}
+                <Grid item xs={ 12 } style={ { display: 'flex', justifyContent: 'flex-end' } }>
+                  <IconButton edge="start" color="inherit" onClick={ (): void => logoutUser() }>
+                    {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
+                    <span style={ { color: ColorEnum.Red, fontSize: 'small' } }>
+                      { t('login.signOut') }
                     </span>
                   </IconButton>
                 </Grid>
               </Grid>
             </Grid>
-            <Divider className={classes.divider} />
-            <List style={{ color: '#4625B2' }} component="nav" aria-labelledby="nested-list-items">
-              {listItemsGenerator()}
+            <Divider className={ classes.divider } />
+            <List style={ { color: '#4625B2' } } component="nav" aria-labelledby="nested-list-items">
+              { listItemsGenerator() }
             </List>
-            <Divider className={classes.divider} />
+            <Divider className={ classes.divider } />
           </div>
         </MaterialDrawer>
-        <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
-          <div className={classes.alert}>
-            {isIndebtPharmacyState && (
-              <Alert variant="filled" severity="error" style={{ margin: 10 }}>
-                {alertContent()}
+        <main className={ classes.content }>
+          <div className={ classes.appBarSpacer } />
+          <div className={ classes.alert }>
+            { isIndebtPharmacyState && (
+              <Alert variant="filled" severity="error" style={ { margin: 10 } }>
+                {alertContent() }
               </Alert>
-            )}
+            ) }
           </div>
-          {component}
+          { component }
         </main>
-        {debtValueState && (
+        { debtValueState && (
           <StyledMenu
             id="customized-menu"
-            anchorEl={creditAnchorEl}
+            anchorEl={ creditAnchorEl }
             keepMounted
-            open={Boolean(creditAnchorEl)}
-            onClose={(): void => setcreditAnchorEl(null)}
+            open={ Boolean(creditAnchorEl) }
+            onClose={ (): void => setcreditAnchorEl(null) }
           >
-            <div style={{ padding: 5 }}>
-              <span style={{ fontSize: 14 }}>
-                {' '}
-                <b>{Utils.numberWithCommas(Math.abs(debtValueState))}</b>
-                <span style={{ fontSize: 10, marginRight: 2 }}>{t('general.defaultCurrency')}</span>
-                {debtValueState > 0 && (
+            <div style={ { padding: 5 } }>
+              <span style={ { fontSize: 14 } }>
+                { ' ' }
+                <b>{ Utils.numberWithCommas(Math.abs(debtValueState)) }</b>
+                <span style={ { fontSize: 10, marginRight: 2 } }>{ t('general.defaultCurrency') }</span>
+                { debtValueState > 0 && (
                   <>
-                    <span style={{ marginLeft: 8 }}> بدهکار</span>
+                    <span style={ { marginLeft: 8 } }> بدهکار</span>
                     <Button
-                      onClick={() => {
+                      onClick={ () => {
                         history.push(accountingInfo);
-                      }}
+                      } }
                       type="button"
                       variant="outlined"
                     >
-                      {t('general.pay')}
+                      { t('general.pay') }
                     </Button>
                   </>
-                )}
+                ) }
               </span>
             </div>
           </StyledMenu>
-        )}
+        ) }
       </div>
     </Context.Provider>
   );

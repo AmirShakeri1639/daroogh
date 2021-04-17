@@ -1,21 +1,23 @@
-import { createStyles, Dialog, DialogActions, Grid, makeStyles } from '@material-ui/core';
+import { Button, createStyles, Dialog, DialogActions, Grid, makeStyles } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { isUndefined } from 'lodash';
-import { Button } from '..';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { ColorEnum } from 'enum';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
     cancelButton: {
-      color: '#fff',
       fontSize: 10,
-      float: 'right',
+      width: 85,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
     submitBtn: {
-      color: '#fff',
       fontSize: 10,
-      float: 'right',
+      width: 85,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
   })
 );
@@ -41,7 +43,9 @@ interface Props {
   hideSubmit?: boolean;
   modalAlt?: boolean;
   hideAll?: boolean;
-  canceleButtonTitle? : string;
+  canceleButtonTitle?: string;
+  style?: React.CSSProperties;
+  className?: string;
 }
 
 const modalQueryString = '?modal=true';
@@ -59,19 +63,28 @@ const CDialog: React.FC<Props> = ({
   children,
   isLoading,
   formHandler,
+  style,
+  className,
   hideSubmit,
   hideAll,
   modalAlt,
   canceleButtonTitle,
 }) => {
+  const hasModalAlt = (): boolean => {
+    return window.location.hash.endsWith(modalAltQueryString);
+  };
+
+  const hasModal = (): boolean => {
+    return window.location.hash.endsWith(modalQueryString);
+  };
+
   useEffect(() => {
     const onHashChange = (): void => {
       if (!hasModal() && !hasModalAlt() && !isUndefined(onClose)) {
         onClose();
       } else if (!hasModalAlt() && !isUndefined(onCloseAlternate)) {
         onCloseAlternate();
-      }
-       else if (hasModal() && !isUndefined(onOpen)) {
+      } else if (hasModal() && !isUndefined(onOpen)) {
         onOpen();
       } else if (!isUndefined(onOpenAltenate) && hasModalAlt()) {
         onOpenAltenate();
@@ -92,13 +105,7 @@ const CDialog: React.FC<Props> = ({
       }
     }
   }, [isOpen]);
-  const hasModal = (): boolean => {
-    return window.location.hash.endsWith(modalQueryString);
-  };
 
-  const hasModalAlt = (): boolean => {
-    return window.location.hash.endsWith(modalAltQueryString);
-  };
   const onCloseHandler = (): void => {
     if (!isUndefined(onClose)) {
       onClose();
@@ -115,29 +122,27 @@ const CDialog: React.FC<Props> = ({
       fullWidth={fullWidth ?? false}
       onClose={onCloseHandler}
       fullScreen={fullScreen}
+      style={style ?? undefined}
+      className={className ?? ''}
     >
       {children}
       {!hideAll && (
         <DialogActions>
-          <Grid container xs={12}>
-            <Grid item xs={7} sm={8} />
-            <Grid item xs={2} sm={2}>
-              <StyledButton type="button" onClick={onCloseHandler} className={cancelButton}>
-                {canceleButtonTitle ? canceleButtonTitle : t('general.close')}
-              </StyledButton>
-            </Grid>
-            <Grid item xs={3} sm={2}>
-              {!hideSubmit && (
-                <StyledButton
-                  className={submitBtn}
-                  type="button"
-                  disabled={isLoading ?? false}
-                  onClick={formHandler}
-                >
-                  {isLoading ?? false ? t('general.pleaseWait') : t('general.submit')}
-                </StyledButton>
-              )}
-            </Grid>
+          <Grid container xs={12} direction="row-reverse">
+            {!hideSubmit && (
+              <Button
+                variant="outlined"
+                className={submitBtn}
+                type="button"
+                disabled={isLoading ?? false}
+                onClick={formHandler}
+              >
+                {isLoading ?? false ? t('general.pleaseWait') : t('general.submit')}
+              </Button>
+            )}
+            <Button variant="outlined" onClick={onCloseHandler} className={cancelButton}>
+              {canceleButtonTitle ? canceleButtonTitle : t('general.close')}
+            </Button>
           </Grid>
         </DialogActions>
       )}

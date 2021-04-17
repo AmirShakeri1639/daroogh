@@ -20,11 +20,7 @@ import {
 } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import {
-  errorHandler,
-  successSweetAlert,
-  warningSweetAlert,
-} from '../../../../utils';
+import { errorHandler, tSuccess, tWarn } from 'utils';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import { useTranslation } from 'react-i18next';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
@@ -122,12 +118,7 @@ const DrugsList: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
 
-  const {
-    container,
-    cancelButtonDialog,
-    formContainer,
-    formContent, submitBtn,
-  } = useClasses();
+  const { container, cancelButtonDialog, formContainer, formContent, submitBtn } = useClasses();
   const queryCache = useQueryCache();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -139,9 +130,7 @@ const DrugsList: React.FC = () => {
   React.useEffect(() => {
     async function getCategories(): Promise<any> {
       const result = await allCategories(0, 1000);
-      setCategories(
-        result.items.map((item: any) => ({ value: item.id, label: item.name }))
-      );
+      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
     }
     getCategories();
   }, []);
@@ -150,9 +139,7 @@ const DrugsList: React.FC = () => {
   React.useEffect(() => {
     async function getTypes(): Promise<any> {
       const result = await types();
-      setDrugTypes(
-        result.items.map((item: any) => ({ value: item, label: item }))
-      );
+      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
     }
     getTypes();
   }, []);
@@ -161,20 +148,20 @@ const DrugsList: React.FC = () => {
     onSuccess: async () => {
       ref.current?.loadItems();
       await queryCache.invalidateQueries('drugsList');
-      await successSweetAlert(t('alert.successfulDelete'));
+      tSuccess(t('alert.successfulDelete'));
     },
   });
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
     onSuccess: async () => {
       await queryCache.invalidateQueries('drugsList');
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       ref.current?.onQueryChange();
       dispatch({ type: 'reset' });
     },
   });
 
-  const tableColumns =                                                          (): DataTableColumns[] => {
+  const tableColumns = (): DataTableColumns[] => {
     return [
       {
         field: 'id',
@@ -185,9 +172,9 @@ const DrugsList: React.FC = () => {
       },
       {
         field: 'name',
-        title: t('drug.name'),
+        title: t('drug.product'),
         searchable: true,
-        type: 'string'
+        type: 'string',
       },
       {
         field: 'genericName',
@@ -206,12 +193,24 @@ const DrugsList: React.FC = () => {
             </span>
           );
         },
+        fieldLookup: 'active',
+        lookupFilter: [
+          { code: 0, name: 'غیرفعال' },
+          { code: 1, name: 'فعال' },
+        ],
       },
       {
         field: 'enName',
         title: t('drug.enName'),
         type: 'string',
         searchable: true,
+        render: (row: any): any => {
+          return (
+            <span className="no-farsi-number">
+              { row.enName }
+            </span>
+          )
+        }
       },
       {
         field: 'type',
@@ -224,16 +223,7 @@ const DrugsList: React.FC = () => {
 
   const toggleDrugActivationHandler = async (row: any): Promise<any> => {
     try {
-      const {
-        id,
-        name,
-        genericName,
-        companyName,
-        barcode,
-        description,
-        enName,
-        type,
-      } = row;
+      const { id, name, genericName, companyName, barcode, description, enName, type } = row;
       const categoryID = row.category.id;
       let { active } = row;
       active = !active;
@@ -250,7 +240,7 @@ const DrugsList: React.FC = () => {
         type,
         active,
       });
-      dispatch({ type: 'reset' })
+      dispatch({ type: 'reset' });
       ref.current?.loadItems();
     } catch (e) {
       errorHandler(e);
@@ -260,7 +250,7 @@ const DrugsList: React.FC = () => {
   const toggleConfirmHandler = async (e: any, row: any): Promise<any> => {
     try {
       await toggleDrugActivationHandler(row);
-      ref.current?.loadItems();
+      ref.current?.onQueryChange();
       // ref.current?.onQueryChange();
     } catch (e) {
       errorHandler(e);
@@ -283,6 +273,7 @@ const DrugsList: React.FC = () => {
     try {
       if (window.confirm(t('alert.remove'))) {
         await _remove(userRow.id);
+        ref.current?.onQueryChange();
       }
     } catch (e) {
       errorHandler(e);
@@ -291,17 +282,7 @@ const DrugsList: React.FC = () => {
 
   const saveHandler = (item: any): void => {
     toggleIsOpenSaveModalForm();
-    const {
-      id,
-      name,
-      genericName,
-      companyName,
-      barcode,
-      description,
-      active,
-      enName,
-      type,
-    } = item;
+    const { id, name, genericName, companyName, barcode, description, active, enName, type } = item;
     const categoryID = item.category ? item.category.id : 1;
 
     dispatch({ type: 'id', value: id });
@@ -354,179 +335,175 @@ const DrugsList: React.FC = () => {
         errorHandler(e);
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'));
+      tWarn(t('alert.fillFormCarefully'));
     }
   };
 
   const editModal = (): JSX.Element => {
     return (
-      <Dialog open={ isOpenEditModal } fullScreen={ fullScreen } fullWidth={true}
-        onClose={ toggleIsOpenSaveModalForm }>
+      <Dialog
+        open={ isOpenEditModal }
+        fullScreen={ fullScreen }
+        fullWidth={ true }
+        onClose={ toggleIsOpenSaveModalForm }
+      >
         <DialogTitle className="text-sm">
           { state.id === 0 ? t('action.create') : t('action.edit') }
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-              <Grid container spacing={ 1 } className={ formContent }>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <label>{ t('drug.name') }</label>
-                    </Grid>
-                    <Grid item xs={ 12 }>
-                      <Input
-                        className="w-100"
-                        value={ state.name }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'name', value: e.target.value })
-                        }
-                      />
-                    </Grid>
+            <Grid container spacing={ 1 } className={ formContent }>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.product') }</label>
                   </Grid>
-                </Grid>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <label>{ t('drug.category') }</label>
-                    </Grid>
-                    <Grid item xs={ 12 }>
-                      <DaroogDropdown
-                        defaultValue={ state.categoryID }
-                        data={ categories }
-                        className="w-100"
-                        onChangeHandler={ (v): void => {
-                          return dispatch({ type: 'categoryID', value: v });
-                        } }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <label>{ t('drug.genericName') }</label>
-                    </Grid>
-                    <Grid item xs={ 12 }>
-                      <Input
-                        className="w-100"
-                        label={ t('drug.genericName') }
-                        value={ state.genericName }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'genericName', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <label>
-                        { t('drug.companyName') }
-                      </label>
-                    </Grid>
-                    <Grid item xs={ 12 }>
-                      <Input
-                        className="w-100"
-                        label={ t('drug.companyName') }
-                        value={ state.companyName }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'companyName', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <label>{ t('drug.barcode') }</label>
-                    </Grid>
-                    <Grid item xs={ 12 }>
-                      <Input
-                        className="w-100"
-                        label={ t('drug.barcode') }
-                        value={ state.barcode }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'barcode', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <label>{ t('general.description') }</label>
-                    </Grid>
-                    <Grid item xs={ 12 }>
-                      <Input
-                        className="w-100"
-                        label={ t('general.description') }
-                        value={ state.description }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'description', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={ state.active }
-                            onChange={ (e): void =>
-                              dispatch({
-                                type: 'active',
-                                value: e.target.checked,
-                              })
-                            }
-                          />
-                        }
-                        label={ t('general.active') }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <label>{ t('drug.enName') }</label>
-                    </Grid>
-                    <Grid item xs={ 12 }>
-                      <Input
-                        className="w-100"
-                        label={ t('drug.enName') }
-                        value={ state.enName }
-                        onChange={ (e): void =>
-                          dispatch({ type: 'enName', value: e.target.value })
-                        }
-                      />
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={ 12 }>
-                  <Grid container spacing={ 1 }>
-                    <Grid item xs={ 12 }>
-                      <label>{ t('general.type') }</label>
-                    </Grid>
-                    <Grid item xs={ 12 }>
-                      <DaroogDropdown
-                        defaultValue={ state.type }
-                        data={ drugTypes }
-                        className="w-100"
-                        label={ t('general.type') }
-                        onChangeHandler={ (v): void => {
-                          return dispatch({ type: 'type', value: v });
-                        } }
-                      />
-                    </Grid>
+                  <Grid item xs={ 12 }>
+                    <Input
+                      className="w-100"
+                      value={ state.name }
+                      onChange={ (e): void => dispatch({ type: 'name', value: e.target.value }) }
+                    />
                   </Grid>
                 </Grid>
               </Grid>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.category') }</label>
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <DaroogDropdown
+                      defaultValue={ state.categoryID }
+                      data={ categories }
+                      className="w-100"
+                      onChangeHandler={ (v): void => {
+                        return dispatch({ type: 'categoryID', value: v });
+                      } }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.genericName') }</label>
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <Input
+                      className="w-100"
+                      label={ t('drug.genericName') }
+                      value={ state.genericName }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'genericName', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.companyName') }</label>
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <Input
+                      className="w-100"
+                      label={ t('drug.companyName') }
+                      value={ state.companyName }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'companyName', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.barcode') }</label>
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <Input
+                      className="w-100"
+                      label={ t('drug.barcode') }
+                      value={ state.barcode }
+                      onChange={ (e): void => dispatch({ type: 'barcode', value: e.target.value }) }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.description') }</label>
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <Input
+                      className="w-100"
+                      label={ t('general.description') }
+                      value={ state.description }
+                      onChange={ (e): void =>
+                        dispatch({ type: 'description', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={ state.active }
+                          onChange={ (e): void =>
+                            dispatch({
+                              type: 'active',
+                              value: e.target.checked,
+                            })
+                          }
+                        />
+                      }
+                      label={ t('general.active') }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.enName') }</label>
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <Input
+                      className="w-100 no-farsi-number"
+                      label={ t('drug.enName') }
+                      value={ state.enName }
+                      onChange={ (e): void => dispatch({ type: 'enName', value: e.target.value }) }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.type') }</label>
+                  </Grid>
+                  <Grid item xs={ 12 }>
+                    <DaroogDropdown
+                      defaultValue={ state.type }
+                      data={ drugTypes }
+                      className="w-100"
+                      label={ t('general.type') }
+                      onChangeHandler={ (v): void => {
+                        return dispatch({ type: 'type', value: v });
+                      } }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
           </DialogContentText>
         </DialogContent>
         <Divider />
@@ -556,9 +533,7 @@ const DrugsList: React.FC = () => {
                     submitSave();
                   } }
                 >
-                  { isLoadingSave
-                    ? t('general.pleaseWait')
-                    : t('general.save') }
+                  { isLoadingSave ? t('general.pleaseWait') : t('general.save') }
                 </Button>
               </Grid>
             </Grid>
@@ -580,9 +555,7 @@ const DrugsList: React.FC = () => {
               columns={ tableColumns() }
               addAction={ (): void => saveHandler(initialState) }
               editAction={ (e: any, row: any): void => saveHandler(row) }
-              removeAction={ async (e: any, row: any): Promise<void> =>
-                await removeHandler(row)
-              }
+              removeAction={ async (e: any, row: any): Promise<void> => await removeHandler(row) }
               customActions={ actions }
               queryKey={ DrugEnum.GET_ALL }
               queryCallback={ all }

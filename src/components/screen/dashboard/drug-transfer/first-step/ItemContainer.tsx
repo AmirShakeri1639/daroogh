@@ -8,6 +8,7 @@ import { ColorEnum } from 'enum';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { useTranslation } from 'react-i18next';
 import Utils from 'components/public/utility/Utils';
+import ShowOffer from 'components/public/offer-show/ShowOffer';
 
 
 
@@ -49,7 +50,7 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
         </Grid>
         <Grid xs={12} item container>
           <Grid xs={4}>
-              <TextWithTitle isSmal={true} title={t('general.gift')} body={`${offer1} به ${offer2}`} />
+            <ShowOffer isSmall={true} offer1={offer1} offer2={offer2}/>
           </Grid>
           <Grid xs={4}>
           <TextWithTitle isSmal={true} title='انقضا' body={convertISOTime(expireDate) } dateSuffix={Utils.getExpireDays(expireDate)} showDateSuffix={!isSmallDevice} />

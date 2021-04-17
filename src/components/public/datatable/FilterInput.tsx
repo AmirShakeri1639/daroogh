@@ -21,6 +21,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Utils from '../utility/Utils';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import CloseIcon from '@material-ui/icons/Close';
+import { debug } from 'console';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -51,9 +52,11 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     operator:
       !props.columnDef.lookupFilter && props.columnDef.type !== 'date'
         ? `contains(cast(${props.columnDef.field},'Edm.String'),'$')`
-        : props.columnDef.type !== 'date'
+        : props.columnDef.type !== 'date' && props.columnDef.type !== 'boolean'
         ? `cast(${props.columnDef.fieldLookup},'Edm.String') in $`
-        : `concat(cast(year(${props.columnDef.field}),Edm.String),concat('-',concat(cast(month(${props.columnDef.field}),Edm.String),concat('-',cast(day(${props.columnDef.field}),Edm.String))))) eq '$'`,
+        : props.columnDef.type !== 'boolean'
+        ? `concat(cast(year(${props.columnDef.field}),Edm.String),concat('-',concat(cast(month(${props.columnDef.field}),Edm.String),concat('-',cast(day(${props.columnDef.field}),Edm.String))))) eq '$'`
+        : `${props.columnDef.fieldLookup} in $`,
   });
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
@@ -73,6 +76,9 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
     setValue(value);
     if (props.columnDef.type === 'date') {
       if (value !== '') value = Utils.convertShamsiToGeo(value, 'YYYY-MM-DD');
+    }
+    if (props.columnDef.type === 'boolean') {
+      value = '(' + value.map((x: string) => (x === 'فعال' ? true : false)).join(', ') + ')';
     }
     props.onFilterChanged(props.columnDef.tableData.id, {
       fieldValue: value,
@@ -224,7 +230,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
-  const filterOperatorMenu = (): JSX.Element[] => {
+  const filterOperatorMenu = React.useMemo((): JSX.Element[] => {
     let option: { text: string; value: string; operator: string }[] = [];
     if (!props.columnDef.lookupFilter) {
       switch (props.columnDef.type) {
@@ -242,22 +248,20 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
       if (props.columnDef.type === 'boolean') option = filterLookupBooleanOptions;
       else option = filterLookupOptions;
     }
-    // !props.columnDef.lookupFilter &&
-    // props.columnDef.type !== 'date' &&
-    // props.columnDef.type !== 'string'
-    //   ? filterOptions
-    //   : props.columnDef.type !== 'date'
-    //   ? filterLookupOptions
-    //   : props.columnDef.type !== 'string'
-    //   ? filterDateOptions
-    //   : filterOptionsString;
     const res = option.map((option, index) => {
       return (
         <MenuItem
           selected={index === selectedIndex}
           onClick={(): any => {
             handleClose(option, index);
-            if (value) handleChange(value, option);
+            switch (props.columnDef.type) {
+              case 'boolean':
+                if (personName) handleChange(personName, option);
+                break;
+              default:
+                if (value) handleChange(value, option);
+                break;
+            }
           }}
         >
           {option.text}
@@ -265,7 +269,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
       );
     });
     return res;
-  };
+  }, [anchorEl]);
 
   return (
     <div>
@@ -351,7 +355,7 @@ const FilterInput: React.FC = (props: any): JSX.Element => {
         open={Boolean(anchorEl)}
         // onClose={handleClose}
       >
-        {filterOperatorMenu()}
+        {filterOperatorMenu}
       </Menu>
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DateTimePicker

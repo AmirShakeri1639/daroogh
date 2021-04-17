@@ -108,7 +108,7 @@ export interface CardPropsInterface {
 
 export interface CardContainerRelatedPharmacyDrugsInterface {
   data: PharmacyDrugInterface;
-  isFull? : boolean;
+  isFull?: boolean;
 }
 
 export interface CardHeaderInterface {
@@ -171,6 +171,7 @@ export interface FavoriteDrugInterface {
 export interface UserInterface {
   data: NewUserData;
   editRoleHandler: (item: any) => void;
+  removeRolesHandler: (item: any) => void;
 }
 
 export interface CardJobInterface {
@@ -217,9 +218,10 @@ export interface TextWithTitlePropsInterface {
   title: string | React.ReactNode;
   body: string | React.ReactNode;
   suffix?: string | React.ReactNode;
-  isSmal?:boolean ;
-  dateSuffix? : string | React.ReactNode;
-  showDateSuffix?:boolean;
+  isSmal?: boolean;
+  dateSuffix?: string | React.ReactNode;
+  showDateSuffix?: boolean;
+  className?: string;
 }
 
 export interface BackDropPropsInterface {

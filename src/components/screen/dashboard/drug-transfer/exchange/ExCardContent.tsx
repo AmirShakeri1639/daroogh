@@ -26,6 +26,7 @@ import { useTranslation } from 'react-i18next';
 import Utils from '../../../../public/utility/Utils';
 import Ribbon from '../../../../public/ribbon/Ribbon';
 import { ColorEnum } from '../../../../../enum';
+import ShowOffer from 'components/public/offer-show/ShowOffer';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -226,7 +227,11 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                   <FontAwesomeIcon icon={faPills} size="1x" />
                   <span style={{ marginRight: 5 }}>
                     {item.drug.name}
-                    {item.drug.enName && `(${item.drug.enName})`}
+                    { item.drug.enName &&
+                      <span className="no-farsi-number">
+                        { item.drug.enName }
+                      </span>
+                    }
                   </span>
                 </Grid>
                 <Grid item xs={4} style={{ textAlign: 'left' }}>
@@ -237,13 +242,7 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
                     </li>
                     <li className={colLeftIcon}>
                       <CardGiftcardIcon />
-                      {!(item.offer1 === 0 && item.offer2 === 0) ? (
-                        <>
-                          {item.offer1} به {item.offer2}{' '}
-                        </>
-                      ) : (
-                        'ندارد'
-                      )}
+                      <ShowOffer offer1={item.offer1} offer2={item.offer2}/>
                     </li>
                     <li className={colLeftIcon}>
                       <MoneyIcon />
@@ -277,7 +276,10 @@ function ExCardContent(props: ExCardContentProps): JSX.Element {
               <span style={{ fontSize: 13 }}>
                 {pharmacyDrug?.drug?.genericName}
                 {pharmacyDrug?.drug?.enName &&
-                  `(${pharmacyDrug?.drug?.enName})`}
+                  <span className="no-farsi-number">
+                    { pharmacyDrug?.drug?.enName }
+                  </span>
+                }
               </span>
             </li>
           </ul>

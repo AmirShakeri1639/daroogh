@@ -7,7 +7,6 @@ import {
   Container,
   Hidden,
   Fab,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -32,22 +31,16 @@ import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useEffectOnce } from '../../../../hooks';
-import { Convertor, errorHandler, successSweetAlert } from '../../../../utils';
+import { Convertor, errorHandler, tSuccess } from 'utils';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 // @ts-ignore
 import jalaali from 'jalaali-js';
-import { DrugType } from '../../../../enum/pharmacyDrug';
 import { ListOptions } from '../../../public/auto-complete/AutoComplete';
 import styled from 'styled-components';
 import CDialog from 'components/public/dialog/Dialog';
 import { ColorEnum } from 'enum';
-import Calculator from '../calculator/Calculator'
-import { Console } from 'console';
-
-const GridCenter = styled((props) => <Grid item {...props} />)`
-  text-align: center;
-`;
+import Calculator from '../calculator/Calculator';
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -136,9 +129,9 @@ const useStyle = makeStyles((theme) =>
       alignItems: 'center',
     },
     fieldset: {
-      borderColor: '#f5f5f5',
+      borderColor: ColorEnum.DeepBlue,
       borderRadius: 10,
-      color: '#6d6d6d',
+      color: 'red',
       '& legend': {
         color: '#7e7e7e',
       },
@@ -176,18 +169,19 @@ const useStyle = makeStyles((theme) =>
       backgroundColor: '#54bc54 ',
     },
     sectionContainer: {
-      background: ColorEnum.LiteBack,
-      borderLeft: `1px solid ${ColorEnum.Borders}`,
+      background: 'white',
+      borderLeft: `3px solid ${ColorEnum.DeepBlue}`,
+
       display: 'flex',
       alignContent: 'center',
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 8,
     },
-    input:{
-      width:80,
-      marginLeft:8,
-      marginRight:8,
+    input: {
+      width: 80,
+      marginLeft: 8,
+      marginRight: 8,
     },
   })
 );
@@ -201,7 +195,7 @@ const { getComissionAndRecommendation } = new Comission();
 const { numberWithZero, convertISOTime } = Convertor;
 
 const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32;
+const dayIsValid = (day: number): boolean => day < 32 || day > 0;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
@@ -219,7 +213,14 @@ const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} 
   }
 `;
 
+const StyledTitle = styled.span`
+  color: #17a2bb;
+  font-size: 12px;
+`;
 
+const StyledDialogContent = styled((props) => <DialogContent {...props} />)`
+  scroll-behavior: smooth;
+`;
 
 const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
@@ -241,49 +242,68 @@ const SupplyList: React.FC = () => {
     id: -1,
     genericName: '',
   });
-  const [calculatedValue , setCalculatedValue] = useState<number>(0);
+  const [calculatedValue, setCalculatedValue] = useState<number>(0);
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
   const [isWrongDate, setIsWrongDate] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
   const [showError, setShowError] = useState(false);
 
   const theme = useTheme();
 
+  const monthRef = useRef<any>();
+  const yearRef = useRef<any>();
+  const batchRef = useRef<any>();
+
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation();
   const queryCache = useQueryCache();
 
+  const resetValues = (): void => {
+    dispatch({ type: 'reset' });
+    setSelectedDay('');
+    setSelectedMonth('');
+    setSelectedYear('s');
+  };
+
   const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
   const toggleIsOpenCalculator = (): void => {
-    
     setIsOpenCalculator((v) => !v);
     if (isOpenCalculator) {
       window.history.back();
     }
   };
-  const [selectedPrice, setSelectedPrice] = useState<number>(0);
-
 
   const {
     contentContainer,
     blankCard,
-    modalContainer,
     expireDate,
     fieldset,
-    buttonContainer,
-    cancelButton,
-    submitBtn,
     formContent,
+    input,
     label,
     fab,
     sectionContainer,
-    input,
   } = useStyle();
+
+  // useEffect(() => {
+  //   const el = document.getElementById('scrollable-content') as HTMLElement;
+  //   if (el !== null) {
+  //     const scrollHeight = el.scrollHeight;
+  //     const interval = setInterval(() => {
+  //       if (el.scrollTop < scrollHeight) {
+  //         el.scrollTop = el.scrollTop + 4;
+  //       }
+
+  //       if (el.scrollTop === scrollHeight) {
+  //         clearInterval(interval);
+  //       }
+  //     }, 50);
+  //   }
+  // }, [comissionPercent, daroogRecommendation]);
 
   useEffectOnce(() => {
     (async (): Promise<any> => {
@@ -295,6 +315,8 @@ const SupplyList: React.FC = () => {
       }
     })();
   });
+
+  const containerRef = useRef<any>();
 
   useEffect(() => {
     (async (): Promise<any> => {
@@ -365,7 +387,7 @@ const SupplyList: React.FC = () => {
         toggleIsOpenModalOfNewList();
         resetStates();
       }
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
     },
   });
@@ -457,7 +479,7 @@ const SupplyList: React.FC = () => {
           el: (
             <div>
               <div>{getDrugName(_item)}</div>
-              <div className="text-muted txt-sm">{`${
+              <div className="text-muted txt-sm no-farsi-number">{ `${
                 _item.enName !== null ? `-${_item.enName}` : ''
               }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
             </div>
@@ -541,13 +563,10 @@ const SupplyList: React.FC = () => {
 
   const memoItems = useMemo(() => displayHandler(), [data, filteredItems]);
 
-  const calculatorFormHandler = async (): Promise<any> => {
+  const selectedCalculaterValueHandler = (v: number): void => {
+    setCalculatedValue(v);
   };
 
-  const selectedCalculaterValueHandler = (v:number):void=>{
-      setCalculatedValue(v);
-
-  }
   const formHandler = async (): Promise<any> => {
     try {
       if (
@@ -593,11 +612,13 @@ const SupplyList: React.FC = () => {
       //@ts-ignore
       state.drugID = selectedDrug?.value;
       await _savePharmacyDrug(state);
-      setCalculatedValue(0)
+      setCalculatedValue(0);
     } catch (e) {
       errorHandler(e);
     }
   };
+
+  const autoCompleteRef = useRef<any>();
 
   return (
     <>
@@ -639,79 +660,102 @@ const SupplyList: React.FC = () => {
       </Container>
 
       <CDialog
-        fullScreen={fullScreen}
+        fullWidth={fullScreen}
         isOpen={isOpenCalculator}
         onCloseAlternate={(): void => setIsOpenCalculator(false)}
         onOpenAltenate={(): void => setIsOpenCalculator(true)}
         modalAlt={true}
         hideAll={false}
         hideSubmit={true}
-        // canceleButtonTitle="درج نتیجه محاسبه"
-        // formHandler={(): void => setIsOpenCalculator(false)}
-
       >
-        <DialogContent >
-         <div style={{display:'flex', justifyContent:'center', minWidth:300}}>
-                    <Calculator setCalculatedValue={selectedCalculaterValueHandler}/>
-
-         </div>
+        <DialogContent>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignContent: 'center',
+              minWidth: `${fullScreen ? '0px' : '300px'}`,
+            }}
+          >
+            <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
+          </div>
         </DialogContent>
       </CDialog>
 
       <CDialog
         fullScreen={fullScreen}
         isOpen={isOpenModalOfNewList}
-        onClose={(): void =>{ setIsOpenModalOfNewList(false)
-                            setCalculatedValue(0)}}
-        onOpen={(): void => {setIsOpenModalOfNewList(true)
-          setCalculatedValue(0)}}
+        onClose={(): void => {
+          setIsOpenModalOfNewList(false);
+          setCalculatedValue(0);
+          resetValues();
+          setSelectedDrug(null);
+        }}
+        onOpen={(): void => {
+          setIsOpenModalOfNewList(true);
+          setCalculatedValue(0);
+        }}
         formHandler={formHandler}
         fullWidth
       >
         <DialogTitle className="text-sm">افزودن به لیست عرضه</DialogTitle>
-        <DialogContent>
+        <StyledDialogContent id="scrollable-content">
           <DialogContentText>
             <Grid container spacing={3} direction="column" className={formContent}>
-              <Grid item xs={12} className={sectionContainer}>
-                <AutoComplete
-                  disable={state?.id !== 0}
-                  ref={useRef()}
-                  isLoading={isLoading}
-                  onChange={debounce((e) => searchDrugs(e.target.value), 500)}
-                  loadingText={t('general.loading')}
-                  className="w-100"
-                  placeholder={t('drug.name')}
-                  options={options}
-                  onItemSelected={(item: any[]): void => setSelectedDrug(item[0])}
-                  defaultSelectedItem={selectedDrug?.label}
-                />
+              <Grid item container xs={12} className={sectionContainer}>
+                <Grid item xs={12}>
+                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                    {t('alerts.searchProduct')}
+                  </span>
+                </Grid>
+                <Grid item xs={12}>
+                  <AutoComplete
+                    disable={state?.id !== 0}
+                    ref={autoCompleteRef}
+                    isLoading={isLoading}
+                    onChange={debounce((e) => searchDrugs(e.target.value), 500)}
+                    loadingText={t('general.loading')}
+                    className="w-100"
+                    placeholder={t('drug.productName')}
+                    options={options}
+                    onItemSelected={(item: any[]): void => setSelectedDrug(item[0])}
+                    defaultSelectedItem={state.id === 0 ? '' : selectedDrug?.label}
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item container xs={12} className={sectionContainer}>
-                <Input
-                  numberFormat
-                  placeholder={`${t('general.number')}`}
-                  className="w-100"
-                  valueLimit={(value) => {
-                    if (value.value > 0 || value.value === '') {
-                      return value;
-                    }
-                  }}
-                  label={`${t('general.number')} ${t('drug.drug')}`}
-                  onChange={(e): void => dispatch({ type: 'cnt', value: e })}
-                  value={state?.cnt}
-                />
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      numberFormat
+                      placeholder={`${t('general.number')}`}
+                      className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
+                      label={`${t('general.number')} ${t('drug.drug')}`}
+                      onChange={(e): void => dispatch({ type: 'cnt', value: e })}
+                      value={state?.cnt}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
                 <Grid xs={12} item>
-                <span className="text-danger txt-xs">{t('alerts.priceTypeAlert')}</span>
+                  <StyledTitle>{t('alerts.priceTypeAlert')}</StyledTitle>
                 </Grid>
                 <Grid item xs={9}>
                   <Input
                     placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
                     numberFormat
-                    value={calculatedValue === 0 ?  state?.amount : calculatedValue}
+                    value={calculatedValue === 0 ? state?.amount : calculatedValue}
                     className="w-100"
                     valueLimit={(value) => {
                       if (value.value > 0 || value.value === '') {
@@ -721,17 +765,12 @@ const SupplyList: React.FC = () => {
                     label={t('general.price')}
                     onChange={(e): void => {
                       dispatch({ type: 'amount', value: e });
-                      setCalculatedValue(0)
-
-                    }
-                    
-                  }
+                      setCalculatedValue(0);
+                    }}
                   />
                 </Grid>
                 <Grid item xs={3}>
-                  <Button onClick={(): void => {
-                    toggleIsOpenCalculator()
-                  }}>
+                  <Button onClick={toggleIsOpenCalculator}>
                     <FontAwesomeIcon
                       style={{ color: ColorEnum.DeepBlue, margin: 4 }}
                       icon={faCalculator}
@@ -744,61 +783,58 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container alignItems="center" spacing={1}>
                   <Grid item xs={12}>
-                    <span className="text-danger txt-xs">{t('alerts.offerDescriptions')}
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      {t('alerts.offerDescriptions')}
                     </span>
                   </Grid>
                   <Grid container alignItems="center" spacing={0}>
-                      <span>به ازای</span>
+                    <span>به ازای</span>
 
-                      
-                      <Input
-                        type="number"
-                        className= {input}
-                        value={state?.offer2}
-                        placeholder="تعداد"
-                        onChange={(e): void => {
-                          const val = e.target.value;
-                          if (Number(val) >= 1 || Number(state?.offer2) >= 1) {
-                            dispatch({
-                              type: 'offer2',
-                              value: val,
-                            });
-                          }
-                        }}
-                      />
-                      <span>تا</span>
-
-                        
-
-
-                    
-                      <Input
-                        type="number"
-                        className= {input}
-
-                        value={state?.offer1}
-                        placeholder="تعداد"
-                        onChange={(e): void => {
-                          const val = e.target.value;
-                          if (Number(val) >= 1 || Number(state?.offer1) >= 1) {
-                            dispatch({
-                              type: 'offer1',
-                              value: val,
-                            });
-                          }
-                        }}
-                      />
-                      {t('general.gift')}
-                    
+                    <Input
+                      type="number"
+                      className={input}
+                      value={state?.offer2}
+                      placeholder="تعداد"
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (Number(val) >= 1 || Number(state?.offer2) >= 1) {
+                          dispatch({
+                            type: 'offer2',
+                            value: val,
+                          });
+                        }
+                      }}
+                    />
+                    <span>تا</span>
+                    <Input
+                      type="number"
+                      className={input}
+                      value={state?.offer1}
+                      placeholder="تعداد"
+                      onChange={(e): void => {
+                        const val = e.target.value;
+                        if (Number(val) >= 1 || Number(state?.offer1) >= 1) {
+                          dispatch({
+                            type: 'offer1',
+                            value: val,
+                          });
+                        }
+                      }}
+                    />
+                    {t('general.gift')}
                   </Grid>
                 </Grid>
               </Grid>
 
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <span style={{ marginBottom: 8 }}>{t('general.expireDate')}</span>{' '}
-                    <span className="text-danger txt-xs">(وارد کردن روز اجباری نیست)</span>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
+                    <span style={{ marginBottom: 8, marginLeft: 6 }}>
+                      {t('general.expireDate')}
+                    </span>
+                    <span style={{ color: '#17A2B8', fontSize: 10 }}>
+                      ( سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد )
+                    </span>
                   </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -807,46 +843,56 @@ const SupplyList: React.FC = () => {
                       label={t('general.day')}
                       type="number"
                       value={selectedDay}
-                      placeholder={'22'}
+                      // placeholder={'22'}
+                      required
+                      error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
                         }
+                        if (val.length === 2) {
+                          monthRef.current.focus();
+                        }
                       }}
-                      error={Number(selectedDay) > 31}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       type="number"
+                      ref={monthRef}
                       value={selectedMonth}
                       label={t('general.month')}
-                      required
+                      // required
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
-                      placeholder={'08'}
+                      // placeholder={'08'}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedMonth.length < 2 || val.length < 2) {
                           setSelectedMonth(e.target.value);
                         }
+                        if (val.length === 2) {
+                          yearRef.current.focus();
+                        }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       type="number"
+                      ref={yearRef}
                       value={selectedYear}
                       required
                       error={selectedYear === '' && showError}
-                      placeholder={'1401/2022'}
+                      // placeholder={'1401/2022'}
                       label={t('general.year')}
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedYear.length < 4 || val.length < 4) {
                           setSelectedYear(val);
+                        }
+                        if (val.length === 4) {
+                          batchRef.current.focus();
                         }
                       }}
                     />
@@ -866,23 +912,32 @@ const SupplyList: React.FC = () => {
                     </p>
                   )}
                 </Grid>
-                <span className="txt-sm">سال وارد شده 4 رقمی و به صورت میلادی یا شمسی باشد</span>
               </Grid>
 
-              {/* <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('general.barcode')}
-                value={state?.batchNO}
-                onChange={(e): void =>
-                  dispatch({ type: 'batchNO', value: e.target.value })
-                }
-              />
-            </Grid> */}
+              <Grid item className={sectionContainer} xs={12}>
+                <Grid container>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
+                    </span>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      required
+                      ref={batchRef}
+                      error={state?.batchNO === '' && showError}
+                      className="w-100"
+                      label={t('general.batchNumber')}
+                      value={state?.batchNO}
+                      onChange={(e): void => dispatch({ type: 'batchNO', value: e.target.value })}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
 
               {comissionPercent !== '' && (
                 <Grid item xs={12}>
-                  {`پورسانت: ${comissionPercent}%`}
+                  <h3>{`پورسانت: ${comissionPercent}%`}</h3>
                 </Grid>
               )}
 
@@ -895,7 +950,7 @@ const SupplyList: React.FC = () => {
               )}
             </Grid>
           </DialogContentText>
-        </DialogContent>
+        </StyledDialogContent>
         <Divider />
         <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
@@ -907,7 +962,7 @@ const SupplyList: React.FC = () => {
                   checked={isCheckedNewItem}
                   onChange={(e): void => setIsCheckedNewItem(e.target.checked)}
                 />
-                <span>صفحه بعد از اضافه کردن دارو٬ جهت افزودن داروی جدید بسته نشود</span>
+                <span>{t('alerts.reloadModalToEnterNewDrug')}</span>
               </label>
             </Grid>
           </Grid>

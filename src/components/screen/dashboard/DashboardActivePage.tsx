@@ -92,7 +92,7 @@ const DashboardActivePage: React.FC = () => {
                   تائید طرفین و در انتظار پرداخت طرف مقابل
                 </button>
                 <button onClick={(): any => showTransfer(10)}>
-                  تبادل کامل شده
+                  تبادل انجام شده
                 </button>
               </Grid>
 

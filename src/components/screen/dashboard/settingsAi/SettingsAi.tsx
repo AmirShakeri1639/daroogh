@@ -12,11 +12,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { ActionInterface, SettingsAiInterface } from '../../../../interfaces';
 import { SettingsAi } from '../../../../services/api';
-import {
-  errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
-} from '../../../../utils';
+import { errorHandler, tError, tSuccess } from '../../../../utils';
 import { useMutation } from 'react-query';
 import TextFieldDaroogh from 'components/public/TextField/TextFieldDaroogh';
 
@@ -372,7 +368,7 @@ const SettingsAiForm: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
     },
   });
 
@@ -382,7 +378,7 @@ const SettingsAiForm: React.FC = () => {
     try {
       await _save(state);
     } catch (e) {
-      await errorSweetAlert(t('error.save'));
+      tError(t('error.save'));
       errorHandler(e);
     }
   };
@@ -394,12 +390,7 @@ const SettingsAiForm: React.FC = () => {
           <h2>{t('settingsAi.settingsAi')}</h2>
         </Typography>
         <Divider />
-        <form
-          autoComplete="off"
-          id="myform"
-          className={rootFull}
-          onSubmit={submit}
-        >
+        <form autoComplete="off" id="myform" className={rootFull} onSubmit={submit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <h3>{t('settingsAi.section1')}</h3>
@@ -467,9 +458,7 @@ const SettingsAiForm: React.FC = () => {
                 help="امتیاز به ازای دارویی که در دسته دارویی مورد علاقه هست"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyDrugIsCategoryFavorite.length < 1 && showError
-                }
+                error={state.pharmacyDrugIsCategoryFavorite.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugIsCategoryFavorite')}
                 required
                 type="number"
@@ -490,15 +479,11 @@ const SettingsAiForm: React.FC = () => {
                   <p>
                     امتیاز برای داروهایی که سرچ کرده
                     <ul>
+                      <li> ضریب 0.1 این مقدار برای داروهایی که در دسته دارویی سرچ بودند</li>
                       <li>
                         {' '}
-                        ضریب 0.1 این مقدار برای داروهایی که در دسته دارویی سرچ
-                        بودند
-                      </li>
-                      <li>
-                        {' '}
-                        ضریب 0.05 این مقدار برای سرچ داروهای آفر دار یا حداقل
-                        مهلت تاریخ انقضا در فیلتر سرچ پیشرفته استفاده می‌شود
+                        ضریب 0.05 این مقدار برای سرچ داروهای آفر دار یا حداقل مهلت تاریخ انقضا در
+                        فیلتر سرچ پیشرفته استفاده می‌شود
                       </li>
                     </ul>
                   </p>
@@ -525,9 +510,7 @@ const SettingsAiForm: React.FC = () => {
                 help="ضریب برای تعداد دفعاتی که این دارو را در سبد خرید خود (در پروسه تبادل) اضافه کرده اعم از تبادلات کنسل شده (که داروخانه فعلی کنسل‌کننده نبوده) و چه تبادلات موفق"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyDrugAddToBasketCount.length < 1 && showError
-                }
+                error={state.pharmacyDrugAddToBasketCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugAddToBasketCount')}
                 required
                 type="number"
@@ -564,12 +547,10 @@ const SettingsAiForm: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextFieldDaroogh
-                help="امتیاز به ازای داروی با نام جنریک مشابه با لیست علاقمندی"
+                help="امتیاز به ازای داروی با نام ژنریک مشابه با لیست علاقمندی"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyDrugIsSimilarFavorite.length < 1 && showError
-                }
+                error={state.pharmacyDrugIsSimilarFavorite.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugIsSimilarFavorite')}
                 required
                 type="number"
@@ -589,9 +570,7 @@ const SettingsAiForm: React.FC = () => {
                 help="امتیاز به ازای داروی که در گذشته در تبادل دریافت کرده"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyDrugExchangeBasketCount.length < 1 && showError
-                }
+                error={state.pharmacyDrugExchangeBasketCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugExchangeBasketCount')}
                 required
                 type="number"
@@ -611,13 +590,8 @@ const SettingsAiForm: React.FC = () => {
                 help="امتیاز به ازای دارویی که از سبد پیشنهادی خودش حذف کرده"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyDrugRemoveFromExchangeBasketCount.length < 1 &&
-                  showError
-                }
-                label={t(
-                  'settingsAi.pharmacyDrugRemoveFromExchangeBasketCount'
-                )}
+                error={state.pharmacyDrugRemoveFromExchangeBasketCount.length < 1 && showError}
+                label={t('settingsAi.pharmacyDrugRemoveFromExchangeBasketCount')}
                 required
                 type="number"
                 variant="outlined"
@@ -636,10 +610,7 @@ const SettingsAiForm: React.FC = () => {
                 help="امتیاز به ازای دارویی که در سبد خریدش بوده و تبادل را کنسل کرده (به دلیل عدم علاقه به داروهای سبد تبادل)"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyDrugCanceledExchangeBasketCount.length < 1 &&
-                  showError
-                }
+                error={state.pharmacyDrugCanceledExchangeBasketCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyDrugCanceledExchangeBasketCount')}
                 required
                 type="number"
@@ -672,9 +643,7 @@ const SettingsAiForm: React.FC = () => {
                 variant="outlined"
                 value={state.drugScore}
                 className={formItem}
-                onChange={(e): void =>
-                  dispatch({ type: 'drugScore', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'drugScore', value: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -729,9 +698,7 @@ const SettingsAiForm: React.FC = () => {
                 variant="outlined"
                 value={state.drugSearchCount}
                 className={formItem}
-                onChange={(e): void =>
-                  dispatch({ type: 'drugSearchCount', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'drugSearchCount', value: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -805,9 +772,7 @@ const SettingsAiForm: React.FC = () => {
                 help="ضریب برای تعداد تبادل موفق"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyPharmacyExchangeCount.length < 1 && showError
-                }
+                error={state.pharmacyPharmacyExchangeCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyPharmacyExchangeCount')}
                 required
                 type="number"
@@ -827,10 +792,7 @@ const SettingsAiForm: React.FC = () => {
                 help="ضریب برای تعداد تبادل کنسل شده"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyPharmacyCanceledExchangeCount.length < 1 &&
-                  showError
-                }
+                error={state.pharmacyPharmacyCanceledExchangeCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyPharmacyCanceledExchangeCount')}
                 required
                 type="number"
@@ -852,9 +814,7 @@ const SettingsAiForm: React.FC = () => {
                 "
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyPharmacyOpenListCount.length < 1 && showError
-                }
+                error={state.pharmacyPharmacyOpenListCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyPharmacyOpenListCount')}
                 required
                 type="number"
@@ -877,23 +837,20 @@ const SettingsAiForm: React.FC = () => {
                     <ul>
                       <li>
                         {' '}
-                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر
-                        هم‌استانی انجام شده (به کل جستجوهای آن داروخانه) به این
-                        ضریب افزوده می‌شود
+                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر هم‌استانی انجام شده
+                        (به کل جستجوهای آن داروخانه) به این ضریب افزوده می‌شود
                       </li>
                       <li>
                         {' '}
-                        به اندازه نصف تعداد تبادلاتی که به دلیل فاصله زیاد کنسل
-                        کرده، به این ضریب افزوده می‌شود
+                        به اندازه نصف تعداد تبادلاتی که به دلیل فاصله زیاد کنسل کرده، به این ضریب
+                        افزوده می‌شود
                       </li>
                     </ul>
                   </p>
                 }
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyPharmacyIsSameProvince.length < 1 && showError
-                }
+                error={state.pharmacyPharmacyIsSameProvince.length < 1 && showError}
                 label={t('settingsAi.pharmacyPharmacyIsSameProvince')}
                 required
                 type="number"
@@ -916,14 +873,13 @@ const SettingsAiForm: React.FC = () => {
                     <ul>
                       <li>
                         {' '}
-                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر
-                        هم‌شهری انجام شده (به کل جستجوهای آن داروخانه) به این
-                        ضریب افزوده می‌شود
+                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر هم‌شهری انجام شده
+                        (به کل جستجوهای آن داروخانه) به این ضریب افزوده می‌شود
                       </li>
                       <li>
                         {' '}
-                        به اندازه تعداد تبادلاتی که به دلیل فاصله زیاد کنسل
-                        کرده، به این ضریب افزوده می‌شود
+                        به اندازه تعداد تبادلاتی که به دلیل فاصله زیاد کنسل کرده، به این ضریب افزوده
+                        می‌شود
                       </li>
                     </ul>
                   </p>
@@ -953,25 +909,21 @@ const SettingsAiForm: React.FC = () => {
                     <ul>
                       <li>
                         {' '}
-                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر
-                        فاصله در محدوده مجاور انجام شده (به کل جستجوهای آن
-                        داروخانه) به این ضریب افزوده می‌شود
+                        به اندازه دوبرابر نسبت کسر جستجوهای پیشرفته که با فیلتر فاصله در محدوده
+                        مجاور انجام شده (به کل جستجوهای آن داروخانه) به این ضریب افزوده می‌شود
                       </li>
                       <li>
                         {' '}
-                        به اندازه دو برابر تعداد تبادلاتی که به دلیل فاصله زیاد
-                        کنسل کرده، به این ضریب افزوده می‌شود دقت شود که
-                        داروخانه‌های که همجوار باشند از امتیازات هم‌استانی و
-                        هم‌شهری نیز بهره‌مند هستند.
+                        به اندازه دو برابر تعداد تبادلاتی که به دلیل فاصله زیاد کنسل کرده، به این
+                        ضریب افزوده می‌شود دقت شود که داروخانه‌های که همجوار باشند از امتیازات
+                        هم‌استانی و هم‌شهری نیز بهره‌مند هستند.
                       </li>
                     </ul>
                   </p>
                 }
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyPharmacyIsCloseDistance.length < 1 && showError
-                }
+                error={state.pharmacyPharmacyIsCloseDistance.length < 1 && showError}
                 label={t('settingsAi.pharmacyPharmacyIsCloseDistance')}
                 required
                 type="number"
@@ -991,13 +943,8 @@ const SettingsAiForm: React.FC = () => {
                 help="معیار حداکثر فاصله (بر حسب متر) دو داروخانه که همجوار درنظر گرفته شوند"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyPharmacyNeighboringDistanceMeters.length < 1 &&
-                  showError
-                }
-                label={t(
-                  'settingsAi.pharmacyPharmacyNeighboringDistanceMeters'
-                )}
+                error={state.pharmacyPharmacyNeighboringDistanceMeters.length < 1 && showError}
+                label={t('settingsAi.pharmacyPharmacyNeighboringDistanceMeters')}
                 required
                 type="number"
                 variant="outlined"
@@ -1029,9 +976,7 @@ const SettingsAiForm: React.FC = () => {
                 variant="outlined"
                 value={state.pharmacyScore}
                 className={formItem}
-                onChange={(e): void =>
-                  dispatch({ type: 'pharmacyScore', value: e.target.value })
-                }
+                onChange={(e): void => dispatch({ type: 'pharmacyScore', value: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
@@ -1079,9 +1024,7 @@ const SettingsAiForm: React.FC = () => {
                 help="ضریب تعداد تبادل کنسل شده توسط این داروخانه"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyCanceledExchangeCount.length < 1 && showError
-                }
+                error={state.pharmacyCanceledExchangeCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyCanceledExchangeCount')}
                 required
                 type="number"
@@ -1181,9 +1124,7 @@ const SettingsAiForm: React.FC = () => {
                 help="ضریب برای تعداد نسخه مردمی پاسخ داده شده"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyPeopleResponseCount.length < 1 && showError
-                }
+                error={state.pharmacyPeopleResponseCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyPeopleResponseCount')}
                 required
                 type="number"
@@ -1203,9 +1144,7 @@ const SettingsAiForm: React.FC = () => {
                 help="ضریب برای تعداد درخواست استخدامی درج شده در سیستم داروگ"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacyEmployeeRequestCount.length < 1 && showError
-                }
+                error={state.pharmacyEmployeeRequestCount.length < 1 && showError}
                 label={t('settingsAi.pharmacyEmployeeRequestCount')}
                 required
                 type="number"
@@ -1305,10 +1244,7 @@ const SettingsAiForm: React.FC = () => {
                 help="ضریب برای تعداد انتخاب داروهای با تاریخ انقضای نزدیک یا بدون آفر (قیمت نامناسب) در سبد تبادل"
                 data-hintposition="top-left"
                 data-position="left"
-                error={
-                  state.pharmacySelectedForceDrugsInExchange.length < 1 &&
-                  showError
-                }
+                error={state.pharmacySelectedForceDrugsInExchange.length < 1 && showError}
                 label={t('settingsAi.pharmacySelectedForceDrugsInExchange')}
                 required
                 type="number"

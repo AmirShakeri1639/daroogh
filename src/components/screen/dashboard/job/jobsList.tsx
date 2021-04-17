@@ -1,25 +1,12 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import Job from '../../../../services/api/Job';
-import FormContainer from '../../../public/form-container/FormContainer';
 import CardContainer from './CardContainer';
 import {
   Container,
   Grid,
-  IconButton,
   Paper,
-  CardHeader,
-  Card,
-  CardContent,
   Divider,
-  Box,
-  TextField,
-  Button,
-  CardActions,
-  FormControlLabel,
-  Switch,
-  Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   DialogContentText,
@@ -30,23 +17,16 @@ import {
   Hidden,
   Fab,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import Input from '../../../public/input/Input';
-import PersonOutlineIcon from '@material-ui/icons/PersonOutline';
-import Modal from '../../../public/modal/Modal';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import {
   errorHandler,
-  isNullOrEmpty,
-  successSweetAlert,
-  warningSweetAlert,
+  tSuccess,
 } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../classes';
 import {
   ActionInterface,
-  PharmacyInterface,
-  ConfirmParams,
   LabelValue,
   JobInterface,
   DataTableCustomActionInterface,
@@ -55,26 +35,17 @@ import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { JobsEnum } from '../../../../enum/query';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
-import { ColorEnum, WorkTimeEnum, MaritalStatusType, GenderType } from '../../../../enum';
-import { DefaultCountryDivisionID } from '../../../../enum/consts';
+import { ColorEnum, MaritalStatusType, GenderType } from '../../../../enum';
 import { User } from '../../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCheck,
   faTimes,
-  faUserCog,
-  faFileInvoiceDollar,
-  faGlobe,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-import { Impersonation } from '../../../../utils';
 import { useHistory } from 'react-router-dom';
-import routes from '../../../../routes';
 import { UrlAddress } from '../../../../enum/UrlAddress';
-import AddTransactionModal from '../accounting/AddTransactionModal';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
-import { Map } from '../../../public';
-import { CountryDivisionSelect } from '../../../public/country-division/CountryDivisionSelect';
 import { StateType, WorkShiftType, SkillLevel, JobPositionType, EducationLevel } from 'enum/Job';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { debounce } from 'lodash';
@@ -300,18 +271,18 @@ const JobsList: React.FC = () => {
     getList();
   };
   const [_cancel, { isLoading: isLoadingRemove }] = useMutation(cancel, {
-    onSuccess: async () => {
+    onSuccess: async (result) => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(JobsEnum.GET_ALL);
       resetListRef();
-      await successSweetAlert(t('alert.successfulDelete'));
+      tSuccess(result.message);
     },
   });
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
     onSuccess: async () => {
       await queryCache.invalidateQueries(JobsEnum.GET_ALL);
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       resetListRef();
 
       ref.current?.onQueryChange();
@@ -382,11 +353,11 @@ const JobsList: React.FC = () => {
         render: (row: any): any => {
           return (
             <span
-              style={{
+              style={ {
                 color: row.cancelDate ? ColorEnum.Red : ColorEnum.Green,
-              }}
+              } }
             >
-              <FontAwesomeIcon icon={row.cancelDate ? faTimes : faCheck} />
+              <FontAwesomeIcon icon={ row.cancelDate ? faTimes : faCheck } />
             </span>
           );
         },
@@ -516,7 +487,7 @@ const JobsList: React.FC = () => {
       errorHandler(e);
     }
     //   } else {
-    //     await warningSweetAlert(t('alert.fillFormCarefully'));
+    //     tWarn(t('alert.fillFormCarefully'));
     //   }
   };
 
@@ -702,89 +673,89 @@ const JobsList: React.FC = () => {
   const editModal = (): JSX.Element => {
     return (
       <CDialog
-        fullScreen={fullScreen}
+        fullScreen={ fullScreen }
         fullWidth
-        isOpen={isOpenEditModal}
-        onClose={(): void => setIsOpenSaveModal(false)}
-        onOpen={(): void => setIsOpenSaveModal(true)}
-        formHandler={submitSave}
+        isOpen={ isOpenEditModal }
+        onClose={ (): void => setIsOpenSaveModal(false) }
+        onOpen={ (): void => setIsOpenSaveModal(true) }
+        formHandler={ submitSave }
       >
         <DialogTitle className="text-sm">
-          {state?.id === 0 ? t('action.create') : t('action.edit')}
+          { state?.id === 0 ? t('action.create') : t('action.edit') }
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Grid container spacing={1} className={formContent}>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.maritalStatus')}</label>
+            <Grid container spacing={ 1 } className={ formContent }>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.maritalStatus') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.maritalStatus}
-                      data={MaritalStatusList}
+                      defaultValue={ state?.maritalStatus }
+                      data={ MaritalStatusList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'maritalStatus', value: v });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.gender')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.gender') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.gender}
-                      data={GenderTypeList}
+                      defaultValue={ state?.gender }
+                      data={ GenderTypeList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'gender', value: v });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.hasReadingPrescriptionCertificate')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.hasReadingPrescriptionCertificate') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.hasReadingPrescriptionCertificate}
-                      data={StateTypeList}
+                      defaultValue={ state?.hasReadingPrescriptionCertificate }
+                      data={ StateTypeList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({
                           type: 'hasReadingPrescriptionCertificate',
                           value: v,
                         });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.minGradeOfReadingPrescriptionCertificate')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.minGradeOfReadingPrescriptionCertificate') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       numberFormat
                       required
-                      label={t('jobs.minGradeOfReadingPrescriptionCertificate')}
+                      label={ t('jobs.minGradeOfReadingPrescriptionCertificate') }
                       className="w-100"
-                      value={state?.minGradeOfReadingPrescriptionCertificate}
-                      onChange={(e): void =>
+                      value={ state?.minGradeOfReadingPrescriptionCertificate }
+                      onChange={ (e): void =>
                         dispatch({
                           type: 'minGradeOfReadingPrescriptionCertificate',
                           value: e.target.value,
@@ -794,19 +765,19 @@ const JobsList: React.FC = () => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.minWorkExperienceYear')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.minWorkExperienceYear') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       numberFormat
                       required
-                      label={t('jobs.minWorkExperienceYear')}
-                      value={state?.minWorkExperienceYear}
-                      onChange={(e): void =>
+                      label={ t('jobs.minWorkExperienceYear') }
+                      value={ state?.minWorkExperienceYear }
+                      onChange={ (e): void =>
                         dispatch({
                           type: 'minWorkExperienceYear',
                           value: e.target.value,
@@ -816,189 +787,189 @@ const JobsList: React.FC = () => {
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.suggestedWorkShift')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.suggestedWorkShift') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.suggestedWorkShift}
-                      data={WorkShiftTypeList}
+                      defaultValue={ state?.suggestedWorkShift }
+                      data={ WorkShiftTypeList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({
                           type: 'suggestedWorkShift',
                           value: v,
                         });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.pharmaceuticalSoftwareSkill')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.pharmaceuticalSoftwareSkill') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.pharmaceuticalSoftwareSkill}
-                      data={SkillLevelList}
+                      defaultValue={ state?.pharmaceuticalSoftwareSkill }
+                      data={ SkillLevelList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({
                           type: 'pharmaceuticalSoftwareSkill',
                           value: v,
                         });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.computerSkill')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.computerSkill') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.computerSkill}
-                      data={SkillLevelList}
+                      defaultValue={ state?.computerSkill }
+                      data={ SkillLevelList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'computerSkill', value: v });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.foreignLanguagesSkill')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.foreignLanguagesSkill') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.foreignLanguagesSkill}
-                      data={SkillLevelList}
+                      defaultValue={ state?.foreignLanguagesSkill }
+                      data={ SkillLevelList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({
                           type: 'foreignLanguagesSkill',
                           value: v,
                         });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label htmlFor="add" className={`${label} cursor-pointer`}>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label htmlFor="add" className={ `${label} cursor-pointer` }>
                       <input
                         id="hasGuarantee"
                         type="checkbox"
-                        checked={state?.hasGuarantee}
-                        onChange={(e): void =>
+                        checked={ state?.hasGuarantee }
+                        onChange={ (e): void =>
                           dispatch({
                             type: 'hasGuarantee',
                             value: e.target.checked,
                           })
                         }
                       />
-                      <span>{t('jobs.hasGuarantee')}</span>
+                      <span>{ t('jobs.hasGuarantee') }</span>
                     </label>
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.jobPosition')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.jobPosition') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.jobPosition}
-                      data={JobPositionTypeList}
+                      defaultValue={ state?.jobPosition }
+                      data={ JobPositionTypeList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'jobPosition', value: v });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.education')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.education') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.education}
-                      data={EducationLevelList}
+                      defaultValue={ state?.education }
+                      data={ EducationLevelList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'education', value: v });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.maxAge')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.maxAge') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       numberFormat
                       required
-                      label={t('jobs.maxAge')}
-                      value={state?.maxAge}
-                      onChange={(e): void => dispatch({ type: 'maxAge', value: e.target.value })}
+                      label={ t('jobs.maxAge') }
+                      value={ state?.maxAge }
+                      onChange={ (e): void => dispatch({ type: 'maxAge', value: e.target.value }) }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('jobs.livingInArea')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('jobs.livingInArea') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state?.livingInArea}
-                      data={StateTypeList}
+                      defaultValue={ state?.livingInArea }
+                      data={ StateTypeList }
                       className="w-100"
-                      onChangeHandler={(v): void => {
+                      onChangeHandler={ (v): void => {
                         return dispatch({ type: 'livingInArea', value: v });
-                      }}
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.descriptions')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.descriptions') }</label>
                   </Grid>
 
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('general.descriptions')}
-                      value={state?.descriptions}
-                      onChange={(e): void =>
+                      label={ t('general.descriptions') }
+                      value={ state?.descriptions }
+                      onChange={ (e): void =>
                         dispatch({
                           type: 'descriptions',
                           value: e.target.value,
@@ -1087,11 +1058,11 @@ const JobsList: React.FC = () => {
         //const { user } = item;
         //if (user !== null) {
         return (
-          <Grid item xs={12} sm={6} md={4} key={item.id}>
+          <Grid item xs={ 12 } sm={ 6 } md={ 4 } key={ item.id }>
             <CardContainer
-              data={item}
-              saveHandler={saveHandler}
-              toggleConfirmHandler={toggleConfirmHandler}
+              data={ item }
+              saveHandler={ saveHandler }
+              toggleConfirmHandler={ toggleConfirmHandler }
             />
           </Grid>
         );
@@ -1104,47 +1075,47 @@ const JobsList: React.FC = () => {
 
   // @ts-ignore
   return (
-    <Container maxWidth="lg" className={container}>
-      <Grid item xs={12}>
-        <span>{t('jobs.list')}</span>
+    <Container maxWidth="lg" className={ container }>
+      <Grid item xs={ 12 }>
+        <span>{ t('jobs.list') }</span>
       </Grid>
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          {false && (
+      <Grid container spacing={ 0 }>
+        <Grid item xs={ 12 }>
+          { false && (
             <DataTable
-              tableRef={ref}
-              columns={tableColumns()}
+              tableRef={ ref }
+              columns={ tableColumns() }
               // addAction={(): void => saveHandler(initialState)}
-              editAction={(e: any, row: any): void => saveHandler(row)}
-              customActions={actions}
-              queryKey={JobsEnum.GET_ALL}
-              queryCallback={all}
-              urlAddress={UrlAddress.getAllJobs}
-              initLoad={false}
+              editAction={ (e: any, row: any): void => saveHandler(row) }
+              customActions={ actions }
+              queryKey={ JobsEnum.GET_ALL }
+              queryCallback={ all }
+              urlAddress={ UrlAddress.getAllJobs }
+              initLoad={ false }
             />
-          )}
-          {(isLoadingRemove || isLoadingSave) && <CircleLoading />}
+          ) }
+          { (isLoadingRemove || isLoadingSave) && <CircleLoading /> }
 
-          <Grid container spacing={3} className={contentContainer}>
+          <Grid container spacing={ 3 } className={ contentContainer }>
             <Hidden xsDown>
-              <Grid item xs={12} sm={6} md={4}>
-                <Paper className={blankCard} onClick={(): void => saveHandler(initialState)}>
-                  <FontAwesomeIcon icon={faPlus} size="2x" />
+              <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+                <Paper className={ blankCard } onClick={ (): void => saveHandler(initialState) }>
+                  <FontAwesomeIcon icon={ faPlus } size="2x" />
                   <span>ایجاد فرصت شغلی</span>
                 </Paper>
               </Grid>
             </Hidden>
 
             <Hidden smUp>
-              <Fab onClick={(): void => saveHandler(initialState)} className={fab} aria-label="add">
-                <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
+              <Fab onClick={ (): void => saveHandler(initialState) } className={ fab } aria-label="add">
+                <FontAwesomeIcon size="2x" icon={ faPlus } color="white" />
               </Fab>
             </Hidden>
-            {true && contentGenerator()}
-            {true && <CircleBackdropLoading isOpen={isLoading} />}
+            { true && contentGenerator() }
+            { true && <CircleBackdropLoading isOpen={ isLoading } /> }
           </Grid>
         </Grid>
-        {isOpenEditModal && editModal()}
+        { isOpenEditModal && editModal() }
       </Grid>
     </Container>
   );

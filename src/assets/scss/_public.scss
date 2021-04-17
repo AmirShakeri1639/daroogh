@@ -105,6 +105,25 @@ input[type='number'] {
   }
 }
 
+.Toastify__toast {
+  font-family  : Vazir;
+  border-radius: .3em;
+}
+
+.Toastify__toast--success {
+  background   : #43A048;
+  padding-right: 1em;
+
+  .toast-success-message {
+    padding-right: 1em;
+  }
+}
+
+.no-farsi-number,
+.no-farsi-number .MuiInputBase-root {
+  font-family: VazirFontNumber !important;
+}
+
 @media print {
   .print-hide {
     display: none !important;

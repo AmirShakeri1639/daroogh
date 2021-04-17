@@ -13,7 +13,7 @@ import { SupplyListCardContainer } from '../../../../interfaces';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { useMutation, useQueryCache } from 'react-query';
 import { PharmacyDrug } from '../../../../services/api';
-import { successSweetAlert, errorSweetAlert } from '../../../../utils';
+import { tSuccess, tError } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../enum';
 import { AllPharmacyDrug } from '../../../../enum/query';
@@ -81,10 +81,10 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
   const [_removePharmacyDrug] = useMutation(removePharmacyDrug, {
     onSuccess: async (data) => {
       queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
-      await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      tSuccess(t('alert.successfulRemoveTextMessage'));
     },
     onError: async () => {
-      await errorSweetAlert(t('alert.failedRemove'));
+      tError(t('alert.failedRemove'));
     },
   });
 

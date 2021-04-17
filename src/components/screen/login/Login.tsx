@@ -2,7 +2,6 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import {
-  Avatar,
   Button,
   Container,
   createStyles,
@@ -14,7 +13,6 @@ import {
   Grid,
 } from '@material-ui/core';
 import { makeStyles, Theme } from '@material-ui/core/styles';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { useTranslation } from 'react-i18next';
 import {
   ActionInterface,
@@ -25,8 +23,8 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 import CircleLoading from '../../public/loading/CircleLoading';
 import Account from '../../../services/api/Account';
 import { useMutation } from 'react-query';
-import { errorHandler, errorSweetAlert } from '../../../utils';
-import { Settings, User, File } from '../../../services/api';
+import { errorHandler, tError } from 'utils';
+import { Settings, User } from '../../../services/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
@@ -46,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
     margin: {
       margin: theme.spacing(1),
     },
-    button:{
+    button: {
       width: '100%'
     }
   })
@@ -123,13 +121,13 @@ const Login: React.FC = (): JSX.Element => {
         localStorage.setItem('settings', JSON.stringify(settings));
 
         // Save blob of profile pic in local storage
-        try {
-          const fileApi = new File();
-          const blob = await fileApi.get(data.imageKey);
-          localStorage.setItem('avatar', window.URL.createObjectURL(blob));
-        } catch (e) {
-          errorHandler(e);
-        }
+        // try {
+        //   const fileApi = new File();
+        //   const blob = await fileApi.get(data.imageKey);
+        //   localStorage.setItem('avatar', window.URL.createObjectURL(blob));
+        // } catch (e) {
+        //   errorHandler(e);
+        // }
 
         if (process.env.NODE_ENV === 'production') {
           (async (): Promise<any> => {
@@ -163,7 +161,6 @@ const Login: React.FC = (): JSX.Element => {
       ) {
         setIsValidRecaptcha(false)
       }
-      await errorSweetAlert(t('alert.errorUserNamePassword'));
     },
   });
 
@@ -198,7 +195,7 @@ const Login: React.FC = (): JSX.Element => {
     dispatch({ type: 'username', value: e.target.value });
   const passwordHandler = (e: React.ChangeEvent<HTMLInputElement>): void =>
     dispatch({ type: 'password', value: e.target.value });
-
+  (window as any).$crisp = [];
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />

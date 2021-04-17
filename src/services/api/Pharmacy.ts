@@ -1,6 +1,12 @@
 import Api from './Api'
 import { errorHandler } from "../../utils";
-import { PharmacyInterface, ConfirmParams, PharmacyWithUserInterface, FileForPharmacyInterface } from '../../interfaces';
+import {
+  PharmacyInterface,
+  ConfirmParams,
+  FileForPharmacyInterface,
+  FileForPharmacyGeneralInterface
+} from '../../interfaces';
+import { DataTableColumns } from 'interfaces/DataTableColumns';
 
 class Pharmacy extends Api {
   pharmacyId: number | string = 0
@@ -15,6 +21,7 @@ class Pharmacy extends Api {
     files: `/Pharmacy/GetFiles`,
     removeFile: '/Pharmacy/RemoveFile',
     addFile: '/Pharmacy/AddFile',
+    addFileGeneral: '/Pharmacy/AddFileGeneral',
   }
 
   constructor(pharmacyId: number | string = 0) {
@@ -34,8 +41,12 @@ class Pharmacy extends Api {
     }
   }
 
-  register = async (data: PharmacyWithUserInterface): Promise<any> => {
+  register = async (data: any): Promise<any> => {
     try {
+      // const result = await this.postFormData(
+      //   this.urls.register,
+      //   data
+      // )
       const result = await this.postJsonData(
         this.urls.register,
         data
@@ -84,10 +95,18 @@ class Pharmacy extends Api {
     }
   }
 
-  files = async (skip: number, top: number = 10): Promise<any> => {
-    const result = await this.postJsonData(
-      `${this.urls.files}?pharmacyId=${this.pharmacyId}` +
-      `&$top=${top}&$skip=${skip * top}&$orderby=id desc`)
+  files = async (
+    skip: number, top: number = 10,
+    searchableColumns: DataTableColumns[] = [],
+    searchText: string = ''
+  ): Promise<any> => {
+    let filter = 'true'
+    if (searchText.trim() != "") {
+      filter = `(contains(cast(fileTypeName,'Edm.String'),'${searchText}'))`
+    }
+    const query = `${this.urls.files}?pharmacyId=${this.pharmacyId}` +
+      `&$top=${top}&$skip=${skip * top}&$orderby=id desc&$filter=${filter}`
+    const result = await this.postJsonData(query)
     return result.data
   }
 
@@ -102,12 +121,27 @@ class Pharmacy extends Api {
     const {
       fileTypeID, pharmacyId, file
     } = data
+
     const result = await this.postFormData(
       `${this.urls.addFile}?fileTypeId=${fileTypeID}&pharmacyId=${pharmacyId}`,
       { file: file }
     )
     return result.data
   }
+
+  addFileGeneral = async (data: FileForPharmacyGeneralInterface): Promise<any> => {
+    const {
+      fileTypeID, pharmacyKey, file
+    } = data
+
+    const result = await this.postFormData(
+      this.urls.addFileGeneral +
+      `?fileTypeId=${fileTypeID}&pharmacyKey=${pharmacyKey}`,
+      { file: file }
+    )
+    return result.data
+  }
+
 }
 
 export default Pharmacy;

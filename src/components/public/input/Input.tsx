@@ -2,7 +2,7 @@ import React, { forwardRef, ReactText, Ref, useCallback } from 'react';
 import { createStyles, makeStyles, TextField } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
 
-const useStyle = makeStyles((theme) =>
+const useStyle = makeStyles(() =>
   createStyles({
     numberInput: {
       width: '100%',
@@ -35,6 +35,7 @@ interface InputProps {
   className?: any;
   helperText?: ReactText;
   valueLimit?: (obj: any) => any;
+  onBlur?: () => void;
 }
 
 const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref) => {
@@ -56,51 +57,53 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
     className,
     helperText,
     valueLimit,
+    onBlur,
   } = props;
 
-  const inuptGenerator = useCallback((): JSX.Element => {
+  const inputGenerator = useCallback((): JSX.Element => {
     if (numberFormat) {
       return (
         <NumberFormat
-          ref={ref}
+          ref={ ref }
           type="tel"
-          className={numberInput}
-          value={value}
-          placeholder={String(placeholder)}
+          className={ numberInput }
+          value={ value }
+          placeholder={ String(placeholder) }
           thousandSeparator
-          isAllowed={valueLimit}
+          isAllowed={ valueLimit }
           // @ts-ignore
-          onValueChange={(value): void => onChange(value?.value)}
-          customInput={TextField}
+          onValueChange={ (value): void => onChange(value?.value) }
+          customInput={ TextField }
         />
       );
     }
     return (
       <TextField
-        ref={ref}
-        error={error}
-        className={className || ''}
-        type={type}
-        value={value}
+        inputRef={ ref }
+        error={ error }
+        className={ className || '' }
+        type={ type }
+        value={ value }
         size="small"
-        helperText={helperText}
+        helperText={ helperText }
         variant="outlined"
-        rows={rows}
-        multiline={isMultiLine}
-        label={label}
-        placeholder={String(placeholder)}
-        dir={dir}
-        required={required}
-        onClick={onClick}
-        inputProps={{
+        rows={ rows }
+        multiline={ isMultiLine }
+        label={ label }
+        placeholder={ String(placeholder) }
+        dir={ dir }
+        required={ required }
+        onClick={ onClick }
+        onBlur={ onBlur ?? undefined }
+        inputProps={ {
           readOnly,
-        }}
-        onChange={onChange}
+        } }
+        onChange={ onChange }
       />
     );
   }, [value, error]);
 
-  return inuptGenerator();
+  return inputGenerator();
 });
 
 Input.defaultProps = {

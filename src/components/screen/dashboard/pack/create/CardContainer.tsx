@@ -1,19 +1,12 @@
 import React, { Fragment, useState } from 'react';
-import {
-  makeStyles,
-  Paper,
-  createStyles,
-  Grid,
-  Button,
-  Divider,
-} from '@material-ui/core';
+import { makeStyles, Paper, createStyles, Grid, Button, Divider } from '@material-ui/core';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SupplyListCardContainer } from '../../../../../interfaces';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { useMutation, useQueryCache } from 'react-query';
 import { PharmacyDrug } from '../../../../../services/api';
-import { successSweetAlert, errorSweetAlert } from '../../../../../utils';
+import { tSuccess, tError } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../../enum';
 import { AllPharmacyDrug } from '../../../../../enum/query';
@@ -37,32 +30,33 @@ const useStyle = makeStyles((theme) =>
 interface CardContainerProps {
   item: PharmacyDrugSupplyList;
   removeHandler: (item: any) => void;
-  status: number
+  status: number;
 }
 
 const CardContainer: React.FC<CardContainerProps> = (props) => {
-  const { root, redTrash } = useStyle();
+  const { root } = useStyle();
   const { item, removeHandler, status } = props;
 
   const {
+    id,
     cnt,
     expireDate,
     offer1,
     offer2,
     amount,
-    drugID: { value, label, d },
+    drugID: { label },
   } = item;
 
   const queryCache = useQueryCache();
   const { t } = useTranslation();
 
   const [_removePharmacyDrug] = useMutation(removePharmacyDrug, {
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
-      await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      tSuccess(t('alert.successfulRemoveTextMessage'));
     },
     onError: async () => {
-      await errorSweetAlert(t('alert.failedRemove'));
+      tError(t('alert.failedRemove'));
     },
   });
 
@@ -73,7 +67,6 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
   return (
     <Paper className={root} elevation={1}>
       <Grid container spacing={1}>
-     
         <Detail
           drugName={label}
           amount={Number(amount)}
@@ -84,9 +77,7 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
           enName={''}
         />
       </Grid>
-      {
-        status == 1 &&
-
+      {status == 1 && (
         <Fragment>
           <Grid item xs={12} style={{ padding: '4px' }}>
             {' '}
@@ -97,16 +88,16 @@ const CardContainer: React.FC<CardContainerProps> = (props) => {
             <Grid justify="flex-end" container spacing={0}>
               <Grid item xs={2}>
                 <Button
-                  onClick={(): void => itemRemoveHandler(value)}
+                  onClick={(): void => itemRemoveHandler(id)}
                   style={{ color: 'red', fontSize: '14px' }}
                 >
                   حذف
-            </Button>
+                </Button>
               </Grid>
             </Grid>
           </Grid>
         </Fragment>
-      }
+      )}
     </Paper>
   );
 };
