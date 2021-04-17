@@ -3,9 +3,10 @@ import { errorHandler } from "../../utils";
 import {
   PharmacyInterface,
   ConfirmParams,
-  FileForPharmacyInterface, 
+  FileForPharmacyInterface,
   FileForPharmacyGeneralInterface
 } from '../../interfaces';
+import { DataTableColumns } from 'interfaces/DataTableColumns';
 
 class Pharmacy extends Api {
   pharmacyId: number | string = 0
@@ -94,10 +95,18 @@ class Pharmacy extends Api {
     }
   }
 
-  files = async (skip: number, top: number = 10): Promise<any> => {
-    const result = await this.postJsonData(
-      `${this.urls.files}?pharmacyId=${this.pharmacyId}` +
-      `&$top=${top}&$skip=${skip * top}&$orderby=id desc`)
+  files = async (
+    skip: number, top: number = 10,
+    searchableColumns: DataTableColumns[] = [],
+    searchText: string = ''
+  ): Promise<any> => {
+    let filter = 'true'
+    if (searchText.trim() != "") {
+      filter = `(contains(cast(fileTypeName,'Edm.String'),'${searchText}'))`
+    }
+    const query = `${this.urls.files}?pharmacyId=${this.pharmacyId}` +
+      `&$top=${top}&$skip=${skip * top}&$orderby=id desc&$filter=${filter}`
+    const result = await this.postJsonData(query)
     return result.data
   }
 

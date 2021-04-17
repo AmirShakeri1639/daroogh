@@ -28,6 +28,7 @@ import {
   faUserMd,
   faCog,
   faHandshake,
+  faArchive,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -115,6 +116,7 @@ const {
   pharmacyMessage,
   surveyList,
   fda_exchangeList,
+  aPharmacyDocs,
 } = routes;
 
 /**
@@ -445,6 +447,19 @@ const ListItems: React.FC = () => {
             selected: isOpenPageOfThisGroup('favorite/drug'),
             link: drugFavoriteList,
           })}
+        </List>
+
+        <List component="div" className={ linkWrapper }>
+          { getListItem({
+            Icon: FontAwesomeIcon,
+            text: t('file.docs'),
+            selected: isOpenPageOfThisGroup(aPharmacyDocs),
+            link: aPharmacyDocs,
+            props: {
+              icon: faArchive,
+              size: 'lg',
+            },
+          }) }
         </List>
 
         <List component="div" className={linkWrapper}>
