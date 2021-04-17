@@ -107,7 +107,7 @@ const initialState = {
     countryDivisionID: -1,
     x: '',
     y: '',
-    type: 2,
+    type: 1,
   },
   user: {
     id: 0,

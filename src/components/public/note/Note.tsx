@@ -5,7 +5,7 @@ import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 
 const Note: React.FC = (props) => {
   return (
-    <Grid container className="note" xs={ 12 } sm={ 10 }>
+    <Grid container className="note" xs={ 11 } sm={ 10 }>
       <Grid item xs={ 1 }>
         <FontAwesomeIcon icon={ faExclamation } size="3x" />
       </Grid>
