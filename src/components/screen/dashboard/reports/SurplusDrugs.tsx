@@ -91,12 +91,8 @@ const getColumns = (): DataTableColumns[] => {
       type: 'string',
       headerStyle: { minWidth: 150 },
       render: (row: any): any => {
-        return (
-          <span className="no-farsi-number">
-            { row.drugEnName }
-          </span>
-        )
-      }
+        return <span className="no-farsi-number">{row.drugEnName}</span>;
+      },
     },
     {
       title: 'نوع دارو',
