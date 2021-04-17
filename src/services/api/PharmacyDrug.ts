@@ -53,6 +53,7 @@ class PharmacyDrug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -63,6 +64,7 @@ class PharmacyDrug extends Api {
       return result;
     } catch (error) {
       errorHandler(error);
+      return Promise.reject(error)
     }
   };
 
@@ -74,6 +76,7 @@ class PharmacyDrug extends Api {
       return result;
     } catch (error) {
       errorHandler(error);
+      return Promise.reject(error)
     }
   };
 
@@ -85,6 +88,7 @@ class PharmacyDrug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -105,6 +109,7 @@ class PharmacyDrug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -116,6 +121,7 @@ class PharmacyDrug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -127,6 +133,7 @@ class PharmacyDrug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -138,6 +145,7 @@ class PharmacyDrug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -149,6 +157,7 @@ class PharmacyDrug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -160,6 +169,7 @@ class PharmacyDrug extends Api {
       return result;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -187,6 +197,7 @@ class PharmacyDrug extends Api {
       return result;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -198,6 +209,7 @@ class PharmacyDrug extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -209,6 +221,7 @@ class PharmacyDrug extends Api {
       return result;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 

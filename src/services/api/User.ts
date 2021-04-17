@@ -29,6 +29,7 @@ class User extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -40,6 +41,7 @@ class User extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -60,6 +62,7 @@ class User extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -69,6 +72,7 @@ class User extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -82,6 +86,7 @@ class User extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -93,6 +98,7 @@ class User extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
