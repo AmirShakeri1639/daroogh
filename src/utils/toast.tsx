@@ -4,19 +4,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 
-export const tSimple = (message = '') => toast(message)
+export const tSimple = (message = '', options = {}) => toast(message, options)
 
-export const tInfo = (message = '') => toast.info(message)
+export const tInfo = (message = '', options = {}) => toast.info(message, options)
 
-export const tSuccess = (message = '') => toast.success(
+export const tSuccess = (message = '', options = {}) => toast.success(
   <>
     <FontAwesomeIcon icon={ faCheckCircle } size="lg" />
     <span className="toast-success-message">
       { message }
     </span>
-  </>
+  </>,
+  options
 )
 
-export const tWarn = (message = '') => toast.warn(message)
+export const tWarn = (message = '', options = {}) => toast.warn(message, options)
 
-export const tError = (message = '') => toast.error(message)
+export const tError = (message = '', options = {}) => toast.error(message, options)

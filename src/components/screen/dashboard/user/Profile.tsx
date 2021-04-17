@@ -23,6 +23,7 @@ import changeProfilePic from '../user/changeProfilePic';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { ColorEnum } from 'enum';
+import { toast } from 'react-toastify';
 
 export const useClasses = makeStyles((theme) =>
   createStyles({
@@ -241,7 +242,7 @@ const Profile: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      tSuccess(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'))
     },
   });
 
