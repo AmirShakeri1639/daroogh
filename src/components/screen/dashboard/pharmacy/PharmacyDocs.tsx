@@ -1,22 +1,23 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, Paper, useMediaQuery, useTheme } from '@material-ui/core';
-import DataTable from 'components/public/datatable/DataTable';
-import { useTranslation } from 'react-i18next';
-import { useClasses } from '../classes';
-import useDataTableRef from 'hooks/useDataTableRef';
-import { DataTableColumns } from 'interfaces/DataTableColumns';
-import { FileType, Pharmacy } from 'services/api';
-import queryString from 'query-string';
-import { useLocation } from 'react-router-dom';
-import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
-import { useMutation, useQueryCache } from 'react-query';
-import { errorHandler, isNullOrEmpty, tSuccess, tWarn } from 'utils';
-import { ActionInterface, FileForPharmacyInterface, LabelValue } from 'interfaces';
-import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faImage } from '@fortawesome/free-regular-svg-icons';
-import { PictureDialog } from 'components/public';
-import Uploader from 'components/public/uploader/uploader';
+import React, { useEffect, useReducer, useState } from 'react'
+import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, Paper, useMediaQuery, useTheme } from '@material-ui/core'
+import DataTable from 'components/public/datatable/DataTable'
+import { useTranslation } from 'react-i18next'
+import { useClasses } from '../classes'
+import useDataTableRef from 'hooks/useDataTableRef'
+import { DataTableColumns } from 'interfaces/DataTableColumns'
+import { FileType, Pharmacy } from 'services/api'
+import queryString from 'query-string'
+import { useLocation } from 'react-router-dom'
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading'
+import { useMutation, useQueryCache } from 'react-query'
+import { errorHandler, isNullOrEmpty, tError, tSuccess, tWarn } from 'utils'
+import { ActionInterface, CommandInterface, DataTableCustomActionInterface, FileForPharmacyInterface, LabelValue } from 'interfaces'
+import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faImage } from '@fortawesome/free-regular-svg-icons'
+import { PictureDialog } from 'components/public'
+import Uploader from 'components/public/uploader/uploader'
+import { ColorEnum, PharmacyFileStateEnum } from 'enum'
 
 const initialState: FileForPharmacyInterface = {
   fileTypeID: 1,
@@ -77,6 +78,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
   const [isOpenPicture, setIsOpenPicture] = useState(false)
   const [fileName, setFileName] = useState()
   const [fileTitle, setFileTitle] = useState()
+  const [fileId, setFileId] = useState(0)
 
   const { all: allFileTypes } = new FileType()
   const [fileTypes, setFileTypes] = useState<LabelValue[]>([])
@@ -96,15 +98,67 @@ const PharmacyDocs: React.FC<Props> = (props) => {
 
   const pharmacy = new Pharmacy(pharmacyId)
 
+  const [pharmacyName, setPharmacyName] = useState('')
+  useEffect(() => {
+    (async function getPharmacy(): Promise<any> {
+      const result = await pharmacy.get(pharmacyId)
+      setPharmacyName(result.name)
+    })()
+  }, [])
+
+  const [_changeFileState] = useMutation(pharmacy.changeFileState, {
+    onSuccess: async (e: any) => {
+      ref.current?.onQueryChange()
+      tSuccess(e)
+    },
+    onError: async (e: any) => {
+      tError(t('error.save'))
+    }
+  })
+
+  const changeFileState = async (
+    id: any, state: number | string
+  ): Promise<any> => {
+    await _changeFileState({ fileId: id, state })
+  }
+
+  const commands: CommandInterface[] = [
+    {
+      title: t('file.state.Confirmed'),
+      method: (e: any) => {
+        setIsOpenPicture(false)
+        changeFileState(e, PharmacyFileStateEnum.Confirmed)
+      },
+      color: ColorEnum.Green
+    },
+    {
+      title: t('file.state.UnConfirmed'),
+      method: (e: any) => {
+        setIsOpenPicture(false)
+        changeFileState(e, PharmacyFileStateEnum.UnConfirmed)
+      }
+    }
+  ]
+
   const pictureDialog = (fileKey: string, fileName?: string, title?: string): JSX.Element => {
     return (
       <PictureDialog
+        fileId={ fileId }
         fileName={ fileName }
         fileKey={ fileKey }
         title={ title }
         onClose={ (): void => setIsOpenPicture(false) }
+        commands={ commands }
       />
     )
+  }
+
+  const setRowData = (row: any) => {
+    setFileKeyToShow(row.fileKey)
+    setIsOpenPicture(true)
+    setFileName(row.fileName)
+    setFileTitle(row.fileTypeName)
+    setFileId(row.id)
   }
 
   const tableColumns = (): DataTableColumns[] => {
@@ -114,15 +168,22 @@ const PharmacyDocs: React.FC<Props> = (props) => {
         title: t('general.id'),
         type: 'number',
         cellStyle: { textAlign: 'right' },
+        searchable: true,
       },
       {
         field: 'fileName',
         title: t('file.fileName'),
         type: 'string',
+        searchable: true,
       },
       {
         field: 'fileTypeName',
         title: t('file.fileType'),
+        type: 'string',
+      },
+      {
+        field: 'stateString',
+        title: t('general.status'),
         type: 'string',
       },
       {
@@ -134,10 +195,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
             <>
               { !isNullOrEmpty(row.fileKey) &&
                 <Button onClick={ (): any => {
-                  setFileKeyToShow(row.fileKey)
-                  setIsOpenPicture(true)
-                  setFileName(row.fileName)
-                  setFileTitle(row.fileTypeName)
+                  setRowData(row)
                 } }>
                   <FontAwesomeIcon icon={ faImage } />
                 </Button>
@@ -148,6 +206,18 @@ const PharmacyDocs: React.FC<Props> = (props) => {
       },
     ]
   }
+
+  const actions: DataTableCustomActionInterface[] = [
+    {
+      icon: 'check',
+      tooltip: t('action.changeStatus'),
+      iconProps: {
+        color: 'error',
+      },
+      position: 'row',
+      action: (e: any, row: any) => setRowData(row),
+    }
+  ]
 
   const [_remove, { isLoading: isLoadingRemove }] = useMutation(pharmacy.removeFile, {
     onSuccess: async () => {
@@ -290,7 +360,9 @@ const PharmacyDocs: React.FC<Props> = (props) => {
     <Container maxWidth="lg" className={ container }>
       <Grid container spacing={ 0 }>
         <Grid item xs={ 12 }>
-          <div><b>{ t('file.pharmacyDocs') }</b></div>
+          <div><h2>
+            { t('file.pharmacyDocs') } { pharmacyName }
+          </h2></div>
           <Paper>
             <DataTable
               tableRef={ ref }
@@ -304,6 +376,7 @@ const PharmacyDocs: React.FC<Props> = (props) => {
               urlAddress={ pharmacy.urls.files }
               otherQueryString={ `pharmacyId=${pharmacyId}` }
               initLoad={ false }
+              customActions={ actions }
             />
             { <CircleBackdropLoading isOpen={ isLoadingRemove || isLoadingSave } /> }
             { isSaveDialogOpen && saveModal() }
