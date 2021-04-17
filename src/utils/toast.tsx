@@ -9,6 +9,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 
+export enum ToastDurationEnum {
+  Short = 2000,
+  Medium = 5000,
+  Long = 12000,
+  VeryLong = 20000
+}
+
 export const tSimple = (message = '', options = {}) => toast(message, options)
 
 export const tInfo = (message = '', options = {}) => toast.info(
