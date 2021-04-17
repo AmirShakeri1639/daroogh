@@ -2,10 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import mapboxgl, { setRTLTextPlugin } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
+// @ts-ignore
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 setRTLTextPlugin(
   'https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js',
-  () => { },
+  () => {},
   true // Lazy load the plugin
 );
 
@@ -31,14 +34,8 @@ interface Props {
 }
 
 const Map: React.FC<Props> = (props) => {
-  const {
-    onClick,
-    maxHeight = '400px',
-    defaultLatLng,
-    draggable,
-    getGeoLocation = false,
-  } = props;
-  const LATLNG: [number, number] = [59.526950363917827, 36.321029857543529]
+  const { onClick, maxHeight = '400px', defaultLatLng, draggable, getGeoLocation = false } = props;
+  const LATLNG: [number, number] = [59.526950363917827, 36.321029857543529];
   const { container } = useStyle();
 
   const [map, setMap] = useState<any>(null);
@@ -51,23 +48,27 @@ const Map: React.FC<Props> = (props) => {
   //   null,
   //   true // Lazy load the plugin
   // );
+  const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+  });
 
-  const [pos, setPos] = useState<[number, number] | undefined>(undefined)
+  const [pos, setPos] = useState<[number, number] | undefined>(undefined);
   useEffect(() => {
     async function getLoc() {
       if (window.navigator.geolocation) {
         await navigator.geolocation.getCurrentPosition((position) => {
-          setPos([position.coords.longitude, position.coords.latitude])
-        })
+          setPos([position.coords.longitude, position.coords.latitude]);
+        });
       }
     }
 
-    getLoc()
-  }, [])
+    getLoc();
+  }, []);
 
   useEffect(() => {
     const initializeMap = (setMap: any, mapContainer: any): any => {
-      const defPos = pos ?? defaultLatLng ?? LATLNG
+      const defPos = pos ?? defaultLatLng ?? LATLNG;
       const map = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v11', // stylesheet location
@@ -76,29 +77,32 @@ const Map: React.FC<Props> = (props) => {
       });
 
       let marker: any;
-
+      map.addControl(geocoder);
       map.addControl(new mapboxgl.NavigationControl());
+
       const geolocate = new mapboxgl.GeolocateControl({
         positionOptions: {
           enableHighAccuracy: true,
         },
         trackUserLocation: true,
-      })
+      });
       map.addControl(geolocate);
 
       if (getGeoLocation && pos) {
         if (onClick) {
-          onClick({ lngLat: {
-            lat: pos[1],
-            lng: pos[0]
-          }})
+          onClick({
+            lngLat: {
+              lat: pos[1],
+              lng: pos[0],
+            },
+          });
         }
-        if (marker) marker.remove()
+        if (marker) marker.remove();
         marker = new mapboxgl.Marker({
           draggable: draggable,
         })
           .setLngLat(pos)
-          .addTo(map)
+          .addTo(map);
       }
 
       if (!getGeoLocation && defaultLatLng && defaultLatLng.length) {
@@ -118,9 +122,7 @@ const Map: React.FC<Props> = (props) => {
         if (marker) {
           marker.remove();
         }
-        marker = new mapboxgl.Marker({ draggable: true })
-          .setLngLat(e.lngLat)
-          .addTo(map);
+        marker = new mapboxgl.Marker({ draggable: true }).setLngLat(e.lngLat).addTo(map);
         if (onClick) onClick(e);
         if (marker !== undefined) {
           marker.on('dragend', markerDragHandler);
@@ -136,20 +138,19 @@ const Map: React.FC<Props> = (props) => {
     };
 
     if (!map) initializeMap(setMap, mapContainer);
-
   }, [map, pos]);
 
   return (
     <div
-      className={ container }
-      ref={ mapContainer }
-      style={ {
+      className={container}
+      ref={mapContainer}
+      style={{
         width: '100%',
         height: 'calc(100vh - 150px)',
         maxHeight: maxHeight,
         // position: 'absolute',
         direction: 'rtl',
-      } }
+      }}
     />
   );
 };
