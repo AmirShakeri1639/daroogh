@@ -108,15 +108,15 @@ input[type='number'] {
 .Toastify__toast {
   font-family  : Vazir;
   border-radius: .3em;
+  padding-right: 1em;
+
+  .toast-message {
+    padding-right: 1em;
+  }
 }
 
 .Toastify__toast--success {
   background   : #43A048;
-  padding-right: 1em;
-
-  .toast-success-message {
-    padding-right: 1em;
-  }
 }
 
 .no-farsi-number,
