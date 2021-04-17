@@ -4,7 +4,7 @@ import {
   createStyles,
   debounce,
   Dialog, DialogActions, DialogContent, DialogTitle,
-  Divider, Grid, makeStyles, Paper, useMediaQuery, useTheme
+  Divider, Fab, Grid, Hidden, makeStyles, Paper, useMediaQuery, useTheme
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../../classes';
@@ -19,6 +19,7 @@ import { ActionInterface, FileForPharmacyInterface, LabelValue } from 'interface
 import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faImage } from '@fortawesome/free-regular-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { PictureDialog } from 'components/public';
 import CardContainer from 'components/public/card-container/CardContainer';
 import Uploader from 'components/public/uploader/uploader';
@@ -42,7 +43,19 @@ export const useStyles = makeStyles((theme) =>
     searchIconButton: {
       display: 'none',
     },
-
+    blankCard: {
+      minHeight: 150,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      cursor: 'pointer',
+      height: '100%',
+      color: '#C9A3A3',
+      '& span': {
+        marginTop: 20,
+      },
+    },
     contentContainer: {
       marginTop: 15,
     },
@@ -54,6 +67,15 @@ export const useStyles = makeStyles((theme) =>
       margin: 16,
     },
     rootContainer: {},
+    fab: {
+      margin: 0,
+      top: 'auto',
+      left: 20,
+      bottom: 40,
+      right: 'auto',
+      position: 'fixed',
+      backgroundColor: '#54bc54 ',
+    },
   })
 )
 
@@ -114,14 +136,9 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
   }, [])
 
   const {
-    root,
-    smallImage,
-    formItem,
-    searchBar,
-    searchIconButton,
     contentContainer,
-    detailsContainer,
-    rootContainer,
+    blankCard,
+    fab,
   } = useStyles()
   const {
     container,
@@ -248,7 +265,7 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
       file
     } = state
 
-    if (file !== null) {
+    if (file != null && fileTypeID != undefined) {
       try {
         await _save({
           fileTypeID,
@@ -290,7 +307,6 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
     () => pharmacy.files(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
-        console.log(result)
         if (result == undefined || result.count == 0) {
           setNoDataRef(true)
         } else {
@@ -490,14 +506,25 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
       <h2>{ t('file.pharmacyDocs') } { pharmName }</h2>
       <Grid container spacing={ 0 }>
         <Grid item xs={ 12 }>
-          <Paper>
-            <Grid container spacing={ 3 } className={ contentContainer }>
-              { contentGenerator() }
-            </Grid>
-            { <CircleBackdropLoading isOpen={ isLoadingRemove || isLoadingSave } /> }
-            { isSaveDialogOpen && saveModal() }
-            { isOpenPicture && pictureDialog(fileKeyToShow, fileName, fileTitle) }
-          </Paper>
+          <Grid container spacing={ 3 } className={ contentContainer }>
+            <Hidden xsDown>
+              <Grid item xs={ 12 } sm={ 12 } md={ 4 } xl={ 4 }>
+                <Paper className={ blankCard } onClick={ saveHandler }>
+                  <FontAwesomeIcon icon={ faPlus } size="2x" />
+                  <span>{ t('file.addToPharmacy') }</span>
+                </Paper>
+              </Grid>
+            </Hidden>
+            <Hidden smUp>
+              <Fab onClick={ saveHandler } className={ fab } aria-label="add">
+                <FontAwesomeIcon size="2x" icon={ faPlus } color="white" />
+              </Fab>
+            </Hidden>
+            { contentGenerator() }
+          </Grid>
+          { <CircleBackdropLoading isOpen={ isLoadingRemove || isLoadingSave } /> }
+          { isSaveDialogOpen && saveModal() }
+          { isOpenPicture && pictureDialog(fileKeyToShow, fileName, fileTitle) }
         </Grid>
       </Grid>
     </Container>
