@@ -1,6 +1,8 @@
-import { Button, createStyles, makeStyles, TextField } from '@material-ui/core';
 import React from 'react';
+import { Button, createStyles, makeStyles, TextField } from '@material-ui/core';
+import { useTranslation } from 'react-i18next';
 import noImage from '../../../assets/images/no-image.png';
+import { isNullOrEmpty } from 'utils';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -16,6 +18,7 @@ const useStyle = makeStyles((theme) =>
       marginTop: 0,
       display: 'flex',
       alignItems: 'center',
+      maxWidth: '95%',
     },
   })
 );
@@ -24,12 +27,28 @@ interface UploaderPI {
   showSaveClick?: boolean;
   getFile: (e: any) => void;
   handleOnSave?: (e: any) => void;
+  onDelete?: () => void;
+  keyId?: string;
+  multiple?: boolean;
+  accept?: string;
 }
-const Uploader = (props: UploaderPI): JSX.Element => {
-  const { getFile, handleOnSave, showSaveClick = false } = props;
+
+const Uploader: React.FC<UploaderPI> = (props) => {
+  const {
+    getFile,
+    handleOnSave,
+    showSaveClick = false,
+    onDelete,
+    keyId = '',
+    multiple = false,
+    accept = 'image/*',
+  } = props;
+
+  const { t } = useTranslation();
   const { input, ulStyle } = useStyle();
   const [file, setFile] = React.useState<any>();
   const [fileName, setFileName] = React.useState<string>();
+
   return (
     <ul className={ulStyle}>
       <li>
@@ -55,7 +74,7 @@ const Uploader = (props: UploaderPI): JSX.Element => {
             minWidth: 160,
           }}
           size="small"
-          defaultValue="فایلی انتخاب نشده است"
+          defaultValue={t('file.noFileSelected')}
           value={fileName}
           inputProps={{
             readOnly: true,
@@ -65,25 +84,26 @@ const Uploader = (props: UploaderPI): JSX.Element => {
       </li>
       <li>
         <input
-          accept="image/*"
+          accept={accept}
           className={input}
-          id="contained-button-file"
-          multiple
+          key={`contained-button-file_${keyId}`}
+          id={`contained-button-file_${keyId}`}
+          multiple={multiple}
           type="file"
           onChange={(e): void => {
             if (e.target.files) {
+              getFile(multiple ? e.target.files : e.target.files[0]);
               let reader = new FileReader();
               reader.onload = (e) => {
                 setFile(e?.target?.result);
               };
               reader.readAsDataURL(e.target.files[0]);
-              getFile(e.target.files[0]);
               setFileName(e.target.files[0].name);
               e.target.value = '';
             }
           }}
         />
-        <label htmlFor="contained-button-file">
+        <label htmlFor={`contained-button-file_${keyId}`}>
           <Button
             variant="contained"
             color="primary"
@@ -91,22 +111,26 @@ const Uploader = (props: UploaderPI): JSX.Element => {
             size="small"
             style={{ marginRight: 10 }}
           >
-            دریافت فایل
+            {t('file.get')}
           </Button>
         </label>
-        <Button
-          style={{ marginRight: 10 }}
-          variant="contained"
-          color="secondary"
-          component="span"
-          size="small"
-          onClick={() => {
-            setFile(null);
-            setFileName('فایلی انتخاب نشده است');
-          }}
-        >
-          حذف
-        </Button>
+        {!isNullOrEmpty(file) && (
+          <Button
+            style={{ marginRight: 10 }}
+            variant="contained"
+            color="secondary"
+            component="span"
+            size="small"
+            onClick={() => {
+              setFile(null);
+              setFileName(t('file.noFileSelected'));
+              if (onDelete) onDelete();
+            }}
+          >
+            {t('file.delete')}
+          </Button>
+        )}
+
         {showSaveClick && (
           <Button
             style={{ marginRight: 10, backgroundColor: 'green', color: 'white' }}
@@ -117,7 +141,7 @@ const Uploader = (props: UploaderPI): JSX.Element => {
               if (handleOnSave) handleOnSave(file);
             }}
           >
-            ذخیره
+            {t('file.save')}
           </Button>
         )}
       </li>

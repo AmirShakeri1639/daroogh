@@ -30,7 +30,8 @@ import {
   CountryDivision,
   EmploymentApplication as applications,
 } from '../../../../../services/api';
-import { DatePicker, MaterialContainer, Modal } from '../../../../public';
+import { MaterialContainer, Modal } from '../../../../public';
+import DatePicker, { DateObject } from 'react-multi-date-picker';
 import { errorHandler, successSweetAlert, tError } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -90,6 +91,11 @@ const useStyle = makeStyles((theme) =>
     },
     contentContainer: {
       marginTop: 15,
+    },
+    datePicker: {
+      '& .rmdp-container': {
+        display: 'block !important',
+      },
     },
   })
 );
@@ -258,7 +264,7 @@ const EmploymentApplication: React.FC = () => {
 
   const { t } = useTranslation();
 
-  const { addButton, input, fab, buttonContainer, contentContainer } = useStyle();
+  const { addButton, input, fab, buttonContainer, contentContainer, datePicker } = useStyle();
   const { container } = useClasses();
   const toggleIsOpenModal = (): void => setIsOpenModal((v) => !v);
 
@@ -328,7 +334,6 @@ const EmploymentApplication: React.FC = () => {
     dispatch({ type: 'landlinePhone', value: landlinePhone });
     dispatch({ type: 'file', value: file });
     dispatch({ type: 'address', value: address });
-
   };
 
   useEffect(() => {
@@ -367,55 +372,48 @@ const EmploymentApplication: React.FC = () => {
   });
 
   const formHandler = async (): Promise<any> => {
-    var message = "";
-    if (state.name == "") {
+    console.log(state);
+    var message = '';
+    if (state.name == '') {
       message = t('peopleSection.name');
-    } else if (state.family == "") {
+    } else if (state.family == '') {
       message = t('peopleSection.family');
-    } else if (state.birtdate == "") {
+    } else if (state.birtdate == '') {
       message = t('peopleSection.birtdate');
     } else if (state.gender == -1) {
       message = t('peopleSection.gender');
-    } else if (state.workExperienceYear == "") {
+    } else if (state.workExperienceYear == '') {
       message = t('peopleSection.workExperienceYear');
     } else if (state.pharmaceuticalSoftwareSkill == -1) {
       message = t('peopleSection.pharmaceuticalSoftwareSkill');
-    }
-    else if (state.computerSkill == -1) {
+    } else if (state.computerSkill == -1) {
       message = t('peopleSection.computerSkill');
-    }
-    else if (state.foreignLanguagesSkill == -1) {
+    } else if (state.foreignLanguagesSkill == -1) {
       message = t('peopleSection.foreignLanguagesSkill');
-    }
-    else if (state.suggestedJobPosition == -1) {
+    } else if (state.suggestedJobPosition == -1) {
       message = t('peopleSection.suggestedJobPosition');
-    }
-    else if (state.education == -1) {
+    } else if (state.education == -1) {
       message = t('peopleSection.education');
-    }
-    else if (state.countryDivisionCode == "") {
+    } else if (state.countryDivisionCode == '') {
       message = t('peopleSection.countryDivisionCode');
-    }
-    else if (state.landlinePhone == "") {
+    } else if (state.landlinePhone == '') {
       message = t('peopleSection.landlinePhone');
-    }
-    else if (state.address == "") {
+    } else if (state.address == '') {
       message = t('peopleSection.address');
-    }
-    else if (state.descriptions == "") {
+    } else if (state.descriptions == '') {
       message = t('peopleSection.descriptions');
     }
-    if (message != "") {
-      tError("لطفا " + "مقادیر اجباری" + " را وارد نمایید")
-    }
-    else if (state.hasReadingPrescriptionCertificate
-      && state.gradeOfReadingPrescriptionCertificate == "") {
-      tError("لطفا " + t('peopleSection.gradeOfReadingPrescriptionCertificate') + " را وارد نمایید")
-    }
-    else {
-
+    if (message != '') {
+      tError('لطفا ' + 'مقادیر اجباری' + ' را وارد نمایید');
+    } else if (
+      state.hasReadingPrescriptionCertificate &&
+      state.gradeOfReadingPrescriptionCertificate == ''
+    ) {
+      tError(
+        'لطفا ' + t('peopleSection.gradeOfReadingPrescriptionCertificate') + ' را وارد نمایید'
+      );
+    } else {
       try {
-
         await _save(state).then((rec) => refetch());
       } catch (e) {
         errorHandler(e);
@@ -436,7 +434,11 @@ const EmploymentApplication: React.FC = () => {
         if (item !== null) {
           return (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
-              <CardContainer data={item} formHandler={removeHandler} toggleEditModal={saveHandler} />
+              <CardContainer
+                data={item}
+                formHandler={removeHandler}
+                toggleEditModal={saveHandler}
+              />
             </Grid>
           );
         }
@@ -511,7 +513,7 @@ const EmploymentApplication: React.FC = () => {
         hideAll={true}
       >
         <DialogContent>
-          <DatePicker
+          {/* <DatePicker
             // minimumDate={utils('fa').getToday()}
             // dateTypeIsSelectable
             selectedDateHandler={(e): void => {
@@ -520,7 +522,7 @@ const EmploymentApplication: React.FC = () => {
 
               toggleIsOpenDatePicker();
             }}
-          />
+          /> */}
         </DialogContent>
       </CDialog>
 
@@ -546,7 +548,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.name')}
                 InputLabelProps={{
                   shrink: true,
-
                 }}
                 variant="outlined"
                 value={state.name}
@@ -568,8 +569,8 @@ const EmploymentApplication: React.FC = () => {
                 onChange={(e): void => dispatch({ type: 'family', value: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <TextField
+            <Grid item xs={12} sm={12} md={6} lg={6} className={datePicker}>
+              {/* <TextField
                 onClick={(): void => {
                   setIsOpenDatePicker(true);
                 }}
@@ -577,12 +578,22 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.birthDate')}
                 InputLabelProps={{
                   shrink: true,
-
                 }}
                 required
                 variant="outlined"
                 value={selectedDate}
                 onChange={(e): void => dispatch({ type: 'birthDate', value: e.target.value })}
+              /> */}
+              <DatePicker
+                value={state.birthDate}
+                required
+                calendar="persian"
+                locale="fa"
+                type="custom"
+                render={<DateComponent label={t('peopleSection.birthDate') + '*'} />}
+                onChange={(e: any): void => {
+                  dispatch({ type: 'birthDate', value: e });
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -610,9 +621,7 @@ const EmploymentApplication: React.FC = () => {
                 value={state.gender}
                 onChange={(e): void => dispatch({ type: 'gender', value: e.target.value })}
               >
-                <option key="-1" value="">
-
-                </option>
+                <option key="-1" value=""></option>
                 {genders.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -633,9 +642,7 @@ const EmploymentApplication: React.FC = () => {
                 value={state.maritalStatus}
                 onChange={(e): void => dispatch({ type: 'maritalStatus', value: e.target.value })}
               >
-                <option key="-1" value="">
-
-                </option>
+                <option key="-1" value=""></option>
                 {maritalStatuses.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -651,9 +658,8 @@ const EmploymentApplication: React.FC = () => {
                       dispatch({
                         type: 'hasReadingPrescriptionCertificate',
                         value: e.target.checked,
-                      })
-                    }
-                    }
+                      });
+                    }}
                     value={state.hasReadingPrescriptionCertificate}
                   />
                 }
@@ -669,7 +675,11 @@ const EmploymentApplication: React.FC = () => {
                   shrink: true,
                 }}
                 variant="outlined"
-                value={state.gradeOfReadingPrescriptionCertificate === 0 ? '' : state.gradeOfReadingPrescriptionCertificate}
+                value={
+                  state.gradeOfReadingPrescriptionCertificate === 0
+                    ? ''
+                    : state.gradeOfReadingPrescriptionCertificate
+                }
                 onChange={(e): void =>
                   dispatch({
                     type: 'gradeOfReadingPrescriptionCertificate',
@@ -685,7 +695,6 @@ const EmploymentApplication: React.FC = () => {
                 type="number"
                 InputLabelProps={{
                   shrink: true,
-
                 }}
                 required
                 variant="outlined"
@@ -716,8 +725,7 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {suggestedWorkShifts.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -743,8 +751,7 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {pharmaceuticalSoftwareSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -765,8 +772,7 @@ const EmploymentApplication: React.FC = () => {
                 value={state.computerSkill}
                 onChange={(e): void => dispatch({ type: 'computerSkill', value: e.target.value })}
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {computerSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -792,8 +798,7 @@ const EmploymentApplication: React.FC = () => {
                 }
                 required
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {foreignLanguagesSkills.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -819,8 +824,7 @@ const EmploymentApplication: React.FC = () => {
                   })
                 }
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {suggestedJobPositions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -841,8 +845,7 @@ const EmploymentApplication: React.FC = () => {
                 value={state.education}
                 onChange={(e): void => dispatch({ type: 'education', value: e.target.value })}
               >
-                <option key="-1" value="">
-                </option>
+                <option key="-1" value=""></option>
                 {educations.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
@@ -875,7 +878,6 @@ const EmploymentApplication: React.FC = () => {
                 onChange={changeprovince}
                 SelectProps={{
                   native: true,
-
                 }}
                 required
                 variant="outlined"
@@ -895,7 +897,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.city')}
                 SelectProps={{
                   native: true,
-
                 }}
                 variant="outlined"
                 required
@@ -949,7 +950,6 @@ const EmploymentApplication: React.FC = () => {
                 label={t('peopleSection.landlinePhone')}
                 InputLabelProps={{
                   shrink: true,
-
                 }}
                 required
                 variant="outlined"
@@ -1025,5 +1025,18 @@ const EmploymentApplication: React.FC = () => {
     </Container>
   );
 };
-
+const DateComponent: React.FC<any> = (props) => {
+  return (
+    <TextField
+      fullWidth
+      label={props.label}
+      onClick={props.openCalendar}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      variant="outlined"
+      value={props.stringDate}
+    />
+  );
+};
 export default EmploymentApplication;

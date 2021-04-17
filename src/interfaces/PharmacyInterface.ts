@@ -17,6 +17,7 @@ export interface PharmacyInterface {
   countryDivisionID: number | string;
   x?: string;
   y?: string;
+  type?: number | string;
 }
 
 export interface PharmacyFileInterface {

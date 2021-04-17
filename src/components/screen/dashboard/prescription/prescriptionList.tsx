@@ -5,14 +5,7 @@ import { Prescription } from '../../../../services/api';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import CardContainer from './CardContainer';
 import { useClasses } from '../classes';
-import {
-  errorHandler,
-  isNullOrEmpty,
-  JwtData,
-  successSweetAlert,
-  warningSweetAlert,
-  today,
-} from '../../../../utils';
+import { errorHandler, isNullOrEmpty, JwtData, tSuccess, tWarn, today } from 'utils';
 import {
   ActionInterface,
   PrescriptionInterface,
@@ -21,11 +14,8 @@ import {
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { ColorEnum, PrescriptionEnum, PrescriptionResponseStateEnum } from '../../../../enum';
 import {
-  Button,
   Container,
   createStyles,
-  Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
@@ -39,7 +29,6 @@ import {
 } from '@material-ui/core';
 import { Picture, PictureDialog } from '../../../public';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
-import SearchBar from 'material-ui-search-bar';
 import { debounce } from 'lodash';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import CDialog from 'components/public/dialog/Dialog';
@@ -71,7 +60,16 @@ export const useStyles = makeStyles((theme) =>
       padding: 16,
       minHeight: 60,
       borderRadius: 5,
-      margin: 16,
+      margin: 8,
+    },
+    callButton: {
+      fontSize: '11px',
+      color: 'green',
+      border: '1px solid rgba(0, 0, 0, 0.23)',
+      padding: '5px 15px',
+      borderRadius: '4px',
+      textDecoration: 'none',
+      marginRight: '8px',
     },
     rootContainer: {},
   })
@@ -145,6 +143,7 @@ const PrescriptionList: React.FC = () => {
     contentContainer,
     detailsContainer,
     rootContainer,
+    callButton,
   } = useStyles();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -153,7 +152,7 @@ const PrescriptionList: React.FC = () => {
   const { getList, save, urls } = new Prescription();
   const [_save, { isLoading }] = useMutation(save, {
     onSuccess: async () => {
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       await getCardList(true);
       // await queryCache.invalidateQueries(PrescriptionEnum.GET_LIST);
       // ref.current?.onQueryChange();
@@ -271,7 +270,7 @@ const PrescriptionList: React.FC = () => {
 
   const saveHandler = (item: PrescriptionInterface): void => {
     if (
-      (item.cancelDate == null || item.cancelDate == undefined) &&
+      (item.cancelDate === null || item.cancelDate === undefined) &&
       item.expireDate >= today('-')
     ) {
       toggleIsOpenSaveModalForm();
@@ -302,7 +301,7 @@ const PrescriptionList: React.FC = () => {
       dispatch({ type: 'comment', value: item.comment });
       dispatch({ type: 'fileKey', value: item.fileKey });
     } else {
-      warningSweetAlert(t('prescription.cantEdit'));
+      tWarn(t('prescription.cantEdit'));
     }
   };
 
@@ -477,7 +476,21 @@ const PrescriptionList: React.FC = () => {
                 {!isNullOrEmpty(state.fileKey) && (
                   <>
                     <Grid item xs={12} className={detailsContainer}>
-                      <Picture fileKey={state.fileKey} className={smallImage} />
+                      <Grid item xs={12}>
+                        <Picture fileKey={state.fileKey} className={smallImage} />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <a
+                          className={callButton}
+                          onClick={(e: any): any => {
+                            e.stopPropagation();
+                          }}
+                          download=""
+                          href={'https://api.daroog.org/api/File/GetFile?key=' + state.fileKey}
+                        >
+                          دانلود نسخه
+                        </a>
+                      </Grid>
                     </Grid>
                   </>
                 )}

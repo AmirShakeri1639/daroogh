@@ -1,12 +1,59 @@
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCheckCircle,
+  faInfoCircle,
+  faTimesCircle,
+  faExclamationCircle,
+} from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
 
-export const tSimple = (message = '') => toast(message)
+export enum ToastDurationEnum {
+  Short = 2000,
+  Medium = 5000,
+  Long = 12000,
+  VeryLong = 20000
+}
 
-export const tInfo = (message = '') => toast.info(message)
+export const tSimple = (message = '', options = {}) => toast(message, options)
 
-export const tSuccess = (message = '') => toast.success(message)
+export const tInfo = (message = '', options = {}) => toast.info(
+  <>
+    <FontAwesomeIcon icon={ faInfoCircle } size="lg" />
+    <span className="toast-message">
+      { message }
+    </span>
+  </>,
+  options
+)
 
-export const tWarn = (message = '') => toast.warn(message)
+export const tSuccess = (message = '', options = {}) => toast.success(
+  <>
+    <FontAwesomeIcon icon={ faCheckCircle } size="lg" />
+    <span className="toast-message">
+      { message }
+    </span>
+  </>,
+  options
+)
 
-export const tError = (message = '') => toast.error(message)
+export const tWarn = (message = '', options = {}) => toast.warn(
+  <>
+    <FontAwesomeIcon icon={ faExclamationCircle } size="lg" />
+    <span className="toast-message">
+      { message }
+    </span>
+  </>,
+  options
+)
+
+export const tError = (message = '', options = {}) => toast.error(
+  <>
+    <FontAwesomeIcon icon={ faTimesCircle } size="lg" />
+    <span className="toast-message">
+      { message }
+    </span>
+  </>,
+  options
+)

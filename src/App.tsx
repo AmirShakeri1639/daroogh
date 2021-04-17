@@ -99,21 +99,11 @@ const PrescriptionList = lazy(
 
 const ProfileLazy = lazy(() => import('./components/screen/dashboard/user/Profile'));
 
-const SettingsForm = lazy(
-  () => import('./components/screen/dashboard/settings/Settings')
-);
-const SettingsAiForm = lazy(
-  () => import('./components/screen/dashboard/settingsAi/SettingsAi')
-);
-const FavoriteDrugsForm = lazy(
-  () => import('./components/screen/dashboard/reports/FavoriteDrugs')
-);
-const SelectedDrugsForm = lazy(
-  () => import('./components/screen/dashboard/reports/SelectedDrugs')
-);
-const SurplusDrugsForm = lazy(
-  () => import('./components/screen/dashboard/reports/SurplusDrugs')
-);
+const SettingsForm = lazy(() => import('./components/screen/dashboard/settings/Settings'));
+const SettingsAiForm = lazy(() => import('./components/screen/dashboard/settingsAi/SettingsAi'));
+const FavoriteDrugsForm = lazy(() => import('./components/screen/dashboard/reports/FavoriteDrugs'));
+const SelectedDrugsForm = lazy(() => import('./components/screen/dashboard/reports/SelectedDrugs'));
+const SurplusDrugsForm = lazy(() => import('./components/screen/dashboard/reports/SurplusDrugs'));
 
 const Job = lazy(() => import('./components/screen/dashboard/job/Job'));
 
@@ -123,9 +113,10 @@ const PharmacyMessage = lazy(
 const SurveyComponent = lazy(
   () => import('./components/screen/dashboard/pharmacy/survey/SurveyComponent')
 );
+const APharmacyDocs = lazy(() => import('./components/screen/dashboard/pharmacy/docs/docs'));
 
-const Error404 = lazy(() => import('./components/screen/public/404'))
-const Error401 = lazy(() => import('./components/screen/public/401'))
+const Error404 = lazy(() => import('./components/screen/public/404'));
+const Error401 = lazy(() => import('./components/screen/public/401'));
 
 const {
   login,
@@ -171,6 +162,7 @@ const {
   jobsList,
   pharmacyMessage,
   surveyList,
+  aPharmacyDocs,
   fda_exchangeList,
   survey,
   error401,
@@ -221,7 +213,6 @@ const App = (): JSX.Element => {
   const setupCrisp = (): void => {
     (window as any).$crisp = [];
 
-
     (function () {
       var d = document;
       var s = d.createElement('script');
@@ -230,12 +221,12 @@ const App = (): JSX.Element => {
       s.async = true;
       d.getElementsByTagName('head')[0].appendChild(s);
     })();
-  }
+  };
 
   setupCrisp();
   return (
     <>
-      <ToastContainer rtl={true} />
+      <ToastContainer rtl={true} closeButton={false} position="bottom-right" />
       <Router>
         <Switch>
           <Suspense fallback={<LoadingComponent />}>
@@ -384,6 +375,9 @@ const App = (): JSX.Element => {
             <PrivateRoute path={surveyList}>
               <Dashboard component={<SurveyComponent />} />
             </PrivateRoute>
+            <PrivateRoute path={aPharmacyDocs}>
+              <Dashboard component={<APharmacyDocs />} />
+            </PrivateRoute>
 
             <PrivateRoute exact path={fda_exchangeList}>
               <Dashboard component={<FDA_exchangeList />} />
@@ -394,11 +388,9 @@ const App = (): JSX.Element => {
 
             <Route
               render={(e): any => {
-                if (e.location.pathname === '/') return
-                if (!Object.values(routes).some(
-                  i => e.location.pathname.startsWith(i)
-                )) {
-                  return <Error404 />
+                if (e.location.pathname === '/') return;
+                if (!Object.values(routes).some((i) => e.location.pathname.startsWith(i))) {
+                  return <Error404 />;
                 }
               }}
             />

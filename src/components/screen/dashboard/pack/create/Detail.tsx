@@ -58,7 +58,7 @@ const Detail: React.FC<DetailSupplyInterface> = memo((props) => {
                   </Grid>
                   <Grid container xs={11} style={{ alignItems: 'center', paddingRight: '8px' }}>
                     <span>{drugName}</span>
-                    <div className={smallText}>{` ${enName}` ?? ''}</div>
+                    <div className={ `${smallText} no-farsi-number` }>{ ` ${enName}` ?? '' }</div>
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>

@@ -1,9 +1,8 @@
 import React from 'react';
 
 const getDrugName = (item: any): string => {
-  return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
-    item.type !== null ? ` - ${item.type}` : ''
-  }`;
+  return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${item.type !== null ? ` - ${item.type}` : ''
+    }`;
 };
 
 type Item = {
@@ -22,10 +21,12 @@ export default (items: any[]): Item[] => {
     },
     el: (
       <div>
-        <div>{getDrugName(_item)}</div>
-        <div className="text-muted txt-sm">{`${_item.enName !== null ? `-${_item.enName}` : ''}${
-          _item.companyName !== null ? ` - ${_item.companyName}` : ''
-        }`}</div>
+        <div>{ getDrugName(_item) }</div>
+        <div className="text-muted txt-sm no-farsi-number">{
+          `${_item.enName !== null
+            ? `-${_item.enName}` : ''}${_item.companyName !== null ? ` - ${_item.companyName}`
+              : ''
+          }` }</div>
       </div>
     ),
   }));

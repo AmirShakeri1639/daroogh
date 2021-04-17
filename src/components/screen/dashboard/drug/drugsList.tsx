@@ -1,7 +1,7 @@
-import React, { useReducer, useState } from 'react';
-import { useMutation, useQueryCache } from 'react-query';
-import Drug from '../../../../services/api/Drug';
-import Input from '../../../public/input/Input';
+import React, { useReducer, useState } from 'react'
+import { useMutation, useQueryCache } from 'react-query'
+import Drug from '../../../../services/api/Drug'
+import Input from '../../../public/input/Input'
 import {
   Container,
   Grid,
@@ -17,26 +17,26 @@ import {
   DialogContentText,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { errorHandler, successSweetAlert, warningSweetAlert } from '../../../../utils';
-import CircleLoading from '../../../public/loading/CircleLoading';
-import { useTranslation } from 'react-i18next';
-import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
-import { useClasses } from '../classes';
+} from '@material-ui/core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { errorHandler, tError, tSuccess, tWarn } from 'utils'
+import CircleLoading from '../../../public/loading/CircleLoading'
+import { useTranslation } from 'react-i18next'
+import { DataTableColumns } from '../../../../interfaces/DataTableColumns'
+import { useClasses } from '../classes'
 import {
   ActionInterface,
   DataTableCustomActionInterface,
   DrugInterface,
-} from '../../../../interfaces';
-import useDataTableRef from '../../../../hooks/useDataTableRef';
-import DataTable from '../../../public/datatable/DataTable';
-import { DrugEnum } from '../../../../enum/query';
-import { Category } from '../../../../services/api';
-import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
-import { UrlAddress } from '../../../../enum/UrlAddress';
-import { ColorEnum } from '../../../../enum';
+} from '../../../../interfaces'
+import useDataTableRef from '../../../../hooks/useDataTableRef'
+import DataTable from '../../../public/datatable/DataTable'
+import { DrugEnum } from '../../../../enum/query'
+import { Category } from '../../../../services/api'
+import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown'
+import { UrlAddress } from '../../../../enum/UrlAddress'
+import { ColorEnum } from '../../../../enum'
 
 const initialState: DrugInterface = {
   id: 0,
@@ -49,117 +49,121 @@ const initialState: DrugInterface = {
   active: false,
   enName: '',
   type: 'شربت',
-};
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
-  const { value } = action;
+  const { value } = action
 
   switch (action.type) {
     case 'id':
       return {
         ...state,
         id: value,
-      };
+      }
     case 'categoryID':
       return {
         ...state,
         categoryID: value,
-      };
+      }
     case 'name':
       return {
         ...state,
         name: value,
-      };
+      }
     case 'genericName':
       return {
         ...state,
         genericName: value,
-      };
+      }
     case 'companyName':
       return {
         ...state,
         companyName: value,
-      };
+      }
     case 'barcode':
       return {
         ...state,
         barcode: value,
-      };
+      }
     case 'description':
       return {
         ...state,
         description: value,
-      };
+      }
     case 'active':
       return {
         ...state,
         active: value,
-      };
+      }
     case 'enName':
       return {
         ...state,
         enName: value,
-      };
+      }
     case 'type':
       return {
         ...state,
         type: value,
-      };
+      }
     case 'reset':
-      return initialState;
+      return initialState
     default:
-      console.error('Action type not defined');
+      console.error('Action type not defined')
   }
 }
 
 const DrugsList: React.FC = () => {
-  const ref = useDataTableRef();
-  const { t } = useTranslation();
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [isOpenEditModal, setIsOpenSaveModal] = useState(false);
+  const ref = useDataTableRef()
+  const { t } = useTranslation()
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const [isOpenEditModal, setIsOpenSaveModal] = useState(false)
 
-  const { container, cancelButtonDialog, formContainer, formContent, submitBtn } = useClasses();
-  const queryCache = useQueryCache();
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const { save, all, remove, types } = new Drug();
-  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
+  const { container, cancelButtonDialog, formContainer, formContent, submitBtn } = useClasses()
+  const queryCache = useQueryCache()
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { save, all, remove, types } = new Drug()
+  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v)
 
-  const { getAllCategories: allCategories } = new Category();
-  const [categories, setCategories] = useState([]);
+  const { getAllCategories: allCategories } = new Category()
+  const [categories, setCategories] = useState([])
   React.useEffect(() => {
     async function getCategories(): Promise<any> {
-      const result = await allCategories(0, 1000);
-      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
+      const result = await allCategories(0, 1000)
+      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })))
     }
-    getCategories();
-  }, []);
+    getCategories()
+  }, [])
 
-  const [drugTypes, setDrugTypes] = useState([]);
+  const [drugTypes, setDrugTypes] = useState([])
   React.useEffect(() => {
     async function getTypes(): Promise<any> {
-      const result = await types();
-      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })));
+      const result = await types()
+      setDrugTypes(result.items.map((item: any) => ({ value: item, label: item })))
     }
-    getTypes();
-  }, []);
+    getTypes()
+  }, [])
 
   const [_remove, { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
-      ref.current?.loadItems();
-      await queryCache.invalidateQueries('drugsList');
-      await successSweetAlert(t('alert.successfulDelete'));
-    },
-  });
+      ref.current?.loadItems()
+      await queryCache.invalidateQueries('drugsList')
+      tSuccess(t('alert.successfulDelete'))
+    }
+  })
 
   const [_save, { isLoading: isLoadingSave }] = useMutation(save, {
     onSuccess: async () => {
-      await queryCache.invalidateQueries('drugsList');
-      await successSweetAlert(t('alert.successfulSave'));
-      ref.current?.onQueryChange();
-      dispatch({ type: 'reset' });
+      await queryCache.invalidateQueries('drugsList')
+      tSuccess(t('alert.successfulSave'))
+      ref.current?.onQueryChange()
+      dispatch({ type: 'reset' })
     },
-  });
+    onError: async (e) => {
+      // @ts-ignore
+      tError(t('error.save'))
+    }
+  })
 
   const tableColumns = (): DataTableColumns[] => {
     return [
@@ -188,10 +192,10 @@ const DrugsList: React.FC = () => {
         type: 'boolean',
         render: (row: any): any => {
           return (
-            <span style={{ color: row.active ? ColorEnum.Green : ColorEnum.Red }}>
-              <FontAwesomeIcon icon={row.active ? faCheck : faTimes} />
+            <span style={ { color: row.active ? ColorEnum.Green : ColorEnum.Red } }>
+              <FontAwesomeIcon icon={ row.active ? faCheck : faTimes } />
             </span>
-          );
+          )
         },
         fieldLookup: 'active',
         lookupFilter: [
@@ -204,6 +208,13 @@ const DrugsList: React.FC = () => {
         title: t('drug.enName'),
         type: 'string',
         searchable: true,
+        render: (row: any): any => {
+          return (
+            <span className="no-farsi-number">
+              { row.enName }
+            </span>
+          )
+        }
       },
       {
         field: 'type',
@@ -211,15 +222,15 @@ const DrugsList: React.FC = () => {
         type: 'string',
         searchable: true,
       },
-    ];
-  };
+    ]
+  }
 
   const toggleDrugActivationHandler = async (row: any): Promise<any> => {
     try {
-      const { id, name, genericName, companyName, barcode, description, enName, type } = row;
-      const categoryID = row.category.id;
-      let { active } = row;
-      active = !active;
+      const { id, name, genericName, companyName, barcode, description, enName, type } = row
+      const categoryID = row.category.id
+      let { active } = row
+      active = !active
 
       await _save({
         id,
@@ -232,23 +243,23 @@ const DrugsList: React.FC = () => {
         enName,
         type,
         active,
-      });
-      dispatch({ type: 'reset' });
-      ref.current?.loadItems();
+      })
+      dispatch({ type: 'reset' })
+      ref.current?.loadItems()
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-  };
+  }
 
   const toggleConfirmHandler = async (e: any, row: any): Promise<any> => {
     try {
-      await toggleDrugActivationHandler(row);
-      ref.current?.loadItems();
+      await toggleDrugActivationHandler(row)
+      ref.current?.onQueryChange()
       // ref.current?.onQueryChange();
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-  };
+  }
 
   const actions: DataTableCustomActionInterface[] = [
     {
@@ -260,38 +271,39 @@ const DrugsList: React.FC = () => {
       position: 'row',
       action: toggleConfirmHandler,
     },
-  ];
+  ]
 
   const removeHandler = async (userRow: DrugInterface): Promise<any> => {
     try {
       if (window.confirm(t('alert.remove'))) {
-        await _remove(userRow.id);
+        await _remove(userRow.id)
+        ref.current?.onQueryChange()
       }
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-  };
+  }
 
   const saveHandler = (item: any): void => {
-    toggleIsOpenSaveModalForm();
-    const { id, name, genericName, companyName, barcode, description, active, enName, type } = item;
-    const categoryID = item.category ? item.category.id : 1;
+    toggleIsOpenSaveModalForm()
+    const { id, name, genericName, companyName, barcode, description, active, enName, type } = item
+    const categoryID = item.category ? item.category.id : 1
 
-    dispatch({ type: 'id', value: id });
-    dispatch({ type: 'name', value: name });
-    dispatch({ type: 'categoryID', value: categoryID });
-    dispatch({ type: 'genericName', value: genericName });
-    dispatch({ type: 'companyName', value: companyName });
-    dispatch({ type: 'barcode', value: barcode });
-    dispatch({ type: 'description', value: description });
-    dispatch({ type: 'active', value: active });
-    dispatch({ type: 'enName', value: enName });
-    dispatch({ type: 'type', value: type });
-  };
+    dispatch({ type: 'id', value: id })
+    dispatch({ type: 'name', value: name })
+    dispatch({ type: 'categoryID', value: categoryID })
+    dispatch({ type: 'genericName', value: genericName })
+    dispatch({ type: 'companyName', value: companyName })
+    dispatch({ type: 'barcode', value: barcode })
+    dispatch({ type: 'description', value: description })
+    dispatch({ type: 'active', value: active })
+    dispatch({ type: 'enName', value: enName })
+    dispatch({ type: 'type', value: type })
+  }
 
   const isFormValid = (): boolean => {
-    return state.name && state.name.trim().length > 0;
-  };
+    return state.name && state.name.trim().length > 0
+  }
 
   const submitSave = async (): Promise<any> => {
     const {
@@ -305,7 +317,7 @@ const DrugsList: React.FC = () => {
       active,
       enName,
       type,
-    } = state;
+    } = state
 
     if (isFormValid()) {
       try {
@@ -320,136 +332,136 @@ const DrugsList: React.FC = () => {
           active,
           enName,
           type,
-        });
-        dispatch({ type: 'reset' });
-        toggleIsOpenSaveModalForm();
+        })
+        dispatch({ type: 'reset' })
+        toggleIsOpenSaveModalForm()
       } catch (e) {
-        errorHandler(e);
+        errorHandler(e)
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'));
+      tWarn(t('alert.fillFormCarefully'))
     }
-  };
+  }
 
   const editModal = (): JSX.Element => {
     return (
       <Dialog
-        open={isOpenEditModal}
-        fullScreen={fullScreen}
-        fullWidth={true}
-        onClose={toggleIsOpenSaveModalForm}
+        open={ isOpenEditModal }
+        fullScreen={ fullScreen }
+        fullWidth={ true }
+        onClose={ toggleIsOpenSaveModalForm }
       >
         <DialogTitle className="text-sm">
-          {state.id === 0 ? t('action.create') : t('action.edit')}
+          { state.id === 0 ? t('action.create') : t('action.edit') }
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Grid container spacing={1} className={formContent}>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.product')}</label>
+            <Grid container spacing={ 1 } className={ formContent }>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.product') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      value={state.name}
-                      onChange={(e): void => dispatch({ type: 'name', value: e.target.value })}
+                      value={ state.name }
+                      onChange={ (e): void => dispatch({ type: 'name', value: e.target.value }) }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.category')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.category') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state.categoryID}
-                      data={categories}
+                      defaultValue={ state.categoryID }
+                      data={ categories }
                       className="w-100"
-                      onChangeHandler={(v): void => {
-                        return dispatch({ type: 'categoryID', value: v });
-                      }}
+                      onChangeHandler={ (v): void => {
+                        return dispatch({ type: 'categoryID', value: v })
+                      } }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.genericName')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.genericName') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('drug.genericName')}
-                      value={state.genericName}
-                      onChange={(e): void =>
+                      label={ t('drug.genericName') }
+                      value={ state.genericName }
+                      onChange={ (e): void =>
                         dispatch({ type: 'genericName', value: e.target.value })
                       }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.companyName')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.companyName') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('drug.companyName')}
-                      value={state.companyName}
-                      onChange={(e): void =>
+                      label={ t('drug.companyName') }
+                      value={ state.companyName }
+                      onChange={ (e): void =>
                         dispatch({ type: 'companyName', value: e.target.value })
                       }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.barcode')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.barcode') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('drug.barcode')}
-                      value={state.barcode}
-                      onChange={(e): void => dispatch({ type: 'barcode', value: e.target.value })}
+                      label={ t('drug.barcode') }
+                      value={ state.barcode }
+                      onChange={ (e): void => dispatch({ type: 'barcode', value: e.target.value }) }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.description')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.description') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
                       className="w-100"
-                      label={t('general.description')}
-                      value={state.description}
-                      onChange={(e): void =>
+                      label={ t('general.description') }
+                      value={ state.description }
+                      onChange={ (e): void =>
                         dispatch({ type: 'description', value: e.target.value })
                       }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
                     <FormControlLabel
                       control={
                         <Switch
-                          checked={state.active}
-                          onChange={(e): void =>
+                          checked={ state.active }
+                          onChange={ (e): void =>
                             dispatch({
                               type: 'active',
                               value: e.target.checked,
@@ -457,40 +469,40 @@ const DrugsList: React.FC = () => {
                           }
                         />
                       }
-                      label={t('general.active')}
+                      label={ t('general.active') }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('drug.enName')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('drug.enName') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <Input
-                      className="w-100"
-                      label={t('drug.enName')}
-                      value={state.enName}
-                      onChange={(e): void => dispatch({ type: 'enName', value: e.target.value })}
+                      className="w-100 no-farsi-number"
+                      label={ t('drug.enName') }
+                      value={ state.enName }
+                      onChange={ (e): void => dispatch({ type: 'enName', value: e.target.value }) }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Grid container spacing={1}>
-                  <Grid item xs={12}>
-                    <label>{t('general.type')}</label>
+              <Grid item xs={ 12 }>
+                <Grid container spacing={ 1 }>
+                  <Grid item xs={ 12 }>
+                    <label>{ t('general.type') }</label>
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={ 12 }>
                     <DaroogDropdown
-                      defaultValue={state.type}
-                      data={drugTypes}
+                      defaultValue={ state.type }
+                      data={ drugTypes }
                       className="w-100"
-                      label={t('general.type')}
-                      onChangeHandler={(v): void => {
-                        return dispatch({ type: 'type', value: v });
-                      }}
+                      label={ t('general.type') }
+                      onChangeHandler={ (v): void => {
+                        return dispatch({ type: 'type', value: v })
+                      } }
                     />
                   </Grid>
                 </Grid>
@@ -500,67 +512,67 @@ const DrugsList: React.FC = () => {
         </DialogContent>
         <Divider />
         <DialogActions>
-          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
-            <Grid container xs={12}>
-              <Grid item xs={7} sm={8} />
-              <Grid item xs={2} sm={2}>
+          <Grid container style={ { marginTop: 4, marginBottom: 4 } } xs={ 12 }>
+            <Grid container xs={ 12 }>
+              <Grid item xs={ 7 } sm={ 8 } />
+              <Grid item xs={ 2 } sm={ 2 }>
                 <Button
                   type="submit"
-                  className={cancelButtonDialog}
-                  onClick={(): void => {
-                    dispatch({ type: 'reset' });
-                    toggleIsOpenSaveModalForm();
-                  }}
+                  className={ cancelButtonDialog }
+                  onClick={ (): void => {
+                    dispatch({ type: 'reset' })
+                    toggleIsOpenSaveModalForm()
+                  } }
                 >
-                  {t('general.cancel')}
+                  { t('general.cancel') }
                 </Button>
               </Grid>
-              <Grid item xs={3} sm={2}>
+              <Grid item xs={ 3 } sm={ 2 }>
                 <Button
                   type="submit"
                   color="primary"
-                  className={submitBtn}
-                  onClick={(e): void => {
-                    e.preventDefault();
-                    submitSave();
-                  }}
+                  className={ submitBtn }
+                  onClick={ (e): void => {
+                    e.preventDefault()
+                    submitSave()
+                  } }
                 >
-                  {isLoadingSave ? t('general.pleaseWait') : t('general.save')}
+                  { isLoadingSave ? t('general.pleaseWait') : t('general.save') }
                 </Button>
               </Grid>
             </Grid>
           </Grid>
         </DialogActions>
       </Dialog>
-    );
-  };
+    )
+  }
 
   // @ts-ignore
   return (
-    <Container maxWidth="lg" className={container}>
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <div>{t('drug.list')}</div>
+    <Container maxWidth="lg" className={ container }>
+      <Grid container spacing={ 0 }>
+        <Grid item xs={ 12 }>
+          <div>{ t('drug.list') }</div>
           <Paper>
             <DataTable
-              tableRef={ref}
-              columns={tableColumns()}
-              addAction={(): void => saveHandler(initialState)}
-              editAction={(e: any, row: any): void => saveHandler(row)}
-              removeAction={async (e: any, row: any): Promise<void> => await removeHandler(row)}
-              customActions={actions}
-              queryKey={DrugEnum.GET_ALL}
-              queryCallback={all}
-              urlAddress={UrlAddress.getAllDrug}
-              initLoad={false}
+              tableRef={ ref }
+              columns={ tableColumns() }
+              addAction={ (): void => saveHandler(initialState) }
+              editAction={ (e: any, row: any): void => saveHandler(row) }
+              removeAction={ async (e: any, row: any): Promise<void> => await removeHandler(row) }
+              customActions={ actions }
+              queryKey={ DrugEnum.GET_ALL }
+              queryCallback={ all }
+              urlAddress={ UrlAddress.getAllDrug }
+              initLoad={ false }
             />
-            {isLoadingRemove && <CircleLoading />}
+            { isLoadingRemove && <CircleLoading /> }
           </Paper>
         </Grid>
-        {isOpenEditModal && editModal()}
+        { isOpenEditModal && editModal() }
       </Grid>
     </Container>
-  );
-};
+  )
+}
 
-export default DrugsList;
+export default DrugsList

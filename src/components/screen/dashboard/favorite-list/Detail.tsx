@@ -65,7 +65,7 @@ const Detail: React.FC<DrugInterface> = (props) => {
                     style={{ alignItems: 'center', paddingRight: '8px' }}
                   >
                     <span>{name}</span>
-                    <div className="text-muted txt-sm">{enName || ''}</div>
+                    <div className="text-muted txt-sm no-farsi-number">{ enName || '' }</div>
                   </Grid>
                 </Grid>
 
@@ -78,6 +78,7 @@ const Detail: React.FC<DrugInterface> = (props) => {
                   </Grid>
                   <Grid item xs={12}>
                     <TextWithTitle
+                      className="no-farsi-number"
                       title={t('drug.latinName')}
                       body={enName || t('general.undefined')}
                     />

@@ -18,6 +18,8 @@ import {
   useTheme,
   Divider,
   Paper,
+  Checkbox,
+  ListItemText,
 } from '@material-ui/core';
 import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react';
 import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
@@ -42,26 +44,19 @@ import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
 import { useParams } from 'react-router-dom';
-import { DrugType } from '../../../../../enum/pharmacyDrug';
 import Calculator from '../../calculator/Calculator';
 
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
-import routes from '../../../../../routes';
-import { SearchDrugInCategory, SearchDrugInMultiCategory } from '../../../../../interfaces/search';
+import { SearchDrugInMultiCategory } from '../../../../../interfaces/search';
 import { PackCreation } from 'model/pack';
-import { ListOptions } from '../../../../public/auto-complete/AutoComplete';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
 import { ColorEnum } from 'enum';
 import CDialog from 'components/public/dialog/Dialog';
-import { setConstantValue } from 'typescript';
-
-const GridCenter = styled((props) => <Grid item {...props} />)`
-  text-align: center;
-`;
+import { CountryDivisionSelect } from 'components/public/country-division/CountryDivisionSelect';
 
 const { searchDrugInMultipleCategory } = new Drug();
 
@@ -75,13 +70,21 @@ const { numberWithZero, thousandsSeperatorFa } = Convertor;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
+const StyledTitle = styled.span`
+  color: #17a2bb;
+  font-size: 12px;
+`;
+
+const StyledDialogContent = styled((props) => <DialogContent {...props} />)`
+  scroll-behavior: smooth;
+`;
+
 const useStyle = makeStyles((theme) =>
   createStyles({
     fieldset: {
-      borderColor: '#f5f5f5',
+      borderColor: ColorEnum.DeepBlue,
       borderRadius: 10,
-      color: '#6d6d6d',
-      marginTop: 20,
+      color: 'red',
       '& legend': {
         color: '#7e7e7e',
       },
@@ -191,17 +194,24 @@ const StyledGrid = styled((props: any) => <Grid {...props} item xs={12} spacing=
   margin: 24px 24px 0px 0px;
 `;
 
+const STMenuItem = styled((props) => <MenuItem {...props} />)`
+  &:nth-child(odd) {
+    background-color: #ededed;
+  }
+`;
+
 const Create: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('-1');
+  const [selectedCategory, setSelectedCategory] = useState<number[]>([]);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [selectedDrug, setSelectedDrug] = useState<any>('');
   const [amount, setAmount] = useState<string>('');
   const [number, setNumber] = useState<string | number>('');
   const [offer1, setOffer1] = useState<string>('');
   const [offer2, setOffer2] = useState<string>('');
+  const [barcode, setBarcode] = useState('');
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [daysDiff, setDaysDiff] = useState<string>('');
@@ -244,22 +254,36 @@ const Create: React.FC = () => {
 
   const autoCompleteRef = useRef<any>(null);
 
-  const dayRef = useRef<HTMLInputElement>();
   const monthRef = useRef<HTMLInputElement>();
-  const yearRef = useRef();
+  const yearRef = useRef<HTMLInputElement>();
+  const batchRef = useRef<HTMLInputElement>();
 
   const {
     addButton,
     expireDate,
     label,
-    submitBtn,
-    cancelButton,
     fieldset,
     fab,
     sectionContainer,
     input,
     formContainer,
   } = useStyle();
+
+  // useEffect(() => {
+  //   const el = document.getElementById('scrollable-content') as HTMLElement;
+  //   if (el !== null) {
+  //     const scrollHeight = el.scrollHeight;
+  //     const interval = setInterval(() => {
+  //       if (el.scrollTop < scrollHeight) {
+  //         el.scrollTop = el.scrollTop + 4;
+  //       }
+
+  //       if (el.scrollTop === scrollHeight) {
+  //         clearInterval(interval);
+  //       }
+  //     }, 50);
+  //   }
+  // }, [comissionPercent, daroogRecommendation]);
 
   const resetValues = (): void => {
     setAmount('');
@@ -277,6 +301,7 @@ const Create: React.FC = () => {
     setIsWrongDate(false);
     setShowError(false);
     setHasMinimumDate(true);
+    setBarcode('');
 
     if (autoCompleteRef && autoCompleteRef.current) {
       autoCompleteRef.current.setInputValue('');
@@ -375,8 +400,7 @@ const Create: React.FC = () => {
   }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
-    console.log('category', selectedCategory);
-    if (selectedCategory === '-1') {
+    if (selectedCategory.length === 0) {
       warningSweetAlert(t('alerts.SelectCategoryAlert'));
     } else {
       if (isOpenModal) {
@@ -408,6 +432,16 @@ const Create: React.FC = () => {
     return totalPrice;
   };
 
+  const mergeCategories = (items: number[]): void => {
+    const categories = items.map((item, index) => {
+      if (!!!item && index > 0) {
+        return item;
+      }
+      return item;
+    });
+    setSelectedCategory(categories);
+  };
+
   async function getPackDrugs(_packId?: number): Promise<any> {
     if (packId !== undefined || _packId !== undefined) {
       try {
@@ -415,11 +449,11 @@ const Create: React.FC = () => {
 
         const result = await getPackDetail(packId !== undefined ? packId : _packId || 0);
 
-        const { pharmacyDrug, status } = result;
+        const { pharmacyDrug, status, categoryID, categoryID2, categoryID3 } = result;
 
         setPackTotalItems(pharmacyDrug.length);
         setPackStatus(status);
-        setSelectedCategory(result.category !== null ? result.category.id : '-1');
+        mergeCategories([categoryID, categoryID2, categoryID3]);
         setDrugsPack([...mapApiDrugsToStandardDrugs(pharmacyDrug)]);
 
         setPackTotalPrice(getTotalPrice(pharmacyDrug));
@@ -440,7 +474,7 @@ const Create: React.FC = () => {
   const [_savePack] = useMutation(savePack, {
     onSuccess: async (data) => {
       if (packId === undefined) {
-        setSelectedCategory('');
+        setSelectedCategory([]);
       }
       if (storedPackId === null) {
         setStoredPackId(data.data.packID);
@@ -478,16 +512,24 @@ const Create: React.FC = () => {
   const submition = async (data: any): Promise<void> => {
     const packData: PackCreation = {
       id: packId !== undefined ? packId : storedPackId !== null ? storedPackId : 0,
-      categoryID: selectedCategory,
+      categoryID: selectedCategory[0],
       // name: packTitle,
       name: '',
       pharmacyDrug: data as PharmacyDrugSupplyList[],
     };
 
-    if (selectedCategory === '-1') {
+    // TODO: This if block should be removed
+    if (selectedCategory.length === 0) {
       delete packData.categoryID;
     }
 
+    if (!!selectedCategory[1]) {
+      packData.categoryID2 = selectedCategory[1];
+    }
+
+    if (!!selectedCategory[2]) {
+      packData.categoryID3 = selectedCategory[2];
+    }
     await _savePack(packData);
   };
 
@@ -512,7 +554,7 @@ const Create: React.FC = () => {
 
   const removeHandler = async (drugId: number): Promise<void> => {
     if (window.confirm(t('alert.remove'))) {
-      remove(drugsPack, (item) => item.drugID.value === drugId);
+      remove(drugsPack, (item) => item.id === drugId);
       try {
         await submition(mapDrugsPackToApi(drugsPack));
         setDrugsPack([...drugsPack]);
@@ -555,8 +597,10 @@ const Create: React.FC = () => {
         name: title,
       };
 
-      if (selectedCategory !== '-1' && !isUndefined(selectedCategory)) {
-        data.categoryId = Number(selectedCategory);
+      if (selectedCategory.length !== 0 && !isUndefined(selectedCategory)) {
+        data.categoryId = Number(selectedCategory[0]);
+        data.secondCategory = Number(selectedCategory[1]) ?? '';
+        data.thirdCategory = Number(selectedCategory[2]) ?? '';
       }
 
       const result = await searchDrugInMultipleCategory(data);
@@ -572,12 +616,16 @@ const Create: React.FC = () => {
   };
 
   const itemsGenerator = (): JSX.Element[] => {
-    return categories.map((item, index) => {
+    return categories.map((item) => {
       const { id, name } = item;
       return (
-        <MenuItem style={{ background: `${index % 2 === 0 ? '#ededed' : ''}` }} key={id} value={id}>
-          {name}
-        </MenuItem>
+        <STMenuItem key={id} value={id}>
+          <Checkbox
+            disabled={selectedCategory.length === 3 && !selectedCategory.includes(id)}
+            checked={selectedCategory.includes(id)}
+          />
+          <ListItemText primary={name} />
+        </STMenuItem>
       );
     });
   };
@@ -632,9 +680,10 @@ const Create: React.FC = () => {
   const selectedCalculaterValueHandler = (v: number): void => {
     setCalculatedValue(v);
   };
+
   const formHandler = async (): Promise<any> => {
     try {
-      if (!isValidInputs() || selectedCategory === '' || isWrongDate || !hasMinimumDate) {
+      if (!isValidInputs() || selectedCategory.length === 0 || isWrongDate || !hasMinimumDate) {
         setShowError(true);
         return;
       }
@@ -648,6 +697,7 @@ const Create: React.FC = () => {
         {
           ...omit(getNewDrugData(), 'id'),
           drugID: getNewDrugData().drugID.value,
+          batchNO: barcode,
         },
       ];
 
@@ -663,13 +713,20 @@ const Create: React.FC = () => {
     setPackTotalPrice(getTotalPrice(temporaryDrugs));
   }, [temporaryDrugs]);
 
+  const handleChange = async (event: React.ChangeEvent<{ value: unknown }>): Promise<any> => {
+    const currentValue = event.target.value as number[];
+    if (selectedCategory.length < 3 || currentValue.length < 3) {
+      setSelectedCategory(currentValue);
+    }
+  };
+
   return (
     <MaterialContainer>
       <StyledGrid>
         <span>
-          ابتدا یک دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید . اقلامی
-          که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر قابل تغییر توسط طرف مقابل
-          عرضه میشود{' '}
+          ابتدا یک تا سه دسته بندی برای پک انتخاب نمایید و سپس اقلام مورد نظر خود را اضافه نمایید .
+          اقلامی که به صورت پک ثبت مینمایید در تبادل٬ با هم و با قیمت و تعداد غیر قابل تغییر توسط
+          طرف مقابل عرضه میشود{' '}
         </span>
       </StyledGrid>
       <Grid container spacing={3} alignItems="center">
@@ -686,9 +743,15 @@ const Create: React.FC = () => {
                       label={t('pack.category')}
                       placeholder={t('pack.category')}
                       className="w-100"
+                      multiple
                       value={selectedCategory}
-                      onChange={(e): void => {
-                        setSelectedCategory(e.target.value as string);
+                      onChange={handleChange}
+                      renderValue={(selected: any): string => {
+                        const items = categories
+                          .filter((item: any) => selected.indexOf(item.id) !== -1)
+                          .map((item: any) => item.name);
+
+                        return ((items as string[]) ?? []).join(' - ');
                       }}
                       disabled={drugsPack.length > 0}
                     >
@@ -750,8 +813,6 @@ const Create: React.FC = () => {
         modalAlt={true}
         hideAll={false}
         hideSubmit={true}
-        // canceleButtonTitle="درج نتیجه محاسبه"
-        // formHandler={(): void => setIsOpenCalculator(false)}
       >
         <DialogContent>
           <div
@@ -783,35 +844,75 @@ const Create: React.FC = () => {
         formHandler={formHandler}
         fullWidth
       >
-        <DialogTitle className="text-sm">{'افزودن دارو به پک'}</DialogTitle>
-        <DialogContent>
+        <DialogTitle className="text-sm">
+          <Grid container>
+            <Grid item xs={12}>
+              <span style={{ fontSize: '12px !important' }}>افزودن محصول به این پک</span>
+            </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>{' '}
+            {comissionPercent !== '' && (
+              <Grid item xs={12}>
+                <Grid item xs={12}>
+                  <span
+                    style={{
+                      fontSize: '13px !important',
+                      color: 'white',
+                      background: 'green',
+                      textAlign: 'center',
+                    }}
+                  >{`پورسانت: ${comissionPercent}%`}</span>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+        </DialogTitle>{' '}
+        <StyledDialogContent id="scrollable-content">
           <DialogContentText>
             <Grid container spacing={3} direction="column">
-              <Grid item xs={12} className={sectionContainer}>
-                <AutoComplete
-                  ref={autoCompleteRef}
-                  isLoading={isLoading}
-                  options={options}
-                  className="w-100"
-                  placeholder={t('drug.name')}
-                  loadingText={t('general.loading')}
-                  onChange={debounce((e) => searchDrugs(e.target.value), 500)}
-                  onItemSelected={(item): void => setSelectedDrug(item[0])}
-                  defaultSelectedItem=""
-                />
+              <Grid item container xs={12} className={sectionContainer}>
+                <Grid item xs={12}>
+                  <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                    {t('alerts.searchProduct')}
+                  </span>
+                </Grid>
+                <Grid item xs={12}>
+                  <AutoComplete
+                    ref={autoCompleteRef}
+                    isLoading={isLoading}
+                    options={options}
+                    className="w-100"
+                    placeholder={t('drug.productName')}
+                    loadingText={t('general.loading')}
+                    onChange={debounce((e) => searchDrugs(e.target.value), 500)}
+                    onItemSelected={(item): void => setSelectedDrug(item[0])}
+                    defaultSelectedItem=""
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item container xs={12} className={sectionContainer}>
-                <Input
-                  placeholder={`${t('general.number')}`}
-                  numberFormat
-                  className="w-100"
-                  label={`${t('general.number')} ${t('drug.drug')}`}
-                  onChange={(e): void => {
-                    setNumber(e);
-                  }}
-                  value={number}
-                />
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container>
+                  <Grid item xs={12}>
+                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      placeholder={`${t('general.number')}`}
+                      numberFormat
+                      className="w-100"
+                      label={`${t('general.number')} ${t('drug.drug')}`}
+                      onChange={(e): void => {
+                        setNumber(e);
+                      }}
+                      value={number}
+                    />
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item container xs={12} className={sectionContainer}>
@@ -891,7 +992,7 @@ const Create: React.FC = () => {
 
               <Grid item container className={sectionContainer} xs={12}>
                 <Grid container spacing={1}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
                     <span style={{ marginBottom: 8, marginLeft: 6 }}>
                       {t('general.expireDate')}
                     </span>
@@ -903,7 +1004,6 @@ const Create: React.FC = () => {
                 <Grid container spacing={1}>
                   <Grid item xs={4} sm={3}>
                     <Input
-                      ref={dayRef}
                       label={t('general.day')}
                       value={selectedDay}
                       error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
@@ -914,15 +1014,13 @@ const Create: React.FC = () => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
                           setSelectedDay(e.target.value);
-                          if (selectedDay.length === 2) {
-                            // TODO: under development
-                            monthRef?.current?.focus();
-                          }
+                        }
+                        if (val.length === 2) {
+                          monthRef?.current?.focus();
                         }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       ref={monthRef}
@@ -937,10 +1035,12 @@ const Create: React.FC = () => {
                         if (selectedMonth.length < 2 || val.length < 2) {
                           setSelectedMonth(e.target.value);
                         }
+                        if (val.length === 2) {
+                          yearRef?.current?.focus();
+                        }
                       }}
                     />
                   </Grid>
-                  {/* <span style={{ alignSelf: 'center' }}>/</span> */}
                   <Grid item xs={4} sm={3}>
                     <Input
                       ref={yearRef}
@@ -954,6 +1054,9 @@ const Create: React.FC = () => {
                         const val = e.target.value;
                         if (selectedYear.length < 4 || val.length < 4) {
                           setSelectedYear(e.target.value);
+                        }
+                        if (val.length === 4) {
+                          batchRef?.current?.focus();
                         }
                       }}
                     />
@@ -975,22 +1078,32 @@ const Create: React.FC = () => {
                 </Grid>
               </Grid>
 
-              {/* <Grid item xs={12}>
-              <Input
-                className="w-100"
-                label={t('general.barcode')}
-                value={state?.batchNO}
-                onChange={(e): void =>
-                  dispatch({ type: 'batchNO', value: e.target.value })
-                }
-              />
-            </Grid> */}
-
-              {comissionPercent !== '' && (
-                <Grid item xs={12}>
-                  {`پورسانت: ${comissionPercent}%`}
+              <Grid item xs={12} className={sectionContainer}>
+                <Grid container>
+                  <Grid item xs={12} style={{ marginBottom: 8 }}>
+                    <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                      وارد کردن بچ نامبر برای ثبت محصول الزامی میباشد
+                    </span>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      required
+                      ref={batchRef}
+                      error={barcode === '' && showError}
+                      className="w-100"
+                      label={t('general.batchNumber')}
+                      value={barcode}
+                      onChange={(e): void => setBarcode(e.target.value)}
+                    />
+                  </Grid>
                 </Grid>
-              )}
+              </Grid>
+
+              {/* {comissionPercent !== '' && (
+                <Grid item xs={12}>
+                  <h3>{`پورسانت: ${comissionPercent}%`}</h3>
+                </Grid>
+              )} */}
 
               {daroogRecommendation !== '' && (
                 <Grid item xs={12}>
@@ -1001,7 +1114,7 @@ const Create: React.FC = () => {
               )}
             </Grid>
           </DialogContentText>
-        </DialogContent>
+        </StyledDialogContent>
         <Divider />
         <DialogActions>
           <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
@@ -1016,25 +1129,6 @@ const Create: React.FC = () => {
                 <span>{t('alerts.reloadModalToEnterNewDrug')}</span>
               </label>
             </Grid>
-            {/* 
-            <Grid container xs={12}>
-              <Grid item xs={7} sm={8} />
-              <Grid item xs={2} sm={2}>
-                <Button type="button" onClick={toggleIsOpenModal} className={cancelButton}>
-                  {t('general.close')}
-                </Button>
-              </Grid>
-              <Grid item xs={3} sm={2}>
-                <Button
-                  className={submitBtn}
-                  type="button"
-                  onClick={formHandler}
-                  disabled={isBackdropLoading}
-                >
-                  {isBackdropLoading ? t('general.pleaseWait') : t('general.add')}
-                </Button>
-              </Grid>
-</Grid>*/}
           </Grid>
         </DialogActions>
       </CDialog>
@@ -1044,9 +1138,7 @@ const Create: React.FC = () => {
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
           selectedDateHandler={(e): void => {
-            // calculateDateDifference(e, '/');
             setSelectedDate(e);
-
             toggleIsOpenDatePicker();
           }}
         />

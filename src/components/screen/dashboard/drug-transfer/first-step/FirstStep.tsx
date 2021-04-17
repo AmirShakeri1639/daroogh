@@ -302,7 +302,7 @@ const FirstStep: React.FC = () => {
         el: (
           <div>
             <div>{getDrugName(_item)}</div>
-            <div className="text-muted txt-sm">{`${
+            <div className="text-muted txt-sm no-farsi-number">{ `${
               _item.enName !== null ? `-${_item.enName}` : ''
             }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
           </div>

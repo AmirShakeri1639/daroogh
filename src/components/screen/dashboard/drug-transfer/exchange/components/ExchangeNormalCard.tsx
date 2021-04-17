@@ -150,7 +150,11 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
           </div>
           <div style={{ width: '100%', fontSize: `${isSmallDevice ? '10px' : '12px'}` }}>
             {pharmacyDrug?.drug.genericName}
-            {pharmacyDrug?.drug.enName && `(${pharmacyDrug?.drug.enName})`}
+            { pharmacyDrug?.drug.enName &&
+              <span className="no-farsi-number">
+                { pharmacyDrug?.drug.enName }
+              </span>
+            }
           </div>
         </Grid>
         {lockedAction && (

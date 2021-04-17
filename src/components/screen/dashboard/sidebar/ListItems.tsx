@@ -28,6 +28,7 @@ import {
   faUserMd,
   faCog,
   faHandshake,
+  faArchive,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -115,6 +116,7 @@ const {
   pharmacyMessage,
   surveyList,
   fda_exchangeList,
+  aPharmacyDocs,
 } = routes;
 
 /**
@@ -198,7 +200,7 @@ const ListItems: React.FC = () => {
   const publicMenu = (): JSX.Element => {
     return (
       <div className={menuContainer}>
-        <h3 className={spacing3}>{t('general.peopleSection')}</h3>
+        {/* <h3 className={spacing3}>{t('general.peopleSection')}</h3> */}
 
         <List component="div" className={linkWrapper}>
           {getListItem({
@@ -252,7 +254,7 @@ const ListItems: React.FC = () => {
           })}
         </List>
 
-        <List component="div" className={linkWrapper}>
+        {/* <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: FontAwesomeIcon,
             text: t('jobSearch.jobSearch'),
@@ -263,7 +265,7 @@ const ListItems: React.FC = () => {
               size: 'lg',
             },
           })}
-        </List>
+        </List> */}
 
         <List component="div" className={linkWrapper}>
           {getListItem({
@@ -380,7 +382,7 @@ const ListItems: React.FC = () => {
   const pharmacyMenu = (): JSX.Element => {
     return (
       <div className={menuContainer}>
-        <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3>
+        {/* <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3> */}
         <ListItem
           button
           className={linkWrapper}
@@ -444,6 +446,19 @@ const ListItems: React.FC = () => {
             text: t('general.yourFavorite'),
             selected: isOpenPageOfThisGroup('favorite/drug'),
             link: drugFavoriteList,
+          })}
+        </List>
+
+        <List component="div" className={linkWrapper}>
+          {getListItem({
+            Icon: FontAwesomeIcon,
+            text: t('file.docs'),
+            selected: isOpenPageOfThisGroup(aPharmacyDocs),
+            link: aPharmacyDocs,
+            props: {
+              icon: faArchive,
+              size: 'lg',
+            },
           })}
         </List>
 
