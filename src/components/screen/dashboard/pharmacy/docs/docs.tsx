@@ -186,12 +186,12 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
     )
   }
 
-  const tableColumns = [
+  const tableColumns: DataTableColumns[] = [
     {
       field: 'id',
       title: t('general.id'),
       type: 'number',
-      cellStyle: { textAlign: 'right' },
+      hidden: true,
     },
     {
       field: 'fileName',
@@ -207,22 +207,7 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
       field: 'fileKey',
       title: t('file.file'),
       type: 'string',
-      render: (row: any): any => {
-        return (
-          <>
-            { !isNullOrEmpty(row.fileKey) &&
-              <Button onClick={ (): any => {
-                setFileKeyToShow(row.fileKey)
-                setIsOpenPicture(true)
-                setFileName(row.fileName)
-                setFileTitle(row.fileTypeName)
-              } }>
-                <FontAwesomeIcon icon={ faImage } />
-              </Button>
-            }
-          </>
-        )
-      }
+      hidden: true
     },
   ]
 
@@ -390,8 +375,8 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
 
   const detailHandler = (item: any): void => {
     setFileKeyToShow(item.fileKey)
-    setFileName(item['file.fileName'])
-    setFileTitle(item['file.fileType'])
+    setFileName(item.fileName)
+    setFileTitle(item.fileTypeName)
     setIsOpenPicture(true)
   }
 
@@ -408,11 +393,8 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
           >
             <CardContainer
               itemId={ item.id }
-              data={ {
-                fileKey: item.fileKey,
-                'file.fileName': item.fileName,
-                'file.fileType': item.fileTypeName,
-              } }
+              fields={ tableColumns }
+              data={ item }
               removeHandler={ removeHandler }
               detailHandler={ detailHandler }
             />

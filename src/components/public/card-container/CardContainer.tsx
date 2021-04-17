@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   makeStyles,
   Paper,
@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 import Detail from './Details';
 import { useTranslation } from 'react-i18next';
+import { DataTableColumns } from 'interfaces/DataTableColumns';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -24,6 +25,7 @@ const useStyle = makeStyles((theme) =>
 
 interface Props {
   data: any
+  fields: DataTableColumns[]
   itemId?: number | string
   removeHandler?: (item: any) => void
   detialHandler?: (item: any) => void
@@ -32,15 +34,28 @@ interface Props {
 const CardContainer: React.FC<any> = (props) => {
   const { root } = useStyle()
   const { t } = useTranslation()
+  const [info, setInfo] = useState<DataTableColumns[]>([])
+
   const {
-    data, itemId,
+    data, itemId, fields,
     removeHandler, detailHandler
   } = props
+
+  useEffect(() => {
+    const dataCols: DataTableColumns[] = []
+    fields.map((i: any): any => {
+      dataCols.push({
+        ...i,
+        value: data[i.field]
+      })
+    })
+    setInfo(dataCols)
+  }, [])
 
   return (
     <Paper className={ root } elevation={ 1 }>
       <Grid container spacing={ 0 }>
-        <Detail data={ data } />
+        <Detail data={ info } />
       </Grid>
       <Grid item xs={ 12 } style={ { padding: '4px' } }>
         <Divider />
