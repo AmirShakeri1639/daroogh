@@ -479,7 +479,7 @@ const SupplyList: React.FC = () => {
           el: (
             <div>
               <div>{getDrugName(_item)}</div>
-              <div className="text-muted txt-sm no-farsi-number">{ `${
+              <div className="text-muted txt-sm no-farsi-number">{`${
                 _item.enName !== null ? `-${_item.enName}` : ''
               }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
             </div>
@@ -698,7 +698,33 @@ const SupplyList: React.FC = () => {
         formHandler={formHandler}
         fullWidth
       >
-        <DialogTitle className="text-sm">افزودن به لیست عرضه</DialogTitle>
+        <DialogTitle className="text-sm">
+          <Grid container>
+            <Grid item xs={12}>
+              <span style={{ fontSize: '12px !important' }}>افزودن محصول به لیست عرضه</span>
+            </Grid>
+            <Grid item xs={12}>
+              <Divider />
+            </Grid>{' '}
+            {comissionPercent !== '' && (
+              <Grid item xs={12}>
+                <Grid item xs={12}>
+                  <span
+                    style={{
+                      fontSize: '13px !important',
+                      color: 'white',
+                      background: 'green',
+                      textAlign: 'center',
+                    }}
+                  >{`پورسانت: ${comissionPercent}%`}</span>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider />
+                </Grid>
+              </Grid>
+            )}
+          </Grid>
+        </DialogTitle>
         <StyledDialogContent id="scrollable-content">
           <DialogContentText>
             <Grid container spacing={3} direction="column" className={formContent}>
@@ -934,12 +960,6 @@ const SupplyList: React.FC = () => {
                   </Grid>
                 </Grid>
               </Grid>
-
-              {comissionPercent !== '' && (
-                <Grid item xs={12}>
-                  <h3>{`پورسانت: ${comissionPercent}%`}</h3>
-                </Grid>
-              )}
 
               {daroogRecommendation !== '' && (
                 <Grid item xs={12}>
