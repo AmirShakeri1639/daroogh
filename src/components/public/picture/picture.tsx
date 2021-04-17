@@ -16,10 +16,7 @@ const Picture: React.FC<Props> = (props) => {
   useEffect(() => {
     async function getFile(fileKey: string) {
       const { get } = new File();
-      const result =
-      isNullOrEmpty(fileKey)
-      ? ''
-      : await get(fileKey);
+      const result = isNullOrEmpty(fileKey) ? '' : await get(fileKey);
       setFile(result == '' ? '' : window.URL.createObjectURL(result));
       setIsLoading(false);
     }
@@ -28,15 +25,17 @@ const Picture: React.FC<Props> = (props) => {
 
   return (
     <>
-      { isLoading && <CircleLoading /> }
-      { !isNullOrEmpty(file) && 
+      {isLoading && <CircleLoading />}
+      {!isNullOrEmpty(file) && (
         <img
-          width='100%'
-          className={ className }
-          src={ file } />
-      }
+          width="100%"
+          className={className}
+          style={{ maxWidth: '500px', maxHeight: '500px' }}
+          src={file}
+        />
+      )}
     </>
   );
-}
+};
 
 export default Picture;

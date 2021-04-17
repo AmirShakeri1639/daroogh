@@ -18,6 +18,7 @@ const useStyle = makeStyles((theme) =>
       marginTop: 0,
       display: 'flex',
       alignItems: 'center',
+      maxWidth: '95%',
     },
   })
 );

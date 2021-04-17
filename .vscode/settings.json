@@ -15,5 +15,6 @@
     "Scrollable",
     "daroog",
     "fortawesome"
-  ]
+  ],
+  "editor.formatOnSaveMode": "modifications"
 }
