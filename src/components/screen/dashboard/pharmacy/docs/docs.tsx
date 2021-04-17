@@ -204,6 +204,11 @@ const CurrentPharmacyDocs: React.FC<Props> = (props) => {
       type: 'string',
     },
     {
+      field: 'stateString',
+      title: t('general.status'),
+      type: 'string',
+    },
+    {
       field: 'fileKey',
       title: t('file.file'),
       type: 'string',

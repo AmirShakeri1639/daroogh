@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Button,
   createStyles,
@@ -11,10 +11,11 @@ import {
   makeStyles,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import { Picture } from '..';
-import { useTranslation } from 'react-i18next';
-import FileLink from './fileLink';
+} from '@material-ui/core'
+import { Picture } from '..'
+import { useTranslation } from 'react-i18next'
+import FileLink from './fileLink'
+import { CommandInterface } from 'interfaces'
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -34,38 +35,44 @@ const useClasses = makeStyles((theme) =>
       },
     },
   })
-);
+)
 
 interface Props {
-  fileKey: string;
-  title?: string;
-  className?: string;
-  onClose?: any;
-  fileName?: string;
+  fileId?: number | string
+  fileKey: string
+  title?: string
+  className?: string
+  onClose?: any
+  fileName?: string
+  commands?: CommandInterface[]
 }
 
 const PictureDialog: React.FC<Props> = (props) => {
-  const { fileKey, className = '', title = '', onClose, fileName } = props;
-  const { t } = useTranslation();
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const { root } = useClasses();
-  const [isOpenDialog, setIsOpenDialog] = useState(true);
+  const {
+    fileKey, className = '', title = '',
+    onClose, fileName, fileId,
+    commands
+  } = props
+  const { t } = useTranslation()
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { root } = useClasses()
+  const [isOpenDialog, setIsOpenDialog] = useState(true)
 
   return (
-    <Dialog open={isOpenDialog} fullScreen={fullScreen} fullWidth={true}>
-      <DialogTitle>{title}</DialogTitle>
+    <Dialog open={ isOpenDialog } fullScreen={ fullScreen } fullWidth={ true }>
+      <DialogTitle>{ title }</DialogTitle>
       <Divider />
-      <DialogContent className={root}>
+      <DialogContent className={ root }>
         <Grid container>
-          <Grid item xs={12}>
-            {(fileName === undefined ||
+          <Grid item xs={ 12 }>
+            { (fileName === undefined ||
               (!fileName.endsWith('.jpg') && !fileName.endsWith('.png'))) && (
-              <FileLink fileKey={fileKey} fileName={fileName} text={t('general.download')} />
-            )}
-            {fileName !== undefined && (fileName.endsWith('.jpg') || fileName.endsWith('.png')) && (
-              <Picture fileKey={fileKey} className={className} />
-            )}
+                <FileLink fileKey={ fileKey } fileName={ fileName } text={ t('general.download') } />
+              ) }
+            { fileName !== undefined && (fileName.endsWith('.jpg') || fileName.endsWith('.png')) && (
+              <Picture fileKey={ fileKey } className={ className } />
+            ) }
           </Grid>
         </Grid>
       </DialogContent>
@@ -73,16 +80,37 @@ const PictureDialog: React.FC<Props> = (props) => {
         <Button
           variant="outlined"
           color="secondary"
-          onClick={(): void => {
-            setIsOpenDialog(false);
-            if (onClose) onClose();
-          }}
+          onClick={ (): void => {
+            setIsOpenDialog(false)
+            if (onClose) onClose()
+          } }
         >
-          {t('general.ok')}
+          { t('general.ok') }
         </Button>
+        {
+          commands && commands.length > 0 &&
+          <>
+            {
+              commands.map((i: any) => {
+                return (
+                  <Button
+                    variant="outlined"
+                    color="default"
+                    style={ { color: i.color ? i.color : '' } }
+                    onClick={ (): void => {
+                      i.method(fileId)
+                    } }
+                  >
+                    { i.title }
+                  </Button>
+                )
+              })
+            }
+          </>
+        }
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
-export default PictureDialog;
+export default PictureDialog
