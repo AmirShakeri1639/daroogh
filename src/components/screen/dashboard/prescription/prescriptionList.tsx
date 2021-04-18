@@ -355,7 +355,6 @@ const PrescriptionList: React.FC = () => {
     () => getList(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoDataRef(true);
         } else {

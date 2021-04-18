@@ -20,13 +20,11 @@ class Job extends Api {
     }
   };
 
-
   all = async (skip: number, top: number = 10): Promise<any> => {
     try {
       const result = await this.postJsonData(
         `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`
       );
-      console.log(result.data);
       return result.data;
     } catch (e) {
       errorHandler(e);

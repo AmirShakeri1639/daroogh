@@ -99,7 +99,6 @@ const SyrveyQuestion: React.FC<{
   surveyAnswer?: SurveyAnswer[];
 }> = (props) => {
   const { question, surveyAnswer } = props;
-  console.log(surveyAnswer);
 
   switch (question.type) {
     case 1:

@@ -89,7 +89,6 @@ const SecondStep: React.FC = () => {
 
   const loginByTicketHandler = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault();
-    //console.log(ticketId);
     try {
       /*if (isValidOtpCode(code)) {
         await _loginByTicket({
