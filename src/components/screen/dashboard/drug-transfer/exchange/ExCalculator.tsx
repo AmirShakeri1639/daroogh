@@ -304,7 +304,6 @@ const ExCalculator: React.FC<Props> = (props) => {
   const printBill = () => {
     const dialogActions = document.getElementById('dialogActions')
     const dialogActionsDisplay = dialogActions?.style.display
-    console.log('dialogActionsDisplay', dialogActionsDisplay)
     window.print()
     // printElem('billContainer', t('exchange.exCalculator'))
   }

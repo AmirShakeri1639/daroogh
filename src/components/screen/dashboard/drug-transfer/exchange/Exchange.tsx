@@ -120,7 +120,6 @@ const Exchange: React.FC<ReduxProps> = (props) => {
   const { t } = useTranslation();
 
   const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
-  console.log('exchange', viewExhcnage);
   return (
     <Grid
       container

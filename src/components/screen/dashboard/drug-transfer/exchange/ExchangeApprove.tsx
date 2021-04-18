@@ -242,10 +242,10 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
       },
     })
       .then((res) => {
-        console.log('123');
+        console.log('');
       })
       .then((data) => {
-        console.log(data);
+        console.log('');
       });
   };
 

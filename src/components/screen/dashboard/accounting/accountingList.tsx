@@ -226,7 +226,6 @@ const AccountingList: React.FC = () => {
     if (!noDataRef.current && checkDevice) {
       const currentpage = pageRef.current + 1;
       setPageRef(currentpage);
-      console.log(pageRef.current);
       getList();
     }
   };

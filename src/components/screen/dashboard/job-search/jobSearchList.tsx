@@ -323,12 +323,9 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     () => all(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoDataRef(true);
         } else {
-          // console.log(result.items);
-
           setListRef(result.items);
         }
       },
@@ -344,7 +341,6 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
 
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await all(pageRef.current, 10, [], searchRef.current);
-    //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoDataRef(true);
     }
@@ -380,7 +376,6 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     if (!noDataRef.current && checkDevice) {
       const currentpage = pageRef.current + 1;
       setPageRef(currentpage);
-      console.log(pageRef.current);
       getList();
     }
   };

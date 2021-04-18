@@ -635,7 +635,6 @@ const UsersList: React.FC = () => {
   };
   const contentGenerator = (): JSX.Element[] | null => {
     if (!isLoading && list !== undefined && isFetched) {
-      console.log(data);
       return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
@@ -676,11 +675,9 @@ const UsersList: React.FC = () => {
     () => getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoDataRef(true);
         } else {
-          //console.log(result.items);
           setListRef(result.items);
         }
       },
@@ -696,7 +693,6 @@ const UsersList: React.FC = () => {
 
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current);
-    // console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoDataRef(true);
     }
@@ -731,7 +727,6 @@ const UsersList: React.FC = () => {
     if (!noDataRef.current && checkDevice) {
       const currentpage = pageRef.current + 1;
       setPageRef(currentpage);
-      console.log(pageRef.current);
       getList();
     }
   };

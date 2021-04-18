@@ -299,7 +299,6 @@ const ActionButtons = (): JSX.Element => {
     // } catch (error) {
     //   errorHandler(error);
     // }
-    console.log('path', `${survey}?exchangeId=${exchangeId}`);
     history.push(`${survey}?exchangeId=${exchangeId}`);
   };
 

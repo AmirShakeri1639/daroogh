@@ -599,12 +599,9 @@ const JobsList: React.FC = () => {
     () => all(pageRef.current, 10),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoDataRef(true);
         } else {
-          //console.log(result.items);
-
           setListRef(result.items);
         }
       },
@@ -620,7 +617,6 @@ const JobsList: React.FC = () => {
 
   async function getList(): Promise<any> {
     const result = await all(pageRef.current, 10);
-    console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoDataRef(true);
     } else {
@@ -655,7 +651,6 @@ const JobsList: React.FC = () => {
     if (!noDataRef.current && checkDevice) {
       const currentpage = pageRef.current + 1;
       setPageRef(currentpage);
-      console.log(pageRef.current);
       getList();
     }
   };
