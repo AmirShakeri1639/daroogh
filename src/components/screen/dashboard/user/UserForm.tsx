@@ -15,8 +15,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { ActionInterface } from '../../../../interfaces'
 import {
   errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
+  tError,
+  tSuccess,
   tWarn,
 } from '../../../../utils'
 import { useMutation } from 'react-query'
@@ -186,7 +186,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
         }
 
         setOptions([])
-        await successSweetAlert(
+        tSuccess(
           message || t('alert.successfulCreateTextMessage')
         )
         if (onSubmit) {
@@ -195,7 +195,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
         dispatch({ type: 'reset' })
       },
       onError: async (data: any) => {
-        await errorSweetAlert(data || t('error.save'))
+        tError(data || t('error.save'))
       },
     }
   )
