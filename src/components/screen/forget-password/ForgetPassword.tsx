@@ -17,6 +17,7 @@ import Validation from "../../../utils/validation";
 import CircleLoading from "../../public/loading/CircleLoading";
 import { Alert } from "../../public/alert/Alert";
 import { useTranslation } from 'react-i18next';
+import { tError } from 'utils';
 
 const useStyles = makeStyles((theme) => createStyles({
   root: {
@@ -95,7 +96,10 @@ const ForgetPassword: React.FC = () => {
         });
       }
       else {
-        setShowError(true);
+        
+        tError("در وارد نمودن شماره موبایل دقت فرمائید");
+        
+        
       }
     }
     catch (e) {
