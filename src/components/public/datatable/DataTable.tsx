@@ -1,43 +1,104 @@
-import React, { createRef, useImperativeHandle, useState, forwardRef, useEffect } from 'react';
-import MaterialTable, { MTableToolbar } from 'material-table';
-import { DataTableProps } from '../../../interfaces';
-import { usePaginatedQuery, useQueryCache } from 'react-query';
-import { errorSweetAlert, sweetAlert } from '../../../utils';
-import { useTranslation } from 'react-i18next';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPowerOff } from '@fortawesome/free-solid-svg-icons';
-import localization from './localization';
-import { has } from 'lodash';
+import React, { createRef, useState, forwardRef, useEffect } from 'react'
+import MaterialTable, { MTableToolbar } from 'material-table'
+import { DataTableProps } from '../../../interfaces'
+import { useQueryCache } from 'react-query'
+import { sweetAlert } from '../../../utils'
+import { useTranslation } from 'react-i18next'
+import localization from './localization'
 import {
   AppBar,
-  createStyles,
   Dialog,
   DialogContent,
   DialogTitle,
   IconButton,
   makeStyles,
+  Menu,
+  MenuItem,
   Slide,
-  TablePagination,
   Toolbar,
   Typography,
-} from '@material-ui/core';
-import itemsSanitizer from './ItemsSanitizer';
-import { DataTableColumns } from '../../../interfaces/DataTableColumns';
-import { UrlAddress } from '../../../enum/UrlAddress';
-import FilterInput from './FilterInput';
-import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInterface';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import Report from '../report/Report';
-import ReportViewerContainer from '../report/ReportViewerContainer';
-import { TransitionProps } from '@material-ui/core/transitions/transition';
-import CloseIcon from '@material-ui/icons/Close';
-import moment from 'jalali-moment';
+} from '@material-ui/core'
+import { DataTableColumns } from '../../../interfaces/DataTableColumns'
+import { UrlAddress } from '../../../enum/UrlAddress'
+import FilterInput from './FilterInput'
+import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInterface'
+import ChevronRight from '@material-ui/icons/ChevronRight'
+import ChevronLeft from '@material-ui/icons/ChevronLeft'
+import ReportViewerContainer from '../report/ReportViewerContainer'
+import { TransitionProps } from '@material-ui/core/transitions/transition'
+import CloseIcon from '@material-ui/icons/Close'
+import XLSX from 'xlsx'
+import { tSimple, tSuccess, tInfo, tWarn } from 'utils'
+import { screenWidth } from 'enum'
+
+const exportToExcel = async (columns: any[], data: any[], type: number, url: string) => {
+  const columnInfo = columns.reduce(
+    (acc, column) => {
+      const headerLabel = column.title || column.field
+      acc.header.push(headerLabel)
+      acc.map[column.field] = headerLabel
+      return acc
+    },
+    { map: {}, header: [] }
+  )
+  let mappedData: any[] = []
+
+  switch (type) {
+    case 0:
+      const user = localStorage.getItem('user') || '{}'
+      const { token } = JSON.parse(user)
+      tInfo('فایل اکسل در حال تولید می باشد')
+      await fetch(url, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          mappedData = result.items
+        })
+        .catch(
+          async (error: any): Promise<any> => {
+            await sweetAlert({
+              type: 'error',
+              text: 'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
+            })
+            mappedData = []
+          }
+        )
+      break
+    case 1:
+      mappedData = data
+      break
+    default:
+      break
+  }
+
+  let result = mappedData.map((row) =>
+    Object.entries(row).reduce((acc: any, [key, value]) => {
+      if (columnInfo.map[key]) {
+        acc[columnInfo.map[key]] = value
+      }
+      return acc
+    }, {})
+  )
+
+  var ws = XLSX.utils.json_to_sheet(result, {
+    header: columnInfo.header,
+  })
+
+  var wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+
+  XLSX.writeFile(wb, `daroog.xlsx`)
+}
 
 type CountdownHandle = {
-  loadItems: () => void;
-};
+  loadItems: () => void
+}
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -65,25 +126,25 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(1),
     color: theme.palette.grey[700],
   },
-}));
+}))
 
 const Transition = React.forwardRef<TransitionProps, { children?: React.ReactElement<any, any> }>(
   (props, ref) => <Slide direction="up" ref={ref} {...props} />
-);
+)
 
 const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps> = (
   props,
   forwardedRef
 ) => {
-  const { table, closeButton } = useStyles();
-  const [page, setPage] = useState<number>(0);
-  const [searchText, setSearchText] = useState<string>('');
-  const [itemsCount, setItemsCount] = useState<number>(0);
-  const [entries, setEntries] = useState([]);
-  const [isLoader, setLoader] = useState(true);
-  const [showFilter, setShowFilter] = useState(false);
-  const [showReport, setShowReport] = useState(false);
-  const [filters, setFilters] = useState<DataTableFilterInterface[]>([]);
+  const { table, closeButton } = useStyles()
+  const [page, setPage] = useState<number>(0)
+  const [searchText, setSearchText] = useState<string>('')
+  const [itemsCount, setItemsCount] = useState<number>(0)
+  const [entries, setEntries] = useState([])
+  const [isLoader, setLoader] = useState(true)
+  const [showFilter, setShowFilter] = useState(false)
+  const [showReport, setShowReport] = useState(false)
+  const [filters, setFilters] = useState<DataTableFilterInterface[]>([])
 
   const {
     editUser,
@@ -106,16 +167,32 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     defaultFilter,
     detailPanel,
     otherQueryString,
-  } = props;
+  } = props
 
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const queryCache = useQueryCache();
+  const queryCache = useQueryCache()
+
+  const expoertOptions = [
+    { title: 'اکسپورت از تمام صفحات', type: 0 },
+    { title: 'اکسپورت از صفحه جاری', type: 1 },
+  ]
+  const ITEM_HEIGHT = 48
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+
+  const handleExportButtonClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleExportClose = () => {
+    setAnchorEl(null)
+  }
 
   const materialTableProps = {
     onRowClick,
     onSelectionChange: (): any => void 0,
-  };
+  }
 
   let tableActions: any[] = [
     {
@@ -123,6 +200,12 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
       tooltip: 'فیلتر',
       isFreeAction: true,
       onClick: (): any => setShowFilter(!showFilter),
+    },
+    {
+      icon: 'import_export',
+      tooltip: 'اکسپورت',
+      isFreeAction: true,
+      onClick: (e: any): any => handleExportButtonClick(e),
     },
     {
       icon: 'refresh',
@@ -136,7 +219,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     //   isFreeAction: true,
     //   onClick: (): any => setShowReport(true),
     // },
-  ];
+  ]
 
   if (addAction !== undefined) {
     tableActions = [
@@ -147,7 +230,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         isFreeAction: true,
         onClick: (): void => addAction(),
       },
-    ];
+    ]
   }
   if (stateAction !== undefined) {
     tableActions = [
@@ -162,7 +245,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         onClick: (event: any, rowData: any): void =>
           rowData.active ? stateAction(rowData) : editUser?.(rowData),
       },
-    ];
+    ]
   }
   if (editAction !== undefined) {
     tableActions = [
@@ -176,7 +259,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         },
         onClick: (event: any, rowData: any): void => editAction(event, rowData),
       },
-    ];
+    ]
   }
   if (removeAction !== undefined) {
     tableActions = [
@@ -189,10 +272,10 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
           color: 'secondary',
         },
         onClick: (event: any, rowData: any): void => {
-          removeAction(event, rowData);
+          removeAction(event, rowData)
         },
       },
-    ];
+    ]
   }
   if (customActions !== undefined && customActions.length > 0) {
     customActions.map((a: any) => {
@@ -205,22 +288,22 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
             color: a.color ? a.color : 'primary',
           },
           onClick: (event: any, rowData: any): void => {
-            if (a.action) a.action(event, rowData);
+            if (a.action) a.action(event, rowData)
           },
         },
-      ];
-    });
+      ]
+    })
   }
 
   useEffect(() => {
-    tableRef.current.onQueryChange();
-  }, [filters]);
+    tableRef.current.onQueryChange()
+  }, [filters])
 
   useEffect(() => {
     columns.forEach((element: DataTableColumns) => {
-      element.filterComponent = (props: any): any => <FilterInput {...props} />;
-    });
-  }, [columns]);
+      element.filterComponent = (props: any): any => <FilterInput {...props} />
+    })
+  }, [columns])
 
   const ReportContainer = (): JSX.Element => (
     <Dialog
@@ -259,7 +342,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 
   return (
     <div className={table}>
@@ -277,58 +360,51 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         columns={columns}
         data={(query): any =>
           new Promise((resolve, reject) => {
-            let url = UrlAddress.baseUrl + urlAddress;
+            let url = UrlAddress.baseUrl + urlAddress
             if (url.includes('?'))
-              url += `&$top=${query.pageSize}&$skip=${
-                query.page * query.pageSize
-              }`;
-            else
-              url += `?&$top=${query.pageSize}&$skip=${
-                query.page * query.pageSize
-              }`;
+              url += `&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
+            else url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
 
             if (otherQueryString) {
-              url += `&${otherQueryString}`;
+              url += `&${otherQueryString}`
             }
 
             if (defaultFilter) {
-              url += `&$filter= ${defaultFilter}`;
+              url += `&$filter= ${defaultFilter}`
             }
 
-            const qFilter = query.filters.filter((x) => x.value.fieldValue !== '');
+            const qFilter = query.filters.filter((x) => x.value.fieldValue !== '')
             qFilter.forEach((x: any, i: number) => {
-              if (i === 0) url += defaultFilter ? ' and ' : '&$filter=';
-              const openP = i === 0 ? '(' : '';
-              const closeP = i === qFilter.length - 1 ? ')' : '';
-              const andO = i < qFilter.length - 1 ? 'and ' : '';
+              if (i === 0) url += defaultFilter ? ' and ' : '&$filter='
+              const openP = i === 0 ? '(' : ''
+              const closeP = i === qFilter.length - 1 ? ')' : ''
+              const andO = i < qFilter.length - 1 ? 'and ' : ''
               url += `${openP} ${String(x.value.operator).replace(
                 '$',
                 x.value.fieldValue
-              )} ${andO}${closeP}`;
-            });
+              )} ${andO}${closeP}`
+            })
             if (query.search && query.search !== '') {
-              const columnsFilter = columns.filter((x: any) => x.searchable);
+              const columnsFilter = columns.filter((x: any) => x.searchable)
               if (columnsFilter.length > 0) {
-                url += defaultFilter || query.filters.length > 0 ? ' and ' : '&$filter=';
+                url += defaultFilter || query.filters.length > 0 ? ' and ' : '&$filter='
                 columnsFilter.forEach((x: DataTableColumns, i: number) => {
-                  const openP = i === 0 ? '(' : '';
-                  const closeP = i === columnsFilter.length - 1 ? ')' : '';
-                  const orO = i < columnsFilter.length - 1 ? 'or ' : '';
-                  url += `${openP}contains(cast(${x.field},'Edm.String'),'${query.search}')${orO}${closeP}`;
-                });
+                  const openP = i === 0 ? '(' : ''
+                  const closeP = i === columnsFilter.length - 1 ? ')' : ''
+                  const orO = i < columnsFilter.length - 1 ? 'or ' : ''
+                  url += `${openP}contains(cast(${x.field},'Edm.String'),'${query.search}')${orO}${closeP}`
+                })
               }
             }
             if (query.orderBy) {
-              url += `&$orderby=${query.orderBy.field?.toString()} ${
-                query.orderDirection
-              }`;
+              url += `&$orderby=${query.orderBy.field?.toString()} ${query.orderDirection}`
             } else {
               if (columns.findIndex((c: any) => c.field === 'id') !== -1) {
-                url += `&$orderby=id desc`;
+                url += `&$orderby=id desc`
               }
             }
-            const user = localStorage.getItem('user') || '{}';
-            const { token } = JSON.parse(user);
+            const user = localStorage.getItem('user') || '{}'
+            const { token } = JSON.parse(user)
 
             if (urlAddress)
               fetch(url, {
@@ -341,15 +417,11 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
               })
                 .then((response) => response.json())
                 .then((result) => {
-                  // result.items.forEach((a: any) => {
-                  //   if (a.sendDate)
-                  //     a.sendDate = moment(a.sendDate, 'YYYY/MM/DD').locale('fa').format('YYYY/MM/DD');
-                  // })
                   resolve({
                     data: result.items,
                     page: query.page,
                     totalCount: result.count,
-                  });
+                  })
                 })
                 .catch(
                   async (error: any): Promise<any> => {
@@ -357,14 +429,14 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
                       type: 'error',
                       text:
                         'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
-                    });
+                    })
                     resolve({
                       data: [],
                       page: 0,
                       totalCount: 0,
-                    });
+                    })
                   }
-                );
+                )
           })
         }
         detailPanel={
@@ -373,7 +445,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
                 {
                   tooltip: 'نمایش جزئیات',
                   render: (rowData): any => {
-                    return detailPanel(rowData);
+                    return detailPanel(rowData)
                   },
                 },
               ]
@@ -396,7 +468,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
           filtering: showFilter,
           filterCellStyle: { paddingTop: 0, paddingBottom: 5 },
           pageSize,
-          exportButton: true,
+          // exportButton: true,
           padding: 'dense',
           showTitle: false,
           headerStyle: {
@@ -414,8 +486,39 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         onSearchChange={(text: string): any => setSearchText(text)}
         {...materialTableProps}
       />
+      <Menu
+        id="long-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={open}
+        onClose={handleExportClose}
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            marginLeft: window.innerWidth <= screenWidth.sm ? 0 : 50,
+          },
+        }}
+      >
+        {expoertOptions.map((option) => (
+          <MenuItem
+            key={option.title}
+            onClick={(): any => {
+              exportToExcel(
+                tableRef.current.dataManager.columns,
+                tableRef.current.dataManager.data,
+                option.type,
+                UrlAddress.baseUrl + urlAddress
+              )
+              handleExportClose()
+            }}
+            style={{ fontSize: 12 }}
+          >
+            {option.title}
+          </MenuItem>
+        ))}
+      </Menu>
     </div>
-  );
-};
+  )
+}
 
-export default forwardRef(DataTable);
+export default forwardRef(DataTable)
