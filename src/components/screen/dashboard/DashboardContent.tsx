@@ -92,7 +92,7 @@ const DashboardContent: React.FC<any> = () => {
     const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
     if (whatsNewExistsFromStorage === 'true') {
       localStorage.removeItem('whatsNewExists');
-      showWhatsNew(localStorage.getItem('version') || '0.1.0');
+      showWhatsNew(localStorage.getItem('version') || '1.0.0');
     }
   }
   // }, [localStorage.getItem('version')]);
