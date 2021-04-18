@@ -17,6 +17,7 @@ class CountryDivision extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   }
 
@@ -28,6 +29,7 @@ class CountryDivision extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   }
 
@@ -37,6 +39,7 @@ class CountryDivision extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   }
 
@@ -47,6 +50,7 @@ class CountryDivision extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   }
 
@@ -57,6 +61,7 @@ class CountryDivision extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   }
 }

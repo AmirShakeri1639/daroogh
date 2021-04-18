@@ -27,6 +27,7 @@ class Exchange extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -57,6 +58,7 @@ class Exchange extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -100,6 +102,7 @@ class Exchange extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 }

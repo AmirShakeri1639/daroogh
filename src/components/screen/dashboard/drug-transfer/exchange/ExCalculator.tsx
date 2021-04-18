@@ -34,6 +34,7 @@ import {
   percentAllowed,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import { useEffectOnce } from 'hooks';
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
@@ -44,15 +45,27 @@ interface Props {
 }
 
 const ExCalculator: React.FC<Props> = (props) => {
+  const [dialogOpen, setDialogOpen] = useState(true);
+
   const exchange: ViewExchangeInterface =
     props.exchange == undefined ? ViewExchangeInitialState : props.exchange;
   const { onClose, full = true, pharmacyNameA, pharmacyNameB } = props;
-  // if (showActions === undefined) showActions = true;
 
   const { t } = useTranslation();
   const { spacing3, spacingVertical3, darkText } = useClasses();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+  useEffectOnce(() => {
+    const keyHandler = (e: KeyboardEvent): void => {
+      if (e.key === 'Backspace') {
+        setDialogOpen(false)
+      }
+    }
+    window.addEventListener('keydown', keyHandler);
+
+    return (): void => window.removeEventListener('keydown', keyHandler);
+  });
 
   const { basketCount, uBasketCount } = useContext<TransferDrugContextInterface>(
     DrugTransferContext
@@ -212,6 +225,7 @@ const ExCalculator: React.FC<Props> = (props) => {
           </>
         ) }
         <div className={ spacing3 }>&nbsp;</div>
+
         {!isNullOrEmpty(totalCount) && (
           <Grid item xs={ 12 } className={ spacingVertical3 }>
             <TextLine
@@ -304,12 +318,10 @@ const ExCalculator: React.FC<Props> = (props) => {
   const printBill = () => {
     const dialogActions = document.getElementById('dialogActions')
     const dialogActionsDisplay = dialogActions?.style.display
-    console.log('dialogActionsDisplay', dialogActionsDisplay)
     window.print()
     // printElem('billContainer', t('exchange.exCalculator'))
   }
 
-  const [dialogOpen, setDialogOpen] = useState(true);
   return (
     <>
       {full ? (
@@ -317,7 +329,7 @@ const ExCalculator: React.FC<Props> = (props) => {
           open={ dialogOpen }
           fullScreen={ fullScreen }
           fullWidth={ true }
-          id='billContainer'
+          id="billContainer"
         >
           <DialogTitle>{ t('exchange.exCalculator') }</DialogTitle>
           <Divider />

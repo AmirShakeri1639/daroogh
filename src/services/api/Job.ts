@@ -16,19 +16,19 @@ class Job extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
-
 
   all = async (skip: number, top: number = 10): Promise<any> => {
     try {
       const result = await this.postJsonData(
         `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=id desc`
       );
-      console.log(result.data);
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -47,7 +47,8 @@ class Job extends Api {
          return result.data;
        } catch (e) {
          errorHandler(e)
-       }
+        return Promise.reject(e)
+      }
     }
 
     confirm = async (id: number | string): Promise<any> => {

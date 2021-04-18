@@ -241,7 +241,7 @@ const Profile: React.FC = () => {
       if (showError) {
         setShowError(false);
       }
-      tSuccess(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'))
     },
   });
 

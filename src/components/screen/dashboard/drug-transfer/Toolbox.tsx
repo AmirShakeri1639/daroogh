@@ -146,48 +146,6 @@ const ToolBox: React.FC = () => {
               }}
             >
               <ShoppingBasketIcon className={icons} />
-              {/* <Badge
-                badgeContent={
-                  activeStep === 1
-                    ? Array.from(
-                        basketCount.filter(
-                          (thing, i, arr) =>
-                            thing.packID &&
-                            arr.findIndex((t) => t.packID === thing.packID) ===
-                              i
-                        )
-                      ).length +
-                      Array.from(
-                        basketCount.filter(
-                          (thing, i, arr) =>
-                            !thing.packID &&
-                            arr.findIndex(
-                              (t) => t.drug.id === thing.drug.id
-                            ) === i
-                        )
-                      ).length
-                    : Array.from(
-                        uBasketCount.filter(
-                          (thing, i, arr) =>
-                            thing.packID &&
-                            arr.findIndex((t) => t.packID === thing.packID) ===
-                              i
-                        )
-                      ).length +
-                      Array.from(
-                        uBasketCount.filter(
-                          (thing, i, arr) =>
-                            !thing.packID &&
-                            arr.findIndex(
-                              (t) => t.drug.id === thing.drug.id
-                            ) === i
-                        )
-                      ).length
-                }
-                color="secondary"
-              >
-                <ShoppingBasketIcon className={icons} />
-              </Badge> */}
             </IconButton>
           </Tooltip>
         </li>
@@ -200,27 +158,6 @@ const ToolBox: React.FC = () => {
             </Tooltip>
           </li>
         )}
-        {/* <li>
-          <Tooltip title="مرتب سازی">
-            <SortIcon className={icons} />
-          </Tooltip>
-          <span className="txt-xs position-relative">پیشنهاد هوشمند</span>
-        </li>
-        <li>
-          <Tooltip title="نمایش لیستی">
-            <ListIcon className={icons} />
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip title="نمایش سطری">
-            <ViewStreamIcon className={icons} />
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip title="نمایش فشرده">
-            <ViewComfyIcon className={icons} />
-          </Tooltip>
-        </li> */}
       </ul>
       <Grid container spacing={1}>
         <Grid item xs={1}>

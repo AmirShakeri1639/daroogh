@@ -17,6 +17,7 @@ import {
   FormControlLabel,
   Radio,
   Switch,
+  Link,
 } from '@material-ui/core';
 import Pharmacy from '../../../services/api/Pharmacy';
 import { LabelValue } from '../../../interfaces';
@@ -42,6 +43,8 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import Uploader from 'components/public/uploader/uploader';
+import { Block } from '@material-ui/icons';
+import Note from 'components/public/note/Note';
 
 export const useClasses = makeStyles((theme) => createStyles({
   parent: {
@@ -1028,8 +1031,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            { state?.pharmacy.type == 2 &&
-              <>
+            {
+              state?.pharmacy.type == 2 &&
+              <Grid item container xs={ 12 }>
                 <Grid item xs={ 12 }>
                   <h4
                     style={ {
@@ -1053,30 +1057,40 @@ const RegisterPharmacyWithUser: React.FC = () => {
                     }
                   />
                 </Grid>
-                <Grid item xs={ 12 }>
-                  <h4
-                    style={ {
-                      padding: '1em 0',
-                      color:
-                        state?.file5 == null && showError
-                          ? 'red'
-                          : 'rgba(0, 0, 0, 0.87)'
-                    } }
-                  >
-                    { t('file.type.commitment') } *
-                  </h4>
-                  <Uploader
-                    keyId="file5"
-                    showSaveClick={ false }
-                    getFile={ (e) =>
-                      dispatch({ type: 'file5', value: e })
-                    }
-                    onDelete={ () =>
-                      dispatch({ type: 'file5', value: null })
-                    }
-                  />
+                <Grid item container xs={ 12 }>
+                  <Grid item xs={ 12 }>
+                    <h4
+                      style={ {
+                        padding: '1em 0',
+                        color:
+                          state?.file5 == null && showError
+                            ? 'red'
+                            : 'rgba(0, 0, 0, 0.87)'
+                      } }
+                    >
+                      { t('file.type.commitment') } *
+                    </h4>
+                    <Note>
+                      { t('file.commitmentGuide') }
+                      <br />
+                      <Link
+                        href="http://daroog.com/file/%D9%86%D9%85%D9%88%D9%86%D9%87.docx">
+                        { t('file.downloadCommitmentSample') }
+                      </Link>
+                    </Note>
+                    <Uploader
+                      keyId="file5"
+                      showSaveClick={ false }
+                      getFile={ (e) =>
+                        dispatch({ type: 'file5', value: e })
+                      }
+                      onDelete={ () =>
+                        dispatch({ type: 'file5', value: null })
+                      }
+                    />
+                  </Grid>
                 </Grid>
-              </>
+              </Grid>
             }
           </Grid>
           <div className={ spacing1 }>&nbsp;</div>

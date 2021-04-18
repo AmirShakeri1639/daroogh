@@ -10,7 +10,7 @@ import {
   Divider,
 
 } from "@material-ui/core";
-import { useHistory, useLocation ,Link } from 'react-router-dom';
+import { useHistory, useLocation, Link } from 'react-router-dom';
 import { makeStyles } from "@material-ui/core/styles";
 import { QueryStatus, useMutation } from 'react-query';
 import Account from "../../../services/api/Account";
@@ -19,7 +19,7 @@ import CircleLoading from "../../public/loading/CircleLoading";
 import { Alert } from "../../public/alert/Alert";
 import { useTranslation } from 'react-i18next';
 import { File, Settings, User } from 'services/api';
-import { errorHandler, errorSweetAlert } from '../../../utils';
+import { errorHandler, errorSweetAlert, tError } from '../../../utils';
 import 'assets/scss/login.scss';
 
 const useStyles = makeStyles((theme) => createStyles({
@@ -111,7 +111,6 @@ const Otp: React.FC = () => {
 
         // Get settings from SERVER
         const { getPublic } = new Settings();
-        console.log(data)
         const result = await getPublic(data.token);
         const { smsAPIkey, ...settings } = result;
         localStorage.setItem('settings', JSON.stringify(settings));
@@ -133,9 +132,7 @@ const Otp: React.FC = () => {
                 najva_user_token: string
               ): void {
                 (async (najvaUserToken): Promise<void> => {
-                  console.log('Start of set notification key');
                   await setNotification(najvaUserToken);
-                  console.log('Notification key setted');
                 })(najva_user_token);
               };
             } catch (e) {
@@ -172,12 +169,9 @@ const Otp: React.FC = () => {
         setServerMessage(message);
         setIsOpenSnackbar(true);
         resetTicket();
-
       } else {
-        console.log(_data.ticketId)
         setTicketId(_data.ticketId);
         setCodeSent(true);
-
       }
     }
   }, [statusTicket, dataTicket]);
@@ -195,7 +189,10 @@ const Otp: React.FC = () => {
           });
         }
         else {
-          setShowError(true);
+
+          tError("در وارد نمودن شماره موبایل دقت فرمائید");
+
+
         }
       } else {
         if (isValidOtpCode(code)) {
@@ -205,7 +202,7 @@ const Otp: React.FC = () => {
           });
         }
         else {
-          setShowError(true);
+          tError("در وارد نمودن کد دقت فرمائید");
         }
       }
     }

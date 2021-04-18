@@ -33,6 +33,7 @@ class Reports extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
   getExchangeStatus = async (): Promise<any> => {
@@ -41,6 +42,7 @@ class Reports extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
   getExchangeCount = async (): Promise<any> => {
@@ -49,6 +51,7 @@ class Reports extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
   getAddedValueOfPharmacy = async (): Promise<any> => {
@@ -63,6 +66,7 @@ class Reports extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
   getAddedValue = async (): Promise<any> => {
@@ -77,6 +81,7 @@ class Reports extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
   getSurplusDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
@@ -97,6 +102,7 @@ class Reports extends Api {
       return result.data.items;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 
@@ -112,6 +118,7 @@ class Reports extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
   getSelectedDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
@@ -126,6 +133,7 @@ class Reports extends Api {
       return result.data;
     } catch (e) {
       errorHandler(e);
+      return Promise.reject(e)
     }
   };
 }
