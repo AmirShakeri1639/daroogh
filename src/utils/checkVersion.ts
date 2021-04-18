@@ -38,7 +38,7 @@ export const showWhatsNew = async (versionNo: string | number) => {
 
 const checkVersion = (): boolean => {
   try {
-    const defaultVersion = '0.1.0'
+    const defaultVersion = '1.0.0'
     const localVersion = localStorage.getItem('version') || defaultVersion
 
     const packageJson = require('../../package.json')

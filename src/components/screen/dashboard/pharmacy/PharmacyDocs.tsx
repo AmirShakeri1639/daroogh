@@ -184,7 +184,13 @@ const PharmacyDocs: React.FC<Props> = (props) => {
       {
         field: 'stateString',
         title: t('general.status'),
-        type: 'string',
+        type: 'number',
+        fieldLookup: 'state',
+        lookupFilter: [
+          { code: 0, name: t('file.state.None') },
+          { code: 1, name: t('file.state.Confirmed') },
+          { code: 2, name: t('file.state.UnConfirmed') },
+        ]
       },
       {
         field: 'fileKey',
