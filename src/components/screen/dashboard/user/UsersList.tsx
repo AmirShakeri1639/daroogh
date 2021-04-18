@@ -14,14 +14,16 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
   ActionInterface,
   DataTableCustomActionInterface,
-  TableColumnInterface,
+  DataTableColumns,
 } from '../../../../interfaces';
-import { TextMessage } from '../../../../enum';
+import { TextMessage, ColorEnum } from '../../../../enum';
 import { errorHandler, successSweetAlert, sweetAlert } from '../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserTag } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faUserTag, faCheck, faTimes,
+} from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
 import UserForm from './UserForm';
@@ -231,7 +233,7 @@ const UsersList: React.FC = () => {
 
   const { root, userRoleIcon } = useClasses();
 
-  const tableColumns = (): TableColumnInterface[] => {
+  const tableColumns = (): DataTableColumns[] => {
     return [
       {
         field: 'id',
@@ -265,6 +267,11 @@ const UsersList: React.FC = () => {
         field: 'gender',
         title: t('general.gender'),
         type: 'number',
+        fieldLookup: 'gender',
+        lookupFilter: [
+          { code: 0, name: t('general.male') },
+          { code: 1, name: t('general.female') },
+        ],
         render: (row: any): any =>
           row.gender == 0
             ? t('general.male')
@@ -302,10 +309,21 @@ const UsersList: React.FC = () => {
       },
       {
         field: 'active',
-        title: 'وضعیت کاربر',
-        type: 'string',
-        render: (rowData: any): any => (rowData.active ? 'فعال' : 'غیرفعال'),
-        cellStyle: { textAlign: 'center', width: 80 },
+        title: t('general.status'),
+        type: 'boolean',
+        width: '90px',
+        render: (row: any): any => {
+          return (
+            <span style={ { color: row.active ? ColorEnum.Green : ColorEnum.Red } }>
+              <FontAwesomeIcon icon={ row.active ? faCheck : faTimes } />
+            </span>
+          );
+        },
+        fieldLookup: 'active',
+        lookupFilter: [
+          { code: 0, name: t('general.inactive') },
+          { code: 1, name: t('general.active') },
+        ],
       },
     ];
   };
