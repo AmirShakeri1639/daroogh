@@ -21,7 +21,6 @@ const { getBestPharmaciesList } = new Reports();
 
 const BestPharmaciesList: React.FC<{ for24Hour: boolean }> = (props) => {
   const { t } = useTranslation();
-  console.log(props.for24Hour);
 
   const { container, table } = useClasses();
   const { data } = useQuery('getBestPharmaciesList' + props.for24Hour, () => {

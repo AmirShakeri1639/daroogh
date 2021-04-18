@@ -111,7 +111,6 @@ const Otp: React.FC = () => {
 
         // Get settings from SERVER
         const { getPublic } = new Settings();
-        console.log(data)
         const result = await getPublic(data.token);
         const { smsAPIkey, ...settings } = result;
         localStorage.setItem('settings', JSON.stringify(settings));
@@ -133,9 +132,7 @@ const Otp: React.FC = () => {
                 najva_user_token: string
               ): void {
                 (async (najvaUserToken): Promise<void> => {
-                  console.log('Start of set notification key');
                   await setNotification(najvaUserToken);
-                  console.log('Notification key setted');
                 })(najva_user_token);
               };
             } catch (e) {
@@ -172,12 +169,9 @@ const Otp: React.FC = () => {
         setServerMessage(message);
         setIsOpenSnackbar(true);
         resetTicket();
-
       } else {
-        console.log(_data.ticketId)
         setTicketId(_data.ticketId);
         setCodeSent(true);
-
       }
     }
   }, [statusTicket, dataTicket]);

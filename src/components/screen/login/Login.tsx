@@ -137,9 +137,7 @@ const Login: React.FC = (): JSX.Element => {
                 najva_user_token: string
               ): void {
                 (async (najvaUserToken): Promise<void> => {
-                  console.log('Start of set notification key');
                   await setNotification(najvaUserToken);
-                  console.log('Notification key setted');
                 })(najva_user_token);
               };
             } catch (e) {

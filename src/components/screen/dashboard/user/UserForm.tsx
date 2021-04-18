@@ -159,7 +159,6 @@ function reducer(state = initialState, action: ActionInterface): any {
 }
 
 const UserForm: React.FC<UserDataProps> = (props) => {
-  console.log('Userdata props: ', props)
   const [state, dispatch] = useReducer(reducer, initialState)
   const [showError, setShowError] = useState<boolean>(false)
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false)
@@ -206,7 +205,6 @@ const UserForm: React.FC<UserDataProps> = (props) => {
 
   const inputValuesValidation = (): boolean => {
     const { name, family, mobile, email, userName, nationalCode } = state
-    debugger
     return (
       name.trim().length < 2 ||
       family.trim().length < 2 ||
