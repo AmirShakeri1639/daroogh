@@ -445,7 +445,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                   }
                 />
               }
-              label={ `${t('user.user')} ${state.active ? t('general.active') : t('general.deActive')
+              label={ `${t('user.user')} ${state.active ? t('general.active') : t('general.inactive')
                 }` }
             />
           </Grid>

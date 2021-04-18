@@ -33,7 +33,7 @@ export default {
         home: 'خانه',
         description: 'شرح',
         active: 'فعال',
-        deActive: 'غیرفعال',
+        inactive: 'غیرفعال',
         type: 'نوع',
         pleaseWait: 'لطفا صبر کنید',
         cancel: 'انصراف',
