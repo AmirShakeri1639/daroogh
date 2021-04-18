@@ -212,7 +212,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       (email !== null && !email !== undefined && email !== '' &&
         !emailRegex.test(email?.toLowerCase())) ||
       userName.trim().length < 1 ||
-      (nationalCode !== '' && nationalCode?.length !== 10)
+      (nationalCode !== null && nationalCode !== undefined  &&
+        nationalCode !== '' && nationalCode?.length !== 10)
     )
   }
 
@@ -321,6 +322,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
               error={
+                state?.email !== null &&
+                state?.email !== undefined &&
                 state?.email?.length > 0 &&
                 !emailRegex.test(state.email) &&
                 showError
@@ -371,6 +374,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
               error={
+                state?.nationalCode !== null && 
+                state?.nationalCode !== undefined  &&
                 state?.nationalCode !== '' &&
                 state?.nationalCode?.length !== 10 &&
                 showError
