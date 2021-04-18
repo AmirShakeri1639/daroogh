@@ -14,8 +14,8 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ActionInterface, ProfileInterface } from '../../../../interfaces';
-import { User } from '../../../../services/api';
-import { ThreePartDatePicker } from '../../../public';
+import { Pharmacy, User } from '../../../../services/api';
+import { Map, ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
 import { errorHandler, tError, tWarn, tSuccess } from 'utils';
 import { useMutation } from 'react-query';
@@ -235,6 +235,17 @@ const Profile: React.FC = () => {
 
     getProfile();
   }, []);
+
+  const [pharmacyX, setPharmacyX] = useState(0)
+  const [pharmacyY, setPharmacyY] = useState(0)
+  useEffect(() => {
+    (async function getPharmacyLoc(): Promise<any> {
+      const { get } = new Pharmacy()
+      const result = await get(state.pharmacyID)
+      setPharmacyX(result.x)
+      setPharmacyY(result.y)
+    })()
+  }, [state.pharmacyID])
 
   const [_save] = useMutation(saveNewUser, {
     onSuccess: async () => {
@@ -478,6 +489,13 @@ const Profile: React.FC = () => {
                             {state.pharmacyAddress}
                           </p>
                         )}
+                      </Grid>
+                      <Grid item xs={ 12 }>
+                        <Map
+                          draggable={ false }
+                          getGeoLocation={ false }
+                          defaultLatLng={ [pharmacyX, pharmacyY] }
+                        />
                       </Grid>
                     </div>
                   )}
