@@ -43,7 +43,6 @@ import {
 } from '@fortawesome/free-regular-svg-icons';
 import { faKey } from '@fortawesome/free-solid-svg-icons';
 import Uploader from 'components/public/uploader/uploader';
-import { Block } from '@material-ui/icons';
 import Note from 'components/public/note/Note';
 
 export const useClasses = makeStyles((theme) => createStyles({
