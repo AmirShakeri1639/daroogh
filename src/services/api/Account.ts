@@ -40,7 +40,8 @@ class Account extends Api {
 
   loginByTicket = async (data: any): Promise<any> => {
     try {
-      data.ticket = Utils.fixNumbers(data.ticket)
+
+
       const result = await this.postJsonData(
         `/Account/LoginByTicket?ticketId=${data.ticketId}&ticket=${data.ticket}`,
       );
