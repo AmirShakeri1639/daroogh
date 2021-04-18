@@ -103,6 +103,7 @@ const Map: React.FC<Props> = (props) => {
         })
           .setLngLat(pos)
           .addTo(map);
+        map.setCenter(pos)
       }
 
       if (!getGeoLocation && defaultLatLng && defaultLatLng.length) {
@@ -111,6 +112,7 @@ const Map: React.FC<Props> = (props) => {
         })
           .setLngLat(defaultLatLng)
           .addTo(map);
+        map.setCenter(defPos)
       }
 
       map.on('load', () => {
@@ -119,13 +121,15 @@ const Map: React.FC<Props> = (props) => {
       });
 
       map.on('click', (e: any): any => {
-        if (marker) {
-          marker.remove();
-        }
-        marker = new mapboxgl.Marker({ draggable: true }).setLngLat(e.lngLat).addTo(map);
-        if (onClick) onClick(e);
-        if (marker !== undefined) {
-          marker.on('dragend', markerDragHandler);
+        if (draggable) {
+          if (marker) {
+            marker.remove()
+          }
+          marker = new mapboxgl.Marker({ draggable: true }).setLngLat(e.lngLat).addTo(map)
+          if (onClick) onClick(e)
+          if (marker !== undefined) {
+            marker.on('dragend', markerDragHandler)
+          }
         }
       });
       const markerDragHandler = (): void => {
@@ -138,7 +142,7 @@ const Map: React.FC<Props> = (props) => {
     };
 
     if (!map) initializeMap(setMap, mapContainer);
-  }, [map, pos]);
+  }, [map, pos, defaultLatLng]);
 
   return (
     <div

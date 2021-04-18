@@ -14,8 +14,8 @@ import {
 } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import { ActionInterface, ProfileInterface } from '../../../../interfaces';
-import { User } from '../../../../services/api';
-import { ThreePartDatePicker } from '../../../public';
+import { Pharmacy, User } from '../../../../services/api';
+import { Map, ThreePartDatePicker } from '../../../public';
 import routes from '../../../../routes';
 import { errorHandler, tError, tWarn, tSuccess } from 'utils';
 import { useMutation } from 'react-query';
@@ -479,6 +479,16 @@ const Profile: React.FC = () => {
                           </p>
                         )}
                       </Grid>
+                      {
+                        state?.pharmacyX &&
+                        <Grid item xs={ 12 }>
+                          <Map
+                            draggable={ false }
+                            getGeoLocation={ false }
+                            defaultLatLng={ [state?.pharmacyX, state?.pharmacyY] }
+                          />
+                        </Grid>
+                      }
                     </div>
                   )}
                   <div className={spacing1}>&nbsp;</div>
