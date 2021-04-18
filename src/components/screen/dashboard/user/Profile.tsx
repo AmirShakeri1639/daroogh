@@ -236,17 +236,6 @@ const Profile: React.FC = () => {
     getProfile();
   }, []);
 
-  const [pharmacyX, setPharmacyX] = useState(0)
-  const [pharmacyY, setPharmacyY] = useState(0)
-  useEffect(() => {
-    (async function getPharmacyLoc(): Promise<any> {
-      const { get } = new Pharmacy()
-      const result = await get(state.pharmacyID)
-      setPharmacyX(result.x)
-      setPharmacyY(result.y)
-    })()
-  }, [state.pharmacyID])
-
   const [_save] = useMutation(saveNewUser, {
     onSuccess: async () => {
       if (showError) {
@@ -490,13 +479,16 @@ const Profile: React.FC = () => {
                           </p>
                         )}
                       </Grid>
-                      <Grid item xs={ 12 }>
-                        <Map
-                          draggable={ false }
-                          getGeoLocation={ false }
-                          defaultLatLng={ [pharmacyX, pharmacyY] }
-                        />
-                      </Grid>
+                      {
+                        state?.pharmacyX &&
+                        <Grid item xs={ 12 }>
+                          <Map
+                            draggable={ false }
+                            getGeoLocation={ false }
+                            defaultLatLng={ [state?.pharmacyX, state?.pharmacyY] }
+                          />
+                        </Grid>
+                      }
                     </div>
                   )}
                   <div className={spacing1}>&nbsp;</div>
