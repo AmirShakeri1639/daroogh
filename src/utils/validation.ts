@@ -16,7 +16,7 @@ class Validation {
 
   isValidaMobileNumber(mobileNumber: string): boolean {
     mobileNumber = Utils.fixNumbers(mobileNumber);
-    const regex = /^09\d{9}$/g;
+    const regex = /^09\d{9}|9\d{9}$/g;
 
     return regex.test(mobileNumber);
   }
