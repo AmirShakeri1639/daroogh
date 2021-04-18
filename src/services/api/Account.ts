@@ -1,5 +1,6 @@
 import Api from "./Api";
 import { ForgetPasswordDataInterface, UserLoginInterface } from "../../interfaces";
+import Utils from "../../components/public/utility/Utils";
 
 class Account extends Api {
   loginUser = async (data: UserLoginInterface): Promise<any> => {
@@ -39,6 +40,7 @@ class Account extends Api {
 
   loginByTicket = async (data: any): Promise<any> => {
     try {
+
 
       const result = await this.postJsonData(
         `/Account/LoginByTicket?ticketId=${data.ticketId}&ticket=${data.ticket}`,
