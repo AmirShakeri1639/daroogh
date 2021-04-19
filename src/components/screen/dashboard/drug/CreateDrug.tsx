@@ -9,8 +9,6 @@ import {
   Typography,
   Divider,
   Box,
-  FormControlLabel,
-  Switch,
 } from '@material-ui/core';
 import Drug from '../../../../services/api/Drug';
 import { DrugInterface } from '../../../../interfaces';
@@ -20,10 +18,9 @@ import { ActionInterface } from '../../../../interfaces';
 import { useTranslation } from 'react-i18next';
 import {
   errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
-  sweetAlert,
-} from '../../../../utils';
+  tSuccess,
+  tError,
+} from 'utils';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import { Category } from '../../../../services/api';
 
@@ -141,11 +138,11 @@ const CreateDrug: React.FC = () => {
   const [_saveDrug] = useMutation(save, {
     onSuccess: async (data) => {
       await queryCache.invalidateQueries('drugsList');
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       dispatch({ type: 'reset' });
     },
     onError: async () => {
-      await errorSweetAlert(t('error.save'));
+      tError(t('error.save'));
     },
   });
 

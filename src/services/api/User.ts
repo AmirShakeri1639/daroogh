@@ -1,9 +1,10 @@
 import Api from './Api';
 import { errorHandler } from '../../utils';
 import {
+  ChangePasswordByAdminInterface,
   ChangeUserPasswordInterface,
   NewUserData,
-} from '../../interfaces/user';
+} from 'interfaces';
 import { NewPharmacyUserData } from '../../model';
 import { DataTableColumns } from 'interfaces/DataTableColumns';
 
@@ -21,6 +22,7 @@ class User extends Api {
     setNotificationKey: '/User/SetNotificationKey?notifKey=',
     disableUser: '/User/DisableUser?userId=',
     changeProfileImage: '/User/ChangeProfileImage?userId=',
+    changePasswordByAdmin: '/User/ChangePasswordByAdmin',
   };
 
   profile = async (): Promise<any> => {
@@ -137,6 +139,21 @@ class User extends Api {
       { file: pic }
     )
     return result.data;
+  }
+
+  changePasswordByAdmin = async (
+    data: ChangePasswordByAdminInterface
+  ): Promise<any> => {
+    try {
+      const result = await this.postData(
+        this.urls.changePasswordByAdmin +
+        `?userId=${data.userId}&newPassword=${data.newPassword}`
+      )
+      return result.data
+    } catch (e) {
+      errorHandler(e)
+      return Promise.reject(e)
+    }
   }
 }
 

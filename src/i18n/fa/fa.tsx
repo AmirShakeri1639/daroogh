@@ -244,6 +244,7 @@ export default {
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
         passwordHelperText: 'گذرواژه شامل حروف انگلیسی اعداد و حداقل ۸ کاراکتر باشد.',
+        newPassword: 'رمز عبور جدید',
         admin: 'ادمین',
         goldUser: 'کاربر طلایی',
         silverUser: 'کاربر نقره ای',

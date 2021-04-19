@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { EmploymentApplication, File } from '../../../../services/api';
 import CardContainer from './CardContainer';
 
-import { errorHandler, isNullOrEmpty, successSweetAlert } from '../../../../utils';
+import { errorHandler, isNullOrEmpty, tSuccess } from 'utils';
 import { DataTableCustomActionInterface } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
@@ -12,15 +12,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faInfoCircle, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
-import { getJalaliDate } from '../../../../utils/jalali';
-import FormContainer from '../../../public/form-container/FormContainer';
 import {
-  Box,
   Button,
   Container,
   createStyles,
-  Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
@@ -31,10 +26,8 @@ import {
 } from '@material-ui/core';
 import { ColorEnum, EmploymentApplicationEnum } from '../../../../enum';
 import FileLink from '../../../public/picture/fileLink';
-import { api } from '../../../../config/default.json';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import SearchBar from 'material-ui-search-bar';
-import { TrendingUpRounded } from '@material-ui/icons';
 import { debounce } from 'lodash';
 import CDialog from 'components/public/dialog/Dialog';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
@@ -282,7 +275,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(EmploymentApplicationEnum.GET_ALL);
-      await successSweetAlert(t('alert.done'));
+      tSuccess(t('alert.done'));
     },
   });
 

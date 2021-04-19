@@ -1,33 +1,24 @@
 import React, { useContext, useReducer, useState } from 'react';
 import {
-  Button,
   Card,
   CardActions,
   CardContent,
   Collapse,
   createStyles,
-  Grid,
   IconButton,
   makeStyles,
-  TextField,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
 import {
   ActionInterface,
   CardPropsInterface,
-  ViewExchangeInterface,
-} from '../../../../../interfaces';
+} from 'interfaces';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import { useMutation } from 'react-query';
 import { AddDrugInterface } from '../../../../../interfaces';
-import { errorHandler, sweetAlert } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
-import { AddDrog1, AddDrog2, AddPack1, AddPack2 } from '../../../../../model/exchange';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
@@ -208,18 +199,7 @@ const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
   const { getViewExchange } = new PharmacyDrug();
 
-  // useEffect(() => {
-  //   setDrugInfo(pharmacyDrug);
-  // }, []);
-
   const { expand, expandOpen, root, actionExpand, pack, collapse } = style();
-
-  // const lockState = async (): Promise<any> => {
-  //   await sweetAlert({
-  //     type: 'warning',
-  //     text: 'در این مرحله امکان هیچگونه عملیاتی وجود ندارد',
-  //   });
-  // };
 
   const handleExpandClick = (): any => {
     setExpanded(!expanded);
