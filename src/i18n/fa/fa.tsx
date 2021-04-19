@@ -131,6 +131,7 @@ export default {
         new: 'جدید',
         dr: 'دکتر',
         view: 'مشاهده',
+        call: 'تماس',
       },
 
       pack: {
@@ -549,6 +550,7 @@ export default {
       },
       jobSearch: {
         jobSearch: 'کاریابی',
+        downloadResume: 'دانلود رزومه',
       },
       prescription: {
         prescription: 'نسخه',
