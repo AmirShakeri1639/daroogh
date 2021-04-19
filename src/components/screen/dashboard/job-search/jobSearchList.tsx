@@ -119,12 +119,14 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
                 body={readingPrescriptionCertificateStr}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {gradeOfReadingPrescriptionCertificate !== 0 && (
+              <Grid item xs={12} sm={6}>
               <TextWithTitle
                 title={t('employment.gradeOfReadingPrescriptionCertificate')}
-                body={gradeOfReadingPrescriptionCertificate}
+                body={gradeOfReadingPrescriptionCertificate }
               />
             </Grid>
+            )}
             <Grid item xs={12} sm={6}>
               <TextWithTitle title={t('employment.workExperience')} body={workExperienceYear} />
             </Grid>
@@ -166,7 +168,16 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextWithTitle title={t('general.mobile')} body={mobile} />
+              <TextWithTitle title={t('general.mobile')} body={
+                <a
+                onClick={(e: any): any => {
+                  e.stopPropagation()
+                }}
+                href={'tel:' + mobile}
+              >
+                {mobile}
+              </a>
+              } />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextWithTitle title={t('general.landlinePhone')} body={landlinePhone} />
