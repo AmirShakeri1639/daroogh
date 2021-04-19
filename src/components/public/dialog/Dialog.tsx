@@ -2,10 +2,11 @@ import { Button, createStyles, Dialog, DialogActions, Grid, makeStyles } from '@
 import React, { useEffect } from 'react';
 import { isUndefined } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 import { ColorEnum } from 'enum';
+import { useLocation } from 'react-router';
+import queryString from 'query-string';
 
-const useStyle = makeStyles((theme) =>
+const useStyle = makeStyles(() =>
   createStyles({
     cancelButton: {
       fontSize: 10,
@@ -22,11 +23,6 @@ const useStyle = makeStyles((theme) =>
   })
 );
 
-const StyledButton = styled(Button)`
-  &&&& {
-    background-color: #5abc55 !important;
-  }
-`;
 
 interface Props {
   title?: string;
@@ -48,8 +44,7 @@ interface Props {
   className?: string;
 }
 
-const modalQueryString = '?modal=true';
-const modalAltQueryString = '?modalAlt=true';
+
 
 // CDialog => Custom Dialog
 const CDialog: React.FC<Props> = ({
@@ -70,6 +65,13 @@ const CDialog: React.FC<Props> = ({
   modalAlt,
   canceleButtonTitle,
 }) => {
+  const location = useLocation();
+  const params = queryString.parse(location.search);
+  const urlHasParams = Object.keys(params).length > 0;
+
+  const modalQueryString = `${urlHasParams ? '&' : '?'}modal=true`;
+  const modalAltQueryString = `${urlHasParams ? '&' : '?'}modalAlt=true`;
+
   const hasModalAlt = (): boolean => {
     return window.location.hash.endsWith(modalAltQueryString);
   };
