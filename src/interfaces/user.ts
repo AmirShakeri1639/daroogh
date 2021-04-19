@@ -364,6 +364,11 @@ export interface ChangeUserPasswordInterface {
   newPassword: string;
 }
 
+export interface ChangePasswordByAdminInterface {
+  userId: number | string
+  newPassword: string
+}
+
 export interface UserRoleInterface {
   roleID: number | string;
   userID: number | string;

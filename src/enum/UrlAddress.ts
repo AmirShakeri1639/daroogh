@@ -1,5 +1,5 @@
 export enum UrlAddress {
-  baseUrl = 'https://api.daroog.org/api',
+  // baseUrl = 'https://api.daroog.org/api', //>>> important: USE getBaseUrl() INSTEAD
   getAllExchange = '/Exchange/AllExchange',
   getAllAccounting = '/Accounting/AllAccounting',
   getAllCategories = '/Categories/AllCategories',

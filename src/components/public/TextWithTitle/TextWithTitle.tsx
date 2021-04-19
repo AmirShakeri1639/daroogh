@@ -37,7 +37,9 @@ const TextWithTitle: React.FC<TextWithTitlePropsInterface> = (props) => {
 
   const { titleC,textC,suffixC } = useStyle();
     
-  return (
+  return (<>
+
+  { body !== null && body !== '' && (
     <Grid container xs={12}>
       <span className={titleC}>{title}</span>
       <div className={titleC}>:&nbsp;</div>
@@ -57,6 +59,8 @@ const TextWithTitle: React.FC<TextWithTitlePropsInterface> = (props) => {
       )
       }
     </Grid>
+  ) }
+    </>
   );
 };
 

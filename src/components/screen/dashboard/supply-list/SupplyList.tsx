@@ -251,6 +251,7 @@ const SupplyList: React.FC = () => {
   const [isWrongDate, setIsWrongDate] = useState(false);
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
   const [showError, setShowError] = useState(false);
+  const [offerAlert, setOfferAlert] = useState<boolean>(false)
 
   const theme = useTheme();
 
@@ -267,6 +268,7 @@ const SupplyList: React.FC = () => {
     setSelectedDay('');
     setSelectedMonth('');
     setSelectedYear('s');
+    setOfferAlert(false)
   };
 
   const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
@@ -325,6 +327,9 @@ const SupplyList: React.FC = () => {
         // @ts-ignore
         const { value: drugId } = selectedDrug;
         if ((offer1 !== '' && offer2 !== '' && Number(cnt) > 0) || (drugId && Number(amount) > 0)) {
+          if (Number(offer1) > 0 && Number(offer2) > 0) {
+            setOfferAlert(true)
+          }
           const result = await getComissionAndRecommendation({
             drugId,
             price: state?.amount,
@@ -705,7 +710,7 @@ const SupplyList: React.FC = () => {
             </Grid>
             <Grid item xs={12}>
               <Divider />
-            </Grid>{' '}
+            </Grid>
             {comissionPercent !== '' && (
               <Grid item xs={12}>
                 <Grid item xs={12}>
@@ -849,6 +854,15 @@ const SupplyList: React.FC = () => {
                     />
                     {t('general.gift')}
                   </Grid>
+                  {offerAlert && (
+                    <Grid xs={12}>
+                      <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                        {t('alerts.offerAlertFirstPart')}
+                        <span style={{ color: 'red', fontSize: 13 , fontWeight:'bold' }}>{Number(state?.cnt)+ Math.floor(Number(state?.cnt) / Number(state?.offer2) * Number(state?.offer1))}</span>
+                        {t('alerts.offerAlertSecondPart')}
+                      </span>
+                    </Grid>
+                  )}
                 </Grid>
               </Grid>
 
@@ -889,7 +903,7 @@ const SupplyList: React.FC = () => {
                       ref={monthRef}
                       value={selectedMonth}
                       label={t('general.month')}
-                      // required
+                      required
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
                       // placeholder={'08'}
                       onChange={(e): void => {
