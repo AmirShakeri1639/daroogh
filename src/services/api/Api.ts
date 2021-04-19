@@ -1,12 +1,12 @@
 import axios, { AxiosInstance } from 'axios'
-import { api } from '../../config/default.json'
 import { DefaultAxiosConfigInterface } from '../../interfaces'
 import { errorHandler, tError } from 'utils'
 import i18n from 'i18n'
 import { ToastDurationEnum } from 'utils/toast'
+import { getBaseUrl } from 'config'
 
 const axiosInstance = axios.create({
-  baseURL: api.baseUrl,
+  baseURL: getBaseUrl(),
   timeout: 0,
 })
 
@@ -28,7 +28,15 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
   }
 
   const { status } = response
-  if (status === 401) {
+  if (status === 400) {
+    ; (async (): Promise<any> => {
+      const message = error?.response?.data?.message
+      tError(message === undefined
+        ? 'مشکلی در ارسال درخواست وجود دارد،' +
+        ' در صورت تکرار لطفا با پشتیبانی تماس بگیرید!'
+        : message)
+    })()
+  } else if (status === 401) {
     ;(async (): Promise<any> => {
       const message = error?.response?.data?.message
       tError(message === undefined ? 'شما مجوز دسترسی به این صفحه را ندارید!' : message)

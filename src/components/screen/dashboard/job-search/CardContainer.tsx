@@ -62,7 +62,9 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
             }}
             href={'tel:' + mobile}
           >
-            تماس
+            <span style={{ display: 'inline-block' }}>
+              { t('general.call') }
+            </span>
           </a>
           {resumeFileKey && (
             <a
@@ -73,7 +75,9 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
               download=""
               href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
             >
-              دانلود رزومه
+              <span style={{ display: 'inline-block' }}>
+                { t('jobSearch.downloadResume') }
+              </span>
             </a>
           )}
         </Grid>

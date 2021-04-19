@@ -1,4 +1,4 @@
-import { api } from '../config/default.json';
+import { getBaseUrl } from 'config'
 
 const dashboard = 'dashboard';
 const exchange = 'exchange';
@@ -80,7 +80,7 @@ export default {
 
   prescriptionList: `/${dashboard}/${prescription}/list`,
 
-  fileUrl: `${api.baseUrl}/File/GetFile?key=`,
+  fileUrl: `${getBaseUrl()}/File/GetFile?key=`,
 
   profile: `/${dashboard}/${user}/profile`,
   settings: `/${dashboard}/site-settings`,

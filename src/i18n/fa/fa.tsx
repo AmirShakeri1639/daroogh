@@ -33,7 +33,7 @@ export default {
         home: 'خانه',
         description: 'شرح',
         active: 'فعال',
-        deActive: 'غیرفعال',
+        inactive: 'غیرفعال',
         type: 'نوع',
         pleaseWait: 'لطفا صبر کنید',
         cancel: 'انصراف',
@@ -131,6 +131,7 @@ export default {
         new: 'جدید',
         dr: 'دکتر',
         view: 'مشاهده',
+        call: 'تماس',
       },
 
       pack: {
@@ -244,6 +245,7 @@ export default {
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
         passwordHelperText: 'گذرواژه شامل حروف انگلیسی اعداد و حداقل ۸ کاراکتر باشد.',
+        newPassword: 'رمز عبور جدید',
         admin: 'ادمین',
         goldUser: 'کاربر طلایی',
         silverUser: 'کاربر نقره ای',
@@ -548,6 +550,7 @@ export default {
       },
       jobSearch: {
         jobSearch: 'کاریابی',
+        downloadResume: 'دانلود رزومه',
       },
       prescription: {
         prescription: 'نسخه',
@@ -773,7 +776,10 @@ export default {
         searchProduct:
           'برای جستجو حداقل سه کارکتر از نام یا نام ژنریک و یا نام انگلیسی محصول را وارد نمایید',
         cantEditProfile:
-          'از آنجا که امکان ویرایش اطلاعات داروخانه توسط شما مقدور نمی باشد٬ در صورت نیاز میتوانید با پشتیبانی تماس بگیرید',
+          'از آنجا که ویرایش اطلاعات داروخانه توسط شما مقدور نمی باشد٬ در صورت نیاز میتوانید با پشتیبانی تماس بگیرید',
+        offerAlertFirstPart:'طبق اعداد وارد شده، شما باید ',
+        offerAlertSecondPart: ' عدد از این محصول را به داروخانه مقابل تحویل دهید.',
+        chooseCloserDateAlert:'پورسانت بر مبنای تاریخ انقضا محاسبه میشود'
       },
 
       widget: {
