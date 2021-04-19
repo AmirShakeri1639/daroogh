@@ -6,7 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@material-ui/core';
-import { api } from '../../../config/default.json';
+import { getBaseUrl } from 'config'
 
 interface Props {
   fileKey: string;
@@ -32,7 +32,7 @@ const FileLink: React.FC<Props> = (props) => {
           style={ { textDecoration: 'none', color: '#1e88e5' } }
           className={ className }
           download={ fileName }
-          href={ `${api.baseUrl}${fileUrls.get}?key=${fileKey}` }
+          href={ `${getBaseUrl()}${fileUrls.get}?key=${fileKey}` }
         >
           <FontAwesomeIcon icon={ faDownload } />
           &nbsp;

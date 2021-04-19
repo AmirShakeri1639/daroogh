@@ -81,7 +81,7 @@ const Report = (props: ReportProp): JSX.Element => {
   });
 
   const onGetData = async (): Promise<any> => {
-    // const result = await fetch(`${UrlAddress.baseUrl}${webApiUrl}`, {
+    // const result = await fetch(`${getBaseUrl()}${webApiUrl}`, {
     //   method: 'POST',
     //   headers: {
     //     Accept: 'application/json',
