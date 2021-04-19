@@ -1,23 +1,17 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
-import SearchBar from 'material-ui-search-bar';
 import {
   createStyles,
   Divider,
   Grid,
-  Button,
-  TextField,
   Input as SelectInput,
   FormControl,
-  InputLabel,
   Select,
   Checkbox,
   ListItemText,
   MenuItem,
   Container,
   Hidden,
-  Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   DialogContentText,
@@ -37,19 +31,19 @@ import {
   ActionInterface,
   DataTableCustomActionInterface,
   TableColumnInterface,
-} from '../../../../interfaces';
-import { RoleType, TextMessage } from '../../../../enum';
+} from 'interfaces';
+import { RoleType, TextMessage } from 'enum';
 import {
   errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
-  sweetAlert,
+  tSuccess,
   tError,
-} from '../../../../utils';
+} from 'utils';
 import { useTranslation } from 'react-i18next';
 import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faUserTag } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlus, faUserTag,
+} from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
 import { PharmacyUsersEnum, RoleQueryEnum, UserQueryEnum } from '../../../../enum/query';
@@ -57,13 +51,12 @@ import DataTable from '../../../public/datatable/DataTable';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { NewPharmacyUserData } from '../../../../model';
-import { Role, User } from '../../../../services/api';
+import { Role, User } from 'services/api';
 import RoleForm from '../user/RoleForm';
 import CardContainer from './user/CardContainer';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { debounce } from 'lodash';
 import CDialog from 'components/public/dialog/Dialog';
-import { tSuccess } from 'utils/toast';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -306,7 +299,7 @@ const UsersList: React.FC = () => {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      tSuccess(t('alert.successfulRemoveTextMessage'));
       resetListRef();
     },
   });
@@ -324,7 +317,7 @@ const UsersList: React.FC = () => {
       ref.current?.onQueryChange();
       dispatch({ type: 'reset' });
       queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      await successSweetAlert(t('alert.successfulEditTextMessage'));
+      tSuccess(t('alert.successfulEditTextMessage'));
       resetListRef();
     },
   });
@@ -338,11 +331,11 @@ const UsersList: React.FC = () => {
       dispatch({ type: 'reset' });
       toggleIsOpenModalOfUser();
       ref.current?.onQueryChange();
-      await successSweetAlert(message || t('alert.successfulCreateTextMessage'));
+      tSuccess(message || t('alert.successfulCreateTextMessage'));
       resetListRef();
     },
     onError: async (data: any) => {
-      await errorSweetAlert(data || t('error.save'));
+      tError(data || t('error.save'));
     },
   });
 
@@ -352,7 +345,6 @@ const UsersList: React.FC = () => {
     formContent,
     userRoleIcon,
     fab,
-    searchIconButton,
     blankCard,
     contentContainer,
   } = useClasses();
@@ -493,10 +485,7 @@ const UsersList: React.FC = () => {
       const confirmationText = t('alert.disableTextAlert');
       if (window.confirm(confirmationText)) {
         await _disableUser(item.id);
-        await sweetAlert({
-          type: 'success',
-          text: t('alert.successfulDisableTextMessage'),
-        });
+        tSuccess(t('alert.successfulDisableTextMessage'));
         resetDisableUser();
       }
     } catch (e) {

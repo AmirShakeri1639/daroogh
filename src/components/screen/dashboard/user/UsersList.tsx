@@ -8,6 +8,11 @@ import {
   CardHeader,
   IconButton,
   CardContent,
+  useMediaQuery,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  TextField,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { makeStyles } from '@material-ui/core/styles';
@@ -15,24 +20,30 @@ import {
   ActionInterface,
   DataTableCustomActionInterface,
   DataTableColumns,
-} from '../../../../interfaces';
-import { TextMessage, ColorEnum } from '../../../../enum';
-import { errorHandler, successSweetAlert, sweetAlert } from '../../../../utils';
+} from 'interfaces';
+import { 
+  TextMessage, 
+  ColorEnum, 
+  UrlAddress,
+  UserQueryEnum,
+} from 'enum';
+import { errorHandler, tError, tSuccess } from 'utils';
 import { useTranslation } from 'react-i18next';
-import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
+import { InitialNewUserInterface, NewUserData } from 'interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faUserTag, faCheck, faTimes,
+  faUserTag, faCheck, faTimes, faKey,
 } from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
 import UserForm from './UserForm';
-import { UserQueryEnum } from '../../../../enum/query';
 import DataTable from '../../../public/datatable/DataTable';
 import FormContainer from '../../../public/form-container/FormContainer';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import RoleForm from './RoleForm';
-import { UrlAddress } from '../../../../enum/UrlAddress';
+import CDialog from 'components/public/dialog/Dialog'
+import { useTheme } from '@material-ui/core'
+import PasswordInput from './PasswordInput'
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -86,6 +97,9 @@ const useClasses = makeStyles((theme) =>
     userRoleIcon: {
       color: '#7036e7',
     },
+    usePassIcon: {
+      color: ColorEnum.Green
+    }
   })
 );
 
@@ -180,6 +194,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         gender: value,
       };
+    case 'showPassword':
+      return {
+        ...state,
+        showPassword: value,
+      }
     case 'reset':
       return initialState;
     default:
@@ -196,12 +215,21 @@ const UsersList: React.FC = () => {
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
   const [isOpenUserModal, setIsOpenUserModal] = useState(false);
+  const [
+    isOpenChangePasswordAdminModal, setIsOpenChangePasswordAdminModal
+  ] = useState(false)
 
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
   const toggleIsOpenUserModal = (): void => setIsOpenUserModal((v) => !v);
 
-  const { getAllUsers, removeUser, disableUser, saveNewUser } = new User();
+  const { 
+    getAllUsers, 
+    removeUser, 
+    disableUser, 
+    saveNewUser,
+    changePasswordByAdmin, 
+  } = new User();
 
   const queryCache = useQueryCache();
 
@@ -209,7 +237,7 @@ const UsersList: React.FC = () => {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      tSuccess(t('alert.successfulRemoveTextMessage'));
     },
   });
 
@@ -225,13 +253,26 @@ const UsersList: React.FC = () => {
       ref.current?.onQueryChange();
       dispatch({ type: 'reset' });
       queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      await successSweetAlert(t('alert.successfulEditTextMessage'));
+      tSuccess(t('alert.successfulEditTextMessage'));
     },
   });
 
+  const [
+    _changePasswordByAdmin, 
+    { isLoading: isLoadingChangePasswordByAdmin }
+  ] = useMutation(changePasswordByAdmin, {
+    onSuccess: async (r) => {
+      tSuccess(r.message)
+      setIsOpenChangePasswordAdminModal(false)
+    },
+    onError: async () => {
+      setIsOpenChangePasswordAdminModal(true)
+    }
+  })
+
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
-  const { root, userRoleIcon } = useClasses();
+  const { root, userRoleIcon, usePassIcon } = useClasses();
 
   const tableColumns = (): DataTableColumns[] => {
     return [
@@ -343,10 +384,8 @@ const UsersList: React.FC = () => {
       const confirmationText = t('alert.disableTextAlert');
       if (window.confirm(confirmationText)) {
         await _disableUser(item.id);
-        await sweetAlert({
-          type: 'success',
-          text: t('alert.successfulDisableTextMessage'),
-        });
+        tSuccess(t('alert.successfulDisableTextMessage'))
+        dispatch({ type: 'reset' })
         resetDisableUser();
       }
     } catch (e) {
@@ -434,11 +473,71 @@ const UsersList: React.FC = () => {
     toggleIsOpenRoleModal();
   };
 
+  const changePasswordByAdminHandler = (id: number | string): void => {
+    dispatch({ type: 'id', value: id })
+    dispatch({ type: 'password', value: '' })
+    setIsOpenChangePasswordAdminModal(true)
+  }
+
+  const changePasswordByAdminFormHandler = async (): Promise<any> => {
+    await _changePasswordByAdmin({
+      userId: state?.id,
+      newPassword: state?.password
+    })
+  }
+
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const changePasswordByAdminDialog = (): JSX.Element => {
+    return (
+      <>
+        <CDialog
+          fullScreen={ fullScreen }
+          isOpen={ isOpenChangePasswordAdminModal }
+          onClose={ (): void => setIsOpenChangePasswordAdminModal(false) }
+          onOpenAltenate={ (): void => setIsOpenChangePasswordAdminModal(true) }
+          modalAlt={ true }
+          formHandler={ changePasswordByAdminFormHandler }
+          fullWidth
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            { t('user.changeUserPassword') }
+          </DialogTitle>
+          <DialogContent style={ { backgroundColor: '#FAFAFA', width: '100%' } }>
+            <Grid container spacing={ 1 }>
+              <Grid item xs={ 12 }>
+                <PasswordInput
+                  error={ state.password.trim().length < 7 }
+                  value={ state.password }
+                  helperText={ t('user.passwordHelperText') }
+                  onChange={ (e): void => dispatch({ type: 'password', value: e.target.value }) }
+                  label={ t('user.newPassword') }
+                  onClickIcon={ (): void =>
+                    dispatch({ type: 'showPassword', value: !state?.showPassword })
+                  }
+                  isVisiblePassword={ state.showPassword }
+                />
+              </Grid>
+            </Grid>
+          </DialogContent>
+        </CDialog>
+      </>
+    )
+  }
+
   const customDataTableActions: DataTableCustomActionInterface[] = [
     {
-      icon: (): any => <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />,
+      icon: (): any => <FontAwesomeIcon icon={ faUserTag } className={ userRoleIcon } />,
       tooltip: 'نقش کاربر',
       action: (event: any, rowData: any): void => editRoleHandler(rowData),
+    },
+    {
+      icon: (): any => <FontAwesomeIcon icon={ faKey } className={ usePassIcon } />,
+      tooltip: t('user.changeUserPassword'),
+      action: (event: any, row: any): void => changePasswordByAdminHandler(row.id)
     },
   ];
 
@@ -533,6 +632,8 @@ const UsersList: React.FC = () => {
           onCancel={addUserHandler}
         />
       </Modal>
+
+      { changePasswordByAdminDialog() }
     </FormContainer>
   );
 };

@@ -2,7 +2,7 @@ import React, { createRef, useState, forwardRef, useEffect } from 'react'
 import MaterialTable, { MTableToolbar } from 'material-table'
 import { DataTableProps } from '../../../interfaces'
 import { useQueryCache } from 'react-query'
-import { sweetAlert } from '../../../utils'
+import { tError } from 'utils'
 import { useTranslation } from 'react-i18next'
 import localization from './localization'
 import {
@@ -62,10 +62,9 @@ const exportToExcel = async (columns: any[], data: any[], type: number, url: str
         })
         .catch(
           async (error: any): Promise<any> => {
-            await sweetAlert({
-              type: 'error',
-              text: 'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
-            })
+            tError(
+              'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.'
+            )
             mappedData = []
           }
         )
@@ -425,11 +424,9 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
                 })
                 .catch(
                   async (error: any): Promise<any> => {
-                    await sweetAlert({
-                      type: 'error',
-                      text:
-                        'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
-                    })
+                    tError(
+                      'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.'
+                    )
                     resolve({
                       data: [],
                       page: 0,
