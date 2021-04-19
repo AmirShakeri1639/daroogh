@@ -34,7 +34,7 @@ import {
   percentAllowed,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
-import { useEffectOnce } from 'hooks';
+import CDialog from 'components/public/dialog/Dialog';
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
@@ -56,16 +56,6 @@ const ExCalculator: React.FC<Props> = (props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  useEffectOnce(() => {
-    const keyHandler = (e: KeyboardEvent): void => {
-      if (e.key === 'Backspace') {
-        setDialogOpen(false)
-      }
-    }
-    window.addEventListener('keydown', keyHandler);
-
-    return (): void => window.removeEventListener('keydown', keyHandler);
-  });
 
   const { basketCount, uBasketCount } = useContext<TransferDrugContextInterface>(
     DrugTransferContext
@@ -325,11 +315,13 @@ const ExCalculator: React.FC<Props> = (props) => {
   return (
     <>
       {full ? (
-        <Dialog
-          open={ dialogOpen }
+        <CDialog
+          isOpen={ dialogOpen }
           fullScreen={ fullScreen }
           fullWidth={ true }
-          id="billContainer"
+          onClose={(): void => setDialogOpen(false)}
+          hideAll
+          // id="billContainer"
         >
           <DialogTitle>{ t('exchange.exCalculator') }</DialogTitle>
           <Divider />
@@ -355,7 +347,7 @@ const ExCalculator: React.FC<Props> = (props) => {
               { t('general.ok') }
             </Button>
           </DialogActions>
-        </Dialog>
+        </CDialog>
       ) : (
         <CalcContent />
       ) }
