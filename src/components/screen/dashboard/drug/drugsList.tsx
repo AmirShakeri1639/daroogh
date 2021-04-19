@@ -217,6 +217,11 @@ const DrugsList: React.FC = () => {
         }
       },
       {
+        field: 'category.name',
+        title: t('drug.category'),
+        type: 'string',
+      },
+      {
         field: 'type',
         title: t('general.type'),
         type: 'string',
