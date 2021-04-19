@@ -30,6 +30,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import XLSX from 'xlsx'
 import { tSimple, tSuccess, tInfo, tWarn } from 'utils'
 import { screenWidth } from 'enum'
+import { getBaseUrl } from 'config'
 
 const exportToExcel = async (columns: any[], data: any[], type: number, url: string) => {
   const columnInfo = columns.reduce(
@@ -359,7 +360,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         columns={columns}
         data={(query): any =>
           new Promise((resolve, reject) => {
-            let url = UrlAddress.baseUrl + urlAddress
+            let url = getBaseUrl() + urlAddress
             if (url.includes('?'))
               url += `&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
             else url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
@@ -504,7 +505,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
                 tableRef.current.dataManager.columns,
                 tableRef.current.dataManager.data,
                 option.type,
-                UrlAddress.baseUrl + urlAddress
+                getBaseUrl() + urlAddress
               )
               handleExportClose()
             }}

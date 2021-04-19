@@ -1,12 +1,12 @@
 import axios, { AxiosInstance } from 'axios'
-import { api } from '../../config/default.json'
 import { DefaultAxiosConfigInterface } from '../../interfaces'
 import { errorHandler, tError } from 'utils'
 import i18n from 'i18n'
 import { ToastDurationEnum } from 'utils/toast'
+import { getBaseUrl } from 'config'
 
 const axiosInstance = axios.create({
-  baseURL: api.baseUrl,
+  baseURL: getBaseUrl(),
   timeout: 0,
 })
 

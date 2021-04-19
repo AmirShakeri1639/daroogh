@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import noImage from 'assets/images/no-image.png';
 import { File } from 'services/api';
-import { api } from 'config/default.json';
+import { getBaseUrl } from 'config'
 import { DataTableColumns } from 'interfaces/DataTableColumns';
 import { ColorEnum } from 'enum';
 
@@ -37,7 +37,7 @@ const Detail: React.FC<Props> = (props) => {
               <img
                 onError={addDefaultSrc}
                 style={{ height: '80px', width: '80px', margin: '5px' }}
-                src={`${api.baseUrl}${urls.get}?key=${fileKey}`}
+                src={`${getBaseUrl()}${urls.get}?key=${fileKey}`}
               />
             </Grid>
           )}
