@@ -44,20 +44,18 @@ import { Map, TextLine } from '../../../../public';
 // import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import ExCalculator from './ExCalculator';
 import { theme } from '../../../../../RTL';
-import { Fullscreen, KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
 import {
   GetQuestionGroupOfExchangeInterface,
   Question,
   QuestionOptions,
 } from '../../../../../interfaces/GetQuestionGroupOfExchangeInterface';
-import { JsxEmit } from 'typescript';
 import { Rating } from '@material-ui/lab';
 import { SaveSurvey } from '../../../../../model/SaveSurvey';
-import CircleLoading from '../../../../public/loading/CircleLoading';
 import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { ColorEnum } from 'enum';
-import { GetAccountingForPaymentInterace } from 'interfaces/AccountingInterface';
+import CDialog from 'components/public/dialog/Dialog';
 //https://sweetalert2.github.io/
 // import Swal from 'sweetalert2'
 // import withReactContent from 'sweetalert2-react-content'
@@ -463,11 +461,12 @@ const ActionButtons = (): JSX.Element => {
 
   const ShowPharmacyInfo = (): JSX.Element => {
     return (
-      <Dialog
+      <CDialog
         fullScreen={fullScreen}
-        open={isShowPharmacyInfoModal}
+        isOpen={isShowPharmacyInfoModal}
         fullWidth={true}
         onClose={toggleIsShowPharmacyInfoModalForm}
+        hideAll
       >
         <DialogTitle>اطلاعات داروخانه مقابل</DialogTitle>
         <DialogContent>
@@ -505,7 +504,7 @@ const ActionButtons = (): JSX.Element => {
             بستن
           </Button>
         </DialogActions>
-      </Dialog>
+      </CDialog>
     );
   };
 
