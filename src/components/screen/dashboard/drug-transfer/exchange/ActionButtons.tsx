@@ -22,40 +22,40 @@ import {
   Typography,
   useMediaQuery,
   Button,
-} from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import { useContext } from 'react';
-import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface';
-import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
-import { default as MatButton } from '@material-ui/core/Button';
-import CloseIcon from '@material-ui/icons/Close';
-import errorHandler from '../../../../../utils/errorHandler';
-import { Cancel, ConfirmOrNotExchange, Send } from '../../../../../model/exchange';
-import { useMutation } from 'react-query';
-import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import sweetAlert from '../../../../../utils/sweetAlert';
-import Modal from '../../../../public/modal/Modal';
-import ExchangeApprove from './ExchangeApprove';
-import { useTranslation } from 'react-i18next';
-import routes from '../../../../../routes';
-import { useHistory } from 'react-router-dom';
-import { PharmacyInfo } from '../../../../../interfaces/PharmacyInfo';
-import { Map, TextLine } from '../../../../public';
+} from '@material-ui/core'
+import React, { useEffect, useState } from 'react'
+import { useContext } from 'react'
+import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface'
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context'
+import { default as MatButton } from '@material-ui/core/Button'
+import CloseIcon from '@material-ui/icons/Close'
+import errorHandler from '../../../../../utils/errorHandler'
+import { Cancel, ConfirmOrNotExchange, Send } from '../../../../../model/exchange'
+import { useMutation } from 'react-query'
+import PharmacyDrug from '../../../../../services/api/PharmacyDrug'
+import sweetAlert from '../../../../../utils/sweetAlert'
+import Modal from '../../../../public/modal/Modal'
+import ExchangeApprove from './ExchangeApprove'
+import { useTranslation } from 'react-i18next'
+import routes from '../../../../../routes'
+import { useHistory } from 'react-router-dom'
+import { PharmacyInfo } from '../../../../../interfaces/PharmacyInfo'
+import { Map, TextLine } from '../../../../public'
 // import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import ExCalculator from './ExCalculator';
-import { theme } from '../../../../../RTL';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
+import ExCalculator from './ExCalculator'
+import { theme } from '../../../../../RTL'
+import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons'
 import {
   GetQuestionGroupOfExchangeInterface,
   Question,
   QuestionOptions,
-} from '../../../../../interfaces/GetQuestionGroupOfExchangeInterface';
-import { Rating } from '@material-ui/lab';
-import { SaveSurvey } from '../../../../../model/SaveSurvey';
-import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading';
-import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
-import { ColorEnum } from 'enum';
-import CDialog from 'components/public/dialog/Dialog';
+} from '../../../../../interfaces/GetQuestionGroupOfExchangeInterface'
+import { Rating } from '@material-ui/lab'
+import { SaveSurvey } from '../../../../../model/SaveSurvey'
+import CircleBackdropLoading from '../../../../public/loading/CircleBackdropLoading'
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle'
+import { ColorEnum } from 'enum'
+import CDialog from 'components/public/dialog/Dialog'
 //https://sweetalert2.github.io/
 // import Swal from 'sweetalert2'
 // import withReactContent from 'sweetalert2-react-content'
@@ -135,12 +135,12 @@ const style = makeStyles((theme) =>
       borderLeft: `2px solid ${ColorEnum.Borders}`,
     },
   })
-);
+)
 
 const ActionButtons = (): JSX.Element => {
-  const { t } = useTranslation();
-  const { desktop, survey } = routes;
-  const history = useHistory();
+  const { t } = useTranslation()
+  const { desktop, survey } = routes
+  const history = useHistory()
   const {
     cancelButton,
     confirmButton,
@@ -152,7 +152,7 @@ const ActionButtons = (): JSX.Element => {
     pharmacyInfoStyle,
     questionHeader,
     addressBar,
-  } = style();
+  } = style()
   const {
     activeStep,
     setActiveStep,
@@ -165,38 +165,38 @@ const ActionButtons = (): JSX.Element => {
     is3PercentOk,
     basketCount,
     uBasketCount,
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
-  const [comment, setComment] = useState<string>('');
-  const [modalType, setModalType] = useState('');
-  const [pharmacyInfoState, setPharmacyInfoState] = useState<PharmacyInfo | null>(null);
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext)
+  const [comment, setComment] = useState<string>('')
+  const [modalType, setModalType] = useState('')
+  const [pharmacyInfoState, setPharmacyInfoState] = useState<PharmacyInfo | null>(null)
 
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const [openApproveModal, setOpenApproveModal] = React.useState(false);
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const [openApproveModal, setOpenApproveModal] = React.useState(false)
 
-  const [isSelected, setIsSelected] = React.useState(false);
+  const [isSelected, setIsSelected] = React.useState(false)
 
-  const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(false);
+  const [isOpenCancelExchangeModal, setIsOpenCancelExchangeModal] = useState(false)
   const toggleIsOpenCancelExchangeModalForm = async (type: string): Promise<void> => {
-    setModalType(type);
+    setModalType(type)
     if (type !== 'approve') {
-      await handleConfirmOrNotExchange(false);
-      handleGetQuestionGroupOfExchange();
+      await handleConfirmOrNotExchange(false)
+      handleGetQuestionGroupOfExchange()
     } else {
-      setIsOpenCancelExchangeModal((v) => !v);
+      setIsOpenCancelExchangeModal((v) => !v)
     }
-  };
+  }
 
-  const [isRemoveExchangeModal, setIsRemoveExchangeModal] = useState(false);
+  const [isRemoveExchangeModal, setIsRemoveExchangeModal] = useState(false)
   const toggleIsRemoveExchangeModalForm = (): void => {
-    setIsRemoveExchangeModal((v) => !v);
-  };
+    setIsRemoveExchangeModal((v) => !v)
+  }
 
-  const [isShowPharmacyInfoModal, setIsShowPharmacyInfoModal] = useState(false);
+  const [isShowPharmacyInfoModal, setIsShowPharmacyInfoModal] = useState(false)
   const toggleIsShowPharmacyInfoModalForm = (): void => {
-    setIsShowPharmacyInfoModal((v) => !v);
-  };
+    setIsShowPharmacyInfoModal((v) => !v)
+  }
 
-  const [nameState, setNameState] = useState('');
+  const [nameState, setNameState] = useState('')
 
   const {
     cancelExchange,
@@ -208,21 +208,21 @@ const ActionButtons = (): JSX.Element => {
     saveSurvey,
     getViewExchange,
     getAccountingForPayment,
-  } = new PharmacyDrug();
+  } = new PharmacyDrug()
 
-  const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey());
-  const [openSurvayModal, setOpenSurvayModal] = React.useState(false);
-  const [activeQuestionStep, setActiveQuestionStep] = React.useState(0);
+  const [surveyInput, setSurveyInput] = useState<SaveSurvey>(new SaveSurvey())
+  const [openSurvayModal, setOpenSurvayModal] = React.useState(false)
+  const [activeQuestionStep, setActiveQuestionStep] = React.useState(0)
   const handleNextQuestion = (): any => {
-    setActiveQuestionStep((prevActiveStep) => prevActiveStep + 1);
-  };
+    setActiveQuestionStep((prevActiveStep) => prevActiveStep + 1)
+  }
 
   const handleBackQuestion = (): any => {
-    setActiveQuestionStep((prevActiveStep) => prevActiveStep - 1);
-  };
-  const [getQuestions, setQuestions] = useState<GetQuestionGroupOfExchangeInterface>();
+    setActiveQuestionStep((prevActiveStep) => prevActiveStep - 1)
+  }
+  const [getQuestions, setQuestions] = useState<GetQuestionGroupOfExchangeInterface>()
 
-  const [questionGroupId, serQuestionGroupId] = useState<number>(0);
+  const [questionGroupId, serQuestionGroupId] = useState<number>(0)
 
   const [_cancelExchange, { isLoading: isLoadingCancel }] = useMutation(cancelExchange, {
     onSuccess: async (res) => {
@@ -230,11 +230,11 @@ const ActionButtons = (): JSX.Element => {
         await sweetAlert({
           type: 'success',
           text: res.data.message,
-        });
-        history.push(desktop);
+        })
+        history.push(desktop)
       }
     },
-  });
+  })
 
   const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
     onSuccess: async (res) => {
@@ -242,11 +242,11 @@ const ActionButtons = (): JSX.Element => {
         await sweetAlert({
           type: 'success',
           text: res.message,
-        });
-        history.push(desktop);
+        })
+        history.push(desktop)
       }
     },
-  });
+  })
 
   const [_confirmOrNotExchange, { isLoading: isLoadingConfirmOrNotExchange }] = useMutation(
     confirmOrNotExchange,
@@ -256,12 +256,12 @@ const ActionButtons = (): JSX.Element => {
           await sweetAlert({
             type: 'success',
             text: res.data.message,
-          });
+          })
           // history.push(desktop);
         }
       },
     }
-  );
+  )
 
   const [_saveSurvey, { isLoading: isLoadingSaveSurvey }] = useMutation(saveSurvey, {
     onSuccess: async (res) => {
@@ -269,23 +269,23 @@ const ActionButtons = (): JSX.Element => {
         await sweetAlert({
           type: 'success',
           text: res.message,
-        });
-        history.push(desktop);
+        })
+        history.push(desktop)
       }
     },
-  });
+  })
 
   const handleSaveSurvey = async (): Promise<any> => {
     try {
-      var input = surveyInput;
-      input.exchangeID = exchangeId;
-      input.questionGroupID = questionGroupId;
-      await _saveSurvey(input);
+      var input = surveyInput
+      input.exchangeID = exchangeId
+      input.questionGroupID = questionGroupId
+      await _saveSurvey(input)
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-    setOpenSurvayModal(false);
-  };
+    setOpenSurvayModal(false)
+  }
 
   const handleGetQuestionGroupOfExchange = (): void => {
     // try {
@@ -297,13 +297,13 @@ const ActionButtons = (): JSX.Element => {
     // } catch (error) {
     //   errorHandler(error);
     // }
-    history.push(`${survey}?exchangeId=${exchangeId}`);
-  };
+    history.push(`${survey}?exchangeId=${exchangeId}`)
+  }
 
   const handleCancelExchange = async (): Promise<any> => {
-    const inputmodel = new Cancel();
-    inputmodel.exchangeID = exchangeId;
-    inputmodel.comment = comment;
+    const inputmodel = new Cancel()
+    inputmodel.exchangeID = exchangeId
+    inputmodel.comment = comment
     try {
       var res = await sweetAlert({
         confirmButtonText: 'بله',
@@ -311,45 +311,45 @@ const ActionButtons = (): JSX.Element => {
         showCancelButton: true,
         type: 'info',
         text: 'آیا اطمینان دارید؟',
-      });
-      if (res) await _cancelExchange(inputmodel);
+      })
+      if (res) await _cancelExchange(inputmodel)
       // await handleGetQuestionGroupOfExchange();
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
     // toggleIsOpenCancelExchangeModalForm(modalType);
-  };
+  }
 
   const handleRemoveExchange = async (): Promise<any> => {
     try {
-      await _removeExchange(exchangeId);
+      await _removeExchange(exchangeId)
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-    toggleIsOpenCancelExchangeModalForm(modalType);
-  };
+    toggleIsOpenCancelExchangeModalForm(modalType)
+  }
 
   const getPharmacyInfo = async (): Promise<any> => {
-    const res = await pharmacyInfo(exchangeId);
-    const response: PharmacyInfo = res.data;
-    setPharmacyInfoState(response);
-  };
+    const res = await pharmacyInfo(exchangeId)
+    const response: PharmacyInfo = res.data
+    setPharmacyInfoState(response)
+  }
 
   const handlePharmacyInfo = async (): Promise<any> => {
     try {
-      await getPharmacyInfo();
-      toggleIsShowPharmacyInfoModalForm();
+      await getPharmacyInfo()
+      toggleIsShowPharmacyInfoModalForm()
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-  };
+  }
 
   const handleConfirmOrNotExchange = async (isConfirm: boolean): Promise<any> => {
-    const inputmodel = new ConfirmOrNotExchange();
-    inputmodel.exchangeID = exchangeId;
-    inputmodel.isConfirm = isConfirm;
+    const inputmodel = new ConfirmOrNotExchange()
+    inputmodel.exchangeID = exchangeId
+    inputmodel.isConfirm = isConfirm
     try {
-      let res = await _confirmOrNotExchange(inputmodel);
+      let res = await _confirmOrNotExchange(inputmodel)
       if (viewExhcnage && viewExhcnage.state === 3) {
         if (
           (viewExhcnage.currentPharmacyIsA === false &&
@@ -359,13 +359,13 @@ const ActionButtons = (): JSX.Element => {
             res &&
             (res.data.data.currentState === 4 || res.data.data.currentState === 9))
         )
-          setShowApproveModalForm(true);
+          setShowApproveModalForm(true)
       }
-      if (isConfirm) toggleIsOpenCancelExchangeModalForm(modalType);
+      if (isConfirm) toggleIsOpenCancelExchangeModalForm(modalType)
       if (isConfirm && res) {
-        const viewExResult = await getViewExchange(exchangeId);
-        const result: ViewExchangeInterface | undefined = viewExResult.data;
-        if (result) setViewExchange(result);
+        const viewExResult = await getViewExchange(exchangeId)
+        const result: ViewExchangeInterface | undefined = viewExResult.data
+        if (result) setViewExchange(result)
         if (
           (viewExhcnage.currentPharmacyIsA === false &&
             res &&
@@ -374,40 +374,40 @@ const ActionButtons = (): JSX.Element => {
             res &&
             (res.data.data.currentState === 4 || res.data.data.currentState === 9))
         ) {
-          setShowApproveModalForm(true);
+          setShowApproveModalForm(true)
         } else {
-          history.push(desktop);
+          history.push(desktop)
         }
       }
     } catch (e) {
-      errorHandler(e);
-      toggleIsOpenCancelExchangeModalForm(modalType);
+      errorHandler(e)
+      toggleIsOpenCancelExchangeModalForm(modalType)
     }
-  };
+  }
 
   const [_send, { isLoading: isLoadingSend }] = useMutation(send, {
     onSuccess: async (res) => {
       if (res) {
-        history.push(desktop);
+        history.push(desktop)
       }
     },
-  });
+  })
 
   const handleSend = async (): Promise<any> => {
-    const inputmodel = new Send();
-    inputmodel.exchangeID = exchangeId;
-    inputmodel.lockSuggestion = isSelected;
-    setOpenApproveModal(false);
+    const inputmodel = new Send()
+    inputmodel.exchangeID = exchangeId
+    inputmodel.lockSuggestion = isSelected
+    setOpenApproveModal(false)
     try {
-      await _send(inputmodel);
+      await _send(inputmodel)
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-  };
+  }
 
   const handleChange = (event: any): any => {
-    setIsSelected(event.target.checked);
-  };
+    setIsSelected(event.target.checked)
+  }
 
   const ShowApproveModal = (): JSX.Element => {
     return (
@@ -416,7 +416,7 @@ const ActionButtons = (): JSX.Element => {
         open={openApproveModal}
         fullWidth={true}
         onClose={() => {
-          setOpenApproveModal(false);
+          setOpenApproveModal(false)
         }}
       >
         <DialogTitle>{'تایید نهایی'}</DialogTitle>
@@ -445,7 +445,7 @@ const ActionButtons = (): JSX.Element => {
           <MatButton
             autoFocus
             onClick={() => {
-              setOpenApproveModal(false);
+              setOpenApproveModal(false)
             }}
             color="primary"
           >
@@ -456,8 +456,8 @@ const ActionButtons = (): JSX.Element => {
           </MatButton>
         </DialogActions>
       </Dialog>
-    );
-  };
+    )
+  }
 
   const ShowPharmacyInfo = (): JSX.Element => {
     return (
@@ -475,7 +475,10 @@ const ActionButtons = (): JSX.Element => {
               <TextWithTitle title="نام داروخانه" body={pharmacyInfoState?.data.name} />
             </Grid>
             <Grid item xs={12}>
-              <TextWithTitle title="آدرس" body={pharmacyInfoState?.data.address} />
+              <TextWithTitle
+                title="آدرس"
+                body={`${pharmacyInfoState?.data.pharmacyProvince} ${pharmacyInfoState?.data.address}`}
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextWithTitle title="تلفن" body={pharmacyInfoState?.data.telphon} />
@@ -505,8 +508,8 @@ const ActionButtons = (): JSX.Element => {
           </Button>
         </DialogActions>
       </CDialog>
-    );
-  };
+    )
+  }
 
   const exchangeModalRemove = (): JSX.Element => {
     return (
@@ -560,12 +563,12 @@ const ActionButtons = (): JSX.Element => {
           </CardActions>
         </Card>
       </Modal>
-    );
-  };
+    )
+  }
 
   const syrveyQuestion = (question: Question): JSX.Element => {
-    const input = surveyInput;
-    let element: JSX.Element = <></>;
+    const input = surveyInput
+    let element: JSX.Element = <></>
     switch (question.type) {
       case 2:
         element = (
@@ -574,20 +577,20 @@ const ActionButtons = (): JSX.Element => {
               value={surveyInput.surveyAnswer.find((x) => x.questionID === question.id)?.barom}
               precision={1}
               onChange={(event, newValue): any => {
-                const i = input.surveyAnswer.findIndex((x) => x.questionID === question.id);
+                const i = input.surveyAnswer.findIndex((x) => x.questionID === question.id)
                 if (i !== -1) {
-                  input.surveyAnswer.splice(i, 1);
+                  input.surveyAnswer.splice(i, 1)
                 }
                 input.surveyAnswer.push({
                   questionID: question.id,
                   barom: newValue,
-                });
-                setSurveyInput({ ...input });
+                })
+                setSurveyInput({ ...input })
               }}
             />
           </div>
-        );
-        break;
+        )
+        break
       case 4:
         element = (
           <>
@@ -605,25 +608,25 @@ const ActionButtons = (): JSX.Element => {
                       onChange={(event: React.ChangeEvent<HTMLInputElement>): any => {
                         const i = input.surveyAnswer.findIndex(
                           (x) => x.optionID === +event.target.value
-                        );
+                        )
                         if (i === -1)
                           input.surveyAnswer.push({
                             questionID: question.id,
                             optionID: item.id,
-                          });
-                        else input.surveyAnswer.splice(i, 1);
-                        setSurveyInput({ ...input });
+                          })
+                        else input.surveyAnswer.splice(i, 1)
+                        setSurveyInput({ ...input })
                       }}
                       color="primary"
                     />
                   }
                   label={item.title}
                 />
-              );
+              )
             })}
           </>
-        );
-        break;
+        )
+        break
       case 5:
         element = (
           <TextField
@@ -638,23 +641,23 @@ const ActionButtons = (): JSX.Element => {
               surveyInput.surveyAnswer.find((x) => x.questionID === question.id)?.descriptiveAnswer
             }
             onChange={(e): void => {
-              const i = input.surveyAnswer.findIndex((x) => x.questionID === question.id);
+              const i = input.surveyAnswer.findIndex((x) => x.questionID === question.id)
               if (i !== -1) {
-                input.surveyAnswer.splice(i, 1);
+                input.surveyAnswer.splice(i, 1)
               }
               input.surveyAnswer.push({
                 questionID: question.id,
                 descriptiveAnswer: e.target.value,
-              });
-              setSurveyInput({ ...input });
+              })
+              setSurveyInput({ ...input })
             }}
           />
-        );
+        )
       default:
-        break;
+        break
     }
-    return <div style={{ height: 320, maxHeight: 320, width: 550, maxWidth: 550 }}>{element}</div>;
-  };
+    return <div style={{ height: 320, maxHeight: 320, width: 550, maxWidth: 550 }}>{element}</div>
+  }
 
   const survayModal = (): JSX.Element => (
     <Dialog
@@ -662,7 +665,7 @@ const ActionButtons = (): JSX.Element => {
       open={openSurvayModal}
       fullWidth={true}
       onClose={() => {
-        setOpenSurvayModal(false);
+        setOpenSurvayModal(false)
       }}
     >
       <DialogTitle style={{ borderBottom: '1px silver solid', textAlign: 'center' }}>
@@ -722,7 +725,7 @@ const ActionButtons = (): JSX.Element => {
               variant="contained"
               color="secondary"
               onClick={() => {
-                setOpenSurvayModal(false);
+                setOpenSurvayModal(false)
               }}
             >
               انصراف
@@ -733,7 +736,7 @@ const ActionButtons = (): JSX.Element => {
               variant="contained"
               color="primary"
               onClick={async (): Promise<void> => {
-                await handleSaveSurvey();
+                await handleSaveSurvey()
               }}
             >
               ذخیره
@@ -742,7 +745,7 @@ const ActionButtons = (): JSX.Element => {
         </Grid>
       </DialogActions>
     </Dialog>
-  );
+  )
 
   const exchangeModalApproveCancel = (type: string): JSX.Element => {
     return (
@@ -784,8 +787,8 @@ const ActionButtons = (): JSX.Element => {
           ) : (
             <Button
               onClick={async (): Promise<any> => {
-                await handleConfirmOrNotExchange(false);
-                handleGetQuestionGroupOfExchange();
+                await handleConfirmOrNotExchange(false)
+                handleGetQuestionGroupOfExchange()
               }}
               variant="contained"
               autoFocus
@@ -795,14 +798,14 @@ const ActionButtons = (): JSX.Element => {
           )}
         </DialogActions>
       </Dialog>
-    );
-  };
+    )
+  }
 
-  let element: JSX.Element = <></>;
-  if (!viewExhcnage) return element;
-  const vx: ViewExchangeInterface | undefined = viewExhcnage;
+  let element: JSX.Element = <></>
+  if (!viewExhcnage) return element
+  const vx: ViewExchangeInterface | undefined = viewExhcnage
   if (vx) {
-    let state = vx.state;
+    let state = vx.state
     // The First Side ==========================================
     if (vx.currentPharmacyIsA) {
       if (state === 2)
@@ -818,7 +821,7 @@ const ActionButtons = (): JSX.Element => {
               لغو درخواست
             </Button>
           </>
-        );
+        )
 
       if (state === 3)
         element = (
@@ -829,7 +832,7 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               onClick={(): any => {
-                toggleIsOpenCancelExchangeModalForm('approve');
+                toggleIsOpenCancelExchangeModalForm('approve')
               }}
             >
               تایید و پرداخت
@@ -840,13 +843,13 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               onClick={(): any => {
-                toggleIsOpenCancelExchangeModalForm('cancel');
+                toggleIsOpenCancelExchangeModalForm('cancel')
               }}
             >
               عدم تایید
             </Button>
           </>
-        );
+        )
 
       if (state === 4)
         element = (
@@ -857,13 +860,13 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               onClick={(): any => {
-                setShowApproveModalForm(true);
+                setShowApproveModalForm(true)
               }}
             >
               پرداخت
             </Button>
           </>
-        );
+        )
 
       if (state === 10 || state === 8)
         element = (
@@ -878,7 +881,7 @@ const ActionButtons = (): JSX.Element => {
               نمایش آدرس
             </Button>
           </>
-        );
+        )
 
       if (state === 9)
         element = (
@@ -897,13 +900,13 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               onClick={(): any => {
-                setShowApproveModalForm(true);
+                setShowApproveModalForm(true)
               }}
             >
               پرداخت
             </Button>
           </>
-        );
+        )
 
       if (
         state === 1 &&
@@ -921,10 +924,10 @@ const ActionButtons = (): JSX.Element => {
               {t('general.sendExchange')}
             </Button>
           </>
-        );
+        )
       // The Second Side ==========================================
     } else {
-      if (state > 10) state = state - 10;
+      if (state > 10) state = state - 10
       if (state === 2)
         element = (
           <>
@@ -934,7 +937,7 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               onClick={(): any => {
-                toggleIsOpenCancelExchangeModalForm('approve');
+                toggleIsOpenCancelExchangeModalForm('approve')
               }}
             >
               تایید
@@ -945,13 +948,13 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               onClick={(): any => {
-                toggleIsOpenCancelExchangeModalForm('cancel');
+                toggleIsOpenCancelExchangeModalForm('cancel')
               }}
             >
               عدم تایید
             </Button>
           </>
-        );
+        )
 
       if (state === 4)
         element = (
@@ -962,13 +965,13 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               onClick={(): any => {
-                setShowApproveModalForm(true);
+                setShowApproveModalForm(true)
               }}
             >
               پرداخت
             </Button>
           </>
-        );
+        )
 
       if (state === 9 || state === 10)
         element = (
@@ -983,7 +986,7 @@ const ActionButtons = (): JSX.Element => {
               نمایش آدرس
             </Button>
           </>
-        );
+        )
       if (state === 8)
         element = (
           <>
@@ -1002,13 +1005,13 @@ const ActionButtons = (): JSX.Element => {
               type="button"
               variant="outlined"
               onClick={(): any => {
-                setShowApproveModalForm(true);
+                setShowApproveModalForm(true)
               }}
             >
               پرداخت
             </Button>
           </>
-        );
+        )
     }
   }
 
@@ -1039,13 +1042,13 @@ const ActionButtons = (): JSX.Element => {
       {openApproveModal && <ShowApproveModal />}
       {/* {openSurvayModal && survayModal()} */}
     </>
-  );
+  )
 
   return (
     <div className={fullScreen ? mobileActionContainer : actionContainer}>
       {element} <CircleBackdropLoading isOpen={isLoadingSend} />
     </div>
-  );
-};
+  )
+}
 
 export default ActionButtons;

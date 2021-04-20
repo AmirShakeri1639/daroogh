@@ -182,6 +182,40 @@ const useStyle = makeStyles((theme) =>
       marginLeft: 8,
       marginRight: 8,
     },
+    calculator: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      bottom: 'auto',
+      right: 'auto',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 99999,
+      marginRight: '-50%',
+      // height: 'fit-content',
+      width: '100%',
+      height: '100%',
+      background: '#00000070',
+      boxShadow: '0 0 40px #000000',
+    },
+    calcContainer: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      bottom: 'auto',
+      right: 'auto',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 99999,
+      marginRight: '-50%',
+      height: 'fit-content',
+      width: '300px',
+      boxShadow: '0 0 40px #000000',
+    },
+    calcCloseBtn: {
+      fontSize: 10,
+      width: 85,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
+    },
   })
 )
 
@@ -246,9 +280,9 @@ const Create: React.FC = () => {
   const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false)
   const toggleIsOpenCalculator = (): void => {
     setIsOpenCalculator((v) => !v)
-    if (isOpenCalculator) {
-      window.history.back()
-    }
+    // if (isOpenCalculator) {
+    //   window.history.back()
+    // }
   }
 
   const { packId } = useParams() as { packId: string }
@@ -268,6 +302,9 @@ const Create: React.FC = () => {
     sectionContainer,
     input,
     formContainer,
+    calculator,
+    calcContainer,
+    calcCloseBtn,
   } = useStyle()
 
   // useEffect(() => {
@@ -304,7 +341,9 @@ const Create: React.FC = () => {
     setHasMinimumDate(true)
     setBarcode('')
     setOfferAlert(false)
+    setDaroogRecommendation('')
     setComissionPercent('')
+    setIsOpenModal(false)
 
     if (autoCompleteRef && autoCompleteRef.current) {
       autoCompleteRef.current.setInputValue('')
@@ -811,7 +850,7 @@ const Create: React.FC = () => {
         {memoContent}
       </Grid>
 
-      <CDialog
+      {/* <CDialog
         fullWidth={fullScreen}
         isOpen={isOpenCalculator}
         onCloseAlternate={(): void => setIsOpenCalculator(false)}
@@ -832,7 +871,39 @@ const Create: React.FC = () => {
             <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
           </div>
         </DialogContent>
-      </CDialog>
+      </CDialog> */}
+
+      {isOpenCalculator && (
+        <div className={calculator}>
+          <Grid container className={calcContainer}>
+            <Grid item xs={12}>
+              <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: 'flex',
+                flexDirection: 'row-reverse',
+                background: 'white',
+                padding: 8,
+              }}
+            >
+              <Button
+                variant="outlined"
+                className={calcCloseBtn}
+                type="button"
+                disabled={isLoading ?? false}
+                onClick={() => {
+                  setIsOpenCalculator(false)
+                }}
+              >
+                {t('general.close')}
+              </Button>
+            </Grid>
+          </Grid>
+        </div>
+      )}
 
       <CDialog
         fullScreen={fullScreen}
@@ -842,6 +913,7 @@ const Create: React.FC = () => {
           setCalculatedValue(0)
           resetValues()
           setSelectedDrug(null)
+          setIsOpenCalculator(false)
         }}
         onOpen={(): void => {
           setIsOpenModal(true)
@@ -997,7 +1069,8 @@ const Create: React.FC = () => {
                     <Grid xs={12}>
                       <span style={{ color: '#17A2B8', fontSize: 12 }}>
                         {t('alerts.offerAlertFirstPart')}
-                        {Number(number)+ Math.floor(Number(number) / Number(offer2) * Number(offer1))}
+                        {Number(number) +
+                          Math.floor((Number(number) / Number(offer2)) * Number(offer1))}
                         {t('alerts.offerAlertSecondPart')}
                       </span>
                     </Grid>
