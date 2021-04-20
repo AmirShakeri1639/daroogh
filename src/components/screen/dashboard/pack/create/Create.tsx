@@ -343,6 +343,7 @@ const Create: React.FC = () => {
     setOfferAlert(false)
     setDaroogRecommendation('')
     setComissionPercent('')
+    setIsOpenModal(false)
 
     if (autoCompleteRef && autoCompleteRef.current) {
       autoCompleteRef.current.setInputValue('')
