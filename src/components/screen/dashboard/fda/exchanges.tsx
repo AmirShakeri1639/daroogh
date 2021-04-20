@@ -66,7 +66,7 @@ const Exchanges: React.FC = () => {
     }
   );
 
-  const { getAllExchange } = new Exchange();
+  const { getAllSuccessExchanges, urls } = new Exchange()
   const detailPanel = (row: any): JSX.Element => {
     return (
       <Paper
@@ -296,8 +296,8 @@ const Exchanges: React.FC = () => {
               // ref={ref}
               columns={ getColumns() }
               queryKey={ ExchangeEnum.GET_ALL_EXCHANGE }
-              queryCallback={ getAllExchange }
-              urlAddress={ UrlAddress.getAllExchange }
+              queryCallback={ getAllSuccessExchanges }
+              urlAddress={ urls.allSuccessExchange }
               detailPanel={ (row: any): any => detailPanel(row) }
               initLoad={ false }
             />
