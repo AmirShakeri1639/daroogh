@@ -409,6 +409,8 @@ const SupplyList: React.FC = () => {
     setIsWrongDate(false)
     setHasMinimumDate(true)
     setShowError(false)
+    setOfferAlert(false)
+
   }
 
   const toggleIsOpenModalOfNewList = (): void => {
