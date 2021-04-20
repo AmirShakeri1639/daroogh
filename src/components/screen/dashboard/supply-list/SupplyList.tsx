@@ -271,8 +271,8 @@ const SupplyList: React.FC = () => {
   const [daroogRecommendation, setDaroogRecommendation] = useState<string>('')
   const [comissionPercent, setComissionPercent] = useState<string>('')
   const [selectDrugForEdit, setSelectDrugForEdit] = useState<{
-    id: number
-    genericName: string
+    id: number;
+    genericName: string;
   }>({
     id: -1,
     genericName: '',
@@ -348,18 +348,18 @@ const SupplyList: React.FC = () => {
   // }, [comissionPercent, daroogRecommendation]);
 
   useEffectOnce(() => {
-    ;(async (): Promise<any> => {
+    (async (): Promise<any> => {
       try {
         const result = await all(0, 10 ^ 3)
         setDrugList(result.items)
       } catch (e) {
         errorHandler(e)
       }
-    })()
-  })
+    })();
+  });
 
   useEffect(() => {
-    ;(async (): Promise<any> => {
+    (async (): Promise<any> => {
       try {
         const { offer1, offer2, amount, cnt } = state
         // @ts-ignore
@@ -559,7 +559,6 @@ const SupplyList: React.FC = () => {
     dispatch({ type: 'id', value: id })
 
     const [year, month, day] = convertISOTime(expireDate).split('-')
-    console.log('day------>', day)
     setSelectedYear(year)
     setSelectedMonth(month)
     setSelectedDay(day)
@@ -607,7 +606,7 @@ const SupplyList: React.FC = () => {
     return items
   }
 
-  const memoItems = useMemo(() => displayHandler(), [data, filteredItems])
+  const memoItems = useMemo(() => displayHandler(), [data, filteredItems]);
 
   const selectedCalculaterValueHandler = (v: number): void => {
     setCalculatedValue(v)
@@ -622,10 +621,11 @@ const SupplyList: React.FC = () => {
         !dayIsValid(Number(selectedDay)) ||
         selectedYear.length < 4 ||
         isWrongDate ||
-        !hasMinimumDate
+        !hasMinimumDate ||
+        state?.batchNO === ''
       ) {
-        setShowError(true)
-        return
+        setShowError(true);
+        return;
       }
       setShowError(false)
       const intSelectedYear = Number(selectedYear)
