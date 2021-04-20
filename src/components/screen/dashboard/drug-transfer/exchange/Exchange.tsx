@@ -23,6 +23,7 @@ import Tab2 from './Tab2';
 import { connect, ConnectedProps } from 'react-redux';
 import { ColorEnum } from 'enum';
 import { useTranslation } from 'react-i18next';
+import ExchangeTree from '../exchange-tree/ExchangeTree';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -179,6 +180,9 @@ const Exchange: React.FC<ReduxProps> = (props) => {
           <Grid item xs={12}>
             <ActionButtons />
           </Grid>
+          {/* <Grid item xs={12} style={{marginTop:16}}>
+            <ExchangeTree showBorder={false} exchangeId={viewExhcnage.id}/>
+          </Grid> */}
           {/* <Hidden smDown>
             <ActionButtons />
           </Hidden> */}

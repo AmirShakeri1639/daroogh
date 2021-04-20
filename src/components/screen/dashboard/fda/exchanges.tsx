@@ -131,7 +131,7 @@ const Exchanges: React.FC = () => {
               <Grid item xs={ 12 } sm={ 6 }>
                 <span>نام داروخانه : </span>
                 <span style={ { fontWeight: 'bold' } }>
-                  { pharmacyInfoState?.data.name }
+                {`${pharmacyInfoState?.data.pharmacyProvince} ${pharmacyInfoState?.data.address}`}
                 </span>
               </Grid>
               <Grid item xs={ 12 } sm={ 6 }>
