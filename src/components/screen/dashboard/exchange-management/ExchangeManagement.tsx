@@ -170,7 +170,7 @@ const ExchangeManagement: React.FC = () => {
               <Grid item xs={12} sm={6}>
                 <span>آدرس : </span>
                 <span style={{ fontWeight: 'bold' }}>
-                  {pharmacyInfoState?.data.address}
+                {`${pharmacyInfoState?.data.pharmacyProvince} ${pharmacyInfoState?.data.address}`}
                 </span>
               </Grid>
               <Grid item xs={12} sm={6}>
