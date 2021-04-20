@@ -409,6 +409,8 @@ const SupplyList: React.FC = () => {
     setIsWrongDate(false)
     setHasMinimumDate(true)
     setShowError(false)
+    setDaroogRecommendation('')
+    setComissionPercent('')
   }
 
   const toggleIsOpenModalOfNewList = (): void => {
