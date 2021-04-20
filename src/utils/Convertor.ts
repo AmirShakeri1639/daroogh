@@ -12,11 +12,12 @@ class Convertor {
       Number(splitedGregorianDate[1]),
       Number(splitedGregorianDate[2])
     );
-    return `${convertedDate.jy}-${
+    const a = `${convertedDate.jy}-${
       convertedDate.jm < 10 ? `0${convertedDate.jm}` : convertedDate.jm
-    }-${convertedDate.jd < 10 ? `0${convertedDate.jd}` : convertedDate.jd} ${
-      withTime ? _time.split('.')[0] : ''
+    }-${convertedDate.jd < 10 ? `0${convertedDate.jd}` : convertedDate.jd}${
+      withTime ? ' ' + _time.split('.')[0] : ''
     }`;
+    return a; 
   }
 
   thousandsSeperator(number: string | number): string {
