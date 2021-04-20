@@ -41,6 +41,7 @@ import styled from 'styled-components';
 import CDialog from 'components/public/dialog/Dialog';
 import { ColorEnum } from 'enum';
 import Calculator from '../calculator/Calculator';
+import transitions from '@material-ui/core/styles/transitions';
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -98,6 +99,18 @@ const useStyle = makeStyles((theme) =>
       display: 'flex',
       alignItems: 'center',
       margin: theme.spacing(0, 1),
+    },
+    calculator: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      bottom: 'auto',
+      right: 'auto',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 99999,
+      marginRight: '-50%',
+      height: 'fit-content',
+      width: 300
     },
     contentContainer: {
       marginTop: 15,
@@ -274,9 +287,9 @@ const SupplyList: React.FC = () => {
   const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
   const toggleIsOpenCalculator = (): void => {
     setIsOpenCalculator((v) => !v);
-    if (isOpenCalculator) {
-      window.history.back();
-    }
+    // if (isOpenCalculator) {
+    //   window.history.back();
+    // }
   };
 
   const {
@@ -289,6 +302,7 @@ const SupplyList: React.FC = () => {
     label,
     fab,
     sectionContainer,
+    calculator
   } = useStyle();
 
   // useEffect(() => {
@@ -317,8 +331,6 @@ const SupplyList: React.FC = () => {
       }
     })();
   });
-
-  const containerRef = useRef<any>();
 
   useEffect(() => {
     (async (): Promise<any> => {
@@ -519,6 +531,7 @@ const SupplyList: React.FC = () => {
     dispatch({ type: 'id', value: id });
 
     const [year, month, day] = convertISOTime(expireDate).split('-');
+    console.log('day------>', day)
     setSelectedYear(year);
     setSelectedMonth(month);
     setSelectedDay(day);
@@ -664,28 +677,10 @@ const SupplyList: React.FC = () => {
         </Grid>
       </Container>
 
-      <CDialog
-        fullWidth={fullScreen}
-        isOpen={isOpenCalculator}
-        onCloseAlternate={(): void => setIsOpenCalculator(false)}
-        onOpenAltenate={(): void => setIsOpenCalculator(true)}
-        modalAlt={true}
-        hideAll={false}
-        hideSubmit={true}
-      >
-        <DialogContent>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignContent: 'center',
-              minWidth: `${fullScreen ? '0px' : '300px'}`,
-            }}
-          >
+      
+      {isOpenCalculator && (<div className={calculator}>
             <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
-          </div>
-        </DialogContent>
-      </CDialog>
+      </div>)}
 
       <CDialog
         fullScreen={fullScreen}
@@ -889,7 +884,7 @@ const SupplyList: React.FC = () => {
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
-                          setSelectedDay(e.target.value);
+                          setSelectedDay(val);
                         }
                         if (val.length === 2) {
                           monthRef.current.focus();
@@ -909,7 +904,7 @@ const SupplyList: React.FC = () => {
                       onChange={(e): void => {
                         const val = e.target.value;
                         if (selectedMonth.length < 2 || val.length < 2) {
-                          setSelectedMonth(e.target.value);
+                          setSelectedMonth(val);
                         }
                         if (val.length === 2) {
                           yearRef.current.focus();
