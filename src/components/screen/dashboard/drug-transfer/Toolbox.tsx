@@ -19,10 +19,9 @@ import { useTranslation } from 'react-i18next';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { useMutation } from 'react-query';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
-import sweetAlert from '../../../../utils/sweetAlert';
 import routes from '../../../../routes';
 import { useHistory } from 'react-router-dom';
-import errorHandler from '../../../../utils/errorHandler';
+import { tSuccess, errorHandler } from 'utils';
 import { ColorEnum } from 'enum';
 
 const styles = makeStyles((theme) =>
@@ -82,10 +81,7 @@ const ToolBox: React.FC = () => {
   const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
     onSuccess: async (res) => {
       if (res) {
-        await sweetAlert({
-          type: 'success',
-          text: res.message,
-        });
+        tSuccess(res.message);
         history.push(desktop);
       }
     },

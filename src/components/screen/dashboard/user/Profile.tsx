@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react'
 import {
   Button,
   Container,
@@ -11,18 +11,18 @@ import {
   Switch,
   TextField,
   Typography,
-} from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { ActionInterface, ProfileInterface } from '../../../../interfaces';
-import { User } from '../../../../services/api';
-import { ThreePartDatePicker } from '../../../public';
-import routes from '../../../../routes';
-import { errorHandler, tError, tWarn, tSuccess } from 'utils';
-import { useMutation } from 'react-query';
-import changeProfilePic from '../user/changeProfilePic';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCamera } from '@fortawesome/free-solid-svg-icons';
-import { ColorEnum } from 'enum';
+} from '@material-ui/core'
+import { useTranslation } from 'react-i18next'
+import { ActionInterface, ProfileInterface } from '../../../../interfaces'
+import { Pharmacy, User } from '../../../../services/api'
+import { Map, ThreePartDatePicker } from '../../../public'
+import routes from '../../../../routes'
+import { errorHandler, tError, tWarn, tSuccess } from 'utils'
+import { useMutation } from 'react-query'
+import changeProfilePic from '../user/changeProfilePic'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCamera } from '@fortawesome/free-solid-svg-icons'
+import { ColorEnum } from 'enum'
 
 export const useClasses = makeStyles((theme) =>
   createStyles({
@@ -90,8 +90,20 @@ export const useClasses = makeStyles((theme) =>
         filter: 'opacity(0.8) contrast(1.2)',
       },
     },
+    callButton: {
+      fontSize: '11px',
+      color: 'green',
+      border: '1px solid rgba(0, 0, 0, 0.23)',
+      padding: '5px 15px',
+      borderRadius: '4px',
+      textDecoration: 'none',
+      marginRight: '8px',
+      marginLeft: '16px',
+
+
+    },
   })
-);
+)
 
 const initialState: ProfileInterface | any = {
   id: 0,
@@ -108,107 +120,107 @@ const initialState: ProfileInterface | any = {
   isValidBirthDate: true,
   smsActive: true,
   notifActive: true,
-};
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
-  const { value } = action;
+  const { value } = action
 
   switch (action.type) {
     case 'id':
       return {
         ...state,
         id: value,
-      };
+      }
     case 'name':
       return {
         ...state,
         name: value,
-      };
+      }
     case 'family':
       return {
         ...state,
         family: value,
-      };
+      }
     case 'mobile':
       return {
         ...state,
         mobile: value,
-      };
+      }
     case 'email':
       return {
         ...state,
         email: value,
-      };
+      }
     case 'userName':
       return {
         ...state,
         userName: value,
-      };
+      }
     case 'nationalCode':
       return {
         ...state,
         nationalCode: value,
-      };
+      }
     case 'birthDate':
       return {
         ...state,
         birthDate: value,
-      };
+      }
     case 'active':
       return {
         ...state,
         active: value,
-      };
+      }
     case 'pharmacyName':
       return {
         ...state,
         pharmacyName: value,
-      };
+      }
     case 'pictureFileKey':
       return {
         ...state,
         pictureFileKey: value,
-      };
+      }
     case 'pharmacyID':
       return {
         ...state,
         pharmacyID: value,
-      };
+      }
     case 'isValidBirthDate':
       return {
         ...state,
         isValidBirthDate: value,
-      };
+      }
     case 'smsActive':
       return {
         ...state,
         smsActive: value,
-      };
+      }
     case 'notifActive':
       return {
         ...state,
         notifActive: value,
-      };
+      }
     case 'full':
       return {
         ...state,
         ...value,
-      };
+      }
     case 'reset':
-      return initialState;
+      return initialState
     default:
-      console.error('Action type not defined');
-      break;
+      console.error('Action type not defined')
+      break
   }
 }
 
 const Profile: React.FC = () => {
-  const { t } = useTranslation();
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [showError, setShowError] = useState<boolean>(false);
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g;
-  const { fileUrl } = routes;
-  const isLoadingNewUser = false;
+  const { t } = useTranslation()
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const [showError, setShowError] = useState<boolean>(false)
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
+  const { fileUrl } = routes
+  const isLoadingNewUser = false
 
   const {
     parent,
@@ -223,30 +235,31 @@ const Profile: React.FC = () => {
     centerItem,
     profileImageCamera,
     avatarContainer,
-  } = useClasses();
+    callButton
+  } = useClasses()
 
-  const { profile, saveNewUser } = new User();
+  const { profile, saveNewUser } = new User()
 
   useEffect(() => {
     async function getProfile(): Promise<any> {
-      const data = await profile();
-      dispatch({ type: 'full', value: data });
+      const data = await profile()
+      dispatch({ type: 'full', value: data })
     }
 
-    getProfile();
-  }, []);
+    getProfile()
+  }, [])
 
   const [_save] = useMutation(saveNewUser, {
     onSuccess: async () => {
       if (showError) {
-        setShowError(false);
+        setShowError(false)
       }
       tSuccess(t('alert.successfulSave'))
     },
-  });
+  })
 
   const isFormValid = (): boolean => {
-    const { name, family, nationalCode, mobile, userName, isValidBirthDate } = state;
+    const { name, family, nationalCode, mobile, userName, isValidBirthDate } = state
 
     return !(
       mobile.trim().length < 10 ||
@@ -255,11 +268,11 @@ const Profile: React.FC = () => {
       family.trim().length < 2 ||
       userName.trim().length < 3 ||
       nationalCode.length !== 10
-    );
-  };
+    )
+  }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (isFormValid()) {
       try {
@@ -276,7 +289,7 @@ const Profile: React.FC = () => {
           pharmacyID,
           smsActive,
           notifActive,
-        } = state;
+        } = state
         await _save({
           id,
           name,
@@ -290,16 +303,16 @@ const Profile: React.FC = () => {
           pharmacyID,
           smsActive,
           notifActive,
-        });
+        })
       } catch (e) {
-        tError(t('error.save'));
-        errorHandler(e);
+        tError(t('error.save'))
+        errorHandler(e)
       }
     } else {
-      tWarn(t('alert.fillFormCarefully'));
-      setShowError(true);
+      tWarn(t('alert.fillFormCarefully'))
+      setShowError(true)
     }
-  };
+  }
 
   const profileForm = (): JSX.Element => {
     return (
@@ -319,11 +332,11 @@ const Profile: React.FC = () => {
                   id="profilePicUpload"
                   name="profilePicUpload"
                   onChange={(e: any): void => {
-                    e.preventDefault();
+                    e.preventDefault()
                     if (e.target.files.length > 0) {
                       changeProfilePic(state.id, e.target.files[0]).then((response) => {
-                        dispatch({ type: 'pictureFileKey', value: response });
-                      });
+                        dispatch({ type: 'pictureFileKey', value: response })
+                      })
                     }
                   }}
                 />
@@ -415,8 +428,8 @@ const Profile: React.FC = () => {
                       fullDate={state.birthDate}
                       label={t('user.birthDate')}
                       onChange={(value: string, isValid: boolean): void => {
-                        dispatch({ type: 'isValidBirthDate', value: isValid });
-                        dispatch({ type: 'birthDate', value: value });
+                        dispatch({ type: 'isValidBirthDate', value: isValid })
+                        dispatch({ type: 'birthDate', value: value })
                       }}
                     />
                   </Grid>
@@ -458,6 +471,15 @@ const Profile: React.FC = () => {
                       <Divider style={{ width: '100%' }} />
                       <Grid item xs={12} style={{ margin: 8 }}>
                         <span>{t('alerts.cantEditProfile')}</span>
+                        <a
+                          className={callButton}
+                          onClick={(e: any): any => {
+                            e.stopPropagation()
+                          }}
+                          href={'tel:02191016361'}
+                        >
+                          تماس
+                        </a>
                       </Grid>
                       <Grid item xs={12}>
                         <h3>{t('pharmacy.pharmacy')}</h3>
@@ -479,6 +501,15 @@ const Profile: React.FC = () => {
                           </p>
                         )}
                       </Grid>
+                      {state?.pharmacyX && (
+                        <Grid item xs={12}>
+                          <Map
+                            draggable={false}
+                            getGeoLocation={false}
+                            defaultLatLng={[state?.pharmacyX, state?.pharmacyY]}
+                          />
+                        </Grid>
+                      )}
                     </div>
                   )}
                   <div className={spacing1}>&nbsp;</div>
@@ -505,10 +536,10 @@ const Profile: React.FC = () => {
           </Grid>
         </Paper>
       </Container>
-    );
-  };
+    )
+  }
 
-  return profileForm();
-};
+  return profileForm()
+}
 
 export default Profile;

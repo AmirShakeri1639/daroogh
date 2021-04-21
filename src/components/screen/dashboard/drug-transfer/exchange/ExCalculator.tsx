@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import {
   Grid,
   Divider,
@@ -34,7 +34,8 @@ import {
   percentAllowed,
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
-import { useEffectOnce } from 'hooks';
+import CDialog from 'components/public/dialog/Dialog';
+import { useReactToPrint } from 'react-to-print'
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
@@ -56,16 +57,6 @@ const ExCalculator: React.FC<Props> = (props) => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  useEffectOnce(() => {
-    const keyHandler = (e: KeyboardEvent): void => {
-      if (e.key === 'Backspace') {
-        setDialogOpen(false)
-      }
-    }
-    window.addEventListener('keydown', keyHandler);
-
-    return (): void => window.removeEventListener('keydown', keyHandler);
-  });
 
   const { basketCount, uBasketCount } = useContext<TransferDrugContextInterface>(
     DrugTransferContext
@@ -262,28 +253,45 @@ const ExCalculator: React.FC<Props> = (props) => {
       <Grid container>
         {/* separate data */ }
         <Grid item xs={ 12 }>
-          <Tabs
-            value={ currentTabIndex }
-            indicatorColor="primary"
-            textColor="primary"
-            onChange={ handleChange }
-            centered
-          >
-            <Tab label={ pharmacyNameA ?? t('exchange.you') } />
-            <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
-          </Tabs>
-          <SwipeableViews
-            enableMouseEvents
-            index={ currentTabIndex }
-            onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
-          >
-            <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-              { getOneSideData(true) }
-            </DaroogTabPanel>
-            <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-              { getOneSideData(false) }
-            </DaroogTabPanel>
-          </SwipeableViews>
+          {/* { forPrint &&  */ }
+          <div className="screen-hide">
+            <h2>
+              { pharmacyNameA ?? t('exchange.you') }
+            </h2>
+            { getOneSideData(true) }
+            <Divider />
+            <h2>
+              { pharmacyNameB ?? t('exchange.otherSide') }
+            </h2>
+            { getOneSideData(false) }
+          </div>
+          {/* } */ }
+          {/* { !forPrint && */ }
+          <div className="print-hide">
+            <Tabs
+              value={ currentTabIndex }
+              indicatorColor="primary"
+              textColor="primary"
+              onChange={ handleChange }
+              centered
+            >
+              <Tab label={ pharmacyNameA ?? t('exchange.you') } />
+              <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
+            </Tabs>
+            <SwipeableViews
+              enableMouseEvents
+              index={ currentTabIndex }
+              onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
+            >
+              <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+                { getOneSideData(true) }
+              </DaroogTabPanel>
+              <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+                { getOneSideData(false) }
+              </DaroogTabPanel>
+            </SwipeableViews>
+          </div>
+          {/* } */ }
         </Grid>
         <Divider />
         {/* common data */ }
@@ -313,34 +321,59 @@ const ExCalculator: React.FC<Props> = (props) => {
         </Grid>
       </Grid>
     );
-  };
-
-  const printBill = () => {
-    const dialogActions = document.getElementById('dialogActions')
-    const dialogActionsDisplay = dialogActions?.style.display
-    window.print()
-    // printElem('billContainer', t('exchange.exCalculator'))
   }
+
+  const [forPrint, setForPrint] = useState(false)
+
+  const printRef = useRef()
+  const printBill = useReactToPrint({
+    // @ts-ignore
+    content: () => printRef?.current,
+    onBeforeGetContent: () => setForPrint(true),
+    onBeforePrint: () => setForPrint(true),
+    onAfterPrint: () => setForPrint(false),
+    onPrintError: () => setForPrint(false),
+  })
 
   return (
     <>
       {full ? (
-        <Dialog
-          open={ dialogOpen }
+        <CDialog
+          isOpen={ dialogOpen }
           fullScreen={ fullScreen }
           fullWidth={ true }
+          onClose={(): void => setDialogOpen(false)}
+          hideAll
           id="billContainer"
-        >
+          >
           <DialogTitle>{ t('exchange.exCalculator') }</DialogTitle>
           <Divider />
-          <DialogContent className={ darkText }>
-            <CalcContent />
+          <DialogContent 
+            className={ darkText }
+            ref={ printRef }
+          >
+            <div
+              className="bill-print"
+            >
+              <Grid container className="bill-print-header">
+                <Grid item xs={ 6 }>
+                  { t('exchange.exCalculator') }
+                </Grid>
+                <Grid item xs={ 6 } className="bill-print-header-img">
+                  <img src="/logo.png" />
+                </Grid>
+              </Grid>
+              <CalcContent />
+            </div>
           </DialogContent>
           <DialogActions className="print-hide">
             <Button
               variant="outlined"
               color="default"
-              onClick={ printBill }
+              onClick={ () => {
+                setForPrint(true)
+                if (printBill) printBill()
+              }}
             >
               { t('general.print') }
             </Button>
@@ -355,7 +388,7 @@ const ExCalculator: React.FC<Props> = (props) => {
               { t('general.ok') }
             </Button>
           </DialogActions>
-        </Dialog>
+        </CDialog>
       ) : (
         <CalcContent />
       ) }

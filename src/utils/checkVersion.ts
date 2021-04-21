@@ -38,11 +38,13 @@ export const showWhatsNew = async (versionNo: string | number) => {
 
 const checkVersion = (): boolean => {
   try {
-    const defaultVersion = '0.1.0'
+    const defaultVersion = '1.0.0'
     const localVersion = localStorage.getItem('version') || defaultVersion
 
     const packageJson = require('../../package.json')
     const remoteVersion = packageJson?.version || defaultVersion
+    console.log('%clocal version:', 'color: brown; font-style: italic;', localVersion)
+    console.log('%cremote version:', 'color: red; font-weight: bold', remoteVersion)
 
     if (remoteVersion !== localVersion) {
       localStorage.setItem('version', remoteVersion)

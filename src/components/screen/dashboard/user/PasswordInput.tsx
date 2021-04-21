@@ -11,6 +11,7 @@ interface Props {
   label?: string;
   onClickIcon: () => void;
   isVisiblePassword: boolean;
+  helperText?: string
 }
 
 const PasswordInput: FC<Props> = ({
@@ -20,6 +21,7 @@ const PasswordInput: FC<Props> = ({
   label,
   onClickIcon,
   isVisiblePassword,
+  helperText,
 }) => {
   return (
     <TextField
@@ -29,6 +31,7 @@ const PasswordInput: FC<Props> = ({
       value={value}
       required
       fullWidth
+      helperText={ helperText }
       className="text-field"
       name="password"
       label={label}
