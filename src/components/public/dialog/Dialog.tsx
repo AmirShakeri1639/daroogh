@@ -42,6 +42,8 @@ interface Props {
   canceleButtonTitle?: string;
   style?: React.CSSProperties;
   className?: string;
+  id?: string
+  ref?: any
 }
 
 
@@ -64,6 +66,8 @@ const CDialog: React.FC<Props> = ({
   hideAll,
   modalAlt,
   canceleButtonTitle,
+  id,
+  ref,
 }) => {
   const location = useLocation();
   const params = queryString.parse(location.search);
@@ -126,6 +130,8 @@ const CDialog: React.FC<Props> = ({
       fullScreen={fullScreen}
       style={style ?? undefined}
       className={className ?? ''}
+      id={ id }
+      ref={ ref }
     >
       {children}
       {!hideAll && (

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import {
   Grid,
   Divider,
@@ -35,6 +35,7 @@ import {
 } from '../../../../../utils/ExchangeTools';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import CDialog from 'components/public/dialog/Dialog';
+import { useReactToPrint } from 'react-to-print'
 
 interface Props {
   exchange: ViewExchangeInterface | undefined;
@@ -247,9 +248,9 @@ const ExCalculator: React.FC<Props> = (props) => {
     );
   };
 
-  const CalcContent = (): JSX.Element => {
+  const CalcContent = React.forwardRef((props, ref: any) => {
     return (
-      <Grid container>
+      <Grid container ref={ ref }>
         {/* separate data */ }
         <Grid item xs={ 12 }>
           <Tabs
@@ -303,14 +304,13 @@ const ExCalculator: React.FC<Props> = (props) => {
         </Grid>
       </Grid>
     );
-  };
+  })
 
-  const printBill = () => {
-    const dialogActions = document.getElementById('dialogActions')
-    const dialogActionsDisplay = dialogActions?.style.display
-    window.print()
-    // printElem('billContainer', t('exchange.exCalculator'))
-  }
+  const printRef = useRef()
+  const printBill = useReactToPrint({
+    // @ts-ignore
+    content: () => printRef?.current
+  })
 
   return (
     <>
@@ -321,12 +321,27 @@ const ExCalculator: React.FC<Props> = (props) => {
           fullWidth={ true }
           onClose={(): void => setDialogOpen(false)}
           hideAll
-          // id="billContainer"
-        >
+          id="billContainer"
+          >
           <DialogTitle>{ t('exchange.exCalculator') }</DialogTitle>
           <Divider />
-          <DialogContent className={ darkText }>
-            <CalcContent />
+          <DialogContent 
+            className={ darkText }
+            ref={ printRef }
+          >
+            <div
+              className="bill-print"
+            >
+              <Grid container className="bill-print-header">
+                <Grid item xs={ 6 }>
+                  { t('exchange.exCalculator') }
+                </Grid>
+                <Grid item xs={ 6 } className="bill-print-header-img">
+                  <img src="/logo.png" />
+                </Grid>
+              </Grid>
+              <CalcContent />
+            </div>
           </DialogContent>
           <DialogActions className="print-hide">
             <Button
