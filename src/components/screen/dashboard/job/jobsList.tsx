@@ -753,7 +753,7 @@ const JobsList: React.FC = () => {
                       onChange={ (e): void =>
                         dispatch({
                           type: 'minGradeOfReadingPrescriptionCertificate',
-                          value: e.target.value,
+                          value: e,
                         })
                       }
                     />
@@ -775,7 +775,7 @@ const JobsList: React.FC = () => {
                       onChange={ (e): void =>
                         dispatch({
                           type: 'minWorkExperienceYear',
-                          value: e.target.value,
+                          value: e,
                         })
                       }
                     />
@@ -930,7 +930,7 @@ const JobsList: React.FC = () => {
                       required
                       label={ t('jobs.maxAge') }
                       value={ state?.maxAge }
-                      onChange={ (e): void => dispatch({ type: 'maxAge', value: e.target.value }) }
+                      onChange={ (e): void => dispatch({ type: 'maxAge', value: e }) }
                     />
                   </Grid>
                 </Grid>
