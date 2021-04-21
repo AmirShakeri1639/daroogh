@@ -1,4 +1,7 @@
 import { RoleType } from 'enum';
+import {PharmacyInterface} from './PharmacyInterface'
+import {EmploymentApplicationInterface} from './EmploymentApplicationInterface'
+
 
 export interface ActionInterface {
   type: string;
@@ -66,6 +69,11 @@ export interface CommandInterface {
   title: string
   method: (e: any) => void
   color?: string
+}
+
+export interface FindJobInterface {
+    pharmacy : PharmacyInterface;
+    details : EmploymentApplicationInterface;
 }
 
 export type { DrugInterface } from './DrugInterface';
