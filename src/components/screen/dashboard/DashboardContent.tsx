@@ -88,10 +88,13 @@ const DashboardContent: React.FC<any> = () => {
   // React.useEffect(() => {
     console.log('%cbefore checkversion', 'background: yellow')
   if (checkVersion()) {
-    console.log('version checked ready t ocleanup cache')
+    console.log('version checked ready to cleanup cache')
     clearMyCache();
   } else {
-    console.log('%cversion is not changed checking for whatsneweXists', 'background: lightblue')
+    console.log(
+      '%cversion is not changed (maybe it\'s after cleaning up the cache)' +
+      ' checking for whatsneweXists', 'background: lightblue'
+    )
     const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
     if (whatsNewExistsFromStorage === 'true') {
       localStorage.removeItem('whatsNewExists');

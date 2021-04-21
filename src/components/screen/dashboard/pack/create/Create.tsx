@@ -728,7 +728,7 @@ const Create: React.FC = () => {
 
   const formHandler = async (): Promise<any> => {
     try {
-      if (!isValidInputs() || selectedCategory.length === 0 || isWrongDate || !hasMinimumDate) {
+      if (!isValidInputs() || selectedCategory.length === 0 || isWrongDate || !hasMinimumDate || barcode.trim() === '') {
         setShowError(true)
         return
       }

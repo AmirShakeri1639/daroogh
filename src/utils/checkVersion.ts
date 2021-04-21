@@ -43,6 +43,8 @@ const checkVersion = (): boolean => {
 
     const packageJson = require('../../package.json')
     const remoteVersion = packageJson?.version || defaultVersion
+    console.log('%clocal version:', 'color: brown; font-style: italic;', localVersion)
+    console.log('%cremote version:', 'color: red; font-weight: bold', remoteVersion)
 
     if (remoteVersion !== localVersion) {
       localStorage.setItem('version', remoteVersion)
