@@ -396,6 +396,8 @@ export default {
         waitingForYourConfirmation: 'تبادل‌های در انتظار',
         exchangesWithFavorites: 'سبدهای شامل علاقمندی',
         searchDrugPlaceHolder: 'عبارت را وارد کرده و سپس کلید اینتر را بزنید',
+        fromYours: 'از سبد شما',
+        fromOthers: 'از سبد طرف مقابل',
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',

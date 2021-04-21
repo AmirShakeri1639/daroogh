@@ -1,0 +1,44 @@
+@media print {
+  .print-hide {
+    display: none !important;
+  }
+
+  .bill-print {
+    border   : 1px solid #666 !important;
+    border-radius: 1em;
+    padding  : 1em;
+    margin   : 2em;
+    direction: rtl;
+
+    * {
+      font-family: Vazir;
+    }
+
+    .bill-print-header {
+      width         : 100%;
+      clear         : both;
+      font-weight   : bold;
+      border-bottom : 1px solid gray;
+      margin-bottom : 1em;
+      padding-bottom: 1em;
+
+      .bill-print-header-img {
+        text-align: left;
+
+        img {
+          height: 2em;
+        }
+      }
+    }
+  }
+}
+
+@media screen {
+  .screen-hide {
+    display: none !important;
+  }
+
+  .bill-print-header {
+    display: none !important;
+  }
+}
