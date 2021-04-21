@@ -46,6 +46,7 @@ export default {
 
   prescription: `/${dashboard}/${peopleSection}/prescription`,
   jobApplication: `/${dashboard}/${peopleSection}/employmentApplication`,
+  findJob: `/${dashboard}/${peopleSection}/findJob`,
 
   drugCategoryfavoriteList: `/${dashboard}/${favorite}/drug-category`,
 

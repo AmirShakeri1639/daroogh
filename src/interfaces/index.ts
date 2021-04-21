@@ -72,10 +72,12 @@ export interface CommandInterface {
 }
 
 export interface FindJobInterface {
-    pharmacy : PharmacyInterface;
-    details : EmploymentApplicationInterface;
+    items : finJobDetailInterface[]
 }
-
+export interface finJobDetailInterface{
+  pharmacy : PharmacyInterface;
+  details : EmploymentApplicationInterface;
+}
 export type { DrugInterface } from './DrugInterface';
 export type { CategoryInterface } from './CategoryInterface';
 export type { 

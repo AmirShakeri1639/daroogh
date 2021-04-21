@@ -64,7 +64,12 @@ const EmploymentApplication = lazy(
       './components/screen/dashboard/peopleSection/EmploymentApplication/EmploymentApplication'
     )
 );
-
+const FindJob = lazy(
+  () =>
+    import(
+      './components/screen/dashboard/peopleSection/FindJob/FindJob'
+    )
+);
 const CreatePharmacy = lazy(() => import('./components/screen/dashboard/pharmacy/createPharmacy'));
 
 const PharmaciesList = lazy(() => import('./components/screen/dashboard/pharmacy/pharmaciesList'));
@@ -123,6 +128,7 @@ const {
   drugFavoriteList,
   prescription,
   jobApplication,
+  findJob,
   dashboard,
   transfer,
   desktop,
@@ -324,6 +330,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute exact path={jobApplication}>
               <Dashboard component={<EmploymentApplication />} />
+            </PrivateRoute>
+            <PrivateRoute exact path={findJob}>
+              <Dashboard component={<FindJob />} />
             </PrivateRoute>
             <PrivateRoute exact path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />
