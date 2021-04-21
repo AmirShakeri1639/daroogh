@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react';
+import React, { useMemo, useReducer, useState } from 'react';
 import { useMutation, useQueryCache } from 'react-query';
 import User from '../../../../services/api/User';
 import {
@@ -44,6 +44,7 @@ import RoleForm from './RoleForm';
 import CDialog from 'components/public/dialog/Dialog'
 import { useTheme } from '@material-ui/core'
 import PasswordInput from './PasswordInput'
+import ChangeUserPassword from './ChangePassword';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -217,7 +218,8 @@ const UsersList: React.FC = () => {
   const [isOpenUserModal, setIsOpenUserModal] = useState(false);
   const [
     isOpenChangePasswordAdminModal, setIsOpenChangePasswordAdminModal
-  ] = useState(false)
+  ] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
   const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
@@ -259,7 +261,6 @@ const UsersList: React.FC = () => {
 
   const [
     _changePasswordByAdmin, 
-    { isLoading: isLoadingChangePasswordByAdmin }
   ] = useMutation(changePasswordByAdmin, {
     onSuccess: async (r) => {
       tSuccess(r.message)
@@ -491,42 +492,42 @@ const UsersList: React.FC = () => {
 
   const changePasswordByAdminDialog = (): JSX.Element => {
     return (
-      <>
-        <CDialog
-          fullScreen={ fullScreen }
-          isOpen={ isOpenChangePasswordAdminModal }
-          onClose={ (): void => setIsOpenChangePasswordAdminModal(false) }
-          onOpenAltenate={ (): void => setIsOpenChangePasswordAdminModal(true) }
-          modalAlt={ true }
-          formHandler={ changePasswordByAdminFormHandler }
-          fullWidth
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            { t('user.changeUserPassword') }
-          </DialogTitle>
-          <DialogContent style={ { backgroundColor: '#FAFAFA', width: '100%' } }>
-            <Grid container spacing={ 1 }>
-              <Grid item xs={ 12 }>
-                <PasswordInput
-                  error={ state.password.trim().length < 7 }
-                  value={ state.password }
-                  helperText={ t('user.passwordHelperText') }
-                  onChange={ (e): void => dispatch({ type: 'password', value: e.target.value }) }
-                  label={ t('user.newPassword') }
-                  onClickIcon={ (): void =>
-                    dispatch({ type: 'showPassword', value: !state?.showPassword })
-                  }
-                  isVisiblePassword={ state.showPassword }
-                />
-              </Grid>
+      <CDialog
+        fullScreen={ fullScreen }
+        isOpen={ isOpenChangePasswordAdminModal }
+        onClose={ (): void => setIsOpenChangePasswordAdminModal(false) }
+        onOpenAltenate={ (): void => setIsOpenChangePasswordAdminModal(true) }
+        modalAlt={ true }
+        formHandler={ changePasswordByAdminFormHandler }
+        fullWidth
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          { t('user.changeUserPassword') }
+        </DialogTitle>
+        <DialogContent style={ { backgroundColor: '#FAFAFA', width: '100%' } }>
+          <Grid container spacing={ 1 }>
+            <Grid item xs={ 12 }>
+              <PasswordInput
+                error={ state.password.trim().length < 7 && showError }
+                value={ state.password }
+                helperText={ t('user.passwordHelperText') }
+                onChange={ (e): void => dispatch({ type: 'password', value: e.target.value }) }
+                label={ t('user.newPassword') }
+                onClickIcon={ (): void =>
+                  dispatch({ type: 'showPassword', value: !state?.showPassword })
+                }
+                isVisiblePassword={ state.showPassword }
+              />
             </Grid>
-          </DialogContent>
-        </CDialog>
-      </>
-    )
+          </Grid>
+        </DialogContent>
+      </CDialog>
+    );
   }
+
+  const memoChangeUserPassword = useMemo(() => changePasswordByAdminDialog(), [state.password,isOpenChangePasswordAdminModal]);
 
   const customDataTableActions: DataTableCustomActionInterface[] = [
     {
@@ -549,23 +550,27 @@ const UsersList: React.FC = () => {
     toggleIsOpenUserModal();
   };
 
+  const memoDataTable = useMemo(() => (
+    <DataTable
+      tableRef={ref}
+      extraMethods={{ editUser: enableUserHandler }}
+      columns={tableColumns()}
+      editAction={editUserHandler}
+      addAction={addUserHandler}
+      editUser={enableUserHandler}
+      removeAction={removeUserHandler}
+      initLoad={false}
+      isLoading={isLoadingRemoveUser || isLoadingEditUser}
+      pageSize={10}
+      urlAddress={UrlAddress.getAllUser}
+      stateAction={disableUserHandler}
+      customActions={customDataTableActions}
+    />
+  ), [])
+
   return (
     <FormContainer title={t('user.users-list')}>
-      <DataTable
-        tableRef={ref}
-        extraMethods={{ editUser: enableUserHandler }}
-        columns={tableColumns()}
-        editAction={editUserHandler}
-        addAction={addUserHandler}
-        editUser={enableUserHandler}
-        removeAction={removeUserHandler}
-        initLoad={false}
-        isLoading={isLoadingRemoveUser || isLoadingEditUser}
-        pageSize={10}
-        urlAddress={UrlAddress.getAllUser}
-        stateAction={disableUserHandler}
-        customActions={customDataTableActions}
-      />
+      {memoDataTable}
 
       <Modal open={isOpenRoleModal} toggle={toggleIsOpenRoleModal}>
         <Card className={root}>
@@ -633,7 +638,7 @@ const UsersList: React.FC = () => {
         />
       </Modal>
 
-      { changePasswordByAdminDialog() }
+      {memoChangeUserPassword}
     </FormContainer>
   );
 };
