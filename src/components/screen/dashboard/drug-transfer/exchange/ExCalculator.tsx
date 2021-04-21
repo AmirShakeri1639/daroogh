@@ -248,11 +248,16 @@ const ExCalculator: React.FC<Props> = (props) => {
     );
   };
 
-  const CalcContent = React.forwardRef((props, ref: any) => {
+  interface calcContentProps {
+    forPrint?: boolean
+  }
+  const CalcContent = React.forwardRef((props: calcContentProps) => {
+    const { forPrint = false } = props
     return (
-      <Grid container ref={ ref }>
+      <Grid container>
         {/* separate data */ }
         <Grid item xs={ 12 }>
+          { console.log('%cFORPRINT:', 'background: yellow; padding: 3em', forPrint) }
           <Tabs
             value={ currentTabIndex }
             indicatorColor="primary"
@@ -306,10 +311,14 @@ const ExCalculator: React.FC<Props> = (props) => {
     );
   })
 
+  const [forPrint, setForPrint] = useState(false)
+
   const printRef = useRef()
   const printBill = useReactToPrint({
     // @ts-ignore
-    content: () => printRef?.current
+    content: () => printRef?.current,
+    onAfterPrint: () => setForPrint(false),
+    onPrintError: () => setForPrint(false),
   })
 
   return (
@@ -340,14 +349,19 @@ const ExCalculator: React.FC<Props> = (props) => {
                   <img src="/logo.png" />
                 </Grid>
               </Grid>
-              <CalcContent />
+              <CalcContent
+                forPrint={ forPrint }
+              />
             </div>
           </DialogContent>
           <DialogActions className="print-hide">
             <Button
               variant="outlined"
               color="default"
-              onClick={ printBill }
+              onClick={ () => {
+                setForPrint(true)
+                if (printBill) printBill()
+              }}
             >
               { t('general.print') }
             </Button>
