@@ -248,38 +248,50 @@ const ExCalculator: React.FC<Props> = (props) => {
     );
   };
 
-  interface calcContentProps {
-    forPrint?: boolean
-  }
-  const CalcContent = React.forwardRef((props: calcContentProps) => {
-    const { forPrint = false } = props
+  const CalcContent = (): JSX.Element => {
     return (
       <Grid container>
         {/* separate data */ }
         <Grid item xs={ 12 }>
-          { console.log('%cFORPRINT:', 'background: yellow; padding: 3em', forPrint) }
-          <Tabs
-            value={ currentTabIndex }
-            indicatorColor="primary"
-            textColor="primary"
-            onChange={ handleChange }
-            centered
-          >
-            <Tab label={ pharmacyNameA ?? t('exchange.you') } />
-            <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
-          </Tabs>
-          <SwipeableViews
-            enableMouseEvents
-            index={ currentTabIndex }
-            onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
-          >
-            <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
-              { getOneSideData(true) }
-            </DaroogTabPanel>
-            <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
-              { getOneSideData(false) }
-            </DaroogTabPanel>
-          </SwipeableViews>
+          {/* { forPrint &&  */ }
+          <div className="screen-hide">
+            <h2>
+              { pharmacyNameA ?? t('exchange.you') }
+            </h2>
+            { getOneSideData(true) }
+            <Divider />
+            <h2>
+              { pharmacyNameB ?? t('exchange.otherSide') }
+            </h2>
+            { getOneSideData(false) }
+          </div>
+          {/* } */ }
+          {/* { !forPrint && */ }
+          <div className="print-hide">
+            <Tabs
+              value={ currentTabIndex }
+              indicatorColor="primary"
+              textColor="primary"
+              onChange={ handleChange }
+              centered
+            >
+              <Tab label={ pharmacyNameA ?? t('exchange.you') } />
+              <Tab label={ pharmacyNameB ?? t('exchange.otherSide') } />
+            </Tabs>
+            <SwipeableViews
+              enableMouseEvents
+              index={ currentTabIndex }
+              onChangeIndex={ (index: number): void => setCurrentTabIndex(index) }
+            >
+              <DaroogTabPanel value={ currentTabIndex } index={ 0 }>
+                { getOneSideData(true) }
+              </DaroogTabPanel>
+              <DaroogTabPanel value={ currentTabIndex } index={ 1 }>
+                { getOneSideData(false) }
+              </DaroogTabPanel>
+            </SwipeableViews>
+          </div>
+          {/* } */ }
         </Grid>
         <Divider />
         {/* common data */ }
@@ -309,7 +321,7 @@ const ExCalculator: React.FC<Props> = (props) => {
         </Grid>
       </Grid>
     );
-  })
+  }
 
   const [forPrint, setForPrint] = useState(false)
 
@@ -317,6 +329,8 @@ const ExCalculator: React.FC<Props> = (props) => {
   const printBill = useReactToPrint({
     // @ts-ignore
     content: () => printRef?.current,
+    onBeforeGetContent: () => setForPrint(true),
+    onBeforePrint: () => setForPrint(true),
     onAfterPrint: () => setForPrint(false),
     onPrintError: () => setForPrint(false),
   })
@@ -349,9 +363,7 @@ const ExCalculator: React.FC<Props> = (props) => {
                   <img src="/logo.png" />
                 </Grid>
               </Grid>
-              <CalcContent
-                forPrint={ forPrint }
-              />
+              <CalcContent />
             </div>
           </DialogContent>
           <DialogActions className="print-hide">
