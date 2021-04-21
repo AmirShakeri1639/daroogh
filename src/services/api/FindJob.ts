@@ -6,7 +6,7 @@ class FileType extends Api {
     all: '/api/Job/AllJobs',
   }
 
-  all = async (): Promise<any> => {
+  all =  async (countryDivision:string): Promise<any> => {
     const result = await this.postData(this.urls.all)
     return result.data
   }
