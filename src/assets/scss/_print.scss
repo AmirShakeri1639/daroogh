@@ -1,0 +1,29 @@
+@media print {
+  .bill-print {
+    border : 2px solid #444 !important;
+    padding: 1em;
+    margin : 2em;
+    direction: rtl;
+
+    * {
+      font-family: Vazir;
+    }
+
+    .bill-print-header {
+      width      : 100%;
+      clear      : both;
+      font-weight: bold;
+      border-bottom: 1px solid gray;
+      margin-bottom: 1em;
+      padding-bottom: 1em;
+    }
+  }
+}
+
+@media screen {
+
+  .print-hide,
+  .bill-print-header {
+    display: none;
+  }
+}
