@@ -27,6 +27,7 @@ import { EmploymentApplication as presApi } from '../../../../../services/api';
 import { EmpApplicationDataInterface } from 'interfaces/EmploymentApplicationInterface';
 import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import { confirmSweetAlert } from 'utils'
 
 const { detail } = new presApi();
 const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
@@ -54,7 +55,8 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
   const { sendDate, suggestedJobPositionStr, id, resumeFileKey, cancelDate } = data;
 
   const removeHandler = async (_id: number): Promise<any> => {
-    if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
+    const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
+    if (removeConfirm) {
       await formHandler(_id);
     }
   };

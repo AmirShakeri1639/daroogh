@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { errorHandler, tError, tSuccess, tWarn } from 'utils'
+import { confirmSweetAlert, errorHandler, tError, tSuccess, tWarn } from 'utils'
 import CircleLoading from '../../../public/loading/CircleLoading'
 import { useTranslation } from 'react-i18next'
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns'
@@ -281,7 +281,8 @@ const DrugsList: React.FC = () => {
 
   const removeHandler = async (userRow: DrugInterface): Promise<any> => {
     try {
-      if (window.confirm(t('alert.remove'))) {
+      const removeConfirm = await confirmSweetAlert(t('alert.remove'))
+      if (removeConfirm) {
         await _remove(userRow.id)
         ref.current?.onQueryChange()
       }

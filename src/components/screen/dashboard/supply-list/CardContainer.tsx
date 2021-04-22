@@ -11,7 +11,7 @@ import Detail from './Detail';
 import { SupplyListCardContainer } from '../../../../interfaces';
 import { useMutation, useQueryCache } from 'react-query';
 import { PharmacyDrug } from '../../../../services/api';
-import { successSweetAlert, errorSweetAlert } from '../../../../utils';
+import { successSweetAlert, errorSweetAlert, confirmSweetAlert } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../enum';
 import { AllPharmacyDrug } from '../../../../enum/query';
@@ -83,7 +83,8 @@ const CardContainer: React.FC<SupplyListCardContainer> = memo((props) => {
   });
 
   const removeHandler = async (): Promise<any> => {
-    if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
+    const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
+    if (removeConfirm) {
       setIsOpenBackDrop(true);
       await _removePharmacyDrug(id);
     }

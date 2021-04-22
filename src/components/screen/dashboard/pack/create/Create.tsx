@@ -39,7 +39,10 @@ import { omit, remove, has, debounce, isUndefined } from 'lodash'
 import Input from '../../../../public/input/Input'
 import CardContainer from './CardContainer'
 import { useEffectOnce } from '../../../../../hooks'
-import { errorHandler, Convertor, jalali, warningSweetAlert } from '../../../../../utils'
+import { 
+  errorHandler, Convertor, jalali, 
+  warningSweetAlert, confirmSweetAlert 
+} from 'utils'
 import { utils } from 'react-modern-calendar-datepicker'
 import moment from 'jalali-moment'
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug'
@@ -598,7 +601,8 @@ const Create: React.FC = () => {
   }
 
   const removeHandler = async (drugId: number): Promise<void> => {
-    if (window.confirm(t('alert.remove'))) {
+    const removeConfirm = await confirmSweetAlert(t('alert.remove'))
+    if (removeConfirm) {
       remove(drugsPack, (item) => item.id === drugId)
       try {
         await submition(mapDrugsPackToApi(drugsPack))

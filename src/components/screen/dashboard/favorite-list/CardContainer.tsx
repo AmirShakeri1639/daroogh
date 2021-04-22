@@ -4,6 +4,7 @@ import Detail from './Detail';
 import { FavoriteDrugInterface } from '../../../../interfaces';
 import { TextMessage } from '../../../../enum';
 import { BackDrop } from '../../../public';
+import { confirmSweetAlert } from 'utils'
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -30,7 +31,8 @@ const CardContainer: React.FC<FavoriteDrugInterface> = (props) => {
   } = data;
 
   const removeHandler = async (_id: number): Promise<any> => {
-    if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
+    const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
+    if (removeConfirm) {
       await formHandler(_id);
     }
   };

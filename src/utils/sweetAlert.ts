@@ -71,14 +71,14 @@ const sweetAlert = async (params: SweetAlertProps): Promise<any> => {
   }
 
   const res =
-    text
+    html
       ? await MySwal.fire({
         ...sendingParams,
-        text
+        html
       })
       : await MySwal.fire({
         ...sendingParams,
-        html,
+        text,
       });
 
   return res.isConfirmed;
