@@ -203,6 +203,7 @@ export default {
         login: 'ورود',
         exit: 'خروج',
         signOut: 'خروج از حساب کاربری',
+        confirmSignOut: 'برای خروج اطمینان دارید؟',
         'login-sub': 'وارد حساب کاربری خود شوید',
         'forgot-password': 'رمز عبور را فراموش کرده‌اید؟',
         'sign-up': 'عضویت',
@@ -404,6 +405,9 @@ export default {
         addToCategoryList: 'اضافه کردن دسته بندی به لیست علاقه مندی',
       },
       alert: {
+        attention: 'توجه',
+        confirm: 'باشه',
+        cancel: 'بی خیال',
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
         enableTextAlert: 'آیا میخواهید فعال شود؟',
         successfulDisableTextMessage: 'با موفقیت غیرفعال شد',

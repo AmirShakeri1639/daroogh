@@ -14,13 +14,9 @@ import {
   useTheme,
   DialogActions,
 } from '@material-ui/core';
-import { MaterialContainer, Modal } from '../../../../public';
 import Detail from './Detail';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FavoriteDrugInterface, PrescriptionDataInterface } from '../../../../../interfaces';
-import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { ColorEnum, TextMessage } from '../../../../../enum';
-import { BackDrop, TextLine } from '../../../../public';
+import { PrescriptionDataInterface } from '../../../../../interfaces';
+import { BackDrop } from '../../../../public';
 import { useClasses } from '../../classes';
 import moment from 'jalali-moment';
 import { useQuery } from 'react-query';
@@ -28,6 +24,8 @@ import { Prescription as presApi } from '../../../../../services/api';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { useLocation } from 'react-router-dom';
 import CDialog from 'components/public/dialog/Dialog';
+import { confirmSweetAlert } from 'utils'
+import { useTranslation } from 'react-i18next'
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -55,6 +53,7 @@ const useStyle = makeStyles((theme) =>
 );
 const { detail } = new presApi();
 const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
+  const { t } = useTranslation()
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const { isLoading, data: dataApi, isFetched, refetch } = useQuery(
@@ -112,7 +111,8 @@ const CardContainer: React.FC<PrescriptionDataInterface> = (props) => {
   } = data;
 
   const removeHandler = async (_id: number): Promise<any> => {
-    if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
+    const removeConfirm = await confirmSweetAlert(t('alert.remove'))
+    if (removeConfirm) {
       await formHandler(_id);
     }
   };

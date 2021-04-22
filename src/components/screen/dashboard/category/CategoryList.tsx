@@ -22,7 +22,7 @@ import { ActionInterface, LabelValue } from '../../../../interfaces';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import Category from '../../../../services/api/Category';
 import { useMutation, useQueryCache } from 'react-query';
-import { errorHandler, tSuccess } from '../../../../utils';
+import { confirmSweetAlert, errorHandler, tSuccess } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../enum';
 import CircleLoading from '../../../public/loading/CircleLoading';
@@ -249,7 +249,8 @@ const CategoryList: React.FC = () => {
   const onHandleRemoveRow = async (row: CategoriesInterface): Promise<void> => {
     const { id } = row;
     try {
-      if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
+      const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
+      if (removeConfirm) {
         await _removeCategory(id);
         tSuccess(TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE);
         resetRemoveCategory();
