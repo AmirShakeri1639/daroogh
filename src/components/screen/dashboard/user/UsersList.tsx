@@ -1,6 +1,6 @@
 import React, { useMemo, useReducer, useState } from 'react';
 import { useMutation, useQueryCache } from 'react-query';
-import User from '../../../../services/api/User';
+import User from 'services/api/User';
 import {
   createStyles,
   Divider,
@@ -27,7 +27,7 @@ import {
   UrlAddress,
   UserQueryEnum,
 } from 'enum';
-import { errorHandler, tError, tSuccess } from 'utils';
+import { errorHandler, tSuccess } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { InitialNewUserInterface, NewUserData } from 'interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -44,7 +44,6 @@ import RoleForm from './RoleForm';
 import CDialog from 'components/public/dialog/Dialog'
 import { useTheme } from '@material-ui/core'
 import PasswordInput from './PasswordInput'
-import ChangeUserPassword from './ChangePassword';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -527,7 +526,10 @@ const UsersList: React.FC = () => {
     );
   }
 
-  const memoChangeUserPassword = useMemo(() => changePasswordByAdminDialog(), [state.password,isOpenChangePasswordAdminModal]);
+  const memoChangeUserPassword = useMemo(
+    () => changePasswordByAdminDialog(),
+    [state.password, isOpenChangePasswordAdminModal]
+  );
 
   const customDataTableActions: DataTableCustomActionInterface[] = [
     {
