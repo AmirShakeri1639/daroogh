@@ -35,7 +35,14 @@ interface Props {
 }
 
 const Map: React.FC<Props> = (props) => {
-  const { onClick, maxHeight = '400px', defaultLatLng, draggable, getGeoLocation = false, hasGeocoder = false } = props
+  const {
+    onClick,
+    maxHeight = '400px',
+    defaultLatLng,
+    draggable,
+    getGeoLocation = false,
+    hasGeocoder = false,
+  } = props
   const LATLNG: [number, number] = [59.526950363917827, 36.321029857543529]
   const { container } = useStyle()
 
