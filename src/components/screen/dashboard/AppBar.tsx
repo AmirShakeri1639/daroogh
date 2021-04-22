@@ -24,7 +24,7 @@ import NotificationMenu from './appbar/NotificationMenu';
 import UserMenu from './appbar/UserMenu';
 import { useQuery } from 'react-query';
 import { connect, ConnectedProps } from 'react-redux';
-import { JwtData, sweetAlert } from '../../../utils';
+import { confirmSweetAlert, JwtData, sweetAlert } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, faBell, faPlusSquare, faBars } from '@fortawesome/free-solid-svg-icons';
 
@@ -222,12 +222,9 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
 
   const newTransferHandler = async (): Promise<void> => {
     if (_transfer.isStarted) {
-      const res = await sweetAlert({
-        text: 'روند تبادل فعلی را حذف و دوباره شروع میکنید؟',
-        type: 'warning',
-        cancelButtonText: t('general.bikhial'),
-        showCancelButton: true,
-      });
+      const res = await confirmSweetAlert(
+        'روند تبادل فعلی را حذف و دوباره شروع میکنید؟'
+      )
 
       if (!res) {
         return;

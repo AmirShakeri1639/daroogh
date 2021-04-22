@@ -13,11 +13,11 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PackEnum } from '../../../../enum';
 import { Pack as PackApi } from '../../../../services/api';
-import { BackDrop, Button, MaterialContainer } from '../../../public';
+import { BackDrop } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import CardContainer from './CardContainer';
-import { errorSweetAlert, successSweetAlert } from '../../../../utils';
+import { confirmSweetAlert, errorSweetAlert, successSweetAlert } from 'utils';
 
 const { getPharmacyPacks, removePack } = new PackApi();
 
@@ -82,7 +82,8 @@ const Pack: React.FC = () => {
   };
 
   const removeHandler = async (id: number): Promise<any> => {
-    if (window.confirm(t('alert.remove'))) {
+    const removeConfirm = await confirmSweetAlert(t('alert.remove'))
+    if (removeConfirm) {
       await _removePack(id);
     }
   };

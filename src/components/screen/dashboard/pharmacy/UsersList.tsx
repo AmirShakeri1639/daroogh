@@ -37,6 +37,7 @@ import {
   errorHandler,
   tSuccess,
   tError,
+  confirmSweetAlert,
 } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
@@ -472,8 +473,9 @@ const UsersList: React.FC = () => {
 
   const removeUserHandler = async (e: any, userRow: NewUserData): Promise<any> => {
     try {
-      if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
-        await _removeUser(userRow.id);
+      const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
+      if (removeConfirm) {
+          await _removeUser(userRow.id);
       }
     } catch (e) {
       errorHandler(e);
@@ -482,8 +484,8 @@ const UsersList: React.FC = () => {
 
   const disableUserHandler = async (item: any): Promise<any> => {
     try {
-      const confirmationText = t('alert.disableTextAlert');
-      if (window.confirm(confirmationText)) {
+      const confirmation = await confirmSweetAlert(t('alert.disableTextAlert'))
+      if (confirmation) {
         await _disableUser(item.id);
         tSuccess(t('alert.successfulDisableTextMessage'));
         resetDisableUser();
@@ -494,7 +496,8 @@ const UsersList: React.FC = () => {
   };
 
   const enableUserHandler = async (user: InitialNewUserInterface): Promise<any> => {
-    if (!window.confirm(t('alert.enableTextAlert'))) {
+    const enableText = await confirmSweetAlert(t('alert.enableTextAlert'))
+    if (!enableText) {
       return;
     }
     const {
@@ -581,7 +584,8 @@ const UsersList: React.FC = () => {
   });
 
   const removeAllRoles = async (row: any): Promise<any> => {
-    if (window.confirm('آیا از حدف همه نقش های کاربر مطمدن هستید؟')) {
+    const confirmed = await confirmSweetAlert('آیا از حدف همه نقش های کاربر مطمدن هستید؟')
+    if (confirmed) {
       try {
         await _remove(row.id);
         ref.current?.onQueryChange();

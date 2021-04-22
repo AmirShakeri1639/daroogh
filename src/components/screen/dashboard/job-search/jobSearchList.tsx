@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { EmploymentApplication, File } from '../../../../services/api';
 import CardContainer from './CardContainer';
 
-import { errorHandler, isNullOrEmpty, tSuccess } from 'utils';
+import { confirmSweetAlert, errorHandler, isNullOrEmpty, tSuccess } from 'utils';
 import { DataTableCustomActionInterface } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
@@ -281,7 +281,8 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
 
   const cancelHandler = async (row: any): Promise<any> => {
     try {
-      if (window.confirm(t('alert.cancelConfirm'))) {
+      const cancelConfirm = await confirmSweetAlert(t('alert.cancelConfirm'))
+      if (cancelConfirm) {
         await _cancel(row.id);
       }
     } catch (e) {

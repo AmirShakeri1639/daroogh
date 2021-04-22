@@ -16,6 +16,7 @@ export {
   infoSweetAlert,
   successSweetAlert,
   warningSweetAlert,
+  confirmSweetAlert,
 } from './sweetAlert';
 export {
   default as jalali,

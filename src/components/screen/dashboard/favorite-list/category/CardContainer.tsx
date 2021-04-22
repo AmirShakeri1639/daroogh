@@ -13,6 +13,7 @@ import { FavoriteDrugInterface } from '../../../../../interfaces';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { TextMessage } from '../../../../../enum';
 import { BackDrop } from '../../../../public';
+import { confirmSweetAlert } from 'utils'
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -35,7 +36,8 @@ const CardContainer: React.FC<FavoriteDrugInterface> = (props) => {
   const { name, id } = data;
 
   const removeHandler = async (_id: number): Promise<any> => {
-    if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
+    const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
+    if (removeConfirm) {
       await formHandler(_id);
     }
   };
