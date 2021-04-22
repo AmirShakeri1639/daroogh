@@ -1,7 +1,10 @@
+import i18n from 'i18next'
 import { Impersonation } from './';
+import { confirmSweetAlert } from 'utils'
 
-export default (): void => {
-  if (window.confirm('برای خروج اطمینان دارید؟')) {
+export default async (): Promise<any> => {
+  const signout = await confirmSweetAlert(i18n.t('login.confirmSignOut'))
+  if (signout) {
     const impersonation = new Impersonation();
     if (impersonation.currentToken === impersonation.mainToken) {
       const version = localStorage.getItem('version')
@@ -14,4 +17,4 @@ export default (): void => {
       window.location.reload();
     }
   }
-};
+}
