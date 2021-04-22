@@ -10,8 +10,18 @@ import queryString from 'query-string'
 import { useLocation } from 'react-router-dom'
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading'
 import { useMutation, useQueryCache } from 'react-query'
-import { errorHandler, isNullOrEmpty, tError, tSuccess, tWarn } from 'utils'
-import { ActionInterface, CommandInterface, DataTableCustomActionInterface, FileForPharmacyInterface, LabelValue } from 'interfaces'
+import { 
+  errorHandler, isNullOrEmpty, 
+  tError, tSuccess, tWarn,
+  confirmSweetAlert,
+} from 'utils'
+import { 
+  ActionInterface, 
+  CommandInterface, 
+  DataTableCustomActionInterface, 
+  FileForPharmacyInterface, 
+  LabelValue 
+} from 'interfaces'
 import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faImage } from '@fortawesome/free-regular-svg-icons'
@@ -234,8 +244,9 @@ const PharmacyDocs: React.FC<Props> = (props) => {
   })
   const removeHandler = async (item: any): Promise<any> => {
     try {
-      if (window.confirm(t('alert.remove'))) {
-        await _remove(item.id)
+      const removeConfirm = await confirmSweetAlert(t('alert.remove'))
+      if (removeConfirm) {
+          await _remove(item.id)
         ref.current?.onQueryChange()
       }
     } catch (e) {

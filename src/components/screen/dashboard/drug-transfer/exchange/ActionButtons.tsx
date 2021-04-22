@@ -33,7 +33,7 @@ import errorHandler from '../../../../../utils/errorHandler'
 import { Cancel, ConfirmOrNotExchange, Send } from '../../../../../model/exchange'
 import { useMutation } from 'react-query'
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug'
-import sweetAlert from '../../../../../utils/sweetAlert'
+import sweetAlert, { confirmSweetAlert } from '../../../../../utils/sweetAlert'
 import Modal from '../../../../public/modal/Modal'
 import ExchangeApprove from './ExchangeApprove'
 import { useTranslation } from 'react-i18next'
@@ -305,13 +305,14 @@ const ActionButtons = (): JSX.Element => {
     inputmodel.exchangeID = exchangeId
     inputmodel.comment = comment
     try {
-      var res = await sweetAlert({
-        confirmButtonText: 'بله',
-        cancelButtonText: 'خیر',
-        showCancelButton: true,
-        type: 'info',
-        text: 'آیا اطمینان دارید؟',
-      })
+      var res = await confirmSweetAlert(
+        'آیا اطمینان دارید؟', 
+        {
+          confirmButtonText: 'بله',
+          cancelButtonText: 'خیر',
+          type: 'info',
+        }
+      )
       if (res) await _cancelExchange(inputmodel)
       // await handleGetQuestionGroupOfExchange();
     } catch (e) {

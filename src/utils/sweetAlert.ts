@@ -1,7 +1,9 @@
 import Swal from 'sweetalert2';
 import withReactContent, { ReactElementOr } from 'sweetalert2-react-content';
+import i18n from 'i18next'
 
 interface SweetAlertProps {
+  title?: any;
   text?: any;
   html?: ReactElementOr<'html'>;
   type?: 'info' | 'warning' | 'success' | 'error';
@@ -32,6 +34,7 @@ const MySwal = withReactContent(Swal);
 
 const sweetAlert = async (params: SweetAlertProps): Promise<any> => {
   const {
+    title,
     text,
     type,
     html,
@@ -49,41 +52,34 @@ const sweetAlert = async (params: SweetAlertProps): Promise<any> => {
     showConfirmButton,
   } = params;
 
-  const res =
-  text ?
-  await MySwal.fire({
-    text,
+  const sendingParams = {
+    title,
     icon: type,
     toast,
     position,
     timer,
     timerProgressBar,
-    confirmButtonText: confirmButtonText ?? 'باشه',
-    cancelButtonText: cancelButtonText ?? 'انصراف',
+    confirmButtonText: confirmButtonText ?? i18n.t('alert.confirm'),
+    cancelButtonText: cancelButtonText ?? i18n.t('alert.cancel'),
     showCloseButton: false,
     showCancelButton: showCancelButton,
-    cancelButtonColor: cancelButtonColor ?? '#aaa',
-    confirmButtonColor: confirmButtonColor ?? '#3085d6',
+    cancelButtonColor,
+    confirmButtonColor,
     focusCancel: !!focusCancel,
     focusConfirm: !!!focusConfirm,
     showConfirmButton: showConfirmButton ?? true,
-  }) :
-  await MySwal.fire({
-    html,
-    icon: type,
-    toast,
-    position,
-    timer,
-    timerProgressBar,
-    confirmButtonText: confirmButtonText ?? 'باشه',
-    cancelButtonText: cancelButtonText ?? 'انصراف',
-    showCloseButton: false,
-    showCancelButton: showCancelButton,
-    cancelButtonColor: cancelButtonColor ?? '#aaa',
-    confirmButtonColor: confirmButtonColor ?? '#3085d6',
-    focusCancel: !!focusCancel,
-    focusConfirm: !!!focusConfirm,
-  });
+  }
+
+  const res =
+    html
+      ? await MySwal.fire({
+        ...sendingParams,
+        html
+      })
+      : await MySwal.fire({
+        ...sendingParams,
+        text,
+      });
 
   return res.isConfirmed;
 };
@@ -111,5 +107,17 @@ export const errorSweetAlert = async (text: any): Promise<any> =>
     type: 'error',
     text,
   });
+
+export const confirmSweetAlert = async (text: any, params: any = null): Promise<any> => {
+  const res = await
+    sweetAlert({
+      title: i18n.t('alert.attention'),
+      text: text,
+      type: 'warning',
+      showCancelButton: true,
+      ...params
+    })
+  return res
+}
 
 export default sweetAlert;

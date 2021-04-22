@@ -391,7 +391,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
                   </span>
                 </Grid>
                 <Grid item xs={ 12 } style={ { display: 'flex', justifyContent: 'flex-end' } }>
-                  <IconButton edge="start" color="inherit" onClick={ (): void => logoutUser() }>
+                  <IconButton edge="start" color="inherit" onClick={ (): any => logoutUser() }>
                     {/* <FontAwesomeIcon icon={ faDoorOpen } /> */ }
                     <span style={ { color: ColorEnum.Red, fontSize: 'small' } }>
                       { t('login.signOut') }
