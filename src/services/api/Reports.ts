@@ -1,11 +1,11 @@
-import Api from './Api';
-import { errorHandler } from '../../utils';
+import Api from './Api'
+import { errorHandler } from '../../utils'
 import {
   PharmacyInterface,
   ConfirmParams,
   PharmacyWithUserInterface,
   RreportSearch,
-} from '../../interfaces';
+} from '../../interfaces'
 
 class Reports extends Api {
   readonly urls = {
@@ -18,42 +18,42 @@ class Reports extends Api {
     getWidgetInfo: '/Reports/GetWidgetInfo',
     getAddedValueOfPharmacy: '/Reports/GetAddedValueOfPharmacy',
     getAddedValue: '/Reports/GetAddedValue',
-  };
+  }
 
   getWidgetInfo = async (): Promise<any> => {
-    const result = await this.postJsonData(this.urls.getWidgetInfo);
-    return result.data;
-  };
+    const result = await this.postJsonData(this.urls.getWidgetInfo)
+    return result.data
+  }
 
   getBestPharmaciesList = async (for24Hour: boolean): Promise<any> => {
     try {
       const result = await this.postData(
         `${this.urls.getBestPharmaciesList}?for24Hour=${for24Hour}`
-      );
-      return result.data;
+      )
+      return result.data
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
       return Promise.reject(e)
     }
-  };
+  }
   getExchangeStatus = async (): Promise<any> => {
     try {
-      const result = await this.getData(`${this.urls.getExchangeStatus}`);
-      return result.data;
+      const result = await this.getData(`${this.urls.getExchangeStatus}`)
+      return result.data
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
       return Promise.reject(e)
     }
-  };
+  }
   getExchangeCount = async (): Promise<any> => {
     try {
-      const result = await this.getData(`${this.urls.getExchangeCount}`);
-      return result.data;
+      const result = await this.getData(`${this.urls.getExchangeCount}`)
+      return result.data
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
       return Promise.reject(e)
     }
-  };
+  }
   getAddedValueOfPharmacy = async (): Promise<any> => {
     try {
       const result = await this.getData(
@@ -62,13 +62,13 @@ class Reports extends Api {
           day: '2-digit',
           month: '2-digit',
         }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
-      );
-      return result.data;
+      )
+      return result?.data
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
       return Promise.reject(e)
     }
-  };
+  }
   getAddedValue = async (): Promise<any> => {
     try {
       const result = await this.getData(
@@ -77,13 +77,13 @@ class Reports extends Api {
           day: '2-digit',
           month: '2-digit',
         }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
-      );
-      return result.data;
+      )
+      return result?.data
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
       return Promise.reject(e)
     }
-  };
+  }
   getSurplusDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
     try {
       const result = await this.getData(
@@ -98,13 +98,13 @@ class Reports extends Api {
           .format('YYYY/MM/DD')}&geoCode=${data.geoCode}&remainExpDaysFromMinDate=${
           data.remainExpDaysFromMinDate
         }`
-      );
-      return result.data.items;
+      )
+      return result.data.items
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
       return Promise.reject(e)
     }
-  };
+  }
 
   getFavoriteDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
     try {
@@ -114,13 +114,13 @@ class Reports extends Api {
         }&toDate=${data.toDate}&geoCode=${data.geoCode}&remainExpDaysFromMinDate=${
           data.remainExpDaysFromMinDate
         }`
-      );
-      return result.data;
+      )
+      return result.data
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
       return Promise.reject(e)
     }
-  };
+  }
   getSelectedDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
     try {
       const result = await this.getData(
@@ -129,13 +129,13 @@ class Reports extends Api {
         }&fromDate=${data.fromDate.convert('gregorian')}&toDate=${data.toDate.convert(
           'gregorian'
         )}&geoCode=${data.geoCode}&remainExpDaysFromMinDate=${data.remainExpDaysFromMinDate}`
-      );
-      return result.data;
+      )
+      return result.data
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
       return Promise.reject(e)
     }
-  };
+  }
 }
 
-export default Reports;
+export default Reports
