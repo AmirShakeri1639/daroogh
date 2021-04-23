@@ -132,7 +132,6 @@ const Login: React.FC = (): JSX.Element => {
         if (process.env.NODE_ENV === 'production') {
           (async (): Promise<any> => {
             try {
-              console.info('Environment: ', process.env.NODE_ENV);
               window.najvaUserSubscribed = function (
                 najva_user_token: string
               ): void {
