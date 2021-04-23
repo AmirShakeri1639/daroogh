@@ -4,6 +4,7 @@
     "editor.formatOnSave": false
   },
   "[typescript]": {
+    "editor.tabSize": 2,
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false
   },

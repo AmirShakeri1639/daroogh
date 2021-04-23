@@ -92,7 +92,7 @@ function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
     case 'reset':
       return new PharmacyDrugSupplyList()
     default:
-      console.log(`Action type: ${type} not defined`)
+      console.warn(`Action type: ${type} not defined`)
   }
 }
 
