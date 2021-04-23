@@ -17,7 +17,10 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { makeStyles } from '@material-ui/core/styles';
 import { ActionInterface, TableColumnInterface } from '../../../../interfaces';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import { errorHandler, errorSweetAlert, successSweetAlert } from '../../../../utils';
+import { 
+  errorHandler,
+  confirmSweetAlert, errorSweetAlert, successSweetAlert 
+} from 'utils';
 import { useTranslation } from 'react-i18next';
 import Permissions from './Permissions';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
@@ -227,7 +230,8 @@ const CreateRole: React.FC = () => {
   const removeRoleHandler = async (event: any, row: any): Promise<any> => {
     const { id } = row;
     try {
-      if (window.confirm(t('alert.remove'))) {
+      const removeConfirm = await confirmSweetAlert(t('alert.remove'))
+      if (removeConfirm) {
         await _removeRoleById(id);
       }
     } catch (e) {

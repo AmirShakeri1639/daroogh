@@ -24,10 +24,11 @@ import {
 } from '../../../../interfaces';
 import { Accounting } from '../../../../services/api';
 import {
+  confirmSweetAlert,
   errorHandler,
   errorSweetAlert,
   successSweetAlert,
-} from '../../../../utils';
+} from 'utils';
 import { todayJalali } from '../../../../utils/jalali';
 import { useClasses } from '../classes';
 import { TransactionTypeEnum } from '../../../../enum';
@@ -125,7 +126,8 @@ const AddTransactionModal: React.FC<Props> = ({
 
     if (state.amount !== 0 && state.description.length > 2) {
       setShowError(false);
-      if (window.confirm(t('accounting.areYouSure'))) {
+      const areYouSure = await confirmSweetAlert(t('accounting.areYouSure'))
+      if (areYouSure) {
         const amountToSend =
           transactionType == TransactionTypeEnum.Creditor ? -amount : amount;
         const result = await _add({

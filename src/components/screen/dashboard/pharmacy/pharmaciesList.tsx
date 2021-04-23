@@ -20,6 +20,7 @@ import {
 import CircleLoading from '../../../public/loading/CircleLoading';
 import Input from '../../../public/input/Input';
 import {
+  confirmSweetAlert,
   errorHandler,
   isNullOrEmpty,
   tSuccess,
@@ -292,8 +293,9 @@ const PharmaciesList: React.FC = () => {
 
   const removeHandler = async (row: PharmacyInterface): Promise<any> => {
     try {
-      if (window.confirm(t('alert.remove'))) {
-        await _remove(row.id);
+      const removeConfirm = await confirmSweetAlert(t('alert.remove'))
+      if (removeConfirm) {
+          await _remove(row.id);
         ref.current?.loadItems();
       }
     } catch (e) {
