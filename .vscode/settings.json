@@ -12,9 +12,11 @@
     "editor.formatOnPaste": false
   },
   "cSpell.words": [
+    "Recaptcha",
     "Scrollable",
     "daroog",
-    "fortawesome"
+    "fortawesome",
+    "najva"
   ],
   "editor.formatOnSaveMode": "modifications",
   "prettier.semi": false
