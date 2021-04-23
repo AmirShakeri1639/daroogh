@@ -132,6 +132,11 @@ export default {
         dr: 'دکتر',
         view: 'مشاهده',
         call: 'تماس',
+        minimum: 'کمترین',
+        maximum: 'بیشترین',
+        nearest: 'نزدیکترین',
+        farthest: 'دورترین',
+        primitive: 'اولیه'
       },
 
       pack: {
