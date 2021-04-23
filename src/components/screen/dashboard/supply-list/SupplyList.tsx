@@ -41,7 +41,10 @@ import styled from 'styled-components'
 import CDialog from 'components/public/dialog/Dialog'
 import { ColorEnum } from 'enum'
 import Calculator from '../calculator/Calculator'
-import transitions from '@material-ui/core/styles/transitions'
+import SupplyListFilter, { Option } from './SupplyListFilter'
+import { FilterItems } from './types'
+import { StyledFilterWrapper } from './styles'
+import { LeakRemoveTwoTone } from '@material-ui/icons'
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action
@@ -271,8 +274,8 @@ const SupplyList: React.FC = () => {
   const [daroogRecommendation, setDaroogRecommendation] = useState<string>('')
   const [comissionPercent, setComissionPercent] = useState<string>('')
   const [selectDrugForEdit, setSelectDrugForEdit] = useState<{
-    id: number;
-    genericName: string;
+    id: number
+    genericName: string
   }>({
     id: -1,
     genericName: '',
@@ -287,8 +290,10 @@ const SupplyList: React.FC = () => {
   const [hasMinimumDate, setHasMinimumDate] = useState(true)
   const [showError, setShowError] = useState(false)
   const [offerAlert, setOfferAlert] = useState<boolean>(false)
+  const [selectedFilterItem, setSelectedFilterItem] = useState<string>(FilterItems.NEAREST_EXPIRE_DATE);
 
-  const theme = useTheme()
+  const theme = useTheme();
+
 
   const monthRef = useRef<any>()
   const yearRef = useRef<any>()
@@ -348,18 +353,18 @@ const SupplyList: React.FC = () => {
   // }, [comissionPercent, daroogRecommendation]);
 
   useEffectOnce(() => {
-    (async (): Promise<any> => {
+    ;(async (): Promise<any> => {
       try {
         const result = await all(0, 10 ^ 3)
         setDrugList(result.items)
       } catch (e) {
         errorHandler(e)
       }
-    })();
-  });
+    })()
+  })
 
   useEffect(() => {
-    (async (): Promise<any> => {
+    ;(async (): Promise<any> => {
       try {
         const { offer1, offer2, amount, cnt } = state
         // @ts-ignore
@@ -410,7 +415,6 @@ const SupplyList: React.FC = () => {
     setHasMinimumDate(true)
     setShowError(false)
     setOfferAlert(false)
-
   }
 
   const toggleIsOpenModalOfNewList = (): void => {
@@ -420,11 +424,28 @@ const SupplyList: React.FC = () => {
     setIsOpenModalOfNewList((v) => !v)
   }
 
-  const { data, isFetched } = useQuery(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () =>
-    allPharmacyDrug('', true, 'desc')
+  const callAllPharmacyDrugs = () => {
+    if (selectedFilterItem === FilterItems.MAXIMUM_INVENTORY) {
+      return allPharmacyDrug('desc', 'cnt');
+    }
+
+    if (selectedFilterItem === FilterItems.MINIMUM_INVENTORY) {
+      return allPharmacyDrug('asc', 'cnt')
+    }
+
+    if (selectedFilterItem === FilterItems.NEAREST_EXPIRE_DATE) {
+      return allPharmacyDrug('asc', 'expireDate')
+    }
+
+    return allPharmacyDrug('desc', 'expireDate');
+  }
+
+  const { data, isFetched, isLoading: isLoadingPharmacyDrugs } = useQuery(
+    [AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, selectedFilterItem],
+    () => callAllPharmacyDrugs()
   )
 
-  const [_savePharmacyDrug, { isLoading: isLoadingSave }] = useMutation(savePharmacyDrug, {
+  const [_savePharmacyDrug] = useMutation(savePharmacyDrug, {
     onSuccess: async () => {
       if (isCheckedNewItem) {
         resetStates()
@@ -583,17 +604,17 @@ const SupplyList: React.FC = () => {
   }
 
   const displayHandler = (): JSX.Element[] => {
-    let items = []
-    if (filteredItems.length > 0) {
-      items = filteredItems.map((item: AllPharmacyDrugInterface) => {
-        return (
-          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
-            <CardContainer editHandler={(): Promise<any> => editHandler(item)} drug={item} />
-          </Grid>
-        )
-      })
-    } else {
-      if (isFetched) {
+    let items = [];
+    if (isFetched) {
+      if (filteredItems.length > 0) {
+        items = filteredItems.map((item: AllPharmacyDrugInterface) => {
+          return (
+            <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+              <CardContainer editHandler={(): Promise<any> => editHandler(item)} drug={item} />
+            </Grid>
+          )
+        })
+      } else {
         items = data.items.map((item: AllPharmacyDrugInterface) => {
           return (
             <Grid spacing={3} item xs={12} sm={12} md={4} xl={4} key={item.id}>
@@ -606,7 +627,7 @@ const SupplyList: React.FC = () => {
     return items
   }
 
-  const memoItems = useMemo(() => displayHandler(), [data, filteredItems]);
+  const memoItems = useMemo(() => displayHandler(), [data, filteredItems, selectedFilterItem])
 
   const selectedCalculaterValueHandler = (v: number): void => {
     setCalculatedValue(v)
@@ -624,8 +645,8 @@ const SupplyList: React.FC = () => {
         !hasMinimumDate ||
         state?.batchNO === ''
       ) {
-        setShowError(true);
-        return;
+        setShowError(true)
+        return
       }
       setShowError(false)
       const intSelectedYear = Number(selectedYear)
@@ -664,7 +685,26 @@ const SupplyList: React.FC = () => {
     }
   }
 
-  const autoCompleteRef = useRef<any>()
+  const autoCompleteRef = useRef<any>();
+
+  const filterListItems = (): Option[] => [
+    {
+      value: FilterItems.MAXIMUM_INVENTORY,
+      text: `${t('general.maximum')} ${t('general.inventory')}`
+    },
+    {
+      value: FilterItems.MINIMUM_INVENTORY,
+      text: `${t('general.minimum')} ${t('general.inventory')}`
+    },
+    {
+      value: FilterItems.NEAREST_EXPIRE_DATE,
+      text: `${t('general.nearest')} ${t('general.expireDate')}`
+    },
+    {
+      value: FilterItems.FARTHEST_EXPIRE_DATE,
+      text: `${t('general.farthest')} ${t('general.expireDate')}`
+    }
+  ]
 
   return (
     <>
@@ -677,13 +717,33 @@ const SupplyList: React.FC = () => {
               onRequestSearch={filteredItemsHandler}
             />
           </Grid>
+
           {filteredItems.length > 0 && filteredItems.length < data.items.length && (
-            <Grid item xs={3} md={2}>
+            <Grid item xs={6} md={2}>
               <SearchButton variant="text" onClick={(): void => setFilteredItems([])}>
-                {t('general.displayList', { var: 'اولیه' })}
+                {t('general.displayList', { var: t('general.primitive') })}
               </SearchButton>
             </Grid>
           )}
+          
+          <StyledFilterWrapper item xs={12} md={5} isSmallScreen={fullScreen}>
+            <Grid container alignItems="center">
+              <Grid item xs={4} sm={3} md={4} lg={3}>
+                {t('general.sortWith')}
+              </Grid>
+
+              <Grid item xs={8} sm={9} md={8}>
+                <SupplyListFilter
+                  onChange={(e): void => setSelectedFilterItem(e.target.value as string)}
+                  value={selectedFilterItem}
+                  valuesArray={filterListItems()}
+                  label={t('general.sortWith')}
+                />
+
+              </Grid>
+            </Grid>
+          </StyledFilterWrapper>
+          
         </Grid>
 
         <Grid container spacing={3} className={contentContainer}>
@@ -697,6 +757,7 @@ const SupplyList: React.FC = () => {
           </Hidden>
 
           {memoItems}
+
           <Hidden smUp>
             <Fab onClick={toggleIsOpenModalOfNewList} className={fab} aria-label="add">
               <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
@@ -1058,9 +1119,9 @@ const SupplyList: React.FC = () => {
           </Grid>
         </DialogActions>
       </CDialog>
-      <BackDrop isOpen={isOpenBackDrop} />
+      <BackDrop isOpen={isOpenBackDrop || isLoadingPharmacyDrugs} />
     </>
   )
 }
 
-export default SupplyList;
+export default SupplyList
