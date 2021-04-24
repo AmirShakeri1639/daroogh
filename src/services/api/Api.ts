@@ -6,7 +6,7 @@ import { ToastDurationEnum } from 'utils/toast'
 import { getBaseUrl } from 'config'
 
 const axiosInstance = axios.create({
-  baseURL: 'https://api.daroog.org/api', //getBaseUrl(),
+  baseURL: getBaseUrl(),
   timeout: 0,
 })
 
