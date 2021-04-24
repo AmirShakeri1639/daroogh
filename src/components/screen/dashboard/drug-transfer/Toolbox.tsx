@@ -19,11 +19,13 @@ import { useTranslation } from 'react-i18next';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { useMutation } from 'react-query';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
-import sweetAlert from '../../../../utils/sweetAlert';
 import routes from '../../../../routes';
 import { useHistory } from 'react-router-dom';
-import errorHandler from '../../../../utils/errorHandler';
+import { tSuccess, errorHandler, confirmSweetAlert } from 'utils';
 import { ColorEnum } from 'enum';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
+import { Exchange } from 'services/api'
 
 const styles = makeStyles((theme) =>
   createStyles({
@@ -61,7 +63,12 @@ const styles = makeStyles((theme) =>
 const ToolBox: React.FC = () => {
   const { ul, icons, buttonContainer } = styles();
 
-  const { viewExhcnage, exchangeId } = useContext<TransferDrugContextInterface>(
+  const { 
+    viewExhcnage, 
+    exchangeId,
+    setNeedRefresh, 
+    activeStep,
+  } = useContext<TransferDrugContextInterface>(
     DrugTransferContext
   );
 
@@ -82,10 +89,7 @@ const ToolBox: React.FC = () => {
   const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
     onSuccess: async (res) => {
       if (res) {
-        await sweetAlert({
-          type: 'success',
-          text: res.message,
-        });
+        tSuccess(res.message);
         history.push(desktop);
       }
     },
@@ -135,9 +139,39 @@ const ToolBox: React.FC = () => {
     );
   };
 
+  const { callAiSuggestion } = new Exchange()
+  const confirmAiSuggestion = async (): Promise<any> => {
+    const confirmed = await confirmSweetAlert(
+      t('alert.aiSuggestion')
+    )
+    if (confirmed) {
+      const aiSugg = await callAiSuggestion(viewExhcnage.id)
+      tSuccess(aiSugg.data.message)
+      // @ts-ignore
+      setNeedRefresh(true)
+    }
+  } 
+
   return (
     <>
       <ul className={ul}>
+        {
+          activeStep == 2 &&
+          viewExhcnage.currentPharmacyIsA && 
+          !viewExhcnage.lockAction &&
+          viewExhcnage.state == 1 &&
+          <li>
+            <Tooltip title={ `${t('exchange.aiSuggestion')}` }>
+              <IconButton onClick={confirmAiSuggestion}>
+                <FontAwesomeIcon 
+                  icon={faUserAstronaut} 
+                  size="sm" 
+                  className={ icons } 
+                />
+              </IconButton>
+            </Tooltip>
+          </li>
+        }
         <li>
           <Tooltip title="فاکتور تبادل">
             <IconButton
@@ -146,48 +180,6 @@ const ToolBox: React.FC = () => {
               }}
             >
               <ShoppingBasketIcon className={icons} />
-              {/* <Badge
-                badgeContent={
-                  activeStep === 1
-                    ? Array.from(
-                        basketCount.filter(
-                          (thing, i, arr) =>
-                            thing.packID &&
-                            arr.findIndex((t) => t.packID === thing.packID) ===
-                              i
-                        )
-                      ).length +
-                      Array.from(
-                        basketCount.filter(
-                          (thing, i, arr) =>
-                            !thing.packID &&
-                            arr.findIndex(
-                              (t) => t.drug.id === thing.drug.id
-                            ) === i
-                        )
-                      ).length
-                    : Array.from(
-                        uBasketCount.filter(
-                          (thing, i, arr) =>
-                            thing.packID &&
-                            arr.findIndex((t) => t.packID === thing.packID) ===
-                              i
-                        )
-                      ).length +
-                      Array.from(
-                        uBasketCount.filter(
-                          (thing, i, arr) =>
-                            !thing.packID &&
-                            arr.findIndex(
-                              (t) => t.drug.id === thing.drug.id
-                            ) === i
-                        )
-                      ).length
-                }
-                color="secondary"
-              >
-                <ShoppingBasketIcon className={icons} />
-              </Badge> */}
             </IconButton>
           </Tooltip>
         </li>
@@ -200,27 +192,6 @@ const ToolBox: React.FC = () => {
             </Tooltip>
           </li>
         )}
-        {/* <li>
-          <Tooltip title="مرتب سازی">
-            <SortIcon className={icons} />
-          </Tooltip>
-          <span className="txt-xs position-relative">پیشنهاد هوشمند</span>
-        </li>
-        <li>
-          <Tooltip title="نمایش لیستی">
-            <ListIcon className={icons} />
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip title="نمایش سطری">
-            <ViewStreamIcon className={icons} />
-          </Tooltip>
-        </li>
-        <li>
-          <Tooltip title="نمایش فشرده">
-            <ViewComfyIcon className={icons} />
-          </Tooltip>
-        </li> */}
       </ul>
       <Grid container spacing={1}>
         <Grid item xs={1}>

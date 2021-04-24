@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react'
 import {
   Button,
   createStyles,
@@ -10,25 +10,27 @@ import {
   FormLabel,
   RadioGroup,
   Radio,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { ActionInterface } from '../../../../interfaces';
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { ActionInterface } from '../../../../interfaces'
 import {
   errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
-} from '../../../../utils';
-import { useMutation } from 'react-query';
-import DateTimePicker from '../../../public/datepicker/DatePicker';
-import Modal from '../../../public/modal/Modal';
-import User from '../../../../services/api/User';
-import { useTranslation } from 'react-i18next';
-import { UserDataProps } from '../../../../interfaces';
-import { Autocomplete } from '@material-ui/lab';
-import { debounce } from 'lodash';
-import { Search } from '../../../../services/api';
-import { _PharmacyTypeEnum } from '../../../../enum';
-import { SearchPharmacyInterface } from '../../../../interfaces/search';
+  tError,
+  tSuccess,
+  tWarn,
+} from '../../../../utils'
+import { useMutation } from 'react-query'
+import DateTimePicker from '../../../public/datepicker/DatePicker'
+import Modal from '../../../public/modal/Modal'
+import User from '../../../../services/api/User'
+import { useTranslation } from 'react-i18next'
+import { UserDataProps } from '../../../../interfaces'
+import { Autocomplete } from '@material-ui/lab'
+import { debounce } from 'lodash'
+import { Search } from '../../../../services/api'
+import { _PharmacyTypeEnum } from '../../../../enum'
+import { SearchPharmacyInterface } from '../../../../interfaces/search'
+import NumberField from 'components/public/TextField/NumberField'
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -56,9 +58,9 @@ const useClasses = makeStyles((theme) =>
       textAlign: 'right',
     },
   })
-);
+)
 
-const { searchPharmacy } = new Search();
+const { searchPharmacy } = new Search()
 
 const initialState = {
   id: 0,
@@ -78,151 +80,152 @@ const initialState = {
   smsActive: true,
   notifActive: true,
   gender: 0,
-};
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
-  const { value } = action;
+  const { value } = action
   switch (action.type) {
     case 'name':
       return {
         ...state,
         name: value,
-      };
+      }
     case 'family':
       return {
         ...state,
         family: value,
-      };
+      }
     case 'pharmacyID':
       return {
         ...state,
         pharmacyID: value,
-      };
+      }
     case 'mobile':
       return {
         ...state,
         mobile: value,
-      };
+      }
     case 'email':
       return {
         ...state,
         email: value,
-      };
+      }
     case 'active':
       return {
         ...state,
         active: value,
-      };
+      }
     case 'userName':
       return {
         ...state,
         userName: value,
-      };
+      }
     case 'password':
       return {
         ...state,
         password: value,
-      };
+      }
     case 'nationalCode':
       return {
         ...state,
         nationalCode: value,
-      };
+      }
     case 'birthDate':
       return {
         ...state,
         birthDate: value,
-      };
+      }
     case 'smsActive':
       return {
         ...state,
         smsActive: value,
-      };
+      }
     case 'notifActive':
       return {
         ...state,
         notifActive: value,
-      };
+      }
     case 'gender':
       return {
         ...state,
         gender: value,
-      };
+      }
     case 'user':
-      return value;
+      return value
     case 'reset':
-      return initialState;
+      return initialState
     default:
-      console.error('Action type not defined');
+      console.error('Action type not defined')
   }
 }
 
 const UserForm: React.FC<UserDataProps> = (props) => {
-  console.log('Userdata props: ', props)
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [showError, setShowError] = useState<boolean>(false);
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [options, setOptions] = useState<any[]>([]);
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const [showError, setShowError] = useState<boolean>(false)
+  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [options, setOptions] = useState<any[]>([])
 
-  const { userData, noShowInput, onSubmit, onCancel } = props;
+  const { userData, noShowInput, onSubmit, onCancel } = props
 
   useEffect(() => {
     if (userData !== undefined) {
-      dispatch({ type: 'user', value: userData });
+      dispatch({ type: 'user', value: userData })
     }
-  }, [userData]);
+  }, [userData])
 
-  const { saveNewUser } = new User();
-  const { t } = useTranslation();
+  const { saveNewUser } = new User()
+  const { t } = useTranslation()
 
   const [_saveNewUser, { isLoading: isLoadingNewUser }] = useMutation(
     saveNewUser,
     {
       onSuccess: async (data) => {
-        const { message } = data;
+        const { message } = data
         if (showError) {
-          setShowError(false);
+          setShowError(false)
         }
 
-        setOptions([]);
-        await successSweetAlert(
-          message || t('alert.successfulCreateTextMessage')
-        );
+        setOptions([])
+        tSuccess(
+          message || t('alert.successfulSave')
+        )
         if (onSubmit) {
-          onSubmit();
+          onSubmit()
         }
-        dispatch({ type: 'reset' });
+        dispatch({ type: 'reset' })
       },
       onError: async (data: any) => {
-        await errorSweetAlert(data || t('error.save'));
+        tError(data || t('error.save'))
       },
     }
-  );
+  )
 
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
-  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v)
+  const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
   const inputValuesValidation = (): boolean => {
-    const { name, family, mobile, email, userName, nationalCode } = state;
-
+    const { name, family, mobile, email, userName, nationalCode } = state
     return (
       name.trim().length < 2 ||
       family.trim().length < 2 ||
-      mobile.trim().length < 11 ||
-      (email !== '' && !emailRegex.test(email.toLowerCase())) ||
+      mobile.length < 11 ||
+      (email !== null && !email !== undefined && email !== '' &&
+        !emailRegex.test(email?.toLowerCase())) ||
       userName.trim().length < 1 ||
-      (nationalCode !== '' && nationalCode.length !== 10)
-    );
-  };
+      (nationalCode !== null && nationalCode !== undefined  &&
+        nationalCode !== '' && nationalCode?.length !== 10)
+    )
+  }
 
   const formHandler = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<any> => {
-    e.preventDefault();
+    e.preventDefault()
     if (inputValuesValidation()) {
-      setShowError(true);
-      return;
+      setShowError(true)
+      tWarn(t('alert.fillFormCarefully'))
+      return
     }
     const data: any = {
       id: state.id,
@@ -239,38 +242,38 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       smsActive: state.smsActive,
       notifActive: state.notifActive,
       gender: state.gender,
-    };
-    await _saveNewUser(data);
-  };
+    }
+    await _saveNewUser(data)
+  }
 
   const isVisibleField = (field: string): boolean => {
-    return !noShowInput?.includes(field);
-  };
+    return !noShowInput?.includes(field)
+  }
 
   const searchPharmacyByName = async (name: string): Promise<any> => {
     if (name.length < 2) {
-      return;
+      return
     }
     try {
-      setIsLoading(true);
-      const result = await searchPharmacy(name, _PharmacyTypeEnum.FUZZY);
+      setIsLoading(true)
+      const result = await searchPharmacy(name, _PharmacyTypeEnum.FUZZY)
       const mappedItems = result.map((item: SearchPharmacyInterface) => ({
         id: item.id,
         name: item.name,
-      }));
-      setIsLoading(false);
-      setOptions(mappedItems);
+      }))
+      setIsLoading(false)
+      setOptions(mappedItems)
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-  };
+  }
 
   const {
     formContainer,
     addButton,
     cancelButton,
     buttonContainer,
-  } = useClasses();
+  } = useClasses()
 
   return (
     <>
@@ -303,11 +306,11 @@ const UserForm: React.FC<UserDataProps> = (props) => {
             />
           </Grid>
           <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
-            <TextField
+            <NumberField
               className="w-100"
               error={ state.mobile.trim().length < 11 && showError }
               label="موبایل"
-              type="number"
+              maxLength={ 11 }
               size="small"
               variant="outlined"
               value={ state.mobile }
@@ -320,6 +323,8 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
             <TextField
               error={
+                state?.email !== null &&
+                state?.email !== undefined &&
                 state?.email?.length > 0 &&
                 !emailRegex.test(state.email) &&
                 showError
@@ -368,15 +373,17 @@ const UserForm: React.FC<UserDataProps> = (props) => {
             </Grid>
           ) }
           <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
-            <TextField
+            <NumberField
               error={
+                state?.nationalCode !== null && 
+                state?.nationalCode !== undefined  &&
                 state?.nationalCode !== '' &&
-                state?.nationalCode?.length < 10 &&
+                state?.nationalCode?.length !== 10 &&
                 showError
               }
               label="کد ملی"
               className="w-100"
-              type="text"
+              maxLength={ 10 }
               size="small"
               variant="outlined"
               value={ state.nationalCode }
@@ -408,7 +415,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               options={ options }
               value={ state?.pharmacyID }
               onChange={ (event, value, reason): void => {
-                dispatch({ type: 'pharmacyID', value });
+                dispatch({ type: 'pharmacyID', value })
               } }
               onInputChange={ debounce(
                 (e, newValue) => searchPharmacyByName(newValue),
@@ -439,7 +446,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
                   }
                 />
               }
-              label={ `${t('user.user')} ${state.active ? t('general.active') : t('general.deActive')
+              label={ `${t('user.user')} ${state.active ? t('general.active') : t('general.inactive')
                 }` }
             />
           </Grid>
@@ -508,17 +515,16 @@ const UserForm: React.FC<UserDataProps> = (props) => {
           <Grid container spacing={ 1 } className={ buttonContainer }>
             <Grid item xs={ 12 }>
               <Button
-                type="submit"
                 color="secondary"
                 variant="contained"
                 className={ cancelButton }
                 onClick={ (): void => {
-                  dispatch({ type: 'reset' });
-                  setShowError(false);
+                  dispatch({ type: 'reset' })
+                  setShowError(false)
                   if (onCancel) {
-                    onCancel();
+                    onCancel()
                   } else {
-                    window.history.go(-1);
+                    window.history.go(-1)
                   }
                 } }
               >
@@ -540,13 +546,13 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       <Modal open={ isOpenDatePicker } toggle={ toggleIsOpenDatePicker }>
         <DateTimePicker
           selectedDateHandler={ (e): void => {
-            dispatch({ type: 'birthDate', value: e });
-            toggleIsOpenDatePicker();
+            dispatch({ type: 'birthDate', value: e })
+            toggleIsOpenDatePicker()
           } }
         />
       </Modal>
     </>
-  );
-};
+  )
+}
 
-export default UserForm;
+export default UserForm

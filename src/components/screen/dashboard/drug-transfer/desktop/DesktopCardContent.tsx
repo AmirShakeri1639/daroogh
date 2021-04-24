@@ -378,7 +378,7 @@ const DesktopCardContent = ({
             </Grid>
           )}
 
-          {totalPriceA !== undefined && totalPriceA > 0 && (
+          {!full && totalPriceA !== undefined && totalPriceA > 0 && (
             <Grid item xs={12}>
               <TextWithTitle
                 title={
@@ -393,7 +393,7 @@ const DesktopCardContent = ({
               />
             </Grid>
           )}
-          {totalPriceB !== undefined && totalPriceB > 0 && (
+          {!full && totalPriceB !== undefined && totalPriceB > 0 && (
             <Grid item xs={12}>
               <TextWithTitle
                 title={
@@ -736,7 +736,7 @@ const DesktopCardContent = ({
           >
             <DialogTitle className="text-sm">{t('exchange.exchangeTree')}</DialogTitle>
             <DialogContent>
-              <ExchangeTree exchangeId={item.id} />
+              <ExchangeTree exchangeId={item.id} showBorder={true} />
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setShowExchangeTree(false)} color="primary">
@@ -769,8 +769,8 @@ const DesktopCardContent = ({
                   xs={12}
                   spacing={0}
                   style={{
-                    fontSize: 13,
-                    marginTop: 8,
+                    fontSize: `${isSmallDevice ? '12px' : '14px'}`,
+                    marginTop: 4,
                     border: '1px solid #F4CB08',
                     padding: 4,
                   }}

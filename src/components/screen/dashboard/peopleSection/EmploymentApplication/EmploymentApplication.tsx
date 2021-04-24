@@ -372,7 +372,6 @@ const EmploymentApplication: React.FC = () => {
   });
 
   const formHandler = async (): Promise<any> => {
-    console.log(state);
     var message = '';
     if (state.name == '') {
       message = t('peopleSection.name');

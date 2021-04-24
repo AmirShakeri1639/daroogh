@@ -4,6 +4,7 @@
     "editor.formatOnSave": false
   },
   "[typescript]": {
+    "editor.tabSize": 2,
     "editor.formatOnSave": false,
     "editor.formatOnPaste": false
   },
@@ -12,9 +13,11 @@
     "editor.formatOnPaste": false
   },
   "cSpell.words": [
+    "Recaptcha",
     "Scrollable",
     "daroog",
-    "fortawesome"
+    "fortawesome",
+    "najva"
   ],
   "editor.formatOnSaveMode": "modifications",
   "prettier.semi": false

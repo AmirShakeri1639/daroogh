@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react'
 import {
   Container,
   TextField,
@@ -18,33 +18,35 @@ import {
   Radio,
   Switch,
   Link,
-} from '@material-ui/core';
-import Pharmacy from '../../../services/api/Pharmacy';
-import { LabelValue } from '../../../interfaces';
-import { useMutation } from 'react-query';
-import { ActionInterface } from '../../../interfaces';
-import { useTranslation } from 'react-i18next';
+} from '@material-ui/core'
+import Pharmacy from '../../../services/api/Pharmacy'
+import { LabelValue } from '../../../interfaces'
+import { useMutation } from 'react-query'
+import { ActionInterface } from '../../../interfaces'
+import { useTranslation } from 'react-i18next'
 import {
   errorHandler,
   sweetAlert,
   tWarn,
-} from 'utils';
-import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown';
-import { ColorEnum, WorkTimeEnum } from '../../../enum';
-import Modal from '../../public/modal/Modal';
-import DateTimePicker from '../../public/datepicker/DatePicker';
-import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect';
-import { Map, ThreePartDatePicker } from '../../public';
-import { useHistory } from 'react-router-dom';
-import routes from '../../../routes';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+} from 'utils'
+import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown'
+import { ColorEnum, WorkTimeEnum } from '../../../enum'
+import Modal from '../../public/modal/Modal'
+import DateTimePicker from '../../public/datepicker/DatePicker'
+import { 
+  CountryDivisionSelect 
+} from '../../public/country-division/CountryDivisionSelect'
+import { Map, ThreePartDatePicker } from '../../public'
+import { useHistory } from 'react-router-dom'
+import routes from '../../../routes'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faEye, faEyeSlash,
-} from '@fortawesome/free-regular-svg-icons';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
-import Uploader from 'components/public/uploader/uploader';
-import { Block } from '@material-ui/icons';
-import Note from 'components/public/note/Note';
+} from '@fortawesome/free-regular-svg-icons'
+import { faKey } from '@fortawesome/free-solid-svg-icons'
+import Uploader from 'components/public/uploader/uploader'
+import Note from 'components/public/note/Note'
+import NumberField from 'components/public/TextField/NumberField'
 
 export const useClasses = makeStyles((theme) => createStyles({
   parent: {
@@ -88,7 +90,7 @@ export const useClasses = makeStyles((theme) => createStyles({
     display: 'flex',
     margin: 'auto'
   },
-}));
+}))
 
 const initialState = {
   pharmacy: {
@@ -136,10 +138,10 @@ const initialState = {
   file4: null,
   // commitment
   file5: null,
-};
+}
 
 function reducer(state = initialState, action: ActionInterface): any {
-  const { value } = action;
+  const { value } = action
 
   switch (action.type) {
     // PHARMACY ----------------
@@ -147,128 +149,128 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         pharmacy: { ...state.pharmacy, id: value },
-      };
+      }
     case 'pharmacy.name':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, name: value },
-      };
+      }
     case 'pharmacy.description':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, description: value },
-      };
+      }
     case 'pharmacy.hix':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, hix: value },
-      };
+      }
     case 'pharmacy.gli':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, gli: value },
-      };
+      }
     case 'pharmacy.workTime':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, workTime: +value },
-      };
+      }
     case 'pharmacy.address':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, address: value },
-      };
+      }
     case 'pharmacy.mobile':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, mobile: value },
-      };
+      }
     case 'pharmacy.telphon':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, telphon: value },
-      };
+      }
     case 'pharmacy.webSite':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, webSite: value },
-      };
+      }
     case 'pharmacy.email':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, email: value },
-      };
+      }
     case 'pharmacy.postalCode':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, postalCode: value },
-      };
+      }
     case 'pharmacy.countryDivisionID':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, countryDivisionID: value },
-      };
+      }
     case 'pharmacy.x':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, x: value },
-      };
+      }
     case 'pharmacy.y':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, y: value },
-      };
+      }
     case 'pharmacy.type':
       return {
         ...state,
         pharmacy: { ...state.pharmacy, type: value },
-      };
+      }
     // USER -------------------
     case 'user.pharmacyID':
       return {
         ...state,
         user: { ...state.user, pharmacyID: value },
-      };
+      }
     case 'user.name':
       return {
         ...state,
         user: { ...state.user, name: value },
-      };
+      }
     case 'user.family':
       return {
         ...state,
         user: { ...state.user, family: value },
-      };
+      }
     case 'user.mobile':
       return {
         ...state,
         user: { ...state.user, mobile: value },
-      };
+      }
     case 'user.email':
       return {
         ...state,
         user: { ...state.user, email: value },
-      };
+      }
     case 'user.userName':
       return {
         ...state,
         user: { ...state.user, userName: value },
-      };
+      }
     case 'user.password':
       return {
         ...state,
         user: { ...state.user, password: value },
-      };
+      }
     case 'user.nationalCode':
       return {
         ...state,
         user: { ...state.user, nationalCode: value },
-      };
+      }
     case 'user.birthDate':
       return {
         ...state,
         user: { ...state.user, birthDate: value },
-      };
+      }
     case 'user.gender':
       return {
         ...state,
@@ -278,7 +280,7 @@ function reducer(state = initialState, action: ActionInterface): any {
       return {
         ...state,
         user: { ...state.user, isValidBirthDate: value },
-      };
+      }
     case 'isVisiblePassword':
       return {
         ...state,
@@ -311,21 +313,21 @@ function reducer(state = initialState, action: ActionInterface): any {
         file5: value
       }
     case 'reset':
-      return initialState;
+      return initialState
     default:
-      console.error('Action type not defined');
+      console.error('Action type not defined')
   }
 }
 
 const RegisterPharmacyWithUser: React.FC = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const { t } = useTranslation();
-  const history = useHistory();
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
-  const [showError, setShowError] = useState<boolean>(false);
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
-  const { register } = new Pharmacy();
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g;
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { t } = useTranslation()
+  const history = useHistory()
+  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false)
+  const [showError, setShowError] = useState<boolean>(false)
+  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v)
+  const { register } = new Pharmacy()
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
 
   const {
     parent,
@@ -340,28 +342,28 @@ const RegisterPharmacyWithUser: React.FC = () => {
     rootFull,
     longItem,
     centerItem,
-  } = useClasses();
+  } = useClasses()
 
-  const [workTimeList, setWorkTimeList] = useState(new Array<LabelValue>());
+  const [workTimeList, setWorkTimeList] = useState(new Array<LabelValue>())
   useEffect(() => {
-    const wtList: LabelValue[] = [];
+    const wtList: LabelValue[] = []
     for (const wt in WorkTimeEnum) {
       if (parseInt(wt) >= 0)
         wtList.push({
           label: t(`WorkTimeEnum.${WorkTimeEnum[wt]}`),
           value: wt,
-        });
+        })
     }
-    setWorkTimeList(wtList);
-  }, []);
+    setWorkTimeList(wtList)
+  }, [])
 
   const [_register, { isLoading: isLoadingNewUser }] = useMutation(register, {
     onSuccess: async (data: any) => {
       if (showError) {
-        setShowError(false);
+        setShowError(false)
       }
     },
-  });
+  })
 
   const isFormValid = (): boolean => {
     const {
@@ -372,7 +374,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
       file3,
       file4,
       file5,
-    } = state;
+    } = state
     const {
       name,
       family,
@@ -380,7 +382,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
       nationalCode,
       password,
       isValidBirthDate,
-    } = user;
+    } = user
     const {
       name: pharmacyName,
       mobile,
@@ -388,13 +390,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
       telphon,
       countryDivisionID,
       x, y,
-    } = pharmacy;
+    } = pharmacy
 
     return !(
       // pharmacy
       (
         pharmacyName.trim().length < 2 ||
-        mobile.trim().length < 10 ||
+        mobile.length < 10 ||
         countryDivisionID == 0 ||
         countryDivisionID == -1 ||
         address.trim().length < 3 ||
@@ -415,8 +417,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
           (file4 == null || file5 == null)
         )
       )
-    );
-  };
+    )
+  }
 
   const saveFiles = async (key: number | string): Promise<any> => {
     const { addFileGeneral } = new Pharmacy()
@@ -500,7 +502,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
   }
 
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (isFormValid()) {
       try {
@@ -536,7 +538,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
             password: state.user.password,
             birthDate: state.user.birthDate,
           },
-        });
+        })
         if (regResult !== undefined) {
           const filesSaved = await saveFiles(regResult.data.pharmacyKey)
           await sweetAlert({
@@ -553,21 +555,21 @@ const RegisterPharmacyWithUser: React.FC = () => {
               }) }
             </>,
           })
-          dispatch({ type: 'reset' });
-          history.push(routes.login);
+          dispatch({ type: 'reset' })
+          history.push(routes.login)
         }
       } catch (e) {
         await sweetAlert({
           type: 'error',
           text: t('error.save'),
-        });
-        errorHandler(e);
+        })
+        errorHandler(e)
       }
     } else {
-      tWarn(t('alert.fillFormCarefully'));
-      setShowError(true);
+      tWarn(t('alert.fillFormCarefully'))
+      setShowError(true)
     }
-  };
+  }
 
   return (
     <Container maxWidth="lg" className={ parent }>
@@ -624,20 +626,6 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            {/* <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
-                error={ state.user.userName.length < 3 && showError }
-                label={ t('login.username') }
-                required
-                className={ formItem }
-                variant="outlined"
-                autoComplete="off"
-                value={ state.user.userName }
-                onChange={ (e): void =>
-                  dispatch({ type: 'user.userName', value: e.target.value })
-                }
-              />
-            </Grid> */}
             <Grid item xs={ 12 } sm={ 6 }>
               <TextField
                 error={ state?.password?.length < 3 && showError }
@@ -666,7 +654,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                           dispatch({ type: 'isVisiblePassword', value: !state?.isVisiblePassword })
                         } }
                         onMouseDown={ (e: React.MouseEvent<HTMLButtonElement>): void => {
-                          e.preventDefault();
+                          e.preventDefault()
                         } }
                         edge="end"
                       >
@@ -682,11 +670,11 @@ const RegisterPharmacyWithUser: React.FC = () => {
               />
             </Grid>
             <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
+              <NumberField
                 error={ state?.user.nationalCode.length < 10 && showError }
                 label={ t('user.nationalCode') }
+                maxLength={ 10 }
                 required
-                type="text"
                 className={ formItem }
                 variant="outlined"
                 value={ state?.user.nationalCode }
@@ -704,8 +692,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
               <ThreePartDatePicker
                 label={ t('user.birthDate') }
                 onChange={ (value: string, isValid: boolean): void => {
-                  dispatch({ type: 'user.isValidBirthDate', value: isValid });
-                  dispatch({ type: 'user.birthDate', value: value });
+                  dispatch({ type: 'user.isValidBirthDate', value: isValid })
+                  dispatch({ type: 'user.birthDate', value: value })
                 } }
               />
             </Grid>
@@ -792,15 +780,15 @@ const RegisterPharmacyWithUser: React.FC = () => {
               />
             </Grid>
             <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
-              <TextField
-                error={ state?.pharmacy.mobile.trim().length < 10 && showError }
+              <NumberField
+                error={ state?.pharmacy.mobile.length < 10 && showError }
                 label={ t('general.mobile') }
-                type="number"
                 required
                 className={ formItem }
                 variant="outlined"
+                maxLength={ 11 }
                 value={ state?.pharmacy.mobile }
-                onChange={ (e): void => {
+                onChange={ (e: any): void => {
                   dispatch({ type: 'pharmacy.mobile', value: e.target.value })
                   dispatch({ type: 'user.userName', value: e.target.value })
                 } }
@@ -906,7 +894,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 className={ `${formItem} ${dropdown}` }
                 label={ t('pharmacy.workTime') }
                 onChangeHandler={ (v): void => {
-                  return dispatch({ type: 'pharmacy.workTime', value: v });
+                  return dispatch({ type: 'pharmacy.workTime', value: v })
                 } }
               />
             </Grid>
@@ -916,7 +904,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                   error={ state?.pharmacy.countryDivisionID == -1 && showError }
                   label={ `${t('general.location')} * ` }
                   onSelectedHandler={ (id): void => {
-                    dispatch({ type: 'pharmacy.countryDivisionID', value: id });
+                    dispatch({ type: 'pharmacy.countryDivisionID', value: id })
                   } }
                 />
               </Grid>
@@ -942,8 +930,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
                   draggable={ true }
                   getGeoLocation={ true }
                   onClick={ (e: any): void => {
-                    dispatch({ type: 'pharmacy.x', value: e.lngLat.lng });
-                    dispatch({ type: 'pharmacy.y', value: e.lngLat.lat });
+                    dispatch({ type: 'pharmacy.x', value: e.lngLat.lng })
+                    dispatch({ type: 'pharmacy.y', value: e.lngLat.lat })
                   } }
                 />
               </div>
@@ -1118,14 +1106,14 @@ const RegisterPharmacyWithUser: React.FC = () => {
       <Modal open={ isOpenDatePicker } toggle={ toggleIsOpenDatePicker }>
         <DateTimePicker
           selectedDateHandler={ (e): void => {
-            dispatch({ type: 'user.birthDate', value: e });
-            toggleIsOpenDatePicker();
+            dispatch({ type: 'user.birthDate', value: e })
+            toggleIsOpenDatePicker()
           } }
         />
       </Modal>
       <div className={ spacing3 }>&nbsp;</div>
     </Container>
-  );
-};
+  )
+}
 
-export default RegisterPharmacyWithUser;
+export default RegisterPharmacyWithUser

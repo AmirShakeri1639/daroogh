@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useReducer, useEffect, useRef, useMemo } from 'react'
 import {
   createStyles,
   Grid,
@@ -15,80 +15,84 @@ import {
   useTheme,
   Divider,
   Button,
-} from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { BackDrop, AutoComplete } from '../../../public';
-import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar';
-import { useMutation, useQuery, useQueryCache } from 'react-query';
-import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
-import { AllPharmacyDrug } from '../../../../enum/query';
-import { Drug, PharmacyDrug, Comission } from '../../../../services/api';
-import CardContainer from './CardContainer';
-import { debounce, has } from 'lodash';
-import { ActionInterface, AllPharmacyDrugInterface, DrugInterface } from '../../../../interfaces';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Input from '../../../public/input/Input';
-import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
-import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
-import { useEffectOnce } from '../../../../hooks';
-import { Convertor, errorHandler, tSuccess } from 'utils';
-import moment from 'jalali-moment';
-import { jalali } from '../../../../utils';
+} from '@material-ui/core'
+import { useTranslation } from 'react-i18next'
+import { BackDrop, AutoComplete } from '../../../public'
+import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearchbar'
+import { useMutation, useQuery, useQueryCache } from 'react-query'
+import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons'
+import { AllPharmacyDrug } from '../../../../enum/query'
+import { Drug, PharmacyDrug, Comission } from '../../../../services/api'
+import CardContainer from './CardContainer'
+import { debounce, has } from 'lodash'
+import { ActionInterface, AllPharmacyDrugInterface, DrugInterface } from '../../../../interfaces'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Input from '../../../public/input/Input'
+import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend'
+import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug'
+import { useEffectOnce } from '../../../../hooks'
+import { Convertor, errorHandler, tSuccess } from 'utils'
+import moment from 'jalali-moment'
+import { jalali } from '../../../../utils'
 // @ts-ignore
-import jalaali from 'jalaali-js';
-import { ListOptions } from '../../../public/auto-complete/AutoComplete';
-import styled from 'styled-components';
-import CDialog from 'components/public/dialog/Dialog';
-import { ColorEnum } from 'enum';
-import Calculator from '../calculator/Calculator';
+import jalaali from 'jalaali-js'
+import { ListOptions } from '../../../public/auto-complete/AutoComplete'
+import styled from 'styled-components'
+import CDialog from 'components/public/dialog/Dialog'
+import { ColorEnum } from 'enum'
+import Calculator from '../calculator/Calculator'
+import SupplyListFilter, { Option } from './SupplyListFilter'
+import { FilterItems } from './types'
+import { StyledFilterWrapper } from './styles'
+import { LeakRemoveTwoTone } from '@material-ui/icons'
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
-  const { value, type } = action;
+  const { value, type } = action
   switch (type) {
     case 'id':
       return {
         ...state,
         id: value,
-      };
+      }
     case 'drugID':
       return {
         ...state,
         drugID: value,
-      };
+      }
     case 'expireDate':
       return {
         ...state,
         expireDate: value,
-      };
+      }
     case 'offer1':
       return {
         ...state,
         offer1: value,
-      };
+      }
     case 'offer2':
       return {
         ...state,
         offer2: value,
-      };
+      }
     case 'amount':
       return {
         ...state,
         amount: value,
-      };
+      }
     case 'cnt':
       return {
         ...state,
         cnt: value,
-      };
+      }
     case 'batchNO':
       return {
         ...state,
         batchNO: value,
-      };
+      }
     case 'reset':
-      return new PharmacyDrugSupplyList();
+      return new PharmacyDrugSupplyList()
     default:
-      console.log(`Action type: ${type} not defined`);
+      console.warn(`Action type: ${type} not defined`)
   }
 }
 
@@ -98,6 +102,34 @@ const useStyle = makeStyles((theme) =>
       display: 'flex',
       alignItems: 'center',
       margin: theme.spacing(0, 1),
+    },
+    calculator: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      bottom: 'auto',
+      right: 'auto',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 99999,
+      marginRight: '-50%',
+      // height: 'fit-content',
+      width: '100%',
+      height: '100%',
+      background: '#00000070',
+      boxShadow: '0 0 40px #000000',
+    },
+    calcContainer: {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      bottom: 'auto',
+      right: 'auto',
+      transform: 'translate(-50%, -50%)',
+      zIndex: 99999,
+      marginRight: '-50%',
+      height: 'fit-content',
+      width: '300px',
+      boxShadow: '0 0 40px #000000',
     },
     contentContainer: {
       marginTop: 15,
@@ -183,27 +215,33 @@ const useStyle = makeStyles((theme) =>
       marginLeft: 8,
       marginRight: 8,
     },
+    calcCloseBtn: {
+      fontSize: 10,
+      width: 85,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
+    },
   })
-);
+)
 
-const { all, searchDrug } = new Drug();
+const { all, searchDrug } = new Drug()
 
-const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
+const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug()
 
-const { getComissionAndRecommendation } = new Comission();
+const { getComissionAndRecommendation } = new Comission()
 
-const { numberWithZero, convertISOTime } = Convertor;
+const { numberWithZero, convertISOTime } = Convertor
 
-const monthIsValid = (month: number): boolean => month < 13;
-const dayIsValid = (day: number): boolean => day < 32 || day > 0;
+const monthIsValid = (month: number): boolean => month < 13
+const dayIsValid = (day: number): boolean => day < 32 || day > 0
 
-const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
+const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}')
 
-const monthMinimumLength = 28;
+const monthMinimumLength = 28
 
 const SearchButton = styled(Button)`
   color: #2e67e2;
-`;
+`
 
 const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} />)`
   .MuiInputBase-input {
@@ -211,71 +249,77 @@ const StyledMaterialSearchBar = styled((props) => <MaterialSearchBar {...props} 
       font-size: 0.7rem !important;
     }
   }
-`;
+`
 
 const StyledTitle = styled.span`
   color: #17a2bb;
   font-size: 12px;
-`;
+`
 
 const StyledDialogContent = styled((props) => <DialogContent {...props} />)`
   scroll-behavior: smooth;
-`;
+`
 
 const SupplyList: React.FC = () => {
-  const [filteredItems, setFilteredItems] = useState<any>([]);
-  const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [state, dispatch] = useReducer(reducer, new PharmacyDrugSupplyList());
-  const [drugList, setDrugList] = useState<DrugInterface[]>([]);
-  const [options, setOptions] = useState<any[]>([]);
-  const [selectedDrug, setSelectedDrug] = useState<ListOptions | null>(null);
-  const [selectedDate, setSelectedDate] = useState<string>('');
-  const [daysDiff, setDaysDiff] = useState<string>('');
-  const [isoDate, setIsoDate] = useState<string>('');
-  const [daroogRecommendation, setDaroogRecommendation] = useState<string>('');
-  const [comissionPercent, setComissionPercent] = useState<string>('');
+  const [filteredItems, setFilteredItems] = useState<any>([])
+  const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [state, dispatch] = useReducer(reducer, new PharmacyDrugSupplyList())
+  const [drugList, setDrugList] = useState<DrugInterface[]>([])
+  const [options, setOptions] = useState<any[]>([])
+  const [selectedDrug, setSelectedDrug] = useState<ListOptions | null>(null)
+  const [selectedDate, setSelectedDate] = useState<string>('')
+  const [daysDiff, setDaysDiff] = useState<string>('')
+  const [isoDate, setIsoDate] = useState<string>('')
+  const [daroogRecommendation, setDaroogRecommendation] = useState<string>('')
+  const [comissionPercent, setComissionPercent] = useState<string>('')
   const [selectDrugForEdit, setSelectDrugForEdit] = useState<{
-    id: number;
-    genericName: string;
+    id: number
+    genericName: string
   }>({
     id: -1,
     genericName: '',
-  });
-  const [calculatedValue, setCalculatedValue] = useState<number>(0);
-  const [selectedDay, setSelectedDay] = useState<string>('');
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
-  const [selectedYear, setSelectedYear] = useState<string>('');
-  const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
-  const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
-  const [isWrongDate, setIsWrongDate] = useState(false);
-  const [hasMinimumDate, setHasMinimumDate] = useState(true);
-  const [showError, setShowError] = useState(false);
+  })
+  const [calculatedValue, setCalculatedValue] = useState<number>(0)
+  const [selectedDay, setSelectedDay] = useState<string>('')
+  const [selectedMonth, setSelectedMonth] = useState<string>('')
+  const [selectedYear, setSelectedYear] = useState<string>('')
+  const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false)
+  const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false)
+  const [isWrongDate, setIsWrongDate] = useState(false)
+  const [hasMinimumDate, setHasMinimumDate] = useState(true)
+  const [showError, setShowError] = useState(false)
+  const [offerAlert, setOfferAlert] = useState<boolean>(false)
+  const [selectedFilterItem, setSelectedFilterItem] = useState<string>(FilterItems.NEAREST_EXPIRE_DATE);
 
   const theme = useTheme();
 
-  const monthRef = useRef<any>();
-  const yearRef = useRef<any>();
-  const batchRef = useRef<any>();
 
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const { t } = useTranslation();
-  const queryCache = useQueryCache();
+  const monthRef = useRef<any>()
+  const yearRef = useRef<any>()
+  const batchRef = useRef<any>()
+
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { t } = useTranslation()
+  const queryCache = useQueryCache()
 
   const resetValues = (): void => {
-    dispatch({ type: 'reset' });
-    setSelectedDay('');
-    setSelectedMonth('');
-    setSelectedYear('s');
-  };
+    dispatch({ type: 'reset' })
+    setSelectedDay('')
+    setSelectedMonth('')
+    setSelectedYear('s')
+    setOfferAlert(false)
+    setDaroogRecommendation('')
+    setComissionPercent('')
+  }
 
-  const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
+  const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false)
   const toggleIsOpenCalculator = (): void => {
-    setIsOpenCalculator((v) => !v);
-    if (isOpenCalculator) {
-      window.history.back();
-    }
-  };
+    setIsOpenCalculator((v) => !v)
+    // if (isOpenCalculator) {
+    //   window.history.back();
+    // }
+  }
 
   const {
     contentContainer,
@@ -287,7 +331,10 @@ const SupplyList: React.FC = () => {
     label,
     fab,
     sectionContainer,
-  } = useStyle();
+    calculator,
+    calcCloseBtn,
+    calcContainer,
+  } = useStyle()
 
   // useEffect(() => {
   //   const el = document.getElementById('scrollable-content') as HTMLElement;
@@ -306,25 +353,26 @@ const SupplyList: React.FC = () => {
   // }, [comissionPercent, daroogRecommendation]);
 
   useEffectOnce(() => {
-    (async (): Promise<any> => {
+    ;(async (): Promise<any> => {
       try {
-        const result = await all(0, 10 ^ 3);
-        setDrugList(result.items);
+        const result = await all(0, 10 ^ 3)
+        setDrugList(result.items)
       } catch (e) {
-        errorHandler(e);
+        errorHandler(e)
       }
-    })();
-  });
-
-  const containerRef = useRef<any>();
+    })()
+  })
 
   useEffect(() => {
-    (async (): Promise<any> => {
+    ;(async (): Promise<any> => {
       try {
-        const { offer1, offer2, amount, cnt } = state;
+        const { offer1, offer2, amount, cnt } = state
         // @ts-ignore
-        const { value: drugId } = selectedDrug;
+        const { value: drugId } = selectedDrug
         if ((offer1 !== '' && offer2 !== '' && Number(cnt) > 0) || (drugId && Number(amount) > 0)) {
+          if (Number(offer1) > 0 && Number(offer2) > 0) {
+            setOfferAlert(true)
+          }
           const result = await getComissionAndRecommendation({
             drugId,
             price: state?.amount,
@@ -332,81 +380,99 @@ const SupplyList: React.FC = () => {
             offer2: state?.offer2,
             expireDate: isoDate,
             pharmacyId: '0',
-          });
-          const { data } = result;
+          })
+          const { data } = result
           if (has(data, 'commissionPercent')) {
-            setComissionPercent(data.commissionPercent);
+            setComissionPercent(data.commissionPercent)
           }
           if (has(data, 'suggestionStr')) {
-            setDaroogRecommendation(data.suggestionStr);
+            setDaroogRecommendation(data.suggestionStr)
           }
         }
       } catch (e) {
-        errorHandler(e);
+        errorHandler(e)
       }
-    })();
-  }, [selectedDrug, state?.amount, state?.offer1, state?.offer2, state?.cnt, isoDate]);
+    })()
+  }, [selectedDrug, state?.amount, state?.offer1, state?.offer2, state?.cnt, isoDate])
 
   const resetDateState = (): void => {
-    setSelectedDay('');
-    setSelectedMonth('');
-    setSelectedYear('');
-  };
+    setSelectedDay('')
+    setSelectedMonth('')
+    setSelectedYear('')
+  }
 
   const resetStates = (): void => {
-    dispatch({ type: 'reset' });
-    setSelectedDate('');
-    resetDateState();
-    setSelectedDrug(null);
-    setDaroogRecommendation('');
-    setComissionPercent('');
-    setDaysDiff('');
-    setIsoDate('');
-    setOptions([]);
-    setIsWrongDate(false);
-    setHasMinimumDate(true);
-    setShowError(false);
-  };
+    dispatch({ type: 'reset' })
+    setSelectedDate('')
+    resetDateState()
+    setSelectedDrug(null)
+    setDaroogRecommendation('')
+    setComissionPercent('')
+    setDaysDiff('')
+    setIsoDate('')
+    setOptions([])
+    setIsWrongDate(false)
+    setHasMinimumDate(true)
+    setShowError(false)
+    setOfferAlert(false)
+  }
 
   const toggleIsOpenModalOfNewList = (): void => {
     if (isOpenModalOfNewList) {
-      resetStates();
+      resetStates()
     }
-    setIsOpenModalOfNewList((v) => !v);
-  };
+    setIsOpenModalOfNewList((v) => !v)
+  }
 
-  const { data, isFetched } = useQuery(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, () =>
-    allPharmacyDrug('', true, 'desc')
-  );
+  const callAllPharmacyDrugs = () => {
+    if (selectedFilterItem === FilterItems.MAXIMUM_INVENTORY) {
+      return allPharmacyDrug('desc', 'cnt');
+    }
 
-  const [_savePharmacyDrug, { isLoading: isLoadingSave }] = useMutation(savePharmacyDrug, {
+    if (selectedFilterItem === FilterItems.MINIMUM_INVENTORY) {
+      return allPharmacyDrug('asc', 'cnt')
+    }
+
+    if (selectedFilterItem === FilterItems.NEAREST_EXPIRE_DATE) {
+      return allPharmacyDrug('asc', 'expireDate')
+    }
+
+    return allPharmacyDrug('desc', 'expireDate');
+  }
+
+  const { data, isFetched, isLoading: isLoadingPharmacyDrugs } = useQuery(
+    [AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, selectedFilterItem],
+    () => callAllPharmacyDrugs()
+  )
+
+  const [_savePharmacyDrug] = useMutation(savePharmacyDrug, {
     onSuccess: async () => {
       if (isCheckedNewItem) {
-        resetStates();
+        resetStates()
       } else {
-        toggleIsOpenModalOfNewList();
-        resetStates();
+        toggleIsOpenModalOfNewList()
+        resetStates()
       }
-      tSuccess(t('alert.successfulSave'));
-      queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
+      tSuccess(t('alert.successfulSave'))
+      queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG)
     },
-  });
+  })
 
-  const isJalaliDate = (num: number): boolean => num < 2000;
+  const isJalaliDate = (num: number): boolean => num < 2000
 
   const calculatDateDiference = (): void => {
-    const date = new Date();
-    const todayMomentObject = moment([date.getFullYear(), date.getMonth(), date.getDate()]);
+    const date = new Date()
+    const todayMomentObject = moment([date.getFullYear(), date.getMonth(), date.getDate()])
 
     const convertedArray = [
       Number(selectedYear),
       Number(selectedMonth),
       Number(selectedDay === '' ? monthMinimumLength : selectedDay),
-    ];
+    ]
 
-    let selectedDate: any;
+    let selectedDate: any
     if (isJalaliDate(convertedArray[0])) {
-      selectedDate = jalali.toGregorian(convertedArray[0], convertedArray[1], convertedArray[2]);
+      selectedDate = jalali.toGregorian(convertedArray[0], convertedArray[1], convertedArray[2])
     }
 
     const selectedDateMomentObject = moment(
@@ -417,22 +483,22 @@ const SupplyList: React.FC = () => {
             Number(selectedMonth) - 1,
             Number(selectedDay === '' ? monthMinimumLength : selectedDay),
           ]
-    );
+    )
 
-    const daysDiff = String(selectedDateMomentObject.diff(todayMomentObject, 'days'));
+    const daysDiff = String(selectedDateMomentObject.diff(todayMomentObject, 'days'))
 
     if (Number(daysDiff) < drugExpireDay) {
-      setHasMinimumDate(false);
+      setHasMinimumDate(false)
     } else {
-      setHasMinimumDate(true);
+      setHasMinimumDate(true)
     }
 
     if (Number(daysDiff) < 0) {
-      setIsWrongDate(true);
-      setDaysDiff('');
+      setIsWrongDate(true)
+      setDaysDiff('')
     } else {
-      setIsWrongDate(false);
-      setDaysDiff(daysDiff);
+      setIsWrongDate(false)
+      setDaysDiff(daysDiff)
     }
 
     setIsoDate(
@@ -443,31 +509,31 @@ const SupplyList: React.FC = () => {
         : `${[Number(selectedYear), Number(selectedMonth) - 1, Number(selectedDay)].join(
             '-'
           )}T00:00:00Z`
-    );
-  };
+    )
+  }
 
   useEffect(() => {
     if (selectedYear !== '' && selectedYear.length === 4 && selectedMonth !== '') {
-      calculatDateDiference();
+      calculatDateDiference()
     }
-  }, [selectedDay, selectedMonth, selectedYear]);
+  }, [selectedDay, selectedMonth, selectedYear])
 
   const getDrugName = (item: any): string => {
     return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
       item.type !== null ? ` - ${item.type}` : ''
-    }`;
-  };
+    }`
+  }
 
   const searchDrugs = async (title: string): Promise<any> => {
     try {
       if (title.length < 2) {
-        return;
+        return
       }
-      setIsLoading(true);
-      const result = await searchDrug(title);
+      setIsLoading(true)
+      const result = await searchDrug(title)
 
-      setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
-      setIsLoading(false);
+      setSelectDrugForEdit(options.find((item) => item.id === selectedDrug))
+      setIsLoading(false)
 
       const optionsList = result
         //.filter((_item: any) => _item.active === true)
@@ -484,13 +550,13 @@ const SupplyList: React.FC = () => {
               }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
             </div>
           ),
-        }));
+        }))
 
-      setOptions(optionsList);
+      setOptions(optionsList)
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-  };
+  }
 
   const editHandler = async (item: any): Promise<any> => {
     const {
@@ -503,69 +569,69 @@ const SupplyList: React.FC = () => {
       expireDate,
       drug: { name },
       id,
-    } = item;
-    dispatch({ type: 'expireDate', value: expireDate });
-    dispatch({ type: 'drugID', value: drugID });
-    dispatch({ type: 'offer1', value: offer1 });
-    dispatch({ type: 'offer2', value: offer2 });
-    dispatch({ type: 'batchNO', value: batchNO });
-    dispatch({ type: 'amount', value: amount });
-    dispatch({ type: 'cnt', value: cnt });
-    dispatch({ type: 'id', value: id });
+    } = item
+    dispatch({ type: 'expireDate', value: expireDate })
+    dispatch({ type: 'drugID', value: drugID })
+    dispatch({ type: 'offer1', value: offer1 })
+    dispatch({ type: 'offer2', value: offer2 })
+    dispatch({ type: 'batchNO', value: batchNO })
+    dispatch({ type: 'amount', value: amount })
+    dispatch({ type: 'cnt', value: cnt })
+    dispatch({ type: 'id', value: id })
 
-    const [year, month, day] = convertISOTime(expireDate).split('-');
-    setSelectedYear(year);
-    setSelectedMonth(month);
-    setSelectedDay(day);
-    setIsOpenBackDrop(true);
-    await searchDrugs(name);
+    const [year, month, day] = convertISOTime(expireDate).split('-')
+    setSelectedYear(year)
+    setSelectedMonth(month)
+    setSelectedDay(day)
+    setIsOpenBackDrop(true)
+    await searchDrugs(name)
     setSelectedDrug({
       value: drugID,
       label: name,
-    });
-    const shamsiDate = convertISOTime(expireDate);
-    setSelectedDate(shamsiDate);
+    })
+    const shamsiDate = convertISOTime(expireDate)
+    setSelectedDate(shamsiDate)
     // calculatDateDiference(shamsiDate, '-');
-    setIsOpenBackDrop(false);
-    toggleIsOpenModalOfNewList();
-  };
+    setIsOpenBackDrop(false)
+    toggleIsOpenModalOfNewList()
+  }
 
   const filteredItemsHandler = (e: any): void => {
     const _filteredItems = data.items.filter(
       (item: any) => item.drug.name.includes(e) || item.drug.genericName.includes(e)
-    );
-    setFilteredItems(_filteredItems);
-  };
+    )
+    setFilteredItems(_filteredItems)
+  }
 
   const displayHandler = (): JSX.Element[] => {
     let items = [];
-    if (filteredItems.length > 0) {
-      items = filteredItems.map((item: AllPharmacyDrugInterface) => {
-        return (
-          <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
-            <CardContainer editHandler={(): Promise<any> => editHandler(item)} drug={item} />
-          </Grid>
-        );
-      });
-    } else {
-      if (isFetched) {
+    if (isFetched) {
+      if (filteredItems.length > 0) {
+        items = filteredItems.map((item: AllPharmacyDrugInterface) => {
+          return (
+            <Grid item spacing={3} xs={12} sm={12} md={4} xl={4} key={item.id}>
+              <CardContainer editHandler={(): Promise<any> => editHandler(item)} drug={item} />
+            </Grid>
+          )
+        })
+      } else {
         items = data.items.map((item: AllPharmacyDrugInterface) => {
           return (
             <Grid spacing={3} item xs={12} sm={12} md={4} xl={4} key={item.id}>
               <CardContainer editHandler={(): Promise<any> => editHandler(item)} drug={item} />
             </Grid>
-          );
-        });
+          )
+        })
       }
     }
-    return items;
-  };
+    return items
+  }
 
-  const memoItems = useMemo(() => displayHandler(), [data, filteredItems]);
+  const memoItems = useMemo(() => displayHandler(), [data, filteredItems, selectedFilterItem])
 
   const selectedCalculaterValueHandler = (v: number): void => {
-    setCalculatedValue(v);
-  };
+    setCalculatedValue(v)
+  }
 
   const formHandler = async (): Promise<any> => {
     try {
@@ -576,49 +642,69 @@ const SupplyList: React.FC = () => {
         !dayIsValid(Number(selectedDay)) ||
         selectedYear.length < 4 ||
         isWrongDate ||
-        !hasMinimumDate
+        !hasMinimumDate ||
+        state?.batchNO === ''
       ) {
-        setShowError(true);
-        return;
+        setShowError(true)
+        return
       }
-      setShowError(false);
-      const intSelectedYear = Number(selectedYear);
-      const intSelectedMonth = Number(selectedMonth);
-      const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay);
+      setShowError(false)
+      const intSelectedYear = Number(selectedYear)
+      const intSelectedMonth = Number(selectedMonth)
+      const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay)
 
-      let date = '';
+      let date = ''
       if (!isJalaliDate(intSelectedYear)) {
         date = `${intSelectedYear}-${numberWithZero(intSelectedMonth)}-${numberWithZero(
           intSelectedDay
-        )}T00:00:00Z`;
+        )}T00:00:00Z`
       } else {
         const jalail2Gregorian = jalaali.toGregorian(
           intSelectedYear,
           intSelectedMonth,
           intSelectedDay
-        );
+        )
 
         date = `${jalail2Gregorian.gy}-${numberWithZero(jalail2Gregorian.gm)}-${numberWithZero(
           jalail2Gregorian.gd
-        )}T00:00:00Z`;
+        )}T00:00:00Z`
       }
-      state.expireDate = date;
+      state.expireDate = date
       if (state.offer1 === '') {
-        state.offer1 = 0;
+        state.offer1 = 0
       }
       if (state.offer2 === '') {
-        state.offer2 = 0;
+        state.offer2 = 0
       }
       //@ts-ignore
-      state.drugID = selectedDrug?.value;
-      await _savePharmacyDrug(state);
-      setCalculatedValue(0);
+      state.drugID = selectedDrug?.value
+      await _savePharmacyDrug(state)
+      setCalculatedValue(0)
     } catch (e) {
-      errorHandler(e);
+      errorHandler(e)
     }
-  };
+  }
 
   const autoCompleteRef = useRef<any>();
+
+  const filterListItems = (): Option[] => [
+    {
+      value: FilterItems.MAXIMUM_INVENTORY,
+      text: `${t('general.maximum')} ${t('general.inventory')}`
+    },
+    {
+      value: FilterItems.MINIMUM_INVENTORY,
+      text: `${t('general.minimum')} ${t('general.inventory')}`
+    },
+    {
+      value: FilterItems.NEAREST_EXPIRE_DATE,
+      text: `${t('general.nearest')} ${t('general.expireDate')}`
+    },
+    {
+      value: FilterItems.FARTHEST_EXPIRE_DATE,
+      text: `${t('general.farthest')} ${t('general.expireDate')}`
+    }
+  ]
 
   return (
     <>
@@ -631,13 +717,33 @@ const SupplyList: React.FC = () => {
               onRequestSearch={filteredItemsHandler}
             />
           </Grid>
+
           {filteredItems.length > 0 && filteredItems.length < data.items.length && (
-            <Grid item xs={3} md={2}>
+            <Grid item xs={6} md={2}>
               <SearchButton variant="text" onClick={(): void => setFilteredItems([])}>
-                {t('general.displayList', { var: 'اولیه' })}
+                {t('general.displayList', { var: t('general.primitive') })}
               </SearchButton>
             </Grid>
           )}
+          
+          <StyledFilterWrapper item xs={12} md={5} isSmallScreen={fullScreen}>
+            <Grid container alignItems="center">
+              <Grid item xs={4} sm={3} md={4} lg={3}>
+                {t('general.sortWith')}
+              </Grid>
+
+              <Grid item xs={8} sm={9} md={8}>
+                <SupplyListFilter
+                  onChange={(e): void => setSelectedFilterItem(e.target.value as string)}
+                  value={selectedFilterItem}
+                  valuesArray={filterListItems()}
+                  label={t('general.sortWith')}
+                />
+
+              </Grid>
+            </Grid>
+          </StyledFilterWrapper>
+          
         </Grid>
 
         <Grid container spacing={3} className={contentContainer}>
@@ -651,6 +757,7 @@ const SupplyList: React.FC = () => {
           </Hidden>
 
           {memoItems}
+
           <Hidden smUp>
             <Fab onClick={toggleIsOpenModalOfNewList} className={fab} aria-label="add">
               <FontAwesomeIcon size="2x" icon={faPlus} color="white" />
@@ -659,41 +766,51 @@ const SupplyList: React.FC = () => {
         </Grid>
       </Container>
 
-      <CDialog
-        fullWidth={fullScreen}
-        isOpen={isOpenCalculator}
-        onCloseAlternate={(): void => setIsOpenCalculator(false)}
-        onOpenAltenate={(): void => setIsOpenCalculator(true)}
-        modalAlt={true}
-        hideAll={false}
-        hideSubmit={true}
-      >
-        <DialogContent>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignContent: 'center',
-              minWidth: `${fullScreen ? '0px' : '300px'}`,
-            }}
-          >
-            <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
-          </div>
-        </DialogContent>
-      </CDialog>
+      {isOpenCalculator && (
+        <div className={calculator}>
+          <Grid container className={calcContainer}>
+            <Grid item xs={12}>
+              <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              style={{
+                display: 'flex',
+                flexDirection: 'row-reverse',
+                background: 'white',
+                padding: 8,
+              }}
+            >
+              <Button
+                variant="outlined"
+                className={calcCloseBtn}
+                type="button"
+                disabled={isLoading ?? false}
+                onClick={() => {
+                  setIsOpenCalculator(false)
+                }}
+              >
+                {t('general.close')}
+              </Button>
+            </Grid>
+          </Grid>
+        </div>
+      )}
 
       <CDialog
         fullScreen={fullScreen}
         isOpen={isOpenModalOfNewList}
         onClose={(): void => {
-          setIsOpenModalOfNewList(false);
-          setCalculatedValue(0);
-          resetValues();
-          setSelectedDrug(null);
+          setIsOpenModalOfNewList(false)
+          setCalculatedValue(0)
+          resetValues()
+          setSelectedDrug(null)
+          setIsOpenCalculator(false)
         }}
         onOpen={(): void => {
-          setIsOpenModalOfNewList(true);
-          setCalculatedValue(0);
+          setIsOpenModalOfNewList(true)
+          setCalculatedValue(0)
         }}
         formHandler={formHandler}
         fullWidth
@@ -705,7 +822,7 @@ const SupplyList: React.FC = () => {
             </Grid>
             <Grid item xs={12}>
               <Divider />
-            </Grid>{' '}
+            </Grid>
             {comissionPercent !== '' && (
               <Grid item xs={12}>
                 <Grid item xs={12}>
@@ -762,7 +879,7 @@ const SupplyList: React.FC = () => {
                       className="w-100"
                       valueLimit={(value) => {
                         if (value.value > 0 || value.value === '') {
-                          return value;
+                          return value
                         }
                       }}
                       label={`${t('general.number')} ${t('drug.drug')}`}
@@ -785,13 +902,13 @@ const SupplyList: React.FC = () => {
                     className="w-100"
                     valueLimit={(value) => {
                       if (value.value > 0 || value.value === '') {
-                        return value;
+                        return value
                       }
                     }}
                     label={t('general.price')}
                     onChange={(e): void => {
-                      dispatch({ type: 'amount', value: e });
-                      setCalculatedValue(0);
+                      dispatch({ type: 'amount', value: e })
+                      setCalculatedValue(0)
                     }}
                   />
                 </Grid>
@@ -822,12 +939,12 @@ const SupplyList: React.FC = () => {
                       value={state?.offer2}
                       placeholder="تعداد"
                       onChange={(e): void => {
-                        const val = e.target.value;
+                        const val = e.target.value
                         if (Number(val) >= 1 || Number(state?.offer2) >= 1) {
                           dispatch({
                             type: 'offer2',
                             value: val,
-                          });
+                          })
                         }
                       }}
                     />
@@ -838,17 +955,31 @@ const SupplyList: React.FC = () => {
                       value={state?.offer1}
                       placeholder="تعداد"
                       onChange={(e): void => {
-                        const val = e.target.value;
+                        const val = e.target.value
                         if (Number(val) >= 1 || Number(state?.offer1) >= 1) {
                           dispatch({
                             type: 'offer1',
                             value: val,
-                          });
+                          })
                         }
                       }}
                     />
                     {t('general.gift')}
                   </Grid>
+                  {offerAlert && (
+                    <Grid xs={12}>
+                      <span style={{ color: '#17A2B8', fontSize: 12 }}>
+                        {t('alerts.offerAlertFirstPart')}
+                        <span style={{ color: 'red', fontSize: 13, fontWeight: 'bold' }}>
+                          {Number(state?.cnt) +
+                            Math.floor(
+                              (Number(state?.cnt) / Number(state?.offer2)) * Number(state?.offer1)
+                            )}
+                        </span>
+                        {t('alerts.offerAlertSecondPart')}
+                      </span>
+                    </Grid>
+                  )}
                 </Grid>
               </Grid>
 
@@ -873,12 +1004,12 @@ const SupplyList: React.FC = () => {
                       required
                       error={(selectedDay === '' && showError) || !dayIsValid(Number(selectedDay))}
                       onChange={(e): void => {
-                        const val = e.target.value;
+                        const val = e.target.value
                         if (selectedDay.length < 2 || val.length < 2) {
-                          setSelectedDay(e.target.value);
+                          setSelectedDay(val)
                         }
                         if (val.length === 2) {
-                          monthRef.current.focus();
+                          monthRef.current.focus()
                         }
                       }}
                     />
@@ -889,16 +1020,16 @@ const SupplyList: React.FC = () => {
                       ref={monthRef}
                       value={selectedMonth}
                       label={t('general.month')}
-                      // required
+                      required
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
                       // placeholder={'08'}
                       onChange={(e): void => {
-                        const val = e.target.value;
+                        const val = e.target.value
                         if (selectedMonth.length < 2 || val.length < 2) {
-                          setSelectedMonth(e.target.value);
+                          setSelectedMonth(val)
                         }
                         if (val.length === 2) {
-                          yearRef.current.focus();
+                          yearRef.current.focus()
                         }
                       }}
                     />
@@ -913,12 +1044,12 @@ const SupplyList: React.FC = () => {
                       // placeholder={'1401/2022'}
                       label={t('general.year')}
                       onChange={(e): void => {
-                        const val = e.target.value;
+                        const val = e.target.value
                         if (selectedYear.length < 4 || val.length < 4) {
-                          setSelectedYear(val);
+                          setSelectedYear(val)
                         }
                         if (val.length === 4) {
-                          batchRef.current.focus();
+                          batchRef.current.focus()
                         }
                       }}
                     />
@@ -988,9 +1119,9 @@ const SupplyList: React.FC = () => {
           </Grid>
         </DialogActions>
       </CDialog>
-      <BackDrop isOpen={isOpenBackDrop} />
+      <BackDrop isOpen={isOpenBackDrop || isLoadingPharmacyDrugs} />
     </>
-  );
-};
+  )
+}
 
-export default SupplyList;
+export default SupplyList

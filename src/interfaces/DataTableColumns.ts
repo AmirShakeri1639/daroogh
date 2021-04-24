@@ -21,7 +21,7 @@ export interface DataTableColumns {
   }) => React.ReactElement<any>;
 }
 
-export interface LookupFilter{
+export interface LookupFilter {
   code: number;
   name: string;
 }

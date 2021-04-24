@@ -33,7 +33,7 @@ export default {
         home: 'خانه',
         description: 'شرح',
         active: 'فعال',
-        deActive: 'غیرفعال',
+        inactive: 'غیرفعال',
         type: 'نوع',
         pleaseWait: 'لطفا صبر کنید',
         cancel: 'انصراف',
@@ -131,6 +131,12 @@ export default {
         new: 'جدید',
         dr: 'دکتر',
         view: 'مشاهده',
+        call: 'تماس',
+        minimum: 'کمترین',
+        maximum: 'بیشترین',
+        nearest: 'نزدیکترین',
+        farthest: 'دورترین',
+        primitive: 'اولیه'
       },
 
       pack: {
@@ -202,6 +208,7 @@ export default {
         login: 'ورود',
         exit: 'خروج',
         signOut: 'خروج از حساب کاربری',
+        confirmSignOut: 'برای خروج اطمینان دارید؟',
         'login-sub': 'وارد حساب کاربری خود شوید',
         'forgot-password': 'رمز عبور را فراموش کرده‌اید؟',
         'sign-up': 'عضویت',
@@ -244,6 +251,7 @@ export default {
         'remove-user': 'حذف کاربر',
         changeUserPassword: 'تغییر رمز عبور کاربر',
         passwordHelperText: 'گذرواژه شامل حروف انگلیسی اعداد و حداقل ۸ کاراکتر باشد.',
+        newPassword: 'رمز عبور جدید',
         admin: 'ادمین',
         goldUser: 'کاربر طلایی',
         silverUser: 'کاربر نقره ای',
@@ -394,12 +402,18 @@ export default {
         waitingForYourConfirmation: 'تبادل‌های در انتظار',
         exchangesWithFavorites: 'سبدهای شامل علاقمندی',
         searchDrugPlaceHolder: 'عبارت را وارد کرده و سپس کلید اینتر را بزنید',
+        fromYours: 'از سبد شما',
+        fromOthers: 'از سبد طرف مقابل',
+        aiSuggestion: 'انتخاب توسط هوش مصنوعی',
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
         addToCategoryList: 'اضافه کردن دسته بندی به لیست علاقه مندی',
       },
       alert: {
+        attention: 'توجه',
+        confirm: 'باشه',
+        cancel: 'بی خیال',
         disableTextAlert: 'آیا می خواهید غیرفعال شود؟',
         enableTextAlert: 'آیا میخواهید فعال شود؟',
         successfulDisableTextMessage: 'با موفقیت غیرفعال شد',
@@ -422,6 +436,7 @@ export default {
         failed: 'عملیات با خطا مواجه شد!',
         done: 'با موفقیت انجام شد.',
         cancelConfirm: 'آیا از لغو این مورد مطمئن هستید؟',
+        aiSuggestion: 'آیا به هوش مصنوعی داروگ اجازه پیشنهاد از سبد خودتان را می‌دهید؟',
       },
       pharmacy: {
         pharmacy: 'داروخانه',
@@ -548,6 +563,7 @@ export default {
       },
       jobSearch: {
         jobSearch: 'کاریابی',
+        downloadResume: 'دانلود رزومه',
       },
       prescription: {
         prescription: 'نسخه',
@@ -773,7 +789,13 @@ export default {
         searchProduct:
           'برای جستجو حداقل سه کارکتر از نام یا نام ژنریک و یا نام انگلیسی محصول را وارد نمایید',
         cantEditProfile:
-          'از آنجا که امکان ویرایش اطلاعات داروخانه توسط شما مقدور نمی باشد٬ در صورت نیاز میتوانید با پشتیبانی تماس بگیرید',
+          'از آنجا که ویرایش اطلاعات داروخانه توسط شما مقدور نمی باشد٬ در صورت نیاز میتوانید با پشتیبانی تماس بگیرید',
+        offerAlertFirstPart:'طبق اعداد وارد شده، شما باید ',
+        offerAlertSecondPart: ' عدد از این محصول را به داروخانه مقابل تحویل دهید.',
+        chooseCloserDateAlert:'پورسانت بر مبنای تاریخ انقضا محاسبه میشود',
+        useAi:'هوش مصنوعی داروگ میتواند عملیات انتخاب از سبد عرضه شما را به صورت خودکار و بر اساس علایق داروخانه مقابل٬ انجام دهد. عملیات متعادل کردن سبدهای تبادل با درصد اختلاف مجاز نیز در صورت امکان صورت خواهد پذیرفت. ',
+        useAi2:'ضمنا شما میتوانید پس از این انتخاب نیز سبد خود را ویرایش نمایید و همیشه آیکن  ',
+        useAi3:'  در هر حالتی از انتخاب داروها برای چینش نهایی به کمک شما خواهد آمد'
       },
 
       widget: {
@@ -804,6 +826,11 @@ export default {
         delete: 'حذف',
         downloadCommitmentSample: 'دانلود فایل نمونه تعهدنامه',
         commitmentGuide: 'لطفا فایل نمونه را برای تعهدنامه دانلود نموده و تصویر آن را پس از پر کردن فرم ارسال فرمایید.',
+        state: {
+          None: 'در دست بررسی',
+          Confirmed: 'تایید',
+          UnConfirmed: 'عدم تایید',
+        }
       },
     },
   },

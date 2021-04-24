@@ -1,23 +1,17 @@
 import React, { useReducer, useState } from 'react';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
-import SearchBar from 'material-ui-search-bar';
 import {
   createStyles,
   Divider,
   Grid,
-  Button,
-  TextField,
   Input as SelectInput,
   FormControl,
-  InputLabel,
   Select,
   Checkbox,
   ListItemText,
   MenuItem,
   Container,
   Hidden,
-  Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   DialogContentText,
@@ -37,19 +31,20 @@ import {
   ActionInterface,
   DataTableCustomActionInterface,
   TableColumnInterface,
-} from '../../../../interfaces';
-import { RoleType, TextMessage } from '../../../../enum';
+} from 'interfaces';
+import { RoleType, TextMessage } from 'enum';
 import {
   errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
-  sweetAlert,
+  tSuccess,
   tError,
-} from '../../../../utils';
+  confirmSweetAlert,
+} from 'utils';
 import { useTranslation } from 'react-i18next';
 import { InitialNewUserInterface, NewUserData } from '../../../../interfaces/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faUserTag } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlus, faUserTag,
+} from '@fortawesome/free-solid-svg-icons';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import Modal from '../../../public/modal/Modal';
 import { PharmacyUsersEnum, RoleQueryEnum, UserQueryEnum } from '../../../../enum/query';
@@ -57,13 +52,12 @@ import DataTable from '../../../public/datatable/DataTable';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import { UrlAddress } from '../../../../enum/UrlAddress';
 import { NewPharmacyUserData } from '../../../../model';
-import { Role, User } from '../../../../services/api';
+import { Role, User } from 'services/api';
 import RoleForm from '../user/RoleForm';
 import CardContainer from './user/CardContainer';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import { debounce } from 'lodash';
 import CDialog from 'components/public/dialog/Dialog';
-import { tSuccess } from 'utils/toast';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -306,7 +300,7 @@ const UsersList: React.FC = () => {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      await successSweetAlert(t('alert.successfulRemoveTextMessage'));
+      tSuccess(t('alert.successfulRemoveTextMessage'));
       resetListRef();
     },
   });
@@ -324,7 +318,7 @@ const UsersList: React.FC = () => {
       ref.current?.onQueryChange();
       dispatch({ type: 'reset' });
       queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      await successSweetAlert(t('alert.successfulEditTextMessage'));
+      tSuccess(t('alert.successfulEditTextMessage'));
       resetListRef();
     },
   });
@@ -338,11 +332,11 @@ const UsersList: React.FC = () => {
       dispatch({ type: 'reset' });
       toggleIsOpenModalOfUser();
       ref.current?.onQueryChange();
-      await successSweetAlert(message || t('alert.successfulCreateTextMessage'));
+      tSuccess(message || t('alert.successfulCreateTextMessage'));
       resetListRef();
     },
     onError: async (data: any) => {
-      await errorSweetAlert(data || t('error.save'));
+      tError(data || t('error.save'));
     },
   });
 
@@ -352,7 +346,6 @@ const UsersList: React.FC = () => {
     formContent,
     userRoleIcon,
     fab,
-    searchIconButton,
     blankCard,
     contentContainer,
   } = useClasses();
@@ -480,8 +473,9 @@ const UsersList: React.FC = () => {
 
   const removeUserHandler = async (e: any, userRow: NewUserData): Promise<any> => {
     try {
-      if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
-        await _removeUser(userRow.id);
+      const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
+      if (removeConfirm) {
+          await _removeUser(userRow.id);
       }
     } catch (e) {
       errorHandler(e);
@@ -490,13 +484,10 @@ const UsersList: React.FC = () => {
 
   const disableUserHandler = async (item: any): Promise<any> => {
     try {
-      const confirmationText = t('alert.disableTextAlert');
-      if (window.confirm(confirmationText)) {
+      const confirmation = await confirmSweetAlert(t('alert.disableTextAlert'))
+      if (confirmation) {
         await _disableUser(item.id);
-        await sweetAlert({
-          type: 'success',
-          text: t('alert.successfulDisableTextMessage'),
-        });
+        tSuccess(t('alert.successfulDisableTextMessage'));
         resetDisableUser();
       }
     } catch (e) {
@@ -505,7 +496,8 @@ const UsersList: React.FC = () => {
   };
 
   const enableUserHandler = async (user: InitialNewUserInterface): Promise<any> => {
-    if (!window.confirm(t('alert.enableTextAlert'))) {
+    const enableText = await confirmSweetAlert(t('alert.enableTextAlert'))
+    if (!enableText) {
       return;
     }
     const {
@@ -592,7 +584,8 @@ const UsersList: React.FC = () => {
   });
 
   const removeAllRoles = async (row: any): Promise<any> => {
-    if (window.confirm('آیا از حدف همه نقش های کاربر مطمدن هستید؟')) {
+    const confirmed = await confirmSweetAlert('آیا از حدف همه نقش های کاربر مطمدن هستید؟')
+    if (confirmed) {
       try {
         await _remove(row.id);
         ref.current?.onQueryChange();
@@ -635,7 +628,6 @@ const UsersList: React.FC = () => {
   };
   const contentGenerator = (): JSX.Element[] | null => {
     if (!isLoading && list !== undefined && isFetched) {
-      console.log(data);
       return listRef.current.map((item: any) => {
         //const { user } = item;
         //if (user !== null) {
@@ -676,11 +668,9 @@ const UsersList: React.FC = () => {
     () => getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoDataRef(true);
         } else {
-          //console.log(result.items);
           setListRef(result.items);
         }
       },
@@ -696,7 +686,6 @@ const UsersList: React.FC = () => {
 
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current);
-    // console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoDataRef(true);
     }
@@ -731,7 +720,6 @@ const UsersList: React.FC = () => {
     if (!noDataRef.current && checkDevice) {
       const currentpage = pageRef.current + 1;
       setPageRef(currentpage);
-      console.log(pageRef.current);
       getList();
     }
   };

@@ -7,18 +7,14 @@ import {
   CardActions,
   CardContent,
   CardHeader,
-  Container,
   createStyles,
   Divider,
   Grid,
   IconButton,
   makeStyles,
-  Tooltip,
 } from '@material-ui/core';
-import { useClasses } from '../classes';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import PharmacyDrug from 'services/api/PharmacyDrug';
-import { errorHandler, sweetAlert } from 'utils';
+import { errorHandler, tSuccess } from 'utils';
 import routes from 'routes';
 import { useHistory } from 'react-router-dom';
 import Modal from 'components/public/modal/Modal';
@@ -136,10 +132,7 @@ const SearchInAList: React.FC = () => {
   const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
     onSuccess: async (res) => {
       if (res) {
-        await sweetAlert({
-          type: 'success',
-          text: res.message,
-        });
+        tSuccess(res.message);
         history.push(desktop);
       }
     },

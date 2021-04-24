@@ -27,5 +27,6 @@ export interface PharmacyInfo {
     workTimeString: string;
     logoFileKey: string;
     activeString: string;
+    pharmacyProvince:string;
   };
 }

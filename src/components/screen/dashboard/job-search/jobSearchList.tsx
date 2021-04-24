@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { EmploymentApplication, File } from '../../../../services/api';
 import CardContainer from './CardContainer';
 
-import { errorHandler, isNullOrEmpty, successSweetAlert } from '../../../../utils';
+import { confirmSweetAlert, errorHandler, isNullOrEmpty, tSuccess } from 'utils';
 import { DataTableCustomActionInterface } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
@@ -12,15 +12,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faInfoCircle, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
-import { getJalaliDate } from '../../../../utils/jalali';
-import FormContainer from '../../../public/form-container/FormContainer';
 import {
-  Box,
   Button,
   Container,
   createStyles,
-  Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
@@ -31,10 +26,8 @@ import {
 } from '@material-ui/core';
 import { ColorEnum, EmploymentApplicationEnum } from '../../../../enum';
 import FileLink from '../../../public/picture/fileLink';
-import { api } from '../../../../config/default.json';
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 import SearchBar from 'material-ui-search-bar';
-import { TrendingUpRounded } from '@material-ui/icons';
 import { debounce } from 'lodash';
 import CDialog from 'components/public/dialog/Dialog';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
@@ -119,12 +112,14 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
                 body={readingPrescriptionCertificateStr}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {gradeOfReadingPrescriptionCertificate !== 0 && (
+              <Grid item xs={12} sm={6}>
               <TextWithTitle
                 title={t('employment.gradeOfReadingPrescriptionCertificate')}
-                body={gradeOfReadingPrescriptionCertificate}
+                body={gradeOfReadingPrescriptionCertificate }
               />
             </Grid>
+            )}
             <Grid item xs={12} sm={6}>
               <TextWithTitle title={t('employment.workExperience')} body={workExperienceYear} />
             </Grid>
@@ -166,7 +161,16 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextWithTitle title={t('general.mobile')} body={mobile} />
+              <TextWithTitle title={t('general.mobile')} body={
+                <a
+                onClick={(e: any): any => {
+                  e.stopPropagation()
+                }}
+                href={'tel:' + mobile}
+              >
+                {mobile}
+              </a>
+              } />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextWithTitle title={t('general.landlinePhone')} body={landlinePhone} />
@@ -271,13 +275,14 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     onSuccess: async () => {
       ref.current?.onQueryChange();
       await queryCache.invalidateQueries(EmploymentApplicationEnum.GET_ALL);
-      await successSweetAlert(t('alert.done'));
+      tSuccess(t('alert.done'));
     },
   });
 
   const cancelHandler = async (row: any): Promise<any> => {
     try {
-      if (window.confirm(t('alert.cancelConfirm'))) {
+      const cancelConfirm = await confirmSweetAlert(t('alert.cancelConfirm'))
+      if (cancelConfirm) {
         await _cancel(row.id);
       }
     } catch (e) {
@@ -323,12 +328,9 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     () => all(pageRef.current, 10, [], searchRef.current),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoDataRef(true);
         } else {
-          // console.log(result.items);
-
           setListRef(result.items);
         }
       },
@@ -344,7 +346,6 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
 
   async function getList(refresh: boolean = false): Promise<any> {
     const result = await all(pageRef.current, 10, [], searchRef.current);
-    //console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoDataRef(true);
     }
@@ -380,7 +381,6 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
     if (!noDataRef.current && checkDevice) {
       const currentpage = pageRef.current + 1;
       setPageRef(currentpage);
-      console.log(pageRef.current);
       getList();
     }
   };

@@ -62,6 +62,12 @@ export interface PermissionItemsInterface {
   permissionItems: PermissionItemInterface[];
 }
 
+export interface CommandInterface {
+  title: string
+  method: (e: any) => void
+  color?: string
+}
+
 export type { DrugInterface } from './DrugInterface';
 export type { CategoryInterface } from './CategoryInterface';
 export type { 
@@ -99,6 +105,7 @@ export type { ProfileInterface } from './profile';
 export type { JobInterface } from './JobInterface';
 export type { JobApplicationInterface } from './JobApplicationInterface';
 export type { WidgetInterface } from './WidgetInterface';
+export type { DataTableColumns, LookupFilter } from './DataTableColumns';
 
 export * from './component';
 export * from './general';

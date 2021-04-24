@@ -20,9 +20,10 @@ import {
 import Input from '../../../public/input/Input';
 import CircleLoading from '../../../public/loading/CircleLoading';
 import {
+  confirmSweetAlert,
   errorHandler,
   tSuccess,
-} from '../../../../utils';
+} from 'utils';
 import { useTranslation } from 'react-i18next';
 import { useClasses } from '../classes';
 import {
@@ -367,7 +368,8 @@ const JobsList: React.FC = () => {
 
   const removeHandler = async (row: JobInterface): Promise<any> => {
     try {
-      if (window.confirm(t('alert.cancelConfirm'))) {
+      const cancelConfirm = await confirmSweetAlert(t('alert.cancelConfirm'))
+      if (cancelConfirm) {
         await _cancel(row.id);
         ref.current?.onQueryChange();
       }
@@ -377,8 +379,9 @@ const JobsList: React.FC = () => {
   };
 
   const toggleConfirmHandler = async (row: JobInterface): Promise<any> => {
-    if (window.confirm(t('alert.cancelConfirm'))) {
-      try {
+    const cancelConfirm = await confirmSweetAlert(t('alert.cancelConfirm'))
+    if (cancelConfirm) {
+    try {
         await _cancel(row.id);
         ref.current?.onQueryChange();
       } catch (e) {
@@ -599,12 +602,9 @@ const JobsList: React.FC = () => {
     () => all(pageRef.current, 10),
     {
       onSuccess: (result) => {
-        console.log(result);
         if (result == undefined || result.count == 0) {
           setNoDataRef(true);
         } else {
-          //console.log(result.items);
-
           setListRef(result.items);
         }
       },
@@ -620,7 +620,6 @@ const JobsList: React.FC = () => {
 
   async function getList(): Promise<any> {
     const result = await all(pageRef.current, 10);
-    console.log(result.items);
     if (result == undefined || result.items.length == 0) {
       setNoDataRef(true);
     } else {
@@ -655,7 +654,6 @@ const JobsList: React.FC = () => {
     if (!noDataRef.current && checkDevice) {
       const currentpage = pageRef.current + 1;
       setPageRef(currentpage);
-      console.log(pageRef.current);
       getList();
     }
   };
@@ -758,7 +756,7 @@ const JobsList: React.FC = () => {
                       onChange={ (e): void =>
                         dispatch({
                           type: 'minGradeOfReadingPrescriptionCertificate',
-                          value: e.target.value,
+                          value: e,
                         })
                       }
                     />
@@ -780,7 +778,7 @@ const JobsList: React.FC = () => {
                       onChange={ (e): void =>
                         dispatch({
                           type: 'minWorkExperienceYear',
-                          value: e.target.value,
+                          value: e,
                         })
                       }
                     />
@@ -935,7 +933,7 @@ const JobsList: React.FC = () => {
                       required
                       label={ t('jobs.maxAge') }
                       value={ state?.maxAge }
-                      onChange={ (e): void => dispatch({ type: 'maxAge', value: e.target.value }) }
+                      onChange={ (e): void => dispatch({ type: 'maxAge', value: e }) }
                     />
                   </Grid>
                 </Grid>

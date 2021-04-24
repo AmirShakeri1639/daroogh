@@ -4,19 +4,9 @@ import {
   Container,
   createStyles,
   Grid,
-  IconButton,
   Paper,
-  Card,
-  CardHeader,
-  CardContent,
   Divider,
-  TextField,
   Button,
-  CardActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Dialog,
   DialogActions,
   DialogContent,
@@ -25,16 +15,14 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import Input from '../../../public/input/Input';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import DataTable from '../../../public/datatable/DataTable';
-import Modal from '../../../public/modal/Modal';
 import { ActionInterface, LabelValue } from '../../../../interfaces';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import Category from '../../../../services/api/Category';
 import { useMutation, useQueryCache } from 'react-query';
-import { errorHandler, sweetAlert } from '../../../../utils';
+import { confirmSweetAlert, errorHandler, tSuccess } from 'utils';
 import { useTranslation } from 'react-i18next';
 import { TextMessage } from '../../../../enum';
 import CircleLoading from '../../../public/loading/CircleLoading';
@@ -219,10 +207,9 @@ const CategoryList: React.FC = () => {
   const [_saveNewCategory, { isLoading: isLoadingNewCategory }] = useMutation(saveCategory, {
     onSuccess: async () => {
       dispatch({ type: 'reset' });
-      await sweetAlert({
-        type: 'success',
-        text: t('alert.successfulCreateTextMessage'),
-      });
+      tSuccess(
+        t('alert.successfulCreateTextMessage')
+      );
     },
   });
 
@@ -238,10 +225,7 @@ const CategoryList: React.FC = () => {
   const [_editCategory, { isLoading: loadingEditCategory }] = useMutation(saveCategory, {
     onSuccess: async (data) => {
       const { message } = data;
-      await sweetAlert({
-        type: 'success',
-        text: message,
-      });
+      tSuccess(message);
       ref.current?.onQueryChange();
     },
   });
@@ -265,12 +249,10 @@ const CategoryList: React.FC = () => {
   const onHandleRemoveRow = async (row: CategoriesInterface): Promise<void> => {
     const { id } = row;
     try {
-      if (window.confirm(TextMessage.REMOVE_TEXT_ALERT)) {
+      const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
+      if (removeConfirm) {
         await _removeCategory(id);
-        await sweetAlert({
-          type: 'success',
-          text: TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE,
-        });
+        tSuccess(TextMessage.SUCCESS_REMOVE_TEXT_MESSAGE);
         resetRemoveCategory();
         ref.current?.loadItems();
       }

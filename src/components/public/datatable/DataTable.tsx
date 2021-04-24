@@ -2,7 +2,7 @@ import React, { createRef, useState, forwardRef, useEffect } from 'react'
 import MaterialTable, { MTableToolbar } from 'material-table'
 import { DataTableProps } from '../../../interfaces'
 import { useQueryCache } from 'react-query'
-import { sweetAlert } from '../../../utils'
+import { tError } from 'utils'
 import { useTranslation } from 'react-i18next'
 import localization from './localization'
 import {
@@ -30,6 +30,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import XLSX from 'xlsx'
 import { tSimple, tSuccess, tInfo, tWarn } from 'utils'
 import { screenWidth } from 'enum'
+import { getBaseUrl } from 'config'
 
 const exportToExcel = async (columns: any[], data: any[], type: number, url: string) => {
   const columnInfo = columns.reduce(
@@ -62,10 +63,9 @@ const exportToExcel = async (columns: any[], data: any[], type: number, url: str
         })
         .catch(
           async (error: any): Promise<any> => {
-            await sweetAlert({
-              type: 'error',
-              text: 'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
-            })
+            tError(
+              'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.'
+            )
             mappedData = []
           }
         )
@@ -360,7 +360,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         columns={columns}
         data={(query): any =>
           new Promise((resolve, reject) => {
-            let url = UrlAddress.baseUrl + urlAddress
+            let url = getBaseUrl() + urlAddress
             if (url.includes('?'))
               url += `&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
             else url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
@@ -425,11 +425,9 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
                 })
                 .catch(
                   async (error: any): Promise<any> => {
-                    await sweetAlert({
-                      type: 'error',
-                      text:
-                        'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.',
-                    })
+                    tError(
+                      'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.'
+                    )
                     resolve({
                       data: [],
                       page: 0,
@@ -507,7 +505,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
                 tableRef.current.dataManager.columns,
                 tableRef.current.dataManager.data,
                 option.type,
-                UrlAddress.baseUrl + urlAddress
+                getBaseUrl() + urlAddress
               )
               handleExportClose()
             }}

@@ -88,7 +88,7 @@ const reducer = (state: typeof initialData, action: Action): any => {
         showRepeatNewPassword: !state.showRepeatNewPassword,
       };
     default:
-      console.log(` ==> action.type ==> `, action.type);
+      console.warn(` ==> action.type ==> `, action.type);
   }
 };
 

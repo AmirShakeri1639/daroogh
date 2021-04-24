@@ -7,10 +7,11 @@ import moment from 'jalali-moment';
 
 interface Props {
   exchangeId: number | string;
+  showBorder? :boolean;
 }
 
 const ExchangeTree: React.FC<Props> = (props) => {
-  const { exchangeId } = props;
+  const { exchangeId , showBorder } = props;
 
   const { t } = useTranslation();
   const [dataList, setDataList] = useState<ViewExchangeInterface>();
@@ -61,7 +62,7 @@ const ExchangeTree: React.FC<Props> = (props) => {
 
   return (
     <>
-      <ExchangeTreeCard
+      <ExchangeTreeCard showBorder={showBorder}
         title={`${t('exchange.exchangeStartWith')} ${nameSuffix('A')}`}
         date={
           dataList?.sendDate == null
@@ -72,7 +73,7 @@ const ExchangeTree: React.FC<Props> = (props) => {
         }
         isYou={side}
       />
-      <ExchangeTreeCard
+      <ExchangeTreeCard showBorder={showBorder}
         title={`${
           dataList?.viewDateB == null
             ? t('exchange.exchangeViewWith')
@@ -88,7 +89,7 @@ const ExchangeTree: React.FC<Props> = (props) => {
         isYou={side}
       />
       {dataList?.cancelDate && (
-        <ExchangeTreeCard
+        <ExchangeTreeCard showBorder={showBorder}
           title={`${t('exchange.exchangeCanceledWith')} ${nameSuffix('A')}`}
           date={
             dataList?.cancelDate == null
@@ -100,7 +101,7 @@ const ExchangeTree: React.FC<Props> = (props) => {
           isYou={side}
         />
       )}
-      <ExchangeTreeCard
+      <ExchangeTreeCard showBorder={showBorder}
         title={`${
           dataList?.confirmB && dataList?.confirmB === true
             ? t('exchange.exchangeConfirmedWith')
@@ -118,7 +119,7 @@ const ExchangeTree: React.FC<Props> = (props) => {
         isYou={side}
       />
       {!isAutoConfirmed && (
-        <ExchangeTreeCard
+        <ExchangeTreeCard showBorder={showBorder}
           title={`${
             dataList?.viewDateA == null
               ? t('exchange.exchangeViewWith')
@@ -134,7 +135,7 @@ const ExchangeTree: React.FC<Props> = (props) => {
           isYou={side}
         />
       )}
-      <ExchangeTreeCard
+      <ExchangeTreeCard showBorder={showBorder}
         title={`${
           isAutoConfirmed
             ? `${t(

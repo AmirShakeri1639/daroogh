@@ -16,7 +16,7 @@ import { queryCache, useMutation } from 'react-query';
 import { useClasses } from '../classes';
 import { ActionInterface } from '../../../../interfaces';
 import { useTranslation } from 'react-i18next';
-import { errorHandler, sweetAlert } from '../../../../utils';
+import { errorHandler, tError, tSuccess } from '../../../../utils';
 import { DaroogDropdown } from '../../../public/daroog-dropdown/DaroogDropdown';
 import { WorkTimeEnum } from '../../../../enum';
 import { DefaultCountryDivisionID } from '../../../../enum/consts';
@@ -150,17 +150,11 @@ const CreatePharmacy: React.FC = () => {
   const [_save] = useMutation(save, {
     onSuccess: async (data: any) => {
       await queryCache.invalidateQueries('pharmaciesList');
-      await sweetAlert({
-        type: 'success',
-        text: data.message || t('alert.successfulSave'),
-      });
+      tSuccess(data.message || t('alert.successfulSave'));
       dispatch({ type: 'reset' });
     },
     onError: async () => {
-      await sweetAlert({
-        type: 'error',
-        text: t('error.save'),
-      });
+      tError(t('error.save'));
     },
   });
 

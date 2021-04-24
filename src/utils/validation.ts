@@ -1,3 +1,4 @@
+import Utils from 'components/public/utility/Utils';
 import jwt from 'jsonwebtoken';
 
 class Validation {
@@ -14,14 +15,19 @@ class Validation {
   }
 
   isValidaMobileNumber(mobileNumber: string): boolean {
-    const regex = /^09\d{9}$/g;
+    mobileNumber = Utils.fixNumbers(mobileNumber);
+    const regex = /^09\d{9}|9\d{9}$/g;
+
     return regex.test(mobileNumber);
   }
 
   isValidOtpCode(code: string): boolean {
+    code = Utils.fixNumbers(code);
     const regex = /^\d{4}$/g;
     return regex.test(code);
   }
+
+
 }
 
 export default Validation;

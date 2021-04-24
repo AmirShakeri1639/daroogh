@@ -31,40 +31,58 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
     },
     detailText:{
       color:'black',
-      fontSize:`${isSmallDevice?'10px':'13px'}`
+      fontSize:`${isSmallDevice?'10px':'12px'}`,
+      fontWeight:'bold'
+
     }
   })
 );
   const {t} = useTranslation();
 
 
-  const { offer1, offer2, drugGenericName ,price,expireDate } = props;
+  const { offer1, offer2, drugGenericName ,price,expireDate,cnt } = props;
 
   const { box,detailText, titleContainer } = useStyle();
 
 
   return (
-    <Grid container className={box}>
-        <Grid item xs={12} className={titleContainer}>
-        <span className={detailText}>{drugGenericName}</span>
+    <Grid container className={ box }>
+      <Grid item xs={ 12 } className={ titleContainer }>
+        <span className={ detailText }>{ drugGenericName }</span>
+      </Grid>
+      <Grid xs={ 12 } item container>
+        <Grid item xs={ 6 } sm={ 3 }>
+          <ShowOffer isSmall={ true } offer1={ offer1 } offer2={ offer2 } />
         </Grid>
-        <Grid xs={12} item container>
-          <Grid xs={4}>
-            <ShowOffer isSmall={true} offer1={offer1} offer2={offer2}/>
-          </Grid>
-          <Grid xs={4}>
-          <TextWithTitle isSmal={true} title='انقضا' body={convertISOTime(expireDate) } dateSuffix={Utils.getExpireDays(expireDate)} showDateSuffix={!isSmallDevice} />
-
-            </Grid>
-            <Grid xs={4}>
-            <TextWithTitle isSmal={true} title={t('general.price')} body={thousandsSeperator(price) } suffix={t('general.defaultCurrency')}/>
-
-            </Grid>
+        <Grid item xs={ 6 } sm={ 3 }>
+          <TextWithTitle 
+            isSmal={ true } 
+            title='انقضا' 
+            body={ convertISOTime(expireDate) } 
+            dateSuffix={ Utils.getExpireDays(expireDate) } 
+            showDateSuffix={ !isSmallDevice } 
+          />
         </Grid>
-        <Grid xs={12}>
-                  <Divider/>
-
+        <Grid item xs={ 6 } sm={ 3 }>
+          <TextWithTitle 
+            isSmal={ true } 
+            title={ t('general.price') } 
+            body={ thousandsSeperator(price) } 
+            suffix={ t('general.defaultCurrency') } 
+          />
         </Grid>
+
+        <Grid item xs={ 6 } sm={ 3 }>
+          <TextWithTitle
+            isSmal={ true } 
+            title={ t('general.number') } 
+            body={ thousandsSeperator(cnt) } 
+          />
+        </Grid>
+      </Grid>
+      <Grid item xs={ 12 }>
+        <Divider />
+      </Grid>
     </Grid>
   );
 };
