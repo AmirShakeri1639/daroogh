@@ -32,6 +32,8 @@ import { setTransferEnd } from '../../../../../redux/actions'
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading'
 import { ColorEnum } from 'enum'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Exchange } from 'services/api'
+import { errorHandler, tError, tInfo, tSuccess } from 'utils'
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -122,6 +124,9 @@ const Tab2: React.FC = () => {
     uBasketCount,
     selectedPharmacyForTransfer,
     lockedAction,
+    viewExhcnage,
+    needRefresh,
+    setNeedRefresh,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext)
 
   const theme = useTheme()
@@ -409,8 +414,20 @@ const Tab2: React.FC = () => {
       </div>
     )
   }
-  const [showAiAlert, setShowAiAlert] = useState<boolean>(true)
-  const toggleShowAiAlert = (): void => setShowAiAlert((v) => !v)
+  const [showAiAlert, setShowAiAlert] = useState<boolean>(
+    viewExhcnage.currentPharmacyIsA &&
+    !viewExhcnage.lockAction &&
+    uBasketCount.length == 0
+  )
+  
+  const { callAiSuggestion } = new Exchange()
+  const aiSuggestion = async (): Promise<any> => {
+    setShowAiAlert(false)
+    const aiSugg = await callAiSuggestion(viewExhcnage.id)
+    tSuccess(aiSugg.data.message)
+    // @ts-ignore
+    setNeedRefresh(true)
+  }
 
   return (
     <>
@@ -443,12 +460,16 @@ const Tab2: React.FC = () => {
                 className={submitBtn}
                 type="button"
                 disabled={isLoading ?? false}
-                onClick={toggleShowAiAlert}
+                onClick={ async (e: any): Promise<any> => {
+                  await aiSuggestion()
+                }}
               >
                 انتخاب توسط هوش مصنوعی
               </Button>
 
-              <Button variant="outlined" className={cancelButton} onClick={toggleShowAiAlert}>
+              <Button variant="outlined" className={cancelButton} 
+                onClick={(): void => setShowAiAlert(false)}
+              >
                 خودم انتخاب میکنم
               </Button>
             </Grid>
