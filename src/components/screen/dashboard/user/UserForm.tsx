@@ -30,6 +30,7 @@ import { debounce } from 'lodash'
 import { Search } from '../../../../services/api'
 import { _PharmacyTypeEnum } from '../../../../enum'
 import { SearchPharmacyInterface } from '../../../../interfaces/search'
+import NumberField from 'components/public/TextField/NumberField'
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -187,7 +188,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
 
         setOptions([])
         tSuccess(
-          message || t('alert.successfulCreateTextMessage')
+          message || t('alert.successfulSave')
         )
         if (onSubmit) {
           onSubmit()
@@ -208,7 +209,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
     return (
       name.trim().length < 2 ||
       family.trim().length < 2 ||
-      mobile.trim().length < 11 ||
+      mobile.length < 11 ||
       (email !== null && !email !== undefined && email !== '' &&
         !emailRegex.test(email?.toLowerCase())) ||
       userName.trim().length < 1 ||
@@ -305,11 +306,11 @@ const UserForm: React.FC<UserDataProps> = (props) => {
             />
           </Grid>
           <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
-            <TextField
+            <NumberField
               className="w-100"
               error={ state.mobile.trim().length < 11 && showError }
               label="موبایل"
-              type="number"
+              maxLength={ 11 }
               size="small"
               variant="outlined"
               value={ state.mobile }
@@ -372,7 +373,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
             </Grid>
           ) }
           <Grid item xs={ 12 } sm={ 6 } xl={ 3 }>
-            <TextField
+            <NumberField
               error={
                 state?.nationalCode !== null && 
                 state?.nationalCode !== undefined  &&
@@ -382,7 +383,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
               }
               label="کد ملی"
               className="w-100"
-              type="text"
+              maxLength={ 10 }
               size="small"
               variant="outlined"
               value={ state.nationalCode }
