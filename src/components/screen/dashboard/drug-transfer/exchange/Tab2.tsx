@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react'
 import {
   createStyles,
   Dialog,
@@ -6,28 +6,34 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   Grid,
   makeStyles,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
-import { default as MatButton } from '@material-ui/core/Button';
-import NewCardContainer from '../exchange/NewCardContainer';
-import NewExCardContent from '../exchange/NewExCardContent';
-import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
-import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery } from 'react-query';
-import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
-import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
-import SearchInAList from '../SearchInAList';
-import CircleLoading from '../../../../public/loading/CircleLoading';
-import sweetAlert from '../../../../../utils/sweetAlert';
-import { useLocation } from 'react-router-dom';
-import queryString from 'query-string';
-import { useDispatch } from 'react-redux';
-import { setTransferEnd } from '../../../../../redux/actions';
-import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
-import { ColorEnum } from 'enum';
+  Button,
+} from '@material-ui/core'
+import { faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
+import { default as MatButton } from '@material-ui/core/Button'
+import NewCardContainer from '../exchange/NewCardContainer'
+import NewExCardContent from '../exchange/NewExCardContent'
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context'
+import { useTranslation } from 'react-i18next'
+import { useMutation, useQuery } from 'react-query'
+import PharmacyDrug from '../../../../../services/api/PharmacyDrug'
+import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface'
+import SearchInAList from '../SearchInAList'
+import CircleLoading from '../../../../public/loading/CircleLoading'
+import sweetAlert from '../../../../../utils/sweetAlert'
+import { useLocation } from 'react-router-dom'
+import queryString from 'query-string'
+import { useDispatch } from 'react-redux'
+import { setTransferEnd } from '../../../../../redux/actions'
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading'
+import { ColorEnum } from 'enum'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Exchange } from 'services/api'
+import { errorHandler, tError, tInfo, tSuccess } from 'utils'
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -64,6 +70,9 @@ const style = makeStyles((theme) =>
       top: 60,
       zIndex: 999,
     },
+    notStickySearch: {
+      marginBottom: 18,
+    },
     stickySearch: {
       position: 'sticky',
       top: '0',
@@ -81,26 +90,28 @@ const style = makeStyles((theme) =>
       marginTop: 5,
       width: '100%',
     },
+
     cancelButton: {
-      width: '100%',
+      fontSize: 12,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
-    confirmButton: {
-      width: '100%',
+    submitBtn: {
+      fontSize: 12,
+      margin: 4,
+      border: `1px solid ${ColorEnum.DeepBlue}`,
     },
-    cancelButton4: {
-      width: '50%',
-      marginRight: 10,
-    },
-    confirmButton4: {
-      width: '50%',
-      marginLeft: 10,
+    aiAlertContainer: {
+      border: `2px dotted ${ColorEnum.DeepBlue}`,
+      padding: 8,
+      fontSize: 13,
     },
   })
-);
+)
 
 const Tab2: React.FC = () => {
-  const { getAllPharmacyDrug } = new PharmacyDrug();
-  const { t } = useTranslation();
+  const { getAllPharmacyDrug } = new PharmacyDrug()
+  const { t } = useTranslation()
 
   const {
     activeStep,
@@ -113,35 +124,38 @@ const Tab2: React.FC = () => {
     uBasketCount,
     selectedPharmacyForTransfer,
     lockedAction,
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+    viewExhcnage,
+    needRefresh,
+    setNeedRefresh,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext)
 
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  const { cancelExchange } = new PharmacyDrug();
-  const dispatch = useDispatch();
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { cancelExchange } = new PharmacyDrug()
+  const dispatch = useDispatch()
 
   const comparer = (otherArray: any): any => {
     return (current: any): any => {
       if (current.packID)
         return (
           otherArray.filter((other: any) => {
-            return other.packID == current.packID;
+            return other.packID == current.packID
           }).length == 0
-        );
+        )
       else
         return (
           otherArray.filter((other: any) => {
-            return other.id == current.id;
+            return other.id == current.id
           }).length == 0
-        );
-    };
-  };
+        )
+    }
+  }
 
   useEffect(() => {
     return (): void => {
-      dispatch(setTransferEnd());
-    };
-  }, []);
+      dispatch(setTransferEnd())
+    }
+  }, [])
 
   const [] = useMutation(cancelExchange, {
     onSuccess: async (res) => {
@@ -149,150 +163,134 @@ const Tab2: React.FC = () => {
         await sweetAlert({
           type: 'success',
           text: res.message,
-        });
+        })
       } else {
         await sweetAlert({
           type: 'error',
           text: 'عملیات ناموفق',
-        });
+        })
       }
     },
-  });
+  })
 
-  const { paper, stickySearch } = style();
+  const {
+    paper,
+    stickySearch,
+    notStickySearch,
+    cancelButton,
+    submitBtn,
+    aiAlertContainer,
+  } = style()
 
-  const [listPageNo] = useState(0);
-  const [pageSize] = useState(10);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [listPageNo] = useState(0)
+  const [pageSize] = useState(10)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { isLoading, refetch } = useQuery(
     ['key'],
     () => {
-      setLoading(true);
-      return getAllPharmacyDrug(
-        '',
-        listPageNo,
-        pageSize
-      );
+      setLoading(true)
+      return getAllPharmacyDrug('', listPageNo, pageSize)
     },
     {
       onSuccess: (data) => {
-        const items: AllPharmacyDrugInterface[] = data.items;
-        const newItems: AllPharmacyDrugInterface[] = [];
-        const packList = new Array<AllPharmacyDrugInterface>();
+        const items: AllPharmacyDrugInterface[] = data.items
+        const newItems: AllPharmacyDrugInterface[] = []
+        const packList = new Array<AllPharmacyDrugInterface>()
         items.forEach((item) => {
-          let ignore = false;
+          let ignore = false
           if (item.packID) {
-            let totalAmount = 0;
+            let totalAmount = 0
             if (!packList.find((x) => x.packID === item.packID)) {
-              if (!item.packDetails) item.packDetails = [];
+              if (!item.packDetails) item.packDetails = []
               items
                 .filter((x) => x.packID === item.packID)
                 .forEach((p: AllPharmacyDrugInterface) => {
-                  item.packDetails.push(p);
-                  packList.push(p);
-                  totalAmount += p.amount * p.cnt;
-                });
-              item.totalAmount = totalAmount;
-              newItems.push(item);
+                  item.packDetails.push(p)
+                  packList.push(p)
+                  totalAmount += p.amount * p.cnt
+                })
+              item.totalAmount = totalAmount
+              newItems.push(item)
             } else {
-              ignore = true;
+              ignore = true
             }
           } else {
-            if (!ignore) newItems.push(item);
+            if (!ignore) newItems.push(item)
           }
-        });
-        setUAllPharmacyDrug(newItems);
-        setOrgUAllPharmacyDrug(newItems);
-        setLoading(false);
+        })
+        setUAllPharmacyDrug(newItems)
+        setOrgUAllPharmacyDrug(newItems)
+        setLoading(false)
       },
       enabled: false,
     }
-  );
+  )
 
-  const location = useLocation();
-  const params = queryString.parse(location.search);
-
-  useEffect(() => {
-    setActiveStep(2);
-  }, []);
+  const location = useLocation()
+  const params = queryString.parse(location.search)
 
   useEffect(() => {
-    const id = params.eid == null ? undefined : params.eid;
-    if (id !== undefined && !selectedPharmacyForTransfer) return;
-    if (lockedAction) refetch();
-  }, [selectedPharmacyForTransfer]);
+    setActiveStep(2)
+  }, [])
 
-  const [concatList, setConcatList] = useState<AllPharmacyDrugInterface[]>([]);
+  useEffect(() => {
+    const id = params.eid == null ? undefined : params.eid
+    if (id !== undefined && !selectedPharmacyForTransfer) return
+    if (lockedAction) refetch()
+  }, [selectedPharmacyForTransfer])
+
+  const [concatList, setConcatList] = useState<AllPharmacyDrugInterface[]>([])
   useEffect(() => {
     uBasketCount.forEach((x) => {
       if (!x.packID) {
-        const pharmacyDrug = uAllPharmacyDrug.find((a) => a.id === x.id);
+        const pharmacyDrug = uAllPharmacyDrug.find((a) => a.id === x.id)
         if (pharmacyDrug) {
-          x.cnt = pharmacyDrug.cnt;
+          x.cnt = pharmacyDrug.cnt
         }
       }
-    });
-    let newList: AllPharmacyDrugInterface[] = [];
+    })
+    let newList: AllPharmacyDrugInterface[] = []
     uAllPharmacyDrug.forEach((x) => {
-      if (uBasketCount.findIndex((y) => y.id === x.id) !== -1) return;
-      newList.push(x);
-    });
-    let output = newList.concat(uBasketCount);
-    setConcatList(output);
-  }, [uBasketCount, uAllPharmacyDrug]);
+      if (uBasketCount.findIndex((y) => y.id === x.id) !== -1) return
+      newList.push(x)
+    })
+    let output = newList.concat(uBasketCount)
+    setConcatList(output)
+  }, [uBasketCount, uAllPharmacyDrug])
 
   const basketCardListGenerator = (): any => {
     if (uBasketCount && uBasketCount.length > 0) {
-      return uBasketCount.map(
-        (item: AllPharmacyDrugInterface, index: number) => {
-          item.order = index + 1;
-          item.buttonName = 'حذف از تبادل';
-          if (item.cardColor === 'white') item.cardColor = '#dff4ff';
+      return uBasketCount.map((item: AllPharmacyDrugInterface, index: number) => {
+        item.order = index + 1
+        item.buttonName = 'حذف از تبادل'
+        if (item.cardColor === 'white') item.cardColor = '#dff4ff'
 
-          return (
-            <Grid item xs={12} sm={12} xl={12} key={index}>
-              <div className={paper}>
-                {item.packID ? (
-                  <NewCardContainer
-                    basicDetail={
-                      <NewExCardContent
-                        formType={1}
-                        pharmacyDrug={item}
-                        isPack={true}
-                      />
-                    }
-                    isPack={true}
-                    pharmacyDrug={item}
-                    collapsableContent={
-                      <NewExCardContent
-                        formType={3}
-                        packInfo={item.packDetails}
-                      />
-                    }
-                  />
-                ) : (
-                  <NewCardContainer
-                    basicDetail={
-                      <NewExCardContent
-                        formType={2}
-                        pharmacyDrug={item}
-                        isPack={false}
-                      />
-                    }
-                    isPack={false}
-                    pharmacyDrug={item}
-                  />
-                )}
-              </div>
-            </Grid>
-          );
-        }
-      );
+        return (
+          <Grid item xs={12} sm={12} xl={12} key={index}>
+            <div className={paper}>
+              {item.packID ? (
+                <NewCardContainer
+                  basicDetail={<NewExCardContent formType={1} pharmacyDrug={item} isPack={true} />}
+                  isPack={true}
+                  pharmacyDrug={item}
+                  collapsableContent={<NewExCardContent formType={3} packInfo={item.packDetails} />}
+                />
+              ) : (
+                <NewCardContainer
+                  basicDetail={<NewExCardContent formType={2} pharmacyDrug={item} isPack={false} />}
+                  isPack={false}
+                  pharmacyDrug={item}
+                />
+              )}
+            </div>
+          </Grid>
+        )
+      })
     }
 
-    return null;
-  };
+    return null
+  }
 
   const cardListGenerator = (): JSX.Element[] | null => {
     if (concatList.length > 0) {
@@ -307,9 +305,9 @@ const Tab2: React.FC = () => {
             //   cardColor: item.cardColor,
             // });
 
-            let changedColor = true;
+            let changedColor = true
             if (item.cardColor === ColorEnum.AddedByB || item.cardColor === ColorEnum.NotConfirmed)
-              changedColor = false;
+              changedColor = false
 
             if (uBasketCount.findIndex((x) => x.id == item.id) !== -1)
               Object.assign(item, {
@@ -317,13 +315,13 @@ const Tab2: React.FC = () => {
                 buttonName: 'حذف از تبادل',
                 cardColor: changedColor ? '#dff4ff' : item.cardColor,
                 cnt: uBasketCount.find((x) => x.id == item.id)?.cnt,
-              });
+              })
             else {
               Object.assign(item, {
                 order: index + 1,
                 buttonName: 'افزودن به تبادل',
                 cardColor: changedColor ? 'white' : item.cardColor,
-              });
+              })
             }
 
             return (
@@ -366,29 +364,27 @@ const Tab2: React.FC = () => {
                       }
                       isPack={false}
                       pharmacyDrug={Object.assign(item, {
-                        currentCnt: item.currentCnt
-                          ? item.currentCnt
-                          : item.cnt,
+                        currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
                       })}
                     />
                   )}
                 </div>
               </Grid>
-            );
+            )
           })
-      );
+      )
     }
 
-    return null;
-  };
+    return null
+  }
 
   const handleClose = (): any => {
-    setOpenDialog(false);
-  };
+    setOpenDialog(false)
+  }
 
   const handleAgree = (): any => {
-    setActiveStep(activeStep + 1);
-  };
+    setActiveStep(activeStep + 1)
+  }
 
   const ConfirmDialog = (): JSX.Element => {
     return (
@@ -416,46 +412,92 @@ const Tab2: React.FC = () => {
           </DialogActions>
         </Dialog>
       </div>
-    );
-  };
+    )
+  }
+  const [showAiAlert, setShowAiAlert] = useState<boolean>(
+    viewExhcnage.currentPharmacyIsA &&
+    !viewExhcnage.lockAction &&
+    uBasketCount.length == 0
+  )  
+  
+  const { callAiSuggestion } = new Exchange()
+  const aiSuggestion = async (): Promise<any> => {
+    setShowAiAlert(false)
+    const aiSugg = await callAiSuggestion(viewExhcnage.id)
+    tSuccess(aiSugg.data.message)
+    // @ts-ignore
+    setNeedRefresh(true)
+  }
 
   return (
     <>
       <Grid
         item
         xs={12}
+        direction="column"
+        alignItems="center"
         style={{
-          maxHeight: `${
-            fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'
-          }`,
-          minHeight: `${
-            fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'
-          }`,
+          maxHeight: 'calc(100vh - 280px)',
+          minHeight: 'calc(100vh - 280px)',
           overflow: 'auto',
           marginTop: -20,
         }}
       >
-        <Grid container item spacing={1} xs={12}>
-          <Grid item xs={12} md={12}>
-            <Grid container className={stickySearch}>
-              <Grid item xs={12} style={{ padding: 0 }}>
-                <SearchInAList />
-              </Grid>
+        {showAiAlert && (
+          <Grid container item xs={12} className={aiAlertContainer}>
+            <Grid item xs={12}>
+              <span>{t('alerts.useAi')}</span>
+              <span>{t('alerts.useAi2')}</span>
+              <FontAwesomeIcon icon={faUserAstronaut} size="lg" />
+              <span>{t('alerts.useAi3')}</span>
             </Grid>
-            <Grid container spacing={1}>
-              <>
-                {/* {basketCardListGenerator()} */}
-                {cardListGenerator()}
-              </>
+            <Grid item xs={12} style={{ marginTop: 16, marginBottom: 8 }}>
+              <Divider />
+            </Grid>
+            <Grid item container xs={12} direction="row-reverse">
+              <Button
+                variant="outlined"
+                className={submitBtn}
+                type="button"
+                disabled={isLoading ?? false}
+                onClick={ async (e: any): Promise<any> => {
+                  await aiSuggestion()
+                }}
+              >
+                { t('exchange.aiSuggestion') }
+              </Button>
+
+              <Button variant="outlined" className={cancelButton} 
+                onClick={(): void => setShowAiAlert(false)}
+              >
+                خودم انتخاب میکنم
+              </Button>
             </Grid>
           </Grid>
-        </Grid>
+        )}
+        {!showAiAlert && (
+          <Grid container item spacing={1} xs={12}>
+            <Grid item xs={12} md={12}>
+              <Grid container className={fullScreen ? notStickySearch : stickySearch}>
+                <Grid item xs={12} style={{ padding: 0 }}>
+                  <SearchInAList />
+                </Grid>
+              </Grid>
+              <Grid container spacing={1}>
+                <>
+                  {/* {basketCardListGenerator()} */}
+                  {cardListGenerator()}
+                </>
+              </Grid>
+            </Grid>
+          </Grid>
+        )}
       </Grid>
 
       <ConfirmDialog />
       <CircleBackdropLoading isOpen={loading} />
     </>
-  );
-};
+  )
+}
 
 export default Tab2;

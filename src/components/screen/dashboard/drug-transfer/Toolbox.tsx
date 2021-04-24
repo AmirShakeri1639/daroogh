@@ -21,8 +21,11 @@ import { useMutation } from 'react-query';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
 import routes from '../../../../routes';
 import { useHistory } from 'react-router-dom';
-import { tSuccess, errorHandler } from 'utils';
+import { tSuccess, errorHandler, confirmSweetAlert } from 'utils';
 import { ColorEnum } from 'enum';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
+import { Exchange } from 'services/api'
 
 const styles = makeStyles((theme) =>
   createStyles({
@@ -60,7 +63,12 @@ const styles = makeStyles((theme) =>
 const ToolBox: React.FC = () => {
   const { ul, icons, buttonContainer } = styles();
 
-  const { viewExhcnage, exchangeId } = useContext<TransferDrugContextInterface>(
+  const { 
+    viewExhcnage, 
+    exchangeId,
+    setNeedRefresh, 
+    activeStep,
+  } = useContext<TransferDrugContextInterface>(
     DrugTransferContext
   );
 
@@ -131,9 +139,39 @@ const ToolBox: React.FC = () => {
     );
   };
 
+  const { callAiSuggestion } = new Exchange()
+  const confirmAiSuggestion = async (): Promise<any> => {
+    const confirmed = await confirmSweetAlert(
+      t('alert.aiSuggestion')
+    )
+    if (confirmed) {
+      const aiSugg = await callAiSuggestion(viewExhcnage.id)
+      tSuccess(aiSugg.data.message)
+      // @ts-ignore
+      setNeedRefresh(true)
+    }
+  } 
+
   return (
     <>
       <ul className={ul}>
+        {
+          activeStep == 2 &&
+          viewExhcnage.currentPharmacyIsA && 
+          !viewExhcnage.lockAction &&
+          viewExhcnage.state == 1 &&
+          <li>
+            <Tooltip title={ `${t('exchange.aiSuggestion')}` }>
+              <IconButton onClick={confirmAiSuggestion}>
+                <FontAwesomeIcon 
+                  icon={faUserAstronaut} 
+                  size="sm" 
+                  className={ icons } 
+                />
+              </IconButton>
+            </Tooltip>
+          </li>
+        }
         <li>
           <Tooltip title="فاکتور تبادل">
             <IconButton
