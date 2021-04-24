@@ -832,6 +832,24 @@ export default {
           UnConfirmed: 'عدم تایید',
         }
       },
+      findJob:{
+        minGradeOfReadingPrescriptionCertificate: 'حداقل نمره نسخه خوانی قابل قبول',
+        minWorkExperienceYear: 'حداقل سابقه کار',
+        maxAge: 'حداکثر سن',
+        descriptions: 'توضیحات',
+        hasReadingPrescriptionCertificateStr: 'توانایی نسخه خوانی',
+        livingInAreaStr: 'سکونت در محل',
+        hasGuaranteeStr: 'نیاز به وثیقه',
+        genderStr: 'جنسیت',
+        suggestedWorkShiftStr: 'شبفت کاری پیشنهادی',
+        maritalStatusStr: 'وضعیت تاهل',
+        pharmaceuticalSoftwareSkillStr: 'توانایی کار با نرم افزارهای داروخانه ای',
+        computerSkillStr: 'توانایی کار با کامپیوتر',
+        foreignLanguagesSkillStr: 'سطح زبان انگلیسی',
+        jobPositionStr: 'موقعیت شغلی مورد نیاز',
+        educationStr: 'حداقل سطح تحصیلات',
+
+      }
     },
   },
 };

@@ -76,7 +76,22 @@ export interface FindJobInterface {
 }
 export interface finJobDetailInterface{
   pharmacy : PharmacyInterface;
-  details : EmploymentApplicationInterface;
+  minGradeOfReadingPrescriptionCertificate: string   | number ; //18.0,
+  minWorkExperienceYear: string   | number ; //25,
+  maxAge: string   ; //28,
+  descriptions: string   ; //gtrfyhtfguyhftgu,
+  hasReadingPrescriptionCertificateStr: string   ; //مهم نیست,
+  livingInAreaStr: string   ; //مهم نیست,
+  hasGuaranteeStr: string   ; //داشتن وثیقه مهم نیست,
+  genderStr: string   ; //مرد,
+  suggestedWorkShiftStr: string   ; //تایم آزاد,
+  maritalStatusStr: string   ; //مجرد,
+  pharmaceuticalSoftwareSkillStr: string   ; //ابتدایی,
+  computerSkillStr: string   ; //ابتدایی,
+  foreignLanguagesSkillStr: string   ; //ابتدایی,
+  jobPositionStr: string   ; //سایر,
+  educationStr: string   ; //بی‌سواد
+
 }
 export type { DrugInterface } from './DrugInterface';
 export type { CategoryInterface } from './CategoryInterface';
