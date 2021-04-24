@@ -769,8 +769,8 @@ const DesktopCardContent = ({
                   xs={12}
                   spacing={0}
                   style={{
-                    fontSize: 13,
-                    marginTop: 8,
+                    fontSize: `${isSmallDevice ? '12px' : '14px'}`,
+                    marginTop: 4,
                     border: '1px solid #F4CB08',
                     padding: 4,
                   }}

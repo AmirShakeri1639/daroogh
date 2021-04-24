@@ -64,6 +64,10 @@ const style = makeStyles((theme) =>
       top: 60,
       zIndex: 999,
     },
+    notStickySearch: {
+
+      marginBottom: 18,
+    },
     stickySearch: {
       position: 'sticky',
       top: '0',
@@ -159,7 +163,7 @@ const Tab2: React.FC = () => {
     },
   });
 
-  const { paper, stickySearch } = style();
+  const { paper, stickySearch,notStickySearch } = style();
 
   const [listPageNo] = useState(0);
   const [pageSize] = useState(10);
@@ -418,26 +422,21 @@ const Tab2: React.FC = () => {
       </div>
     );
   };
-
   return (
     <>
       <Grid
         item
         xs={12}
         style={{
-          maxHeight: `${
-            fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'
-          }`,
-          minHeight: `${
-            fullScreen ? 'calc(100vh - 260px)' : 'calc(100vh - 230px)'
-          }`,
+          maxHeight: 'calc(100vh - 280px)',
+          minHeight: 'calc(100vh - 280px)',
           overflow: 'auto',
           marginTop: -20,
         }}
       >
         <Grid container item spacing={1} xs={12}>
           <Grid item xs={12} md={12}>
-            <Grid container className={stickySearch}>
+            <Grid container className={fullScreen ? notStickySearch : stickySearch}>
               <Grid item xs={12} style={{ padding: 0 }}>
                 <SearchInAList />
               </Grid>
