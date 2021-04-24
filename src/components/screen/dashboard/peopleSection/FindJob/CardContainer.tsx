@@ -31,10 +31,12 @@ const useStyle = makeStyles((theme) =>
       overflow: 'hidden',
     },
     detailsRows: {
-      minHeight: 35,
+      minHeight: 30,
       borderLeft: `2px solid ${ColorEnum.Borders}`,
       marginBottom: 4,
-      paddingLeft: 16,
+      paddingLeft: 8,
+      display:'flex',
+      alignItems:'center'
     },
   })
 )

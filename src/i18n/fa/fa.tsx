@@ -332,6 +332,7 @@ export default {
         email: 'ایمیل',
         resumeFile: 'فایل رزومه',
         requestState: 'وضعیت درخواست',
+        findJob:'کاریابی'
       },
       message: {
         message: 'پیام',
