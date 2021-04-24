@@ -404,6 +404,7 @@ export default {
         searchDrugPlaceHolder: 'عبارت را وارد کرده و سپس کلید اینتر را بزنید',
         fromYours: 'از سبد شما',
         fromOthers: 'از سبد طرف مقابل',
+        aiSuggestion: 'انتخاب توسط هوش مصنوعی',
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
@@ -435,6 +436,7 @@ export default {
         failed: 'عملیات با خطا مواجه شد!',
         done: 'با موفقیت انجام شد.',
         cancelConfirm: 'آیا از لغو این مورد مطمئن هستید؟',
+        aiSuggestion: 'آیا به هوش مصنوعی داروگ اجازه پیشنهاد از سبد خودتان را می‌دهید؟',
       },
       pharmacy: {
         pharmacy: 'داروخانه',

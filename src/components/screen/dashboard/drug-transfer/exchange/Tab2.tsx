@@ -418,7 +418,7 @@ const Tab2: React.FC = () => {
     viewExhcnage.currentPharmacyIsA &&
     !viewExhcnage.lockAction &&
     uBasketCount.length == 0
-  )
+  )  
   
   const { callAiSuggestion } = new Exchange()
   const aiSuggestion = async (): Promise<any> => {
@@ -464,7 +464,7 @@ const Tab2: React.FC = () => {
                   await aiSuggestion()
                 }}
               >
-                انتخاب توسط هوش مصنوعی
+                { t('exchange.aiSuggestion') }
               </Button>
 
               <Button variant="outlined" className={cancelButton} 
