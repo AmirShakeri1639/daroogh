@@ -466,7 +466,7 @@ const ActionButtons = (): JSX.Element => {
         fullScreen={fullScreen}
         isOpen={isShowPharmacyInfoModal}
         fullWidth={true}
-        onClose={toggleIsShowPharmacyInfoModalForm}
+        onClose={(): void => setIsShowPharmacyInfoModal((v) => !v)}
         hideAll
       >
         <DialogTitle>اطلاعات داروخانه مقابل</DialogTitle>

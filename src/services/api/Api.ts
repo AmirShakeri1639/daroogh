@@ -4,8 +4,6 @@ import { errorHandler, tError } from 'utils'
 import i18n from 'i18n'
 import { ToastDurationEnum } from 'utils/toast'
 import { getBaseUrl } from 'config'
-import { toast } from 'react-toastify'
-import React from 'react'
 
 const axiosInstance = axios.create({
   baseURL: getBaseUrl(),
