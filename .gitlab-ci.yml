@@ -23,7 +23,7 @@ deploy_beta:
     - "cp ./build/* C:/daroog/tabadol/beta-front/ -force -recurse"
   environment:
     name: staging
-    url: http://beta.daroog.org
+    url: http://beta.daroog.com
     
 deploy_daroog:
   stage: deploy
@@ -32,5 +32,5 @@ deploy_daroog:
   script:
     - "cp ./build/* C:/daroog/tabadol/front/ -force -recurse"
   environment:
-    name: staging
-    url: http://tabadol.daroog.org
+    name: production
+    url: http://tabadol.daroog.com

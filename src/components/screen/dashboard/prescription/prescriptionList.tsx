@@ -32,6 +32,7 @@ import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoadi
 import { debounce } from 'lodash';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import CDialog from 'components/public/dialog/Dialog';
+import { getBaseUrl } from 'config'
 
 export const useStyles = makeStyles((theme) =>
   createStyles({
@@ -485,7 +486,7 @@ const PrescriptionList: React.FC = () => {
                             e.stopPropagation();
                           }}
                           download=""
-                          href={'https://api.daroog.org/api/File/GetFile?key=' + state.fileKey}
+                          href={getBaseUrl() + '/File/GetFile?key=' + state.fileKey}
                         >
                           دانلود نسخه
                         </a>

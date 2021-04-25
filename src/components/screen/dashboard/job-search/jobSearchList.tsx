@@ -3,13 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { EmploymentApplication, File } from '../../../../services/api';
 import CardContainer from './CardContainer';
-
 import { confirmSweetAlert, errorHandler, isNullOrEmpty, tSuccess } from 'utils';
 import { DataTableCustomActionInterface } from '../../../../interfaces';
 import useDataTableRef from '../../../../hooks/useDataTableRef';
 import DataTable from '../../../public/datatable/DataTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faInfoCircle, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { DataTableColumns } from '../../../../interfaces/DataTableColumns';
 import { useClasses } from '../classes';
 import {
@@ -197,7 +196,7 @@ const EmploymentApplicationList: React.FC<Props> = ({ full = false }) => {
                     e.stopPropagation();
                   }}
                   download=""
-                  href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
+                  href={getBaseUrl() + '/File/GetFile?key=' + resumeFileKey}
                 >
                   {t('peopleSection.resumeDownload')}
                 </a>
