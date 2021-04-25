@@ -144,12 +144,14 @@ export interface SwitchComponentPropsInterface {
 export interface CountyPropsInterface {
   countyHandler?: (val?: string) => void;
   value?: string | number;
+  className?: string;
 }
 
 export interface ProvincePropsInterface {
   provinceHandler?: (val?: string) => void;
   countyId?: string;
   value?: string | number;
+  className?: string;
 }
 
 export interface TransferPropsInterface {
