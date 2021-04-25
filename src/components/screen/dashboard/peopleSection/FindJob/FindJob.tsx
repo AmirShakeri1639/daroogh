@@ -9,8 +9,6 @@ import CardContainer from './CardContainer'
 
 const FindJob: React.FC = () => {
   const [dataList, setDataList] = useState<FindJobInterface>()
-
-  const [countryDivisionCode, setCountryDivisionCode] = useState<string>('')
   const useStyle = makeStyles((theme) =>
     createStyles({
       input: {
@@ -26,9 +24,9 @@ const FindJob: React.FC = () => {
     async function getData() {
       var countryDivision = ''
       if (selectedProvince !== '-2' && selectedProvince !== '*') {
-        countryDivision = String(selectedProvince);
+        countryDivision = String(selectedProvince)
       } else if (selectedCounty !== '-2') {
-        countryDivision = String(selectedCounty);
+        countryDivision = String(selectedCounty)
       }
 
       const { all } = new Job()
@@ -37,15 +35,19 @@ const FindJob: React.FC = () => {
       setDataList(result)
     }
     getData()
-  }, [selectedProvince,selectedCounty])
-
+  }, [selectedProvince, selectedCounty])
 
   const { t } = useTranslation()
 
   return (
     <Container>
-      <Grid container spacing={3} style={{ marginTop: 16 }}>
-        <Grid item container xs={12}>
+      <Grid container spacing={3} style={{ marginTop: 16 }} >
+        <Grid item container xs={12} style={{ margin: 8 , background:'white'}}>
+          <Grid item xs={12} style={{margin:12}}>
+            <span>
+              {t('alerts.findJobAlert')}
+            </span>
+          </Grid>
           <Grid
             item
             container
@@ -55,7 +57,7 @@ const FindJob: React.FC = () => {
               alignItems: 'center',
               alignContent: 'center',
               display: 'flex',
-              marginBottom: 8,
+              marginBottom:8
             }}
           >
             <Grid item xs={12}>
@@ -73,8 +75,13 @@ const FindJob: React.FC = () => {
             item
             xs={12}
             sm={6}
-            style={{ alignItems: 'center', alignContent: 'center', display: 'flex',              marginBottom: 8,
-          }}
+            style={{
+              alignItems: 'center',
+              alignContent: 'center',
+              display: 'flex',
+              marginBottom:8
+
+            }}
           >
             <Grid item xs={12}>
               <Province

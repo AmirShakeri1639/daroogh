@@ -78,7 +78,7 @@ export interface finJobDetailInterface{
   pharmacy : PharmacyInterface;
   minGradeOfReadingPrescriptionCertificate: string   | number ; //18.0,
   minWorkExperienceYear: string   | number ; //25,
-  maxAge: string   ; //28,
+  maxAge: string  | number ; //28,
   descriptions: string   ; //gtrfyhtfguyhftgu,
   hasReadingPrescriptionCertificateStr: string   ; //مهم نیست,
   livingInAreaStr: string   ; //مهم نیست,

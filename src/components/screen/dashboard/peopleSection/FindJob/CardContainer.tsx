@@ -16,6 +16,7 @@ import Detail from './Detail'
 import CDialog from 'components/public/dialog/Dialog'
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle'
 import { ColorEnum } from 'enum'
+import { isNullOrEmpty } from 'utils'
 
 interface Props {
   job: finJobDetailInterface
@@ -35,8 +36,8 @@ const useStyle = makeStyles((theme) =>
       borderLeft: `2px solid ${ColorEnum.Borders}`,
       marginBottom: 4,
       paddingLeft: 8,
-      display:'flex',
-      alignItems:'center'
+      display: 'flex',
+      alignItems: 'center',
     },
   })
 )
@@ -61,13 +62,23 @@ const CardContainer: React.FC<Props> = (props) => {
         </Grid>
         <Grid item xs={12}>
           <Grid justify="flex-end" container spacing={0}>
-            <Grid item>
+            <Grid item> 
+            
+            {(isNullOrEmpty(job.pharmacy.x) || isNullOrEmpty(job.pharmacy.y)) && '' }
+              {!(isNullOrEmpty(job.pharmacy.x) || isNullOrEmpty(job.pharmacy.y)) && (
+                <a style={{textDecoration: 'none'}} href={ `https://google.com/maps?q=${job.pharmacy.y},${job.pharmacy.x}` } target="_blank">
+                  موقعیت روی نقشه
+                </a>
+              ) }
               <Button
                 onClick={(): void => setIsOpenModal(true)}
                 style={{ color: 'green', fontSize: '14px' }}
               >
                 {t('general.details')}
               </Button>
+
+             
+
             </Grid>
           </Grid>
         </Grid>
@@ -80,85 +91,121 @@ const CardContainer: React.FC<Props> = (props) => {
         hideSubmit={true}
       >
         <DialogContent>
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.genderStr')}
-            body={job.genderStr}
-          />
-          {job.maxAge !== '0' && (
-            <TextWithTitle className={detailsRows} title={t('findJob.maxAge')} body={job.maxAge} />
-          )}
+          <Grid container>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.genderStr')}
+                body={job.genderStr}
+              />
+            </Grid>
+            {job.maxAge !== '0' && job.maxAge !== 0 &&(
+              <Grid item xs={12} md={6}>
+                <TextWithTitle
+                  className={detailsRows}
+                  title={t('findJob.maxAge')}
+                  body={job.maxAge}
+                />
+              </Grid>
+            )}
 
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.livingInAreaStr')}
-            body={job.livingInAreaStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.maritalStatusStr')}
-            body={job.maritalStatusStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.educationStr')}
-            body={job.educationStr}
-          />
-          {job.minGradeOfReadingPrescriptionCertificate !== '0' && (
-            <TextWithTitle
-              className={detailsRows}
-              title={t('findJob.minGradeOfReadingPrescriptionCertificate')}
-              body={job.minGradeOfReadingPrescriptionCertificate}
-            />
-          )}
-          {job.minWorkExperienceYear !== '0' && (
-            <TextWithTitle
-              className={detailsRows}
-              title={t('findJob.minWorkExperienceYear')}
-              body={job.minWorkExperienceYear}
-            />
-          )}
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.livingInAreaStr')}
+                body={job.livingInAreaStr}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.maritalStatusStr')}
+                body={job.maritalStatusStr}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.educationStr')}
+                body={job.educationStr}
+              />
+            </Grid>
+            {job.minGradeOfReadingPrescriptionCertificate !== '0' && job.minGradeOfReadingPrescriptionCertificate !== 0 && (
+              <Grid item xs={12} md={6}>
+                <TextWithTitle
+                  className={detailsRows}
+                  title={t('findJob.minGradeOfReadingPrescriptionCertificate')}
+                  body={job.minGradeOfReadingPrescriptionCertificate}
+                />
+              </Grid>
+            )}
+            {job.minWorkExperienceYear !== '0' && job.minWorkExperienceYear !== 0 && (
+              <Grid item xs={12} md={6}>
+                <TextWithTitle
+                  className={detailsRows}
+                  title={t('findJob.minWorkExperienceYear')}
+                  body={job.minWorkExperienceYear}
+                />
+              </Grid>
+            )}
 
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.hasReadingPrescriptionCertificateStr')}
-            body={job.hasReadingPrescriptionCertificateStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.hasGuaranteeStr')}
-            body={job.hasReadingPrescriptionCertificateStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.suggestedWorkShiftStr')}
-            body={job.suggestedWorkShiftStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.pharmaceuticalSoftwareSkillStr')}
-            body={job.pharmaceuticalSoftwareSkillStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.computerSkillStr')}
-            body={job.computerSkillStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.foreignLanguagesSkillStr')}
-            body={job.foreignLanguagesSkillStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.jobPositionStr')}
-            body={job.jobPositionStr}
-          />
-          <TextWithTitle
-            className={detailsRows}
-            title={t('findJob.descriptions')}
-            body={job.descriptions}
-          />
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.hasReadingPrescriptionCertificateStr')}
+                body={job.hasReadingPrescriptionCertificateStr}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.hasGuaranteeStr')}
+                body={job.hasReadingPrescriptionCertificateStr}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.suggestedWorkShiftStr')}
+                body={job.suggestedWorkShiftStr}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.pharmaceuticalSoftwareSkillStr')}
+                body={job.pharmaceuticalSoftwareSkillStr}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.computerSkillStr')}
+                body={job.computerSkillStr}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.foreignLanguagesSkillStr')}
+                body={job.foreignLanguagesSkillStr}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.jobPositionStr')}
+                body={job.jobPositionStr}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextWithTitle
+                className={detailsRows}
+                title={t('findJob.descriptions')}
+                body={job.descriptions}
+              />
+            </Grid>
+          </Grid>
         </DialogContent>
       </CDialog>
     </>
