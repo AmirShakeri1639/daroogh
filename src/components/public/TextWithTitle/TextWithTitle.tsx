@@ -1,6 +1,7 @@
 import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import { ColorEnum } from 'enum';
 import React from 'react';
+import { isNullOrEmpty } from 'utils';
 import { TextWithTitlePropsInterface } from '../../../interfaces';
 
 const TextWithTitle: React.FC<TextWithTitlePropsInterface> = (props) => {
@@ -39,11 +40,11 @@ const TextWithTitle: React.FC<TextWithTitlePropsInterface> = (props) => {
     
   return (<>
 
-  { body !== null && body !== '' && (
-    <Grid container xs={12}>
+  { !isNullOrEmpty(body) && (
+    <Grid container xs={12} className={ `${className || ''}` } >
       <span className={titleC}>{title}</span>
       <div className={titleC}>:&nbsp;</div>
-      <span className={ `${textC} ${className || ''}` }>{ body }</span>
+      <span className={ `${textC}` }>{ body }</span>
       {suffix && (
         <>
         <div>&nbsp;</div>

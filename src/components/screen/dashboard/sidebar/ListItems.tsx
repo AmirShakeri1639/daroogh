@@ -101,6 +101,7 @@ const {
   messagesList,
   drugFavoriteList,
   jobApplication,
+  findJob,
   prescription,
   packsList,
   pharmacyUsersList,
@@ -227,6 +228,20 @@ const ListItems: React.FC = () => {
             },
           })}
         </List>
+
+        <List component="div" className={linkWrapper}>
+          {getListItem({
+            Icon: FontAwesomeIcon,
+            text: t('peopleSection.findJob'),
+            link: findJob,
+            selected: isOpenPageOfThisGroup('peopleSection/findJob'),
+            props: {
+              icon: faBars,
+              size: 'lg',
+            },
+          })}
+        </List>
+
       </div>
     );
   };

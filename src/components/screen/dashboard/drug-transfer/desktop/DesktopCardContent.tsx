@@ -149,7 +149,7 @@ const DesktopCardContent = ({
   if (item?.currentPharmacyIsA) {
     pharmacyKey = item?.pharmacyKeyA == undefined ? '' : item?.pharmacyKeyA;
     totalPourcentage = item?.totalPourcentageA;
-    paymentStatus = item?.paymentDateA == null ? t('exchange.notPayed') : t('exchange.payed');
+    paymentStatus = !!item?.paymentDateA ? t('exchange.payed') : t('exchange.notPayed');
 
     // Should show B's grade and star and warranty
     pharmacyGrade = item?.pharmacyGradeB == undefined ? 4 : item?.pharmacyGradeB;
@@ -158,7 +158,7 @@ const DesktopCardContent = ({
   } else {
     pharmacyKey = item?.pharmacyKeyB == undefined ? '' : item?.pharmacyKeyB;
     totalPourcentage = item.totalPourcentageB;
-    paymentStatus = item?.paymentDateB == null ? t('exchange.notPayed') : t('exchange.payed');
+    paymentStatus = !!item?.paymentDateB ? t('exchange.payed') : t('exchange.notPayed');
 
     item.state = item.state <= 10 && !isStateCommon(item.state) ? item.state + 10 : item.state;
 

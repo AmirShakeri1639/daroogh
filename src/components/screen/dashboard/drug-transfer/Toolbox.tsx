@@ -145,7 +145,7 @@ const ToolBox: React.FC = () => {
       t('alert.aiSuggestion')
     )
     if (confirmed) {
-      const aiSugg = await callAiSuggestion(viewExhcnage.id)
+      const aiSugg = await callAiSuggestion(exchangeId)
       tSuccess(aiSugg.data.message)
       // @ts-ignore
       setNeedRefresh(true)
@@ -157,9 +157,9 @@ const ToolBox: React.FC = () => {
       <ul className={ul}>
         {
           activeStep == 2 &&
-          viewExhcnage.currentPharmacyIsA && 
-          !viewExhcnage.lockAction &&
-          viewExhcnage.state == 1 &&
+          viewExhcnage?.currentPharmacyIsA && 
+          !viewExhcnage?.lockAction &&
+          viewExhcnage?.state == 1 &&
           <li>
             <Tooltip title={ `${t('exchange.aiSuggestion')}` }>
               <IconButton onClick={confirmAiSuggestion}>
