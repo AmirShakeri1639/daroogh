@@ -126,6 +126,7 @@ const Tab2: React.FC = () => {
     lockedAction,
     viewExhcnage,
     needRefresh,
+    exchangeId,
     setNeedRefresh,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext)
 
@@ -415,15 +416,15 @@ const Tab2: React.FC = () => {
     )
   }
   const [showAiAlert, setShowAiAlert] = useState<boolean>(
-    viewExhcnage.currentPharmacyIsA &&
-    !viewExhcnage.lockAction &&
-    uBasketCount.length == 0
+    viewExhcnage?.currentPharmacyIsA &&
+    !viewExhcnage?.lockAction &&
+    uBasketCount?.length == 0
   )  
   
   const { callAiSuggestion } = new Exchange()
   const aiSuggestion = async (): Promise<any> => {
     setShowAiAlert(false)
-    const aiSugg = await callAiSuggestion(viewExhcnage.id)
+    const aiSugg = await callAiSuggestion(exchangeId)
     tSuccess(aiSugg.data.message)
     // @ts-ignore
     setNeedRefresh(true)
