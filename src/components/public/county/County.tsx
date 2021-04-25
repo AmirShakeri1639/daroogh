@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { CountryDivision } from '../../../services/api';
-import { CountyPropsInterface } from '../../../interfaces';
-import {
-  createStyles,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import React, { useEffect, useState } from 'react'
+import { CountryDivision } from '../../../services/api'
+import { CountyPropsInterface } from '../../../interfaces'
+import { createStyles, FormControl, InputLabel, MenuItem, Select } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
+import { useQuery } from 'react-query'
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -21,23 +15,23 @@ const useStyles = makeStyles((theme) =>
       marginTop: theme.spacing(2),
     },
   })
-);
+)
 
-const { getAllProvinces2 } = new CountryDivision();
+const { getAllProvinces2 } = new CountryDivision()
 
 const County: React.FC<CountyPropsInterface> = (props) => {
-  const [selectedCounty, setSelectedCounty] = useState<string>('');
+  const [selectedCounty, setSelectedCounty] = useState<string>('')
 
-  const { countyHandler, value } = props;
+  const { countyHandler, value, className } = props
 
   useEffect(() => {
-    setSelectedCounty(String(value));
-  }, [value]);
+    setSelectedCounty(String(value))
+  }, [value])
 
-  const classes = useStyles();
-  const { t } = useTranslation();
+  const classes = useStyles()
+  const { t } = useTranslation()
 
-  const { data: countyList } = useQuery('countyList', getAllProvinces2);
+  const { data: countyList } = useQuery('countyList', getAllProvinces2)
 
   const countyListGenerator = (): JSX.Element[] | null => {
     if (countyList !== undefined) {
@@ -46,15 +40,15 @@ const County: React.FC<CountyPropsInterface> = (props) => {
           <MenuItem key={c.id} value={c.code}>
             {c.name}
           </MenuItem>
-        );
-      });
+        )
+      })
     }
 
-    return null;
-  };
+    return null
+  }
 
   return (
-    <FormControl variant="outlined" className={classes.formControl}>
+    <FormControl variant="outlined" className={className ? className : classes.formControl}>
       <InputLabel id="county">{t('province.county')}</InputLabel>
       <Select
         labelId="county"
@@ -62,17 +56,17 @@ const County: React.FC<CountyPropsInterface> = (props) => {
         label={t('province.county')}
         value={selectedCounty}
         onChange={(e): void => {
-          const val = e.target.value as string;
-          setSelectedCounty(val);
+          const val = e.target.value as string
+          setSelectedCounty(val)
           if (countyHandler !== undefined) {
-            countyHandler(val);
+            countyHandler(val)
           }
         }}
       >
         {countyListGenerator()}
       </Select>
     </FormControl>
-  );
-};
+  )
+}
 
 export default County;
