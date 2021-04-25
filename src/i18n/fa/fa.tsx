@@ -851,7 +851,13 @@ export default {
         jobPositionStr: 'موقعیت شغلی مورد نیاز',
         educationStr: 'حداقل سطح تحصیلات',
 
-      }
+      },
+      commision: {
+        settingsCommisions: 'تنظیمات پورسانت ها',
+        list: 'لیست پورسانت ها',
+        remainedExpirationDays: 'روزهای باقیمانده تا انقضا',
+        commissionPercent: 'درصد پورسانت',
+      },
     },
   },
 };
