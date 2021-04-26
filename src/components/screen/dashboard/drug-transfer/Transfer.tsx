@@ -397,7 +397,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             {byCartable ? (
               <div>
                 <span>در حال انتقال به صفحه تبادل. لطفا منتظر بمانید...</span>
-                <CircularProgress size={20} />
+                {/* <CircularProgress size={20} /> */}
               </div>
             ) : activeStep === 0 ? (
               <FirstStep />
