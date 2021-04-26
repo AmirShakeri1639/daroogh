@@ -152,6 +152,9 @@ const useStyle = makeStyles((theme) =>
       background: `${ColorEnum.Green} !important`,
       borderRadius: 4,
     },
+    countryDivision:{
+      width:240,
+    }
   })
 );
 
@@ -328,6 +331,7 @@ const FirstStep: React.FC = () => {
     noContent,
     buttonWrapper,
     filterButton,
+    countryDivision,
   } = useStyle();
 
   const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
@@ -552,8 +556,8 @@ const FirstStep: React.FC = () => {
             <Divider className={divider} />
 
             <div className={dateContainer}>
-              <span>{t('province.selectCounty')}</span>
-              <County
+              <span>{t('peopleSection.ostan')}</span>
+              <County className={countryDivision}
                 countyHandler={(e): void => {
                   setSelectedCounty(e ?? '');
                   setSelectedProvince('-2');
@@ -565,8 +569,8 @@ const FirstStep: React.FC = () => {
             <Divider className={divider} />
 
             <div className={dateContainer}>
-              <span>{t('province.selectProvince')}</span>
-              <Province
+              <span>{t('peopleSection.city')}</span>
+              <Province className={countryDivision}
                 countyId={selectedCounty}
                 value={selectedProvince}
                 provinceHandler={(e): void => setSelectedProvince(e ?? '')}
