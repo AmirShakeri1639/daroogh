@@ -79,11 +79,6 @@ const ToolBox: React.FC = () => {
   const { desktop } = routes;
   const history = useHistory();
 
-  const [isRemoveExchangeModal, setIsRemoveExchangeModal] = useState(false);
-  const toggleIsRemoveExchangeModalForm = (): void => {
-    setIsRemoveExchangeModal((v) => !v);
-  };
-
   const { removeExchange } = new PharmacyDrug();
 
   const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
@@ -101,33 +96,15 @@ const ToolBox: React.FC = () => {
     } catch (e) {
       errorHandler(e);
     }
-    toggleIsRemoveExchangeModalForm();
   };
 
-  const exchangeModalRemove = (): JSX.Element => {
-    return (
-      <Dialog open={isRemoveExchangeModal} onClose={toggleIsRemoveExchangeModalForm}>
-        <DialogTitle className="text-sm">حذف تبادل</DialogTitle>
-        <DialogContent>
-          <span>آیا از حذف تبادل اطمینان دارید؟</span>
-        </DialogContent>
-        <Divider />
-        <DialogActions>
-          <Grid item xs={12} className={buttonContainer}>
-            <Button
-              color="default"
-              onClick={async (): Promise<any> => await handleRemoveExchange()}
-            >
-              بله
-            </Button>
-            <Button color="primary" onClick={toggleIsRemoveExchangeModalForm}>
-              خیر
-            </Button>
-          </Grid>
-        </DialogActions>
-      </Dialog>
-    );
-  };
+  const exchangeRemove = async (): Promise<any> => {
+    const confirmRemoveExchange = await confirmSweetAlert(t('alert.removeExchange'))
+    if (confirmRemoveExchange) {
+      await handleRemoveExchange()
+      return
+    }
+  }
 
   const exchangeCalculator = (): JSX.Element => {
     return (
@@ -186,7 +163,7 @@ const ToolBox: React.FC = () => {
         {viewExhcnage && viewExhcnage.currentPharmacyIsA && viewExhcnage.state == 1 && (
           <li>
             <Tooltip title="حذف تبادل">
-              <IconButton onClick={toggleIsRemoveExchangeModalForm}>
+              <IconButton onClick={exchangeRemove}>
                 <DeleteForeverIcon className={icons} />
               </IconButton>
             </Tooltip>
@@ -198,7 +175,6 @@ const ToolBox: React.FC = () => {
           {exchangeCalculator()}
         </Grid>
       </Grid>
-      {isRemoveExchangeModal && exchangeModalRemove()}
     </>
   );
 };
