@@ -1,19 +1,29 @@
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCheckCircle,
   faInfoCircle,
   faTimesCircle,
   faExclamationCircle,
-} from '@fortawesome/free-solid-svg-icons';
-import React from 'react';
+} from '@fortawesome/free-solid-svg-icons'
+import React from 'react'
 
 export enum ToastDurationEnum {
   Short = 2000,
   Medium = 5000,
   Long = 12000,
   VeryLong = 20000
+}
+
+const TOAST_MESSAGE_MAX_LENGTH = 60
+
+const getAutoClose = (message: string): number => {
+  return (
+    message.length > TOAST_MESSAGE_MAX_LENGTH
+      ? ToastDurationEnum.Long
+      : ToastDurationEnum.Medium
+  )
 }
 
 export const tSimple = (message = '', options = {}) => toast(message, options)
@@ -25,7 +35,10 @@ export const tInfo = (message = '', options = {}) => toast.info(
       { message }
     </span>
   </>,
-  options
+  {
+    autoClose: getAutoClose(message),
+    ...options
+  }
 )
 
 export const tSuccess = (message = '', options = {}) => toast.success(
@@ -35,7 +48,10 @@ export const tSuccess = (message = '', options = {}) => toast.success(
       { message }
     </span>
   </>,
-  options
+  {
+    autoClose: getAutoClose(message),
+    ...options
+  }
 )
 
 export const tWarn = (message = '', options = {}) => toast.warn(
@@ -45,7 +61,10 @@ export const tWarn = (message = '', options = {}) => toast.warn(
       { message }
     </span>
   </>,
-  options
+  {
+    autoClose: getAutoClose(message),
+    ...options
+  }
 )
 
 export const tError = (message = '', options = {}) => toast.error(
@@ -55,5 +74,8 @@ export const tError = (message = '', options = {}) => toast.error(
       { message }
     </span>
   </>,
-  options
+  {
+    autoClose: getAutoClose(message),
+    ...options
+  }
 )
