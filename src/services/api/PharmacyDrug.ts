@@ -93,10 +93,11 @@ class PharmacyDrug extends Api {
   };
 
   getRelatedPharmacyDrug = async (
-    count: string | number = ''
+    count: string | number = '',
+    from?: number,
   ): Promise<any> => {
     const result = await this.postData(
-      `/PharmacyDrug/GetRelatedPharmacyDrug?from=0&count=${count}`
+      `/PharmacyDrug/GetRelatedPharmacyDrug?from=${from ?? 0}&count=${count}`
     );
     return result.data;
   };
