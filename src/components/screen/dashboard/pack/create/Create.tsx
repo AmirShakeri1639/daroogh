@@ -629,12 +629,6 @@ const Create: React.FC = () => {
 
   const memoContent = useMemo(() => contentHandler(), [drugsPack])
 
-  const getDrugName = (item: any): string => {
-    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
-      item.type !== null ? ` - ${item.type}` : ''
-    }`
-  }
-
   const searchDrugs = async (title: string): Promise<any> => {
     try {
       if (title.length < 2) {
@@ -1155,18 +1149,17 @@ const Create: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={3} className={expireDate}>
-                    {daysDiff !== '' && <span>{daysDiff} روز</span>}
+                    {daysDiff !== '' && !isNaN(Number(daysDiff)) && <span>{daysDiff} روز</span>}
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  {isWrongDate && <p className="text-danger txt-xs">{t('date.afterToday')}</p>}
-                  {!hasMinimumDate && (
-                    <p className="text-danger txt-xs">
-                      {t('date.minimumDate', {
-                        day: drugExpireDay,
+                  <p className="text-danger txt-xs">
+                    {isWrongDate && t('date.afterToday')}
+                    {!hasMinimumDate && t('date.minimumDate', {
+                        day: drugExpireDay
                       })}
-                    </p>
-                  )}
+                    {isNaN(Number(daysDiff)) && t('date.wrongDate')}
+                  </p>
                 </Grid>
               </Grid>
 
