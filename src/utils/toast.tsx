@@ -17,11 +17,11 @@ export enum ToastDurationEnum {
 }
 
 export const  ToastVibratePattern = {
-  INFO: [250],
-  SIMPLE: [100,300,50],
+  INFO: [300],
+  SIMPLE: [200,200,200],
   SUCCESS: [500],
-  WARN: [150,150],
-  ERROR: [250,500],
+  WARN: [300,250,500],
+  ERROR: [350,200,350,200,350],
 }
 
 export const TOAST_MESSAGE_MAX_LENGTH = 60
