@@ -16,7 +16,15 @@ export enum ToastDurationEnum {
   VeryLong = 20000
 }
 
-const TOAST_MESSAGE_MAX_LENGTH = 60
+export const  ToastVibratePattern = {
+  INFO: [250],
+  SIMPLE: [100,300,50],
+  SUCCESS: [500],
+  WARN: [150,150],
+  ERROR: [250,500],
+}
+
+export const TOAST_MESSAGE_MAX_LENGTH = 60
 
 const getAutoClose = (message: string): number => {
   return (
@@ -26,56 +34,71 @@ const getAutoClose = (message: string): number => {
   )
 }
 
-export const tSimple = (message = '', options = {}) => toast(message, options)
+export const tSimple = (message = '', options = {}) => {
+  window.navigator.vibrate(ToastVibratePattern.SIMPLE)
+  return toast(message, options)
+}
 
-export const tInfo = (message = '', options = {}) => toast.info(
-  <>
-    <FontAwesomeIcon icon={ faInfoCircle } size="lg" />
-    <span className="toast-message">
-      { message }
-    </span>
-  </>,
-  {
-    autoClose: getAutoClose(message),
-    ...options
-  }
-)
+export const tInfo = (message = '', options = {}) => {
+  window.navigator.vibrate(ToastVibratePattern.INFO)
+  return toast.info(
+    <>
+      <FontAwesomeIcon icon={ faInfoCircle } size="lg" />
+      <span className="toast-message">
+        { message }
+      </span>
+    </>,
+    {
+      autoClose: getAutoClose(message),
+      ...options
+    }
+  )
+}
 
-export const tSuccess = (message = '', options = {}) => toast.success(
-  <>
-    <FontAwesomeIcon icon={ faCheckCircle } size="lg" />
-    <span className="toast-message">
-      { message }
-    </span>
-  </>,
-  {
-    autoClose: getAutoClose(message),
-    ...options
-  }
-)
+export const tSuccess = (message = '', options = {}) =>  {
+  window.navigator.vibrate(ToastVibratePattern.SUCCESS)
+  return toast.success(
+    <>
+      <FontAwesomeIcon icon={ faCheckCircle } size="lg" />
+      <span className="toast-message">
+        { message }
+      </span>
+    </>,
+    {
+      autoClose: getAutoClose(message),
+      ...options
+    }
+  )
+}
 
-export const tWarn = (message = '', options = {}) => toast.warn(
-  <>
-    <FontAwesomeIcon icon={ faExclamationCircle } size="lg" />
-    <span className="toast-message">
-      { message }
-    </span>
-  </>,
-  {
-    autoClose: getAutoClose(message),
-    ...options
-  }
-)
+export const tWarn = (message = '', options = {}) => {
+  window.navigator.vibrate(ToastVibratePattern.WARN)
+  return toast.warn(
+    <>
+      <FontAwesomeIcon icon={ faExclamationCircle } size="lg" />
+      <span className="toast-message">
+        { message }
+      </span>
+    </>,
+    {
+      autoClose: getAutoClose(message),
+      ...options
+    }
+  )
+}
 
-export const tError = (message = '', options = {}) => toast.error(
-  <>
-    <FontAwesomeIcon icon={ faTimesCircle } size="lg" />
-    <span className="toast-message">
-      { message }
-    </span>
-  </>,
-  {
-    autoClose: getAutoClose(message),
-    ...options
-  }
-)
+export const tError = (message = '', options = {}) => {
+  window.navigator.vibrate(ToastVibratePattern.ERROR)
+  return toast.error(
+    <>
+      <FontAwesomeIcon icon={ faTimesCircle } size="lg" />
+      <span className="toast-message">
+        { message }
+      </span>
+    </>,
+    {
+      autoClose: getAutoClose(message),
+      ...options
+    }
+  )
+}
