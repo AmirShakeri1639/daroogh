@@ -347,6 +347,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
   return (
     <div className={table}>
       <ReportContainer />
+      <div id="dataTable1">
       <MaterialTable
         tableRef={tableRef}
         localization={localization}
@@ -475,7 +476,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
             color: 'white',
           },
           columnsButton: true,
-          maxBodyHeight: 400,
+          maxBodyHeight: `calc(90vh - ${document?.getElementById('dataTable1')?.getBoundingClientRect()}`,
           minBodyHeight: 400,
           rowStyle: (rowData: any): {} => ({
             backgroundColor: rowData.tableData.checked ? '#37b15933' : '',
@@ -484,6 +485,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
         onSearchChange={(text: string): any => setSearchText(text)}
         {...materialTableProps}
       />
+      </div>
       <Menu
         id="long-menu"
         anchorEl={anchorEl}
