@@ -189,8 +189,8 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
           <Grid item xs={12}>
             <TextWithTitle
               title="انقضا"
-              body={Utils.getExpireDate(pharmacyDrug?.expireDate)}
-              dateSuffix={Utils.getExpireDays(pharmacyDrug?.expireDate)}
+              body={pharmacyDrug?.expireTarikh}
+              dateSuffix={pharmacyDrug?.expireDays}
               // showDateSuffix = {!isSmallDevice}
             />
           </Grid>

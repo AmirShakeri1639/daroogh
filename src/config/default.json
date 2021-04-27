@@ -1,6 +1,6 @@
 {
   "api": {
-    "baseUrl": "https://api.daroog.org/api",
-    "baseUrlBeta": "https://api2.daroog.org/api"
+    "baseUrl": "https://api.daroog.com/api",
+    "baseUrlBeta": "https://api2.daroog.com/api"
   }
 }

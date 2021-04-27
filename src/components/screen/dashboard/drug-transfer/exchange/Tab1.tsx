@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState, useMemo } from 'react'
 import {
   createStyles,
   Dialog,
@@ -24,10 +24,11 @@ import CircleLoading from '../../../../public/loading/CircleLoading'
 import sweetAlert from '../../../../../utils/sweetAlert'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
-import { AllPharmacyDrug, ColorEnum } from 'enum'
+import { AllPharmacyDrug, ColorEnum, screenWidth } from 'enum'
 import { useDispatch } from 'react-redux'
 import { setTransferEnd } from '../../../../../redux/actions'
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading'
+import { debounce } from 'lodash'
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -163,10 +164,10 @@ const Tab1: React.FC = () => {
     },
   })
 
-  const { paper, stickySearch,notStickySearch } = style()
+  const { paper, stickySearch, notStickySearch } = style()
 
   const [listPageNo] = useState(0)
-  const [pageSize] = useState(10)
+  const [pageSize] = useState(2)
   const [loading, setLoading] = useState<boolean>(false)
 
   const { isLoading, refetch } = useQuery(
@@ -231,6 +232,7 @@ const Tab1: React.FC = () => {
   }, [selectedPharmacyForTransfer])
 
   const [concatList, setConcatList] = useState<AllPharmacyDrugInterface[]>([])
+  const [concatListPaginated, setConcatListPaginated] = useState<AllPharmacyDrugInterface[]>([])
 
   useEffect(() => {
     basketCount.forEach((x) => {
@@ -247,7 +249,11 @@ const Tab1: React.FC = () => {
       newList.push(x)
     })
     const output = newList.concat(basketCount)
+    setTotalCountRef(output.length)
+    setConcatListPaginated(output.slice(0, pageSize))
+    setConcatListPaginatedRef(output.slice(0, pageSize))
     setConcatList(output)
+    setConcatListRef(output)
   }, [basketCount, allPharmacyDrug])
 
   const basketCardListGenerator = (): any => {
@@ -258,22 +264,22 @@ const Tab1: React.FC = () => {
         if (item.cardColor === 'white') item.cardColor = '#dff4ff'
 
         return (
-          <Grid item xs={12} sm={12} xl={12} key={index}>
-            <div className={paper}>
-              {item.packID ? (
+          <Grid item xs={ 12 } sm={ 12 } xl={ 12 } key={ index }>
+            <div className={ paper } style={{ height: '500px' }}>
+              { item.packID ? (
                 <NewCardContainer
-                  basicDetail={<NewExCardContent formType={1} pharmacyDrug={item} isPack={true} />}
-                  isPack={true}
-                  pharmacyDrug={item}
-                  collapsableContent={<NewExCardContent formType={3} packInfo={item.packDetails} />}
+                  basicDetail={ <NewExCardContent formType={ 1 } pharmacyDrug={ item } isPack={ true } /> }
+                  isPack={ true }
+                  pharmacyDrug={ item }
+                  collapsableContent={ <NewExCardContent formType={ 3 } packInfo={ item.packDetails } /> }
                 />
               ) : (
                 <NewCardContainer
-                  basicDetail={<NewExCardContent formType={2} pharmacyDrug={item} isPack={false} />}
-                  isPack={false}
-                  pharmacyDrug={item}
+                  basicDetail={ <NewExCardContent formType={ 2 } pharmacyDrug={ item } isPack={ false } /> }
+                  isPack={ false }
+                  pharmacyDrug={ item }
                 />
-              )}
+              ) }
             </div>
           </Grid>
         )
@@ -283,10 +289,10 @@ const Tab1: React.FC = () => {
     return null
   }
 
-  const cardListGenerator = (): JSX.Element[] | null => {
-    if (concatList.length > 0) {
+  const cardListGenerator = useMemo((): JSX.Element[] | null => {
+    if (concatListPaginated.length > 0) {
       return (
-        concatList
+        concatListPaginated
           // .filter(comparer(basketCount))
           .sort((a, b) => (a.order > b.order ? 1 : -1))
           .map((item: AllPharmacyDrugInterface, index: number) => {
@@ -316,49 +322,49 @@ const Tab1: React.FC = () => {
             }
 
             return (
-              <Grid item xs={12} sm={12} xl={12} key={index}>
-                <div className={paper}>
-                  {item.packID ? (
+              <Grid item xs={ 12 } sm={ 12 } xl={ 12 } key={ index }>
+                <div className={ paper }>
+                  { item.packID ? (
                     <NewCardContainer
-                      key={`CardContainer_${item.id}`}
+                      key={ `CardContainer_${item.id}` }
                       basicDetail={
                         <NewExCardContent
-                          key={`CardContent${item.id}`}
-                          formType={1}
-                          pharmacyDrug={item}
-                          isPack={true}
+                          key={ `CardContent${item.id}` }
+                          formType={ 1 }
+                          pharmacyDrug={ item }
+                          isPack={ true }
                         />
                       }
-                      isPack={true}
-                      pharmacyDrug={Object.assign(item, {
+                      isPack={ true }
+                      pharmacyDrug={ Object.assign(item, {
                         currentCnt: item.cnt,
-                      })}
+                      }) }
                       collapsableContent={
                         <NewExCardContent
-                          key={`CardContent${item.id}`}
-                          formType={3}
-                          packInfo={item.packDetails}
-                          isPack={true}
+                          key={ `CardContent${item.id}` }
+                          formType={ 3 }
+                          packInfo={ item.packDetails }
+                          isPack={ true }
                         />
                       }
                     />
                   ) : (
                     <NewCardContainer
-                      key={`CardContainer_${item.id}`}
+                      key={ `CardContainer_${item.id}` }
                       basicDetail={
                         <NewExCardContent
-                          key={item.id}
-                          formType={2}
-                          pharmacyDrug={item}
-                          isPack={false}
+                          key={ item.id }
+                          formType={ 2 }
+                          pharmacyDrug={ item }
+                          isPack={ false }
                         />
                       }
-                      isPack={false}
-                      pharmacyDrug={Object.assign(item, {
+                      isPack={ false }
+                      pharmacyDrug={ Object.assign(item, {
                         currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
-                      })}
+                      }) }
                     />
-                  )}
+                  ) }
                 </div>
               </Grid>
             )
@@ -367,7 +373,7 @@ const Tab1: React.FC = () => {
     }
 
     return null
-  }
+  }, [concatListPaginated, basketCount])
 
   const handleClose = (): any => {
     setOpenDialog(false)
@@ -381,23 +387,23 @@ const Tab1: React.FC = () => {
     return (
       <div>
         <Dialog
-          fullScreen={fullScreen}
-          open={openDialog}
-          onClose={handleClose}
-          fullWidth={true}
+          fullScreen={ fullScreen }
+          open={ openDialog }
+          onClose={ handleClose }
+          fullWidth={ true }
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle>{'انتخاب دارو از سبد خود'}</DialogTitle>
+          <DialogTitle>{ 'انتخاب دارو از سبد خود' }</DialogTitle>
           <DialogContent>
             <DialogContentText>
               آیا تمایل دارید از لیست داروهای خود ، اقلامی را انتخاب نمایید؟
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <MatButton autoFocus onClick={handleClose} color="primary">
+            <MatButton autoFocus onClick={ handleClose } color="primary">
               خیر
             </MatButton>
-            <MatButton onClick={handleAgree} color="primary" autoFocus>
+            <MatButton onClick={ handleAgree } color="primary" autoFocus>
               بلی
             </MatButton>
           </DialogActions>
@@ -406,39 +412,106 @@ const Tab1: React.FC = () => {
     )
   }
 
+  const totalCountRef = React.useRef(0)
+  const setTotalCountRef = (data: number) => {
+    totalCountRef.current = data
+  }
+
+  const concatListPaginatedRef = React.useRef(concatListPaginated)
+  const setConcatListPaginatedRef = (data: AllPharmacyDrugInterface[]) => {
+    concatListPaginatedRef.current = data
+  }
+
+  const concatListRef = React.useRef(concatList)
+  const setConcatListRef = (data: AllPharmacyDrugInterface[]) => {
+    concatListRef.current = data
+  }
+
+
+  const handleScroll = (e: any): any => {
+    const el = e.target
+    const pixelsBeforeEnd = 200
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight
+    if (checkDevice) {
+      if (
+        totalCountRef.current == 0 ||
+        concatListPaginatedRef.current.length < (totalCountRef.current ?? 0)
+      ) {
+        setLoading(true)
+        const paginated = [
+          ...concatListPaginatedRef.current,
+          ...concatListRef.current.slice(
+            concatListPaginatedRef.current.length,
+            concatListPaginatedRef.current.length + pageSize
+          )
+        ]
+        setConcatListPaginated(paginated)
+        setConcatListPaginatedRef(paginated)
+      }
+    }
+    setLoading(false)
+  }
+
+  const addScrollListener = (): void => {
+    document
+      .getElementById('cardListContainer')
+      ?.addEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      })
+  }
+
+  const removeScrollListener = (): void => {
+    document
+      .getElementById('cardListContainer')
+      ?.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      })
+  }
+
+  React.useEffect(() => {
+    addScrollListener()
+    return (): void => {
+      removeScrollListener()
+    }
+  }, [])
+
+
   return (
     <>
-      <Grid
-        item
-        xs={12}
-        style={{
-          maxHeight: 'calc(100vh - 280px)',
-          minHeight: 'calc(100vh - 280px)',
-          overflow: 'auto',
-          marginTop: -20,
-        }}
-      >
-        <Grid container item spacing={1} xs={12}>
-          <Grid item xs={12} md={12}>
-          <Grid container className={fullScreen ? notStickySearch : stickySearch}>
-              <Grid item xs={12} style={{ padding: 0, zIndex: 101 }}>
-                <SearchInAList />
+      <div id="cardListContainer">
+        <Grid
+          item
+          xs={ 12 }
+          style={ {
+            maxHeight: '400px', // 'calc(100vh - 280px)',
+            minHeight: '400px', //'calc(100vh - 280px)',
+            overflow: 'auto',
+            marginTop: -20,
+          } }
+        >
+          <Grid container item spacing={ 1 } xs={ 12 }>
+            <Grid item xs={ 12 } md={ 12 }>
+              <Grid container className={ fullScreen ? notStickySearch : stickySearch }>
+                <Grid item xs={ 12 } style={ { padding: 0, zIndex: 101 } }>
+                  <SearchInAList />
+                </Grid>
               </Grid>
-            </Grid>
-            <Grid container spacing={1}>
-              <>
-                {/* {basketCardListGenerator()} */}
-                {cardListGenerator()}
-              </>
+              <Grid container spacing={ 1 }>
+                {/* {basketCardListGenerator()} */ }
+                { cardListGenerator }
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
 
+      </div>
       <ConfirmDialog />
-      <CircleBackdropLoading isOpen={loading} />
+      <CircleBackdropLoading isOpen={ loading } />
     </>
   )
 }
 
-export default Tab1;
+export default Tab1

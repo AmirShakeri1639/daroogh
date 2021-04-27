@@ -316,7 +316,7 @@ const AccountingList: React.FC = () => {
           <Grid container spacing={3} className={contentContainer}>
             {true && contentGenerator()}
           </Grid>
-          {true && <CircleBackdropLoading isOpen={isLoading} />}
+          <CircleBackdropLoading isOpen={isLoading} />
         </Grid>
       </Grid>
     </Container>

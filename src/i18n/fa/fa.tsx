@@ -332,6 +332,7 @@ export default {
         email: 'ایمیل',
         resumeFile: 'فایل رزومه',
         requestState: 'وضعیت درخواست',
+        findJob:'کاریابی'
       },
       message: {
         message: 'پیام',
@@ -437,6 +438,7 @@ export default {
         done: 'با موفقیت انجام شد.',
         cancelConfirm: 'آیا از لغو این مورد مطمئن هستید؟',
         aiSuggestion: 'آیا به هوش مصنوعی داروگ اجازه پیشنهاد از سبد خودتان را می‌دهید؟',
+        removeExchange: 'آیا از حذف تبادل اطمینان دارید؟',
       },
       pharmacy: {
         pharmacy: 'داروخانه',
@@ -795,7 +797,8 @@ export default {
         chooseCloserDateAlert:'پورسانت بر مبنای تاریخ انقضا محاسبه میشود',
         useAi:'هوش مصنوعی داروگ میتواند عملیات انتخاب از سبد عرضه شما را به صورت خودکار و بر اساس علایق داروخانه مقابل٬ انجام دهد. عملیات متعادل کردن سبدهای تبادل با درصد اختلاف مجاز نیز در صورت امکان صورت خواهد پذیرفت. ',
         useAi2:'ضمنا شما میتوانید پس از این انتخاب نیز سبد خود را ویرایش نمایید و همیشه آیکن  ',
-        useAi3:'  در هر حالتی از انتخاب داروها برای چینش نهایی به کمک شما خواهد آمد'
+        useAi3:'  در هر حالتی از انتخاب داروها برای چینش نهایی به کمک شما خواهد آمد',
+        findJobAlert:'در این بخش میتوانید از میان فرصت های شغلی ارائه شده توسط داروخانه ها با بررسی جزئیات٬ موارد مد نظرتان را انتخاب کنید و با آن داروخانه ها جهت هماهنگی های لازم تماس بگیرید.'
       },
 
       widget: {
@@ -832,6 +835,24 @@ export default {
           UnConfirmed: 'عدم تایید',
         }
       },
+      findJob:{
+        minGradeOfReadingPrescriptionCertificate: 'حداقل نمره نسخه خوانی قابل قبول',
+        minWorkExperienceYear: 'حداقل سابقه کار',
+        maxAge: 'حداکثر سن',
+        descriptions: 'توضیحات',
+        hasReadingPrescriptionCertificateStr: 'توانایی نسخه خوانی',
+        livingInAreaStr: 'سکونت در محل',
+        hasGuaranteeStr: 'نیاز به وثیقه',
+        genderStr: 'جنسیت',
+        suggestedWorkShiftStr: 'شبفت کاری پیشنهادی',
+        maritalStatusStr: 'وضعیت تاهل',
+        pharmaceuticalSoftwareSkillStr: 'توانایی کار با نرم افزارهای داروخانه ای',
+        computerSkillStr: 'توانایی کار با کامپیوتر',
+        foreignLanguagesSkillStr: 'سطح زبان انگلیسی',
+        jobPositionStr: 'موقعیت شغلی مورد نیاز',
+        educationStr: 'حداقل سطح تحصیلات',
+
+      }
     },
   },
 };

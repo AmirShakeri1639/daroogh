@@ -259,7 +259,7 @@ const UserForm: React.FC<UserDataProps> = (props) => {
       const result = await searchPharmacy(name, _PharmacyTypeEnum.FUZZY)
       const mappedItems = result.map((item: SearchPharmacyInterface) => ({
         id: item.id,
-        name: item.name,
+        name: `${item.id} - ${item.name}`,
       }))
       setIsLoading(false)
       setOptions(mappedItems)
