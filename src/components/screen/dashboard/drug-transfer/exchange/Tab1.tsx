@@ -248,7 +248,7 @@ const Tab1: React.FC = () => {
       if (basketCount.findIndex((y) => y.id === x.id) !== -1) return
       newList.push(x)
     })
-    const output = basketCount.concat(newList)
+    const output = basketCount.concat(newList);
     setTotalCountRef(output.length)
     setConcatListPaginated(output.slice(0, pageSize))
     setConcatListPaginatedRef(output.slice(0, pageSize))
@@ -261,6 +261,7 @@ const Tab1: React.FC = () => {
     if (concatListPaginated.length > 0) {
       return (
         concatListPaginated
+          // .sort((a, b) => (a.order > b.order ? 1 : -1))
           .map((item: AllPharmacyDrugInterface, index: number) => {
 
             let changedColor = true
@@ -283,49 +284,49 @@ const Tab1: React.FC = () => {
             }
 
             return (
-              <Grid item xs={ 12 } sm={ 12 } xl={ 12 } key={ index }>
-                <div className={ paper }>
-                  { item.packID ? (
+              <Grid item xs={12} sm={12} xl={12} key={index}>
+                <div className={paper}>
+                  {item.packID ? (
                     <NewCardContainer
-                      key={ `CardContainer_${item.id}` }
+                      key={`CardContainer_${item.id}`}
                       basicDetail={
                         <NewExCardContent
-                          key={ `CardContent${item.id}` }
-                          formType={ 1 }
-                          pharmacyDrug={ item }
-                          isPack={ true }
+                          key={`CardContent${item.id}`}
+                          formType={1}
+                          pharmacyDrug={item}
+                          isPack={true}
                         />
                       }
-                      isPack={ true }
-                      pharmacyDrug={ Object.assign(item, {
+                      isPack={true}
+                      pharmacyDrug={Object.assign(item, {
                         currentCnt: item.cnt,
-                      }) }
+                      })}
                       collapsableContent={
                         <NewExCardContent
-                          key={ `CardContent${item.id}` }
-                          formType={ 3 }
-                          packInfo={ item.packDetails }
-                          isPack={ true }
+                          key={`CardContent${item.id}`}
+                          formType={3}
+                          packInfo={item.packDetails}
+                          isPack={true}
                         />
                       }
                     />
                   ) : (
                     <NewCardContainer
-                      key={ `CardContainer_${item.id}` }
+                      key={`CardContainer_${item.id}`}
                       basicDetail={
                         <NewExCardContent
-                          key={ item.id }
-                          formType={ 2 }
-                          pharmacyDrug={ item }
-                          isPack={ false }
+                          key={item.id}
+                          formType={2}
+                          pharmacyDrug={item}
+                          isPack={false}
                         />
                       }
-                      isPack={ false }
-                      pharmacyDrug={ Object.assign(item, {
+                      isPack={false}
+                      pharmacyDrug={Object.assign(item, {
                         currentCnt: item.currentCnt ? item.currentCnt : item.cnt,
-                      }) }
+                      })}
                     />
-                  ) }
+                  )}
                 </div>
               </Grid>
             )
@@ -348,23 +349,23 @@ const Tab1: React.FC = () => {
     return (
       <div>
         <Dialog
-          fullScreen={ fullScreen }
-          open={ openDialog }
-          onClose={ handleClose }
-          fullWidth={ true }
+          fullScreen={fullScreen}
+          open={openDialog}
+          onClose={handleClose}
+          fullWidth={true}
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle>{ 'انتخاب دارو از سبد خود' }</DialogTitle>
+          <DialogTitle>{'انتخاب دارو از سبد خود'}</DialogTitle>
           <DialogContent>
             <DialogContentText>
               آیا تمایل دارید از لیست داروهای خود ، اقلامی را انتخاب نمایید؟
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <MatButton autoFocus onClick={ handleClose } color="primary">
+            <MatButton autoFocus onClick={handleClose} color="primary">
               خیر
             </MatButton>
-            <MatButton onClick={ handleAgree } color="primary" autoFocus>
+            <MatButton onClick={handleAgree} color="primary" autoFocus>
               بلی
             </MatButton>
           </DialogActions>
@@ -402,7 +403,7 @@ const Tab1: React.FC = () => {
         concatListPaginatedRef.current.length < (totalCountRef.current ?? 0)
       ) {
         setLoading(true)
-        
+
         const paginated = [
           ...concatListPaginatedRef.current,
           ...concatListRef.current.slice(
@@ -444,26 +445,25 @@ const Tab1: React.FC = () => {
 
   return (
     <>
-      <div id="cardListContainer">
+      <div id="cardListContainer" style={{
+        maxHeight: 'calc(100vh - 280px)',
+        minHeight: 'calc(100vh - 280px)',
+        overflow: 'auto',
+        marginTop: -20,
+      }}>
         <Grid
           item
-          xs={ 12 }
-          style={ {
-            maxHeight: 'calc(100vh - 280px)',
-            minHeight: 'calc(100vh - 280px)',
-            overflow: 'auto',
-            marginTop: -20,
-          } }
+          xs={12}
         >
-          <Grid container item spacing={ 1 } xs={ 12 }>
-            <Grid item xs={ 12 } md={ 12 }>
-              <Grid container className={ fullScreen ? notStickySearch : stickySearch }>
-                <Grid item xs={ 12 } style={ { padding: 0, zIndex: 101 } }>
+          <Grid container item spacing={1} xs={12}>
+            <Grid item xs={12} md={12}>
+              <Grid container className={fullScreen ? notStickySearch : stickySearch}>
+                <Grid item xs={12} style={{ padding: 0, zIndex: 101 }}>
                   <SearchInAList />
                 </Grid>
               </Grid>
-              <Grid container spacing={ 1 }>
-                { cardListGenerator }
+              <Grid container spacing={1}>
+                {cardListGenerator}
               </Grid>
             </Grid>
           </Grid>
@@ -471,7 +471,7 @@ const Tab1: React.FC = () => {
 
       </div>
       <ConfirmDialog />
-      <CircleBackdropLoading isOpen={ loading } />
+      <CircleBackdropLoading isOpen={loading} />
     </>
   )
 }
