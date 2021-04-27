@@ -336,7 +336,7 @@ const Tab2: React.FC = () => {
     setConcatListPaginatedRef(output.slice(0, pageSize))
     setConcatList(output)
     setConcatListRef(output)
-  }, [uBasketCount, uAllPharmacyDrug])
+  }, [uAllPharmacyDrug])
 
 
   const cardListGenerator = React.useMemo((): JSX.Element[] | null => {

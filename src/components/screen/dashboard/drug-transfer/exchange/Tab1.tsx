@@ -254,7 +254,7 @@ const Tab1: React.FC = () => {
     setConcatListPaginatedRef(output.slice(0, pageSize))
     setConcatList(output)
     setConcatListRef(output)
-  }, [basketCount, allPharmacyDrug])
+  }, [allPharmacyDrug])
 
 
   const cardListGenerator = useMemo((): JSX.Element[] | null => {
@@ -398,6 +398,7 @@ const Tab1: React.FC = () => {
         ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
         : el.scrollTop + el.clientHeight === el.scrollHeight
     if (checkDevice) {
+      debugger;
       if (
         totalCountRef.current == 0 ||
         concatListPaginatedRef.current.length < (totalCountRef.current ?? 0)
