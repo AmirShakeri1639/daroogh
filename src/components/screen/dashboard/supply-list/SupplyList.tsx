@@ -1056,18 +1056,17 @@ const SupplyList: React.FC = () => {
                   </Grid>
 
                   <Grid item xs={3} className={expireDate}>
-                    {daysDiff !== '' && <span>{daysDiff} روز</span>}
+                    {daysDiff !== ''  && !isNaN(Number(daysDiff)) && <span>{daysDiff} روز</span>}
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  {isWrongDate && <p className="text-danger txt-xs">{t('date.afterToday')}</p>}
-                  {!hasMinimumDate && (
-                    <p className="text-danger txt-xs">
-                      {t('date.minimumDate', {
-                        day: drugExpireDay,
+                   <p className="text-danger txt-xs">
+                    {isWrongDate && t('date.afterToday')}
+                    {!hasMinimumDate && t('date.minimumDate', {
+                        day: drugExpireDay
                       })}
-                    </p>
-                  )}
+                    {isNaN(Number(daysDiff)) && t('date.wrongDate')}
+                  </p>
                 </Grid>
               </Grid>
 

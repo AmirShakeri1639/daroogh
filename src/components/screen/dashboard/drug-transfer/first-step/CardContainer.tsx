@@ -1,19 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 import {
-  createStyles,
   Paper,
   Grid,
-  Box,
-  Divider,
   Button,
-  Hidden,
   useMediaQuery,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, useTheme } from '@material-ui/core/styles';
 import CardHeader from './CardHeader';
 import { CardContainerRelatedPharmacyDrugsInterface } from '../../../../../interfaces';
 import ItemContainer from './ItemContainer';
@@ -24,11 +20,21 @@ import { useDispatch } from 'react-redux';
 import { setTransferStart } from '../../../../../redux/actions';
 import routes from '../../../../../routes';
 import AllPharmacyDrugsViwer from '../AllPharmacyDrugsViwer';
-import { ColorEnum } from 'enum';
 
 const { transfer } = routes;
 
 const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (props) => {
+  const {
+    setSelectedPharmacyForTransfer,
+    setActiveStep,
+    activeStep,
+    setBasketCount,
+    setUbasketCount,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const useStyle = makeStyles((theme) =>
     createStyles({
       paper: {
@@ -97,17 +103,6 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
       },
     })
   );
-
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const {
-    setSelectedPharmacyForTransfer,
-    setActiveStep,
-    activeStep,
-    setBasketCount,
-    setUbasketCount,
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
 
   const { push } = useHistory();
   const dispatch = useDispatch();
@@ -212,14 +207,14 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
         open={showExchangeTree}
         fullScreen={fullScreen}
         fullWidth={true}
-        onClose={() => setShowExchangeTree(false)}
+        onClose={(): void => setShowExchangeTree(false)}
       >
         <DialogTitle className="text-sm">{t('exchange.allPharmacyDrugs')}</DialogTitle>
         <DialogContent>
           <AllPharmacyDrugsViwer pharmacyId={data.pharmacyKey} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowExchangeTree(false)} color="primary">
+          <Button onClick={(): void => setShowExchangeTree(false)} color="primary">
             بستن
           </Button>
           <Button type="button" onClick={transferStartHandler}>
@@ -231,4 +226,4 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
   );
 };
 
-export default CardContainer;
+export default memo(CardContainer);
