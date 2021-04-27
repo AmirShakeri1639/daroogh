@@ -167,7 +167,7 @@ const Tab1: React.FC = () => {
   const { paper, stickySearch, notStickySearch } = style()
 
   const [listPageNo] = useState(0)
-  const [pageSize] = useState(2)
+  const [pageSize] = useState(5)
   const [loading, setLoading] = useState<boolean>(false)
 
   const { isLoading, refetch } = useQuery(
@@ -248,7 +248,7 @@ const Tab1: React.FC = () => {
       if (basketCount.findIndex((y) => y.id === x.id) !== -1) return
       newList.push(x)
     })
-    const output = newList.concat(basketCount)
+    const output = basketCount.concat(newList)
     setTotalCountRef(output.length)
     setConcatListPaginated(output.slice(0, pageSize))
     setConcatListPaginatedRef(output.slice(0, pageSize))
@@ -256,51 +256,12 @@ const Tab1: React.FC = () => {
     setConcatListRef(output)
   }, [basketCount, allPharmacyDrug])
 
-  const basketCardListGenerator = (): any => {
-    if (basketCount && basketCount.length > 0) {
-      return basketCount.map((item: AllPharmacyDrugInterface, index: number) => {
-        item.order = index + 1
-        item.buttonName = 'حذف از تبادل'
-        if (item.cardColor === 'white') item.cardColor = '#dff4ff'
-
-        return (
-          <Grid item xs={ 12 } sm={ 12 } xl={ 12 } key={ index }>
-            <div className={ paper } style={{ height: '500px' }}>
-              { item.packID ? (
-                <NewCardContainer
-                  basicDetail={ <NewExCardContent formType={ 1 } pharmacyDrug={ item } isPack={ true } /> }
-                  isPack={ true }
-                  pharmacyDrug={ item }
-                  collapsableContent={ <NewExCardContent formType={ 3 } packInfo={ item.packDetails } /> }
-                />
-              ) : (
-                <NewCardContainer
-                  basicDetail={ <NewExCardContent formType={ 2 } pharmacyDrug={ item } isPack={ false } /> }
-                  isPack={ false }
-                  pharmacyDrug={ item }
-                />
-              ) }
-            </div>
-          </Grid>
-        )
-      })
-    }
-
-    return null
-  }
 
   const cardListGenerator = useMemo((): JSX.Element[] | null => {
     if (concatListPaginated.length > 0) {
       return (
         concatListPaginated
-          // .filter(comparer(basketCount))
-          .sort((a, b) => (a.order > b.order ? 1 : -1))
           .map((item: AllPharmacyDrugInterface, index: number) => {
-            // Object.assign(item, {
-            //   order: index + 1,
-            //   buttonName: 'افزودن به تبادل',
-            //   cardColor: item.cardColor,
-            // });
 
             let changedColor = true
             if (item.cardColor === ColorEnum.AddedByB || item.cardColor === ColorEnum.NotConfirmed)
@@ -441,6 +402,7 @@ const Tab1: React.FC = () => {
         concatListPaginatedRef.current.length < (totalCountRef.current ?? 0)
       ) {
         setLoading(true)
+        
         const paginated = [
           ...concatListPaginatedRef.current,
           ...concatListRef.current.slice(
@@ -448,6 +410,7 @@ const Tab1: React.FC = () => {
             concatListPaginatedRef.current.length + pageSize
           )
         ]
+
         setConcatListPaginated(paginated)
         setConcatListPaginatedRef(paginated)
       }
@@ -486,8 +449,8 @@ const Tab1: React.FC = () => {
           item
           xs={ 12 }
           style={ {
-            maxHeight: '400px', // 'calc(100vh - 280px)',
-            minHeight: '400px', //'calc(100vh - 280px)',
+            maxHeight: 'calc(100vh - 280px)',
+            minHeight: 'calc(100vh - 280px)',
             overflow: 'auto',
             marginTop: -20,
           } }
@@ -500,7 +463,6 @@ const Tab1: React.FC = () => {
                 </Grid>
               </Grid>
               <Grid container spacing={ 1 }>
-                {/* {basketCardListGenerator()} */ }
                 { cardListGenerator }
               </Grid>
             </Grid>
