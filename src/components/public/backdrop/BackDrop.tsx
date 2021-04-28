@@ -3,9 +3,9 @@ import {
   makeStyles,
   Backdrop,
   CircularProgress,
-} from '@material-ui/core';
-import React from 'react';
-import { BackDropPropsInterface } from '../../../interfaces';
+} from '@material-ui/core'
+import React from 'react'
+import { BackDropPropsInterface } from '../../../interfaces'
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -14,17 +14,21 @@ const useStyle = makeStyles((theme) =>
       color: '#fff',
     },
   })
-);
+)
 
 const BackDrop: React.FC<BackDropPropsInterface> = (props) => {
-  const { isOpen, onClick } = props;
-  const { backdrop } = useStyle();
+  const { isOpen, onClick } = props
+  const { backdrop } = useStyle()
 
   return (
-    <Backdrop className={backdrop} open={isOpen} onClick={onClick}>
-      <CircularProgress color="inherit" />
-    </Backdrop>
-  );
-};
+    <>
+      { isOpen &&
+        <Backdrop className={ backdrop } open={ isOpen } onClick={ onClick }>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      }
+    </>
+  )
+}
 
-export default BackDrop;
+export default BackDrop
