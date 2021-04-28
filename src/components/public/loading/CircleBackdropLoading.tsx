@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import Backdrop from '@material-ui/core/Backdrop';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import React, { useEffect } from 'react'
+import Backdrop from '@material-ui/core/Backdrop'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,15 +10,15 @@ const useStyles = makeStyles((theme: Theme) =>
       color: '#fff',
     },
   })
-);
+)
 
 interface PropInterfact {
-  isOpen: boolean;
+  isOpen: boolean
 }
 
 const CircleBackdropLoading: React.FC<PropInterfact> = (props): JSX.Element => {
-  const { isOpen } = props;
-  const classes = useStyles();
+  const { isOpen } = props
+  const classes = useStyles()
 
   //   const [open, setOpen] = React.useState(false);
   //   const handleToggle = (): any => {
@@ -31,11 +31,13 @@ const CircleBackdropLoading: React.FC<PropInterfact> = (props): JSX.Element => {
 
   return (
     <div>
-      <Backdrop className={classes.backdrop} open={isOpen}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      { isOpen &&
+        <Backdrop className={ classes.backdrop } open={ isOpen }>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      }
     </div>
-  );
-};
+  )
+}
 
-export default CircleBackdropLoading;
+export default CircleBackdropLoading

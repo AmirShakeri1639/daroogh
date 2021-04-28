@@ -7,20 +7,16 @@ import {
   AccordionDetails,
   Divider,
   Typography,
-  Hidden,
   FormControl,
   InputLabel,
-  Checkbox,
-  ListItemText,
   Select,
-  Input as MTInput,
   MenuItem,
   Chip,
 } from '@material-ui/core';
 import { debounce } from 'lodash';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { QueryCache, useInfiniteQuery, useQuery, useQueryCache } from 'react-query';
 import { Category, PharmacyDrug } from 'services/api';
 import { PharmacyDrugEnum } from 'enum/query';
 import { CircleLoading, EmptyContent } from 'components/public';
@@ -40,7 +36,6 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import { errorHandler } from 'utils';
 import Search from 'services/api/Search';
-import { SelectOption } from 'interfaces';
 import { AdvancedSearchInterface } from 'interfaces/search';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from 'redux/actions';
@@ -48,6 +43,8 @@ import { ListOptions } from 'components/public/auto-complete/AutoComplete';
 import { useLocation } from 'react-router';
 import { ColorEnum } from 'enum';
 import { CategoryQueryEnum } from 'enum/query';
+import styled from 'styled-components';
+import { useScrollRestoration } from 'hooks';
 
 const { getRelatedPharmacyDrug, getFavoritePharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
@@ -152,10 +149,21 @@ const useStyle = makeStyles((theme) =>
       background: `${ColorEnum.Green} !important`,
       borderRadius: 4,
     },
+    countryDivision:{
+      width:240,
+    }
   })
 );
 
+const Container = styled.div``;
+
 const isMultipleSelection = true;
+
+type ServerResponse = {
+  count: number;
+  items: any[];
+  nextPageLink: null;
+}
 
 const FirstStep: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
@@ -166,21 +174,28 @@ const FirstStep: React.FC = () => {
   const [searchedDrugs, setSearchedDrugs] = useState<ListOptions[]>([]);
   const [searchedDrugsResult, setSearchedDrugsResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [searchedCategory, setSearchedCategory] = useState<SelectOption | undefined>(undefined);
-  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(undefined);
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
   const [remainingExpireDays, setRemainingExpireDays] = useState<string>('');
   const [isInSearchMode, setIsInSearchMode] = useState<boolean>(false);
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [drugsCategory, setDrugsCategory] = useState<any[]>([]);
   const [selectedDrugsCategory, setSelectedDrugsCategory] = useState('-1');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pharmacyList, setPharmacyList] = useState<any[]>([]);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  const totalPharmacyCount = useRef<number>(1)
+
+  const cache = useQueryCache();
+
   let minimumDrugExpireDay = 30;
   const { search: useLocationSearch } = useLocation();
+  const scrollRestoration = useScrollRestoration;
 
+  scrollRestoration(window, PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, setCurrentPage, cache);
+ 
   try {
     const localStorageSettings = JSON.parse(localStorage.getItem('settings') ?? '{}');
     minimumDrugExpireDay = localStorageSettings.drugExpireDay;
@@ -247,8 +262,8 @@ const FirstStep: React.FC = () => {
 
   const getDrugsCategory = async (): Promise<void> => {
     try {
-      const maximumAvailableDrag = 99;
-      const result = await getAllCategories(0, maximumAvailableDrag);
+      const maximumAvailableDrug = 99;
+      const result = await getAllCategories(0, maximumAvailableDrug);
       const { items } = result;
       setDrugsCategory(items);
     } catch (e) {
@@ -262,7 +277,10 @@ const FirstStep: React.FC = () => {
     }
   }, [isOpenDrawer]);
 
-  const { isLoading: isLoadingCategory, data: categoriesData } = useQuery(
+  const {
+    isLoading: isLoadingCategory,
+    data: categoriesData,
+  } = useQuery(
     CategoryQueryEnum.GET_ALL_CATEGORIES,
     () => getAllCategories(0, 99),
     {
@@ -328,17 +346,23 @@ const FirstStep: React.FC = () => {
     noContent,
     buttonWrapper,
     filterButton,
+    countryDivision,
   } = useStyle();
 
   const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
     shouldDisplayFavoriteList
       ? PharmacyDrugEnum.GET_FAVORITE_EXCHANGE_LIST_OF_DRUGS
-      : PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG,
+      : [PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, currentPage],
     shouldDisplayFavoriteList
       ? (): Promise<any> => getFavoritePharmacyDrug()
-      : (): Promise<any> => getRelatedPharmacyDrug(),
+      : (): Promise<any> => getRelatedPharmacyDrug(10, currentPage * 10),
     {
-      enabled: searchedDrugs.length === 0,
+      enabled: searchedDrugs.length === 0 && pharmacyList.length < totalPharmacyCount?.current ,
+      keepPreviousData: true,
+      onSuccess: (data: ServerResponse) => {
+        setPharmacyList((v) => [...v, ...data.items]);
+        totalPharmacyCount.current = data.count;
+      }
     }
   );
 
@@ -387,7 +411,7 @@ const FirstStep: React.FC = () => {
       }
     } else {
       items = React.Children.toArray(
-        data.items.map((d: PharmacyDrugInterface) => {
+        pharmacyList.map((d: PharmacyDrugInterface) => {
           return (
             <>
               <Grid item xs={12} sm={6} lg={6}>
@@ -427,7 +451,9 @@ const FirstStep: React.FC = () => {
   return (
     <>
       <Grid item xs={12}>
-        <Grid container spacing={2}>
+        <Container id="container">
+
+          <Grid container spacing={2}>
           <Grid item xs={12} style={{ marginTop: 16 }}>
             <span>{t('alerts.supplylistsAlert')}</span>
           </Grid>
@@ -472,8 +498,10 @@ const FirstStep: React.FC = () => {
               />
             )}
           </Grid>
+
           {memoContent}
         </Grid>
+        </Container>
       </Grid>
 
       <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
@@ -552,8 +580,8 @@ const FirstStep: React.FC = () => {
             <Divider className={divider} />
 
             <div className={dateContainer}>
-              <span>{t('province.selectCounty')}</span>
-              <County
+              <span>{t('peopleSection.ostan')}</span>
+              <County className={countryDivision}
                 countyHandler={(e): void => {
                   setSelectedCounty(e ?? '');
                   setSelectedProvince('-2');
@@ -565,8 +593,8 @@ const FirstStep: React.FC = () => {
             <Divider className={divider} />
 
             <div className={dateContainer}>
-              <span>{t('province.selectProvince')}</span>
-              <Province
+              <span>{t('peopleSection.city')}</span>
+              <Province className={countryDivision}
                 countyId={selectedCounty}
                 value={selectedProvince}
                 provinceHandler={(e): void => setSelectedProvince(e ?? '')}
