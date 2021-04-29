@@ -9,6 +9,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 
+export const supportsVibrate = 'vibrate' in window.navigator
+export const vibrate = (pattern: number | number[]): void => {
+  if (supportsVibrate) {
+    window.navigator.vibrate(pattern)
+  }
+}
+
 export enum ToastDurationEnum {
   Short = 2000,
   Medium = 5000,
@@ -16,12 +23,12 @@ export enum ToastDurationEnum {
   VeryLong = 20000
 }
 
-export const  ToastVibratePattern = {
-  INFO: [250],
-  SIMPLE: [100,300,50],
+export const ToastVibratePattern = {
+  INFO: [300],
+  SIMPLE: [200, 200, 200],
   SUCCESS: [500],
-  WARN: [150,150],
-  ERROR: [250,500],
+  WARN: [300, 250, 500],
+  ERROR: [350, 200, 350, 200, 350],
 }
 
 export const TOAST_MESSAGE_MAX_LENGTH = 60
@@ -35,12 +42,12 @@ const getAutoClose = (message: string): number => {
 }
 
 export const tSimple = (message = '', options = {}) => {
-  window.navigator.vibrate(ToastVibratePattern.SIMPLE)
+  vibrate(ToastVibratePattern.SIMPLE)
   return toast(message, options)
 }
 
 export const tInfo = (message = '', options = {}) => {
-  window.navigator.vibrate(ToastVibratePattern.INFO)
+  vibrate(ToastVibratePattern.INFO)
   return toast.info(
     <>
       <FontAwesomeIcon icon={ faInfoCircle } size="lg" />
@@ -55,8 +62,8 @@ export const tInfo = (message = '', options = {}) => {
   )
 }
 
-export const tSuccess = (message = '', options = {}) =>  {
-  window.navigator.vibrate(ToastVibratePattern.SUCCESS)
+export const tSuccess = (message = '', options = {}) => {
+  vibrate(ToastVibratePattern.SUCCESS)
   return toast.success(
     <>
       <FontAwesomeIcon icon={ faCheckCircle } size="lg" />
@@ -72,7 +79,7 @@ export const tSuccess = (message = '', options = {}) =>  {
 }
 
 export const tWarn = (message = '', options = {}) => {
-  window.navigator.vibrate(ToastVibratePattern.WARN)
+  vibrate(ToastVibratePattern.WARN)
   return toast.warn(
     <>
       <FontAwesomeIcon icon={ faExclamationCircle } size="lg" />
@@ -88,7 +95,7 @@ export const tWarn = (message = '', options = {}) => {
 }
 
 export const tError = (message = '', options = {}) => {
-  window.navigator.vibrate(ToastVibratePattern.ERROR)
+  vibrate(ToastVibratePattern.ERROR)
   return toast.error(
     <>
       <FontAwesomeIcon icon={ faTimesCircle } size="lg" />
