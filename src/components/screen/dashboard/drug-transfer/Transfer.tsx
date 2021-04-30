@@ -17,9 +17,7 @@ import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { calcTotalPrices } from '../../../../utils/ExchangeTools';
-import fa from '../../../../i18n/fa/fa';
-import CircularProgressWithLabel from '../../../public/loading/CircularProgressWithLabel';
-import { ColorEnum } from '../../../../enum';
+import { ColorEnum, PharmacyDrugEnum } from '../../../../enum';
 import Exchange from './exchange/Exchange';
 
 const style = makeStyles((theme) =>
@@ -67,9 +65,20 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [needRefresh, setNeedRefresh] = React.useState(false)
 
   const { viewExchangeId, exchangeState } = props;
+  const { search } = useLocation();
+  const params = queryString.parse(search);
 
-  const location = useLocation();
-  const params = queryString.parse(location.search);
+  useEffect(() => {
+    const isStep0 = window.location.hash.endsWith('step=1');
+    const isStep1 = window.location.hash.endsWith('step=2');
+
+    if (isStep0) {
+      setEid('');
+      setActiveStep(0);
+    } else if (isStep1) {
+      setActiveStep(1);
+    }
+  }, [search, params]);
 
   useEffect(() => {
     const xId = params.eid == null ? undefined : params.eid.toString();
