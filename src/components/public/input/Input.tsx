@@ -1,6 +1,7 @@
 import React, { forwardRef, ReactText, Ref, useCallback } from 'react';
 import { createStyles, makeStyles, TextField } from '@material-ui/core';
 import NumberFormat from 'react-number-format';
+import styled from 'styled-components';
 
 const useStyle = makeStyles(() =>
   createStyles({
@@ -17,6 +18,10 @@ const useStyle = makeStyles(() =>
     },
   })
 );
+
+const StyledNumberInput = styled(NumberFormat)`
+  border-color: ${(props) => props.error ? 'red' : 'auto'};
+`
 
 interface InputProps {
   placeholder?: string | number;
@@ -63,9 +68,10 @@ const Input: React.FC<InputProps & { ref?: Ref<any> }> = forwardRef((props, ref)
   const inputGenerator = useCallback((): JSX.Element => {
     if (numberFormat) {
       return (
-        <NumberFormat
+        <StyledNumberInput
           ref={ ref }
           type="tel"
+          error={error}
           className={ numberInput }
           value={ value }
           placeholder={ String(placeholder) }

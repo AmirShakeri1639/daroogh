@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import Ribbon from '../../public/ribbon/Ribbon';
-import { ColorEnum, MessageQueryEnum } from '../../../enum';
+import { ColorEnum, MessageQueryEnum, MessageTypeEnum } from '../../../enum';
 import SvgIcon from '../../public/picture/svgIcon';
 import Context from './Context';
 import routes from '../../../routes';
@@ -345,7 +345,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
         )}
         {showButtons && (
           <>
-            {userMessages !== undefined && userMessages.items.length !== 0 && (
+            {userMessages !== undefined && userMessages.items.filter((item: any) => item.type !== MessageTypeEnum.SPECIAL).length !== 0 && (
               <Tooltip title={String(t('general.notifications'))}>
                 <IconButton edge="end" color="inherit" onClick={handleNotificationIconButton}>
                   <Badge badgeContent={userMessages.items.length} color="secondary">
