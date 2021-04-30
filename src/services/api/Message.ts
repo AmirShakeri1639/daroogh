@@ -1,3 +1,4 @@
+import { MessageTypeEnum } from 'enum';
 import Api from './Api';
 
 class Message extends Api {
@@ -16,11 +17,16 @@ class Message extends Api {
     return result.data;
   };
 
-  getUserMessages = async (justUnreaddMessages = false, skip = 0, top = 10): Promise<any> => {
+  getUserMessages = async (justUnreadMessages = false, skip = 0, top = 10, type?: MessageTypeEnum): Promise<any> => {
     let queryString = '';
-    if (justUnreaddMessages) {
-      queryString = '&$filter=readDate eq null';
+
+    if (justUnreadMessages) {
+      queryString += '&$filter=readDate eq null';
     }
+    if (type !== undefined) {
+      queryString += `${queryString.includes('filter') ? `&type eq ${type}` : `&$filter=type eq ${type}`}`;
+    }
+    console.log(queryString)
     const result = await this.postData(
       `/Message/CurrentUserMessages?$skip=${skip}&$top=${top}&$orderby=id desc${queryString}`
     );
