@@ -408,7 +408,10 @@ export default {
         searchDrugPlaceHolder: 'عبارت را وارد کرده و سپس کلید اینتر را بزنید',
         fromYours: 'از سبد شما',
         fromOthers: 'از سبد طرف مقابل',
+        selectFromYourCart: 'انتخاب دارو از سبد خود',
         aiSuggestion: 'انتخاب توسط هوش مصنوعی',
+        selectMyself: 'خودم انتخاب می‌کنم',
+        confirmToSelectFromOwnCart: 'آیا تمایل دارید از لیست داروهای خود، اقلامی را انتخاب نمایید؟',
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',

@@ -23,7 +23,6 @@ import { useMutation, useQuery } from 'react-query'
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug'
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface'
 import SearchInAList from '../SearchInAList'
-import CircleLoading from '../../../../public/loading/CircleLoading'
 import sweetAlert from '../../../../../utils/sweetAlert'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
@@ -33,8 +32,9 @@ import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoadi
 import { ColorEnum, screenWidth } from 'enum'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Exchange } from 'services/api'
-import { errorHandler, tError, tInfo, tSuccess } from 'utils'
+import { tSuccess } from 'utils'
 import { debounce } from 'lodash'
+import { fillFromCart } from 'utils/ExchangeTools'
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -111,7 +111,11 @@ const style = makeStyles((theme) =>
 )
 
 const Tab2: React.FC = () => {
-  const { getAllPharmacyDrug } = new PharmacyDrug()
+  const { 
+    getAllPharmacyDrug, 
+    getViewExchange, 
+    cancelExchange,
+  } = new PharmacyDrug()
   const { t } = useTranslation()
 
   const {
@@ -126,14 +130,12 @@ const Tab2: React.FC = () => {
     selectedPharmacyForTransfer,
     lockedAction,
     viewExhcnage,
-    needRefresh,
     exchangeId,
-    setNeedRefresh,
+    setUbasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext)
 
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
-  const { cancelExchange } = new PharmacyDrug()
   const dispatch = useDispatch()
 
   const comparer = (otherArray: any): any => {
@@ -436,18 +438,18 @@ const Tab2: React.FC = () => {
           fullWidth={true}
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle>{'انتخاب دارو از سبد خود'}</DialogTitle>
+          <DialogTitle>{ t('exchange.selectFromYourCart') }</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              آیا تمایل دارید از لیست داروهای خود ، اقلامی را انتخاب نمایید؟
+              { t('exchange.confirmToSelectFromOwnCart') }
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <MatButton autoFocus onClick={handleClose} color="primary">
-              خیر
+              { t('general.no') }
             </MatButton>
             <MatButton onClick={handleAgree} color="primary" autoFocus>
-              بلی
+              { t('general.yes') }
             </MatButton>
           </DialogActions>
         </Dialog>
@@ -465,8 +467,9 @@ const Tab2: React.FC = () => {
     setShowAiAlert(false)
     const aiSugg = await callAiSuggestion(exchangeId)
     tSuccess(aiSugg.data.message)
-    // @ts-ignore
-    setNeedRefresh(true)
+    const viewExResult = await getViewExchange(exchangeId)
+    const cart = await fillFromCart(viewExResult.data.cartA, true)
+    setUbasketCount(cart)
   }
 
   return (
@@ -511,7 +514,7 @@ const Tab2: React.FC = () => {
               <Button variant="outlined" className={cancelButton} 
                 onClick={(): void => setShowAiAlert(false)}
               >
-                خودم انتخاب میکنم
+                { t('exchange.selectMyself') }
               </Button>
             </Grid>
           </Grid>
