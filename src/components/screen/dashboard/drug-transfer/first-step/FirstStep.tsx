@@ -44,7 +44,7 @@ import { useLocation } from 'react-router';
 import { ColorEnum } from 'enum';
 import { CategoryQueryEnum } from 'enum/query';
 import styled from 'styled-components';
-import { useScrollRestoration } from 'hooks';
+import { useEffectOnce, useScrollRestoration } from 'hooks';
 
 const { getRelatedPharmacyDrug, getFavoritePharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
@@ -182,6 +182,7 @@ const FirstStep: React.FC = () => {
   const [selectedDrugsCategory, setSelectedDrugsCategory] = useState('-1');
   const [currentPage, setCurrentPage] = useState(0);
   const [pharmacyList, setPharmacyList] = useState<any[]>([]);
+  const [isLoadingRelatedDrugs, setIsLoadingRelatedDrugs] = useState(false);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -189,6 +190,18 @@ const FirstStep: React.FC = () => {
   const totalPharmacyCount = useRef<number>(1)
 
   const cache = useQueryCache();
+  const { search } = useLocation();
+
+  useEffectOnce(() => {
+    const hash = window.location.hash;
+
+    if (hash.includes('step=2')) {
+      window.location.hash = hash.replace('step=2', 'step=1');
+    } else if (!window.location.hash.endsWith('step=1')) {
+      window.location.hash = `${hash}?step=1`;
+    }
+    
+  });
 
   let minimumDrugExpireDay = 30;
   const { search: useLocationSearch } = useLocation();
@@ -349,29 +362,35 @@ const FirstStep: React.FC = () => {
     countryDivision,
   } = useStyle();
 
-  const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
-    shouldDisplayFavoriteList
-      ? PharmacyDrugEnum.GET_FAVORITE_EXCHANGE_LIST_OF_DRUGS
-      : [PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, currentPage],
-    shouldDisplayFavoriteList
-      ? (): Promise<any> => getFavoritePharmacyDrug()
-      : (): Promise<any> => getRelatedPharmacyDrug(10, currentPage * 10),
-    {
-      enabled: searchedDrugs.length === 0 && pharmacyList.length < totalPharmacyCount?.current ,
-      keepPreviousData: true,
-      onSuccess: (data: ServerResponse) => {
-        setPharmacyList((v) => [...v, ...data.items]);
-        totalPharmacyCount.current = data.count;
+  useEffect(() => {
+    (async (): Promise<any> => {
+      if (searchedDrugs.length === 0 && pharmacyList.length < totalPharmacyCount?.current) {
+        if (currentPage === 0) {
+          setIsLoadingRelatedDrugs(true)
+        }
+        let result: ServerResponse;
+        if (shouldDisplayFavoriteList) {
+          result = await getFavoritePharmacyDrug();
+        } else {
+          result = await getRelatedPharmacyDrug(10, currentPage * 10);
+        }
+        setPharmacyList((v) => [...v, ...result.items]);
+        totalPharmacyCount.current = result.count;
+        setIsLoadingRelatedDrugs(false);
       }
-    }
-  );
+    })();
+  }, [search, currentPage]);
+
 
   const toggleCheckbox = (): void => {
     setIsCheckedJustOffer((v) => !v);
   };
 
+  console.log('pharmacylist', pharmacyList)
+
   const contentHandler = () => {
     if (isLoadingRelatedDrugs || isLoading) {
+      console.log(999)
       return <CircleLoading />;
     }
 
@@ -422,7 +441,7 @@ const FirstStep: React.FC = () => {
         })
       );
     }
-
+    console.log('items', items)
     return items;
   };
 
@@ -430,7 +449,7 @@ const FirstStep: React.FC = () => {
     isLoading,
     isLoadingRelatedDrugs,
     isInSearchMode,
-    data,
+    pharmacyList,
   ]);
 
   const drugsListGenerator = (): any => {
