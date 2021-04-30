@@ -398,7 +398,6 @@ const Tab1: React.FC = () => {
         ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
         : el.scrollTop + el.clientHeight === el.scrollHeight
     if (checkDevice) {
-      debugger;
       if (
         totalCountRef.current == 0 ||
         concatListPaginatedRef.current.length < (totalCountRef.current ?? 0)

@@ -453,3 +453,76 @@ export const percentAllowed = (): number => {
     return 0.03;
   }
 };
+
+export const getColor = (currentPharmacyIsA: any, item: any): string => {
+  const color =
+    currentPharmacyIsA
+      ? item.addedByB
+        ? ColorEnum.AddedByB
+        : item.confirmed !== undefined && item.confirmed === false
+        ? ColorEnum.NotConfirmed
+        : ColorEnum.Confirmed
+      : ColorEnum.Confirmed
+
+  return color
+}
+
+/// Gets a cart (from viewExchange) and returns a basket usable in exchange steps
+export const fillFromCart = async (cart: any, isA: boolean = true): Promise<any> => {
+  if (cart == undefined) return []
+  const basket: AllPharmacyDrugInterface[] = []
+  cart.forEach((item: any) => {
+    if (
+      item.confirmed !== undefined &&
+      item.confirmed === false
+    ) return
+    basket.push({
+      packDetails: [],
+      id: item.pharmacyDrugID,
+      packID: item.packID,
+      packName: item.packName,
+      drugID: item.drugID,
+      drug: item.drug,
+      cnt: item.cnt,
+      batchNO: '',
+      expireDate: item.expireDate,
+      amount: item.amount,
+      buttonName: 'حذف از تبادل',
+      cardColor: getColor(isA, item),
+      currentCnt: item.cnt,
+      offer1: item.offer1,
+      offer2: item.offer2,
+      order: 0,
+      totalAmount: 0,
+      totalCount: 0,
+    })
+  })
+
+  const newItemsA: AllPharmacyDrugInterface[] = []
+  const packListA = new Array<AllPharmacyDrugInterface>()
+
+  basket.forEach((item) => {
+    let ignore = false
+    if (item.packID) {
+      let totalAmount = 0
+      if (!packListA.find((x) => x.packID === item.packID)) {
+        if (!item.packDetails) item.packDetails = []
+        basket
+          .filter((x) => x.packID === item.packID)
+          .forEach((p: AllPharmacyDrugInterface) => {
+            item.packDetails.push(p)
+            packListA.push(p)
+            totalAmount += p.amount * p.cnt
+          })
+        item.totalAmount = totalAmount
+        newItemsA.push(item)
+      } else {
+        ignore = true
+      }
+    } else {
+      if (!ignore) newItemsA.push(item)
+    }
+  })
+
+  return basket
+}
