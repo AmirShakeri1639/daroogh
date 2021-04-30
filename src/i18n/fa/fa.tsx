@@ -2,6 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
+        specialMessages: 'پیام های ویژه',
         calculator: 'ماشین حساب',
         calculating: 'محاسبه',
         daroogLatin: 'DarooG',
@@ -136,7 +137,8 @@ export default {
         maximum: 'بیشترین',
         nearest: 'نزدیکترین',
         farthest: 'دورترین',
-        primitive: 'اولیه'
+        primitive: 'اولیه',
+        nextMessage: 'پیام بعدی'
       },
 
       pack: {
@@ -342,6 +344,7 @@ export default {
         profile: 'پروفایل',
         sms: 'پیامک',
         notification: 'ناتیفیکیشن',
+        special: 'ویژه',
         detail: 'جزییات پیام',
         allMessages: 'سوابق کلیه پیام ها',
         daroogMessagesList: 'لیست پیام های دریافتی از  طرف داروگ',

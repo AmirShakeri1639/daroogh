@@ -2,7 +2,7 @@ import Swal from 'sweetalert2';
 import withReactContent, { ReactElementOr } from 'sweetalert2-react-content';
 import i18n from 'i18next'
 
-interface SweetAlertProps {
+interface SweetAlertParams {
   title?: any;
   text?: any;
   html?: ReactElementOr<'html'>;
@@ -30,9 +30,9 @@ interface SweetAlertProps {
   showConfirmButton?: boolean;
 }
 
-const MySwal = withReactContent(Swal);
+export const MySwal = withReactContent(Swal);
 
-const sweetAlert = async (params: SweetAlertProps): Promise<any> => {
+const sweetAlert = async (params: SweetAlertParams): Promise<any> => {
   const {
     title,
     text,

@@ -216,12 +216,13 @@ const App = (): JSX.Element => {
     "gtag('js', new Date());" +
     "gtag('config', 'UA-31704707-1');";
   document.body.appendChild(gaScript2);
+
   const setupCrisp = (): void => {
     (window as any).$crisp = [];
 
-    (function () {
-      var d = document;
-      var s = d.createElement('script');
+    (function (): void {
+      const d = document;
+      const s = d.createElement('script');
 
       s.src = 'https://client.crisp.chat/l.js';
       s.async = true;
