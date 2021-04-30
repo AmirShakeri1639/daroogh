@@ -54,13 +54,20 @@ export enum MessageTypeEnum {
   SMS,
   NOTIFICATION,
   SMS_AND_NOTIFICATION,
+  SPECIAL,
 }
 
-export const MessageTypeArray = (textArray: string[]): any => [
+type MessageOption = {
+  val: number;
+  text: string;
+}
+
+export const MessageTypeArray = (textArray: string[]): MessageOption[] => [
   { val: MessageTypeEnum.PROFILE, text: textArray[0] },
   { val: MessageTypeEnum.SMS, text: textArray[1] },
-  { val: MessageTypeEnum.NOTIFICATION, text: textArray[2] },
-  { val: MessageTypeEnum.SMS_AND_NOTIFICATION, text: textArray[3] },
+  { val: MessageTypeEnum.SPECIAL, text: textArray[2] },
+  { val: MessageTypeEnum.NOTIFICATION, text: textArray[3] },
+  { val: MessageTypeEnum.SMS_AND_NOTIFICATION, text: textArray[4] },
 ];
 
 export enum RolesEnum {
@@ -98,7 +105,7 @@ export enum TransactionTypeEnum {
 
 export enum MaritalStatusType {
   Married = 0,
-  Single = 1,
+  Single = 14
 }
 
 export enum GenderType {

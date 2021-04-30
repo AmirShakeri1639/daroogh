@@ -107,6 +107,7 @@ const MessageForm: React.FC<Props> = ({ onSubmit }) => {
   const messageTypeArrayValues = [
     t('message.profile'),
     t('message.sms'),
+    t('message.special'),
     t('message.notification'),
     `${t('message.sms')} - ${t('message.notification')}`,
   ];
@@ -279,15 +280,15 @@ const MessageForm: React.FC<Props> = ({ onSubmit }) => {
                 labelId="user-type"
                 label={t('general.type')}
               >
-                {MessageTypeArray(messageTypeArrayValues).map(
-                  (item: any): any => {
+                {React.Children.toArray(MessageTypeArray(messageTypeArrayValues).map(
+                  (item): any => {
                     return (
-                      <MenuItem key={item.val} value={item.val}>
+                      <MenuItem value={item.val}>
                         {item.text}
                       </MenuItem>
                     );
                   }
-                )}
+                ))}
               </Select>
             </FormControl>
           </Grid>
