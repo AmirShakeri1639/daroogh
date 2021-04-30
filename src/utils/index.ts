@@ -9,6 +9,7 @@ export {
   tSuccess,
   tWarn,
   tError,
+  vibrate,
 } from './toast';
 export {
   default as sweetAlert,
