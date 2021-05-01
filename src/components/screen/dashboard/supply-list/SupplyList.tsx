@@ -697,7 +697,6 @@ const SupplyList: React.FC = () => {
       text: `${t('general.farthest')} ${t('general.expireDate')}`
     }
   ]
-  console.log('state.id', state.id)
   return (
     <>
       <Container>
