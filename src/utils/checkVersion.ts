@@ -41,8 +41,7 @@ const checkVersion = (): boolean => {
     const defaultVersion = '1.0.0'
     const localVersion = localStorage.getItem('version') || defaultVersion
 
-    const packageJson = require('../../package.json')
-    const remoteVersion = packageJson?.version || defaultVersion
+    const remoteVersion = process.env.REACT_APP_VERSION || defaultVersion
     console.log('%clocal version:', 'color: brown; font-style: italic;', localVersion)
     console.log('%cremote version:', 'color: red; font-weight: bold', remoteVersion)
 
