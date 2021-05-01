@@ -139,9 +139,7 @@ const ExchangePackCard: React.FC<Props> = (props) => {
               <Grid item xs={1} className={checkBoxContainer}>
           <GreenCheckbox
             checked={
-              activeStep === 1
-                ? basketCount.findIndex((x) => x.id == pharmacyDrug?.id) !== -1
-                : uBasketCount.findIndex((x) => x.id == pharmacyDrug?.id) !== -1
+              pharmacyDrug?.checked
             }
             onChange={handleChange}
             name={pharmacyDrug?.id.toString()}

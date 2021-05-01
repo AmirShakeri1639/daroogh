@@ -21,6 +21,7 @@ export interface AllPharmacyDrugInterface {
   buttonName: string;
   cardColor: string;
   confirmed?: boolean;
+  checked?: boolean
 }
 
 export interface DrugI {

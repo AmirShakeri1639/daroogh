@@ -70,7 +70,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
       setEid('');
       setActiveStep(0);
     } else if (isStep1) {
-      setActiveStep(1);
+      if (activeStep != 2) setActiveStep(1)
     }
   }, [search, params]);
 

@@ -270,6 +270,7 @@ const Tab1: React.FC = () => {
 
             if (basketCount.findIndex((x) => x.id == item.id) !== -1)
               Object.assign(item, {
+                checked: true,
                 order: index + 1,
                 buttonName: 'حذف از تبادل',
                 cardColor: changedColor ? '#dff4ff' : item.cardColor,
@@ -277,6 +278,7 @@ const Tab1: React.FC = () => {
               })
             else {
               Object.assign(item, {
+                checked: false,
                 order: index + 1,
                 buttonName: 'افزودن به تبادل',
                 cardColor: changedColor ? 'white' : item.cardColor,

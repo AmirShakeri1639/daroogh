@@ -353,6 +353,7 @@ const Tab2: React.FC = () => {
 
             if (uBasketCount.findIndex((x) => x.id == item.id) !== -1)
               Object.assign(item, {
+                checked: true,
                 order: index + 1,
                 buttonName: 'حذف از تبادل',
                 cardColor: changedColor ? '#dff4ff' : item.cardColor,
@@ -360,6 +361,7 @@ const Tab2: React.FC = () => {
               })
             else {
               Object.assign(item, {
+                checked: false,
                 order: index + 1,
                 buttonName: 'افزودن به تبادل',
                 cardColor: changedColor ? 'white' : item.cardColor,
@@ -374,10 +376,10 @@ const Tab2: React.FC = () => {
                       key={`CardContainer_${item.id}`}
                       basicDetail={
                         <NewExCardContent
-                          key={`CardContent${item.id}`}
-                          formType={1}
-                          pharmacyDrug={item}
-                          isPack={true}
+                          key={ `CardContent${item.id}` }
+                          formType={ 1 }
+                          pharmacyDrug={ item }
+                          isPack={ true }
                         />
                       }
                       isPack={true}

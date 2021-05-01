@@ -386,11 +386,8 @@ const FirstStep: React.FC = () => {
     setIsCheckedJustOffer((v) => !v);
   };
 
-  console.log('pharmacylist', pharmacyList)
-
   const contentHandler = () => {
     if (isLoadingRelatedDrugs || isLoading) {
-      console.log(999)
       return <CircleLoading />;
     }
 
@@ -441,7 +438,6 @@ const FirstStep: React.FC = () => {
         })
       );
     }
-    console.log('items', items)
     return items;
   };
 

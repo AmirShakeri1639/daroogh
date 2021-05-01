@@ -26,7 +26,6 @@ class Message extends Api {
     if (type !== undefined) {
       queryString += `${queryString.includes('filter') ? `&type eq ${type}` : `&$filter=type eq ${type}`}`;
     }
-    console.log(queryString)
     const result = await this.postData(
       `/Message/CurrentUserMessages?$skip=${skip}&$top=${top}&$orderby=id desc${queryString}`
     );
