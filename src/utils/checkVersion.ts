@@ -36,12 +36,15 @@ export const showWhatsNew = async (versionNo: string | number) => {
   }
 }
 
-const checkVersion = (): boolean => {
+const checkVersion = async (): Promise<boolean> => {
   try {
     const defaultVersion = '1.0.0'
     const localVersion = localStorage.getItem('version') || defaultVersion
 
-    const remoteVersion = process.env.REACT_APP_VERSION || defaultVersion
+    const manifest = await (
+      await fetch(window.location.origin + '/manifest.json')
+    ).json()
+    const remoteVersion = manifest['version'] || defaultVersion
     console.log('%clocal version:', 'color: brown; font-style: italic;', localVersion)
     console.log('%cremote version:', 'color: red; font-weight: bold', remoteVersion)
 
