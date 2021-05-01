@@ -63,6 +63,12 @@ const useStyles = makeStyles((theme) =>
         backgroundColor: 'white',
       },
     },
+    exchangeMenu: {
+      background: '#ddd',
+      '& *': {
+        color: 'navy',
+      },
+    },
     linkWrapper: {
       display: 'flex',
       '&:hover': {
@@ -155,7 +161,13 @@ const ListItems: React.FC = () => {
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
   const [isOpenReports, setIsOpenReports] = useState<boolean>(false);
 
-  const { nested, linkWrapper, notNested, menuContainer } = useStyles();
+  const { 
+    nested, 
+    linkWrapper, 
+    notNested, 
+    menuContainer,
+    exchangeMenu, 
+  } = useStyles();
   const { t } = useTranslation();
 
   const { spacing3 } = useClasses();
@@ -398,9 +410,10 @@ const ListItems: React.FC = () => {
     return (
       <div className={menuContainer}>
         {/* <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3> */}
-        <ListItem
+        <div className={ exchangeMenu }>
+          <ListItem
           button
-          className={linkWrapper}
+          className={ linkWrapper }
           onClick={(): void => setIsOpenExchange((val) => !val)}
         >
           <ListItemIcon>
@@ -409,7 +422,7 @@ const ListItems: React.FC = () => {
           <ListItemText primary={t('fda.exchanges')} />
           {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
+          <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
             {getListItem({
               Icon: AppsIcon,
@@ -454,7 +467,7 @@ const ListItems: React.FC = () => {
             })}
           </List>
         </Collapse>
-
+        </div>
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: Bookmark,

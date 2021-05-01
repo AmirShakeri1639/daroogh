@@ -12,15 +12,22 @@ const axiosInstance = axios.create({
 
 const CancelToken = axios.CancelToken
 
+export const ErrorToastId = {
+  NETWORK: 'networkErrorToastId',
+  ERR_400: 'error400',
+  ERR_401: 'error401',
+  ERR_404: 'error404',
+  ERR_500: 'error500',
+}
+
 axiosInstance.interceptors.response.use(undefined, (error) => {
   const { response } = error
 
   if (!error.response) {
-    const networkErrorToastId = 'networkErrorToastId'
     tError(i18n.t('error.network'), {
       autoClose: ToastDurationEnum.VeryLong,
       position: 'top-center',
-      toastId: networkErrorToastId
+      toastId: ErrorToastId.NETWORK
     })
     console.error('Error in network')
     return Promise.reject(error)
@@ -34,24 +41,38 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
   if (status === 400) {
     ; (async (): Promise<any> => {
       const message = error?.response?.data?.message
-      tError(message === undefined
-        ? 'مشکلی در ارسال درخواست وجود دارد،' +
-        ' در صورت تکرار لطفا با پشتیبانی تماس بگیرید!'
-        : message)
+      tError(
+        message === undefined
+          ? 'مشکلی در ارسال درخواست وجود دارد،' +
+          ' در صورت تکرار لطفا با پشتیبانی تماس بگیرید!'
+          : message,
+        { toastId: ErrorToastId.ERR_400 }
+      )
     })()
   } else if (status === 401) {
-    ;(async (): Promise<any> => {
+    ; (async (): Promise<any> => {
       const message = error?.response?.data?.message
-      tError(message === undefined ? 'شما مجوز دسترسی به این صفحه را ندارید!' : message)
+      tError(
+        message === undefined
+          ? 'شما مجوز دسترسی به این صفحه را ندارید!'
+          : message,
+        { toastId: ErrorToastId.ERR_401 }
+      )
     })()
   } else if (status === 404) {
-    ;(async (): Promise<any> => {
-      tError('پیدا نشد! - 404')
+    ; (async (): Promise<any> => {
+      tError(
+        'پیدا نشد! - 404', 
+        { toastId: ErrorToastId.ERR_404 }
+      )
     })()
   } else if (status === 500) {
-    ;(async (): Promise<any> => {
+    ; (async (): Promise<any> => {
       const message = error?.response?.data?.message
-      tError(message === undefined ? 'خطایی رخ داده است.' : message)
+      tError(
+        message === undefined ? 'خطایی رخ داده است.' : message,
+        { toastId: ErrorToastId.ERR_500 }
+      )
     })()
   }
 

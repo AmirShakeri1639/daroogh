@@ -78,7 +78,7 @@ class Reports extends Api {
           month: '2-digit',
         }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
       );
-      return result.data;
+      return result?.data;
     } catch (e) {
       errorHandler(e);
       return Promise.reject(e)
