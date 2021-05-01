@@ -41,10 +41,10 @@ const checkVersion = async (): Promise<boolean> => {
     const defaultVersion = '1.0.0'
     const localVersion = localStorage.getItem('version') || defaultVersion
 
-    const version =
-      await (await fetch(window.location.origin + '/version')).text()
+    const versionFile =
+      await (await fetch(window.location.origin + '/manifest.json')).json()
 
-    const remoteVersion = version || defaultVersion
+    const remoteVersion = versionFile['version'] || defaultVersion
     console.log('%clocal version:', 'color: brown; font-style: italic;', localVersion)
     console.log('%cremote version:', 'color: red; font-weight: bold', remoteVersion)
 
