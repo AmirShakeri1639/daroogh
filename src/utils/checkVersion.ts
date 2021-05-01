@@ -41,14 +41,14 @@ const checkVersion = async (): Promise<boolean> => {
     const defaultVersion = '1.0.0'
     const localVersion = localStorage.getItem('version') || defaultVersion
 
-    const manifest = await (
-      await fetch(window.location.origin + '/manifest.json')
-    ).json()
-    const remoteVersion = manifest['version'] || defaultVersion
+    const version =
+      await (await fetch(window.location.origin + '/version')).text()
+
+    const remoteVersion = version || defaultVersion
     console.log('%clocal version:', 'color: brown; font-style: italic;', localVersion)
     console.log('%cremote version:', 'color: red; font-weight: bold', remoteVersion)
 
-    if (remoteVersion !== localVersion) {
+    if (remoteVersion != localVersion) {
       localStorage.setItem('version', remoteVersion)
       localStorage.setItem('whatsNewExists', 'true')
       // clear cache and reload will be done in another method
@@ -56,6 +56,7 @@ const checkVersion = async (): Promise<boolean> => {
     }
   } catch (e) {
     errorHandler(e)
+    return Promise.reject(e)
   }
 
   return false
