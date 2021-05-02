@@ -199,9 +199,10 @@ const FirstStep: React.FC = () => {
   const { search } = useLocation();
 
   useEffectOnce(() => {
-    const hash = window.location.hash;
+    let hash = window.location.hash;
 
     if (activeStep === 0 && !hash.includes('eid=')) {
+      hash = hash.replace('step=0', '') 
       if (hash.includes('step=2')) {
         window.location.hash = hash.replace('step=2', 'step=1')
       } else if (!window.location.hash.endsWith('step=1')) {

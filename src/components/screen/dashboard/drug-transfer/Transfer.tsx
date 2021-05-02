@@ -281,7 +281,7 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
                 <span>در حال انتقال به صفحه تبادل. لطفا منتظر بمانید...</span>
                 {/* <CircularProgress size={20} /> */}
               </div>
-            ) : activeStep === 0 ? (
+            ) : activeStep === 0 || params.step == '0' ? (
               <FirstStep />
             ) : (
               <Exchange />

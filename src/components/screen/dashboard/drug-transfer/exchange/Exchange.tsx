@@ -119,7 +119,11 @@ const Exchange: React.FC<ReduxProps> = (props) => {
 
   useEffect(() => {
    if (!search.includes('step=2')) {
-      window.location.hash = window.location.hash.replace('?step=1', Object.keys(params).length > 1 ? '&step=2' : '?step=2');
+      window.location.hash = 
+        window.location.hash.replace(
+          '?step=1', 
+          Object.keys(params).length > 1 ? '&step=2' : '?step=2'
+        );
     }
   }, []);
   
