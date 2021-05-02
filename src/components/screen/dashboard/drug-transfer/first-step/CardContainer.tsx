@@ -1,19 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 import {
-  createStyles,
   Paper,
   Grid,
-  Box,
-  Divider,
   Button,
-  Hidden,
   useMediaQuery,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, useTheme } from '@material-ui/core/styles';
 import CardHeader from './CardHeader';
 import { CardContainerRelatedPharmacyDrugsInterface } from '../../../../../interfaces';
 import ItemContainer from './ItemContainer';
@@ -24,11 +20,21 @@ import { useDispatch } from 'react-redux';
 import { setTransferStart } from '../../../../../redux/actions';
 import routes from '../../../../../routes';
 import AllPharmacyDrugsViwer from '../AllPharmacyDrugsViwer';
-import { ColorEnum } from 'enum';
 
 const { transfer } = routes;
 
 const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (props) => {
+  const {
+    setSelectedPharmacyForTransfer,
+    setActiveStep,
+    activeStep,
+    setBasketCount,
+    setUbasketCount,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
   const useStyle = makeStyles((theme) =>
     createStyles({
       paper: {
@@ -98,17 +104,6 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
     })
   );
 
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const {
-    setSelectedPharmacyForTransfer,
-    setActiveStep,
-    activeStep,
-    setBasketCount,
-    setUbasketCount,
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
-
   const { push } = useHistory();
   const dispatch = useDispatch();
 
@@ -139,7 +134,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
   const { t } = useTranslation();
 
   const cardClickHandler = (id: string): void => {
-    push(`${transfer}?eid=${id}`);
+    push(`${transfer}?eid=${id}&step=2`);
   };
 
   const transferStart = (notSendExchangeID: string | null): void => {
@@ -148,6 +143,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
       setBasketCount([]);
       setUbasketCount([]);
       setActiveStep(activeStep + 1);
+      push(transfer + '?step=1')
     } else {
       cardClickHandler(notSendExchangeID);
     }
@@ -194,32 +190,32 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
         </Grid>
         <Grid container item className={button} xs={12}>
          
-            <Button type="button" className={buttonExchange} onClick={transferStartHandler}>
-              {notSendExchangeID !== null ? t('exchange.continue') : t('general.tabadol')}
-            </Button>
-        
-            <Button
-              type="button" className={buttonExchange} 
-              onClick={(): void => {
-                setShowExchangeTree(true);
-              }}
-            >
-              نمایش تمام اقلام
-            </Button>
+          <Button type="button" className={buttonExchange} onClick={transferStartHandler}>
+            {notSendExchangeID !== null ? t('exchange.continue') : t('general.tabadol')}
+          </Button>
+      
+          <Button
+            type="button" className={buttonExchange} 
+            onClick={(): void => {
+              setShowExchangeTree(true);
+            }}
+          >
+            نمایش تمام اقلام
+          </Button>
         </Grid>
       </Paper>
       <Dialog
         open={showExchangeTree}
         fullScreen={fullScreen}
         fullWidth={true}
-        onClose={() => setShowExchangeTree(false)}
+        onClose={(): void => setShowExchangeTree(false)}
       >
         <DialogTitle className="text-sm">{t('exchange.allPharmacyDrugs')}</DialogTitle>
         <DialogContent>
           <AllPharmacyDrugsViwer pharmacyId={data.pharmacyKey} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowExchangeTree(false)} color="primary">
+          <Button onClick={(): void => setShowExchangeTree(false)} color="primary">
             بستن
           </Button>
           <Button type="button" onClick={transferStartHandler}>
@@ -231,4 +227,4 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
   );
 };
 
-export default CardContainer;
+export default memo(CardContainer);

@@ -1,16 +1,12 @@
 import {
   Button,
-  Checkbox,
-  CheckboxProps,
   createStyles,
   Grid,
   makeStyles,
   TextField,
-  withStyles,
 } from '@material-ui/core';
 import React, { useContext, useState } from 'react';
 import { ExCardContentProps, ViewExchangeInterface } from '../../../../../interfaces';
-import moment from 'jalali-moment';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
 import { useTranslation } from 'react-i18next';
 import Utils from '../../../../public/utility/Utils';
@@ -556,7 +552,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   const handleTotalAmountByCounter = () => {
     if (!pharmacyDrug) return;
-    let val = 0;
+    let val = 0
     if (pharmacyDrug) val = pharmacyDrug.amount * pharmacyDrug.currentCnt;
     setTotalAmount(Utils.numberWithCommas(val));
   };

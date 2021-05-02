@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import {
   ListItem,
   ListItemIcon,
@@ -6,10 +6,10 @@ import {
   Collapse,
   List,
   createStyles,
-} from '@material-ui/core'
-import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone'
-import { useTranslation } from 'react-i18next'
-import { makeStyles } from '@material-ui/core/styles'
+} from '@material-ui/core';
+import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone';
+import { useTranslation } from 'react-i18next';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Dashboard as DashboardIcon,
   ExpandLess,
@@ -19,8 +19,8 @@ import {
   Apps as AppsIcon,
   Bookmark,
   GroupTwoTone as GroupTwoToneIcon,
-} from '@material-ui/icons'
-import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
+} from '@material-ui/icons';
+import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome';
 import {
   faBars,
   faUser,
@@ -29,20 +29,20 @@ import {
   faCog,
   faHandshake,
   faArchive,
-} from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance'
-import InboxIcon from '@material-ui/icons/Inbox'
-import ReceiptIcon from '@material-ui/icons/Receipt'
-import { GetValuesOfEnum, PharmacyRoleEnum, RolesEnum } from '../../../../enum'
-import MessageIcon from '@material-ui/icons/Message'
-import CategoryIcon from '@material-ui/icons/Category'
-import AddToPhotosIcon from '@material-ui/icons/AddToPhotos'
-import ContactPhoneIcon from '@material-ui/icons/ContactPhone'
-import { JwtData } from '../../../../utils'
-import { useClasses } from '../classes'
-import routes from '../../../../routes'
-import styled from 'styled-components'
+} from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import InboxIcon from '@material-ui/icons/Inbox';
+import ReceiptIcon from '@material-ui/icons/Receipt';
+import { GetValuesOfEnum, PharmacyRoleEnum, RolesEnum } from '../../../../enum';
+import MessageIcon from '@material-ui/icons/Message';
+import CategoryIcon from '@material-ui/icons/Category';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
+import { JwtData } from '../../../../utils';
+import { useClasses } from '../classes';
+import routes from '../../../../routes';
+import styled from 'styled-components';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -61,6 +61,12 @@ const useStyles = makeStyles((theme) =>
       padding: '1em 0',
       '&:nth-child(even)': {
         backgroundColor: 'white',
+      },
+    },
+    exchangeMenu: {
+      background: '#ddd',
+      '& *': {
+        color: 'navy',
       },
     },
     linkWrapper: {
@@ -84,7 +90,7 @@ const useStyles = makeStyles((theme) =>
       },
     },
   })
-)
+);
 
 const {
   dashboard,
@@ -118,8 +124,7 @@ const {
   surveyList,
   fda_exchangeList,
   aPharmacyDocs,
-  commisionSettingsList,
-} = routes
+} = routes;
 
 /**
  * Detect hash string in url has item or not
@@ -127,49 +132,55 @@ const {
  * @returns boolean
  */
 const isOpenPageOfThisGroup = (item: string): boolean => {
-  const location = window.location.hash
+  const location = window.location.hash;
   // const regex = new RegExp(`/${item}(\/|$)`, 'gi');
   // return regex.test(location);
-  return location.includes(item)
-}
+  return location.includes(item);
+};
 
 const isOpenMainList = (item: string): boolean => {
-  return window.location.href.includes(item)
-}
+  return window.location.href.includes(item);
+};
 
 const StyledListItem = styled((props) => <ListItem {...props} />)`
   padding-right: 0;
   padding-left: 0;
-`
+`;
 
 interface ListItemInterface {
-  Icon: any
-  text: string
-  selected: boolean
-  link: string
-  props?: FontAwesomeIconProps
-  isNested?: boolean
+  Icon: any;
+  text: string;
+  selected: boolean;
+  link: string;
+  props?: FontAwesomeIconProps;
+  isNested?: boolean;
 }
 
 const ListItems: React.FC = () => {
-  const [isOpenExchange, setIsOpenExchange] = useState<boolean>(true)
-  const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false)
-  const [isOpenReports, setIsOpenReports] = useState<boolean>(false)
+  const [isOpenExchange, setIsOpenExchange] = useState<boolean>(true);
+  const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
+  const [isOpenReports, setIsOpenReports] = useState<boolean>(false);
 
-  const { nested, linkWrapper, notNested, menuContainer } = useStyles()
-  const { t } = useTranslation()
+  const { 
+    nested, 
+    linkWrapper, 
+    notNested, 
+    menuContainer,
+    exchangeMenu, 
+  } = useStyles();
+  const { t } = useTranslation();
 
-  const { spacing3 } = useClasses()
+  const { spacing3 } = useClasses();
 
-  const { roles } = new JwtData()
-  let rolesArray = roles()
+  const { roles } = new JwtData();
+  let rolesArray = roles();
 
   /**
    * Create list of sidebar links with dynamic params
    * @returns JSX.Element
    */
   const getListItem = (params: ListItemInterface): JSX.Element => {
-    const Icon = params.Icon
+    const Icon = params.Icon;
     return (
       <StyledListItem selected={params.selected}>
         <Link to={params.link} className={params.isNested ? nested : notNested}>
@@ -179,8 +190,8 @@ const ListItems: React.FC = () => {
           <ListItemText primary={params.text} />
         </Link>
       </StyledListItem>
-    )
-  }
+    );
+  };
 
   const fdaMenu = (): JSX.Element => {
     return (
@@ -196,8 +207,8 @@ const ListItems: React.FC = () => {
           })}
         </List>
       </div>
-    )
-  }
+    );
+  };
 
   const publicMenu = (): JSX.Element => {
     return (
@@ -244,8 +255,8 @@ const ListItems: React.FC = () => {
         </List>
 
       </div>
-    )
-  }
+    );
+  };
 
   const adminMenu = (): JSX.Element => {
     return (
@@ -353,18 +364,6 @@ const ListItems: React.FC = () => {
             },
           })}
         </List>
-        <List component="div" className={linkWrapper}>
-          {getListItem({
-            Icon: FontAwesomeIcon,
-            text: t('commision.settingsCommisions'),
-            selected: isOpenPageOfThisGroup('settingsCommisions'),
-            link: commisionSettingsList,
-            props: {
-              icon: faCog,
-              size: 'lg',
-            },
-          })}
-        </List>
 
         <ListItem
           button
@@ -404,16 +403,17 @@ const ListItems: React.FC = () => {
           </List>
         </Collapse>
       </div>
-    )
-  }
+    );
+  };
 
   const pharmacyMenu = (): JSX.Element => {
     return (
       <div className={menuContainer}>
         {/* <h3 className={spacing3}>{t('pharmacy.pharmacy')}</h3> */}
-        <ListItem
+        <div className={ exchangeMenu }>
+          <ListItem
           button
-          className={linkWrapper}
+          className={ linkWrapper }
           onClick={(): void => setIsOpenExchange((val) => !val)}
         >
           <ListItemIcon>
@@ -422,7 +422,7 @@ const ListItems: React.FC = () => {
           <ListItemText primary={t('fda.exchanges')} />
           {isOpenExchange ? <ExpandLess /> : <ExpandMore />}
         </ListItem>
-        <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
+          <Collapse in={isOpenExchange} timeout="auto" unmountOnExit>
           <List component="div" className={linkWrapper}>
             {getListItem({
               Icon: AppsIcon,
@@ -467,7 +467,7 @@ const ListItems: React.FC = () => {
             })}
           </List>
         </Collapse>
-
+        </div>
         <List component="div" className={linkWrapper}>
           {getListItem({
             Icon: Bookmark,
@@ -580,11 +580,11 @@ const ListItems: React.FC = () => {
           }) }
         </List> */}
       </div>
-    )
-  }
+    );
+  };
 
   if (!Array.isArray(rolesArray)) {
-    rolesArray = [rolesArray]
+    rolesArray = [rolesArray];
   }
 
   return (
@@ -611,7 +611,7 @@ const ListItems: React.FC = () => {
         </>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ListItems
+export default ListItems;

@@ -23,17 +23,18 @@ import { useMutation, useQuery } from 'react-query'
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug'
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface'
 import SearchInAList from '../SearchInAList'
-import CircleLoading from '../../../../public/loading/CircleLoading'
 import sweetAlert from '../../../../../utils/sweetAlert'
 import { useLocation } from 'react-router-dom'
 import queryString from 'query-string'
 import { useDispatch } from 'react-redux'
 import { setTransferEnd } from '../../../../../redux/actions'
 import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading'
-import { ColorEnum } from 'enum'
+import { ColorEnum, screenWidth } from 'enum'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Exchange } from 'services/api'
-import { errorHandler, tError, tInfo, tSuccess } from 'utils'
+import { tSuccess } from 'utils'
+import { debounce } from 'lodash'
+import { fillFromCart } from 'utils/ExchangeTools'
 
 const style = makeStyles((theme) =>
   createStyles({
@@ -110,7 +111,11 @@ const style = makeStyles((theme) =>
 )
 
 const Tab2: React.FC = () => {
-  const { getAllPharmacyDrug } = new PharmacyDrug()
+  const { 
+    getAllPharmacyDrug, 
+    getViewExchange, 
+    cancelExchange,
+  } = new PharmacyDrug()
   const { t } = useTranslation()
 
   const {
@@ -125,14 +130,12 @@ const Tab2: React.FC = () => {
     selectedPharmacyForTransfer,
     lockedAction,
     viewExhcnage,
-    needRefresh,
     exchangeId,
-    setNeedRefresh,
+    setUbasketCount,
   } = useContext<TransferDrugContextInterface>(DrugTransferContext)
 
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
-  const { cancelExchange } = new PharmacyDrug()
   const dispatch = useDispatch()
 
   const comparer = (otherArray: any): any => {
@@ -184,7 +187,7 @@ const Tab2: React.FC = () => {
   } = style()
 
   const [listPageNo] = useState(0)
-  const [pageSize] = useState(10)
+  const [pageSize] = useState(5)
   const [loading, setLoading] = useState<boolean>(false)
 
   const { isLoading, refetch } = useQuery(
@@ -241,7 +244,80 @@ const Tab2: React.FC = () => {
     if (lockedAction) refetch()
   }, [selectedPharmacyForTransfer])
 
+
   const [concatList, setConcatList] = useState<AllPharmacyDrugInterface[]>([])
+  const [concatListPaginated, setConcatListPaginated] = useState<AllPharmacyDrugInterface[]>([])
+
+  const totalCountRef = React.useRef(0)
+  const setTotalCountRef = (data: number) => {
+    totalCountRef.current = data
+  }
+
+  const concatListPaginatedRef = React.useRef(concatListPaginated)
+  const setConcatListPaginatedRef = (data: AllPharmacyDrugInterface[]) => {
+    concatListPaginatedRef.current = data
+  }
+
+  const concatListRef = React.useRef(concatList)
+  const setConcatListRef = (data: AllPharmacyDrugInterface[]) => {
+    concatListRef.current = data
+  }
+
+
+  const handleScroll = (e: any): any => {
+    const el = e.target
+    const pixelsBeforeEnd = 200
+    const checkDevice =
+      window.innerWidth <= screenWidth.sm
+        ? el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight
+        : el.scrollTop + el.clientHeight === el.scrollHeight
+    if (checkDevice) {
+      if (
+        totalCountRef.current == 0 ||
+        concatListPaginatedRef.current.length < (totalCountRef.current ?? 0)
+      ) {
+        setLoading(true)
+        
+        const paginated = [
+          ...concatListPaginatedRef.current,
+          ...concatListRef.current.slice(
+            concatListPaginatedRef.current.length,
+            concatListPaginatedRef.current.length + pageSize
+          )
+        ]
+
+        setConcatListPaginated(paginated)
+        setConcatListPaginatedRef(paginated)
+      }
+    }
+    setLoading(false)
+  }
+
+  const addScrollListener = (): void => {
+    document
+      .getElementById('cardListContainer')
+      ?.addEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      })
+  }
+
+  const removeScrollListener = (): void => {
+    document
+      .getElementById('cardListContainer')
+      ?.removeEventListener('scroll', debounce(handleScroll, 100), {
+        capture: true,
+      })
+  }
+
+  React.useEffect(() => {
+    addScrollListener()
+    return (): void => {
+      removeScrollListener()
+    }
+  }, [])
+
+
+  
   useEffect(() => {
     uBasketCount.forEach((x) => {
       if (!x.packID) {
@@ -256,55 +332,20 @@ const Tab2: React.FC = () => {
       if (uBasketCount.findIndex((y) => y.id === x.id) !== -1) return
       newList.push(x)
     })
-    let output = newList.concat(uBasketCount)
+    const output = uBasketCount.concat(newList)
+    setTotalCountRef(output.length)
+    setConcatListPaginated(output.slice(0, pageSize))
+    setConcatListPaginatedRef(output.slice(0, pageSize))
     setConcatList(output)
-  }, [uBasketCount, uAllPharmacyDrug])
+    setConcatListRef(output)
+  }, [uAllPharmacyDrug])
 
-  const basketCardListGenerator = (): any => {
-    if (uBasketCount && uBasketCount.length > 0) {
-      return uBasketCount.map((item: AllPharmacyDrugInterface, index: number) => {
-        item.order = index + 1
-        item.buttonName = 'حذف از تبادل'
-        if (item.cardColor === 'white') item.cardColor = '#dff4ff'
 
-        return (
-          <Grid item xs={12} sm={12} xl={12} key={index}>
-            <div className={paper}>
-              {item.packID ? (
-                <NewCardContainer
-                  basicDetail={<NewExCardContent formType={1} pharmacyDrug={item} isPack={true} />}
-                  isPack={true}
-                  pharmacyDrug={item}
-                  collapsableContent={<NewExCardContent formType={3} packInfo={item.packDetails} />}
-                />
-              ) : (
-                <NewCardContainer
-                  basicDetail={<NewExCardContent formType={2} pharmacyDrug={item} isPack={false} />}
-                  isPack={false}
-                  pharmacyDrug={item}
-                />
-              )}
-            </div>
-          </Grid>
-        )
-      })
-    }
-
-    return null
-  }
-
-  const cardListGenerator = (): JSX.Element[] | null => {
-    if (concatList.length > 0) {
+  const cardListGenerator = React.useMemo((): JSX.Element[] | null => {
+    if (concatListPaginated.length > 0) {
       return (
-        concatList
-          // .filter(comparer(basketCount))
-          .sort((a, b) => (a.order > b.order ? 1 : -1))
+        concatListPaginated
           .map((item: AllPharmacyDrugInterface, index: number) => {
-            // Object.assign(item, {
-            //   order: index + 1,
-            //   buttonName: 'افزودن به تبادل',
-            //   cardColor: item.cardColor,
-            // });
 
             let changedColor = true
             if (item.cardColor === ColorEnum.AddedByB || item.cardColor === ColorEnum.NotConfirmed)
@@ -312,6 +353,7 @@ const Tab2: React.FC = () => {
 
             if (uBasketCount.findIndex((x) => x.id == item.id) !== -1)
               Object.assign(item, {
+                checked: true,
                 order: index + 1,
                 buttonName: 'حذف از تبادل',
                 cardColor: changedColor ? '#dff4ff' : item.cardColor,
@@ -319,6 +361,7 @@ const Tab2: React.FC = () => {
               })
             else {
               Object.assign(item, {
+                checked: false,
                 order: index + 1,
                 buttonName: 'افزودن به تبادل',
                 cardColor: changedColor ? 'white' : item.cardColor,
@@ -333,10 +376,10 @@ const Tab2: React.FC = () => {
                       key={`CardContainer_${item.id}`}
                       basicDetail={
                         <NewExCardContent
-                          key={`CardContent${item.id}`}
-                          formType={1}
-                          pharmacyDrug={item}
-                          isPack={true}
+                          key={ `CardContent${item.id}` }
+                          formType={ 1 }
+                          pharmacyDrug={ item }
+                          isPack={ true }
                         />
                       }
                       isPack={true}
@@ -377,7 +420,7 @@ const Tab2: React.FC = () => {
     }
 
     return null
-  }
+  },[concatListPaginated, uBasketCount])
 
   const handleClose = (): any => {
     setOpenDialog(false)
@@ -397,18 +440,18 @@ const Tab2: React.FC = () => {
           fullWidth={true}
           aria-labelledby="responsive-dialog-title"
         >
-          <DialogTitle>{'انتخاب دارو از سبد خود'}</DialogTitle>
+          <DialogTitle>{ t('exchange.selectFromYourCart') }</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              آیا تمایل دارید از لیست داروهای خود ، اقلامی را انتخاب نمایید؟
+              { t('exchange.confirmToSelectFromOwnCart') }
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <MatButton autoFocus onClick={handleClose} color="primary">
-              خیر
+              { t('general.no') }
             </MatButton>
             <MatButton onClick={handleAgree} color="primary" autoFocus>
-              بلی
+              { t('general.yes') }
             </MatButton>
           </DialogActions>
         </Dialog>
@@ -426,12 +469,14 @@ const Tab2: React.FC = () => {
     setShowAiAlert(false)
     const aiSugg = await callAiSuggestion(exchangeId)
     tSuccess(aiSugg.data.message)
-    // @ts-ignore
-    setNeedRefresh(true)
+    const viewExResult = await getViewExchange(exchangeId)
+    const cart = await fillFromCart(viewExResult.data.cartA, true)
+    setUbasketCount(cart)
   }
 
   return (
     <>
+    <div id="cardListContainer">
       <Grid
         item
         xs={12}
@@ -471,7 +516,7 @@ const Tab2: React.FC = () => {
               <Button variant="outlined" className={cancelButton} 
                 onClick={(): void => setShowAiAlert(false)}
               >
-                خودم انتخاب میکنم
+                { t('exchange.selectMyself') }
               </Button>
             </Grid>
           </Grid>
@@ -486,15 +531,14 @@ const Tab2: React.FC = () => {
               </Grid>
               <Grid container spacing={1}>
                 <>
-                  {/* {basketCardListGenerator()} */}
-                  {cardListGenerator()}
+                  {cardListGenerator}
                 </>
               </Grid>
             </Grid>
           </Grid>
         )}
       </Grid>
-
+      </div>
       <ConfirmDialog />
       <CircleBackdropLoading isOpen={loading} />
     </>

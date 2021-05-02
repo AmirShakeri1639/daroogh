@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { createStyles, makeStyles, CircularProgress } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import './transfer.scss';
 import Context, { TransferDrugContextInterface } from './Context';
 import { Grid } from '@material-ui/core';
-import ProgressBar from './ProgressBar';
 import MaterialContainer from '../../../public/material-container/MaterialContainer';
-import SecondStep from './second-step/SecondStep';
 import FirstStep from './first-step/FirstStep';
-import ThirdStep from './third-step/ThirdStep';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
-import FourthStep from './fourth-step/FourthStep';
 import { TransferPropsInterface } from '../../../../interfaces/component';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
-import { CardInfo, ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
+import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { calcTotalPrices } from '../../../../utils/ExchangeTools';
-import fa from '../../../../i18n/fa/fa';
-import CircularProgressWithLabel from '../../../public/loading/CircularProgressWithLabel';
-import { ColorEnum } from '../../../../enum';
+import { calcTotalPrices, fillFromCart, getColor } from '../../../../utils/ExchangeTools';
 import Exchange from './exchange/Exchange';
 
 const style = makeStyles((theme) =>
@@ -64,40 +57,39 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [eid, setEid] = useState<number | string | undefined>(0);
   const [lockedAction, setLockedAction] = React.useState(true);
   const [fireDesctopScroll, setFireDesctopScroll] = React.useState(true);
-  const [needRefresh, setNeedRefresh] = React.useState(false)
 
   const { viewExchangeId, exchangeState } = props;
+  const { search } = useLocation();
+  const params = queryString.parse(search);
 
-  const location = useLocation();
-  const params = queryString.parse(location.search);
+  useEffect(() => {
+    const isStep0 = window.location.hash.endsWith('step=1');
+    const isStep1 = window.location.hash.endsWith('step=2');
+
+    if (isStep0) {
+      setEid('');
+      setActiveStep(0);
+    } else if (isStep1) {
+      if (activeStep != 2) setActiveStep(1)
+    }
+  }, [search, params]);
 
   useEffect(() => {
     const xId = params.eid == null ? undefined : params.eid.toString();
     setEid(xId);
   }, [params]);
 
-  const getColor = (res: any, item: any): string => {
-    const color =
-      res && res.currentPharmacyIsA
-        ? item.addedByB
-          ? ColorEnum.AddedByB
-          : item.confirmed !== undefined && item.confirmed === false
-          ? ColorEnum.NotConfirmed
-          : ColorEnum.Confirmed
-        : ColorEnum.Confirmed;
-
-    return color;
-  };
-
   const loadExchange = async (exchangeId: number | string = ''): Promise<void> => {
-    const newEId = exchangeId ? exchangeId : eid
+    const newEId = exchangeId 
+      ? exchangeId 
+      : eid
+        ? eid
+        : viewExhcnage?.id
     if (newEId !== undefined && newEId !== 0) {
       setByCartable(true);
       const result = await getViewExchange(newEId);
       let res: ViewExchangeInterface | undefined = result?.data;
       if (res) {
-        const basketA: AllPharmacyDrugInterface[] = [];
-        const basketB: AllPharmacyDrugInterface[] = [];
         const locked =
           res.state === 1 ||
           (!res.currentPharmacyIsA &&
@@ -107,119 +99,11 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
 
         setLockedAction(locked ?? true);
 
-        if (res.cartA !== undefined) {
-          res.cartA.forEach((item) => {
-            if (
-              !res?.currentPharmacyIsA &&
-              item.confirmed !== undefined &&
-              item.confirmed === false
-            )
-              return;
-            basketA.push({
-              packDetails: [],
-              id: item.pharmacyDrugID,
-              packID: item.packID,
-              packName: item.packName,
-              drugID: item.drugID,
-              drug: item.drug,
-              cnt: item.cnt,
-              batchNO: '',
-              expireDate: item.expireDate,
-              amount: item.amount,
-              buttonName: 'حذف از تبادل',
-              cardColor: getColor(res, item),
-              currentCnt: item.cnt,
-              offer1: item.offer1,
-              offer2: item.offer2,
-              order: 0,
-              totalAmount: 0,
-              totalCount: 0,
-            });
-          });
-        }
-        if (res.cartB !== undefined) {
-          res.cartB.forEach((item) => {
-            if (
-              !res?.currentPharmacyIsA &&
-              item.confirmed !== undefined &&
-              item.confirmed === false
-            )
-              return;
-            basketB.push({
-              packDetails: [],
-              id: item.pharmacyDrugID,
-              packID: item.packID,
-              packName: item.packName,
-              drugID: item.drugID,
-              drug: item.drug,
-              cnt: item.cnt,
-              batchNO: '',
-              expireDate: item.expireDate,
-              amount: item.amount,
-              buttonName: 'حذف از تبادل',
-              cardColor: getColor(res, item),
-              currentCnt: item.cnt,
-              offer1: item.offer1,
-              offer2: item.offer2,
-              order: 0,
-              totalAmount: 0,
-              totalCount: 0,
-              confirmed: item.confirmed,
-            });
-          });
-        }
+        const newItemsA: AllPharmacyDrugInterface[] =
+          await fillFromCart(res?.cartA, res?.currentPharmacyIsA)
+        const newItemsB: AllPharmacyDrugInterface[] =
+          await fillFromCart(res?.cartB, res?.currentPharmacyIsA)
 
-        const newItemsA: AllPharmacyDrugInterface[] = [];
-        const packListA = new Array<AllPharmacyDrugInterface>();
-
-        basketA.forEach((item) => {
-          let ignore = false;
-          if (item.packID) {
-            let totalAmount = 0;
-            if (!packListA.find((x) => x.packID === item.packID)) {
-              if (!item.packDetails) item.packDetails = [];
-              basketA
-                .filter((x) => x.packID === item.packID)
-                .forEach((p: AllPharmacyDrugInterface) => {
-                  item.packDetails.push(p);
-                  packListA.push(p);
-                  totalAmount += p.amount * p.cnt;
-                });
-              item.totalAmount = totalAmount;
-              newItemsA.push(item);
-            } else {
-              ignore = true;
-            }
-          } else {
-            if (!ignore) newItemsA.push(item);
-          }
-        });
-
-        const newItemsB: AllPharmacyDrugInterface[] = [];
-        const packListB = new Array<AllPharmacyDrugInterface>();
-
-        basketB.forEach((item) => {
-          let ignore = false;
-          if (item.packID) {
-            let totalAmount = 0;
-            if (!packListB.find((x) => x.packID === item.packID)) {
-              if (!item.packDetails) item.packDetails = [];
-              basketB
-                .filter((x) => x.packID === item.packID)
-                .forEach((p: AllPharmacyDrugInterface) => {
-                  item.packDetails.push(p);
-                  packListB.push(p);
-                  totalAmount += p.amount * p.cnt;
-                });
-              item.totalAmount = totalAmount;
-              newItemsB.push(item);
-            } else {
-              ignore = true;
-            }
-          } else {
-            if (!ignore) newItemsB.push(item);
-          }
-        });
         if (!res.currentPharmacyIsA) {
           setBasketCount(newItemsA);
           setUbasketCount(newItemsB);
@@ -324,8 +208,8 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   useEffect(() => {
     (async (): Promise<any> => {
       await loadExchange()
-    })();
-  }, [viewExchangeId, exchangeState, eid, needRefresh]);
+    })()
+  }, [viewExchangeId, exchangeState, eid]);
 
   useEffect(() => {
     if (viewExhcnage !== undefined) {
@@ -385,8 +269,6 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
     setLockedAction,
     fireDesctopScroll,
     setFireDesctopScroll,
-    needRefresh,
-    setNeedRefresh,
   });
 
   return (
@@ -397,9 +279,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             {byCartable ? (
               <div>
                 <span>در حال انتقال به صفحه تبادل. لطفا منتظر بمانید...</span>
-                <CircularProgress size={20} />
+                {/* <CircularProgress size={20} /> */}
               </div>
-            ) : activeStep === 0 ? (
+            ) : activeStep === 0 || params.step == '0' ? (
               <FirstStep />
             ) : (
               <Exchange />

@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import {
-  makeStyles,
   Paper,
-  createStyles,
   Grid,
   Button,
-  Box,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,12 +11,11 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import { Modal } from '../../../../public';
 import Detail from './Detail';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarTimes, faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { ColorEnum, TextMessage } from '../../../../../enum';
-import { BackDrop, TextLine } from '../../../../public';
+import { BackDrop } from '../../../../public';
 import { useClasses } from '../../classes';
 import moment from 'jalali-moment';
 import { useQuery } from 'react-query';
@@ -28,6 +24,7 @@ import { EmpApplicationDataInterface } from 'interfaces/EmploymentApplicationInt
 import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import { confirmSweetAlert } from 'utils'
+import { getBaseUrl } from 'config'
 
 const { detail } = new presApi();
 const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
@@ -121,7 +118,7 @@ const CardContainer: React.FC<EmpApplicationDataInterface> = (props) => {
                     e.stopPropagation();
                   }}
                   download=""
-                  href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
+                  href={getBaseUrl() + '/File/GetFile?key=' + resumeFileKey}
                 >
                   {t('peopleSection.resumeDownload')}
                 </a>

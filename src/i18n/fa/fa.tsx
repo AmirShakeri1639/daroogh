@@ -2,6 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
+        specialMessages: 'پیام های ویژه',
         calculator: 'ماشین حساب',
         calculating: 'محاسبه',
         daroogLatin: 'DarooG',
@@ -136,7 +137,8 @@ export default {
         maximum: 'بیشترین',
         nearest: 'نزدیکترین',
         farthest: 'دورترین',
-        primitive: 'اولیه'
+        primitive: 'اولیه',
+        nextMessage: 'پیام بعدی'
       },
 
       pack: {
@@ -342,6 +344,7 @@ export default {
         profile: 'پروفایل',
         sms: 'پیامک',
         notification: 'ناتیفیکیشن',
+        special: 'ویژه',
         detail: 'جزییات پیام',
         allMessages: 'سوابق کلیه پیام ها',
         daroogMessagesList: 'لیست پیام های دریافتی از  طرف داروگ',
@@ -405,7 +408,10 @@ export default {
         searchDrugPlaceHolder: 'عبارت را وارد کرده و سپس کلید اینتر را بزنید',
         fromYours: 'از سبد شما',
         fromOthers: 'از سبد طرف مقابل',
+        selectFromYourCart: 'انتخاب دارو از سبد خود',
         aiSuggestion: 'انتخاب توسط هوش مصنوعی',
+        selectMyself: 'خودم انتخاب می‌کنم',
+        confirmToSelectFromOwnCart: 'آیا تمایل دارید از لیست داروهای خود، اقلامی را انتخاب نمایید؟',
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
@@ -438,6 +444,7 @@ export default {
         done: 'با موفقیت انجام شد.',
         cancelConfirm: 'آیا از لغو این مورد مطمئن هستید؟',
         aiSuggestion: 'آیا به هوش مصنوعی داروگ اجازه پیشنهاد از سبد خودتان را می‌دهید؟',
+        removeExchange: 'آیا از حذف تبادل اطمینان دارید؟',
       },
       pharmacy: {
         pharmacy: 'داروخانه',

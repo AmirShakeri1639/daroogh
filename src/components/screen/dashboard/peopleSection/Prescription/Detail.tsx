@@ -1,31 +1,19 @@
 import {
-  Box,
-  Button,
   createStyles,
   Grid,
   makeStyles,
-  Paper,
 } from '@material-ui/core';
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPills,
-  faBoxes,
-  faMoneyBillWave,
-  faCalendarTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import { DrugInterface } from '../../../../../interfaces';
-import { TextLine, Modal } from '../../../../public';
+import { Modal } from '../../../../public';
 import { useTranslation } from 'react-i18next';
 import {
   PrescriptionInputInterface,
-  PrescriptionInterface,
-  PrescriptionSendInterface,
 } from '../../../../../interfaces/PrescriptionInterface';
 import moment from 'jalali-moment';
-
 import noImage from './noImage.jpg';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import { getBaseUrl } from 'config'
+
 const useStyle = makeStyles((theme) =>
   createStyles({
     modalContainer: {
@@ -80,13 +68,13 @@ const Detail: React.FC<PrescriptionInputInterface> = (props) => {
           <Grid xs={12} item>
             <a
               download=""
-              href={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+              href={getBaseUrl() + '/File/GetFile?key=' + fileKey}
             >
               {' '}
               <img
                 onError={addDefaultSrc}
                 style={{ height: '86px', width: '100px', margin: '5px' }}
-                src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+                src={getBaseUrl() + '/File/GetFile?key=' + fileKey}
               />
             </a>
           </Grid>

@@ -3,6 +3,8 @@ export interface AllPharmacyDrugInterface {
   batchNO: string;
   packID?: number;
   expireDate: any;
+  expireDays?: any;
+  expireTarikh?: any;
   amount: number;
   totalAmount: number;
   totalCount: number;
@@ -19,6 +21,7 @@ export interface AllPharmacyDrugInterface {
   buttonName: string;
   cardColor: string;
   confirmed?: boolean;
+  checked?: boolean
 }
 
 export interface DrugI {
