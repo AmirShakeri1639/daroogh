@@ -225,7 +225,7 @@ const Desktop1: React.FC = () => {
   }, []);
 
   const cardClickHandler = (id: number, state: any, exNumber: string | undefined): void => {
-    history.push(`${transfer}?eid=${exNumber}`);
+    history.push(`${transfer}?eid=${exNumber}&step=2`);
   };
 
   const sortSelected = (field: string, sortType: SortTypeEnum): void => {

@@ -1,3 +1,4 @@
+import React, { useContext, useEffect } from 'react';
 import {
   Box,
   createStyles,
@@ -12,7 +13,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import React, { useContext, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import DesktopCardContent from '../desktop/DesktopCardContent';
