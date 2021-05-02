@@ -346,7 +346,6 @@ const Create: React.FC = () => {
     setOfferAlert(false)
     setDaroogRecommendation('')
     setComissionPercent('')
-    setIsOpenModal(false)
 
     if (autoCompleteRef && autoCompleteRef.current) {
       autoCompleteRef.current.setInputValue('')
@@ -517,7 +516,7 @@ const Create: React.FC = () => {
       setStoredPackId(Number(packId))
     }
     getPackDrugs()
-  }, [packId])
+  }, [packId]);
 
   const [_savePack] = useMutation(savePack, {
     onSuccess: async (data) => {
