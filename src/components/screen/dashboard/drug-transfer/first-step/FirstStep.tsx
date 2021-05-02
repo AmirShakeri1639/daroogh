@@ -198,7 +198,8 @@ const FirstStep: React.FC = () => {
     if (hash.includes('step=2')) {
       window.location.hash = hash.replace('step=2', 'step=1');
     } else if (!window.location.hash.endsWith('step=1')) {
-      window.location.hash = `${hash}?step=1`;
+      const sign = window.location.hash.includes('?') ? '&' : '?'
+      window.location.hash = `${hash}${sign}step=1`
     }
     
   });
