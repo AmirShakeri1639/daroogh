@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useContext, useEffect, useRef, useMemo } from 'react';
 import {
   createStyles,
   Grid,
@@ -24,6 +24,7 @@ import CardContainer from './CardContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { PharmacyDrugInterface } from 'interfaces/pharmacyDrug';
 import { makeStyles } from '@material-ui/core/styles';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import {
   County,
   MaterialDrawer,
@@ -187,21 +188,28 @@ const FirstStep: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+
+  const {
+    activeStep,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
   const totalPharmacyCount = useRef<number>(1)
 
   const cache = useQueryCache();
   const { search } = useLocation();
 
   useEffectOnce(() => {
-    const hash = window.location.hash;
+    let hash = window.location.hash;
 
-    if (hash.includes('step=2')) {
-      window.location.hash = hash.replace('step=2', 'step=1');
-    } else if (!window.location.hash.endsWith('step=1')) {
-      const sign = window.location.hash.includes('?') ? '&' : '?'
-      window.location.hash = `${hash}${sign}step=1`
+    if (activeStep === 0 && !hash.includes('eid=')) {
+      hash = hash.replace('step=0', '') 
+      if (hash.includes('step=2')) {
+        window.location.hash = hash.replace('step=2', 'step=1')
+      } else if (!window.location.hash.endsWith('step=1')) {
+        const sign = window.location.hash.includes('?') ? '&' : '?'
+        window.location.hash = `${hash}${sign}step=1`
+      }
     }
-    
   });
 
   let minimumDrugExpireDay = 30;

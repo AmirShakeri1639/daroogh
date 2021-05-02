@@ -143,6 +143,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
       setBasketCount([]);
       setUbasketCount([]);
       setActiveStep(activeStep + 1);
+      push(transfer + '?step=1')
     } else {
       cardClickHandler(notSendExchangeID);
     }
