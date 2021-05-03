@@ -1,60 +1,109 @@
 import { AllPharmacyDrug } from 'enum';
+import { useScrollRestoration } from 'hooks';
 import { AllPharmacyDrugInterface } from 'interfaces';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryCache } from 'react-query';
 import { PharmacyDrug } from 'services/api';
+import { isNullOrEmpty } from 'utils';
+import { DaroogSearchBar } from './DaroogSearchBar';
 import ItemContainer from './first-step/ItemContainer';
 
 interface Props {
-    pharmacyId: string;
-  }
+  pharmacyId: string;
+}
 
+const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
+  const { pharmacyId } = props;
+  const { getAllPharmacyDrug } = new PharmacyDrug();
 
-  const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
-    const { pharmacyId } = props;
-    const { getAllPharmacyDrug } = new PharmacyDrug();
-    
-    const [dataList , setDateList] = useState<AllPharmacyDrugInterface[]>();
+  const [dataList, setDateList] = useState<AllPharmacyDrugInterface[]>([]);
+  const [dataListD, setDateListD] = useState<AllPharmacyDrugInterface[]>([]);
+  const [filterdList, setFilterdList] = useState<AllPharmacyDrugInterface[]>([]);
 
-    const {  refetch } = useQuery(
-      AllPharmacyDrug.GET_ALL_PHARMACY_DRUG,
-      () => {
-        return getAllPharmacyDrug(pharmacyId);
-      },
-      {
-        onSuccess: (data) => {
-          setDateList(data.items);
-          
-        },
-        enabled: false,
-      }
+  const [isFinished, setIsFinished] = useState<boolean>(false);
+
+  const [searchContent, setSearchContent] = useState<string>('');
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const contentHandler = () => {
+    return (
+      <>
+        <div style={{ position: 'sticky', left: '0', right: '0', top: '0' }}>
+          <DaroogSearchBar onValueChange={(v: string): void => setSearchContent(v)} />
+        </div>
+        {dataListD && (
+          <>
+            {React.Children.toArray(
+              dataListD.map((item: any) => (
+                <>
+                  <ItemContainer
+                    drugGenericName={item.drug.name}
+                    cnt={item.cnt}
+                    offer2={item.offer2}
+                    offer1={item.offer1}
+                    price={item.amount}
+                    expireDate={item.expireDate}
+                  />
+                </>
+              ))
+            )}
+          </>
+        )}
+      </>
     );
+  };
+  const memoContent = useMemo(() => contentHandler(), [dataListD]);
 
-    
-    useEffect(() => {
-        refetch();
-      }, []);
+  const scrollRestoration = useScrollRestoration;
+  const cache = useQueryCache();
 
-    return(<>
+  scrollRestoration(20, window, AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, setCurrentPage, cache);
 
-          {dataList && (<>
-          {React.Children.toArray(
-            dataList.map((item: any) => (<>
-              <ItemContainer
-                drugGenericName={item.drug.name}
-                cnt={item.cnt}
-                offer2={item.offer2}
-                offer1={item.offer1}
-                price={item.amount}
-                expireDate={item.expireDate}
-              /></>
-            ))
-          )}
-          </>)}
-          
-     
+  const { refetch } = useQuery(
+    AllPharmacyDrug.GET_ALL_PHARMACY_DRUG,
+    () => {
+      return getAllPharmacyDrug(pharmacyId);
+    },
+    {
+      onSuccess: (data) => {
+        setDateList(data.items);
+      },
+      enabled: false,
+    }
+  );
 
-    </>);
-  }
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
+    if (currentPage === 0 || !isFinished) {
+      setDateListD((v) => [...v, ...filterdList.slice(currentPage * 20, currentPage * 20 + 20)]);
+
+      console.log(filterdList.length);
+      setIsFinished(filterdList.length - (currentPage - 1) * 20 <= 20);
+    }
+  }, [currentPage, filterdList]);
+
+  useEffect(() => {
+    setIsFinished(false);
+    setDateListD([]);
+    setCurrentPage(0);
+    if (searchContent !== '') {
+      const filtered: AllPharmacyDrugInterface[] = dataList.filter((p) => {
+        return (
+          (p.drug.name && p.drug.name.includes(searchContent)) ||
+          (p.drug.companyName && p.drug.companyName?.includes(searchContent)) ||
+          (p.drug.genericName && p.drug.genericName?.includes(searchContent))
+        );
+      });
+      setFilterdList(filtered);
+    } else {
+      setFilterdList(dataList);
+    }
+  }, [searchContent, dataList]);
+
+  return <>{memoContent}</>;
+};
   export default AllPharmacyDrugsViwer;
