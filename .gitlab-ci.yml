@@ -31,6 +31,7 @@ deploy_daroog:
   only:
     - main
   script:
+    - "rm C:/daroog/tabadol/front/static/ -force -recurse"
     - "cp ./build/* C:/daroog/tabadol/front/ -force -recurse"
   environment:
     name: production

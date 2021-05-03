@@ -194,6 +194,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
     debtValueState,
     setAnchorEl,
     setNotifEl,
+    setActiveStep,
   } = useContext(Context);
 
   const { push } = useHistory();
@@ -231,9 +232,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
       }
       window.location.reload();
     }
-    push({
-      pathname: transfer,
-    });
+    push(transfer + '?step=0');
   };
 
   const [version, setVersion] = useState('');

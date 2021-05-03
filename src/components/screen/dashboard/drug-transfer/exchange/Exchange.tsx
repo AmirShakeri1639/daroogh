@@ -1,3 +1,4 @@
+import React, { useContext, useEffect } from 'react';
 import {
   Box,
   createStyles,
@@ -12,7 +13,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import React, { useContext, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import DesktopCardContent from '../desktop/DesktopCardContent';
@@ -119,7 +119,11 @@ const Exchange: React.FC<ReduxProps> = (props) => {
 
   useEffect(() => {
    if (!search.includes('step=2')) {
-      window.location.hash = window.location.hash.replace('?step=1', Object.keys(params).length > 1 ? '&step=2' : '?step=2');
+      window.location.hash = 
+        window.location.hash.replace(
+          '?step=1', 
+          Object.keys(params).length > 1 ? '&step=2' : '?step=2'
+        );
     }
   }, []);
   
