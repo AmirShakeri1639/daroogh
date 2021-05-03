@@ -207,7 +207,7 @@ const FirstStep: React.FC = () => {
   const { search: useLocationSearch } = useLocation();
   const scrollRestoration = useScrollRestoration;
 
-  scrollRestoration(window, PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, setCurrentPage, cache);
+  scrollRestoration(0,window, PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, setCurrentPage, cache);
  
   try {
     const localStorageSettings = JSON.parse(localStorage.getItem('settings') ?? '{}');

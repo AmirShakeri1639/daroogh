@@ -210,7 +210,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
         onClose={(): void => setShowExchangeTree(false)}
       >
         <DialogTitle className="text-sm">{t('exchange.allPharmacyDrugs')}</DialogTitle>
-        <DialogContent>
+        <DialogContent id='drugsContainer' style={{height: `${fullScreen ? '':'600px' }` , maxHeight:`${fullScreen ? '':'600px' }`}}>
           <AllPharmacyDrugsViwer pharmacyId={data.pharmacyKey} />
         </DialogContent>
         <DialogActions>
