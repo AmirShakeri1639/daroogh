@@ -79,29 +79,34 @@ const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
 
   useEffect(() => {
     if (currentPage === 0 || !isFinished) {
-      setDateListD((v) => [...v, ...filterdList.slice(currentPage * 20, currentPage * 20 + 20)]);
-
-      console.log(filterdList.length);
-      setIsFinished(filterdList.length - (currentPage - 1) * 20 <= 20);
+      setDateListD((v) => [...v, ...filterdList.slice(currentPage * 50, currentPage * 50 + 50)]);
+      setIsFinished(filterdList.length - (currentPage - 1) * 50 <= 50);
     }
   }, [currentPage, filterdList]);
 
   useEffect(() => {
-    setIsFinished(false);
-    setDateListD([]);
-    setCurrentPage(0);
-    if (searchContent !== '') {
-      const filtered: AllPharmacyDrugInterface[] = dataList.filter((p) => {
-        return (
-          (p.drug.name && p.drug.name.includes(searchContent)) ||
-          (p.drug.companyName && p.drug.companyName?.includes(searchContent)) ||
-          (p.drug.genericName && p.drug.genericName?.includes(searchContent))
-        );
-      });
-      setFilterdList(filtered);
-    } else {
-      setFilterdList(dataList);
-    }
+    const delayDebounceFn = setTimeout(
+      () => {
+        setIsFinished(false);
+        setDateListD([]);
+        setCurrentPage(0);
+        if (searchContent !== '') {
+          setFilterdList(
+            dataList.filter((p) => {
+              return (
+                (p.drug.name && p.drug.name.includes(searchContent)) ||
+                (p.drug.companyName && p.drug.companyName?.includes(searchContent)) ||
+                (p.drug.genericName && p.drug.genericName?.includes(searchContent))
+              );
+            })
+          );
+        } else {
+          setFilterdList(dataList);
+        }
+      },
+      searchContent === '' ? 0 : 1000
+    );
+    return () => clearTimeout(delayDebounceFn);
   }, [searchContent, dataList]);
 
   return <>{memoContent}</>;
