@@ -29,7 +29,7 @@ const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
   const contentHandler = () => {
     return (
       <>
-        <div style={{position:"sticky",left:"0",right:"0",top:"0"}}>
+        <div style={{ position: 'sticky', left: '0', right: '0', top: '0' }}>
           <DaroogSearchBar onValueChange={(v: string): void => setSearchContent(v)} />
         </div>
         {dataListD && (
@@ -68,7 +68,6 @@ const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
     {
       onSuccess: (data) => {
         setDateList(data.items);
-        // console.log(dataList);
       },
       enabled: false,
     }
@@ -79,8 +78,6 @@ const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log('filterdList2', filterdList.length);
-
     if (currentPage === 0 || !isFinished) {
       setDateListD((v) => [...v, ...filterdList.slice(currentPage * 20, currentPage * 20 + 20)]);
 
@@ -105,9 +102,6 @@ const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
     } else {
       setFilterdList(dataList);
     }
-    console.log('datalist', dataList.length);
-
-    console.log('filterdList', filterdList.length);
   }, [searchContent, dataList]);
 
   return <>{memoContent}</>;
