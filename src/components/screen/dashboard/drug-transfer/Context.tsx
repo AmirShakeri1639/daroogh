@@ -42,8 +42,6 @@ export interface TransferDrugContextInterface {
   setLockedAction: (value: boolean) => void;
   fireDesctopScroll: boolean;
   setFireDesctopScroll: (value: boolean) => void;
-  needRefresh?: boolean;
-  setNeedRefresh?: (v: boolean) => void;
 }
 
 const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
@@ -86,8 +84,6 @@ const DrugTransferContext = React.createContext<TransferDrugContextInterface>({
   setLockedAction: () => true,
   fireDesctopScroll: true,
   setFireDesctopScroll: () => true,
-  needRefresh: false,
-  setNeedRefresh: () => true,
 });
 
 export default DrugTransferContext;

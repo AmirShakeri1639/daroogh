@@ -134,7 +134,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
   const { t } = useTranslation();
 
   const cardClickHandler = (id: string): void => {
-    push(`${transfer}?eid=${id}`);
+    push(`${transfer}?eid=${id}&step=2`);
   };
 
   const transferStart = (notSendExchangeID: string | null): void => {
@@ -143,6 +143,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
       setBasketCount([]);
       setUbasketCount([]);
       setActiveStep(activeStep + 1);
+      push(transfer + '?step=1')
     } else {
       cardClickHandler(notSendExchangeID);
     }
@@ -189,18 +190,18 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
         </Grid>
         <Grid container item className={button} xs={12}>
          
-            <Button type="button" className={buttonExchange} onClick={transferStartHandler}>
-              {notSendExchangeID !== null ? t('exchange.continue') : t('general.tabadol')}
-            </Button>
-        
-            <Button
-              type="button" className={buttonExchange} 
-              onClick={(): void => {
-                setShowExchangeTree(true);
-              }}
-            >
-              نمایش تمام اقلام
-            </Button>
+          <Button type="button" className={buttonExchange} onClick={transferStartHandler}>
+            {notSendExchangeID !== null ? t('exchange.continue') : t('general.tabadol')}
+          </Button>
+      
+          <Button
+            type="button" className={buttonExchange} 
+            onClick={(): void => {
+              setShowExchangeTree(true);
+            }}
+          >
+            نمایش تمام اقلام
+          </Button>
         </Grid>
       </Paper>
       <Dialog
@@ -210,7 +211,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
         onClose={(): void => setShowExchangeTree(false)}
       >
         <DialogTitle className="text-sm">{t('exchange.allPharmacyDrugs')}</DialogTitle>
-        <DialogContent>
+        <DialogContent id='drugsContainer' style={{height: `${fullScreen ? '':'600px' }` , maxHeight:`${fullScreen ? '':'600px' }`}}>
           <AllPharmacyDrugsViwer pharmacyId={data.pharmacyKey} />
         </DialogContent>
         <DialogActions>

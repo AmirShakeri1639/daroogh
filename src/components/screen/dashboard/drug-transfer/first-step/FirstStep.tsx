@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useContext, useEffect, useRef, useMemo } from 'react';
 import {
   createStyles,
   Grid,
@@ -24,6 +24,7 @@ import CardContainer from './CardContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { PharmacyDrugInterface } from 'interfaces/pharmacyDrug';
 import { makeStyles } from '@material-ui/core/styles';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import {
   County,
   MaterialDrawer,
@@ -44,7 +45,7 @@ import { useLocation } from 'react-router';
 import { ColorEnum } from 'enum';
 import { CategoryQueryEnum } from 'enum/query';
 import styled from 'styled-components';
-import { useScrollRestoration } from 'hooks';
+import { useEffectOnce, useScrollRestoration } from 'hooks';
 
 const { getRelatedPharmacyDrug, getFavoritePharmacyDrug } = new PharmacyDrug();
 const { advancedSearch, searchDrug, searchCategory } = new Search();
@@ -182,19 +183,40 @@ const FirstStep: React.FC = () => {
   const [selectedDrugsCategory, setSelectedDrugsCategory] = useState('-1');
   const [currentPage, setCurrentPage] = useState(0);
   const [pharmacyList, setPharmacyList] = useState<any[]>([]);
+  const [isLoadingRelatedDrugs, setIsLoadingRelatedDrugs] = useState(false);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+
+  const {
+    activeStep,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
   const totalPharmacyCount = useRef<number>(1)
 
   const cache = useQueryCache();
+  const { search } = useLocation();
+
+  useEffectOnce(() => {
+    let hash = window.location.hash;
+
+    if (activeStep === 0 && !hash.includes('eid=')) {
+      hash = hash.replace('step=0', '') 
+      if (hash.includes('step=2')) {
+        window.location.hash = hash.replace('step=2', 'step=1')
+      } else if (!window.location.hash.endsWith('step=1')) {
+        const sign = window.location.hash.includes('?') ? '&' : '?'
+        window.location.hash = `${hash}${sign}step=1`
+      }
+    }
+  });
 
   let minimumDrugExpireDay = 30;
   const { search: useLocationSearch } = useLocation();
   const scrollRestoration = useScrollRestoration;
 
-  scrollRestoration(window, PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, setCurrentPage, cache);
+  scrollRestoration(0,window, PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, setCurrentPage, cache);
  
   try {
     const localStorageSettings = JSON.parse(localStorage.getItem('settings') ?? '{}');
@@ -349,22 +371,25 @@ const FirstStep: React.FC = () => {
     countryDivision,
   } = useStyle();
 
-  const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
-    shouldDisplayFavoriteList
-      ? PharmacyDrugEnum.GET_FAVORITE_EXCHANGE_LIST_OF_DRUGS
-      : [PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, currentPage],
-    shouldDisplayFavoriteList
-      ? (): Promise<any> => getFavoritePharmacyDrug()
-      : (): Promise<any> => getRelatedPharmacyDrug(10, currentPage * 10),
-    {
-      enabled: searchedDrugs.length === 0 && pharmacyList.length < totalPharmacyCount?.current ,
-      keepPreviousData: true,
-      onSuccess: (data: ServerResponse) => {
-        setPharmacyList((v) => [...v, ...data.items]);
-        totalPharmacyCount.current = data.count;
+  useEffect(() => {
+    (async (): Promise<any> => {
+      if (searchedDrugs.length === 0 && pharmacyList.length < totalPharmacyCount?.current) {
+        if (currentPage === 0) {
+          setIsLoadingRelatedDrugs(true)
+        }
+        let result: ServerResponse;
+        if (shouldDisplayFavoriteList) {
+          result = await getFavoritePharmacyDrug();
+        } else {
+          result = await getRelatedPharmacyDrug(10, currentPage * 10);
+        }
+        setPharmacyList((v) => [...v, ...result.items]);
+        totalPharmacyCount.current = result.count;
+        setIsLoadingRelatedDrugs(false);
       }
-    }
-  );
+    })();
+  }, [search, currentPage]);
+
 
   const toggleCheckbox = (): void => {
     setIsCheckedJustOffer((v) => !v);
@@ -422,7 +447,6 @@ const FirstStep: React.FC = () => {
         })
       );
     }
-
     return items;
   };
 
@@ -430,7 +454,7 @@ const FirstStep: React.FC = () => {
     isLoading,
     isLoadingRelatedDrugs,
     isInSearchMode,
-    data,
+    pharmacyList,
   ]);
 
   const drugsListGenerator = (): any => {

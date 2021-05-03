@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import avatarPic from '../../../assets/images/user-profile-avatar.png';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Avatar, Button, Grid, List } from '@material-ui/core';
@@ -10,16 +10,19 @@ import Context from './Context';
 import ListItems from './sidebar/ListItems';
 import { MaterialDrawer } from '../../public';
 import { errorHandler, JwtData, logoutUser } from '../../../utils';
-import { ColorEnum } from '../../../enum';
+import { ColorEnum, MessageQueryEnum, MessageTypeEnum } from '../../../enum';
 import { Alert } from '@material-ui/lab';
 import Utils from '../../public/utility/Utils';
 import Appbar from './AppBar';
 import { useTranslation } from 'react-i18next';
-import { Accounting } from '../../../services/api';
+import { Accounting, Message } from '../../../services/api';
 import { LoggedInUserInterface } from '../../../interfaces';
 import changeProfilePic from './user/changeProfilePic';
 import routes from '../../../routes';
 import { Link, useHistory } from 'react-router-dom';
+import ReceivedMessages from './received-messages/ReceivedMessage';
+import { useEffectOnce } from 'hooks';
+
 const { isIndebtPharmacy } = new Accounting();
 const drawerWidth = 240;
 
@@ -196,6 +199,8 @@ const StyledMenu = withStyles({
   />
 ));
 
+const { getUserMessages } = new Message();
+
 const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const { t } = useTranslation();
   const [activePage, setActivePage] = useState<string>('dashboard');
@@ -208,6 +213,8 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const [notifEl, setNotifEl] = useState<HTMLElement | null>(null);
   const [avatarChanged, setAvatarChanged] = useState<any>();
   const [mrMs, setMrMs] = useState(t('general.dr') + ' ')
+  const [isOpenReceivedMessagesModal, setIsOpenReceivedMessagesModal] = useState(false);
+  const [userMessages, setUserMessages] = useState<any[]>([]);
 
   const { profile } = routes;
 
@@ -244,6 +251,17 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const handleDrawerClose = (): void => setIsOpenDrawer(false);
   const toggleIsOpenDrawer = (): void => setIsOpenDrawer((v) => !v);
 
+  useEffectOnce(() => {
+    (async (): Promise<void> => {
+      const result = await getUserMessages(true, 0, 99, MessageTypeEnum.SPECIAL);
+      const { items } = result;
+      if (items.length > 0) {
+        setUserMessages(items)
+        setIsOpenReceivedMessagesModal(true);
+      }
+    })();
+  })
+
   const activePageHandler = (page: string): void => {
     toggleIsOpenDrawer();
     setActivePage(page);
@@ -264,6 +282,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
     notifEl,
     setNotifEl,
     creditAnchorEl,
+    isOpenReceivedMessagesModal,
   });
 
   const listItemsGenerator = (): any => {
@@ -305,14 +324,6 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   };
 
   const { accountingInfo, fileUrl } = routes;
-
-  // const avatar = useMemo(() => {
-  //   return (
-  //     !loggedInUser || !loggedInUser?.imageKey
-  //       ? avatarPic
-  //       : `${fileUrl}${loggedInUser?.imageKey}`
-  //   )
-  // }, [loggedInUser])
 
   const [avatar, setAvatar] = useState<any>(avatarPic)
   useEffect(() => {
@@ -450,6 +461,13 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
           </StyledMenu>
         ) }
       </div>
+
+      {userMessages.length > 0 &&
+      <ReceivedMessages
+        messages={userMessages}
+        onClose={(): void => setIsOpenReceivedMessagesModal(false)}
+        isOpen={isOpenReceivedMessagesModal}
+      />}
     </Context.Provider>
   );
 };

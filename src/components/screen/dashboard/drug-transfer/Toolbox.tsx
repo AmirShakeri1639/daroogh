@@ -1,12 +1,6 @@
 import React, { useContext, useState } from 'react';
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   createStyles,
-  Divider,
   Grid,
   IconButton,
   makeStyles,
@@ -26,6 +20,7 @@ import { ColorEnum } from 'enum';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUserAstronaut } from '@fortawesome/free-solid-svg-icons'
 import { Exchange } from 'services/api'
+import { fillFromCart } from 'utils/ExchangeTools'
 
 const styles = makeStyles((theme) =>
   createStyles({
@@ -66,8 +61,8 @@ const ToolBox: React.FC = () => {
   const { 
     viewExhcnage, 
     exchangeId,
-    setNeedRefresh, 
     activeStep,
+    setUbasketCount,
   } = useContext<TransferDrugContextInterface>(
     DrugTransferContext
   );
@@ -79,7 +74,7 @@ const ToolBox: React.FC = () => {
   const { desktop } = routes;
   const history = useHistory();
 
-  const { removeExchange } = new PharmacyDrug();
+  const { removeExchange, getViewExchange } = new PharmacyDrug();
 
   const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
     onSuccess: async (res) => {
@@ -124,8 +119,9 @@ const ToolBox: React.FC = () => {
     if (confirmed) {
       const aiSugg = await callAiSuggestion(exchangeId)
       tSuccess(aiSugg.data.message)
-      // @ts-ignore
-      setNeedRefresh(true)
+      const viewExResult = await getViewExchange(exchangeId)
+      const cart = await fillFromCart(viewExResult.data.cartA, true)
+      setUbasketCount(cart)
     }
   } 
 

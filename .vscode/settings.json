@@ -13,12 +13,14 @@
     "editor.formatOnPaste": false
   },
   "cSpell.words": [
+    "Notif",
     "Recaptcha",
     "Scrollable",
+    "Swal",
     "daroog",
+    "fontawesome",
     "fortawesome",
     "najva"
   ],
   "editor.formatOnSaveMode": "modifications",
-  "prettier.semi": false
 }
