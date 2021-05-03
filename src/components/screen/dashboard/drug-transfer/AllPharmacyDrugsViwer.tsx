@@ -85,7 +85,7 @@ const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
   }, [currentPage, filterdList]);
 
   useEffect(() => {
-    const delayDebounceFn = setTimeout(
+    const getData =
       () => {
         setIsFinished(false);
         setDateListD([]);
@@ -103,12 +103,11 @@ const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
         } else {
           setFilterdList(dataList);
         }
-      },
-      searchContent === '' ? 0 : 1000
-    );
-    return () => clearTimeout(delayDebounceFn);
+      };
+      getData();
+    return () => getData();
   }, [searchContent, dataList]);
 
   return <>{memoContent}</>;
 };
-  export default AllPharmacyDrugsViwer;
+export default AllPharmacyDrugsViwer;
