@@ -9,8 +9,6 @@ import Utils from 'components/public/utility/Utils';
 import { ColorEnum } from 'enum';
 import ShowOffer from 'components/public/offer-show/ShowOffer';
 
-const { convertISOTime } = Convertor;
-
 const useStyle = makeStyles((theme) =>
   createStyles({
     paper: {
@@ -23,12 +21,12 @@ const useStyle = makeStyles((theme) =>
         marginLeft: 10,
       },
       '& .drug-container': {
-        padding: '0 6px',
+        padding: 6,
         borderLeft: `2px solid ${ColorEnum.Borders}`,
-        height: '48px',
         backgroundColor: ColorEnum.LiteBack,
         paddingTop: '8px',
         marginBottom: theme.spacing(1),
+        height: 70,
       },
     },
     smallText: {
@@ -53,7 +51,7 @@ const Detail: React.FC<DetailSupplyInterface> = memo((props) => {
             <div className={container}>
               <Grid container spacing={0}>
                 <Grid container xs={12} className="drug-container">
-                  <Grid container xs={1}>
+                  <Grid container item alignItems="center" xs={1}>
                     <img src="drug.png" style={{ height: '25px' }} />
                   </Grid>
                   <Grid container xs={11} style={{ alignItems: 'center', paddingRight: '8px' }}>

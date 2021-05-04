@@ -1,6 +1,5 @@
 import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
