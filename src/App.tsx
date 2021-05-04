@@ -64,7 +64,12 @@ const EmploymentApplication = lazy(
       './components/screen/dashboard/peopleSection/EmploymentApplication/EmploymentApplication'
     )
 );
-
+const FindJob = lazy(
+  () =>
+    import(
+      './components/screen/dashboard/peopleSection/FindJob/FindJob'
+    )
+);
 const CreatePharmacy = lazy(() => import('./components/screen/dashboard/pharmacy/createPharmacy'));
 
 const PharmaciesList = lazy(() => import('./components/screen/dashboard/pharmacy/pharmaciesList'));
@@ -123,6 +128,7 @@ const {
   drugFavoriteList,
   prescription,
   jobApplication,
+  findJob,
   dashboard,
   transfer,
   desktop,
@@ -210,12 +216,13 @@ const App = (): JSX.Element => {
     "gtag('js', new Date());" +
     "gtag('config', 'UA-31704707-1');";
   document.body.appendChild(gaScript2);
+
   const setupCrisp = (): void => {
     (window as any).$crisp = [];
 
-    (function () {
-      var d = document;
-      var s = d.createElement('script');
+    (function (): void {
+      const d = document;
+      const s = d.createElement('script');
 
       s.src = 'https://client.crisp.chat/l.js';
       s.async = true;
@@ -324,6 +331,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute exact path={jobApplication}>
               <Dashboard component={<EmploymentApplication />} />
+            </PrivateRoute>
+            <PrivateRoute exact path={findJob}>
+              <Dashboard component={<FindJob />} />
             </PrivateRoute>
             <PrivateRoute exact path={drugCategoryfavoriteList}>
               <Dashboard component={<DrugFavoriteCategory />} />

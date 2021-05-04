@@ -1,3 +1,4 @@
+import React, { useContext, useEffect } from 'react';
 import {
   Box,
   createStyles,
@@ -12,7 +13,6 @@ import {
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
-import React, { useContext, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import DesktopCardContent from '../desktop/DesktopCardContent';
@@ -24,6 +24,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { ColorEnum } from 'enum';
 import { useTranslation } from 'react-i18next';
 import ExchangeTree from '../exchange-tree/ExchangeTree';
+import queryString from 'query-string';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -114,9 +115,22 @@ const Exchange: React.FC<ReduxProps> = (props) => {
     }
   }, [search]);
 
+  const params = queryString.parse(search);
+
+  useEffect(() => {
+   if (!search.includes('step=2')) {
+      window.location.hash = 
+        window.location.hash.replace(
+          '?step=1', 
+          Object.keys(params).length > 1 ? '&step=2' : '?step=2'
+        );
+    }
+  }, []);
+  
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
+
   const theme = useTheme();
   const { t } = useTranslation();
 

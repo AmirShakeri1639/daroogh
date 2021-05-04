@@ -2,6 +2,7 @@ export default {
   fa: {
     translation: {
       general: {
+        specialMessages: 'پیام های ویژه',
         calculator: 'ماشین حساب',
         calculating: 'محاسبه',
         daroogLatin: 'DarooG',
@@ -41,6 +42,8 @@ export default {
         save: 'ذخیره',
         edit: 'ویرایش',
         term: 'عبارت',
+        display: 'نمایش',
+        
         displayList: 'نمایش لیست {{var}}',
         options: 'امکانات',
         expireDate: 'تاریخ انقضا',
@@ -132,6 +135,12 @@ export default {
         dr: 'دکتر',
         view: 'مشاهده',
         call: 'تماس',
+        minimum: 'کمترین',
+        maximum: 'بیشترین',
+        nearest: 'نزدیکترین',
+        farthest: 'دورترین',
+        primitive: 'اولیه',
+        nextMessage: 'پیام بعدی'
       },
 
       pack: {
@@ -327,6 +336,7 @@ export default {
         email: 'ایمیل',
         resumeFile: 'فایل رزومه',
         requestState: 'وضعیت درخواست',
+        findJob:'کاریابی'
       },
       message: {
         message: 'پیام',
@@ -336,6 +346,7 @@ export default {
         profile: 'پروفایل',
         sms: 'پیامک',
         notification: 'ناتیفیکیشن',
+        special: 'ویژه',
         detail: 'جزییات پیام',
         allMessages: 'سوابق کلیه پیام ها',
         daroogMessagesList: 'لیست پیام های دریافتی از  طرف داروگ',
@@ -399,6 +410,10 @@ export default {
         searchDrugPlaceHolder: 'عبارت را وارد کرده و سپس کلید اینتر را بزنید',
         fromYours: 'از سبد شما',
         fromOthers: 'از سبد طرف مقابل',
+        selectFromYourCart: 'انتخاب دارو از سبد خود',
+        aiSuggestion: 'انتخاب توسط هوش مصنوعی',
+        selectMyself: 'خودم انتخاب می‌کنم',
+        confirmToSelectFromOwnCart: 'آیا تمایل دارید از لیست داروهای خود، اقلامی را انتخاب نمایید؟',
       },
       favorite: {
         addToDrugList: 'اضافه کردن دارو به لیست علاقه مندی',
@@ -430,6 +445,8 @@ export default {
         failed: 'عملیات با خطا مواجه شد!',
         done: 'با موفقیت انجام شد.',
         cancelConfirm: 'آیا از لغو این مورد مطمئن هستید؟',
+        aiSuggestion: 'آیا به هوش مصنوعی داروگ اجازه پیشنهاد از سبد خودتان را می‌دهید؟',
+        removeExchange: 'آیا از حذف تبادل اطمینان دارید؟',
       },
       pharmacy: {
         pharmacy: 'داروخانه',
@@ -785,7 +802,11 @@ export default {
           'از آنجا که ویرایش اطلاعات داروخانه توسط شما مقدور نمی باشد٬ در صورت نیاز میتوانید با پشتیبانی تماس بگیرید',
         offerAlertFirstPart:'طبق اعداد وارد شده، شما باید ',
         offerAlertSecondPart: ' عدد از این محصول را به داروخانه مقابل تحویل دهید.',
-        chooseCloserDateAlert:'پورسانت بر مبنای تاریخ انقضا محاسبه میشود'
+        chooseCloserDateAlert:'پورسانت بر مبنای تاریخ انقضا محاسبه میشود',
+        useAi:'هوش مصنوعی داروگ میتواند عملیات انتخاب از سبد عرضه شما را به صورت خودکار و بر اساس علایق داروخانه مقابل٬ انجام دهد. عملیات متعادل کردن سبدهای تبادل با درصد اختلاف مجاز نیز در صورت امکان صورت خواهد پذیرفت. ',
+        useAi2:'ضمنا شما میتوانید پس از این انتخاب نیز سبد خود را ویرایش نمایید و همیشه آیکن  ',
+        useAi3:'  در هر حالتی از انتخاب داروها برای چینش نهایی به کمک شما خواهد آمد',
+        findJobAlert:'در این بخش میتوانید از میان فرصت های شغلی ارائه شده توسط داروخانه ها با بررسی جزئیات٬ موارد مد نظرتان را انتخاب کنید و با آن داروخانه ها جهت هماهنگی های لازم تماس بگیرید.'
       },
 
       widget: {
@@ -822,6 +843,24 @@ export default {
           UnConfirmed: 'عدم تایید',
         }
       },
+      findJob:{
+        minGradeOfReadingPrescriptionCertificate: 'حداقل نمره نسخه خوانی قابل قبول',
+        minWorkExperienceYear: 'حداقل سابقه کار',
+        maxAge: 'حداکثر سن',
+        descriptions: 'توضیحات',
+        hasReadingPrescriptionCertificateStr: 'توانایی نسخه خوانی',
+        livingInAreaStr: 'سکونت در محل',
+        hasGuaranteeStr: 'نیاز به وثیقه',
+        genderStr: 'جنسیت',
+        suggestedWorkShiftStr: 'شبفت کاری پیشنهادی',
+        maritalStatusStr: 'وضعیت تاهل',
+        pharmaceuticalSoftwareSkillStr: 'توانایی کار با نرم افزارهای داروخانه ای',
+        computerSkillStr: 'توانایی کار با کامپیوتر',
+        foreignLanguagesSkillStr: 'سطح زبان انگلیسی',
+        jobPositionStr: 'موقعیت شغلی مورد نیاز',
+        educationStr: 'حداقل سطح تحصیلات',
+
+      }
     },
   },
 };

@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { makeStyles, Paper, createStyles, Grid, Divider, Button } from '@material-ui/core';
 import Detail from './Detail';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CardJobApplicationInterface, CardJobInterface, NewUserData } from '../../../../interfaces';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { CardJobApplicationInterface } from '../../../../interfaces';
 import { BackDrop } from '../../../public';
 import { useTranslation } from 'react-i18next';
+import { getBaseUrl } from 'config'
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -73,7 +72,7 @@ const CardContainer: React.FC<CardJobApplicationInterface> = (props) => {
                 e.stopPropagation();
               }}
               download=""
-              href={'https://api.daroog.org/api/File/GetFile?key=' + resumeFileKey}
+              href={getBaseUrl() + '/File/GetFile?key=' + resumeFileKey}
             >
               <span style={{ display: 'inline-block' }}>
                 { t('jobSearch.downloadResume') }

@@ -14,7 +14,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import PharmacyDrug from 'services/api/PharmacyDrug';
-import { errorHandler, tSuccess } from 'utils';
+import { confirmSweetAlert, errorHandler, tSuccess } from 'utils';
 import routes from 'routes';
 import { useHistory } from 'react-router-dom';
 import Modal from 'components/public/modal/Modal';
@@ -22,6 +22,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import { default as MatButton } from '@material-ui/core/Button';
 import { useMutation } from 'react-query';
 import ToolBox from './Toolbox';
+import { useTranslation } from 'react-i18next'
 
 const styles = makeStyles((theme) =>
   createStyles({
@@ -44,6 +45,7 @@ const styles = makeStyles((theme) =>
 
 const SearchInAList: React.FC = () => {
   const { icons, container, searchBar } = styles();
+  const { t } = useTranslation()
   const {
     orgAllPharmacyDrug,
     setAllPharmacyDrug,
@@ -122,11 +124,6 @@ const SearchInAList: React.FC = () => {
   const { desktop } = routes;
   const history = useHistory();
 
-  const [isRemoveExchangeModal, setIsRemoveExchangeModal] = useState(false);
-  const toggleIsRemoveExchangeModalForm = (): void => {
-    setIsRemoveExchangeModal((v) => !v);
-  };
-
   const { removeExchange } = new PharmacyDrug();
 
   const [_removeExchange, { isLoading: isLoadingRemoveExchange }] = useMutation(removeExchange, {
@@ -144,63 +141,15 @@ const SearchInAList: React.FC = () => {
     } catch (e) {
       errorHandler(e);
     }
-    toggleIsRemoveExchangeModalForm();
   };
 
-  const exchangeModalRemove = (): JSX.Element => {
-    return (
-      <Modal open={isRemoveExchangeModal} toggle={toggleIsRemoveExchangeModalForm}>
-        <Card>
-          <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title="حذف تبادل"
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={toggleIsRemoveExchangeModalForm}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={1}>
-              <div>
-                <span>آیا از حذف تبادل اطمینان دارید؟</span>
-              </div>
-            </Grid>
-          </CardContent>
-          <CardActions>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <MatButton
-                  onClick={async (): Promise<any> => await handleRemoveExchange()}
-                  variant="contained"
-                  color="primary"
-                  autoFocus
-                >
-                  بله
-                </MatButton>
-              </Grid>
-              <Grid item xs={6} style={{ textAlign: 'left' }}>
-                <MatButton
-                  onClick={toggleIsRemoveExchangeModalForm}
-                  variant="contained"
-                  color="secondary"
-                  autoFocus
-                >
-                  خیر
-                </MatButton>
-              </Grid>
-            </Grid>
-          </CardActions>
-        </Card>
-      </Modal>
-    );
-  };
+  const exchangeRemove = async (): Promise<any> => {
+    const confirmRemoveExchange = await confirmSweetAlert(t('alert.removeExchange'))
+    if (confirmRemoveExchange) {
+      await handleRemoveExchange()
+      return
+    }
+  }
 
   return (
     <Grid container spacing={1} className={container}>
@@ -217,13 +166,12 @@ const SearchInAList: React.FC = () => {
           viewExhcnage.currentPharmacyIsA &&
           viewExhcnage.state == 1 && (
             <Tooltip title="حذف تبادل">
-              <IconButton onClick={toggleIsRemoveExchangeModalForm}>
+              <IconButton onClick={exchangeRemove}>
                 <DeleteForeverIcon className={icons} />
               </IconButton>
             </Tooltip>
           )} */}
       {/* </Grid> */}
-      {isRemoveExchangeModal && exchangeModalRemove()}
     </Grid>
   );
 };

@@ -1,8 +1,4 @@
 import {
-  Card,
-  CardActions,
-  CardContent,
-  CardHeader,
   Checkbox,
   Container,
   createStyles,
@@ -13,7 +9,6 @@ import {
   Divider,
   FormControl,
   Grid,
-  IconButton,
   InputLabel,
   makeStyles,
   MenuItem,
@@ -23,8 +18,6 @@ import {
   Button,
 } from '@material-ui/core';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import Modal from '../../../../public/modal/Modal';
-import CloseIcon from '@material-ui/icons/Close';
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import {
   AccountingInterface,
@@ -32,9 +25,6 @@ import {
   GetAccountingForPaymentInterace,
   PaymentExchangeByBestankari,
 } from '../../../../../interfaces/AccountingInterface';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import TextLine from '../../../../public/text-line/TextLine';
-import { faCalendarTimes, faMoneyBillWave } from '@fortawesome/free-solid-svg-icons';
 import { Select } from '@material-ui/core';
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import moment from 'jalali-moment';
@@ -42,12 +32,11 @@ import Utils from '../../../../public/utility/Utils';
 import { Payment } from '../../../../../model/exchange';
 import routes from '../../../../../routes';
 import { useHistory } from 'react-router-dom';
-import Ribbon from '../../../../public/ribbon/Ribbon';
 import sweetAlert from '../../../../../utils/sweetAlert';
 import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
-import { Fullscreen } from '@material-ui/icons';
 import { ColorEnum } from 'enum';
+import { getBaseUrl } from 'config'
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -265,7 +254,7 @@ const ExchangeApprove: React.FC<ExchangeApprovePI> = (props) => {
   const PaymentPage = (): JSX.Element => {
     return (
       <>
-        <form ref={refFrom} method="post" action="https://api.daroog.org/MyVirtualGateway">
+        <form ref={refFrom} method="post" action={`${getBaseUrl()}/MyVirtualGateway`}>
           <input type="hidden" value={paymentAmount} name="amount"></input>
           <input type="hidden" value={'request'} name="commandType"></input>
           <input type="hidden" value={trackingNumber} name="trackingNumber"></input>

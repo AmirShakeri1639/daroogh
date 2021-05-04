@@ -346,7 +346,6 @@ const Create: React.FC = () => {
     setOfferAlert(false)
     setDaroogRecommendation('')
     setComissionPercent('')
-    setIsOpenModal(false)
 
     if (autoCompleteRef && autoCompleteRef.current) {
       autoCompleteRef.current.setInputValue('')
@@ -517,7 +516,7 @@ const Create: React.FC = () => {
       setStoredPackId(Number(packId))
     }
     getPackDrugs()
-  }, [packId])
+  }, [packId]);
 
   const [_savePack] = useMutation(savePack, {
     onSuccess: async (data) => {
@@ -629,12 +628,6 @@ const Create: React.FC = () => {
 
   const memoContent = useMemo(() => contentHandler(), [drugsPack])
 
-  const getDrugName = (item: any): string => {
-    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
-      item.type !== null ? ` - ${item.type}` : ''
-    }`
-  }
-
   const searchDrugs = async (title: string): Promise<any> => {
     try {
       if (title.length < 2) {
@@ -732,7 +725,14 @@ const Create: React.FC = () => {
 
   const formHandler = async (): Promise<any> => {
     try {
-      if (!isValidInputs() || selectedCategory.length === 0 || isWrongDate || !hasMinimumDate || barcode.trim() === '') {
+      if (!isValidInputs() ||
+      selectedCategory.length === 0 ||
+      isWrongDate ||
+      !hasMinimumDate ||
+      // barcode.trim() === '' ||
+      amount === '' ||
+      number === ''
+    ) {
         setShowError(true)
         return
       }
@@ -746,7 +746,7 @@ const Create: React.FC = () => {
         {
           ...omit(getNewDrugData(), 'id'),
           drugID: getNewDrugData().drugID.value,
-          batchNO: barcode,
+          // batchNO: barcode,
         },
       ]
 
@@ -986,6 +986,7 @@ const Create: React.FC = () => {
                     <Input
                       placeholder={`${t('general.number')}`}
                       numberFormat
+                      error={showError && number === ''}
                       className="w-100"
                       label={`${t('general.number')} ${t('drug.drug')}`}
                       onChange={(e): void => {
@@ -1007,6 +1008,7 @@ const Create: React.FC = () => {
                   <Input
                     placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
                     numberFormat
+                    error={showError && amount === ''}
                     value={calculatedValue === 0 ? amount : calculatedValue}
                     className="w-100"
                     label={t('general.price')}
@@ -1147,30 +1149,29 @@ const Create: React.FC = () => {
                         if (selectedYear.length < 4 || val.length < 4) {
                           setSelectedYear(e.target.value)
                         }
-                        if (val.length === 4) {
-                          batchRef?.current?.focus()
-                        }
+                        // if (val.length === 4) {
+                        //   batchRef?.current?.focus()
+                        // }
                       }}
                     />
                   </Grid>
 
                   <Grid item xs={3} className={expireDate}>
-                    {daysDiff !== '' && <span>{daysDiff} روز</span>}
+                    {daysDiff !== '' && !isNaN(Number(daysDiff)) && <span>{daysDiff} روز</span>}
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  {isWrongDate && <p className="text-danger txt-xs">{t('date.afterToday')}</p>}
-                  {!hasMinimumDate && (
-                    <p className="text-danger txt-xs">
-                      {t('date.minimumDate', {
-                        day: drugExpireDay,
+                  <p className="text-danger txt-xs">
+                    {isWrongDate && t('date.afterToday')}
+                    {!hasMinimumDate && t('date.minimumDate', {
+                        day: drugExpireDay
                       })}
-                    </p>
-                  )}
+                    {isNaN(Number(daysDiff)) && t('date.wrongDate')}
+                  </p>
                 </Grid>
               </Grid>
 
-              <Grid item xs={12} className={sectionContainer}>
+              {/* <Grid item xs={12} className={sectionContainer}>
                 <Grid container>
                   <Grid item xs={12} style={{ marginBottom: 8 }}>
                     <span style={{ color: '#17A2B8', fontSize: 12 }}>
@@ -1189,7 +1190,7 @@ const Create: React.FC = () => {
                     />
                   </Grid>
                 </Grid>
-              </Grid>
+              </Grid> */}
 
               {/* {comissionPercent !== '' && (
                 <Grid item xs={12}>

@@ -1,8 +1,6 @@
 import {
   Card,
-  CardActions,
   CardContent,
-  CardHeader,
   Checkbox,
   createStyles,
   Dialog,
@@ -10,10 +8,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Divider,
   FormControlLabel,
   Grid,
-  IconButton,
   makeStyles,
   MobileStepper,
   Paper,
@@ -23,25 +19,22 @@ import {
   useMediaQuery,
   Button,
 } from '@material-ui/core'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useContext } from 'react'
 import { ViewExchangeInterface } from '../../../../../interfaces/ViewExchangeInterface'
 import DrugTransferContext, { TransferDrugContextInterface } from '../Context'
 import { default as MatButton } from '@material-ui/core/Button'
-import CloseIcon from '@material-ui/icons/Close'
 import errorHandler from '../../../../../utils/errorHandler'
 import { Cancel, ConfirmOrNotExchange, Send } from '../../../../../model/exchange'
 import { useMutation } from 'react-query'
 import PharmacyDrug from '../../../../../services/api/PharmacyDrug'
 import sweetAlert, { confirmSweetAlert } from '../../../../../utils/sweetAlert'
-import Modal from '../../../../public/modal/Modal'
 import ExchangeApprove from './ExchangeApprove'
 import { useTranslation } from 'react-i18next'
 import routes from '../../../../../routes'
 import { useHistory } from 'react-router-dom'
 import { PharmacyInfo } from '../../../../../interfaces/PharmacyInfo'
-import { Map, TextLine } from '../../../../public'
-// import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { Map } from '../../../../public'
 import ExCalculator from './ExCalculator'
 import { theme } from '../../../../../RTL'
 import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons'
@@ -327,7 +320,6 @@ const ActionButtons = (): JSX.Element => {
     } catch (e) {
       errorHandler(e)
     }
-    toggleIsOpenCancelExchangeModalForm(modalType)
   }
 
   const getPharmacyInfo = async (): Promise<any> => {
@@ -466,7 +458,7 @@ const ActionButtons = (): JSX.Element => {
         fullScreen={fullScreen}
         isOpen={isShowPharmacyInfoModal}
         fullWidth={true}
-        onClose={toggleIsShowPharmacyInfoModalForm}
+        onClose={(): void => setIsShowPharmacyInfoModal((v) => !v)}
         hideAll
       >
         <DialogTitle>اطلاعات داروخانه مقابل</DialogTitle>
@@ -512,59 +504,12 @@ const ActionButtons = (): JSX.Element => {
     )
   }
 
-  const exchangeModalRemove = (): JSX.Element => {
-    return (
-      <Modal open={isRemoveExchangeModal} toggle={toggleIsRemoveExchangeModalForm}>
-        <Card>
-          <CardHeader
-            style={{ padding: 0, paddingRight: 10, paddingLeft: 10 }}
-            title="حذف تبادل"
-            titleTypographyProps={{ variant: 'h6' }}
-            action={
-              <IconButton
-                style={{ marginTop: 10 }}
-                aria-label="settings"
-                onClick={toggleIsRemoveExchangeModalForm}
-              >
-                <CloseIcon />
-              </IconButton>
-            }
-          />
-          <Divider />
-          <CardContent>
-            <Grid container spacing={1}>
-              <div>
-                <span>آیا از حذف تبادل اطمینان دارید؟</span>
-              </div>
-            </Grid>
-          </CardContent>
-          <CardActions>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <MatButton
-                  onClick={async (): Promise<any> => await handleRemoveExchange()}
-                  variant="contained"
-                  color="primary"
-                  autoFocus
-                >
-                  بله
-                </MatButton>
-              </Grid>
-              <Grid item xs={6} style={{ textAlign: 'left' }}>
-                <MatButton
-                  onClick={toggleIsRemoveExchangeModalForm}
-                  variant="contained"
-                  color="secondary"
-                  autoFocus
-                >
-                  خیر
-                </MatButton>
-              </Grid>
-            </Grid>
-          </CardActions>
-        </Card>
-      </Modal>
-    )
+  const exchangeRemove = async (): Promise<any> => {
+    const confirmRemoveExchange = await confirmSweetAlert(t('alert.removeExchange'))
+    if (confirmRemoveExchange) {
+      await handleRemoveExchange()
+      return
+    }
   }
 
   const syrveyQuestion = (question: Question): JSX.Element => {
@@ -1037,7 +982,7 @@ const ActionButtons = (): JSX.Element => {
         نظرسنجی
       </Button> */}
       {isOpenCancelExchangeModal && exchangeModalApproveCancel(modalType)}
-      {isRemoveExchangeModal && exchangeModalRemove()}
+      {isRemoveExchangeModal && exchangeRemove()}
       {showApproveModalForm && <ExchangeApprove />}
       {isShowPharmacyInfoModal && <ShowPharmacyInfo />}
       {openApproveModal && <ShowApproveModal />}

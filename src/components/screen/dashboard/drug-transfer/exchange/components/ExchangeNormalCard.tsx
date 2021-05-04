@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   createStyles,
   CheckboxProps,
@@ -16,7 +17,6 @@ import Utils from 'components/public/utility/Utils';
 import { ColorEnum } from 'enum';
 import { AllPharmacyDrugInterface } from 'interfaces';
 
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import drug from '../../../../../../assets/images/drug.png';
 
@@ -34,9 +34,6 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
   const {
     pharmacyDrug,
     totalAmount,
-    activeStep,
-    basketCount,
-    uBasketCount,
     lockedAction,
     handleChange,
     counterButtonFunc,
@@ -161,9 +158,7 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
           <Grid item xs={1} className={checkBoxContainer}>
             <GreenCheckbox
               checked={
-                activeStep === 1
-                  ? basketCount.findIndex((x) => x.id == pharmacyDrug?.id) !== -1
-                  : uBasketCount.findIndex((x) => x.id == pharmacyDrug?.id) !== -1
+                pharmacyDrug?.checked
               }
               onChange={handleChange}
               name={pharmacyDrug?.id.toString()}
@@ -189,8 +184,8 @@ const ExchangeNormalCard: React.FC<Props> = (props) => {
           <Grid item xs={12}>
             <TextWithTitle
               title="انقضا"
-              body={Utils.getExpireDate(pharmacyDrug?.expireDate)}
-              dateSuffix={Utils.getExpireDays(pharmacyDrug?.expireDate)}
+              body={pharmacyDrug?.expireTarikh}
+              dateSuffix={pharmacyDrug?.expireDays}
               // showDateSuffix = {!isSmallDevice}
             />
           </Grid>

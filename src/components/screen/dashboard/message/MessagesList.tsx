@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Paper,
   Grid,
@@ -102,17 +102,21 @@ const MessagesList: React.FC = () => {
     toggleIsOpenModal();
   };
 
+  const memoDataTable = useMemo(() => (
+    <DataTable
+      urlAddress={UrlAddress.getAllMessage}
+      addAction={addNewMessage}
+      columns={tableColumns()}
+      onRowClick={(event: any, rowData: any): Promise<void> => onRowClickHandler(rowData)}
+    />
+  ), []);
+
   return (
     <FormContainer title={t('message.messagesList')}>
       <Grid container spacing={1}>
         <Grid item xs={12}>
           <Paper>
-            <DataTable
-              urlAddress={UrlAddress.getAllMessage}
-              addAction={addNewMessage}
-              columns={tableColumns()}
-              onRowClick={(event: any, rowData: any): Promise<void> => onRowClickHandler(rowData)}
-            />
+            {memoDataTable}
           </Paper>
         </Grid>
       </Grid>
