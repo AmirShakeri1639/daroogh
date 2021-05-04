@@ -105,12 +105,12 @@
           return JSON.parse(jsonPayload)
         }
         var token = parseToken(localStorage.getItem('mainToken'))
-        var userId = token['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ?? ''
-        var roles = token['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? ''
+        var userId = token['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || null
+        var roles = token['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || null
         var mainPharmacy = localStorage.getItem('mainPharmacyName') || null // Replace your_user_id with your own if available.
         window.hj('identify', userId, {
           'version': version,
-          'mainPharmacy': mainPharmacyName,
+          'mainPharmacy': mainPharmacy,
           'name': user.name,
           'family': user.family,
           'gender': user.gender,
