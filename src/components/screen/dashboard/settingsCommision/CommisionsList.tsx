@@ -95,9 +95,10 @@ const CommisionsList: React.FC = () => {
 
   const [_remove, { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
+      tSuccess(t('alert.successfulDelete'))
       ref.current?.loadItems()
       await queryCache.invalidateQueries('commisionsList')
-      tSuccess(t('alert.successfulDelete'))
+      
     },
   })
 

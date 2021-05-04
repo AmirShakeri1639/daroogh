@@ -124,7 +124,8 @@ const {
   surveyList,
   fda_exchangeList,
   aPharmacyDocs,
-} = routes;
+  commisionSettingsList,
+} = routes
 
 /**
  * Detect hash string in url has item or not
@@ -358,6 +359,18 @@ const ListItems: React.FC = () => {
             text: t('settingsAi.settingsAi'),
             selected: isOpenPageOfThisGroup('settingsAi'),
             link: settingsAi,
+            props: {
+              icon: faCog,
+              size: 'lg',
+            },
+          })}
+        </List>
+        <List component="div" className={linkWrapper}>
+          {getListItem({
+            Icon: FontAwesomeIcon,
+            text: t('commision.settingsCommisions'),
+            selected: isOpenPageOfThisGroup('settingsCommisions'),
+            link: commisionSettingsList,
             props: {
               icon: faCog,
               size: 'lg',
