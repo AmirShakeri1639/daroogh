@@ -2,10 +2,10 @@ import { debounce } from "lodash";
 import { useEffect } from "react";
 import { QueryCache } from "react-query";
 
-const useScrollRestoration = (el: HTMLElement | Window, queryKey: string, setter: (val: any) => void, cache?: QueryCache): void => {
+const useScrollRestoration = (pixelsBeforeEnd: number , el: HTMLElement | Window, queryKey: string, setter: (val: any) => void, cache?: QueryCache): void => {
   const func = (e: any): void => {
     const el = e.target;
-    const pixelsBeforeEnd = 200;
+    pixelsBeforeEnd = pixelsBeforeEnd === 0 ? 200: pixelsBeforeEnd;
     if (el.scrollHeight - el.scrollTop - pixelsBeforeEnd <= el.clientHeight) {
       setter((v: any) => v + 1);
       cache?.invalidateQueries(queryKey);

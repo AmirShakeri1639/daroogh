@@ -25,6 +25,7 @@ import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoadi
 import ExchangeNormalCard from './components/ExchangeNormalCard';
 import ExchangePackCard from './components/ExchangePackCard';
 import ExchangePackDetail from './components/ExchangePackDetail';
+import Repeatable from 'components/public/button/ClickNHold';
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -591,6 +592,21 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
 
   const [autoFocus, setAutoFocus] = React.useState<boolean>(false);
 
+  const [interval, setInterVal] = React.useState<any>();
+
+  function down(type: string) {
+    if (type === '+') {
+      counterHandle('+')
+    } else {
+      counterHandle('-')
+    }
+    setInterVal(setInterval(() => type === '+' ? counterHandle('+') : counterHandle('-'), 100));
+  }
+
+  function up() {
+    clearInterval(interval);
+  }
+
   const counterButtonFunc = (): JSX.Element =>
     pharmacyDrug?.buttonName === 'افزودن به تبادل' ? (
       <div key={pharmacyDrug.id}>
@@ -598,7 +614,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           size="small"
           variant="outlined"
           className={`${counterButton} ${counterButtonRight}`}
-          onClick={(): void => counterHandle('+')}
+          onMouseDown={(): void => down('+')}
+          onMouseUp={(): void => up()}
         >
           <AddIcon />
         </Button>
@@ -611,19 +628,8 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           defaultValue={pharmacyDrug.currentCnt}
           autoFocus={autoFocus}
           onChange={(e: any): void => {
-            // if (pharmacyDrug.cnt > +e.target.value && +e.target.value >= 1) {
             pharmacyDrug.currentCnt = +e.target.value;
             handleTotalAmount();
-            // } else {
-            //   pharmacyDrug.currentCnt = pharmacyDrug.cnt;
-            //   setDrugInfo({
-            //     ...pharmacyDrug,
-            //     currentCnt: pharmacyDrug.cnt,
-            //   });
-            //   handleTotalAmount();
-            //   alert('مقدار وارد شده نباید کوچکتر از یک و بزرگتر از موجودی باشد')
-            //   setAutoFocus(true);
-            // }
           }}
         >
           {pharmacyDrug.currentCnt}
@@ -632,7 +638,10 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           size="small"
           variant="outlined"
           className={`${counterButton} ${counterButtonLeft}`}
-          onClick={(): void => counterHandle('-')}
+          onMouseDown={(e: any): void => down('-')}
+          onMouseUp={(): void => up()}
+          onTouchStart={(e: any): void => setInterVal(setInterval(() => console.log("onTouchStart"), 100))}
+          onTouchEnd={(): void => {clearInterval(interval); console.log("onTouchEnd")}}
         >
           <RemoveIcon />
         </Button>
