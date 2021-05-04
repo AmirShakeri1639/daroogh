@@ -643,7 +643,7 @@ const PharmaciesList: React.FC = () => {
                   draggable={true}
                   maxHeight="200px"
                   hasGeocoder={true}
-                  defaultLatLng={[state.x, state.y]}
+                  defaultLatLng={[state.y, state.x]}
                   onClick={(e: any): void => {
                     dispatch({ type: 'x', value: e.lngLat.lng })
                     dispatch({ type: 'y', value: e.lngLat.lat })
@@ -655,8 +655,8 @@ const PharmaciesList: React.FC = () => {
         </DialogContent>
         <Divider />
         <DialogActions>
-          <Grid container style={{ marginTop: 4, marginBottom: 4 }} xs={12}>
-            <Grid container xs={12}>
+          <Grid container style={{ marginTop: 4, marginBottom: 4 }}>
+            <Grid>
               <Grid item xs={7} sm={8} />
               <Grid item xs={2} sm={2}>
                 <Button
