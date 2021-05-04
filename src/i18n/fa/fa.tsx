@@ -42,6 +42,8 @@ export default {
         save: 'ذخیره',
         edit: 'ویرایش',
         term: 'عبارت',
+        display: 'نمایش',
+        
         displayList: 'نمایش لیست {{var}}',
         options: 'امکانات',
         expireDate: 'تاریخ انقضا',

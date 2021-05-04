@@ -47,7 +47,7 @@ class PharmacyDrug extends Api {
     top: number = 100
   ): Promise<any> => {
     try {
-      let query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
+      const query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
       // query += `&$top=${top}&$skip=${skip * top}`;
       const result = await this.postJsonData(query);
       return result.data;
@@ -284,6 +284,11 @@ class PharmacyDrug extends Api {
 
   getFavoritePharmacyDrug = async (pharmacyKey = ''): Promise<any> => {
     const result = await this.postData(`${this.urls.getFavoritePharmacyDrug}?pharmacyKey=${pharmacyKey}`);
+    return result.data;
+  }
+
+  getRelatedPharmacyDrugByDate = async (count: string | number = '', from?: number): Promise<any> => {
+    const result = await this.postData(`/PharmacyDrug/GetRelatedPharmacyDrugByDate?count=${count}&from=${from}`);
     return result.data;
   }
 }
