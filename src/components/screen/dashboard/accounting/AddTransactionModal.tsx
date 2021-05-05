@@ -26,8 +26,8 @@ import { Accounting } from '../../../../services/api';
 import {
   confirmSweetAlert,
   errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
+  tError,
+  tSuccess,
 } from 'utils';
 import { todayJalali } from '../../../../utils/jalali';
 import { useClasses } from '../classes';
@@ -113,7 +113,7 @@ const AddTransactionModal: React.FC<Props> = ({
     },
     onError: async (e) => {
       setDialogOpen(false);
-      await errorSweetAlert(e ? e : t('alert.failed'));
+      tError(e ? e : t('alert.failed'));
       setDialogOpen(true);
       errorHandler(e);
     },
@@ -139,7 +139,7 @@ const AddTransactionModal: React.FC<Props> = ({
 
         if (result !== undefined) {
           setDialogOpen(false);
-          await successSweetAlert(result.message);
+          tSuccess(result.message);
           if (onClose) onClose();
         }
       }

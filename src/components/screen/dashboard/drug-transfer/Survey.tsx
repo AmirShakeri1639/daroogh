@@ -27,7 +27,7 @@ import {
   Question,
   QuestionOptions,
 } from 'interfaces/GetQuestionGroupOfExchangeInterface';
-import { errorHandler, sweetAlert } from 'utils';
+import { errorHandler, tSuccess } from 'utils';
 import { useMutation } from 'react-query';
 import routes from 'routes';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -141,10 +141,7 @@ const Survey: React.FC<Props> = (props) => {
   const [_saveSurvey, { isLoading: isLoadingSaveSurvey }] = useMutation(saveSurvey, {
     onSuccess: async (res: any) => {
       if (res) {
-        await sweetAlert({
-          type: 'success',
-          text: res.message,
-        });
+        tSuccess(res.message);
         if (redirect) history.push(desktop);
       }
     },

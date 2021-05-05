@@ -32,7 +32,7 @@ import {
 } from '../../../../../services/api';
 import { MaterialContainer, Modal } from '../../../../public';
 import DatePicker, { DateObject } from 'react-multi-date-picker';
-import { errorHandler, successSweetAlert, tError } from '../../../../../utils';
+import { errorHandler, tSuccess, tError } from '../../../../../utils';
 import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CardContainer from './CardContainer';
@@ -357,7 +357,7 @@ const EmploymentApplication: React.FC = () => {
         toggleIsOpenModal();
       }
 
-      await successSweetAlert(message);
+      tSuccess(message);
     },
   });
   const [_cancel, { isLoading: isLoadingCancelData }] = useMutation(cancel, {
@@ -367,7 +367,7 @@ const EmploymentApplication: React.FC = () => {
         toggleIsOpenModal();
       }
 
-      await successSweetAlert(message);
+      tSuccess(message);
     },
   });
 

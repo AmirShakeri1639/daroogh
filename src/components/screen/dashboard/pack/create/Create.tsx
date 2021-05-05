@@ -41,7 +41,7 @@ import CardContainer from './CardContainer'
 import { useEffectOnce } from '../../../../../hooks'
 import { 
   errorHandler, Convertor, jalali, 
-  warningSweetAlert, confirmSweetAlert 
+  tWarn, confirmSweetAlert 
 } from 'utils'
 import { utils } from 'react-modern-calendar-datepicker'
 import moment from 'jalali-moment'
@@ -448,7 +448,7 @@ const Create: React.FC = () => {
 
   const toggleIsOpenModal = (): void => {
     if (selectedCategory.length === 0) {
-      warningSweetAlert(t('alerts.SelectCategoryAlert'))
+      tWarn(t('alerts.SelectCategoryAlert'))
     } else {
       if (isOpenModal) {
         resetValues()
