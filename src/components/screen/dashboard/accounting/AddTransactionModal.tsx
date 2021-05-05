@@ -113,7 +113,7 @@ const AddTransactionModal: React.FC<Props> = ({
     },
     onError: async (e) => {
       setDialogOpen(false);
-      tError(e ? e : t('alert.failed'));
+      tError(e ? "" + e : t('alert.failed'));
       setDialogOpen(true);
       errorHandler(e);
     },
