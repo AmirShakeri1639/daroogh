@@ -16,7 +16,7 @@ class Commision extends Api {
       var $queryString =
         this.urls.save +
         `?commissionPercent=${data.commissionPercent}&id=${data.id}&remainedExpirationDays=${data.remainedExpirationDays}`;
-      const result = await this.postJsonData(this.urls.save, data);
+      const result = await this.postFormData(this.urls.save, data);
       return result.data;
     } catch (e) {
       errorHandler(e);
