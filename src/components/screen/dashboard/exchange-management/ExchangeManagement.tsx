@@ -170,7 +170,7 @@ const ExchangeManagement: React.FC = () => {
               <Grid item xs={12} sm={6}>
                 <span>آدرس : </span>
                 <span style={{ fontWeight: 'bold' }}>
-                {`${pharmacyInfoState?.data.pharmacyProvince} ${pharmacyInfoState?.data.address}`}
+                  {`${pharmacyInfoState?.data.pharmacyProvince} ${pharmacyInfoState?.data.address}`}
                 </span>
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -197,10 +197,10 @@ const ExchangeManagement: React.FC = () => {
                         ]}
                       />
                     ) : (
-                        <span style={{ color: 'red' }}>
-                          مختصات جغرافیایی این داروخانه ثبت نشده است
-                        </span>
-                      )}
+                      <span style={{ color: 'red' }}>
+                        مختصات جغرافیایی این داروخانه ثبت نشده است
+                      </span>
+                    )}
                   </CardContent>
                 </Card>
               </Grid>
@@ -393,6 +393,18 @@ const ExchangeManagement: React.FC = () => {
     ];
   };
 
+  const memoDataTable = React.useMemo(() => (
+    <DataTable
+      // ref={ref}
+      columns={getColumns()}
+      queryKey={ExchangeEnum.GET_ALL_EXCHANGE}
+      queryCallback={getAllExchange}
+      urlAddress={UrlAddress.getAllExchange}
+      detailPanel={(row: any): any => detailPanel(row)}
+      customActions={actions}
+      initLoad={false}
+    />), [])
+
   return (
     <Container maxWidth="lg" className={container}>
       <Grid container spacing={0}>
@@ -400,16 +412,7 @@ const ExchangeManagement: React.FC = () => {
           <div style={{ backgroundColor: 'white' }}>لیست تبادلات</div>
           <hr />
           <Paper style={{ height: 500 }}>
-            <DataTable
-              // ref={ref}
-              columns={getColumns()}
-              queryKey={ExchangeEnum.GET_ALL_EXCHANGE}
-              queryCallback={getAllExchange}
-              urlAddress={UrlAddress.getAllExchange}
-              detailPanel={(row: any): any => detailPanel(row)}
-              customActions={actions}
-              initLoad={false}
-            />
+            {memoDataTable}
           </Paper>
         </Grid>
       </Grid>
