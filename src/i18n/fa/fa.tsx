@@ -566,6 +566,8 @@ export default {
         SurplusDrugsForm: 'گزارش داروهای مازاد',
         FavoriteDrugsForm: 'گزارش داروهای مورد علاقه داروخانه‌ها',
         SelectedDrugsForm: 'گزارش داروهای انتخاب شده در تبادل',
+        loginCount: 'گزارش تعداد لاگین‌ها',
+        loginCountTitle: 'تعداد لاگین‌ها',
       },
       countryDivision: {
         province: 'استان',

@@ -5,6 +5,7 @@ import {
   ConfirmParams,
   PharmacyWithUserInterface,
   RreportSearch,
+  LoginCountReportInterface,
 } from '../../interfaces'
 
 class Reports extends Api {
@@ -18,6 +19,7 @@ class Reports extends Api {
     getWidgetInfo: '/Reports/GetWidgetInfo',
     getAddedValueOfPharmacy: '/Reports/GetAddedValueOfPharmacy',
     getAddedValue: '/Reports/GetAddedValue',
+    getLoginCount: '/Reports/GetLoginCount',
   }
 
   getWidgetInfo = async (): Promise<any> => {
@@ -121,6 +123,7 @@ class Reports extends Api {
       return Promise.reject(e)
     }
   }
+  
   getSelectedDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
     try {
       const result = await this.getData(
@@ -136,6 +139,23 @@ class Reports extends Api {
       return Promise.reject(e)
     }
   }
+
+  getLoginCount = async (params: LoginCountReportInterface): Promise<any> => {
+    const {
+      fromDate,
+      toDate = null,
+      geoCode = null,
+      pharmacyID = null
+    } = params
+    const url = this.urls.getLoginCount +
+      `?fromDate=${fromDate}` +
+      (toDate ? `&toDate=${toDate}` : '') +
+      (geoCode ? `&geoCode=${geoCode}` : '') +
+      (pharmacyID ? `&pharmacyID=${pharmacyID}` : '')
+    const result = await this.getData(url)
+    return result.data
+  }
+
 }
 
 export default Reports

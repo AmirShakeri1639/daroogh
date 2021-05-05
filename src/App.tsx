@@ -109,6 +109,7 @@ const SettingsAiForm = lazy(() => import('./components/screen/dashboard/settings
 const FavoriteDrugsForm = lazy(() => import('./components/screen/dashboard/reports/FavoriteDrugs'));
 const SelectedDrugsForm = lazy(() => import('./components/screen/dashboard/reports/SelectedDrugs'));
 const SurplusDrugsForm = lazy(() => import('./components/screen/dashboard/reports/SurplusDrugs'));
+const LoginCountReport = lazy(() => import('./components/screen/dashboard/reports/LoginCountReport'))
 
 const Job = lazy(() => import('./components/screen/dashboard/job/Job'));
 
@@ -172,6 +173,7 @@ const {
   fda_exchangeList,
   survey,
   error401,
+  loginCountReport,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -375,6 +377,9 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={selectedDrugs}>
               <Dashboard component={<SelectedDrugsForm />} />
             </PrivateRoute>
+            <PrivateRoute exact path={loginCountReport}>
+              <Dashboard component={<LoginCountReport />} />
+            </PrivateRoute>
 
             <PrivateRoute path={jobsList}>
               <Dashboard component={<Job />} />
@@ -392,6 +397,7 @@ const App = (): JSX.Element => {
             <PrivateRoute exact path={fda_exchangeList}>
               <Dashboard component={<FDA_exchangeList />} />
             </PrivateRoute>
+
             <PrivateRoute exact path={error401}>
               <Error401 />
             </PrivateRoute>
