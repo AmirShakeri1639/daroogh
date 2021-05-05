@@ -1,12 +1,5 @@
 import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPills,
-  faBoxes,
-  faMoneyBillWave,
-} from '@fortawesome/free-solid-svg-icons';
-import { TextLine } from '../../../public';
 import { useTranslation } from 'react-i18next';
 import { Convertor } from '../../../../utils';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
@@ -76,14 +69,13 @@ const Detail: React.FC<DetailProps> = (props) => {
                 <Grid container style={{ padding: '8px' }}>
                   <Grid item xs={12}>
                     <TextWithTitle
+                      title="تعداد اقلام"
+                      body={thousandsSeperator(drugsCounter)}
+                    />
+                    <TextWithTitle
                       title={t('exchange.basketTotalPrice')}
                       body={thousandsSeperator(totalPrice)}
                       suffix={t('general.defaultCurrency')}
-                    />
-
-                    <TextWithTitle
-                      title="تعداد اقلام"
-                      body={thousandsSeperator(drugsCounter)}
                     />
                   </Grid>
                 </Grid>

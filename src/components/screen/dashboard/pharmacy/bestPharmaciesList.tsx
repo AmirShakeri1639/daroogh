@@ -1,5 +1,5 @@
-import React from 'react';
-import Reports from '../../../../services/api/Reports';
+import React from 'react'
+import Reports from '../../../../services/api/Reports'
 import {
   Container,
   Grid,
@@ -10,31 +10,30 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from '@material-ui/core';
-import { useTranslation } from 'react-i18next';
-import { useClasses } from '../classes';
-import useDataTableRef from '../../../../hooks/useDataTableRef';
-import { TableColumnInterface } from '../../../../interfaces';
-import { useQuery } from 'react-query';
-import { Rating } from '@material-ui/lab';
-const { getBestPharmaciesList } = new Reports();
+} from '@material-ui/core'
+import { useTranslation } from 'react-i18next'
+import { useClasses } from '../classes'
+import useDataTableRef from '../../../../hooks/useDataTableRef'
+import { TableColumnInterface } from '../../../../interfaces'
+import { useQuery } from 'react-query'
+import { Rating } from '@material-ui/lab'
+const { getBestPharmaciesList } = new Reports()
 
 const BestPharmaciesList: React.FC<{ for24Hour: boolean }> = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  const { container, table } = useClasses();
-  const { data } = useQuery('getBestPharmaciesList' + props.for24Hour, () => {
-    return getBestPharmaciesList(props.for24Hour);
-  });
+  const { container, table } = useClasses()
+  const { data } = useQuery(
+    'getBestPharmaciesList' + props.for24Hour,
+    () => {
+      return getBestPharmaciesList(props.for24Hour)
+    },
+    { cacheTime: 0 }
+  )
 
   return (
     <TableContainer component={Paper}>
-      <Table
-        stickyHeader
-        className={table}
-        size="small"
-        aria-label="sticky table"
-      >
+      <Table stickyHeader className={table} size="small" aria-label="sticky table">
         <TableHead>
           <TableRow>
             <TableCell>نام</TableCell>
@@ -50,12 +49,7 @@ const BestPharmaciesList: React.FC<{ for24Hour: boolean }> = (props) => {
             data.items &&
             data.items.length &&
             data.items.map((entry: any, index: number) => (
-              <TableRow
-                hover
-                tabIndex={-1}
-                key={entry.name}
-                selected={entry.isMyself}
-              >
+              <TableRow hover tabIndex={-1} key={entry.name} selected={entry.isMyself}>
                 <TableCell>{entry.name}</TableCell>
                 <TableCell>{entry.rank}</TableCell>
                 <TableCell>{entry.finalScore.toFixed(2)}</TableCell>
@@ -74,7 +68,7 @@ const BestPharmaciesList: React.FC<{ for24Hour: boolean }> = (props) => {
         </TableBody>
       </Table>
     </TableContainer>
-  );
-};
+  )
+}
 
-export default BestPharmaciesList;
+export default BestPharmaciesList
