@@ -697,7 +697,7 @@ const SupplyList: React.FC = () => {
                       background: 'green',
                       textAlign: 'center',
                     }}
-                  >{`پورسانت: ${comissionPercent}%`}</span>
+                  >{`${t('general.daroogComission')}: ${comissionPercent}%`}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />
