@@ -120,6 +120,7 @@ const SurveyComponent = lazy(
   () => import('./components/screen/dashboard/pharmacy/survey/SurveyComponent')
 );
 const APharmacyDocs = lazy(() => import('./components/screen/dashboard/pharmacy/docs/docs'));
+const CommisionsList = lazy(() => import('./components/screen/dashboard/settingsCommision/CommisionsList'));
 
 const Error404 = lazy(() => import('./components/screen/public/404'));
 const Error401 = lazy(() => import('./components/screen/public/401'));
@@ -174,6 +175,7 @@ const {
   survey,
   error401,
   loginCountReport,
+  commisionSettingsList,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -393,7 +395,9 @@ const App = (): JSX.Element => {
             <PrivateRoute path={aPharmacyDocs}>
               <Dashboard component={<APharmacyDocs />} />
             </PrivateRoute>
-
+            <PrivateRoute path={commisionSettingsList}>
+              <Dashboard component={<CommisionsList />} />
+            </PrivateRoute>
             <PrivateRoute exact path={fda_exchangeList}>
               <Dashboard component={<FDA_exchangeList />} />
             </PrivateRoute>

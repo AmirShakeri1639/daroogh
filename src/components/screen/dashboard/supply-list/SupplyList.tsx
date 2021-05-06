@@ -303,6 +303,14 @@ const SupplyList: React.FC = () => {
       return allPharmacyDrug('asc', 'expireDate');
     }
 
+    if (selectedFilterItem === FilterItems.NEAREST_REGISTER_DATE) {
+      return allPharmacyDrug('desc', 'date');
+    }
+
+    if (selectedFilterItem === FilterItems.FARTHEST_REGISTER_DATE) {
+      return allPharmacyDrug('asc', 'date');
+    }
+
     return allPharmacyDrug('desc', 'expireDate');
   };
 
@@ -571,7 +579,16 @@ const SupplyList: React.FC = () => {
       value: FilterItems.FARTHEST_EXPIRE_DATE,
       text: `${t('general.farthest')} ${t('general.expireDate')}`,
     },
+    {
+      value: FilterItems.NEAREST_REGISTER_DATE,
+      text: `${t('general.nearest')} ${t('date.registerDate')}`,
+    },
+    {
+      value: FilterItems.FARTHEST_REGISTER_DATE,
+      text: `${t('general.farthest')} ${t('date.registerDate')}`,
+    },    
   ];
+
   return (
     <>
       <Container>
@@ -697,7 +714,7 @@ const SupplyList: React.FC = () => {
                       background: 'green',
                       textAlign: 'center',
                     }}
-                  >{`پورسانت: ${comissionPercent}%`}</span>
+                  >{`${t('general.daroogComission')}: ${comissionPercent}%`}</span>
                 </Grid>
                 <Grid item xs={12}>
                   <Divider />

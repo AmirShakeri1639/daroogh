@@ -79,20 +79,22 @@ const SearchControl: React.FC<Props> = (props) => {
         <Autocomplete
           id="search"
           size="small"
-          style={{ width: 200, backgroundColor: 'white' }}
+          noOptionsText={'موردی یافت نشد'}
+          style={{ width: 400, backgroundColor: 'white', fontSize: '8px' }}
           options={options as OptionType[]}
           classes={{
             option: classes.option,
           }}
           autoHighlight
           onChange={(event: object, value: OptionType | null, reason: string) => {
-            debugger
             if (reason == 'select-option') if (props.onSelect) props.onSelect(value?.location)
           }}
           getOptionLabel={(option) => option.title}
           renderOption={(option) => (
             <React.Fragment>
-              <span>{option.title}</span>
+              <span>
+                {option.title} {option.region ? `(${option.region})` : ''}
+              </span>
             </React.Fragment>
           )}
           renderInput={(params) => (

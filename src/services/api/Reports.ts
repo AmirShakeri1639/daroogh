@@ -7,6 +7,7 @@ import {
   RreportSearch,
   LoginCountReportInterface,
 } from '../../interfaces'
+import moment from 'jalali-moment';
 
 class Reports extends Api {
   readonly urls = {
@@ -58,12 +59,16 @@ class Reports extends Api {
   }
   getAddedValueOfPharmacy = async (): Promise<any> => {
     try {
+      const now = moment(new Date(),'YYYY-MM-DD').format('YYYY-MM-DD');
+      // const result = await this.getData(
+      //   `${this.urls.getAddedValueOfPharmacy}?fromDate=${new Intl.DateTimeFormat(undefined, {
+      //     year: 'numeric',
+      //     day: '2-digit',
+      //     month: '2-digit',
+      //   }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
+      // );
       const result = await this.getData(
-        `${this.urls.getAddedValueOfPharmacy}?fromDate=${new Intl.DateTimeFormat(undefined, {
-          year: 'numeric',
-          day: '2-digit',
-          month: '2-digit',
-        }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
+        `${this.urls.getAddedValueOfPharmacy}?fromDate=${now}`
       );
       return result?.data;
     } catch (e) {
@@ -73,12 +78,9 @@ class Reports extends Api {
   }
   getAddedValue = async (): Promise<any> => {
     try {
+      const now = moment(new Date(),'YYYY-MM-DD').format('YYYY-MM-DD');
       const result = await this.getData(
-        `${this.urls.getAddedValue}?fromDate=${new Intl.DateTimeFormat(undefined, {
-          year: 'numeric',
-          day: '2-digit',
-          month: '2-digit',
-        }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
+        `${this.urls.getAddedValue}?fromDate=${now}`
       );
       return result?.data;
     } catch (e) {
