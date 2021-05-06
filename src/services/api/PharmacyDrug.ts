@@ -176,7 +176,7 @@ class PharmacyDrug extends Api {
 
   allPharmacyDrug = async (
     order: 'asc' | 'desc' = 'asc',
-    orderBy: 'expireDate' | 'cnt' = 'expireDate',
+    orderBy: 'expireDate' | 'date' | 'cnt' = 'expireDate',
     isFull = true,
     pharmacyKey: string = '',
   ): Promise<any> => {
