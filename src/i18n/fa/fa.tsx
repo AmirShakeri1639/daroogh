@@ -140,7 +140,8 @@ export default {
         nearest: 'نزدیکترین',
         farthest: 'دورترین',
         primitive: 'اولیه',
-        nextMessage: 'پیام بعدی'
+        nextMessage: 'پیام بعدی',
+        daroogComission: 'پورسانت داروگ'
       },
 
       pack: {
