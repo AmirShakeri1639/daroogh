@@ -34,6 +34,7 @@ import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import InboxIcon from '@material-ui/icons/Inbox';
 import ReceiptIcon from '@material-ui/icons/Receipt';
+import SettingsIcon from '@material-ui/icons/Settings';
 import { GetValuesOfEnum, PharmacyRoleEnum, RolesEnum } from '../../../../enum';
 import MessageIcon from '@material-ui/icons/Message';
 import CategoryIcon from '@material-ui/icons/Category';
@@ -161,13 +162,14 @@ const ListItems: React.FC = () => {
   const [isOpenExchange, setIsOpenExchange] = useState<boolean>(true);
   const [isOpenAccounting, setIsOpenAccounting] = useState<boolean>(false);
   const [isOpenReports, setIsOpenReports] = useState<boolean>(false);
+  const [isOpenSettings, setIsOpenSettings] = useState<boolean>(false);
 
-  const { 
-    nested, 
-    linkWrapper, 
-    notNested, 
+  const {
+    nested,
+    linkWrapper,
+    notNested,
     menuContainer,
-    exchangeMenu, 
+    exchangeMenu,
   } = useStyles();
   const { t } = useTranslation();
 
@@ -339,45 +341,44 @@ const ListItems: React.FC = () => {
             link: exchangeManagementList,
           })}
         </List>
+        <ListItem
+          button
+          className={linkWrapper}
+          onClick={(): void => setIsOpenSettings((val) => !val)}
+        >
+          <ListItemIcon>
+            <SettingsIcon />
+          </ListItemIcon>
+          <ListItemText primary={t('settings.settings')} />
+          {isOpenSettings ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={isOpenSettings} timeout="auto" unmountOnExit>
+          <List component="div" className={linkWrapper}>
 
-        <List component="div" className={linkWrapper}>
-          {getListItem({
-            Icon: FontAwesomeIcon,
-            text: t('settings.settings'),
-            selected: isOpenPageOfThisGroup('site-settings'),
-            link: settings,
-            props: {
-              icon: faCog,
-              size: 'lg',
-            },
-          })}
-        </List>
-
-        <List component="div" className={linkWrapper}>
-          {getListItem({
-            Icon: FontAwesomeIcon,
-            text: t('settingsAi.settingsAi'),
-            selected: isOpenPageOfThisGroup('settingsAi'),
-            link: settingsAi,
-            props: {
-              icon: faCog,
-              size: 'lg',
-            },
-          })}
-        </List>
-        <List component="div" className={linkWrapper}>
-          {getListItem({
-            Icon: FontAwesomeIcon,
-            text: t('commision.settingsCommisions'),
-            selected: isOpenPageOfThisGroup('settingsCommisions'),
-            link: commisionSettingsList,
-            props: {
-              icon: faCog,
-              size: 'lg',
-            },
-          })}
-        </List>
-
+            <Link to={settings} className={nested}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('settings.general')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={settingsAi} className={nested}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('settingsAi.settingsAi')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={commisionSettingsList} className={nested}>
+              <ListItemIcon>
+                <SettingsIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('commision.settingsCommisions')} />
+            </Link>
+          </List>
+        </Collapse>
         <ListItem
           button
           className={linkWrapper}

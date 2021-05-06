@@ -612,7 +612,7 @@ export default {
       },
       settings: {
         settings: 'تنظیمات',
-
+        general: 'تنظیمات عمومی',
         password: 'کلمه عبور',
         currentPassword: 'کلمه عبور فعلی',
         repeatPassword: 'تکرار کلمه عبور {{var}}',
