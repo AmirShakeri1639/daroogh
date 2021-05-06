@@ -62,7 +62,6 @@ const SearchControl: React.FC<Props> = (props) => {
     )
       .then((response) => response.json())
       .then((data) => {
-        debugger
         setoptions(data.items)
       })
   }
