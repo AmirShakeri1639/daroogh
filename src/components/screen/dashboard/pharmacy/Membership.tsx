@@ -26,8 +26,8 @@ import {
 import { MembershipRequest } from '../../../../services/api';
 import {
   errorHandler,
-  successSweetAlert,
-  warningSweetAlert,
+  tSuccess,
+  tWarn,
 } from '../../../../utils';
 import { useClasses } from '../classes';
 import Modal from '../../../public/modal/Modal';
@@ -129,7 +129,7 @@ const Membership: React.FC = () => {
         setShowError(false);
       }
       await queryCache.invalidateQueries('membershipRequestsList');
-      await successSweetAlert(result.message);
+      tSuccess(result.message);
       dispatch({ type: 'reset' });
     },
   });
@@ -166,7 +166,7 @@ const Membership: React.FC = () => {
         errorHandler(e);
       }
     } else {
-      await warningSweetAlert(t('alert.fillFormCarefully'));
+      tWarn(t('alert.fillFormCarefully'));
       setShowError(true);
     }
   };

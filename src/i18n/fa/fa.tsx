@@ -613,7 +613,7 @@ export default {
       },
       settings: {
         settings: 'تنظیمات',
-
+        general: 'تنظیمات عمومی',
         password: 'کلمه عبور',
         currentPassword: 'کلمه عبور فعلی',
         repeatPassword: 'تکرار کلمه عبور {{var}}',
@@ -861,7 +861,13 @@ export default {
         jobPositionStr: 'موقعیت شغلی مورد نیاز',
         educationStr: 'حداقل سطح تحصیلات',
 
-      }
+      },
+      commision: {
+        settingsCommisions: 'تنظیمات پورسانت ها',
+        list: 'لیست پورسانت ها',
+        remainedExpirationDays: 'روزهای باقیمانده تا انقضا',
+        commissionPercent: 'درصد پورسانت',
+      },
     },
   },
 };

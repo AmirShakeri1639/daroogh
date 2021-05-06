@@ -8,6 +8,9 @@ import { CountryDivision } from 'services/api';
 import DataTable from 'components/public/datatable/DataTable';
 import { DataTableColumns } from 'interfaces/DataTableColumns';
 import useDataTableRef from 'hooks/useDataTableRef';
+import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ColorEnum } from 'enum';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -116,11 +119,29 @@ const getColumns = (): DataTableColumns[] => {
       cellStyle: { textAlign: 'right' },
     },
     {
+      title: ' فعال',
+      field: 'isActive',
+      type: 'boolean',
+      width: '90px',
+      render: (row: any): any => {
+        return (
+          <span style={{ color: row.isActive ? ColorEnum.Green : ColorEnum.Red }}>
+            <FontAwesomeIcon icon={row.isActive ? faCheck : faTimes} />
+          </span>
+        );
+      },
+      fieldLookup: 'isActive',
+      lookupFilter: [
+        { code: 0, name: 'غیرفعال' },
+        { code: 1, name: 'فعال' },
+      ],
+    },
+    {
       title: 'امتیاز کلی',
       field: 'finalScore',
       type: 'string',
       headerStyle: { minWidth: 150 },
-      cellStyle: { textAlign: 'right' },
+      cellStyle: { textAlign: 'right', direction: 'ltr' },
     },
     {
       title: 'حداقل قیمت عرضه شده',
@@ -216,7 +237,7 @@ const FavoriteDrugsForm: React.FC = () => {
         .format('YYYY/MM/DD')}&toDate=${state.toDate
         .convert('gregorian')
         .setLocale('en')
-        .format('YYYY/MM/DD')}&geoCode=${state.geoCode}`
+        .format('YYYY/MM/DD')}&geoCode=${state.geoCode == '*' ? '' : state.geoCode}`
     );
   };
 
