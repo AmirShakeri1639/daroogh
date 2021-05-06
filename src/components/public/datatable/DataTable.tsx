@@ -348,6 +348,13 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     </Dialog>
   )
 
+  const TOOLBAR_ID = "toolbar__unique__id";
+  useEffect(() => {
+    const searchBar: any = document.querySelector(`#${TOOLBAR_ID} input`);
+    if (!searchBar) return;
+    searchBar.focus();
+  });
+
   return (
     <div className={table}>
       <ReportContainer />
@@ -360,14 +367,20 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
             NextPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
           }}
           components={{
-            Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
+            Toolbar: (props: any): JSX.Element => {
+              return (
+                <div id={TOOLBAR_ID}>
+                  <MTableToolbar {...props} />
+                </div>
+              );
+            },
             Pagination: props => (
-              <Grid container style={{marginTop: -5}}>
-                <Grid item xs={12} sm={6} xl={3} style={{display: 'flex', alignItems: 'center'}}>
+              <Grid container style={{ marginTop: -5 }}>
+                <Grid item xs={12} sm={6} xl={3} style={{ display: 'flex', alignItems: 'center' }}>
                   <span>
                     <TablePagination {...props} />
                   </span>
-                  <span style={{marginRight: 20}}>تعداد کل ردیف ها : <span style={{color: 'blue', fontWeight: 'bold'}}>{Utils.numberWithCommas(totalCount)}</span></span>
+                  <span style={{ marginRight: 20 }}>تعداد کل ردیف ها : <span style={{ color: 'blue', fontWeight: 'bold' }}>{Utils.numberWithCommas(totalCount)}</span></span>
                 </Grid>
               </Grid>
             )

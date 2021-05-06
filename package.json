@@ -16,6 +16,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/pickers": "^3.2.10",
+    "@south-paw/react-vector-maps": "^3.1.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -107,9 +108,10 @@
     "xlsx": "^0.16.9"
   },
   "devDependencies": {
-    "@types/leaflet": "^1.5.21",
+    "@types/leaflet": "^1.7.0",
     "@types/mapbox-gl": "^2.0.0",
     "@types/query-string": "^6.3.0",
+    "eslint-config-prettier": "^8.3.0",
     "prettier": "2.2.1",
     "redux-devtools-extension": "^2.13.8",
     "sass": "^1.32.5"
@@ -125,38 +127,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
-  },
-  "eslintConfig": {
-    "extends": [],
-    "rules": {
-      "jsx-a11y/label-has-associated-control": 0,
-      "unused-imports/no-unused-imports": "off",
-      "unused-imports/no-unused-vars-ts": "off",
-      "unused-imports/no-duplicate-case": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-duplicate-case": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/camelcase": "off",
-      "@typescript-eslint/ban-ts-ignore": "off",
-      "@typescript-eslint/no-inferrable-types": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "object-curly-spacing": [
-        2,
-        "always"
-      ],
-      "react/jsx-uses-react": "off",
-      "react/jsx-uses-vars": "off",
-      "indent": [
-        "off",
-        2,
-        {
-          "SwitchCase": 1
-        }
-      ],
-      "jsx-a11y/no-onchange": 0,
-      "react-hooks/rules-of-hooks": "off",
-      "react-hooks/exhaustive-deps": "off"
-    }
   },
   "eslint": {
     "enable": false
