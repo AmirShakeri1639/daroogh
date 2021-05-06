@@ -80,14 +80,54 @@
     ></script> -->
   <!-- Hotjar Tracking Code for tabadol.daroog.com -->
   <script>
-    (function (h, o, t, j, a, r) {
-      h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
-      h._hjSettings = { hjid: 2382705, hjsv: 6 };
-      a = o.getElementsByTagName('head')[0];
-      r = o.createElement('script'); r.async = 1;
-      r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
-      a.appendChild(r);
-    })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+    (function hotjar() {
+      if (!window.location.host.startsWith('tabadol')) return;
+      (function (h, o, t, j, a, r) {
+        h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+        h._hjSettings = { hjid: 2382705, hjsv: 6 };
+        a = o.getElementsByTagName('head')[0];
+        r = o.createElement('script'); r.async = 1;
+        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+        a.appendChild(r);
+      })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+
+      var version = localStorage.getItem('version') || null
+      var user = JSON.parse(localStorage.getItem('user')) || null // Replace your_user_id with your own if available.
+      if (user) {
+        function parseToken(token) {
+          if (!token) return null
+          const base64Url = token.split('.')[1]
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+          }).join(''))
+
+          return JSON.parse(jsonPayload)
+        }
+        var token = parseToken(localStorage.getItem('mainToken'))
+        var userId = token['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] || null
+        var roles = token['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] || null
+        var mainPharmacy = localStorage.getItem('mainPharmacyName') || null // Replace your_user_id with your own if available.
+        window.hj('identify', userId, {
+          'version': version,
+          'mainPharmacy': mainPharmacy,
+          'name': user.name,
+          'family': user.family,
+          'gender': user.gender,
+          'roles': roles,
+          // Add your own custom attributes here. Some EXAMPLES:
+          // 'Signed up': '2019—06-20Z', // Signup date in ISO-8601 format.
+          // 'Last purchase category': 'Electronics', // Send strings with quotes around them.
+          // 'Total purchases': 15, // Send numbers without quotes.
+          // 'Last purchase date': '2019-06-20Z', // Send dates in ISO-8601 format.
+          // 'Last refund date': null, // Send null when no value exists for a user.
+        })
+      } else {
+        window.hj('identify', null, {
+          'version': version
+        })
+      }
+    })();
   </script>
 </head>
 <style>

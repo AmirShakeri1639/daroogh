@@ -28,9 +28,7 @@ const useStyle = makeStyles((theme) =>
       borderRadius: 5,
       position: 'relative',
       overflow: 'hidden',
-    },
-    redTrash: {
-      color: '#ff0000',
+      height: 250,
     },
   })
 );
@@ -52,9 +50,19 @@ const Ribbon = styled.div.attrs((props: any) => ({ text: props.text }))`
   color: #fff;
 `;
 
+const DeleteButton = styled(Button)`
+  color: red;
+  font-size: 14px;
+`;
+
+const EditButton = styled(Button)`
+  color: green;
+  font-size: 14px;
+`
+
 const CardContainer: React.FC<SupplyListCardContainer> = memo((props) => {
   const [isOpenBackDrop, setIsOpenBackDrop] = useState<boolean>(false);
-  const { root, redTrash } = useStyle();
+  const { root } = useStyle();
   const { drug, editHandler } = props;
 
   const {
@@ -71,7 +79,7 @@ const CardContainer: React.FC<SupplyListCardContainer> = memo((props) => {
   const { t } = useTranslation();
 
   const [_removePharmacyDrug] = useMutation(removePharmacyDrug, {
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       queryCache.invalidateQueries(AllPharmacyDrug.GET_ALL_PHARMACY_DRUG);
       setIsOpenBackDrop(false);
       await successSweetAlert(t('alert.successfulRemoveTextMessage'));
@@ -120,20 +128,18 @@ const CardContainer: React.FC<SupplyListCardContainer> = memo((props) => {
       <Grid item xs={12}>
         <Grid justify="flex-end" container spacing={0}>
           <Grid item xs={2}>
-            <Button
+            <EditButton
               onClick={openEditModal}
-              style={{ color: 'green', fontSize: '14px' }}
             >
-              ویرایش
-            </Button>
+              {t('action.edit')}
+            </EditButton>
           </Grid>
           <Grid item xs={2}>
-            <Button
+            <DeleteButton
               onClick={removeHandler}
-              style={{ color: 'red', fontSize: '14px' }}
             >
-              حذف
-            </Button>
+              {t('action.delete')}
+            </DeleteButton>
           </Grid>
         </Grid>
       </Grid>
