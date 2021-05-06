@@ -253,17 +253,19 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
 
   useEffectOnce(() => {
     (async (): Promise<void> => {
-      const result = await getUserMessages(true, 0, 99);
-      const { items } = result;
-      const _specialMessages = items.filter((item: any) => item.type === MessageTypeEnum.SPECIAL);
-      const genericMessages = items.filter((item: any) => item.type !== MessageTypeEnum.SPECIAL);
-
-      if (_specialMessages.length > 0) {
-        setSpecialMessages(_specialMessages);
-        setIsOpenReceivedMessagesModal(true);
-      }
-      if (genericMessages.length > 0) {
-        setGenericMessages(genericMessages);
+      if (window.location.hash.endsWith('dashboard')) {
+        const result = await getUserMessages(true, 0, 99);
+        const { items } = result;
+        const _specialMessages = items.filter((item: any) => item.type === MessageTypeEnum.SPECIAL);
+        const genericMessages = items.filter((item: any) => item.type !== MessageTypeEnum.SPECIAL);
+  
+        if (_specialMessages.length > 0) {
+          setSpecialMessages(_specialMessages);
+          setIsOpenReceivedMessagesModal(true);
+        }
+        if (genericMessages.length > 0) {
+          setGenericMessages(genericMessages);
+        }
       }
     })();
   });
