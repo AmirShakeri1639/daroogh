@@ -167,6 +167,8 @@ export default {
         sendDate: 'تاریخ ارسال',
         recieveDate: 'تاریخ دریافت',
         minimumDate: 'تاریخ انتخابی باید حداقل برای {{day}} روز آینده باشد',
+        registerDate: 'تاریخ ثبت',
+        
       },
       province: {
         selectCounty: 'انتخاب استان',
