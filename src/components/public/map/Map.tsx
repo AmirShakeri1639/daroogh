@@ -38,8 +38,9 @@ const Map: React.FC<Props> = (props) => {
   }
 
   return (
-    <div style={{position:'relative'}}>
-      <SearchControl  onSelect={onSearchSelect} />
+    <div style={{ position: 'relative' }}>
+      {editable && <SearchControl onSelect={onSearchSelect} />}
+
       <MapContainer
         center={[32.167342, 53.460555]}
         style={{

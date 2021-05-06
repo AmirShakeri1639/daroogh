@@ -640,6 +640,7 @@ const PharmaciesList: React.FC = () => {
             <Grid item xs={12}>
               <div style={{ overflow: 'hidden' }}>
                 <Map
+                  editable={true}
                   draggable={true}
                   maxHeight="200px"
                   hasGeocoder={true}
