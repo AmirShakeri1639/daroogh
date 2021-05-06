@@ -34,8 +34,8 @@ const ReceivedMessages: FC<Props> = ({ messages, isOpen, onClose }) => {
     (async (): Promise<void> => {
       await readMultiMessage(messagesId)
     })();
-    
   });
+  
   return (
     <CDialog
       isOpen={isOpen}

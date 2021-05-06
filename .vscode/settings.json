@@ -23,4 +23,5 @@
     "najva"
   ],
   "editor.formatOnSaveMode": "modifications",
+  "prettier.requireConfig": true,
 }
