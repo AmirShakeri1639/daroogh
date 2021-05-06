@@ -1,5 +1,5 @@
 export enum UrlAddress {
-  // baseUrl = 'https://api.daroog.org/api', //>>> important: USE getBaseUrl() INSTEAD
+  // baseUrl = 'https://api.daroog.com/api', //>>> important: USE getBaseUrl() INSTEAD
   getAllExchange = '/Exchange/AllExchange',
   getAllAccounting = '/Accounting/AllAccounting',
   getAllCategories = '/Categories/AllCategories',
@@ -13,4 +13,5 @@ export enum UrlAddress {
   getBestPharmaciesList = '/Reports/GetBestPharmacyListScores',
   // getPharmacyUsers = '/User/AllPharmacyUsers?$filter=active eq true',
   getAllJobs = '/Job/CurrentPharmacyJobs',
+  getAllCommisions = '/CommissionAmount/AllCommissionDiscounts',
 }

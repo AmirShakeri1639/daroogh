@@ -1,4 +1,7 @@
 import { RoleType } from 'enum';
+import {PharmacyInterface} from './PharmacyInterface'
+import {EmploymentApplicationInterface} from './EmploymentApplicationInterface'
+
 
 export interface ActionInterface {
   type: string;
@@ -68,6 +71,28 @@ export interface CommandInterface {
   color?: string
 }
 
+export interface FindJobInterface {
+    items : finJobDetailInterface[]
+}
+export interface finJobDetailInterface{
+  pharmacy : PharmacyInterface;
+  minGradeOfReadingPrescriptionCertificate: string   | number ; //18.0,
+  minWorkExperienceYear: string   | number ; //25,
+  maxAge: string  | number ; //28,
+  descriptions: string   ; //gtrfyhtfguyhftgu,
+  hasReadingPrescriptionCertificateStr: string   ; //مهم نیست,
+  livingInAreaStr: string   ; //مهم نیست,
+  hasGuaranteeStr: string   ; //داشتن وثیقه مهم نیست,
+  genderStr: string   ; //مرد,
+  suggestedWorkShiftStr: string   ; //تایم آزاد,
+  maritalStatusStr: string   ; //مجرد,
+  pharmaceuticalSoftwareSkillStr: string   ; //ابتدایی,
+  computerSkillStr: string   ; //ابتدایی,
+  foreignLanguagesSkillStr: string   ; //ابتدایی,
+  jobPositionStr: string   ; //سایر,
+  educationStr: string   ; //بی‌سواد
+
+}
 export type { DrugInterface } from './DrugInterface';
 export type { CategoryInterface } from './CategoryInterface';
 export type { 
@@ -106,6 +131,7 @@ export type { JobInterface } from './JobInterface';
 export type { JobApplicationInterface } from './JobApplicationInterface';
 export type { WidgetInterface } from './WidgetInterface';
 export type { DataTableColumns, LookupFilter } from './DataTableColumns';
+export type { CommisionInterface } from './CommisionSettingInterface';
 
 export * from './component';
 export * from './general';

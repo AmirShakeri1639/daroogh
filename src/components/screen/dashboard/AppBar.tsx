@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
 import {
   Toolbar,
-  AppBar,
+  AppBar as MUIAppBar,
   makeStyles,
   IconButton,
   Typography,
@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import Ribbon from '../../public/ribbon/Ribbon';
-import { ColorEnum, MessageQueryEnum } from '../../../enum';
+import { ColorEnum } from '../../../enum';
 import SvgIcon from '../../public/picture/svgIcon';
 import Context from './Context';
 import routes from '../../../routes';
@@ -22,7 +22,6 @@ import { Message } from '../../../services/api';
 import Utils from '../../public/utility/Utils';
 import NotificationMenu from './appbar/NotificationMenu';
 import UserMenu from './appbar/UserMenu';
-import { useQuery } from 'react-query';
 import { connect, ConnectedProps } from 'react-redux';
 import { confirmSweetAlert, JwtData, sweetAlert } from '../../../utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -174,7 +173,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface AppbarProps {
+interface AppBarProps {
   showButtons?: boolean;
 }
 
@@ -186,7 +185,7 @@ const connector = connect(mapStateToProps);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer: _transfer }) => {
+const AppBar: React.FC<AppBarProps & PropsFromRedux> = ({ showButtons = true, transfer: _transfer }) => {
   const {
     setIsOpenDrawer,
     isOpenDrawer,
@@ -194,20 +193,14 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
     debtValueState,
     setAnchorEl,
     setNotifEl,
+    setActiveStep,
+    genericMessages,
   } = useContext(Context);
 
   const { push } = useHistory();
 
   const { t } = useTranslation();
   const { transfer, dashboard } = routes;
-
-  const { data: userMessages, isLoading: isLoadingUserMessages } = useQuery(
-    MessageQueryEnum.GET_USER_MESSAGES,
-    () => getUserMessages(true, 0, 99),
-    {
-      enabled: showButtons,
-    }
-  );
 
   const { trialToolbar, toolbar, appBar, menuButton, menuButtonHidden, title } = useStyles();
   const handleDrawerOpen = (): void => setIsOpenDrawer(true);
@@ -231,9 +224,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
       }
       window.location.reload();
     }
-    push({
-      pathname: transfer,
-    });
+    push(transfer + '?step=0');
   };
 
   const [version, setVersion] = useState('');
@@ -242,7 +233,7 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
   }, []);
 
   return (
-    <AppBar elevation={0} position="absolute" className={appBar}>
+    <MUIAppBar elevation={0} position="absolute" className={appBar}>
       <Toolbar className={isTrial ? trialToolbar : toolbar}>
         {isTrial && (
           <div style={{ zIndex: 0, overflow: 'hidden' }}>
@@ -345,10 +336,10 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
         )}
         {showButtons && (
           <>
-            {userMessages !== undefined && userMessages.items.length !== 0 && (
+            {genericMessages.length > 0 && (
               <Tooltip title={String(t('general.notifications'))}>
                 <IconButton edge="end" color="inherit" onClick={handleNotificationIconButton}>
-                  <Badge badgeContent={userMessages.items.length} color="secondary">
+                  <Badge badgeContent={genericMessages.length} color="secondary">
                     <FontAwesomeIcon icon={faBell} />
                   </Badge>
                 </IconButton>
@@ -370,14 +361,11 @@ const Appbar: React.FC<AppbarProps & PropsFromRedux> = ({ showButtons, transfer:
 
         <UserMenu />
 
-        <NotificationMenu messages={isLoadingUserMessages ? [] : userMessages?.items} />
+        <NotificationMenu messages={genericMessages} />
+        
       </Toolbar>
-    </AppBar>
+    </MUIAppBar>
   );
 };
 
-Appbar.defaultProps = {
-  showButtons: true,
-};
-
-export default connector(Appbar);
+export default connector(AppBar);

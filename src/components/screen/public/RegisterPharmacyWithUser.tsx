@@ -24,66 +24,73 @@ import { LabelValue } from '../../../interfaces'
 import { useMutation } from 'react-query'
 import { ActionInterface } from '../../../interfaces'
 import { useTranslation } from 'react-i18next'
-import { errorHandler, sweetAlert, tWarn } from 'utils'
+import {
+  errorHandler,
+  sweetAlert,
+  tWarn,
+} from 'utils'
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown'
 import { ColorEnum, WorkTimeEnum } from '../../../enum'
 import Modal from '../../public/modal/Modal'
 import DateTimePicker from '../../public/datepicker/DatePicker'
-import { CountryDivisionSelect } from '../../public/country-division/CountryDivisionSelect'
+import { 
+  CountryDivisionSelect 
+} from '../../public/country-division/CountryDivisionSelect'
 import { Map, ThreePartDatePicker } from '../../public'
 import { useHistory } from 'react-router-dom'
 import routes from '../../../routes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons'
+import {
+  faEye, faEyeSlash,
+} from '@fortawesome/free-regular-svg-icons'
 import { faKey } from '@fortawesome/free-solid-svg-icons'
 import Uploader from 'components/public/uploader/uploader'
 import Note from 'components/public/note/Note'
+import NumberField from 'components/public/TextField/NumberField'
 
-export const useClasses = makeStyles((theme) =>
-  createStyles({
-    parent: {
-      paddingTop: theme.spacing(2),
-    },
-    dropdown: {
-      margin: theme.spacing(1),
-      minWidth: '100%',
-    },
-    silverBackground: {
-      background: '#ebebeb',
-    },
-    addButton: {
-      background: theme.palette.blueLinearGradient.main,
-    },
-    spacing1: {
-      margin: theme.spacing(1),
-    },
-    spacing3: {
-      margin: theme.spacing(3),
-    },
-    formItem: {
-      display: 'flex',
-      justifySelf: 'stretch',
-      margin: theme.spacing(1),
-    },
-    titleContainer: {
-      padding: theme.spacing(2),
-    },
-    formTitle: {
-      margin: 0,
-    },
-    rootFull: {
-      flexGrow: 1,
-      margin: theme.spacing(1),
-    },
-    longItem: {
-      width: '75%',
-    },
-    centerItem: {
-      display: 'flex',
-      margin: 'auto',
-    },
-  })
-)
+export const useClasses = makeStyles((theme) => createStyles({
+  parent: {
+    paddingTop: theme.spacing(2),
+  },
+  dropdown: {
+    margin: theme.spacing(1),
+    minWidth: '100%',
+  },
+  silverBackground: {
+    background: '#ebebeb',
+  },
+  addButton: {
+    background: theme.palette.blueLinearGradient.main,
+  },
+  spacing1: {
+    margin: theme.spacing(1)
+  },
+  spacing3: {
+    margin: theme.spacing(3)
+  },
+  formItem: {
+    display: 'flex',
+    justifySelf: 'stretch',
+    margin: theme.spacing(1)
+  },
+  titleContainer: {
+    padding: theme.spacing(2)
+  },
+  formTitle: {
+    margin: 0
+  },
+  rootFull: {
+    flexGrow: 1,
+    margin: theme.spacing(1)
+  },
+  longItem: {
+    width: '75%',
+  },
+  centerItem: {
+    display: 'flex',
+    margin: 'auto'
+  },
+}))
 
 const initialState = {
   pharmacy: {
@@ -359,15 +366,37 @@ const RegisterPharmacyWithUser: React.FC = () => {
   })
 
   const isFormValid = (): boolean => {
-    const { pharmacy, user, file1, file2, file3, file4, file5 } = state
-    const { name, family, userName, nationalCode, password, isValidBirthDate } = user
-    const { name: pharmacyName, mobile, address, telphon, countryDivisionID, x, y } = pharmacy
+    const {
+      pharmacy,
+      user,
+      file1,
+      file2,
+      file3,
+      file4,
+      file5,
+    } = state
+    const {
+      name,
+      family,
+      userName,
+      nationalCode,
+      password,
+      isValidBirthDate,
+    } = user
+    const {
+      name: pharmacyName,
+      mobile,
+      address,
+      telphon,
+      countryDivisionID,
+      x, y,
+    } = pharmacy
 
     return !(
       // pharmacy
       (
         pharmacyName.trim().length < 2 ||
-        mobile.trim().length < 10 ||
+        mobile.length < 10 ||
         countryDivisionID == 0 ||
         countryDivisionID == -1 ||
         address.trim().length < 3 ||
@@ -586,21 +615,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 onChange={(e): void => dispatch({ type: 'user.family', value: e.target.value })}
               />
             </Grid>
-            {/* <Grid item xs={ 12 } sm={ 6 }>
-              <TextField
-                error={ state.user.userName.length < 3 && showError }
-                label={ t('login.username') }
-                required
-                className={ formItem }
-                variant="outlined"
-                autoComplete="off"
-                value={ state.user.userName }
-                onChange={ (e): void =>
-                  dispatch({ type: 'user.userName', value: e.target.value })
-                }
-              />
-            </Grid> */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
                 error={state?.password?.length < 3 && showError}
                 label={t('login.password')}
@@ -624,10 +639,10 @@ const RegisterPharmacyWithUser: React.FC = () => {
                         aria-label="toggle password visibility"
                         onClick={(): void => {
                           dispatch({ type: 'isVisiblePassword', value: !state?.isVisiblePassword })
-                        }}
-                        onMouseDown={(e: React.MouseEvent<HTMLButtonElement>): void => {
+                        } }
+                        onMouseDown={ (e: React.MouseEvent<HTMLButtonElement>): void => {
                           e.preventDefault()
-                        }}
+                        } }
                         edge="end"
                       >
                         {state?.isVisiblePassword ? (
@@ -641,13 +656,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                error={state?.user.nationalCode.length < 10 && showError}
-                label={t('user.nationalCode')}
+            <Grid item xs={ 12 } sm={ 6 }>
+              <NumberField
+                error={ state?.user.nationalCode.length < 10 && showError }
+                label={ t('user.nationalCode') }
+                maxLength={ 10 }
                 required
-                type="text"
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
                 value={state?.user.nationalCode}
                 onChange={(e): void =>
@@ -657,11 +672,11 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'center' }}>
               <ThreePartDatePicker
-                label={t('user.birthDate')}
-                onChange={(value: string, isValid: boolean): void => {
+                label={ t('user.birthDate') }
+                onChange={ (value: string, isValid: boolean): void => {
                   dispatch({ type: 'user.isValidBirthDate', value: isValid })
                   dispatch({ type: 'user.birthDate', value: value })
-                }}
+                } }
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -742,16 +757,16 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <TextField
-                error={state?.pharmacy.mobile.trim().length < 10 && showError}
-                label={t('general.mobile')}
-                type="number"
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <NumberField
+                error={ state?.pharmacy.mobile.length < 10 && showError }
+                label={ t('general.mobile') }
                 required
                 className={formItem}
                 variant="outlined"
-                value={state?.pharmacy.mobile}
-                onChange={(e): void => {
+                maxLength={ 11 }
+                value={ state?.pharmacy.mobile }
+                onChange={ (e: any): void => {
                   dispatch({ type: 'pharmacy.mobile', value: e.target.value })
                   dispatch({ type: 'user.userName', value: e.target.value })
                 }}
@@ -844,23 +859,23 @@ const RegisterPharmacyWithUser: React.FC = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={4}>
               <DaroogDropdown
-                defaultValue={state?.pharmacy.workTime}
-                data={workTimeList}
-                className={`${formItem} ${dropdown}`}
-                label={t('pharmacy.workTime')}
-                onChangeHandler={(v): void => {
+                defaultValue={ state?.pharmacy.workTime }
+                data={ workTimeList }
+                className={ `${formItem} ${dropdown}` }
+                label={ t('pharmacy.workTime') }
+                onChangeHandler={ (v): void => {
                   return dispatch({ type: 'pharmacy.workTime', value: v })
-                }}
+                } }
               />
             </Grid>
             <Grid item xs={12}>
               <Grid xs={12} sm={6} md={4}>
                 <CountryDivisionSelect
-                  error={state?.pharmacy.countryDivisionID == -1 && showError}
-                  label={`${t('general.location')} * `}
-                  onSelectedHandler={(id): void => {
+                  error={ state?.pharmacy.countryDivisionID == -1 && showError }
+                  label={ `${t('general.location')} * ` }
+                  onSelectedHandler={ (id): void => {
                     dispatch({ type: 'pharmacy.countryDivisionID', value: id })
-                  }}
+                  } }
                 />
               </Grid>
             </Grid>
@@ -883,13 +898,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }}
               >
                 <Map
-                  editable={true}
-                  draggable={true}
-                  getGeoLocation={true}
-                  onClick={(e: any): void => {
+                editable={true}
+                  draggable={ true }
+                  getGeoLocation={ true }
+                  onClick={ (e: any): void => {
                     dispatch({ type: 'pharmacy.x', value: e.lngLat.lng })
                     dispatch({ type: 'pharmacy.y', value: e.lngLat.lat })
-                  }}
+                  } }
                 />
               </div>
             </Grid>
@@ -1021,10 +1036,10 @@ const RegisterPharmacyWithUser: React.FC = () => {
       <div className={spacing3}>&nbsp;</div>
       <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
         <DateTimePicker
-          selectedDateHandler={(e): void => {
+          selectedDateHandler={ (e): void => {
             dispatch({ type: 'user.birthDate', value: e })
             toggleIsOpenDatePicker()
-          }}
+          } }
         />
       </Modal>
       <div className={spacing3}>&nbsp;</div>

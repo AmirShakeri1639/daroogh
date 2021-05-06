@@ -20,8 +20,8 @@ import Modal from '../../../public/modal/Modal';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import {
   errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
+  tError,
+  tSuccess,
 } from '../../../../utils';
 import Button from '../../../public/button/Button';
 import { Autocomplete } from '@material-ui/lab';
@@ -107,13 +107,14 @@ const MessageForm: React.FC<Props> = ({ onSubmit }) => {
   const messageTypeArrayValues = [
     t('message.profile'),
     t('message.sms'),
+    t('message.special'),
     t('message.notification'),
     `${t('message.sms')} - ${t('message.notification')}`,
   ];
 
   const [_createNewMessage] = useMutation(createNewMessage, {
     onSuccess: async () => {
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       setShowError(false);
       dispatch({ type: 'reset' });
       setSelectedUser('');
@@ -123,7 +124,7 @@ const MessageForm: React.FC<Props> = ({ onSubmit }) => {
       }
     },
     onError: async () => {
-      await errorSweetAlert(t('error.save'));
+      tError(t('error.save'));
     },
   });
 
@@ -279,15 +280,15 @@ const MessageForm: React.FC<Props> = ({ onSubmit }) => {
                 labelId="user-type"
                 label={t('general.type')}
               >
-                {MessageTypeArray(messageTypeArrayValues).map(
-                  (item: any): any => {
+                {React.Children.toArray(MessageTypeArray(messageTypeArrayValues).map(
+                  (item): any => {
                     return (
-                      <MenuItem key={item.val} value={item.val}>
+                      <MenuItem value={item.val}>
                         {item.text}
                       </MenuItem>
                     );
                   }
-                )}
+                ))}
               </Select>
             </FormControl>
           </Grid>

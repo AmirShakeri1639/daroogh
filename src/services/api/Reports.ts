@@ -62,8 +62,8 @@ class Reports extends Api {
           day: '2-digit',
           month: '2-digit',
         }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
-      )
-      return result?.data
+      );
+      return result?.data;
     } catch (e) {
       errorHandler(e)
       return Promise.reject(e)
@@ -77,8 +77,8 @@ class Reports extends Api {
           day: '2-digit',
           month: '2-digit',
         }).format(new Date(new Date().setFullYear(new Date().getFullYear() - 1)))}`
-      )
-      return result?.data
+      );
+      return result?.data;
     } catch (e) {
       errorHandler(e)
       return Promise.reject(e)

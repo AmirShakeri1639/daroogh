@@ -1,26 +1,18 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useContext, useEffect, useRef, useMemo } from 'react';
 import {
   createStyles,
   Grid,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Divider,
   Typography,
-  Hidden,
   FormControl,
   InputLabel,
-  Checkbox,
-  ListItemText,
   Select,
-  Input as MTInput,
   MenuItem,
   Chip,
 } from '@material-ui/core';
 import { debounce } from 'lodash';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryCache } from 'react-query';
 import { Category, PharmacyDrug } from 'services/api';
 import { PharmacyDrugEnum } from 'enum/query';
 import { CircleLoading, EmptyContent } from 'components/public';
@@ -28,6 +20,7 @@ import CardContainer from './CardContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { PharmacyDrugInterface } from 'interfaces/pharmacyDrug';
 import { makeStyles } from '@material-ui/core/styles';
+import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import {
   County,
   MaterialDrawer,
@@ -40,7 +33,6 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import { errorHandler } from 'utils';
 import Search from 'services/api/Search';
-import { SelectOption } from 'interfaces';
 import { AdvancedSearchInterface } from 'interfaces/search';
 import { useDispatch } from 'react-redux';
 import { setTransferEnd } from 'redux/actions';
@@ -48,9 +40,12 @@ import { ListOptions } from 'components/public/auto-complete/AutoComplete';
 import { useLocation } from 'react-router';
 import { ColorEnum } from 'enum';
 import { CategoryQueryEnum } from 'enum/query';
+import styled from 'styled-components';
+import { useEffectOnce, useScrollRestoration } from 'hooks';
+import DisplayType, { ListItem } from './DisplayType';
 
-const { getRelatedPharmacyDrug, getFavoritePharmacyDrug } = new PharmacyDrug();
-const { advancedSearch, searchDrug, searchCategory } = new Search();
+const { getRelatedPharmacyDrug, getFavoritePharmacyDrug, getRelatedPharmacyDrugByDate } = new PharmacyDrug();
+const { advancedSearch, searchDrug } = new Search();
 const { getAllCategories } = new Category();
 
 const useStyle = makeStyles((theme) =>
@@ -152,10 +147,25 @@ const useStyle = makeStyles((theme) =>
       background: `${ColorEnum.Green} !important`,
       borderRadius: 4,
     },
+    countryDivision:{
+      width:240,
+    }
   })
 );
 
+const StyledTypo = styled(Typography)`
+  margin-bottom: 10px;
+`
+
+const Container = styled.div``;
+
 const isMultipleSelection = true;
+
+type ServerResponse = {
+  count: number;
+  items: any[];
+  nextPageLink: null;
+}
 
 const FirstStep: React.FC = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
@@ -166,21 +176,49 @@ const FirstStep: React.FC = () => {
   const [searchedDrugs, setSearchedDrugs] = useState<ListOptions[]>([]);
   const [searchedDrugsResult, setSearchedDrugsResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [searchedCategory, setSearchedCategory] = useState<SelectOption | undefined>(undefined);
-  const [categoryOptions, setCategoryOptions] = useState<object[] | undefined>(undefined);
   const [maxDistance, setMaxDistance] = useState<number | null>(null);
   const [remainingExpireDays, setRemainingExpireDays] = useState<string>('');
   const [isInSearchMode, setIsInSearchMode] = useState<boolean>(false);
   const [isLoadingSearch, setIsLoadingSearch] = useState(false);
   const [drugsCategory, setDrugsCategory] = useState<any[]>([]);
   const [selectedDrugsCategory, setSelectedDrugsCategory] = useState('-1');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pharmacyList, setPharmacyList] = useState<any[]>([]);
+  const [isLoadingRelatedDrugs, setIsLoadingRelatedDrugs] = useState(false);
+  const [selectedDisplayType, setSelectedDisplayType] = useState<ListItem>('recommender');
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
+  const {
+    activeStep,
+  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
+
+  const totalPharmacyCount = useRef<number>(1);
+
+  const cache = useQueryCache();
+  const { search } = useLocation();
+
+  useEffectOnce(() => {
+    let hash = window.location.hash;
+
+    if (activeStep === 0 && !hash.includes('eid=')) {
+      hash = hash.replace('step=0', '') 
+      if (hash.includes('step=2')) {
+        window.location.hash = hash.replace('step=2', 'step=1')
+      } else if (!window.location.hash.endsWith('step=1')) {
+        const sign = window.location.hash.includes('?') ? '&' : '?'
+        window.location.hash = `${hash}${sign}step=1`
+      }
+    }
+  });
+
   let minimumDrugExpireDay = 30;
   const { search: useLocationSearch } = useLocation();
+  const scrollRestoration = useScrollRestoration;
 
+  scrollRestoration(0,window, PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, setCurrentPage, cache);
+ 
   try {
     const localStorageSettings = JSON.parse(localStorage.getItem('settings') ?? '{}');
     minimumDrugExpireDay = localStorageSettings.drugExpireDay;
@@ -247,8 +285,8 @@ const FirstStep: React.FC = () => {
 
   const getDrugsCategory = async (): Promise<void> => {
     try {
-      const maximumAvailableDrag = 99;
-      const result = await getAllCategories(0, maximumAvailableDrag);
+      const maximumAvailableDrug = 99;
+      const result = await getAllCategories(0, maximumAvailableDrug);
       const { items } = result;
       setDrugsCategory(items);
     } catch (e) {
@@ -262,7 +300,10 @@ const FirstStep: React.FC = () => {
     }
   }, [isOpenDrawer]);
 
-  const { isLoading: isLoadingCategory, data: categoriesData } = useQuery(
+  const {
+    isLoading: isLoadingCategory,
+    data: categoriesData,
+  } = useQuery(
     CategoryQueryEnum.GET_ALL_CATEGORIES,
     () => getAllCategories(0, 99),
     {
@@ -328,19 +369,30 @@ const FirstStep: React.FC = () => {
     noContent,
     buttonWrapper,
     filterButton,
+    countryDivision,
   } = useStyle();
 
-  const { data, isLoading: isLoadingRelatedDrugs } = useQuery(
-    shouldDisplayFavoriteList
-      ? PharmacyDrugEnum.GET_FAVORITE_EXCHANGE_LIST_OF_DRUGS
-      : PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG,
-    shouldDisplayFavoriteList
-      ? (): Promise<any> => getFavoritePharmacyDrug()
-      : (): Promise<any> => getRelatedPharmacyDrug(),
-    {
-      enabled: searchedDrugs.length === 0,
-    }
-  );
+  useEffect(() => {
+    (async (): Promise<any> => {
+      if (searchedDrugs.length === 0 && pharmacyList.length < totalPharmacyCount?.current) {
+        if (currentPage === 0) {
+          setIsLoadingRelatedDrugs(true)
+        }
+        let result: ServerResponse;
+        if (shouldDisplayFavoriteList) {
+          result = await getFavoritePharmacyDrug();
+        } else if (selectedDisplayType === 'recommender') {
+          result = await getRelatedPharmacyDrug(10, currentPage * 10);
+        } else {
+          result = await getRelatedPharmacyDrugByDate(10, currentPage * 10)
+        }
+        setPharmacyList((v) => [...v, ...result.items]);
+        totalPharmacyCount.current = result.count;
+        setIsLoadingRelatedDrugs(false);
+      }
+    })();
+  }, [search, currentPage, selectedDisplayType]);
+
 
   const toggleCheckbox = (): void => {
     setIsCheckedJustOffer((v) => !v);
@@ -348,7 +400,11 @@ const FirstStep: React.FC = () => {
 
   const contentHandler = () => {
     if (isLoadingRelatedDrugs || isLoading) {
-      return <CircleLoading />;
+      return (
+        <Grid container item justify="center">
+          <CircleLoading />
+        </Grid>
+      );
     }
 
     let items = [];
@@ -387,7 +443,7 @@ const FirstStep: React.FC = () => {
       }
     } else {
       items = React.Children.toArray(
-        data.items.map((d: PharmacyDrugInterface) => {
+        pharmacyList.map((d: PharmacyDrugInterface) => {
           return (
             <>
               <Grid item xs={12} sm={6} lg={6}>
@@ -398,7 +454,6 @@ const FirstStep: React.FC = () => {
         })
       );
     }
-
     return items;
   };
 
@@ -406,7 +461,7 @@ const FirstStep: React.FC = () => {
     isLoading,
     isLoadingRelatedDrugs,
     isInSearchMode,
-    data,
+    pharmacyList,
   ]);
 
   const drugsListGenerator = (): any => {
@@ -427,53 +482,74 @@ const FirstStep: React.FC = () => {
   return (
     <>
       <Grid item xs={12}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} style={{ marginTop: 16 }}>
-            <span>{t('alerts.supplylistsAlert')}</span>
-          </Grid>
-          <Grid item xs={12}>
-            <div className={searchContainer}>
-              <Button className={filterButton} onClick={(): void => setIsOpenDrawer(true)}>
-                <FilterListIcon fontSize="small" />
-                {t('general.filter')}
-              </Button>
+        <Container id="container">
+          <Grid container spacing={2}>
+            <Grid item xs={12} style={{ marginTop: 16 }}>
+              <span>{t('alerts.supplylistsAlert')}</span>
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <div className={searchContainer}>
+                <Button className={filterButton} onClick={(): void => setIsOpenDrawer(true)}>
+                  <FilterListIcon fontSize="small" />
+                  {t('general.filter')}
+                </Button>
 
-              <AutoComplete
-                ref={useRef()}
-                isLoading={isLoadingSearch}
-                onChange={debounce((e): Promise<void> => drugSearch(e.target.value), 500)}
-                className="w-100"
-                loadingText={t('general.loading')}
-                options={searchOptions}
-                placeholder="جستجو ( نام محصول٬ نام ژنریک یا نام انگلیسی ) "
-                multiple={isMultipleSelection}
-                onItemSelected={(arrayList: any[]): void => {
-                  if (arrayList.length > 0) {
-                    setIsInSearchMode(true);
-                  } else {
+                <AutoComplete
+                  ref={useRef()}
+                  isLoading={isLoadingSearch}
+                  onChange={debounce((e): Promise<void> => drugSearch(e.target.value), 500)}
+                  className="w-100"
+                  loadingText={t('general.loading')}
+                  options={searchOptions}
+                  placeholder="جستجو ( نام محصول٬ نام ژنریک یا نام انگلیسی ) "
+                  multiple={isMultipleSelection}
+                  onItemSelected={(arrayList: any[]): void => {
+                    if (arrayList.length > 0) {
+                      setIsInSearchMode(true);
+                    } else {
+                      setIsInSearchMode(false);
+                    }
+                    setSearchedDrugs(arrayList);
+                  }}
+                />
+              </div>
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <Grid container alignItems="center">
+                <Grid item xs={3} sm={2} md={3}>
+                  نحوه نمایش
+                </Grid>
+                <Grid item xs={9} sm={10} md={9}>
+                  <DisplayType
+                    selectedHandler={(val: ListItem): void => {
+                      setSelectedDisplayType(val);
+                      setCurrentPage(0);
+                      setPharmacyList([]);
+                    }}
+                  value={selectedDisplayType}
+                />
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={12}>
+              {selectedDrugsCategory !== '-1' && isInSearchMode && (
+                <Chip
+                  label={`${t('general.category')}:
+                  ${drugsCategory.find((item) => item.id == selectedDrugsCategory).name}`}
+                  onDelete={(): void => {
                     setIsInSearchMode(false);
-                  }
-                  setSearchedDrugs(arrayList);
-                }}
-              />
-            </div>
-          </Grid>
+                    setSelectedDrugsCategory('-1');
+                  }}
+                  color="default"
+                />
+              )}
+            </Grid>
 
-          <Grid item xs={12}>
-            {selectedDrugsCategory !== '-1' && isInSearchMode && (
-              <Chip
-                label={`${t('general.category')}:
-                ${drugsCategory.find((item) => item.id == selectedDrugsCategory).name}`}
-                onDelete={(): void => {
-                  setIsInSearchMode(false);
-                  setSelectedDrugsCategory('-1');
-                }}
-                color="default"
-              />
-            )}
+            {memoContent}
           </Grid>
-          {memoContent}
-        </Grid>
+        </Container>
       </Grid>
 
       <MaterialDrawer onClose={toggleIsOpenDrawer} isOpen={isOpenDrawer}>
@@ -486,29 +562,29 @@ const FirstStep: React.FC = () => {
           <Divider />
 
           <div id="content">
-            <Accordion>
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="category-filter"
-                id="category-filter"
-              >
-                افزودن دسته بندی به جست و جو
-              </AccordionSummary>
-              <AccordionDetails>
-                <FormControl variant="outlined" style={{ width: 500 }}>
-                  <InputLabel id="drugs-list-id">{t('general.category')}</InputLabel>
-                  <Select
-                    labelId="drugs-list-id"
-                    id="drugs-list"
-                    value={selectedDrugsCategory}
-                    onChange={handleChange}
-                  >
-                    <MenuItem value="-1">{t('general.noOne')}</MenuItem>
-                    {drugsListGenerator()}
-                  </Select>
-                </FormControl>
-              </AccordionDetails>
-            </Accordion>
+            <Grid container>
+              <Grid item xs={12}>
+                <Grid container item xs={12}>
+                  <StyledTypo>
+                  افزودن دسته بندی به جستجو
+                  </StyledTypo>
+                </Grid>
+                <Grid container item xs={12}>
+                  <FormControl variant="outlined" style={{ width: 500 }}>
+                    <InputLabel id="drugs-list-id">{t('general.category')}</InputLabel>
+                    <Select
+                      labelId="drugs-list-id"
+                      id="drugs-list"
+                      value={selectedDrugsCategory}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value="-1">{t('general.noOne')}</MenuItem>
+                      {drugsListGenerator()}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Grid>
 
             <div className={switchContainer}>
               <span>{t('general.justOffer')}</span>
@@ -552,8 +628,8 @@ const FirstStep: React.FC = () => {
             <Divider className={divider} />
 
             <div className={dateContainer}>
-              <span>{t('province.selectCounty')}</span>
-              <County
+              <span>{t('peopleSection.ostan')}</span>
+              <County className={countryDivision}
                 countyHandler={(e): void => {
                   setSelectedCounty(e ?? '');
                   setSelectedProvince('-2');
@@ -565,8 +641,8 @@ const FirstStep: React.FC = () => {
             <Divider className={divider} />
 
             <div className={dateContainer}>
-              <span>{t('province.selectProvince')}</span>
-              <Province
+              <span>{t('peopleSection.city')}</span>
+              <Province className={countryDivision}
                 countyId={selectedCounty}
                 value={selectedProvince}
                 provinceHandler={(e): void => setSelectedProvince(e ?? '')}

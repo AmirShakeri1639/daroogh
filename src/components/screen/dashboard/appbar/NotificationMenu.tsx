@@ -11,9 +11,8 @@ import Context from '../Context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentDots } from '@fortawesome/free-solid-svg-icons';
 import { Convertor } from '../../../../utils';
-import { useQueryCache } from 'react-query';
 import { Message as MessageApi } from '../../../../services/api';
-import { MessageQueryEnum } from '../../../../enum';
+import { MessageTypeEnum } from '../../../../enum';
 import { has, isEmpty, isUndefined } from 'lodash';
 import { useHistory } from 'react-router';
 import { Message } from 'interfaces';
@@ -23,7 +22,7 @@ interface NotificationMenuProps {
   messages: any[];
 }
 
-const useStyle = makeStyles((theme) =>
+const useStyle = makeStyles(() =>
   createStyles({
     subject: {
       marginLeft: 10,
@@ -53,11 +52,10 @@ const { convertISOTime } = Convertor;
 const { readMultiMessage } = new MessageApi();
 
 const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
-  const { notifEl, setNotifEl } = useContext(Context);
+  const { notifEl, setNotifEl, setGenericMessages } = useContext(Context);
 
   const { subject, menu, menuItem, message: _message, date } = useStyle();
 
-  const queryCache = useQueryCache();
   const { push } = useHistory();
 
   const readMessages = async (): Promise<any> => {
@@ -68,7 +66,7 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
     }
     await readMultiMessage(messagesApiCalls);
 
-    queryCache.invalidateQueries(MessageQueryEnum.GET_USER_MESSAGES);
+    setGenericMessages([]);
   };
 
   const handleClose = (): void => {
@@ -94,26 +92,28 @@ const NotificationMenu: React.FC<NotificationMenuProps> = ({ messages }) => {
 
   const itemsGenerator = (): JSX.Element[] | JSX.Element => {
     if (messages !== undefined && messages.length > 0) {
-      return messages.map((message, index) => {
-        return (
-          <Fragment key={message.id}>
-            <MenuItem
-              className={`${menu} txt-sm`}
-              onClick={(): void => menuClickHandler(message)}
-            >
-              <ListItemIcon className={menuItem}>
-                <div>
-                  <FontAwesomeIcon icon={faCommentDots} size="lg" />
-                  <span className={subject}>{message.subject}</span>
-                </div>
-                <p className={_message}>{message.message1}</p>
-                <p className={date}>{convertISOTime(message.sendDate, true)}</p>
-              </ListItemIcon>
-            </MenuItem>
-            {index < messages.length - 1 && <Divider />}
-          </Fragment>
-        );
-      });
+      return messages
+        .filter(message => message.type !== MessageTypeEnum.SPECIAL)
+        .map((message, index) => {
+          return (
+            <Fragment key={message.id}>
+              <MenuItem
+                className={`${menu} txt-sm`}
+                onClick={(): void => menuClickHandler(message)}
+              >
+                <ListItemIcon className={menuItem}>
+                  <div>
+                    <FontAwesomeIcon icon={faCommentDots} size="lg" />
+                    <span className={subject}>{message.subject}</span>
+                  </div>
+                  <p className={_message}>{message.message1}</p>
+                  <p className={date}>{convertISOTime(message.sendDate, true)}</p>
+                </ListItemIcon>
+              </MenuItem>
+              {index < messages.length - 1 && <Divider />}
+            </Fragment>
+          );
+        });
     } else {
       return (
         <span style={{ width: 300, padding: '0 10px' }}>پیامی وجود ندارد</span>

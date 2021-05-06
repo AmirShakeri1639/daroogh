@@ -19,6 +19,7 @@ const prescription = 'prescription';
 const job = 'job';
 const fda = `/${dashboard}/fda`;
 const error = `/${dashboard}/error`;
+const commisionSettings = 'settingsCommision';
 
 const pharmacyRoutes = {
   pharmacyMessage: `/${dashboard}/${pharmacy}/messages`,
@@ -46,6 +47,7 @@ export default {
 
   prescription: `/${dashboard}/${peopleSection}/prescription`,
   jobApplication: `/${dashboard}/${peopleSection}/employmentApplication`,
+  findJob: `/${dashboard}/${peopleSection}/findJob`,
 
   drugCategoryfavoriteList: `/${dashboard}/${favorite}/drug-category`,
 
@@ -89,6 +91,7 @@ export default {
   favoriteDrugs: `/${dashboard}/favoriteDrugs`,
   selectedDrugs: `/${dashboard}/selectedDrugs`,
   jobsList: `/${dashboard}/${job}/list`,
+  commisionSettingsList: `/${dashboard}/${commisionSettings}/list`,
 
   ...pharmacyRoutes,
 

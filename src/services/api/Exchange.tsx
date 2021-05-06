@@ -18,6 +18,7 @@ class Exchange extends Api {
       `/Exchange/Dashboard?${this.waitingFilter}`,
     oneExchange: 'Exchange/ViewExchange?exchangeID=',
     allSuccessExchange: '/Exchange/AllSuccessExchange',
+    aiSuggestion: '/Exchange/GetBasketRecommendation?exchangeId=',
   };
 
   getExchangeTree = async (exchangeId: number | string): Promise<any> => {
@@ -117,7 +118,10 @@ class Exchange extends Api {
     }
   };
 
-
+  callAiSuggestion = async (exchangeId: number | string): Promise<any> => {
+    const result = await this.postJsonData(`${this.urls.aiSuggestion}${exchangeId}`)
+    return result
+  }
 }
 
 export default Exchange

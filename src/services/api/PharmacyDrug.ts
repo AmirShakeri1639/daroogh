@@ -47,7 +47,7 @@ class PharmacyDrug extends Api {
     top: number = 100
   ): Promise<any> => {
     try {
-      let query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
+      const query = `${this.urls.all}?pharmacyKey=${id}&full=false`;
       // query += `&$top=${top}&$skip=${skip * top}`;
       const result = await this.postJsonData(query);
       return result.data;
@@ -93,10 +93,11 @@ class PharmacyDrug extends Api {
   };
 
   getRelatedPharmacyDrug = async (
-    count: string | number = ''
+    count: string | number = '',
+    from?: number,
   ): Promise<any> => {
     const result = await this.postData(
-      `/PharmacyDrug/GetRelatedPharmacyDrug?from=0&count=${count}`
+      `/PharmacyDrug/GetRelatedPharmacyDrug?from=${from ?? 0}&count=${count}`
     );
     return result.data;
   };
@@ -174,12 +175,13 @@ class PharmacyDrug extends Api {
   };
 
   allPharmacyDrug = async (
-    pharmacyKey: string = '',
+    order: 'asc' | 'desc' = 'asc',
+    orderBy: 'expireDate' | 'date' | 'cnt' = 'expireDate',
     isFull = true,
-    order: 'asc' | 'desc' = 'asc'
+    pharmacyKey: string = '',
   ): Promise<any> => {
     const result = await this.postData(
-      `/PharmacyDrug/AllPharmacyDrug?full=${isFull}&pharmacyKey=${pharmacyKey}&$orderby=id ${order}`
+      `/PharmacyDrug/AllPharmacyDrug?full=${isFull}&pharmacyKey=${pharmacyKey}&$orderby=${orderBy} ${order}`
     );
     return result.data;
   };
@@ -282,6 +284,11 @@ class PharmacyDrug extends Api {
 
   getFavoritePharmacyDrug = async (pharmacyKey = ''): Promise<any> => {
     const result = await this.postData(`${this.urls.getFavoritePharmacyDrug}?pharmacyKey=${pharmacyKey}`);
+    return result.data;
+  }
+
+  getRelatedPharmacyDrugByDate = async (count: string | number = '', from?: number): Promise<any> => {
+    const result = await this.postData(`/PharmacyDrug/GetRelatedPharmacyDrugByDate?count=${count}&from=${from}`);
     return result.data;
   }
 }

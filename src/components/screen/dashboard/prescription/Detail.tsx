@@ -1,28 +1,14 @@
-import { createStyles, Grid, makeStyles, Paper } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faPills,
-  faBoxes,
-  faMoneyBillWave,
-  faCalendarTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import {
-  DrugInterface,
-  InitialNewUserInterface,
-  JobApplicationInterface,
-  UserLoginInterface,
-} from '../../../../interfaces';
-import { TextLine } from '../../../public';
+import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
 import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
 import {
   PrescriptionInterface,
-  PrescriptionInputInterface,
 } from 'interfaces/PrescriptionInterface';
 import { getJalaliDate, isNullOrEmpty, JwtData } from 'utils';
 import { ColorEnum, PrescriptionResponseStateEnum } from 'enum';
 import noImage from './noImage.jpg';
+import { getBaseUrl } from 'config'
 
 
 const useStyle = makeStyles((theme) =>
@@ -152,7 +138,7 @@ const Detail: React.FC<PrescriptionInterface> = (props) => {
               <img
                 onError={addDefaultSrc}
                 style={{ height: '80px', width: '80px', margin: '5px' }}
-                src={'https://api.daroog.org/api/File/GetFile?key=' + fileKey}
+                src={getBaseUrl() + '/File/GetFile?key=' + fileKey}
               />
           </Grid>
         </Grid>

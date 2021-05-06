@@ -1,4 +1,4 @@
-import React, { useContext, useReducer, useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import {
   Card,
   CardActions,
@@ -14,9 +14,7 @@ import {
   ActionInterface,
   CardPropsInterface,
 } from 'interfaces';
-import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
 import { AllPharmacyDrugInterface } from '../../../../../interfaces/AllPharmacyDrugInterface';
-import PharmacyDrug from '../../../../../services/api/PharmacyDrug';
 import { AddDrugInterface } from '../../../../../interfaces';
 import { useTranslation } from 'react-i18next';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -161,7 +159,6 @@ function reducer(state = initialState, action: ActionInterface): any {
 const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
   const [expanded, setExpanded] = React.useState(false);
   const [, setDrugInfo] = useState<AllPharmacyDrugInterface>();
-  const { addDrug1, addPack1, removePack1, addDrug2, addPack2, removePack2 } = new PharmacyDrug();
   const [] = useReducer(reducer, initialState);
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
@@ -181,24 +178,7 @@ const NewCardContainer: React.FC<CardPropsInterface> = (props) => {
     return <MuiAlert style={{ zIndex: 99999 }} elevation={6} variant="filled" {...props} />;
   };
 
-  const {
-    basketCount,
-    setBasketCount,
-    uBasketCount,
-    setUbasketCount,
-    activeStep,
-    setRecommendationMessage,
-    setExchangeId,
-    selectedPharmacyForTransfer,
-    viewExhcnage,
-    setViewExchange,
-    exchangeId,
-    lockedAction,
-  } = useContext<TransferDrugContextInterface>(DrugTransferContext);
-
   const { isPack, collapsableContent, basicDetail, pharmacyDrug } = props;
-  const { getViewExchange } = new PharmacyDrug();
-
   const { expand, expandOpen, root, actionExpand, pack, collapse } = style();
 
   const handleExpandClick = (): any => {

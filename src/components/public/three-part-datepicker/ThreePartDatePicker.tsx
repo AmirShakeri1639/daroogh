@@ -1,8 +1,9 @@
 import React, { useEffect, useReducer } from 'react';
-import { createStyles, Grid, makeStyles, TextField } from '@material-ui/core';
+import { createStyles, Grid, makeStyles } from '@material-ui/core';
 import { useTranslation } from 'react-i18next';
-import { ActionInterface } from '../../../interfaces';
-import { isNullOrEmpty } from '../../../utils';
+import { ActionInterface } from 'interfaces';
+import { isNullOrEmpty } from 'utils';
+import NumberField from '../TextField/NumberField'
 
 const useClasses = makeStyles((theme) =>
   createStyles({
@@ -130,17 +131,16 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
     <Grid item xs={ 12 }
       style={ { display: 'flex', alignItems: 'center' } }>
       <span style={{ whiteSpace: 'pre', margin: '0 .2em' }}>{ props.label }</span>
-      <TextField
+      <NumberField
         error={
           (state.day === '' && (state.month !== '' || state.year !== ''))
           || (state.day !== '' && (state.day < 1 || state.day > 31))
         }
         label={ t('general.day') }
-        type="number"
         className={ formItemSmall }
         variant="outlined"
         value={ state.day }
-        onChange={ (e): void => {
+        onChange={ (e: any): void => {
           e.target.value = e.target.value.substr(0, 2)
           if (e.target.value !== '') {
             if (+e.target.value < 1) e.target.value = '1'
@@ -150,13 +150,12 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
           setSelectedDate({ day: e.target.value });
         } }
       />
-      <TextField
+      <NumberField
         error={
           (state.month === '' && (state.day !== '' || state.year !== ''))
           || (state.month !== '' && (state.month < 1 || state.month > 12))
         }
         label={ t('general.month') }
-        type="number"
         className={ formItemSmall }
         variant="outlined"
         value={ state.month }
@@ -173,13 +172,12 @@ export const ThreePartDatePicker: React.FC<Props> = (props) => {
           setSelectedDate({ month: e.target.value });
         } }
       />
-      <TextField
+      <NumberField
         error={
           (state.year === '' && (state.day !== '' || state.month !== ''))
           || (state.year !== '' && (state.year < 1 || state.year > 99))
         }
         label={ t('general.year') }
-        type="number"
         className={ formItemSmall }
         variant="outlined"
         value={ state.year }

@@ -87,4 +87,4 @@ const ItemContainer: React.FC<ItemContainerPropsInterface> = (props) => {
   );
 };
 
-export default ItemContainer;
+export default React.memo(ItemContainer);

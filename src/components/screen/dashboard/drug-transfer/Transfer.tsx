@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { createStyles, makeStyles, CircularProgress } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import './transfer.scss';
 import Context, { TransferDrugContextInterface } from './Context';
 import { Grid } from '@material-ui/core';
-import ProgressBar from './ProgressBar';
 import MaterialContainer from '../../../public/material-container/MaterialContainer';
-import SecondStep from './second-step/SecondStep';
 import FirstStep from './first-step/FirstStep';
-import ThirdStep from './third-step/ThirdStep';
 import { AllPharmacyDrugInterface } from '../../../../interfaces/AllPharmacyDrugInterface';
-import FourthStep from './fourth-step/FourthStep';
 import { TransferPropsInterface } from '../../../../interfaces/component';
 import PharmacyDrug from '../../../../services/api/PharmacyDrug';
-import { CardInfo, ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
+import { ViewExchangeInterface } from '../../../../interfaces/ViewExchangeInterface';
 import queryString from 'query-string';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { calcTotalPrices } from '../../../../utils/ExchangeTools';
-import fa from '../../../../i18n/fa/fa';
-import CircularProgressWithLabel from '../../../public/loading/CircularProgressWithLabel';
-import { ColorEnum } from '../../../../enum';
+import { calcTotalPrices, fillFromCart, getColor } from '../../../../utils/ExchangeTools';
 import Exchange from './exchange/Exchange';
 
 const style = makeStyles((theme) =>
@@ -66,259 +59,156 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
   const [fireDesctopScroll, setFireDesctopScroll] = React.useState(true);
 
   const { viewExchangeId, exchangeState } = props;
+  const { search } = useLocation();
+  const params = queryString.parse(search);
 
-  const location = useLocation();
-  const params = queryString.parse(location.search);
+  useEffect(() => {
+    const isStep0 = window.location.hash.endsWith('step=1');
+    const isStep1 = window.location.hash.endsWith('step=2');
+
+    if (isStep0) {
+      setEid('');
+      setActiveStep(0);
+    } else if (isStep1) {
+      if (activeStep != 2) setActiveStep(1)
+    }
+  }, [search, params]);
 
   useEffect(() => {
     const xId = params.eid == null ? undefined : params.eid.toString();
     setEid(xId);
   }, [params]);
 
-  const getColor = (res: any, item: any): string => {
-    const color =
-      res && res.currentPharmacyIsA
-        ? item.addedByB
-          ? ColorEnum.AddedByB
-          : item.confirmed !== undefined && item.confirmed === false
-          ? ColorEnum.NotConfirmed
-          : ColorEnum.Confirmed
-        : ColorEnum.Confirmed;
+  const loadExchange = async (exchangeId: number | string = ''): Promise<void> => {
+    const newEId = exchangeId 
+      ? exchangeId 
+      : eid
+        ? eid
+        : viewExhcnage?.id
+    if (newEId !== undefined && newEId !== 0) {
+      setByCartable(true);
+      const result = await getViewExchange(newEId);
+      let res: ViewExchangeInterface | undefined = result?.data;
+      if (res) {
+        const locked =
+          res.state === 1 ||
+          (!res.currentPharmacyIsA &&
+            (res.state === 2 || res.state === 12) &&
+            res.lockSuggestion === false) ||
+          (res.currentPharmacyIsA && res.state === 1);
 
-    return color;
-  };
+        setLockedAction(locked ?? true);
+
+        const newItemsA: AllPharmacyDrugInterface[] =
+          await fillFromCart(res?.cartA, res?.currentPharmacyIsA)
+        const newItemsB: AllPharmacyDrugInterface[] =
+          await fillFromCart(res?.cartB, res?.currentPharmacyIsA)
+
+        if (!res.currentPharmacyIsA) {
+          setBasketCount(newItemsA);
+          setUbasketCount(newItemsB);
+          setSelectedPharmacyForTransfer(res.pharmacyKeyA);
+        } else {
+          setUbasketCount(newItemsA);
+          setBasketCount(newItemsB);
+          setSelectedPharmacyForTransfer(res.pharmacyKeyB);
+        }
+      }
+
+      if (res !== undefined) {
+        res = calcTotalPrices({
+          exchange: res,
+          uBasketCount,
+          basketCount,
+        });
+      }
+
+      setViewExchange(res);
+      if (res) {
+        setExchangeStateCode(res.state);
+        if (res.currentPharmacyIsA) {
+          switch (res.state) {
+            case 2:
+              setMessageOfExchangeState(
+                res.lockSuggestion
+                  ? 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید.'
+                  : 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست پیشنهادی شما را ویرایش نماید.'
+              );
+              break;
+            case 3:
+              setMessageOfExchangeState(
+                'لطفا تغییرات سبدها را بررسی و تایید نموده و نسبت به پرداخت پورسانت اقدام نمایید'
+              );
+              break;
+            case 4 || 9:
+              setMessageOfExchangeState(
+                'تبادل انجام شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
+              );
+              break;
+            case 5:
+              setMessageOfExchangeState('این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت');
+              break;
+            case 6:
+              setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
+              break;
+            case 7:
+              setMessageOfExchangeState('این تبادل لغو شده است');
+              break;
+            case 8 || 10:
+              setMessageOfExchangeState(
+                'این تبادل انجام شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+              );
+              break;
+
+            default:
+              break;
+          }
+        } else {
+          switch (res.state) {
+            case 2:
+              setMessageOfExchangeState(
+                'پس از بررسی سبدها نسبت به تایید یا رد این درخواست اقدام نمایید.'
+              );
+              break;
+            case 3:
+              setMessageOfExchangeState('لطفا منتظر تایید نهایی داروخانه مقابل بمانید');
+              break;
+            case 4 || 8:
+              setMessageOfExchangeState(
+                'تبادل انجام شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
+              );
+              break;
+            case 6:
+              setMessageOfExchangeState('این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت');
+              break;
+            case 5:
+              setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
+              break;
+            case 7:
+              setMessageOfExchangeState('این تبادل لغو شده است');
+              break;
+            case 9 || 10:
+              setMessageOfExchangeState(
+                'این تبادل انجام شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
+              );
+              break;
+            default:
+              break;
+          }
+        }
+      }
+      if (res) {
+        setExchangeId(res.id);
+      }
+      setByCartable(false);
+      setActiveStep(1);
+    }
+  }
 
   useEffect(() => {
-    (async (): Promise<void> => {
-      if (eid !== undefined && eid !== 0) {
-        setByCartable(true);
-        const result = await getViewExchange(eid);
-        let res: ViewExchangeInterface | undefined = result?.data;
-        if (res) {
-          const basketA: AllPharmacyDrugInterface[] = [];
-          const basketB: AllPharmacyDrugInterface[] = [];
-          const locked =
-            res.state === 1 ||
-            (!res.currentPharmacyIsA &&
-              (res.state === 2 || res.state === 12) &&
-              res.lockSuggestion === false) ||
-            (res.currentPharmacyIsA && res.state === 1);
-
-          setLockedAction(locked ?? true);
-
-          if (res.cartA !== undefined) {
-            res.cartA.forEach((item) => {
-              if (
-                !res?.currentPharmacyIsA &&
-                item.confirmed !== undefined &&
-                item.confirmed === false
-              )
-                return;
-              basketA.push({
-                packDetails: [],
-                id: item.pharmacyDrugID,
-                packID: item.packID,
-                packName: item.packName,
-                drugID: item.drugID,
-                drug: item.drug,
-                cnt: item.cnt,
-                batchNO: '',
-                expireDate: item.expireDate,
-                amount: item.amount,
-                buttonName: 'حذف از تبادل',
-                cardColor: getColor(res, item),
-                currentCnt: item.cnt,
-                offer1: item.offer1,
-                offer2: item.offer2,
-                order: 0,
-                totalAmount: 0,
-                totalCount: 0,
-              });
-            });
-          }
-          if (res.cartB !== undefined) {
-            res.cartB.forEach((item) => {
-              if (
-                !res?.currentPharmacyIsA &&
-                item.confirmed !== undefined &&
-                item.confirmed === false
-              )
-                return;
-              basketB.push({
-                packDetails: [],
-                id: item.pharmacyDrugID,
-                packID: item.packID,
-                packName: item.packName,
-                drugID: item.drugID,
-                drug: item.drug,
-                cnt: item.cnt,
-                batchNO: '',
-                expireDate: item.expireDate,
-                amount: item.amount,
-                buttonName: 'حذف از تبادل',
-                cardColor: getColor(res, item),
-                currentCnt: item.cnt,
-                offer1: item.offer1,
-                offer2: item.offer2,
-                order: 0,
-                totalAmount: 0,
-                totalCount: 0,
-                confirmed: item.confirmed,
-              });
-            });
-          }
-
-          const newItemsA: AllPharmacyDrugInterface[] = [];
-          const packListA = new Array<AllPharmacyDrugInterface>();
-
-          basketA.forEach((item) => {
-            let ignore = false;
-            if (item.packID) {
-              let totalAmount = 0;
-              if (!packListA.find((x) => x.packID === item.packID)) {
-                if (!item.packDetails) item.packDetails = [];
-                basketA
-                  .filter((x) => x.packID === item.packID)
-                  .forEach((p: AllPharmacyDrugInterface) => {
-                    item.packDetails.push(p);
-                    packListA.push(p);
-                    totalAmount += p.amount * p.cnt;
-                  });
-                item.totalAmount = totalAmount;
-                newItemsA.push(item);
-              } else {
-                ignore = true;
-              }
-            } else {
-              if (!ignore) newItemsA.push(item);
-            }
-          });
-
-          const newItemsB: AllPharmacyDrugInterface[] = [];
-          const packListB = new Array<AllPharmacyDrugInterface>();
-
-          basketB.forEach((item) => {
-            let ignore = false;
-            if (item.packID) {
-              let totalAmount = 0;
-              if (!packListB.find((x) => x.packID === item.packID)) {
-                if (!item.packDetails) item.packDetails = [];
-                basketB
-                  .filter((x) => x.packID === item.packID)
-                  .forEach((p: AllPharmacyDrugInterface) => {
-                    item.packDetails.push(p);
-                    packListB.push(p);
-                    totalAmount += p.amount * p.cnt;
-                  });
-                item.totalAmount = totalAmount;
-                newItemsB.push(item);
-              } else {
-                ignore = true;
-              }
-            } else {
-              if (!ignore) newItemsB.push(item);
-            }
-          });
-          if (!res.currentPharmacyIsA) {
-            setBasketCount(newItemsA);
-            setUbasketCount(newItemsB);
-            setSelectedPharmacyForTransfer(res.pharmacyKeyA);
-          } else {
-            setUbasketCount(newItemsA);
-            setBasketCount(newItemsB);
-            setSelectedPharmacyForTransfer(res.pharmacyKeyB);
-          }
-        }
-
-        if (res !== undefined) {
-          res = calcTotalPrices({
-            exchange: res,
-            uBasketCount,
-            basketCount,
-          });
-        }
-
-        setViewExchange(res);
-        if (res) {
-          setExchangeStateCode(res.state);
-          if (res.currentPharmacyIsA) {
-            switch (res.state) {
-              case 2:
-                setMessageOfExchangeState(
-                  res.lockSuggestion
-                    ? 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید.'
-                    : 'لطفا منتظر پاسخ داروخانه طرف مقابل بمانید. داروخانه مقابل ممکن است لیست پیشنهادی شما را ویرایش نماید.'
-                );
-                break;
-              case 3:
-                setMessageOfExchangeState(
-                  'لطفا تغییرات سبدها را بررسی و تایید نموده و نسبت به پرداخت پورسانت اقدام نمایید'
-                );
-                break;
-              case 4 || 9:
-                setMessageOfExchangeState(
-                  'تبادل انجام شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
-                );
-                break;
-              case 5:
-                setMessageOfExchangeState('این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت');
-                break;
-              case 6:
-                setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
-                break;
-              case 7:
-                setMessageOfExchangeState('این تبادل لغو شده است');
-                break;
-              case 8 || 10:
-                setMessageOfExchangeState(
-                  'این تبادل انجام شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
-                );
-                break;
-
-              default:
-                break;
-            }
-          } else {
-            switch (res.state) {
-              case 2:
-                setMessageOfExchangeState(
-                  'پس از بررسی سبدها نسبت به تایید یا رد این درخواست اقدام نمایید.'
-                );
-                break;
-              case 3:
-                setMessageOfExchangeState('لطفا منتظر تایید نهایی داروخانه مقابل بمانید');
-                break;
-              case 4 || 8:
-                setMessageOfExchangeState(
-                  'تبادل انجام شده است. لطفا نسبت به پرداخت پورسانت اقدام نمایید.'
-                );
-                break;
-              case 6:
-                setMessageOfExchangeState('این تبادل توسط داروخانه مقابل مورد تایید قرار نگرفت');
-                break;
-              case 5:
-                setMessageOfExchangeState('شما با این تبادل مخالفت نموده اید');
-                break;
-              case 7:
-                setMessageOfExchangeState('این تبادل لغو شده است');
-                break;
-              case 9 || 10:
-                setMessageOfExchangeState(
-                  'این تبادل انجام شده است. میتوانید فاکتور یا آدرس داروخانه مقابل را مشاهده نمایید'
-                );
-                break;
-              default:
-                break;
-            }
-          }
-        }
-        if (res) {
-          setExchangeId(res.id);
-        }
-        setByCartable(false);
-        setActiveStep(1);
-      }
-    })();
+    (async (): Promise<any> => {
+      await loadExchange()
+    })()
   }, [viewExchangeId, exchangeState, eid]);
 
   useEffect(() => {
@@ -389,9 +279,9 @@ const TransferDrug: React.FC<TransferPropsInterface> = (props) => {
             {byCartable ? (
               <div>
                 <span>در حال انتقال به صفحه تبادل. لطفا منتظر بمانید...</span>
-                <CircularProgress size={20} />
+                {/* <CircularProgress size={20} /> */}
               </div>
-            ) : activeStep === 0 ? (
+            ) : activeStep === 0 || params.step == '0' ? (
               <FirstStep />
             ) : (
               <Exchange />

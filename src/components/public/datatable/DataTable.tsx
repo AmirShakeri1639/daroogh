@@ -10,11 +10,13 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  Grid,
   IconButton,
   makeStyles,
   Menu,
   MenuItem,
   Slide,
+  TablePagination,
   Toolbar,
   Typography,
 } from '@material-ui/core'
@@ -31,6 +33,7 @@ import XLSX from 'xlsx'
 import { tSimple, tSuccess, tInfo, tWarn } from 'utils'
 import { screenWidth } from 'enum'
 import { getBaseUrl } from 'config'
+import Utils from '../utility/Utils'
 
 const exportToExcel = async (columns: any[], data: any[], type: number, url: string) => {
   const columnInfo = columns.reduce(
@@ -179,6 +182,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
   ]
   const ITEM_HEIGHT = 48
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [totalCount, setTotalCount] = React.useState<number>(0);
   const open = Boolean(anchorEl)
 
   const handleExportButtonClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -347,99 +351,112 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
   return (
     <div className={table}>
       <ReportContainer />
-      <MaterialTable
-        tableRef={tableRef}
-        localization={localization}
-        icons={{
-          PreviousPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-          NextPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-        }}
-        components={{
-          Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
-        }}
-        columns={columns}
-        data={(query): any =>
-          new Promise((resolve, reject) => {
-            let url = getBaseUrl() + urlAddress
-            if (url.includes('?'))
-              url += `&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
-            else url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
+      <div id="dataTable1">
+        <MaterialTable
+          tableRef={tableRef}
+          localization={localization}
+          icons={{
+            PreviousPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+            NextPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+          }}
+          components={{
+            Toolbar: (props: any): JSX.Element => <MTableToolbar {...props} />,
+            Pagination: props => (
+              <Grid container style={{marginTop: -5}}>
+                <Grid item xs={12} sm={6} xl={3} style={{display: 'flex', alignItems: 'center'}}>
+                  <span>
+                    <TablePagination {...props} />
+                  </span>
+                  <span style={{marginRight: 20}}>تعداد کل ردیف ها : <span style={{color: 'blue', fontWeight: 'bold'}}>{Utils.numberWithCommas(totalCount)}</span></span>
+                </Grid>
+              </Grid>
+            )
+          }}
+          columns={columns}
+          data={(query): any =>
+            new Promise((resolve, reject) => {
+              let url = getBaseUrl() + urlAddress
+              if (url.includes('?'))
+                url += `&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
+              else url += `?&$top=${query.pageSize}&$skip=${query.page * query.pageSize}`
 
-            if (otherQueryString) {
-              url += `&${otherQueryString}`
-            }
-
-            if (defaultFilter) {
-              url += `&$filter= ${defaultFilter}`
-            }
-
-            const qFilter = query.filters.filter((x) => x.value.fieldValue !== '')
-            qFilter.forEach((x: any, i: number) => {
-              if (i === 0) url += defaultFilter ? ' and ' : '&$filter='
-              const openP = i === 0 ? '(' : ''
-              const closeP = i === qFilter.length - 1 ? ')' : ''
-              const andO = i < qFilter.length - 1 ? 'and ' : ''
-              url += `${openP} ${String(x.value.operator).replace(
-                '$',
-                x.value.fieldValue
-              )} ${andO}${closeP}`
-            })
-            if (query.search && query.search !== '') {
-              const columnsFilter = columns.filter((x: any) => x.searchable)
-              if (columnsFilter.length > 0) {
-                url += defaultFilter || query.filters.length > 0 ? ' and ' : '&$filter='
-                columnsFilter.forEach((x: DataTableColumns, i: number) => {
-                  const openP = i === 0 ? '(' : ''
-                  const closeP = i === columnsFilter.length - 1 ? ')' : ''
-                  const orO = i < columnsFilter.length - 1 ? 'or ' : ''
-                  url += `${openP}contains(cast(${x.field},'Edm.String'),'${query.search}')${orO}${closeP}`
-                })
+              if (otherQueryString) {
+                url += `&${otherQueryString}`
               }
-            }
-            if (query.orderBy) {
-              url += `&$orderby=${query.orderBy.field?.toString()} ${query.orderDirection}`
-            } else {
-              if (columns.findIndex((c: any) => c.field === 'id') !== -1) {
-                url += `&$orderby=id desc`
-              }
-            }
-            const user = localStorage.getItem('user') || '{}'
-            const { token } = JSON.parse(user)
 
-            if (urlAddress)
-              fetch(url, {
-                method: 'POST',
-                headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                },
+              if (defaultFilter) {
+                url += `&$filter= ${defaultFilter}`
+              }
+
+              const qFilter = query.filters.filter((x) => x.value.fieldValue !== '')
+              qFilter.forEach((x: any, i: number) => {
+                if (i === 0) url += defaultFilter ? ' and ' : '&$filter='
+                const openP = i === 0 ? '(' : ''
+                const closeP = i === qFilter.length - 1 ? ')' : ''
+                const andO = i < qFilter.length - 1 ? 'and ' : ''
+                url += `${openP} ${String(x.value.operator).replace(
+                  '$',
+                  x.value.fieldValue
+                )} ${andO}${closeP}`
               })
-                .then((response) => response.json())
-                .then((result) => {
-                  resolve({
-                    data: result.items,
-                    page: query.page,
-                    totalCount: result.count,
+              if (query.search && query.search !== '') {
+                const columnsFilter = columns.filter((x: any) => x.searchable)
+                if (columnsFilter.length > 0) {
+                  url += defaultFilter || query.filters.length > 0 ? ' and ' : '&$filter='
+                  columnsFilter.forEach((x: DataTableColumns, i: number) => {
+                    const openP = i === 0 ? '(' : ''
+                    const closeP = i === columnsFilter.length - 1 ? ')' : ''
+                    const orO = i < columnsFilter.length - 1 ? 'or ' : ''
+                    url += `${openP}contains(cast(${x.field},'Edm.String'),'${query.search}')${orO}${closeP}`
                   })
+                }
+              }
+              if (query.orderBy) {
+                url += `&$orderby=${query.orderBy.field?.toString()} ${query.orderDirection}`
+              } else {
+                if (columns.findIndex((c: any) => c.field === 'id') !== -1) {
+                  url += `&$orderby=id desc`
+                }
+              }
+              const user = localStorage.getItem('user') || '{}'
+              const { token } = JSON.parse(user)
+
+              if (urlAddress)
+                fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                  },
                 })
-                .catch(
-                  async (error: any): Promise<any> => {
-                    tError(
-                      'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.'
-                    )
+                  .then((response) => response.json())
+                  .then((result) => {
+                    setTotalCount(result.count);
                     resolve({
-                      data: [],
-                      page: 0,
-                      totalCount: 0,
+                      data: result.items,
+                      page: query.page,
+                      totalCount: result.count,
                     })
-                  }
-                )
-          })
-        }
-        detailPanel={
-          detailPanel
-            ? [
+                  })
+                  .catch(
+                    async (error: any): Promise<any> => {
+                      tError(
+                        'خطایی در اجرای درخواست رخ داده است. لطفا با واحد پشتیبانی تماس حاصل نمایید.'
+                      )
+                      setTotalCount(0);
+                      resolve({
+                        data: [],
+                        page: 0,
+                        totalCount: 0,
+                      })
+                    }
+                  )
+            })
+          }
+          detailPanel={
+            detailPanel
+              ? [
                 {
                   tooltip: 'نمایش جزئیات',
                   render: (rowData): any => {
@@ -447,43 +464,44 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
                   },
                 },
               ]
-            : []
-        }
-        actions={tableActions}
-        title=""
-        // isLoading={isLoader || isLoading || isLoadingFetchData}
-        options={{
-          actionsColumnIndex: -1,
-          actionsCellStyle: {
-            borderRight: '1px solid silver',
-            textAlignLast: 'center',
-          },
-          showSelectAllCheckbox: multiple,
-          selection: selection,
-          searchFieldAlignment: 'left',
-          doubleHorizontalScroll: false,
-          paginationType: 'stepped',
-          filtering: showFilter,
-          filterCellStyle: { paddingTop: 0, paddingBottom: 5 },
-          pageSize,
-          // exportButton: true,
-          padding: 'dense',
-          showTitle: false,
-          headerStyle: {
-            fontWeight: 800,
-            backgroundColor: '#0078d4',
-            color: 'white',
-          },
-          columnsButton: true,
-          maxBodyHeight: 400,
-          minBodyHeight: 400,
-          rowStyle: (rowData: any): {} => ({
-            backgroundColor: rowData.tableData.checked ? '#37b15933' : '',
-          }),
-        }}
-        onSearchChange={(text: string): any => setSearchText(text)}
-        {...materialTableProps}
-      />
+              : []
+          }
+          actions={tableActions}
+          title=""
+          // isLoading={isLoader || isLoading || isLoadingFetchData}
+          options={{
+            actionsColumnIndex: -1,
+            actionsCellStyle: {
+              borderRight: '1px solid silver',
+              textAlignLast: 'center',
+            },
+            showSelectAllCheckbox: multiple,
+            selection: selection,
+            searchFieldAlignment: 'left',
+            doubleHorizontalScroll: false,
+            paginationType: 'stepped',
+            filtering: showFilter,
+            filterCellStyle: { paddingTop: 0, paddingBottom: 5 },
+            pageSize,
+            // exportButton: true,
+            padding: 'dense',
+            showTitle: false,
+            headerStyle: {
+              fontWeight: 800,
+              backgroundColor: '#0078d4',
+              color: 'white',
+            },
+            columnsButton: true,
+            maxBodyHeight: `calc(90vh - ${document?.getElementById('dataTable1')?.getBoundingClientRect()}`,
+            minBodyHeight: 400,
+            rowStyle: (rowData: any): {} => ({
+              backgroundColor: rowData.tableData.checked ? '#37b15933' : '',
+            }),
+          }}
+          onSearchChange={(text: string): any => setSearchText(text)}
+          {...materialTableProps}
+        />
+      </div>
       <Menu
         id="long-menu"
         anchorEl={anchorEl}
