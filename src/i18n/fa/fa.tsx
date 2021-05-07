@@ -149,6 +149,7 @@ export default {
         till: 'تا',
         resetForm: 'بازنشانی فرم',
         or: 'یا',
+        about: 'درباره ما',
       },
 
       pack: {
