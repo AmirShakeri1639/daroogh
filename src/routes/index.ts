@@ -19,6 +19,7 @@ const prescription = 'prescription';
 const job = 'job';
 const fda = `/${dashboard}/fda`;
 const error = `/${dashboard}/error`;
+const reports = `/${dashboard}/reportes`
 const commisionSettings = 'settingsCommision';
 
 const pharmacyRoutes = {
@@ -98,4 +99,6 @@ export default {
   fda_exchangeList: `${fda}/exchange-list`,
 
   error401: `${error}/401`,
+
+  loginCountReport: `${reports}/login-count`,
 };

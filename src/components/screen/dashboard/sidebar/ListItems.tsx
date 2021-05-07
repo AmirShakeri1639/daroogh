@@ -29,6 +29,7 @@ import {
   faCog,
   faHandshake,
   faArchive,
+  faFingerprint,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -125,6 +126,7 @@ const {
   surveyList,
   fda_exchangeList,
   aPharmacyDocs,
+  loginCountReport,
   commisionSettingsList,
 } = routes
 
@@ -414,6 +416,19 @@ const ListItems: React.FC = () => {
               </ListItemIcon>
               <ListItemText primary={t('reports.SelectedDrugsForm')} />
             </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            {getListItem({
+              Icon: FontAwesomeIcon,
+              text: t('reports.loginCount'),
+              selected: isOpenPageOfThisGroup('reports/login-count'),
+              link: loginCountReport,
+              isNested: true,
+              props: {
+                icon: faFingerprint,
+                size: 'lg'
+              }
+            })}
           </List>
         </Collapse>
       </div>

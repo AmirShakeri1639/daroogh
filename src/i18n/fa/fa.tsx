@@ -141,7 +141,11 @@ export default {
         farthest: 'دورترین',
         primitive: 'اولیه',
         nextMessage: 'پیام بعدی',
-        daroogComission: 'پورسانت داروگ'
+        daroogComission: 'پورسانت داروگ',
+        from: 'از',
+        till: 'تا',
+        resetForm: 'بازنشانی فرم',
+        or: 'یا',
       },
 
       pack: {
@@ -569,6 +573,9 @@ export default {
         SurplusDrugsForm: 'گزارش داروهای مازاد',
         FavoriteDrugsForm: 'گزارش داروهای مورد علاقه داروخانه‌ها',
         SelectedDrugsForm: 'گزارش داروهای انتخاب شده در تبادل',
+        loginCount: 'گزارش تعداد لاگین‌ها',
+        loginCountTitle: 'تعداد لاگین‌ها',
+        basedOn: 'بر اساس',
       },
       countryDivision: {
         province: 'استان',
