@@ -101,4 +101,6 @@ export default {
   error401: `${error}/401`,
 
   loginCountReport: `${reports}/login-count`,
+
+  about: `/${dashboard}/about`,
 };
