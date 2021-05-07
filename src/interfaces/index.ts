@@ -138,3 +138,4 @@ export * from './component';
 export * from './general';
 export * from './comission';
 export * from './user';
+export * from './search'

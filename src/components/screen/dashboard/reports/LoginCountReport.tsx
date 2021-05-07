@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useReducer, useState } from 'react'
-import { Container, Grid, Paper, TextField } from '@material-ui/core'
+import { Container, debounce, Divider, Grid, Paper, TextField } from '@material-ui/core'
 import Modal from 'components/public/modal/Modal'
 import DateTimePicker from 'components/public/datepicker/DatePicker'
 import { ActionInterface } from 'interfaces'
 import { useTranslation } from 'react-i18next'
-import { Reports } from 'services/api'
-import moment from 'moment'
-import { toGregorian } from 'utils'
+import { Reports, Search } from 'services/api'
+import { errorHandler, toGregorian } from 'utils'
+import { CountryDivisionSelect } from 'components/public/country-division/CountryDivisionSelect'
+import { _PharmacyTypeEnum } from 'enum'
+import { SearchPharmacyInterface } from 'interfaces/search'
+import { Autocomplete } from '@material-ui/lab'
 
 const initialState = {
   fromDate: '1400/01/01',
@@ -60,6 +63,8 @@ const LoginCountReport: React.FC = () => {
     setDatePicker(field)
     setIsDatePickerOpen(v => !v)
   }
+  const [pharmacies, setPharmaceis] = useState<any[]>([])
+  const [isPharmaciesLoading, setIsPharmaciesLoading] = useState(false)
 
   const setDate = (e: any): void => {
     switch (datePicker) {
@@ -79,15 +84,34 @@ const LoginCountReport: React.FC = () => {
   const { t } = useTranslation()
 
   const { getLoginCount } = useMemo(() => new Reports(), [])
+  const { searchPharmacy } = useMemo(() => new Search(), [])
+
+  const searchPharmacyByName = async (name: string): Promise<any> => {
+    if (name.length < 2) {
+      return
+    }
+    try {
+      setIsPharmaciesLoading(true)
+      const result = await searchPharmacy(name, _PharmacyTypeEnum.FUZZY)
+      const mappedItems = result.map((item: SearchPharmacyInterface) => ({
+        id: item.id,
+        name: `${item.id} - ${item.name}`,
+      }))
+      setIsPharmaciesLoading(false)
+      setPharmaceis(mappedItems)
+    } catch (e) {
+      errorHandler(e)
+    }
+  }
 
   useEffect(() => {
     console.log('state:', state)
     async function getData() {
-      const t = await getLoginCount({ 
+      const t = await getLoginCount({
         fromDate: toGregorian(state.fromDate),
         toDate: toGregorian(state.toDate),
         geoCode: state.geoCode,
-        pharmacyID: state.pharmacyID
+        pharmacyID: state.pharmacyID?.id
       })
       setResult(t)
       console.log('%c  ', 'padding: 2em; background: lightblue', t)
@@ -121,26 +145,57 @@ const LoginCountReport: React.FC = () => {
                   value={ state?.fromDate }
                   onClick={ () => toggleIsDatePickerOpen(DateField.From) }
                 />
-              </Grid>
-              <Grid item xs={ 12 } sm={ 6 } md={ 4 } spacing={ 3 }>
                 <TextField
                   label={ t('general.till') }
                   inputProps={ {
                     readOnly: true,
                   } }
                   type="text"
-                  required
                   size="small"
                   variant="outlined"
                   value={ state?.toDate }
                   onClick={ () => toggleIsDatePickerOpen(DateField.Till) }
                 />
               </Grid>
+              <Grid xs={ 12 } spacing={2}>
+                <Grid xs={ 4 }>
+                  <CountryDivisionSelect
+                    label={ t('general.location') }
+                    onSelectedHandler={ (id): void => {
+                      dispatch({ type: 'geoCode', value: id })
+                    } }
+                  />
+                </Grid>
+              </Grid>
+              <Grid xs={ 12 } spacing={2}>
+                <Autocomplete
+                  loading={ isPharmaciesLoading }
+                  id="pharmacyList"
+                  noOptionsText={ t('general.noData') }
+                  loadingText={ t('general.loading') }
+                  options={ pharmacies }
+                  value={ state?.pharmacyID }
+                  onChange={ (event, value, reason): void => {
+                    dispatch({ type: 'pharmacyID', value: value })
+                  } }
+                  onInputChange={ debounce(
+                    (e, newValue) => searchPharmacyByName(newValue),
+                    500
+                  ) }
+                  getOptionLabel={ (option: any) => option.name ?? '' }
+                  openOnFocus
+                  renderInput={ (params) => (
+                    <TextField
+                      { ...params }
+                      size="small"
+                      label={ t('pharmacy.name') }
+                      variant="outlined"
+                    />
+                  ) }
+                />
+              </Grid>
             </Grid>
-          </Paper>
-        </Grid>
-        <Grid item xs={ 12 }>
-          <Paper className="inner-paper">
+            <Divider className="margined-divider" />
             <h2>
               { t('reports.loginCountTitle') }
             </h2>

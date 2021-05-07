@@ -136,6 +136,10 @@ input[type='number'] {
   padding: 1em 2em
 }
 
+.margined-divider {
+  margin: 3em 0 !important;
+}
+
 @media print {
   .print-hide {
     display: none !important;
