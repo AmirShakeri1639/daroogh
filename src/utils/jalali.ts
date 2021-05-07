@@ -47,7 +47,6 @@ export const getJalaliLastWeek = (): string => {
   const today = new Date()
   const past = today.getDate() - 7
   today.setDate(past)
-  console.log(getJalaliDate(today))
   return getJalaliDate(today)
 }
 

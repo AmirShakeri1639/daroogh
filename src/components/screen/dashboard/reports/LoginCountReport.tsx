@@ -10,6 +10,7 @@ import { CountryDivisionSelect } from 'components/public/country-division/Countr
 import { _PharmacyTypeEnum } from 'enum'
 import { SearchPharmacyInterface } from 'interfaces/search'
 import { Autocomplete } from '@material-ui/lab'
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading'
 
 const initialState = {
   fromDate: getJalaliLastWeek(), // '1400/01/01',
@@ -43,8 +44,6 @@ function reducer(state = initialState, action: ActionInterface): any {
         pharmacyID: value
       }
     case 'reset':
-      console.log('state in reset befoer"', state)
-      console.log('initalstate:', initialState)
       return initialState
     default:
       console.error('Action type not defined - loginCountReport')
@@ -59,6 +58,7 @@ enum DateField {
 const LoginCountReport: React.FC = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const [result, setResult] = useState(0)
+  const [loading, setLoading] = useState(false)
   const [isDatePickerOpen, setIsDatePickerOpen] = useState<boolean>(false)
   const [datePicker, setDatePicker] = useState(DateField.From)
   const toggleIsDatePickerOpen = (field: DateField = DateField.From) => {
@@ -111,8 +111,8 @@ const LoginCountReport: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log('state:', state)
     async function getData() {
+      setLoading(true)
       if (!state.fromDate) {
         setResult(0)
         return
@@ -120,11 +120,11 @@ const LoginCountReport: React.FC = () => {
       const t = await getLoginCount({
         fromDate: toGregorian(state.fromDate),
         toDate: toGregorian(state.toDate),
-        geoCode: state.geoCode,
+        geoCode: state.geoCode != -1 ? state.geoCode : null,
         pharmacyID: state.pharmacyID?.id
       })
       setResult(t)
-      console.log('%c  ', 'padding: 2em; background: lightblue', t)
+      setLoading(false)
     }
 
     getData()
@@ -174,9 +174,12 @@ const LoginCountReport: React.FC = () => {
                 </Grid>
               </Grid>
               <Grid xs={ 12 } className="v-spacing-3">
+                { t('reports.basedOn') }
                 <Grid xs={ 12 } sm={ 6 } md={ 4 }>
                   <CountryDivisionSelect
                     label={ t('general.location') }
+                    returnProvince={ true }
+                    countryDivisionID={ state?.geoCode }
                     onSelectedHandler={ (id): void => {
                       dispatch({ type: 'geoCode', value: id })
                     } }
@@ -184,6 +187,7 @@ const LoginCountReport: React.FC = () => {
                 </Grid>
               </Grid>
               <Grid xs={ 12 } sm={ 6 } className="v-spacing-3">
+                { `${t('general.or')} ${t('pharmacy.pharmacy')}` }
                 <Autocomplete
                   loading={ isPharmaciesLoading }
                   id="pharmacyList"
@@ -238,6 +242,8 @@ const LoginCountReport: React.FC = () => {
           selectedDateHandler={ setDate }
         />
       </Modal>
+
+      <CircleBackdropLoading isOpen={ loading } />
     </Container>
   )
 }

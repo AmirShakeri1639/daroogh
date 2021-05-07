@@ -145,6 +145,7 @@ export default {
         from: 'از',
         till: 'تا',
         resetForm: 'بازنشانی فرم',
+        or: 'یا',
       },
 
       pack: {
@@ -574,6 +575,7 @@ export default {
         SelectedDrugsForm: 'گزارش داروهای انتخاب شده در تبادل',
         loginCount: 'گزارش تعداد لاگین‌ها',
         loginCountTitle: 'تعداد لاگین‌ها',
+        basedOn: 'بر اساس',
       },
       countryDivision: {
         province: 'استان',
