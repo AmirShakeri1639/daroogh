@@ -20,8 +20,8 @@ import Modal from '../../../public/modal/Modal';
 import DateTimePicker from '../../../public/datepicker/DatePicker';
 import {
   errorHandler,
-  errorSweetAlert,
-  successSweetAlert,
+  tError,
+  tSuccess,
 } from '../../../../utils';
 import Button from '../../../public/button/Button';
 import { Autocomplete } from '@material-ui/lab';
@@ -114,7 +114,7 @@ const MessageForm: React.FC<Props> = ({ onSubmit }) => {
 
   const [_createNewMessage] = useMutation(createNewMessage, {
     onSuccess: async () => {
-      await successSweetAlert(t('alert.successfulSave'));
+      tSuccess(t('alert.successfulSave'));
       setShowError(false);
       dispatch({ type: 'reset' });
       setSelectedUser('');
@@ -124,7 +124,7 @@ const MessageForm: React.FC<Props> = ({ onSubmit }) => {
       }
     },
     onError: async () => {
-      await errorSweetAlert(t('error.save'));
+      tError(t('error.save'));
     },
   });
 
