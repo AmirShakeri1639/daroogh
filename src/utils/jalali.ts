@@ -27,4 +27,21 @@ export const getJalaliDate = (gregorianDate: string): string => {
   );
 }
 
+export const toGregorian = (
+  shamsiDate: string, separator: string = '-'
+): string => {
+  if (!shamsiDate) return ''
+  const shamsiDateArray = shamsiDate.split('/')
+  const gregorianDate = jalaali.toGregorian(
+    Number(shamsiDateArray[0]),
+    Number(shamsiDateArray[1]),
+    Number(shamsiDateArray[2])
+  )
+  return (
+    gregorianDate.gy + separator +
+    gregorianDate.gm + separator +
+    gregorianDate.gd
+  )
+}
+
 export default jalaali;

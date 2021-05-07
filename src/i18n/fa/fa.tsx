@@ -141,7 +141,9 @@ export default {
         farthest: 'دورترین',
         primitive: 'اولیه',
         nextMessage: 'پیام بعدی',
-        daroogComission: 'پورسانت داروگ'
+        daroogComission: 'پورسانت داروگ',
+        from: 'از',
+        till: 'تا',
       },
 
       pack: {
