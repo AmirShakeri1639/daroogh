@@ -3,7 +3,9 @@ import { DefaultAxiosConfigInterface } from '../../interfaces'
 import { errorHandler, tError } from 'utils'
 import i18n from 'i18n'
 import { ToastDurationEnum } from 'utils/toast'
-import { getBaseUrl } from 'config'
+import { getBaseUrl } from 'config';
+import moment from 'jalali-moment';
+import Utils from 'components/public/utility/Utils'
 
 const axiosInstance = axios.create({
   baseURL: getBaseUrl(),
@@ -19,6 +21,45 @@ export const ErrorToastId = {
   ERR_404: 'error404',
   ERR_500: 'error500',
 }
+
+/* convert jalali date to gregorian date
+const datePattern = '[0-9]{2,4}(\/|-|\.)[0-9]{2}(\/|-|\.)[0-9]{2,4}';
+axiosInstance.defaults.params = {};
+axiosInstance.interceptors.request.use(config => {
+  //// const event = new Date(Date.UTC(2012, 11, 20, 3, 0, 0));
+  //// const options: any = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  //// alert(event.toLocaleDateString('fa-IR', options));
+
+  //// let lang = '';
+  //// if (window.navigator.languages != undefined)
+  ////   lang = window.navigator.languages[0];
+
+  let params = config.url?.split('?');
+  if (params) {
+    let p = params[1]
+    if (p) {
+      let pp = p.split('&');
+      if (pp) {
+        pp.forEach(x => {
+          let ppp = x.split('=');
+          const reg = new RegExp(datePattern);
+          const newVal = Utils.fixNumbers(ppp[1]);
+          const year = newVal.substring(0, 4);
+          if (newVal.match(reg) && +year < 1900) {
+            let oldval = ppp[0] + '=' + ppp[1];
+            const now = moment.from(newVal, 'fa').format('YYYY-MM-DD');
+            var url = config.url?.replace(oldval, ppp[0] + '=' + now);
+            config.url = url;
+          }
+        });
+      }
+    }
+  }
+  return config;
+}, error => {
+  return Promise.reject(error);
+});
+*/
 
 axiosInstance.interceptors.response.use(undefined, (error) => {
   const { response } = error
@@ -62,7 +103,7 @@ axiosInstance.interceptors.response.use(undefined, (error) => {
   } else if (status === 404) {
     ; (async (): Promise<any> => {
       tError(
-        'پیدا نشد! - 404', 
+        'پیدا نشد! - 404',
         { toastId: ErrorToastId.ERR_404 }
       )
     })()
