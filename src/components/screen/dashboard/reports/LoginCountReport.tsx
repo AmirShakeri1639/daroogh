@@ -1,18 +1,18 @@
 import React, { useEffect, useMemo, useReducer, useState } from 'react'
-import { Container, debounce, Divider, Grid, Paper, TextField } from '@material-ui/core'
+import { Button, Container, debounce, Divider, Grid, Paper, TextField } from '@material-ui/core'
 import Modal from 'components/public/modal/Modal'
 import DateTimePicker from 'components/public/datepicker/DatePicker'
 import { ActionInterface } from 'interfaces'
 import { useTranslation } from 'react-i18next'
 import { Reports, Search } from 'services/api'
-import { errorHandler, toGregorian } from 'utils'
+import { errorHandler, getJalaliDate, getJalaliLastWeek, todayJalali, toGregorian } from 'utils'
 import { CountryDivisionSelect } from 'components/public/country-division/CountryDivisionSelect'
 import { _PharmacyTypeEnum } from 'enum'
 import { SearchPharmacyInterface } from 'interfaces/search'
 import { Autocomplete } from '@material-ui/lab'
 
 const initialState = {
-  fromDate: '1400/01/01',
+  fromDate: getJalaliLastWeek(), // '1400/01/01',
   toDate: null,
   geoCode: null,
   pharmacyID: null,
@@ -43,6 +43,8 @@ function reducer(state = initialState, action: ActionInterface): any {
         pharmacyID: value
       }
     case 'reset':
+      console.log('state in reset befoer"', state)
+      console.log('initalstate:', initialState)
       return initialState
     default:
       console.error('Action type not defined - loginCountReport')
@@ -65,6 +67,10 @@ const LoginCountReport: React.FC = () => {
   }
   const [pharmacies, setPharmaceis] = useState<any[]>([])
   const [isPharmaciesLoading, setIsPharmaciesLoading] = useState(false)
+
+  const resetForm = () => {
+    dispatch({ type: 'reset' })
+  }
 
   const setDate = (e: any): void => {
     switch (datePicker) {
@@ -107,6 +113,10 @@ const LoginCountReport: React.FC = () => {
   useEffect(() => {
     console.log('state:', state)
     async function getData() {
+      if (!state.fromDate) {
+        setResult(0)
+        return
+      }
       const t = await getLoginCount({
         fromDate: toGregorian(state.fromDate),
         toDate: toGregorian(state.toDate),
@@ -131,34 +141,40 @@ const LoginCountReport: React.FC = () => {
         <Grid item xs={ 12 }>
           <Paper className="inner-paper">
             <h3>{ t('reports.loginCountTitle') }</h3>
-            <Grid container item>
-              <Grid item xs={ 12 } sm={ 6 } md={ 4 } spacing={ 3 }>
-                <TextField
-                  label={ t('general.from') }
-                  inputProps={ {
-                    readOnly: true,
-                  } }
-                  type="text"
-                  required
-                  size="small"
-                  variant="outlined"
-                  value={ state?.fromDate }
-                  onClick={ () => toggleIsDatePickerOpen(DateField.From) }
-                />
-                <TextField
-                  label={ t('general.till') }
-                  inputProps={ {
-                    readOnly: true,
-                  } }
-                  type="text"
-                  size="small"
-                  variant="outlined"
-                  value={ state?.toDate }
-                  onClick={ () => toggleIsDatePickerOpen(DateField.Till) }
-                />
+            <Grid container item xs={ 12 }>
+              <Grid container item xs={ 12 } sm={ 6 } className="v-spacing-3"
+              >
+                <Grid item xs={ 12 } sm={ 5 }>
+                  <TextField
+                    label={ t('general.from') }
+                    inputProps={ {
+                      readOnly: true,
+                    } }
+                    type="text"
+                    required
+                    size="small"
+                    variant="outlined"
+                    style={ { marginLeft: '2em' } }
+                    value={ state?.fromDate }
+                    onClick={ () => toggleIsDatePickerOpen(DateField.From) }
+                  />
+                </Grid>
+                <Grid item xs={ 12 } sm={ 5 }>
+                  <TextField
+                    label={ t('general.till') }
+                    inputProps={ {
+                      readOnly: true,
+                    } }
+                    type="text"
+                    size="small"
+                    variant="outlined"
+                    value={ state?.toDate ?? '' }
+                    onClick={ () => toggleIsDatePickerOpen(DateField.Till) }
+                  />
+                </Grid>
               </Grid>
-              <Grid xs={ 12 } spacing={2}>
-                <Grid xs={ 4 }>
+              <Grid xs={ 12 } className="v-spacing-3">
+                <Grid xs={ 12 } sm={ 6 } md={ 4 }>
                   <CountryDivisionSelect
                     label={ t('general.location') }
                     onSelectedHandler={ (id): void => {
@@ -167,7 +183,7 @@ const LoginCountReport: React.FC = () => {
                   />
                 </Grid>
               </Grid>
-              <Grid xs={ 12 } spacing={2}>
+              <Grid xs={ 12 } sm={ 6 } className="v-spacing-3">
                 <Autocomplete
                   loading={ isPharmaciesLoading }
                   id="pharmacyList"
@@ -193,6 +209,17 @@ const LoginCountReport: React.FC = () => {
                     />
                   ) }
                 />
+              </Grid>
+              <Grid xs={ 12 }>
+                <div style={ { textAlign: 'left' } }>
+                  <Button
+                    color="primary"
+                    onClick={ resetForm }
+                    variant="outlined"
+                  >
+                    { t('general.resetForm') }
+                  </Button>
+                </div>
               </Grid>
             </Grid>
             <Divider className="margined-divider" />

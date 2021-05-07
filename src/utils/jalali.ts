@@ -1,6 +1,7 @@
 // @ts-ignore
 import jalaali from 'jalaali-js';
 import moment from 'jalali-moment';
+import { errorHandler } from 'utils'
 
 export const today = (separator: string = '/'): string => {
   const today = new Date();
@@ -19,12 +20,35 @@ export const todayJalali = (): string => {
   );
 }
 
-export const getJalaliDate = (gregorianDate: string): string => {
-  return (
-    moment(gregorianDate, 'YYYY/MM/DD')
-      .locale('fa')
-      .format('YYYY/MM/DD')
-  );
+export const getJalaliDate = (
+  gregorianDate: any, separator: string = '/'
+): string => {
+  if (typeof gregorianDate === 'string') {
+    return (
+      moment(gregorianDate, 'YYYY/MM/DD')
+        .locale('fa')
+        .format(`YYYY${separator}MM${separator}DD`)
+    )
+  }
+  try {
+    const jalali = jalaali.toJalaali(gregorianDate)
+    return (
+      jalali.jy + separator +
+      jalali.jm + separator + 
+      jalali.jd
+    )
+  } catch (e) {
+    errorHandler(e)
+    return ''
+  }
+}
+
+export const getJalaliLastWeek = (): string => {
+  const today = new Date()
+  const past = today.getDate() - 7
+  today.setDate(past)
+  console.log(getJalaliDate(today))
+  return getJalaliDate(today)
 }
 
 export const toGregorian = (

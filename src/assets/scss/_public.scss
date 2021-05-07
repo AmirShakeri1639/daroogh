@@ -140,6 +140,15 @@ input[type='number'] {
   margin: 3em 0 !important;
 }
 
+.spacing-3 {
+  margin: 3em;
+}
+
+.v-spacing-3 {
+  margin: 3em 0;
+}
+
+
 @media print {
   .print-hide {
     display: none !important;

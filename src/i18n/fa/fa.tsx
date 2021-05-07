@@ -144,6 +144,7 @@ export default {
         daroogComission: 'پورسانت داروگ',
         from: 'از',
         till: 'تا',
+        resetForm: 'بازنشانی فرم',
       },
 
       pack: {
