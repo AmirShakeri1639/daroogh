@@ -320,7 +320,12 @@ const Profile: React.FC = () => {
       <Container maxWidth="lg" className={ parent }>
         <Paper className={ padding3 }>
           <Typography component="h2">
-            <h2>{ t('user.profile') }</h2>
+            <h2>
+              { state.pharmacyName
+                ? `${t('pharmacy.pharmacy')} ${state.pharmacyName}`
+                : t('user.profile')
+              }
+            </h2>
           </Typography>
           <Divider />
           <Grid container>

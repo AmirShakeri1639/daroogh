@@ -6,6 +6,7 @@ import {
   Collapse,
   List,
   createStyles,
+  Divider,
 } from '@material-ui/core';
 import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +30,8 @@ import {
   faCog,
   faHandshake,
   faArchive,
+  faFingerprint,
+  faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -125,7 +128,9 @@ const {
   surveyList,
   fda_exchangeList,
   aPharmacyDocs,
+  loginCountReport,
   commisionSettingsList,
+  about,
 } = routes
 
 /**
@@ -415,6 +420,19 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('reports.SelectedDrugsForm')} />
             </Link>
           </List>
+          <List component="div" className={linkWrapper}>
+            {getListItem({
+              Icon: FontAwesomeIcon,
+              text: t('reports.loginCount'),
+              selected: isOpenPageOfThisGroup('reports/login-count'),
+              link: loginCountReport,
+              isNested: true,
+              props: {
+                icon: faFingerprint,
+                size: 'lg'
+              }
+            })}
+          </List>
         </Collapse>
       </div>
     );
@@ -597,6 +615,26 @@ const ListItems: React.FC = () => {
     );
   };
 
+  const generalMenu = (): JSX.Element => {
+    return (
+      <div className={ menuContainer }>
+        <Divider />
+        <List component="div" className={ linkWrapper }>
+          { getListItem({
+            Icon: FontAwesomeIcon,
+            link: about,
+            text: t('general.about'),
+            selected: isOpenPageOfThisGroup('/about'),
+            props: {
+              icon: faQuestionCircle,
+              size: 'lg',
+            },
+          }) }
+        </List>
+      </div>
+    )
+  }
+
   if (!Array.isArray(rolesArray)) {
     rolesArray = [rolesArray];
   }
@@ -624,6 +662,7 @@ const ListItems: React.FC = () => {
             fdaMenu()}
         </>
       )}
+      { generalMenu() }
     </div>
   );
 };

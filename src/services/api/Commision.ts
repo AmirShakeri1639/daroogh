@@ -29,7 +29,6 @@ class Commision extends Api {
       const result = await this.postJsonData(
         `${this.urls.all}?$top=${top}&$skip=${skip * top}&$orderby=remainedExpirationDays`
       );
-      console.log(result);
       return result.data;
     } catch (e) {
       errorHandler(e);

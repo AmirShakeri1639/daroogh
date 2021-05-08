@@ -111,7 +111,6 @@ const DashboardContent: React.FC<any> = () => {
     setValue(index)
   }
   const onClick = ({ target }: any) => {
-    debugger
     const name = target.attributes.name.value
     window.open(`https://www.google.com/search?q=${name}%20nz`)
   }
