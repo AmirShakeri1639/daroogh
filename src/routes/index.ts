@@ -1,4 +1,4 @@
-import { getBaseUrl } from 'config'
+import { getBaseUrl } from 'config';
 
 const dashboard = 'dashboard';
 const exchange = 'exchange';
@@ -21,6 +21,7 @@ const fda = `/${dashboard}/fda`;
 const error = `/${dashboard}/error`;
 const reports = `/${dashboard}/reportes`
 const commisionSettings = 'settingsCommision';
+const employmentApplication = 'employmentApplication';
 
 const pharmacyRoutes = {
   pharmacyMessage: `/${dashboard}/${pharmacy}/messages`,
@@ -33,6 +34,8 @@ export default {
   registerPharmacyWithUser: `/register-pharmacy-with-user`,
   forgetPassword: '/forget-password',
   otp: '/otp',
+
+  employmentApplicationForAdmin: `/${dashboard}/${employmentApplication}/list`,
   
   dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,

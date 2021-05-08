@@ -43,7 +43,7 @@ export default {
         edit: 'ویرایش',
         term: 'عبارت',
         display: 'نمایش',
-        
+        and: 'و',
         displayList: 'نمایش لیست {{var}}',
         options: 'امکانات',
         expireDate: 'تاریخ انقضا',

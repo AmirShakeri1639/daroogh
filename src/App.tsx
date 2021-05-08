@@ -122,6 +122,8 @@ const SurveyComponent = lazy(
 );
 const APharmacyDocs = lazy(() => import('./components/screen/dashboard/pharmacy/docs/docs'));
 const CommisionsList = lazy(() => import('./components/screen/dashboard/settingsCommision/CommisionsList'));
+const EmploymentApplicationForAdmin = lazy(() => import('./components/screen/dashboard/employment/admin/EmploymentApplication'));
+
 
 const Error404 = lazy(() => import('./components/screen/public/404'));
 const Error401 = lazy(() => import('./components/screen/public/401'));
@@ -177,6 +179,7 @@ const {
   error401,
   loginCountReport,
   commisionSettingsList,
+  employmentApplicationForAdmin,
   about,
 } = routes;
 
@@ -402,6 +405,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute exact path={fda_exchangeList}>
               <Dashboard component={<FDA_exchangeList />} />
+            </PrivateRoute>
+            <PrivateRoute exact path={employmentApplicationForAdmin}>
+              <Dashboard component={<EmploymentApplicationForAdmin />} />
             </PrivateRoute>
 
             <PrivateRoute exact path={error401}>

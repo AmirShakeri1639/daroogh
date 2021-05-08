@@ -309,9 +309,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
       </span>
     );
     const body = (
-      <>
-        <span style={{ marginRight: 5 }}>{t('alerts.DebotAlert')}</span>
-      </>
+      <span style={{ marginRight: 5 }}>{t('alerts.DebotAlert')}</span>
     );
     element = (
       <>
