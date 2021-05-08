@@ -42,7 +42,7 @@ interface Props {
 }
 
 const Detail: React.FC<Props> = (props) => {
-  const { paper, container, textLeft, icon } = useStyle()
+  const { paper, container } = useStyle()
   const { job } = props
   const { t } = useTranslation()
   // const { thousandsSeperator } = Convertor;
