@@ -619,7 +619,6 @@ const ListItems: React.FC = () => {
     return (
       <div className={ menuContainer }>
         <Divider />
-
         <List component="div" className={ linkWrapper }>
           { getListItem({
             Icon: FontAwesomeIcon,
