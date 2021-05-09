@@ -14,4 +14,5 @@ export enum UrlAddress {
   // getPharmacyUsers = '/User/AllPharmacyUsers?$filter=active eq true',
   getAllJobs = '/Job/CurrentPharmacyJobs',
   getAllCommisions = '/CommissionAmount/AllCommissionDiscounts',
+  adminEmploymentApplication = '/EmploymentApplication/AllEmploymentApplicationsForAdmin',
 }

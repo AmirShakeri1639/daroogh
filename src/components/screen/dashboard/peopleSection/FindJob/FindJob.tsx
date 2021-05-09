@@ -1,7 +1,6 @@
 import { Container, createStyles, Grid, makeStyles } from '@material-ui/core'
 import { County, Province } from 'components/public'
-import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle'
-import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FindJob as Job } from 'services/api'
 import { FindJobInterface, finJobDetailInterface } from '../../../../../interfaces'
@@ -9,7 +8,7 @@ import CardContainer from './CardContainer'
 
 const FindJob: React.FC = () => {
   const [dataList, setDataList] = useState<FindJobInterface>()
-  const useStyle = makeStyles((theme) =>
+  const useStyle = makeStyles(() =>
     createStyles({
       input: {
         width: '80%',

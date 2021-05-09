@@ -224,7 +224,7 @@ const UsersList: React.FC = () => {
   const toggleIsOpenUserModal = (): void => setIsOpenUserModal((v) => !v);
 
   const { 
-    getAllUsers, 
+    getAllUsers,
     removeUser, 
     disableUser, 
     saveNewUser,
