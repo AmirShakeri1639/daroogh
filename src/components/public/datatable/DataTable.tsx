@@ -353,7 +353,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     const searchBar: any = document.querySelector(`#${TOOLBAR_ID} input`);
     if (!searchBar) return;
     searchBar.focus();
-  });
+  }, []);
 
   return (
     <div className={table}>
