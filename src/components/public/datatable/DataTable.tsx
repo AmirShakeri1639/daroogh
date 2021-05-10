@@ -347,13 +347,15 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
       </DialogContent>
     </Dialog>
   )
+  
+  const [querySearch, setQuerySearch] = useState('')
 
   const TOOLBAR_ID = "toolbar__unique__id";
   useEffect(() => {
     const searchBar: any = document.querySelector(`#${TOOLBAR_ID} input`);
     if (!searchBar) return;
     searchBar.focus();
-  }, []);
+  }, [querySearch, totalCount]);
 
   return (
     <div className={table}>
@@ -413,6 +415,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
                 )} ${andO}${closeP}`
               })
               if (query.search && query.search !== '') {
+                setQuerySearch(query.search)
                 const columnsFilter = columns.filter((x: any) => x.searchable)
                 if (columnsFilter.length > 0) {
                   url += defaultFilter || query.filters.length > 0 ? ' and ' : '&$filter='
