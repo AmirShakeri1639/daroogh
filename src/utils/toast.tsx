@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify'
+import { toast, ToastOptions } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -41,12 +41,12 @@ const getAutoClose = (message: string): number => {
   )
 }
 
-export const tSimple = (message = '', options = {}) => {
+export const tSimple = (message = '', options: ToastOptions = {}) => {
   vibrate(ToastVibratePattern.SIMPLE)
   return toast(message, options)
 }
 
-export const tInfo = (message = '', options = {}) => {
+export const tInfo = (message = '', options: ToastOptions = {}) => {
   vibrate(ToastVibratePattern.INFO)
   return toast.info(
     <>
@@ -62,7 +62,7 @@ export const tInfo = (message = '', options = {}) => {
   )
 }
 
-export const tSuccess = (message = '', options = {}) => {
+export const tSuccess = (message = '', options: ToastOptions = {}) => {
   vibrate(ToastVibratePattern.SUCCESS)
   return toast.success(
     <>
@@ -78,7 +78,7 @@ export const tSuccess = (message = '', options = {}) => {
   )
 }
 
-export const tWarn = (message = '', options = {}) => {
+export const tWarn = (message = '', options: ToastOptions = {}) => {
   vibrate(ToastVibratePattern.WARN)
   return toast.warn(
     <>
@@ -94,7 +94,7 @@ export const tWarn = (message = '', options = {}) => {
   )
 }
 
-export const tError = (message = '', options = {}) => {
+export const tError = (message = '', options: ToastOptions = {}) => {
   vibrate(ToastVibratePattern.ERROR)
   return toast.error(
     <>
