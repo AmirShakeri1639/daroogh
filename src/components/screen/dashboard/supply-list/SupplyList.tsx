@@ -22,14 +22,14 @@ import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
 import { AllPharmacyDrug } from '../../../../enum/query';
 import { Drug, PharmacyDrug, Comission } from '../../../../services/api';
 import CardContainer from './CardContainer';
-import { debounce, has } from 'lodash';
+import { debounce, has, isNil } from 'lodash';
 import { ActionInterface, AllPharmacyDrugInterface, DrugInterface } from '../../../../interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useEffectOnce } from '../../../../hooks';
-import { Convertor, errorHandler, tSuccess } from 'utils';
+import { Convertor, errorHandler, tError, tSuccess } from 'utils';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 // @ts-ignore
@@ -43,6 +43,8 @@ import SupplyListFilter, { Option } from './SupplyListFilter';
 import { FilterItems } from './types';
 import { StyledFilterWrapper } from './styles';
 import { useStyle } from './style';
+import { ToastDurationEnum } from 'utils/toast';
+import { ErrorToastId } from 'services/api/Api';
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -509,56 +511,59 @@ const SupplyList: React.FC = () => {
   };
 
   const formHandler = async (): Promise<any> => {
-    try {
-      if (
-        selectedYear.trim() === '' ||
-        selectedMonth.trim() === '' ||
-        !monthIsValid(Number(selectedMonth)) ||
-        !dayIsValid(Number(selectedDay)) ||
-        selectedYear.length < 4 ||
-        isWrongDate ||
-        !hasMinimumDate ||
-        // state?.batchNO === ''
-        state?.cnt === '' ||
-        state?.amount === ''
-      ) {
-        setShowError(true);
-        return;
-      }
-      setShowError(false);
-      const intSelectedYear = Number(selectedYear);
-      const intSelectedMonth = Number(selectedMonth);
-      const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay);
+    if (
+      selectedYear.trim() === '' ||
+      selectedMonth.trim() === '' ||
+      !monthIsValid(Number(selectedMonth)) ||
+      !dayIsValid(Number(selectedDay)) ||
+      selectedYear.length < 4 ||
+      isWrongDate ||
+      !hasMinimumDate ||
+      // state?.batchNO === ''
+      state?.cnt === '' ||
+      state?.amount === ''
+    ) {
+      setShowError(true);
+      return;
+    }
+    setShowError(false);
+    const intSelectedYear = Number(selectedYear);
+    const intSelectedMonth = Number(selectedMonth);
+    const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay);
 
-      let date = '';
-      if (!isJalaliDate(intSelectedYear)) {
-        date = `${intSelectedYear}-${numberWithZero(intSelectedMonth)}-${numberWithZero(
-          intSelectedDay
-        )}T00:00:00Z`;
-      } else {
-        const jalail2Gregorian = jalaali.toGregorian(
-          intSelectedYear,
-          intSelectedMonth,
-          intSelectedDay
-        );
+    let date = '';
+    if (!isJalaliDate(intSelectedYear)) {
+      date = `${intSelectedYear}-${numberWithZero(intSelectedMonth)}-${numberWithZero(
+        intSelectedDay
+      )}T00:00:00Z`;
+    } else {
+      const jalail2Gregorian = jalaali.toGregorian(
+        intSelectedYear,
+        intSelectedMonth,
+        intSelectedDay
+      );
 
-        date = `${jalail2Gregorian.gy}-${numberWithZero(jalail2Gregorian.gm)}-${numberWithZero(
-          jalail2Gregorian.gd
-        )}T00:00:00Z`;
-      }
-      state.expireDate = date;
-      if (state.offer1 === '') {
-        state.offer1 = 0;
-      }
-      if (state.offer2 === '') {
-        state.offer2 = 0;
-      }
-      //@ts-ignore
+      date = `${jalail2Gregorian.gy}-${numberWithZero(jalail2Gregorian.gm)}-${numberWithZero(
+        jalail2Gregorian.gd
+      )}T00:00:00Z`;
+    }
+    state.expireDate = date;
+    if (state.offer1 === '') {
+      state.offer1 = 0;
+    }
+    if (state.offer2 === '') {
+      state.offer2 = 0;
+    }
+    if (!isNil(selectedDrug)) {
       state.drugID = selectedDrug?.value;
       await _savePharmacyDrug(state);
       setCalculatedValue(0);
-    } catch (e) {
-      errorHandler(e);
+    } else {
+      tError(t('error.save'), {
+        autoClose: ToastDurationEnum.Long,
+        position: 'bottom-right',
+        toastId: ErrorToastId.ERR_500,
+      });
     }
   };
 
