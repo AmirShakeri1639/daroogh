@@ -936,6 +936,7 @@ const Create: React.FC = () => {
         }}
         formHandler={formHandler}
         fullWidth
+        disableBackdropClick={true}
       >
         <DialogTitle className="text-sm">
           <Grid container>
