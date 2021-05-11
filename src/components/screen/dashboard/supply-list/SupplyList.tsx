@@ -22,14 +22,14 @@ import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
 import { AllPharmacyDrug } from '../../../../enum/query';
 import { Drug, PharmacyDrug, Comission } from '../../../../services/api';
 import CardContainer from './CardContainer';
-import { debounce, has } from 'lodash';
+import { debounce, has, isNil } from 'lodash';
 import { ActionInterface, AllPharmacyDrugInterface, DrugInterface } from '../../../../interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Input from '../../../public/input/Input';
 import FieldSetLegend from '../../../public/fieldset-legend/FieldSetLegend';
 import { PharmacyDrugSupplyList } from '../../../../model/pharmacyDrug';
 import { useEffectOnce } from '../../../../hooks';
-import { Convertor, errorHandler, tSuccess } from 'utils';
+import { Convertor, errorHandler, tError, tSuccess } from 'utils';
 import moment from 'jalali-moment';
 import { jalali } from '../../../../utils';
 // @ts-ignore
@@ -43,6 +43,8 @@ import SupplyListFilter, { Option } from './SupplyListFilter';
 import { FilterItems } from './types';
 import { StyledFilterWrapper } from './styles';
 import { useStyle } from './style';
+import { ToastDurationEnum } from 'utils/toast';
+import { ErrorToastId } from 'services/api/Api';
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -151,6 +153,8 @@ const SupplyList: React.FC = () => {
     genericName: '',
   });
   const [calculatedValue, setCalculatedValue] = useState<number>(0);
+  const [isCalculatingPrice, setIsCalculatingPrice] = useState<boolean>(false);
+
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
@@ -176,7 +180,9 @@ const SupplyList: React.FC = () => {
   const queryCache = useQueryCache();
 
   const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
-  const toggleIsOpenCalculator = (): void => {
+  const toggleIsOpenCalculator = (calculatingPrice: boolean): void => {
+    setCalculatedValue(0);
+    setIsCalculatingPrice(calculatingPrice);
     setIsOpenCalculator((v) => !v);
     // if (isOpenCalculator) {
     //   window.history.back();
@@ -196,6 +202,7 @@ const SupplyList: React.FC = () => {
     calculator,
     calcCloseBtn,
     calcContainer,
+    importantMessage,
   } = useStyle();
 
   // useEffect(() => {
@@ -225,37 +232,37 @@ const SupplyList: React.FC = () => {
     })();
   });
 
-  useEffect(() => {
-    (async (): Promise<any> => {
-      try {
-        const { offer1, offer2, amount, cnt } = state;
-        // @ts-ignore
-        const { value: drugId } = selectedDrug;
-        if ((offer1 !== '' && offer2 !== '' && Number(cnt) > 0) || (drugId && Number(amount) > 0)) {
-          if (Number(offer1) > 0 && Number(offer2) > 0) {
-            setOfferAlert(true);
-          }
-          const result = await getComissionAndRecommendation({
-            drugId,
-            price: state?.amount,
-            offer1: state?.offer1,
-            offer2: state?.offer2,
-            expireDate: isoDate,
-            pharmacyId: '0',
-          });
-          const { data } = result;
-          if (has(data, 'commissionPercent')) {
-            setComissionPercent(data.commissionPercent);
-          }
-          if (has(data, 'suggestionStr')) {
-            setDaroogRecommendation(data.suggestionStr);
-          }
-        }
-      } catch (e) {
-        errorHandler(e);
-      }
-    })();
-  }, [selectedDrug, state?.amount, state?.offer1, state?.offer2, state?.cnt, isoDate]);
+  // useEffect(() => {
+  //   (async (): Promise<any> => {
+  //     try {
+  //       const { offer1, offer2, amount, cnt } = state;
+  //       // @ts-ignore
+  //       const { value: drugId } = selectedDrug;
+  //       if ((offer1 !== '' && offer2 !== '' && Number(cnt) > 0) || (drugId && Number(amount) > 0)) {
+  //         if (Number(offer1) > 0 && Number(offer2) > 0) {
+  //           setOfferAlert(true);
+  //         }
+  //         const result = await getComissionAndRecommendation({
+  //           drugId,
+  //           price: state?.amount,
+  //           offer1: state?.offer1,
+  //           offer2: state?.offer2,
+  //           expireDate: isoDate,
+  //           pharmacyId: '0',
+  //         });
+  //         const { data } = result;
+  //         if (has(data, 'commissionPercent')) {
+  //           setComissionPercent(data.commissionPercent);
+  //         }
+  //         if (has(data, 'suggestionStr')) {
+  //           setDaroogRecommendation(data.suggestionStr);
+  //         }
+  //       }
+  //     } catch (e) {
+  //       errorHandler(e);
+  //     }
+  //   })();
+  // }, [selectedDrug, state?.amount, state?.offer1, state?.offer2, state?.cnt, isoDate]);
 
   const resetDateState = (): void => {
     setSelectedDay('');
@@ -509,56 +516,59 @@ const SupplyList: React.FC = () => {
   };
 
   const formHandler = async (): Promise<any> => {
-    try {
-      if (
-        selectedYear.trim() === '' ||
-        selectedMonth.trim() === '' ||
-        !monthIsValid(Number(selectedMonth)) ||
-        !dayIsValid(Number(selectedDay)) ||
-        selectedYear.length < 4 ||
-        isWrongDate ||
-        !hasMinimumDate ||
-        // state?.batchNO === ''
-        state?.cnt === '' ||
-        state?.amount === ''
-      ) {
-        setShowError(true);
-        return;
-      }
-      setShowError(false);
-      const intSelectedYear = Number(selectedYear);
-      const intSelectedMonth = Number(selectedMonth);
-      const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay);
+    if (
+      selectedYear.trim() === '' ||
+      selectedMonth.trim() === '' ||
+      !monthIsValid(Number(selectedMonth)) ||
+      !dayIsValid(Number(selectedDay)) ||
+      selectedYear.length < 4 ||
+      isWrongDate ||
+      !hasMinimumDate ||
+      // state?.batchNO === ''
+      state?.cnt === '' ||
+      state?.amount === ''
+    ) {
+      setShowError(true);
+      return;
+    }
+    setShowError(false);
+    const intSelectedYear = Number(selectedYear);
+    const intSelectedMonth = Number(selectedMonth);
+    const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay);
 
-      let date = '';
-      if (!isJalaliDate(intSelectedYear)) {
-        date = `${intSelectedYear}-${numberWithZero(intSelectedMonth)}-${numberWithZero(
-          intSelectedDay
-        )}T00:00:00Z`;
-      } else {
-        const jalail2Gregorian = jalaali.toGregorian(
-          intSelectedYear,
-          intSelectedMonth,
-          intSelectedDay
-        );
+    let date = '';
+    if (!isJalaliDate(intSelectedYear)) {
+      date = `${intSelectedYear}-${numberWithZero(intSelectedMonth)}-${numberWithZero(
+        intSelectedDay
+      )}T00:00:00Z`;
+    } else {
+      const jalail2Gregorian = jalaali.toGregorian(
+        intSelectedYear,
+        intSelectedMonth,
+        intSelectedDay
+      );
 
-        date = `${jalail2Gregorian.gy}-${numberWithZero(jalail2Gregorian.gm)}-${numberWithZero(
-          jalail2Gregorian.gd
-        )}T00:00:00Z`;
-      }
-      state.expireDate = date;
-      if (state.offer1 === '') {
-        state.offer1 = 0;
-      }
-      if (state.offer2 === '') {
-        state.offer2 = 0;
-      }
-      //@ts-ignore
+      date = `${jalail2Gregorian.gy}-${numberWithZero(jalail2Gregorian.gm)}-${numberWithZero(
+        jalail2Gregorian.gd
+      )}T00:00:00Z`;
+    }
+    state.expireDate = date;
+    if (state.offer1 === '') {
+      state.offer1 = 0;
+    }
+    if (state.offer2 === '') {
+      state.offer2 = 0;
+    }
+    if (!isNil(selectedDrug)) {
       state.drugID = selectedDrug?.value;
       await _savePharmacyDrug(state);
       setCalculatedValue(0);
-    } catch (e) {
-      errorHandler(e);
+    } else {
+      tError(t('error.save'), {
+        autoClose: ToastDurationEnum.Long,
+        position: 'bottom-right',
+        toastId: ErrorToastId.ERR_500,
+      });
     }
   };
 
@@ -586,7 +596,7 @@ const SupplyList: React.FC = () => {
     {
       value: FilterItems.FARTHEST_REGISTER_DATE,
       text: `${t('general.farthest')} ${t('date.registerDate')}`,
-    },    
+    },
   ];
 
   return (
@@ -695,6 +705,7 @@ const SupplyList: React.FC = () => {
         }}
         formHandler={formHandler}
         fullWidth
+        disableBackdropClick={true}
       >
         <DialogTitle className="text-sm">
           <Grid container>
@@ -704,7 +715,7 @@ const SupplyList: React.FC = () => {
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            {comissionPercent !== '' && (
+            {/* {comissionPercent !== '' && (
               <Grid item xs={12}>
                 <Grid item xs={12}>
                   <span
@@ -720,7 +731,7 @@ const SupplyList: React.FC = () => {
                   <Divider />
                 </Grid>
               </Grid>
-            )}
+            )} */}
           </Grid>
         </DialogTitle>
         <StyledDialogContent id="scrollable-content">
@@ -751,23 +762,43 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container>
                   <Grid item xs={12}>
-                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                    <StyledTitle>{t('alerts.countAlert')}</StyledTitle>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Input
-                      numberFormat
-                      error={showError && state?.cnt === ''}
-                      placeholder={`${t('general.number')}`}
-                      className="w-100"
-                      valueLimit={(value) => {
-                        if (value.value > 0 || value.value === '') {
-                          return value;
+                  <Grid item container xs={12}>
+                    <Grid item xs={7} md={8}>
+                      <Input
+                        numberFormat
+                        error={showError && state?.cnt === ''}
+                        placeholder={`${t('general.number')} ${t('general.inNumber')}`}
+                        className="w-100"
+                        valueLimit={(value) => {
+                          if (value.value > 0 || value.value === '') {
+                            return value;
+                          }
+                        }}
+                        label={`${t('general.number')} ${t('drug.drug')}`}
+                        onChange={(e): void => dispatch({ type: 'cnt', value: e })}
+                        value={
+                          calculatedValue === 0
+                            ? state?.cnt
+                            : !isCalculatingPrice
+                            ? calculatedValue
+                            : state.cnt
                         }
-                      }}
-                      label={`${t('general.number')} ${t('drug.drug')}`}
-                      onChange={(e): void => dispatch({ type: 'cnt', value: e })}
-                      value={state?.cnt}
-                    />
+                      />
+                    </Grid>
+                    <Grid item xs={2} md={1} className={importantMessage}>
+                      <span>{t('general.num')}</span>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Button onClick={() => toggleIsOpenCalculator(false)}>
+                        <FontAwesomeIcon
+                          style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                          icon={faCalculator}
+                        />
+                        {t('general.calculating')}
+                      </Button>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -776,33 +807,44 @@ const SupplyList: React.FC = () => {
                 <Grid xs={12} item>
                   <StyledTitle>{t('alerts.priceTypeAlert')}</StyledTitle>
                 </Grid>
-                <Grid item xs={9}>
-                  <Input
-                    placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
-                    numberFormat
-                    error={showError && state?.amount === ''}
-                    value={calculatedValue === 0 ? state?.amount : calculatedValue}
-                    className="w-100"
-                    valueLimit={(value) => {
-                      if (value.value > 0 || value.value === '') {
-                        return value;
+                <Grid item container>
+                  <Grid item xs={7} md={8}>
+                    <Input
+                      placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
+                      numberFormat
+                      error={showError && state?.amount === ''}
+                      value={
+                        calculatedValue === 0
+                          ? state?.amount
+                          : isCalculatingPrice
+                          ? calculatedValue
+                          : state?.amount
                       }
-                    }}
-                    label={t('general.price')}
-                    onChange={(e): void => {
-                      dispatch({ type: 'amount', value: e });
-                      setCalculatedValue(0);
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Button onClick={toggleIsOpenCalculator}>
-                    <FontAwesomeIcon
-                      style={{ color: ColorEnum.DeepBlue, margin: 4 }}
-                      icon={faCalculator}
+                      className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
+                      label={t('general.price')}
+                      onChange={(e): void => {
+                        dispatch({ type: 'amount', value: e });
+                        setCalculatedValue(0);
+                      }}
                     />
-                    {t('general.calculating')}
-                  </Button>
+                  </Grid>
+                  <Grid item xs={2} md={1} className={importantMessage}>
+                    <span>تومان</span>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button onClick={() => toggleIsOpenCalculator(true)}>
+                      <FontAwesomeIcon
+                        style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                        icon={faCalculator}
+                      />
+                      {t('general.calculating')}
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
 
