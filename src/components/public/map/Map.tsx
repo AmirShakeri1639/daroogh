@@ -33,7 +33,6 @@ const Map: React.FC<Props> = (props) => {
   const [position, setPosition] = useState(defaultLatLng)
   const [draggableRes, setDraggable] = useState(draggable)
   const onSearchSelect = (e: any) => {
-    debugger
     setPosition([e.y, e.x])
   }
 

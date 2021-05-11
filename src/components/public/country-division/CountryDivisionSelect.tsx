@@ -29,18 +29,23 @@ interface Props {
   label?: string;
   onSelectedHandler: (value: number | string) => void;
   error?: boolean;
+  returnProvince?: boolean
 }
+
 const useStyles = makeStyles((theme) => createStyles({
   container: {
     marginTop: theme.spacing(1),
     padding: theme.spacing(0,0)
   }
 }));
+
 export const CountryDivisionSelect: React.FC<Props> = (props) => {
   const {
     countryDivisionID,
-    label = '', onSelectedHandler,
-    error = false
+    label = '', 
+    onSelectedHandler,
+    error = false,
+    returnProvince = false
   } = props;
   const [province, setProvince] = useState<CountryDivisionInterface>(
     initialProvince
@@ -139,10 +144,20 @@ export const CountryDivisionSelect: React.FC<Props> = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (countryDivisionID == null) {
+      setProvince(initialProvince)
+      setCity(initialCity)
+      if (onSelectedHandler) onSelectedHandler(-1)
+    }
+  }, [countryDivisionID])
+
   const provinceSelectedHandler = (id: number | string): void => {
     const { value, label } = allProvinces.filter((p) => p.value === id)[0];
     setProvince({ id: value, name: label, selectable: false });
     loadCities(id);
+    setCity(initialCity)
+    if (returnProvince) onSelectedHandler(id)
   };
 
   const citySelectedHandler = (id: number | string): void => {

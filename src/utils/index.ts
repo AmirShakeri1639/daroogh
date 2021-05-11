@@ -22,7 +22,10 @@ export {
 export {
   default as jalali,
   today,
+  todayJalali,
   getJalaliDate,
+  getJalaliLastWeek,
+  toGregorian,
 } from './jalali';
 export { default as Convertor } from './Convertor';
 export { default as sanitizeReactSelect } from './sanitizeReactSelect';

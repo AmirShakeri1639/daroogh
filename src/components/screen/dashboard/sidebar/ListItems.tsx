@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   ListItem,
   ListItemIcon,
   ListItemText,
   Collapse,
   List,
-  createStyles,
+  Divider,
 } from '@material-ui/core';
 import ContactMailTwoToneIcon from '@material-ui/icons/ContactMailTwoTone';
 import { useTranslation } from 'react-i18next';
-import { makeStyles } from '@material-ui/core/styles';
 import {
   Dashboard as DashboardIcon,
   ExpandLess,
@@ -29,6 +28,9 @@ import {
   faCog,
   faHandshake,
   faArchive,
+  faFingerprint,
+  faQuestionCircle,
+  faBookMedical,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -44,54 +46,8 @@ import { JwtData } from '../../../../utils';
 import { useClasses } from '../classes';
 import routes from '../../../../routes';
 import styled from 'styled-components';
+import { useStyles } from './style';
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      maxWidth: 360,
-      backgroundColor: theme.palette.background.paper,
-    },
-    notNested: {
-      paddingLeft: theme.spacing(2),
-    },
-    nested: {
-      paddingLeft: theme.spacing(4),
-    },
-    menuContainer: {
-      padding: '1em 0',
-      '&:nth-child(even)': {
-        backgroundColor: 'white',
-      },
-    },
-    exchangeMenu: {
-      background: '#ddd',
-      '& *': {
-        color: 'navy',
-      },
-    },
-    linkWrapper: {
-      display: 'flex',
-      '&:hover': {
-        backgroundColor: 'rgba(0, 0, 0, .05)',
-        transition: 'background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-      },
-      '& div': {
-        color: '#4625B2',
-      },
-      '& a': {
-        color: '#4625B2',
-        textDecoration: 'none',
-        width: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        '& div:nth-child(2)': {
-          display: 'inline-block',
-        },
-      },
-    },
-  })
-);
 
 const {
   dashboard,
@@ -125,7 +81,11 @@ const {
   surveyList,
   fda_exchangeList,
   aPharmacyDocs,
+  loginCountReport,
   commisionSettingsList,
+  employmentApplicationForAdmin,
+  about,
+  allPharmacyDrugReport,
 } = routes
 
 /**
@@ -415,7 +375,46 @@ const ListItems: React.FC = () => {
               <ListItemText primary={t('reports.SelectedDrugsForm')} />
             </Link>
           </List>
+          <List component="div" className={linkWrapper}>
+            {getListItem({
+              Icon: FontAwesomeIcon,
+              text: t('reports.loginCount'),
+              selected: isOpenPageOfThisGroup('reports/login-count'),
+              link: loginCountReport,
+              isNested: true,
+              props: {
+                icon: faFingerprint,
+                size: 'lg'
+              }
+            })}
+          </List>
+          <List component="div" className={linkWrapper}>
+            {getListItem({
+              Icon: FontAwesomeIcon,
+              text: t('reports.allPharmacyDrug'),
+              selected: isOpenPageOfThisGroup('reports/all-pharmacy-drugs'),
+              link: allPharmacyDrugReport,
+              isNested: true,
+              props: {
+                icon: faBookMedical,
+                size: 'lg'
+              }
+            })}
+          </List>
         </Collapse>
+
+        <List component="div" className={linkWrapper}>
+          {getListItem({
+            Icon: FontAwesomeIcon,
+            text: t('jobs.employment'),
+            link: employmentApplicationForAdmin,
+            selected: isOpenPageOfThisGroup('employmentApplication/list'),
+            props: {
+              icon: faUserMd,
+              size: 'lg',
+            },
+          })}
+        </List>
       </div>
     );
   };
@@ -597,6 +596,26 @@ const ListItems: React.FC = () => {
     );
   };
 
+  const generalMenu = (): JSX.Element => {
+    return (
+      <div className={ menuContainer }>
+        <Divider />
+        <List component="div" className={ linkWrapper }>
+          { getListItem({
+            Icon: FontAwesomeIcon,
+            link: about,
+            text: t('general.about'),
+            selected: isOpenPageOfThisGroup('/about'),
+            props: {
+              icon: faQuestionCircle,
+              size: 'lg',
+            },
+          }) }
+        </List>
+      </div>
+    )
+  }
+
   if (!Array.isArray(rolesArray)) {
     rolesArray = [rolesArray];
   }
@@ -624,6 +643,7 @@ const ListItems: React.FC = () => {
             fdaMenu()}
         </>
       )}
+      { generalMenu() }
     </div>
   );
 };

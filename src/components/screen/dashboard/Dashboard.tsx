@@ -225,7 +225,6 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
   const handleIsIndebtPharmacy = async (): Promise<any> => {
     try {
       const res = await isIndebtPharmacy();
-      debugger;
       setIsIndebtPharmacyState(res.data.isInDebt);
       setDebtValueState(res.data.debt);
     } catch (error) {
@@ -310,9 +309,7 @@ const Dashboard: React.FC<DashboardPropsInterface> = ({ component }) => {
       </span>
     );
     const body = (
-      <>
-        <span style={{ marginRight: 5 }}>{t('alerts.DebotAlert')}</span>
-      </>
+      <span style={{ marginRight: 5 }}>{t('alerts.DebotAlert')}</span>
     );
     element = (
       <>

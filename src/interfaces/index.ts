@@ -131,9 +131,11 @@ export type { JobInterface } from './JobInterface';
 export type { JobApplicationInterface } from './JobApplicationInterface';
 export type { WidgetInterface } from './WidgetInterface';
 export type { DataTableColumns, LookupFilter } from './DataTableColumns';
+export type { LoginCountReportInterface } from './ReportInterface'
 export type { CommisionInterface } from './CommisionSettingInterface';
 
 export * from './component';
 export * from './general';
 export * from './comission';
 export * from './user';
+export * from './search'

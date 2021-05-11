@@ -1,4 +1,4 @@
-import { getBaseUrl } from 'config'
+import { getBaseUrl } from 'config';
 
 const dashboard = 'dashboard';
 const exchange = 'exchange';
@@ -19,7 +19,9 @@ const prescription = 'prescription';
 const job = 'job';
 const fda = `/${dashboard}/fda`;
 const error = `/${dashboard}/error`;
+const reports = `/${dashboard}/reportes`
 const commisionSettings = 'settingsCommision';
+const employmentApplication = 'employmentApplication';
 
 const pharmacyRoutes = {
   pharmacyMessage: `/${dashboard}/${pharmacy}/messages`,
@@ -32,6 +34,8 @@ export default {
   registerPharmacyWithUser: `/register-pharmacy-with-user`,
   forgetPassword: '/forget-password',
   otp: '/otp',
+
+  employmentApplicationForAdmin: `/${dashboard}/${employmentApplication}/list`,
   
   dashboard: `/${dashboard}`,
   desktop: `/${dashboard}/${exchange}/desktop`,
@@ -98,4 +102,9 @@ export default {
   fda_exchangeList: `${fda}/exchange-list`,
 
   error401: `${error}/401`,
+
+  loginCountReport: `${reports}/login-count`,
+  allPharmacyDrugReport: `${reports}/all-pharmacy-drugs`,
+
+  about: `/${dashboard}/about`,
 };

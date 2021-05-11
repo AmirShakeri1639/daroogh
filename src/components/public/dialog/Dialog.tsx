@@ -23,7 +23,6 @@ const useStyle = makeStyles(() =>
   })
 );
 
-
 interface Props {
   title?: string;
   isOpen: boolean;
@@ -42,8 +41,9 @@ interface Props {
   canceleButtonTitle?: string;
   style?: React.CSSProperties;
   className?: string;
-  id?: string
-  ref?: any
+  id?: string;
+  ref?: any;
+  disableBackdropClick?: boolean;
 }
 
 
@@ -68,6 +68,7 @@ const CDialog: React.FC<Props> = ({
   canceleButtonTitle,
   id,
   ref,
+  disableBackdropClick,
 }) => {
   const location = useLocation();
   const params = queryString.parse(location.search);
@@ -132,6 +133,7 @@ const CDialog: React.FC<Props> = ({
       className={className ?? ''}
       id={ id }
       ref={ ref }
+      disableBackdropClick = {disableBackdropClick}
     >
       {children}
       {!hideAll && (
