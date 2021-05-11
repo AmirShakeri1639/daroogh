@@ -170,6 +170,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
     defaultFilter,
     detailPanel,
     otherQueryString,
+    showToolbar = true,
   } = props
 
   const { t } = useTranslation()
@@ -371,9 +372,12 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
           components={{
             Toolbar: (props: any): JSX.Element => {
               return (
-                <div id={TOOLBAR_ID}>
-                  <MTableToolbar {...props} />
-                </div>
+                showToolbar
+                  ?
+                  <div id={ TOOLBAR_ID }>
+                    <MTableToolbar { ...props } />
+                  </div>
+                  : <></>
               );
             },
             Pagination: props => (
