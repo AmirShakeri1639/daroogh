@@ -104,6 +104,7 @@ export default {
   error401: `${error}/401`,
 
   loginCountReport: `${reports}/login-count`,
+  allPharmacyDrugReport: `${reports}/all-pharmacy-drugs`,
 
   about: `/${dashboard}/about`,
 };

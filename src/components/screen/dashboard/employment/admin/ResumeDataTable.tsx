@@ -52,12 +52,13 @@ const ResumeDataTable: React.FC<Props & WithTranslation> = ({ ref, t }) => {
       {
         field: 'id',
         title: t('general.id'),
+        type: 'number',
         searchable: true,
-        type: 'string',
         cellStyle: { textAlign: 'right' },
       },
       {
         field: 'name',
+        searchable: true,
         title: `${t('peopleSection.name')} ${t('general.and')} ${t('peopleSection.family')}`,
         type: 'string',
         render: (row: any): any => `${row.name} ${row.family}`,
@@ -65,7 +66,6 @@ const ResumeDataTable: React.FC<Props & WithTranslation> = ({ ref, t }) => {
       {
         field: 'genderStr',
         title: t('general.gender'),
-        searchable: true,
         type: 'string',
         fieldLookup: 'gender',
         lookupFilter: [
@@ -77,8 +77,7 @@ const ResumeDataTable: React.FC<Props & WithTranslation> = ({ ref, t }) => {
       {
         field: 'workExperienceYear',
         title: t('peopleSection.workExperienceYear'),
-        searchable: true,
-        type: 'string',
+        type: 'number',
         cellStyle: { textAlign: 'right' },
       },
     ];
