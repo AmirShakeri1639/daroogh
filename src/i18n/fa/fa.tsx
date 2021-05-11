@@ -574,6 +574,7 @@ export default {
         exchangeAmount: 'مبلغ تراکنش',
       },
       reports: {
+        report: 'گزارش',
         reports: 'گزارشات',
         SurplusDrugsForm: 'گزارش داروهای مازاد',
         FavoriteDrugsForm: 'گزارش داروهای مورد علاقه داروخانه‌ها',
@@ -581,6 +582,7 @@ export default {
         loginCount: 'گزارش تعداد لاگین‌ها',
         loginCountTitle: 'تعداد لاگین‌ها',
         basedOn: 'بر اساس',
+        allPharmacyDrug: 'محصولات داروخانه‌ها',
       },
       countryDivision: {
         province: 'استان',
