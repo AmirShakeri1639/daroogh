@@ -153,6 +153,8 @@ const SupplyList: React.FC = () => {
     genericName: '',
   });
   const [calculatedValue, setCalculatedValue] = useState<number>(0);
+  const [isCalculatingPrice, setIsCalculatingPrice] = useState<boolean>(false);
+
   const [selectedDay, setSelectedDay] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<string>('');
@@ -178,7 +180,9 @@ const SupplyList: React.FC = () => {
   const queryCache = useQueryCache();
 
   const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
-  const toggleIsOpenCalculator = (): void => {
+  const toggleIsOpenCalculator = (calculatingPrice: boolean): void => {
+    setCalculatedValue(0);
+    setIsCalculatingPrice(calculatingPrice);
     setIsOpenCalculator((v) => !v);
     // if (isOpenCalculator) {
     //   window.history.back();
@@ -198,6 +202,7 @@ const SupplyList: React.FC = () => {
     calculator,
     calcCloseBtn,
     calcContainer,
+    importantMessage,
   } = useStyle();
 
   // useEffect(() => {
@@ -591,7 +596,7 @@ const SupplyList: React.FC = () => {
     {
       value: FilterItems.FARTHEST_REGISTER_DATE,
       text: `${t('general.farthest')} ${t('date.registerDate')}`,
-    },    
+    },
   ];
 
   return (
@@ -756,23 +761,43 @@ const SupplyList: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container>
                   <Grid item xs={12}>
-                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                    <StyledTitle>{t('alerts.countAlert')}</StyledTitle>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Input
-                      numberFormat
-                      error={showError && state?.cnt === ''}
-                      placeholder={`${t('general.number')}`}
-                      className="w-100"
-                      valueLimit={(value) => {
-                        if (value.value > 0 || value.value === '') {
-                          return value;
+                  <Grid item container xs={12}>
+                    <Grid item xs={7} md={8}>
+                      <Input
+                        numberFormat
+                        error={showError && state?.cnt === ''}
+                        placeholder={`${t('general.number')} ${t('general.inNumber')}`}
+                        className="w-100"
+                        valueLimit={(value) => {
+                          if (value.value > 0 || value.value === '') {
+                            return value;
+                          }
+                        }}
+                        label={`${t('general.number')} ${t('drug.drug')}`}
+                        onChange={(e): void => dispatch({ type: 'cnt', value: e })}
+                        value={
+                          calculatedValue === 0
+                            ? state?.cnt
+                            : !isCalculatingPrice
+                            ? calculatedValue
+                            : state.cnt
                         }
-                      }}
-                      label={`${t('general.number')} ${t('drug.drug')}`}
-                      onChange={(e): void => dispatch({ type: 'cnt', value: e })}
-                      value={state?.cnt}
-                    />
+                      />
+                    </Grid>
+                    <Grid item xs={2} md={1} className={importantMessage}>
+                      <span>{t('general.num')}</span>
+                    </Grid>
+                    <Grid item xs={3}>
+                      <Button onClick={() => toggleIsOpenCalculator(false)}>
+                        <FontAwesomeIcon
+                          style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                          icon={faCalculator}
+                        />
+                        {t('general.calculating')}
+                      </Button>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -781,33 +806,44 @@ const SupplyList: React.FC = () => {
                 <Grid xs={12} item>
                   <StyledTitle>{t('alerts.priceTypeAlert')}</StyledTitle>
                 </Grid>
-                <Grid item xs={9}>
-                  <Input
-                    placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
-                    numberFormat
-                    error={showError && state?.amount === ''}
-                    value={calculatedValue === 0 ? state?.amount : calculatedValue}
-                    className="w-100"
-                    valueLimit={(value) => {
-                      if (value.value > 0 || value.value === '') {
-                        return value;
+                <Grid item container>
+                  <Grid item xs={7} md={8}>
+                    <Input
+                      placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
+                      numberFormat
+                      error={showError && state?.amount === ''}
+                      value={
+                        calculatedValue === 0
+                          ? state?.amount
+                          : isCalculatingPrice
+                          ? calculatedValue
+                          : state?.amount
                       }
-                    }}
-                    label={t('general.price')}
-                    onChange={(e): void => {
-                      dispatch({ type: 'amount', value: e });
-                      setCalculatedValue(0);
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Button onClick={toggleIsOpenCalculator}>
-                    <FontAwesomeIcon
-                      style={{ color: ColorEnum.DeepBlue, margin: 4 }}
-                      icon={faCalculator}
+                      className="w-100"
+                      valueLimit={(value) => {
+                        if (value.value > 0 || value.value === '') {
+                          return value;
+                        }
+                      }}
+                      label={t('general.price')}
+                      onChange={(e): void => {
+                        dispatch({ type: 'amount', value: e });
+                        setCalculatedValue(0);
+                      }}
                     />
-                    {t('general.calculating')}
-                  </Button>
+                  </Grid>
+                  <Grid item xs={2} md={1} className={importantMessage}>
+                    <span>تومان</span>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button onClick={() => toggleIsOpenCalculator(true)}>
+                      <FontAwesomeIcon
+                        style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                        icon={faCalculator}
+                      />
+                      {t('general.calculating')}
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
 

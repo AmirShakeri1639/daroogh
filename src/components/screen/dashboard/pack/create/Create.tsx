@@ -20,13 +20,13 @@ import {
   Paper,
   Checkbox,
   ListItemText,
-} from '@material-ui/core'
-import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react'
-import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useTranslation } from 'react-i18next'
-import { useMutation } from 'react-query'
-import { Category, Comission, Drug, Pack } from '../../../../../services/api'
+} from '@material-ui/core';
+import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react';
+import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useTranslation } from 'react-i18next';
+import { useMutation } from 'react-query';
+import { Category, Comission, Drug, Pack } from '../../../../../services/api';
 import {
   AutoComplete,
   autoCompleteItems,
@@ -34,53 +34,50 @@ import {
   DatePicker,
   MaterialContainer,
   Modal,
-} from '../../../../public'
-import { omit, remove, has, debounce, isUndefined } from 'lodash'
-import Input from '../../../../public/input/Input'
-import CardContainer from './CardContainer'
-import { useEffectOnce } from '../../../../../hooks'
-import { 
-  errorHandler, Convertor, jalali, 
-  tWarn, confirmSweetAlert 
-} from 'utils'
-import { utils } from 'react-modern-calendar-datepicker'
-import moment from 'jalali-moment'
-import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug'
-import { useParams } from 'react-router-dom'
-import Calculator from '../../calculator/Calculator'
+} from '../../../../public';
+import { omit, remove, has, debounce, isUndefined } from 'lodash';
+import Input from '../../../../public/input/Input';
+import CardContainer from './CardContainer';
+import { useEffectOnce } from '../../../../../hooks';
+import { errorHandler, Convertor, jalali, tWarn, confirmSweetAlert } from 'utils';
+import { utils } from 'react-modern-calendar-datepicker';
+import moment from 'jalali-moment';
+import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
+import { useParams } from 'react-router-dom';
+import Calculator from '../../calculator/Calculator';
 
 // @ts-ignore
-import jalaali from 'jalaali-js'
-import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend'
-import { SearchDrugInMultiCategory } from '../../../../../interfaces/search'
-import { PackCreation } from 'model/pack'
-import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle'
-import styled from 'styled-components'
-import { useSnackbar } from 'notistack'
-import { ColorEnum } from 'enum'
-import CDialog from 'components/public/dialog/Dialog'
-import { CountryDivisionSelect } from 'components/public/country-division/CountryDivisionSelect'
+import jalaali from 'jalaali-js';
+import FieldSetLegend from '../../../../public/fieldset-legend/FieldSetLegend';
+import { SearchDrugInMultiCategory } from '../../../../../interfaces/search';
+import { PackCreation } from 'model/pack';
+import TextWithTitle from 'components/public/TextWithTitle/TextWithTitle';
+import styled from 'styled-components';
+import { useSnackbar } from 'notistack';
+import { ColorEnum } from 'enum';
+import CDialog from 'components/public/dialog/Dialog';
+import { CountryDivisionSelect } from 'components/public/country-division/CountryDivisionSelect';
 
-const { searchDrugInMultipleCategory } = new Drug()
+const { searchDrugInMultipleCategory } = new Drug();
 
-const { getAllCategories } = new Category()
+const { getAllCategories } = new Category();
 
-const { savePack, getPackDetail } = new Pack()
+const { savePack, getPackDetail } = new Pack();
 
-const { getComissionAndRecommendation } = new Comission()
+const { getComissionAndRecommendation } = new Comission();
 
-const { numberWithZero, thousandsSeperatorFa } = Convertor
+const { numberWithZero, thousandsSeperatorFa } = Convertor;
 
-const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}')
+const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
 
 const StyledTitle = styled.span`
   color: #17a2bb;
   font-size: 12px;
-`
+`;
 
 const StyledDialogContent = styled((props) => <DialogContent {...props} />)`
   scroll-behavior: smooth;
-`
+`;
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -219,82 +216,94 @@ const useStyle = makeStyles((theme) =>
       margin: 4,
       border: `1px solid ${ColorEnum.DeepBlue}`,
     },
+    importantMessage: {
+      background: 'red',
+      color: 'white',
+      justifyContent: 'center',
+      borderRadius: '0px 5px 5px 0px',
+      alignItems: 'center',
+      display: 'flex',
+    },
   })
-)
+);
 
-const monthMinimumLength = 28
+const monthMinimumLength = 28;
 
-const monthIsValid = (month: number): boolean => month < 13
-const dayIsValid = (day: number): boolean => day < 32 || day > 0
+const monthIsValid = (month: number): boolean => month < 13;
+const dayIsValid = (day: number): boolean => day < 32 || day > 0;
 
 const StyledGrid = styled((props: any) => <Grid {...props} item xs={12} spacing={3} />)`
   margin: 24px 24px 0px 0px;
-`
+`;
 
 const STMenuItem = styled((props) => <MenuItem {...props} />)`
   &:nth-child(odd) {
     background-color: #ededed;
   }
-`
+`;
 
 const Create: React.FC = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [options, setOptions] = useState<any[]>([])
-  const [categories, setCategories] = useState<any[]>([])
-  const [selectedCategory, setSelectedCategory] = useState<number[]>([])
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
-  const [selectedDrug, setSelectedDrug] = useState<any>('')
-  const [amount, setAmount] = useState<string>('')
-  const [number, setNumber] = useState<string | number>('')
-  const [offer1, setOffer1] = useState<string>('')
-  const [offer2, setOffer2] = useState<string>('')
-  const [barcode, setBarcode] = useState('')
-  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false)
-  const [selectedDate, setSelectedDate] = useState<string>('')
-  const [daysDiff, setDaysDiff] = useState<string>('')
-  const [isoDate, setIsoDate] = useState<string>('')
-  const [temporaryDrugs, setTemporaryDrugs] = useState<PharmacyDrugSupplyList[]>([])
-  const [isBackdropLoading, setIsBackdropLoading] = useState<boolean>(false)
-  const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false)
-  const [packTotalItems, setPackTotalItems] = useState<number>(0)
-  const [packStatus, setPackStatus] = useState<number>(1)
-  const [packTotalPrice, setPackTotalPrice] = useState<number>(0)
-  const [selectedDay, setSelectedDay] = useState<string>('')
-  const [selectedMonth, setSelectedMonth] = useState<string>('')
-  const [selectedYear, setSelectedYear] = useState<string>('')
-  const [isWrongDate, setIsWrongDate] = useState(false)
-  const [daroogRecommendation, setDaroogRecommendation] = useState<string>('')
-  const [comissionPercent, setComissionPercent] = useState<string>('')
-  const [hasMinimumDate, setHasMinimumDate] = useState(true)
-  const [drugsPack, setDrugsPack] = useState<PharmacyDrugSupplyList[]>([])
-  const [storedPackId, setStoredPackId] = useState<number | null>(null)
-  const [showError, setShowError] = useState(false)
-  const [calculatedValue, setCalculatedValue] = useState<number>(0)
-  const [offerAlert, setOfferAlert] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [options, setOptions] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<number[]>([]);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [selectedDrug, setSelectedDrug] = useState<any>('');
+  const [amount, setAmount] = useState<string>('');
+  const [number, setNumber] = useState<string | number>('');
+  const [offer1, setOffer1] = useState<string>('');
+  const [offer2, setOffer2] = useState<string>('');
+  const [barcode, setBarcode] = useState('');
+  const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
+  const [selectedDate, setSelectedDate] = useState<string>('');
+  const [daysDiff, setDaysDiff] = useState<string>('');
+  const [isoDate, setIsoDate] = useState<string>('');
+  const [temporaryDrugs, setTemporaryDrugs] = useState<PharmacyDrugSupplyList[]>([]);
+  const [isBackdropLoading, setIsBackdropLoading] = useState<boolean>(false);
+  const [isCheckedNewItem, setIsCheckedNewItem] = useState<boolean>(false);
+  const [packTotalItems, setPackTotalItems] = useState<number>(0);
+  const [packStatus, setPackStatus] = useState<number>(1);
+  const [packTotalPrice, setPackTotalPrice] = useState<number>(0);
+  const [selectedDay, setSelectedDay] = useState<string>('');
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
+  const [selectedYear, setSelectedYear] = useState<string>('');
+  const [isWrongDate, setIsWrongDate] = useState(false);
+  const [daroogRecommendation, setDaroogRecommendation] = useState<string>('');
+  const [comissionPercent, setComissionPercent] = useState<string>('');
+  const [hasMinimumDate, setHasMinimumDate] = useState(true);
+  const [drugsPack, setDrugsPack] = useState<PharmacyDrugSupplyList[]>([]);
+  const [storedPackId, setStoredPackId] = useState<number | null>(null);
+  const [showError, setShowError] = useState(false);
+  const [calculatedValue, setCalculatedValue] = useState<number>(0);
+  const [isCalculatingPrice, setIsCalculatingPrice] = useState<boolean>(false);
 
-  const theme = useTheme()
+  const [offerAlert, setOfferAlert] = useState<boolean>(false);
 
-  const { enqueueSnackbar } = useSnackbar()
+  const theme = useTheme();
 
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const { enqueueSnackbar } = useSnackbar();
 
-  const { t } = useTranslation()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false)
-  const toggleIsOpenCalculator = (): void => {
-    setIsOpenCalculator((v) => !v)
+  const { t } = useTranslation();
+
+  const [isOpenCalculator, setIsOpenCalculator] = useState<boolean>(false);
+  const toggleIsOpenCalculator = (calculatingPrice: boolean): void => {
+    setCalculatedValue(0);
+    setIsCalculatingPrice(calculatingPrice);
+    setIsOpenCalculator((v) => !v);
     // if (isOpenCalculator) {
-    //   window.history.back()
+    //   window.history.back();
     // }
-  }
+  };
 
-  const { packId } = useParams() as { packId: string }
+  const { packId } = useParams() as { packId: string };
 
-  const autoCompleteRef = useRef<any>(null)
+  const autoCompleteRef = useRef<any>(null);
 
-  const monthRef = useRef<HTMLInputElement>()
-  const yearRef = useRef<HTMLInputElement>()
-  const batchRef = useRef<HTMLInputElement>()
+  const monthRef = useRef<HTMLInputElement>();
+  const yearRef = useRef<HTMLInputElement>();
+  const batchRef = useRef<HTMLInputElement>();
 
   const {
     addButton,
@@ -308,7 +317,8 @@ const Create: React.FC = () => {
     calculator,
     calcContainer,
     calcCloseBtn,
-  } = useStyle()
+    importantMessage,
+  } = useStyle();
 
   // useEffect(() => {
   //   const el = document.getElementById('scrollable-content') as HTMLElement;
@@ -327,46 +337,46 @@ const Create: React.FC = () => {
   // }, [comissionPercent, daroogRecommendation]);
 
   const resetValues = (): void => {
-    setAmount('')
-    setNumber('')
-    setSelectedYear('')
-    setSelectedMonth('')
-    setSelectedDay('')
-    setSelectedDrug('')
-    setOffer1('')
-    setOffer2('')
-    setIsoDate('')
-    setDaysDiff('')
-    setSelectedDate('')
-    setOptions([])
-    setIsWrongDate(false)
-    setShowError(false)
-    setHasMinimumDate(true)
-    setBarcode('')
-    setOfferAlert(false)
-    setDaroogRecommendation('')
-    setComissionPercent('')
+    setAmount('');
+    setNumber('');
+    setSelectedYear('');
+    setSelectedMonth('');
+    setSelectedDay('');
+    setSelectedDrug('');
+    setOffer1('');
+    setOffer2('');
+    setIsoDate('');
+    setDaysDiff('');
+    setSelectedDate('');
+    setOptions([]);
+    setIsWrongDate(false);
+    setShowError(false);
+    setHasMinimumDate(true);
+    setBarcode('');
+    setOfferAlert(false);
+    setDaroogRecommendation('');
+    setComissionPercent('');
 
     if (autoCompleteRef && autoCompleteRef.current) {
-      autoCompleteRef.current.setInputValue('')
+      autoCompleteRef.current.setInputValue('');
     }
-  }
+  };
 
-  const isJalaliDate = (num: number): boolean => num < 2000
+  const isJalaliDate = (num: number): boolean => num < 2000;
 
   const calculateDateDifference = (): void => {
-    const date = new Date()
-    const todayMomentObject = moment([date.getFullYear(), date.getMonth(), date.getDate()])
+    const date = new Date();
+    const todayMomentObject = moment([date.getFullYear(), date.getMonth(), date.getDate()]);
 
     const convertedArray = [
       Number(selectedYear),
       Number(selectedMonth),
       Number(selectedDay === '' ? monthMinimumLength : selectedDay),
-    ]
+    ];
 
-    let selectedDate: any
+    let selectedDate: any;
     if (isJalaliDate(convertedArray[0])) {
-      selectedDate = jalali.toGregorian(convertedArray[0], convertedArray[1], convertedArray[2])
+      selectedDate = jalali.toGregorian(convertedArray[0], convertedArray[1], convertedArray[2]);
     }
 
     const selectedDateMomentObject = moment(
@@ -377,22 +387,22 @@ const Create: React.FC = () => {
             Number(selectedMonth) - 1,
             Number(selectedDay === '' ? monthMinimumLength : selectedDay),
           ]
-    )
+    );
 
-    const daysDiff = String(selectedDateMomentObject.diff(todayMomentObject, 'days'))
+    const daysDiff = String(selectedDateMomentObject.diff(todayMomentObject, 'days'));
 
     if (Number(daysDiff) < drugExpireDay) {
-      setHasMinimumDate(false)
+      setHasMinimumDate(false);
     } else {
-      setHasMinimumDate(true)
+      setHasMinimumDate(true);
     }
 
     if (Number(daysDiff) < 0) {
-      setIsWrongDate(true)
-      setDaysDiff('')
+      setIsWrongDate(true);
+      setDaysDiff('');
     } else {
-      setIsWrongDate(false)
-      setDaysDiff(daysDiff)
+      setIsWrongDate(false);
+      setDaysDiff(daysDiff);
     }
 
     setIsoDate(
@@ -403,26 +413,26 @@ const Create: React.FC = () => {
         : `${[Number(selectedYear), Number(selectedMonth) - 1, Number(selectedDay)].join(
             '-'
           )}T00:00:00Z`
-    )
-  }
+    );
+  };
 
   useEffect(() => {
     if (selectedYear !== '' && selectedYear.length === 4 && selectedMonth !== '') {
-      calculateDateDifference()
+      calculateDateDifference();
     }
-  }, [selectedDay, selectedMonth, selectedYear])
+  }, [selectedDay, selectedMonth, selectedYear]);
 
   useEffect(() => {
-    ;(async (): Promise<any> => {
+    (async (): Promise<any> => {
       try {
         // @ts-ignore
-        const { value: drugId } = selectedDrug
+        const { value: drugId } = selectedDrug;
         if (
           (Number(offer1) > 0 && Number(offer2) > 0 && Number(number) > 0) ||
           (drugId && Number(amount) > 0)
         ) {
           if (Number(offer1) > 0 && Number(offer2) > 0) {
-            setOfferAlert(true)
+            setOfferAlert(true);
           }
           const result = await getComissionAndRecommendation({
             drugId,
@@ -431,33 +441,33 @@ const Create: React.FC = () => {
             offer2: offer2,
             expireDate: isoDate,
             pharmacyId: '0',
-          })
-          const { data } = result
+          });
+          const { data } = result;
           if (has(data, 'commissionPercent')) {
-            setComissionPercent(data.commissionPercent)
+            setComissionPercent(data.commissionPercent);
           }
           if (has(data, 'suggestionStr')) {
-            setDaroogRecommendation(data.suggestionStr)
+            setDaroogRecommendation(data.suggestionStr);
           }
         }
       } catch (e) {
-        errorHandler(e)
+        errorHandler(e);
       }
-    })()
-  }, [selectedDrug, amount, offer1, offer2, number, isoDate])
+    })();
+  }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
     if (selectedCategory.length === 0) {
-      tWarn(t('alerts.SelectCategoryAlert'))
+      tWarn(t('alerts.SelectCategoryAlert'));
     } else {
       if (isOpenModal) {
-        resetValues()
+        resetValues();
       }
-      setIsOpenModal((v) => !v)
+      setIsOpenModal((v) => !v);
     }
-  }
+  };
 
-  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v)
+  const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v);
 
   const mapApiDrugsToStandardDrugs = (items: any): PharmacyDrugSupplyList[] => {
     return items.map((item: any) => {
@@ -467,94 +477,94 @@ const Create: React.FC = () => {
           value: item.drug.id,
           label: item.drug.name,
         },
-      }
-    })
-  }
+      };
+    });
+  };
 
   const getTotalPrice = (items: any[]): number => {
-    let totalPrice = 0
+    let totalPrice = 0;
     items.forEach((item: any) => {
-      totalPrice += item.amount * item.cnt
-    })
-    return totalPrice
-  }
+      totalPrice += item.amount * item.cnt;
+    });
+    return totalPrice;
+  };
 
   const mergeCategories = (items: number[]): void => {
     const categories = items.map((item, index) => {
       if (!!!item && index > 0) {
-        return item
+        return item;
       }
-      return item
-    })
-    setSelectedCategory(categories)
-  }
+      return item;
+    });
+    setSelectedCategory(categories);
+  };
 
   async function getPackDrugs(_packId?: number): Promise<any> {
     if (packId !== undefined || _packId !== undefined) {
       try {
-        setIsBackdropLoading(true)
+        setIsBackdropLoading(true);
 
-        const result = await getPackDetail(packId !== undefined ? packId : _packId || 0)
+        const result = await getPackDetail(packId !== undefined ? packId : _packId || 0);
 
-        const { pharmacyDrug, status, categoryID, categoryID2, categoryID3 } = result
+        const { pharmacyDrug, status, categoryID, categoryID2, categoryID3 } = result;
 
-        setPackTotalItems(pharmacyDrug.length)
-        setPackStatus(status)
-        mergeCategories([categoryID, categoryID2, categoryID3])
-        setDrugsPack([...mapApiDrugsToStandardDrugs(pharmacyDrug)])
+        setPackTotalItems(pharmacyDrug.length);
+        setPackStatus(status);
+        mergeCategories([categoryID, categoryID2, categoryID3]);
+        setDrugsPack([...mapApiDrugsToStandardDrugs(pharmacyDrug)]);
 
-        setPackTotalPrice(getTotalPrice(pharmacyDrug))
-        setIsBackdropLoading(false)
+        setPackTotalPrice(getTotalPrice(pharmacyDrug));
+        setIsBackdropLoading(false);
       } catch (e) {
-        errorHandler(e)
+        errorHandler(e);
       }
     }
   }
 
   useEffect(() => {
     if (packId !== undefined) {
-      setStoredPackId(Number(packId))
+      setStoredPackId(Number(packId));
     }
-    getPackDrugs()
+    getPackDrugs();
   }, [packId]);
 
   const [_savePack] = useMutation(savePack, {
     onSuccess: async (data) => {
       if (packId === undefined) {
-        setSelectedCategory([])
+        setSelectedCategory([]);
       }
       if (storedPackId === null) {
-        setStoredPackId(data.data.packID)
+        setStoredPackId(data.data.packID);
       }
-      setIsBackdropLoading(false)
+      setIsBackdropLoading(false);
 
       if (isCheckedNewItem) {
-        resetValues()
+        resetValues();
       } else {
-        setIsOpenModal(false)
-        resetValues()
+        setIsOpenModal(false);
+        resetValues();
       }
 
-      await getPackDrugs(data.data.packID)
+      await getPackDrugs(data.data.packID);
       enqueueSnackbar(t('alert.done'), {
         variant: 'success',
-      })
+      });
     },
     onError: () => {
-      setIsBackdropLoading(false)
+      setIsBackdropLoading(false);
     },
-  })
+  });
 
   useEffectOnce(() => {
-    ;(async (): Promise<any> => {
+    (async (): Promise<any> => {
       try {
-        const result = await getAllCategories(0, 99)
-        setCategories(result.items)
+        const result = await getAllCategories(0, 99);
+        setCategories(result.items);
       } catch (e) {
-        errorHandler(e)
+        errorHandler(e);
       }
-    })()
-  })
+    })();
+  });
 
   const submition = async (data: any): Promise<void> => {
     const packData: PackCreation = {
@@ -563,54 +573,54 @@ const Create: React.FC = () => {
       // name: packTitle,
       name: '',
       pharmacyDrug: data as PharmacyDrugSupplyList[],
-    }
+    };
 
     // TODO: This if block should be removed
     if (selectedCategory.length === 0) {
-      delete packData.categoryID
+      delete packData.categoryID;
     }
 
     if (!!selectedCategory[1]) {
-      packData.categoryID2 = selectedCategory[1]
+      packData.categoryID2 = selectedCategory[1];
     }
 
     if (!!selectedCategory[2]) {
-      packData.categoryID3 = selectedCategory[2]
+      packData.categoryID3 = selectedCategory[2];
     }
-    await _savePack(packData)
-  }
+    await _savePack(packData);
+  };
 
   const mapDrugsPackToApi = (_drugsPack: any[]): any[] => {
-    let items: any[] = []
+    let items: any[] = [];
     if (_drugsPack.length > 0) {
       items = _drugsPack.map((item) => {
         if (has(item.drugID, 'value')) {
           return {
             ...omit(item, 'id'),
             drugID: item.drugID.value,
-          }
+          };
         }
-        return item
-      })
+        return item;
+      });
 
-      return items
+      return items;
     }
 
-    return []
-  }
+    return [];
+  };
 
   const removeHandler = async (drugId: number): Promise<void> => {
-    const removeConfirm = await confirmSweetAlert(t('alert.remove'))
+    const removeConfirm = await confirmSweetAlert(t('alert.remove'));
     if (removeConfirm) {
-      remove(drugsPack, (item) => item.id === drugId)
+      remove(drugsPack, (item) => item.id === drugId);
       try {
-        await submition(mapDrugsPackToApi(drugsPack))
-        setDrugsPack([...drugsPack])
+        await submition(mapDrugsPackToApi(drugsPack));
+        setDrugsPack([...drugsPack]);
       } catch (e) {
-        errorHandler(e)
+        errorHandler(e);
       }
     }
-  }
+  };
 
   const contentHandler = (): JSX.Element[] | null => {
     if (drugsPack.length > 0) {
@@ -619,47 +629,47 @@ const Create: React.FC = () => {
           <Grid item xs={12} md={4}>
             <CardContainer status={packStatus} item={item} removeHandler={removeHandler} />
           </Grid>
-        )
-      })
+        );
+      });
     }
 
-    return null
-  }
+    return null;
+  };
 
-  const memoContent = useMemo(() => contentHandler(), [drugsPack])
+  const memoContent = useMemo(() => contentHandler(), [drugsPack]);
 
   const searchDrugs = async (title: string): Promise<any> => {
     try {
       if (title.length < 2) {
-        return
+        return;
       }
-      setIsLoading(true)
+      setIsLoading(true);
       const data: SearchDrugInMultiCategory = {
         categoryId: 0,
         name: title,
-      }
+      };
 
       if (selectedCategory.length !== 0 && !isUndefined(selectedCategory)) {
-        data.categoryId = Number(selectedCategory[0])
-        data.secondCategory = Number(selectedCategory[1]) ?? ''
-        data.thirdCategory = Number(selectedCategory[2]) ?? ''
+        data.categoryId = Number(selectedCategory[0]);
+        data.secondCategory = Number(selectedCategory[1]) ?? '';
+        data.thirdCategory = Number(selectedCategory[2]) ?? '';
       }
 
-      const result = await searchDrugInMultipleCategory(data)
+      const result = await searchDrugInMultipleCategory(data);
 
-      setIsLoading(false)
+      setIsLoading(false);
 
-      const optionsList = autoCompleteItems(result)
+      const optionsList = autoCompleteItems(result);
 
-      setOptions(optionsList)
+      setOptions(optionsList);
     } catch (e) {
-      errorHandler(e)
+      errorHandler(e);
     }
-  }
+  };
 
   const itemsGenerator = (): JSX.Element[] => {
     return categories.map((item) => {
-      const { id, name } = item
+      const { id, name } = item;
       return (
         <STMenuItem key={id} value={id}>
           <Checkbox
@@ -668,9 +678,9 @@ const Create: React.FC = () => {
           />
           <ListItemText primary={name} />
         </STMenuItem>
-      )
-    })
-  }
+      );
+    });
+  };
 
   const isValidInputs = (): boolean => {
     return (
@@ -680,29 +690,29 @@ const Create: React.FC = () => {
       selectedYear !== '' &&
       selectedMonth !== '' &&
       selectedYear.length === 4
-    )
-  }
+    );
+  };
 
   const getNewDrugData = (): PharmacyDrugSupplyList => {
-    const intSelectedYear = Number(selectedYear)
-    const intSelectedMonth = Number(selectedMonth)
-    const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay)
+    const intSelectedYear = Number(selectedYear);
+    const intSelectedMonth = Number(selectedMonth);
+    const intSelectedDay = Number(selectedDay === '' ? monthMinimumLength : selectedDay);
 
-    let date = ''
+    let date = '';
     if (!isJalaliDate(intSelectedYear)) {
       date = `${intSelectedYear}-${numberWithZero(intSelectedMonth)}-${numberWithZero(
         intSelectedDay
-      )}T00:00:00Z`
+      )}T00:00:00Z`;
     } else {
       const jalail2Gregorian = jalaali.toGregorian(
         intSelectedYear,
         intSelectedMonth,
         intSelectedDay
-      )
+      );
 
       date = `${jalail2Gregorian.gy}-${numberWithZero(jalail2Gregorian.gm)}-${numberWithZero(
         jalail2Gregorian.gd
-      )}T00:00:00Z`
+      )}T00:00:00Z`;
     }
 
     const data: PharmacyDrugSupplyList = {
@@ -714,32 +724,33 @@ const Create: React.FC = () => {
       offer2: offer2 !== '' ? Number(offer2) : 0,
       id: 0,
       batchNO: '',
-    }
+    };
 
-    return data
-  }
+    return data;
+  };
 
   const selectedCalculaterValueHandler = (v: number): void => {
-    setCalculatedValue(v)
-  }
+    setCalculatedValue(v);
+  };
 
   const formHandler = async (): Promise<any> => {
     try {
-      if (!isValidInputs() ||
-      selectedCategory.length === 0 ||
-      isWrongDate ||
-      !hasMinimumDate ||
-      // barcode.trim() === '' ||
-      amount === '' ||
-      number === ''
-    ) {
-        setShowError(true)
-        return
+      if (
+        !isValidInputs() ||
+        selectedCategory.length === 0 ||
+        isWrongDate ||
+        !hasMinimumDate ||
+        // barcode.trim() === '' ||
+        amount === '' ||
+        number === ''
+      ) {
+        setShowError(true);
+        return;
       }
 
-      setIsBackdropLoading(true)
+      setIsBackdropLoading(true);
 
-      const items: any[] = mapDrugsPackToApi(drugsPack)
+      const items: any[] = mapDrugsPackToApi(drugsPack);
 
       const data: PharmacyDrugSupplyList[] = [
         ...items,
@@ -748,26 +759,26 @@ const Create: React.FC = () => {
           drugID: getNewDrugData().drugID.value,
           // batchNO: barcode,
         },
-      ]
+      ];
 
-      await submition(data)
-      setCalculatedValue(0)
+      await submition(data);
+      setCalculatedValue(0);
     } catch (e) {
-      errorHandler(e)
+      errorHandler(e);
     }
-  }
+  };
 
   useEffect(() => {
-    setPackTotalItems(temporaryDrugs.length)
-    setPackTotalPrice(getTotalPrice(temporaryDrugs))
-  }, [temporaryDrugs])
+    setPackTotalItems(temporaryDrugs.length);
+    setPackTotalPrice(getTotalPrice(temporaryDrugs));
+  }, [temporaryDrugs]);
 
   const handleChange = async (event: React.ChangeEvent<{ value: unknown }>): Promise<any> => {
-    const currentValue = event.target.value as number[]
+    const currentValue = event.target.value as number[];
     if (selectedCategory.length < 3 || currentValue.length < 3) {
-      setSelectedCategory(currentValue)
+      setSelectedCategory(currentValue);
     }
-  }
+  };
 
   return (
     <MaterialContainer>
@@ -798,9 +809,9 @@ const Create: React.FC = () => {
                       renderValue={(selected: any): string => {
                         const items = categories
                           .filter((item: any) => selected.indexOf(item.id) !== -1)
-                          .map((item: any) => item.name)
+                          .map((item: any) => item.name);
 
-                        return ((items as string[]) ?? []).join(' - ')
+                        return ((items as string[]) ?? []).join(' - ');
                       }}
                       disabled={drugsPack.length > 0}
                     >
@@ -899,7 +910,7 @@ const Create: React.FC = () => {
                 type="button"
                 disabled={isLoading ?? false}
                 onClick={() => {
-                  setIsOpenCalculator(false)
+                  setIsOpenCalculator(false);
                 }}
               >
                 {t('general.close')}
@@ -913,15 +924,15 @@ const Create: React.FC = () => {
         fullScreen={fullScreen}
         isOpen={isOpenModal}
         onClose={(): void => {
-          setIsOpenModal(false)
-          setCalculatedValue(0)
-          resetValues()
-          setSelectedDrug(null)
-          setIsOpenCalculator(false)
+          setIsOpenModal(false);
+          setCalculatedValue(0);
+          resetValues();
+          setSelectedDrug(null);
+          setIsOpenCalculator(false);
         }}
         onOpen={(): void => {
-          setIsOpenModal(true)
-          setCalculatedValue(0)
+          setIsOpenModal(true);
+          setCalculatedValue(0);
         }}
         formHandler={formHandler}
         fullWidth
@@ -980,20 +991,45 @@ const Create: React.FC = () => {
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container>
                   <Grid item xs={12}>
-                    <StyledTitle>{t('general.count', { var: t('drug.drugs') })}</StyledTitle>
+                    <StyledTitle>{t('alerts.countAlert')}</StyledTitle>
                   </Grid>
-                  <Grid item xs={12}>
-                    <Input
-                      placeholder={`${t('general.number')}`}
-                      numberFormat
-                      error={showError && number === ''}
-                      className="w-100"
-                      label={`${t('general.number')} ${t('drug.drug')}`}
-                      onChange={(e): void => {
-                        setNumber(e)
-                      }}
-                      value={number}
-                    />
+                  <Grid container>
+                    <Grid item xs={7} md={8}>
+                      <Input
+                        placeholder={`${t('general.number')}`}
+                        numberFormat
+                        error={showError && number === ''}
+                        className="w-100"
+                        label={`${t('general.number')} ${t('drug.drug')}`}
+                        onChange={(e): void => {
+                          setNumber(e);
+                        }}
+                        value={
+                          calculatedValue === 0
+                            ? number
+                            : !isCalculatingPrice
+                            ? calculatedValue
+                            : number
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={2} md={1} className={importantMessage}>
+                      <span>{t('general.num')}</span>
+                    </Grid>
+
+                    <Grid item xs={3}>
+                      <Button
+                        onClick={(): void => {
+                          toggleIsOpenCalculator(false);
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                          icon={faCalculator}
+                        />
+                        {t('general.calculating')}
+                      </Button>
+                    </Grid>
                   </Grid>
                 </Grid>
               </Grid>
@@ -1004,32 +1040,43 @@ const Create: React.FC = () => {
                     {t('alerts.priceTypeAlert')}
                   </span>
                 </Grid>
-                <Grid item xs={9}>
-                  <Input
-                    placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
-                    numberFormat
-                    error={showError && amount === ''}
-                    value={calculatedValue === 0 ? amount : calculatedValue}
-                    className="w-100"
-                    label={t('general.price')}
-                    onChange={(e): void => {
-                      setAmount(e)
-                      setCalculatedValue(0)
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={3}>
-                  <Button
-                    onClick={(): void => {
-                      toggleIsOpenCalculator()
-                    }}
-                  >
-                    <FontAwesomeIcon
-                      style={{ color: ColorEnum.DeepBlue, margin: 4 }}
-                      icon={faCalculator}
+                <Grid container item>
+                  <Grid item xs={7} md={8}>
+                    <Input
+                      placeholder={`${t('general.pricePerUnit')} (${t('general.defaultCurrency')})`}
+                      numberFormat
+                      error={showError && amount === ''}
+                      value={
+                        calculatedValue === 0
+                          ? amount
+                          : isCalculatingPrice
+                          ? calculatedValue
+                          : amount
+                      }
+                      className="w-100"
+                      label={t('general.price')}
+                      onChange={(e): void => {
+                        setAmount(e);
+                        setCalculatedValue(0);
+                      }}
                     />
-                    {t('general.calculating')}
-                  </Button>
+                  </Grid>
+                  <Grid item xs={2} md={1} className={importantMessage}>
+                    <span>تومان</span>
+                  </Grid>
+                  <Grid item xs={3}>
+                    <Button
+                      onClick={(): void => {
+                        toggleIsOpenCalculator(true);
+                      }}
+                    >
+                      <FontAwesomeIcon
+                        style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                        icon={faCalculator}
+                      />
+                      {t('general.calculating')}
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
 
@@ -1049,9 +1096,9 @@ const Create: React.FC = () => {
                       value={offer2}
                       placeholder="تعداد"
                       onChange={(e): void => {
-                        const val = e.target.value
+                        const val = e.target.value;
                         if (Number(val) >= 1 || Number(offer2) >= 1) {
-                          setOffer2(e.target.value)
+                          setOffer2(e.target.value);
                         }
                       }}
                     />
@@ -1063,9 +1110,9 @@ const Create: React.FC = () => {
                       value={offer1}
                       placeholder="تعداد"
                       onChange={(e): void => {
-                        const val = e.target.value
+                        const val = e.target.value;
                         if (Number(val) >= 1 || Number(offer1) >= 1) {
-                          setOffer1(e.target.value)
+                          setOffer1(e.target.value);
                         }
                       }}
                     />
@@ -1105,12 +1152,12 @@ const Create: React.FC = () => {
                       required
                       // placeholder={'22'}
                       onChange={(e): void => {
-                        const val = e.target.value
+                        const val = e.target.value;
                         if (selectedDay.length < 2 || val.length < 2) {
-                          setSelectedDay(e.target.value)
+                          setSelectedDay(e.target.value);
                         }
                         if (val.length === 2) {
-                          monthRef?.current?.focus()
+                          monthRef?.current?.focus();
                         }
                       }}
                     />
@@ -1125,12 +1172,12 @@ const Create: React.FC = () => {
                       type="number"
                       error={(selectedMonth === '' && showError) || Number(selectedMonth) > 12}
                       onChange={(e): void => {
-                        const val = e.target.value
+                        const val = e.target.value;
                         if (selectedMonth.length < 2 || val.length < 2) {
-                          setSelectedMonth(e.target.value)
+                          setSelectedMonth(e.target.value);
                         }
                         if (val.length === 2) {
-                          yearRef?.current?.focus()
+                          yearRef?.current?.focus();
                         }
                       }}
                     />
@@ -1145,9 +1192,9 @@ const Create: React.FC = () => {
                       error={selectedYear === '' && showError}
                       // placeholder={'1401/2022'}
                       onChange={(e): void => {
-                        const val = e.target.value
+                        const val = e.target.value;
                         if (selectedYear.length < 4 || val.length < 4) {
-                          setSelectedYear(e.target.value)
+                          setSelectedYear(e.target.value);
                         }
                         // if (val.length === 4) {
                         //   batchRef?.current?.focus()
@@ -1163,8 +1210,9 @@ const Create: React.FC = () => {
                 <Grid item xs={12}>
                   <p className="text-danger txt-xs">
                     {isWrongDate && t('date.afterToday')}
-                    {!hasMinimumDate && t('date.minimumDate', {
-                        day: drugExpireDay
+                    {!hasMinimumDate &&
+                      t('date.minimumDate', {
+                        day: drugExpireDay,
                       })}
                     {isNaN(Number(daysDiff)) && t('date.wrongDate')}
                   </p>
@@ -1231,15 +1279,15 @@ const Create: React.FC = () => {
           minimumDate={utils('fa').getToday()}
           dateTypeIsSelectable
           selectedDateHandler={(e): void => {
-            setSelectedDate(e)
-            toggleIsOpenDatePicker()
+            setSelectedDate(e);
+            toggleIsOpenDatePicker();
           }}
         />
       </Modal>
 
       <BackDrop isOpen={isBackdropLoading} />
     </MaterialContainer>
-  )
-}
+  );
+};
 
 export default Create;
