@@ -422,39 +422,39 @@ const Create: React.FC = () => {
     }
   }, [selectedDay, selectedMonth, selectedYear]);
 
-  useEffect(() => {
-    (async (): Promise<any> => {
-      try {
-        // @ts-ignore
-        const { value: drugId } = selectedDrug;
-        if (
-          (Number(offer1) > 0 && Number(offer2) > 0 && Number(number) > 0) ||
-          (drugId && Number(amount) > 0)
-        ) {
-          if (Number(offer1) > 0 && Number(offer2) > 0) {
-            setOfferAlert(true);
-          }
-          const result = await getComissionAndRecommendation({
-            drugId,
-            price: amount,
-            offer1: offer1,
-            offer2: offer2,
-            expireDate: isoDate,
-            pharmacyId: '0',
-          });
-          const { data } = result;
-          if (has(data, 'commissionPercent')) {
-            setComissionPercent(data.commissionPercent);
-          }
-          if (has(data, 'suggestionStr')) {
-            setDaroogRecommendation(data.suggestionStr);
-          }
-        }
-      } catch (e) {
-        errorHandler(e);
-      }
-    })();
-  }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
+  // useEffect(() => {
+  //   (async (): Promise<any> => {
+  //     try {
+  //       // @ts-ignore
+  //       const { value: drugId } = selectedDrug;
+  //       if (
+  //         (Number(offer1) > 0 && Number(offer2) > 0 && Number(number) > 0) ||
+  //         (drugId && Number(amount) > 0)
+  //       ) {
+  //         if (Number(offer1) > 0 && Number(offer2) > 0) {
+  //           setOfferAlert(true);
+  //         }
+  //         const result = await getComissionAndRecommendation({
+  //           drugId,
+  //           price: amount,
+  //           offer1: offer1,
+  //           offer2: offer2,
+  //           expireDate: isoDate,
+  //           pharmacyId: '0',
+  //         });
+  //         const { data } = result;
+  //         if (has(data, 'commissionPercent')) {
+  //           setComissionPercent(data.commissionPercent);
+  //         }
+  //         if (has(data, 'suggestionStr')) {
+  //           setDaroogRecommendation(data.suggestionStr);
+  //         }
+  //       }
+  //     } catch (e) {
+  //       errorHandler(e);
+  //     }
+  //   })();
+  // }, [selectedDrug, amount, offer1, offer2, number, isoDate]);
 
   const toggleIsOpenModal = (): void => {
     if (selectedCategory.length === 0) {
@@ -945,7 +945,7 @@ const Create: React.FC = () => {
             <Grid item xs={12}>
               <Divider />
             </Grid>{' '}
-            {comissionPercent !== '' && (
+            {/* {comissionPercent !== '' && (
               <Grid item xs={12}>
                 <Grid item xs={12}>
                   <span
@@ -961,7 +961,7 @@ const Create: React.FC = () => {
                   <Divider />
                 </Grid>
               </Grid>
-            )}
+            )} */}
           </Grid>
         </DialogTitle>{' '}
         <StyledDialogContent id="scrollable-content">

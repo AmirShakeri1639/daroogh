@@ -232,37 +232,37 @@ const SupplyList: React.FC = () => {
     })();
   });
 
-  useEffect(() => {
-    (async (): Promise<any> => {
-      try {
-        const { offer1, offer2, amount, cnt } = state;
-        // @ts-ignore
-        const { value: drugId } = selectedDrug;
-        if ((offer1 !== '' && offer2 !== '' && Number(cnt) > 0) || (drugId && Number(amount) > 0)) {
-          if (Number(offer1) > 0 && Number(offer2) > 0) {
-            setOfferAlert(true);
-          }
-          const result = await getComissionAndRecommendation({
-            drugId,
-            price: state?.amount,
-            offer1: state?.offer1,
-            offer2: state?.offer2,
-            expireDate: isoDate,
-            pharmacyId: '0',
-          });
-          const { data } = result;
-          if (has(data, 'commissionPercent')) {
-            setComissionPercent(data.commissionPercent);
-          }
-          if (has(data, 'suggestionStr')) {
-            setDaroogRecommendation(data.suggestionStr);
-          }
-        }
-      } catch (e) {
-        errorHandler(e);
-      }
-    })();
-  }, [selectedDrug, state?.amount, state?.offer1, state?.offer2, state?.cnt, isoDate]);
+  // useEffect(() => {
+  //   (async (): Promise<any> => {
+  //     try {
+  //       const { offer1, offer2, amount, cnt } = state;
+  //       // @ts-ignore
+  //       const { value: drugId } = selectedDrug;
+  //       if ((offer1 !== '' && offer2 !== '' && Number(cnt) > 0) || (drugId && Number(amount) > 0)) {
+  //         if (Number(offer1) > 0 && Number(offer2) > 0) {
+  //           setOfferAlert(true);
+  //         }
+  //         const result = await getComissionAndRecommendation({
+  //           drugId,
+  //           price: state?.amount,
+  //           offer1: state?.offer1,
+  //           offer2: state?.offer2,
+  //           expireDate: isoDate,
+  //           pharmacyId: '0',
+  //         });
+  //         const { data } = result;
+  //         if (has(data, 'commissionPercent')) {
+  //           setComissionPercent(data.commissionPercent);
+  //         }
+  //         if (has(data, 'suggestionStr')) {
+  //           setDaroogRecommendation(data.suggestionStr);
+  //         }
+  //       }
+  //     } catch (e) {
+  //       errorHandler(e);
+  //     }
+  //   })();
+  // }, [selectedDrug, state?.amount, state?.offer1, state?.offer2, state?.cnt, isoDate]);
 
   const resetDateState = (): void => {
     setSelectedDay('');
@@ -714,7 +714,7 @@ const SupplyList: React.FC = () => {
             <Grid item xs={12}>
               <Divider />
             </Grid>
-            {comissionPercent !== '' && (
+            {/* {comissionPercent !== '' && (
               <Grid item xs={12}>
                 <Grid item xs={12}>
                   <span
@@ -730,7 +730,7 @@ const SupplyList: React.FC = () => {
                   <Divider />
                 </Grid>
               </Grid>
-            )}
+            )} */}
           </Grid>
         </DialogTitle>
         <StyledDialogContent id="scrollable-content">
