@@ -75,7 +75,6 @@ interface MarkerProps {
   hasGeocoder?: boolean;
 }
 const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
-  debugger;
   const {
     onClick,
     maxHeight = '400px',
@@ -89,14 +88,34 @@ const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
     latitude: defaultLatLng[0],
     longitude: defaultLatLng[1],
   });
+  const markerRef = useRef(null);
+  const eventHandlers = useMemo(
+    () => ({
+      dragend() {
+        debugger;
+        const marker: any = markerRef.current;
+        if (marker != null) {
+          setPosition({
+            latitude: marker.getLatLng().lat,
+            longitude: marker.getLatLng().lng,
+          });
+          if (onClick) onClick({ lat: marker.getLatLng().lat, lng: marker.getLatLng().lng });
+        }
+      },
+    }),
+    []
+  );
   const map = useMapEvents({
     click(event) {
+      debugger;
       const { lat, lng } = event.latlng;
       setPosition({
         latitude: lat,
         longitude: lng,
       });
+      if (onClick) onClick({ lat, lng });
     },
+
   });
   useEffect(() => {
     setPosition({
@@ -107,7 +126,12 @@ const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
   }, [defaultLatLng[0], defaultLatLng[1]]);
 
   return position.latitude ? (
-    <Marker position={[position.latitude, position.longitude]} draggable={draggable && editable} />
+    <Marker
+      ref={markerRef}
+      position={[position.latitude, position.longitude]}
+      draggable={draggable && editable}
+      eventHandlers={eventHandlers}
+    />
   ) : null;
 };
 
