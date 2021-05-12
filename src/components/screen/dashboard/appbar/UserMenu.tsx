@@ -37,17 +37,19 @@ const UserMenu: React.FC = () => {
     logoutUser();
   };
 
-  const renderItems = useMemo((): JSX.Element[] => {
-    return menuItems.map((item) => (
-      <MenuItem className="txt-sm">
-        <Link to={item.path} style={{ textDecoration: 'none' }}>
-          <ListItemIcon>
-            <FontAwesomeIcon icon={item.icon} size="lg" />
-          </ListItemIcon>
-          {item.text}
-        </Link>
-      </MenuItem>
-    ));
+  const renderItems = useMemo((): any => {
+    return React.Children.toArray(
+      menuItems.map((item) => (
+        <MenuItem className="txt-sm">
+          <Link to={ item.path } style={ { textDecoration: 'none' } }>
+            <ListItemIcon>
+              <FontAwesomeIcon icon={ item.icon } size="lg" />
+            </ListItemIcon>
+            { item.text }
+          </Link>
+        </MenuItem>
+      ))
+    )
   }, []);
 
   return (
