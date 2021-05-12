@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, createStyles, Divider, Grid, Hidden } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { Box, createStyles, DialogContent, Divider, Grid, Hidden } from '@material-ui/core';
 import { CardHeaderInterface } from '../../../../../interfaces';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,34 +8,20 @@ import {
   faStarHalfAlt,
   faMapMarkerAlt,
   faCalculator,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@material-ui/icons/Person';
-import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
-import { ColorEnum } from 'enum';
+import { ColorEnum, RolesEnum } from 'enum';
+import { confirmSweetAlert, Impersonation, JwtData } from 'utils'
+import { Pharmacy, User } from 'services/api'
+import routes from 'routes'
+import { useHistory } from 'react-router-dom'
 
 const useStyle = makeStyles((theme) =>
   createStyles({
-    box: {
-      padding: theme.spacing(2, 1),
-      position: 'relative',
-    },
-    divPosition: {
-      position: 'absolute',
-      '&.left': {
-        right: 8,
-        background: 'white',
-        bottom: 9,
-        padding: '0 3px 0 10px',
-      },
-      '&.right': {
-        left: 8,
-        background: 'white',
-        bottom: 10,
-        padding: '0 10px 0 3px',
-      },
-    },
+    
     userLevelContainer: {
       display: 'flex',
       alignItems: 'center',
@@ -66,9 +52,6 @@ const useStyle = makeStyles((theme) =>
         },
       },
     },
-    textLeft: {
-      textAlign: 'right',
-    },
     starIcon: {
       color: '#ffc65d',
     },
@@ -94,13 +77,56 @@ const useStyle = makeStyles((theme) =>
 );
 
 const CardHeader: React.FC<CardHeaderInterface> = (props) => {
-  const { city, guaranty, province, star, itemsCount, userType } = props;
+  const { city, guaranty, province, star, itemsCount, userType, pharmacyKey = '' } = props;
+  const [pharmacyTitle, setPharmacyTitle] = useState('')
+  const [pharmacyId, setPharmacyId] = useState(0)
+  
+  const { roles } = new JwtData();
+  let rolesArray = roles();
+  if (!Array.isArray(rolesArray)) {
+    rolesArray = [rolesArray];
+  }
+  const [showPharmacyInfo] = useState<boolean>(
+    rolesArray?.indexOf(RolesEnum.ADMIN) >= 0
+  )
+
+  useEffect(() => {
+    if (!showPharmacyInfo) return
+    const { detailByKey } = new Pharmacy()
+    const getPharmacyData = async (): Promise<any> => {
+      const pharmacy = await detailByKey(pharmacyKey)
+      setPharmacyTitle(pharmacy.name)
+      setPharmacyId(pharmacy.id)
+    }
+    getPharmacyData()
+  }, [showPharmacyInfo])
+  
+  const history = useHistory()
+
+  const { impersonate } = new User()
+  const impersonateHandler = (event: any, pharmacyId: any): void => {
+    async function getNewToken(id: number | string): Promise<any> {
+      const result = await impersonate(id)
+      const impersonation = new Impersonation()
+      impersonation.changeToken(result.data.token, result.data.pharmacyName)
+      history.push(routes.supplyList)
+    }
+    getNewToken(pharmacyId)
+  }
+
+  const doImpersonate = async (): Promise<any> =>{
+    const confirmImpersonate = await confirmSweetAlert(
+      t('alert.impersonate'), {
+        title: t('pharmacy.pharmacy') + ' ' + pharmacyTitle
+      }
+    )
+    if (!confirmImpersonate) return
+    impersonateHandler(null, pharmacyId)
+  }
 
   const {
-    box,
-    divPosition,
+
     userLevelContainer,
-    textLeft,
     starIcon,
     headerBack,
     logoType,
@@ -192,6 +218,17 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
           </span>
           <Hidden xsDown ><span className="txt-xs ">محل داروخانه: </span></Hidden>
           <span className={` ${pharmacyName} `}>{`${province} ${city}`}</span>
+
+          {showPharmacyInfo && (
+            <span onClick={() => doImpersonate()}>{'    '}
+            <FontAwesomeIcon
+              icon={faUser}
+              size="1x"
+              style={{ marginLeft: '6px' }}
+            />
+          </span>
+          )}
+
         </Grid>
         <Grid item xs={12}>
           {handleUserType(userType)}
@@ -213,6 +250,7 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
       </Grid>
       <Grid item xs={5} lg={4} md={4}></Grid>
     </Grid>
+
   );
 };
 
