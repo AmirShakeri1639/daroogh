@@ -105,7 +105,7 @@ export enum TransactionTypeEnum {
 
 export enum MaritalStatusType {
   Married = 0,
-  Single = 14
+  Single = 1
 }
 
 export enum GenderType {

@@ -1,24 +1,40 @@
-import React from 'react'
-import { Button, Container, Grid, makeStyles, Paper, Tab, Tabs } from '@material-ui/core'
-import MapCluster from '../../public/map/MapCluster'
-import ExChangeChart from './exChange/ExChangeChart'
-import BestPharmaciesList from './pharmacy/bestPharmaciesList'
-import AllWidgets from './widgets/AllWidgets'
-import 'intro.js/introjs.css'
-import 'intro.js/introjs-rtl.css'
-import './style.css'
-import { checkVersion, clearMyCache, JwtData, showWhatsNew } from 'utils'
-import AddedValueOfPharmacyWidget from './widgets/AddedValueOfPharmacyWidget'
-import AddedValueWidget from './widgets/AddedValueWidget'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faFileMedical, faUser } from '@fortawesome/free-solid-svg-icons'
-import routes from 'routes'
-import { useTranslation } from 'react-i18next'
+import React, { useState } from 'react';
+import {
+  Button,
+  Container,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  Paper,
+  Tab,
+  Tabs,
+} from '@material-ui/core';
+import MapCluster from '../../public/map/MapCluster';
+import ExChangeChart from './exChange/ExChangeChart';
+import BestPharmaciesList from './pharmacy/bestPharmaciesList';
+import AllWidgets from './widgets/AllWidgets';
+import 'intro.js/introjs.css';
+import 'intro.js/introjs-rtl.css';
+import './style.css';
+import { checkVersion, clearMyCache, JwtData, showWhatsNew } from 'utils';
+import AddedValueOfPharmacyWidget from './widgets/AddedValueOfPharmacyWidget';
+import AddedValueWidget from './widgets/AddedValueWidget';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBars, faFileMedical, faUser } from '@fortawesome/free-solid-svg-icons';
+import routes from 'routes';
+import { useTranslation } from 'react-i18next';
 
-import styled from 'styled-components'
-import { VectorMap } from '@south-paw/react-vector-maps'
+import styled from 'styled-components';
+import { VectorMap } from '@south-paw/react-vector-maps';
 
-import iran from './iran.json'
+import iran from './iran.json';
+import CDialog from 'components/public/dialog/Dialog';
 
 const Map = styled.div`
   margin: 1rem auto;
@@ -54,7 +70,7 @@ const Map = styled.div`
       }
     }
   }
-`
+`;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -93,48 +109,51 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     color: '#1e88e5',
   },
-}))
+}));
 
-const { profile, prescription, jobApplication } = routes
+const { profile, prescription, jobApplication } = routes;
 const DashboardContent: React.FC<any> = () => {
-  const classes = useStyles()
-  const jwtData = new JwtData()
-  const pharmacyName = jwtData.userData.pharmacyName
-  const { t } = useTranslation()
-  const [value, setValue] = React.useState(0)
+  const classes = useStyles();
+  const jwtData = new JwtData();
+  const pharmacyName = jwtData.userData.pharmacyName;
+  const { t } = useTranslation();
+  const [value, setValue] = React.useState(0);
+  const [isOpenDetails, setIsOpenDetails] = useState(false);
 
   const handleChange = (event: any, newValue: any): void => {
-    setValue(newValue)
-  }
+    setValue(newValue);
+  };
 
   const handleChangeIndex = (index: any): void => {
-    setValue(index)
-  }
+    setValue(index);
+  };
   const onClick = ({ target }: any) => {
-    const name = target.attributes.name.value
-    window.open(`https://www.google.com/search?q=${name}%20nz`)
-  }
+    setIsOpenDetails(true);
+    // const name = target.attributes.name.value;
+    // window.open(`https://www.google.com/search?q=${name}%20nz`);
+  };
 
   // React.useEffect(() => {
-  console.log('%cbefore checkversion', 'background: yellow')
+  console.log('%cbefore checkversion', 'background: yellow');
   {
     (async (): Promise<any> => {
-      const versionChanged = await checkVersion()
+      const versionChanged = await checkVersion();
       if (versionChanged) {
-        console.log('version checked ready to cleanup cache')
+        console.log('version checked ready to cleanup cache');
         clearMyCache();
       } else {
         console.log(
-          '%cversion is not changed (maybe it\'s after cleaning up the cache)' +
-          ' checking for whatsneweXists', 'background: lightblue'
-        )
+          "%cversion is not changed (maybe it's after cleaning up the cache)" +
+            ' checking for whatsneweXists',
+          'background: lightblue'
+        );
         const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
         if (whatsNewExistsFromStorage === 'true') {
           localStorage.removeItem('whatsNewExists');
           showWhatsNew(localStorage.getItem('version') || '1.0.0');
         }
       }
-    })()
+    })();
   }
   // }, [localStorage.getItem('version')]);
 
@@ -261,8 +280,29 @@ const DashboardContent: React.FC<any> = () => {
           </Grid>
         </Grid>
       )}
+      <CDialog
+        fullScreen={false}
+        fullWidth
+        isOpen={isOpenDetails}
+        onClose={(): void => setIsOpenDetails(false)}
+        onOpen={(): void => setIsOpenDetails(true)}
+        hideSubmit={true}
+      >
+        <DialogTitle>داروخانه ها</DialogTitle>
+        <Divider />
+        <DialogContent>
+          <List component="nav" aria-label="contacts">
+            <ListItem button>
+              <ListItemText primary="شاکری" />
+            </ListItem>
+            <ListItem button>
+              <ListItemText primary="امینی" />
+            </ListItem>
+          </List>
+        </DialogContent>
+      </CDialog>
     </Container>
-  )
-}
+  );
+};
 
-export default DashboardContent
+export default DashboardContent;
