@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, createStyles, Divider, Grid, Hidden } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Box, createStyles, DialogContent, Divider, Grid, Hidden } from '@material-ui/core';
 import { CardHeaderInterface } from '../../../../../interfaces';
 import { makeStyles } from '@material-ui/core/styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,34 +8,16 @@ import {
   faStarHalfAlt,
   faMapMarkerAlt,
   faCalculator,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@material-ui/icons/Person';
-import { Breakpoint } from '@material-ui/core/styles/createBreakpoints';
 import { ColorEnum } from 'enum';
 
 const useStyle = makeStyles((theme) =>
   createStyles({
-    box: {
-      padding: theme.spacing(2, 1),
-      position: 'relative',
-    },
-    divPosition: {
-      position: 'absolute',
-      '&.left': {
-        right: 8,
-        background: 'white',
-        bottom: 9,
-        padding: '0 3px 0 10px',
-      },
-      '&.right': {
-        left: 8,
-        background: 'white',
-        bottom: 10,
-        padding: '0 10px 0 3px',
-      },
-    },
+    
     userLevelContainer: {
       display: 'flex',
       alignItems: 'center',
@@ -66,9 +48,6 @@ const useStyle = makeStyles((theme) =>
         },
       },
     },
-    textLeft: {
-      textAlign: 'right',
-    },
     starIcon: {
       color: '#ffc65d',
     },
@@ -95,12 +74,16 @@ const useStyle = makeStyles((theme) =>
 
 const CardHeader: React.FC<CardHeaderInterface> = (props) => {
   const { city, guaranty, province, star, itemsCount, userType } = props;
+  const [ showPharmacyInfo , setShowPharmacyInfo] = useState<boolean>(true)
+
+  const impersonate = (): void =>{
+
+  }
+
 
   const {
-    box,
-    divPosition,
+
     userLevelContainer,
-    textLeft,
     starIcon,
     headerBack,
     logoType,
@@ -192,6 +175,17 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
           </span>
           <Hidden xsDown ><span className="txt-xs ">محل داروخانه: </span></Hidden>
           <span className={` ${pharmacyName} `}>{`${province} ${city}`}</span>
+
+          {showPharmacyInfo && (
+            <span onClick={()=>impersonate()}>{'    '}
+            <FontAwesomeIcon
+              icon={faUser}
+              size="1x"
+              style={{ marginLeft: '6px' }}
+            />
+          </span>
+          )}
+
         </Grid>
         <Grid item xs={12}>
           {handleUserType(userType)}
@@ -213,6 +207,7 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
       </Grid>
       <Grid item xs={5} lg={4} md={4}></Grid>
     </Grid>
+
   );
 };
 
