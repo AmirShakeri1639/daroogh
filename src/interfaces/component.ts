@@ -118,6 +118,7 @@ export interface CardHeaderInterface {
   star: number | string;
   itemsCount: number | string;
   userType: number;
+  pharmacyKey?: string;
 }
 
 export interface ItemContainerPropsInterface {

@@ -160,6 +160,7 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
       <Paper className={paper}>
         <Grid container spacing={0}>
           <CardHeader
+            pharmacyKey={pharmacyKey}
             city={pharmacyCity}
             province={pharmacyProvince}
             guaranty={warranty}

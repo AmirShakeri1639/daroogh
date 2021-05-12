@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, createStyles, DialogContent, Divider, Grid, Hidden } from '@material-ui/core';
 import { CardHeaderInterface } from '../../../../../interfaces';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,7 +13,11 @@ import {
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@material-ui/icons/Person';
-import { ColorEnum } from 'enum';
+import { ColorEnum, RolesEnum } from 'enum';
+import { confirmSweetAlert, Impersonation, JwtData } from 'utils'
+import { Pharmacy, User } from 'services/api'
+import routes from 'routes'
+import { useHistory } from 'react-router-dom'
 
 const useStyle = makeStyles((theme) =>
   createStyles({
@@ -73,13 +77,52 @@ const useStyle = makeStyles((theme) =>
 );
 
 const CardHeader: React.FC<CardHeaderInterface> = (props) => {
-  const { city, guaranty, province, star, itemsCount, userType } = props;
-  const [ showPharmacyInfo , setShowPharmacyInfo] = useState<boolean>(true)
+  const { city, guaranty, province, star, itemsCount, userType, pharmacyKey = '' } = props;
+  const [pharmacyTitle, setPharmacyTitle] = useState('')
+  const [pharmacyId, setPharmacyId] = useState(0)
+  
+  const { roles } = new JwtData();
+  let rolesArray = roles();
+  if (!Array.isArray(rolesArray)) {
+    rolesArray = [rolesArray];
+  }
+  const [showPharmacyInfo] = useState<boolean>(
+    rolesArray?.indexOf(RolesEnum.ADMIN) >= 0
+  )
 
-  const impersonate = (): void =>{
+  useEffect(() => {
+    if (!showPharmacyInfo) return
+    const { detailByKey } = new Pharmacy()
+    const getPharmacyData = async (): Promise<any> => {
+      const pharmacy = await detailByKey(pharmacyKey)
+      setPharmacyTitle(pharmacy.name)
+      setPharmacyId(pharmacy.id)
+    }
+    getPharmacyData()
+  }, [showPharmacyInfo])
+  
+  const history = useHistory()
 
+  const { impersonate } = new User()
+  const impersonateHandler = (event: any, pharmacyId: any): void => {
+    async function getNewToken(id: number | string): Promise<any> {
+      const result = await impersonate(id)
+      const impersonation = new Impersonation()
+      impersonation.changeToken(result.data.token, result.data.pharmacyName)
+      history.push(routes.supplyList)
+    }
+    getNewToken(pharmacyId)
   }
 
+  const doImpersonate = async (): Promise<any> =>{
+    const confirmImpersonate = await confirmSweetAlert(
+      t('alert.impersonate'), {
+        title: t('pharmacy.pharmacy') + ' ' + pharmacyTitle
+      }
+    )
+    if (!confirmImpersonate) return
+    impersonateHandler(null, pharmacyId)
+  }
 
   const {
 
@@ -177,7 +220,7 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
           <span className={` ${pharmacyName} `}>{`${province} ${city}`}</span>
 
           {showPharmacyInfo && (
-            <span onClick={()=>impersonate()}>{'    '}
+            <span onClick={() => doImpersonate()}>{'    '}
             <FontAwesomeIcon
               icon={faUser}
               size="1x"
