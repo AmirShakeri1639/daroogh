@@ -256,17 +256,13 @@ const MenuProps = {
   },
 };
 
-const { getAllRoles, removeUserRoles } = new Role();
-
-const { addPharmacyUser } = new User();
 
 const UsersList: React.FC = () => {
   const ref = useDataTableRef();
   const { t } = useTranslation();
-
+  
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false);
-  const [isOpenSaveModal, setIsOpenSaveModal] = useState(false);
   const [isOpenRoleModal, setIsOpenRoleModal] = useState<boolean>(false);
   const [idOfSelectedUser, setIdOfSelectedUser] = useState<number>(0);
   const [isOpenModalOfCreateUser, setIsOpenModalOfCreateUser] = useState<boolean>(false);
@@ -275,12 +271,12 @@ const UsersList: React.FC = () => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
   //const fullScreen =  true
-
+  
   const toggleIsOpenModalOfUser = (): void => setIsOpenModalOfCreateUser((v) => !v);
   const toggleIsOpenRoleModal = (): void => setIsOpenRoleModal((v) => !v);
-  const toggleIsOpenSaveModalForm = (): void => setIsOpenSaveModal((v) => !v);
-
-  const { getCurrentPharmacyUsers, removeUser, disableUser, saveNewUser } = new User();
+  
+  const { getCurrentPharmacyUsers, addPharmacyUser } = new User();
+  const { getAllRoles, removeUserRoles } = new Role();
 
   const { isLoading: roleListLoading, data: roleListData } = useQuery(
     RoleQueryEnum.GET_ALL_ROLES,
@@ -295,33 +291,6 @@ const UsersList: React.FC = () => {
     setNoDataRef(false);
     getList();
   };
-
-  const [_removeUser, { isLoading: isLoadingRemoveUser }] = useMutation(removeUser, {
-    onSuccess: async () => {
-      ref.current?.onQueryChange();
-      await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      tSuccess(t('alert.successfulRemoveTextMessage'));
-      resetListRef();
-    },
-  });
-
-  const [_disableUser, { reset: resetDisableUser }] = useMutation(disableUser, {
-    onSuccess: async () => {
-      ref.current?.onQueryChange();
-      await queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      resetListRef();
-    },
-  });
-
-  const [_editUser, { isLoading: isLoadingEditUser }] = useMutation(saveNewUser, {
-    onSuccess: async () => {
-      ref.current?.onQueryChange();
-      dispatch({ type: 'reset' });
-      queryCache.invalidateQueries(UserQueryEnum.GET_ALL_USERS);
-      tSuccess(t('alert.successfulEditTextMessage'));
-      resetListRef();
-    },
-  });
 
   const [_addPharmacyUser, { isLoading: isLoadingNewUser }] = useMutation(addPharmacyUser, {
     onSuccess: async (data) => {
@@ -392,182 +361,6 @@ const UsersList: React.FC = () => {
     await _addPharmacyUser(data);
   };
 
-  const tableColumns = (): TableColumnInterface[] => {
-    return [
-      {
-        field: 'id',
-        title: 'شناسه',
-        searchable: true,
-        type: 'numeric',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'name',
-        title: 'نام',
-        searchable: true,
-        type: 'string',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'family',
-        title: 'نام خانوادگی',
-        searchable: true,
-        type: 'string',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'mobile',
-        title: 'موبایل',
-        searchable: true,
-        type: 'string',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'gender',
-        title: t('general.gender'),
-        type: 'number',
-        render: (row: any): any =>
-          row.gender == 0
-            ? t('general.male')
-            : row.gender == 1
-            ? t('general.female')
-            : t('general.unknown'),
-      },
-      {
-        field: 'email',
-        title: 'ایمیل',
-        searchable: true,
-        type: 'string',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'nationalCode',
-        title: 'کد ملی',
-        searchable: true,
-        type: 'string',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'userName',
-        title: 'نام کاربری',
-        searchable: true,
-        type: 'string',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'pharmacyName',
-        title: 'نام داروخانه',
-        searchable: true,
-        type: 'string',
-        cellStyle: { textAlign: 'right' },
-      },
-      {
-        field: 'active',
-        title: 'وضعیت کاربر',
-        type: 'string',
-        render: (rowData: any): any => (rowData.active ? 'فعال' : 'غیرفعال'),
-        cellStyle: { textAlign: 'center', width: 80 },
-      },
-    ];
-  };
-
-  const removeUserHandler = async (e: any, userRow: NewUserData): Promise<any> => {
-    try {
-      const removeConfirm = await confirmSweetAlert(TextMessage.REMOVE_TEXT_ALERT)
-      if (removeConfirm) {
-          await _removeUser(userRow.id);
-      }
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
-
-  const disableUserHandler = async (item: any): Promise<any> => {
-    try {
-      const confirmation = await confirmSweetAlert(t('alert.disableTextAlert'))
-      if (confirmation) {
-        await _disableUser(item.id);
-        tSuccess(t('alert.successfulDisableTextMessage'));
-        resetDisableUser();
-      }
-    } catch (e) {
-      errorHandler(e);
-    }
-  };
-
-  const enableUserHandler = async (user: InitialNewUserInterface): Promise<any> => {
-    const enableText = await confirmSweetAlert(t('alert.enableTextAlert'))
-    if (!enableText) {
-      return;
-    }
-    const {
-      name,
-      family,
-      email,
-      mobile,
-      birthDate,
-      id,
-      nationalCode,
-      pharmacyID,
-      userName,
-      smsActive,
-      notifActive,
-      gender,
-    } = user;
-
-    await _editUser({
-      id,
-      active: true,
-      name,
-      family,
-      userName,
-      birthDate,
-      nationalCode,
-      email,
-      mobile,
-      pharmacyID,
-      smsActive,
-      notifActive,
-      gender,
-    });
-  };
-
-  const editUserHandler = (e: any, row: any): void => {
-    toggleIsOpenSaveModalForm();
-    const {
-      name,
-      family,
-      email,
-      mobile,
-      birthDate,
-      id,
-      nationalCode,
-      userName,
-      active,
-      pharmacyName,
-      pharmacyID,
-      smsActive,
-      notifActive,
-      gender,
-    } = row;
-    dispatch({ type: 'name', value: name });
-    dispatch({ type: 'family', value: family });
-    dispatch({ type: 'email', value: email });
-    dispatch({ type: 'mobile', value: mobile });
-    dispatch({ type: 'userName', value: userName });
-    dispatch({ type: 'nationalCode', value: nationalCode });
-    dispatch({ type: 'id', value: id });
-    dispatch({ type: 'birthDate', value: birthDate });
-    dispatch({ type: 'active', value: active });
-    dispatch({ type: 'smsActive', value: smsActive });
-    dispatch({ type: 'notifActive', value: notifActive });
-    dispatch({ type: 'gender', value: gender });
-    dispatch({
-      type: 'pharmacyID',
-      value: { id: pharmacyID, name: pharmacyName },
-    });
-  };
-
   const editRoleHandler = (item: any): void => {
     const { id } = item;
     setIdOfSelectedUser(id);
@@ -595,14 +388,6 @@ const UsersList: React.FC = () => {
     }
   };
 
-  const customDataTAbleACtions: DataTableCustomActionInterface[] = [
-    {
-      icon: (): any => <FontAwesomeIcon icon={faUserTag} className={userRoleIcon} />,
-      tooltip: 'نقش کاربر',
-      action: (event: any, rowData: any): void => editRoleHandler(rowData),
-    },
-  ];
-
   const rolesListGenerator = (): any => {
     if (roleListData !== undefined && !roleListLoading) {
       return (
@@ -625,27 +410,28 @@ const UsersList: React.FC = () => {
 
   const handleChange = async (event: React.ChangeEvent<{ value: unknown }>): Promise<any> => {
     setSelectedRoles(event.target.value as number[]);
-  };
-  const contentGenerator = (): JSX.Element[] | null => {
+  }
+
+  const contentGenerator = (): any[] | null => {
     if (!isLoading && list !== undefined && isFetched) {
-      return listRef.current.map((item: any) => {
-        //const { user } = item;
-        //if (user !== null) {
-        return (
-          <Grid item xs={12} sm={6} md={4} key={item.id}>
-            <CardContainer
-              data={item}
-              editRoleHandler={editRoleHandler}
-              removeRolesHandler={removeAllRoles}
-            />
-          </Grid>
-        );
-        //}
-      });
+      return React.Children.toArray(
+        listRef.current.map((item: any) => {
+          return (
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 } key={ item.id }>
+              <CardContainer
+                data={ item }
+                editRoleHandler={ editRoleHandler }
+                removeRolesHandler={ removeAllRoles }
+              />
+            </Grid>
+          )
+        })
+      );
     }
 
     return null;
-  };
+  }
+
   const [list, setList] = useState<any>([]);
   const listRef = React.useRef(list);
   const setListRef = (data: any, refresh: boolean = false) => {
@@ -658,11 +444,6 @@ const UsersList: React.FC = () => {
   };
   const [search, setSearch] = useState<string>('');
   const searchRef = React.useRef(search);
-  const setSearchRef = (data: any) => {
-    searchRef.current = data;
-    setSearch(data);
-    getList(true);
-  };
   const { isLoading, data, isFetched } = useQuery(
     UserQueryEnum.GET_ALL_USERS,
     () => getCurrentPharmacyUsers(pageRef.current, 10, [], searchRef.current),
@@ -737,37 +518,8 @@ const UsersList: React.FC = () => {
     <Container maxWidth="lg">
       <h1 className="txt-md">{t('user.users-list')}</h1>
 
-      {false && (
-        <DataTable
-          tableRef={ref}
-          extraMethods={{ editUser: enableUserHandler }}
-          columns={tableColumns()}
-          // editAction={editUserHandler}
-          // editUser={enableUserHandler}
-          // removeAction={removeUserHandler}
-          queryKey={PharmacyUsersEnum.GET_PHARMACY_USERS}
-          queryCallback={getCurrentPharmacyUsers}
-          initLoad={false}
-          isLoading={isLoadingRemoveUser || isLoadingEditUser}
-          pageSize={10}
-          urlAddress={UrlAddress.getPharmacyUsers}
-          // stateAction={disableUserHandler}
-          customActions={customDataTAbleACtions}
-        />
-      )}
       <br />
 
-      {/* {true && (
-        <Grid container spacing={1}>
-          <Grid item xs={12} md={6}>
-            <SearchBar
-              classes={{ searchIconButton: searchIconButton }}
-              placeholder={t('general.search')}
-              onChange={(newValue) => setSearchRef(newValue)}
-            />
-          </Grid>
-        </Grid>
-      )} */}
       <Grid container spacing={3} className={contentContainer}>
         <Hidden xsDown>
           <Grid item xs={12} sm={6} md={4}>

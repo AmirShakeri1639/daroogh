@@ -23,6 +23,7 @@ class Pharmacy extends Api {
     addFile: '/Pharmacy/AddFile',
     addFileGeneral: '/Pharmacy/AddFileGeneral',
     changeStateFile: '/Pharmacy/ChangeStateFile',
+    detailByKey: '/Pharmacy/DetailByKey',
   }
 
   constructor(pharmacyId: number | string = 0) {
@@ -73,6 +74,13 @@ class Pharmacy extends Api {
       errorHandler(e)
       return Promise.reject(e)
     }
+  }
+
+  detailByKey = async (key: string): Promise<any> => {
+    const result = await this.postJsonData(
+      `${this.urls.detailByKey}?pharmacyKey=${key}`
+    )
+    return result.data
   }
 
   remove = async (id: number | string): Promise<any> => {

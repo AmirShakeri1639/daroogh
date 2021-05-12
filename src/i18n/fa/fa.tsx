@@ -459,6 +459,7 @@ export default {
         cancelConfirm: 'آیا از لغو این مورد مطمئن هستید؟',
         aiSuggestion: 'آیا به هوش مصنوعی داروگ اجازه پیشنهاد از سبد خودتان را می‌دهید؟',
         removeExchange: 'آیا از حذف تبادل اطمینان دارید؟',
+        impersonate: 'آیا می‌خواهید به جای این داروخانه وارد شوید؟',
       },
       pharmacy: {
         pharmacy: 'داروخانه',
@@ -574,6 +575,7 @@ export default {
         exchangeAmount: 'مبلغ تراکنش',
       },
       reports: {
+        report: 'گزارش',
         reports: 'گزارشات',
         SurplusDrugsForm: 'گزارش داروهای مازاد',
         FavoriteDrugsForm: 'گزارش داروهای مورد علاقه داروخانه‌ها',
@@ -581,6 +583,7 @@ export default {
         loginCount: 'گزارش تعداد لاگین‌ها',
         loginCountTitle: 'تعداد لاگین‌ها',
         basedOn: 'بر اساس',
+        allPharmacyDrug: 'محصولات داروخانه‌ها',
       },
       countryDivision: {
         province: 'استان',

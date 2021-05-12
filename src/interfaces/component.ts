@@ -81,6 +81,7 @@ export interface DataTableProps {
   defaultFilter?: string;
   otherQueryString?: string;
   detailPanel?: ((rowdata: any) => void) | JSX.Element | any;
+  showToolbar?: boolean;
 }
 
 export interface UserDataProps {
@@ -118,6 +119,7 @@ export interface CardHeaderInterface {
   star: number | string;
   itemsCount: number | string;
   userType: number;
+  pharmacyKey?: string;
 }
 
 export interface ItemContainerPropsInterface {

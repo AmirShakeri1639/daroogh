@@ -21,6 +21,7 @@ class Reports extends Api {
     getAddedValueOfPharmacy: '/Reports/GetAddedValueOfPharmacy',
     getAddedValue: '/Reports/GetAddedValue',
     getLoginCount: '/Reports/GetLoginCount',
+    getAllPharmacyDrugs: '/Reports/AllPharmacyDrug',
   }
 
   getWidgetInfo = async (): Promise<any> => {
@@ -155,6 +156,11 @@ class Reports extends Api {
       (geoCode ? `&geoCode=${geoCode}` : '') +
       (pharmacyID ? `&pharmacyID=${pharmacyID}` : '')
     const result = await this.getData(url)
+    return result.data
+  }
+
+  getAllPharmacyDrugs = async (): Promise<any> => {
+    const result = await this.postJsonData(this.urls.getAllPharmacyDrugs)
     return result.data
   }
 
