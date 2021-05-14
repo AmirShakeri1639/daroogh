@@ -20,67 +20,6 @@ export const ErrorToastId = {
   ERR_500: 'error500',
 }
 
-axiosInstance.interceptors.response.use(undefined, (error) => {
-  const { response } = error
-
-  if (!error.response) {
-    tError(i18n.t('error.network'), {
-      autoClose: ToastDurationEnum.VeryLong,
-      position: 'top-center',
-      toastId: ErrorToastId.NETWORK
-    })
-    console.error('Error in network')
-    return Promise.reject(error)
-  }
-
-  if (error.response.data?.message) {
-    console.error(error.response.data.message)
-  }
-
-  const { status } = response
-  if (status === 400) {
-    ; (async (): Promise<any> => {
-      const message = error?.response?.data?.message
-      tError(
-        message === undefined
-          ? 'مشکلی در ارسال درخواست وجود دارد،' +
-          ' در صورت تکرار لطفا با پشتیبانی تماس بگیرید!'
-          : message,
-        { toastId: ErrorToastId.ERR_400 }
-      )
-    })()
-  } else if (status === 401) {
-    ; (async (): Promise<any> => {
-      const message = error?.response?.data?.message
-      tError(
-        message === undefined
-          ? 'شما مجوز دسترسی به این صفحه را ندارید!'
-          : message,
-        { toastId: ErrorToastId.ERR_401 }
-      )
-    })()
-  } else if (status === 404) {
-    ; (async (): Promise<any> => {
-      tError(
-        'پیدا نشد! - 404', 
-        { toastId: ErrorToastId.ERR_404 }
-      )
-    })()
-  } else if (status === 500) {
-    ; (async (): Promise<any> => {
-      const message = error?.response?.data?.message
-      tError(
-        message === undefined ? 'خطایی رخ داده است.' : message,
-        { toastId: ErrorToastId.ERR_500 }
-      )
-    })()
-  }
-
-  return Promise.reject(
-    error?.response?.data?.message == undefined ? error : error?.response?.data?.message
-  )
-})
-
 class Api {
   protected axiosInstance: AxiosInstance = axiosInstance
   protected axiosSource = CancelToken.source()
@@ -148,5 +87,81 @@ class Api {
     }
   }
 }
+
+// THIS IS TEMPORARILY
+const logError = async (error: any): Promise<any> => {
+  const result = await fetch(
+    'https://cms.hozehkh.com/errorlog_d.py?daroog=daroog_',
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        err: error
+      })
+    }
+  )
+  console.log('CMSMCMSMC:', result)
+}
+
+axiosInstance.interceptors.response.use(undefined, (error) => {
+  const { response } = error
+
+  if (!error.response) {
+    tError(i18n.t('error.network'), {
+      autoClose: ToastDurationEnum.VeryLong,
+      position: 'top-center',
+      toastId: ErrorToastId.NETWORK
+    })
+    logError(error)
+    console.error('Error in network')
+    return Promise.reject(error)
+  }
+
+  if (error.response.data?.message) {
+    console.error(error.response.data.message)
+  }
+
+  const { status } = response
+  if (status === 400) {
+    ; (async (): Promise<any> => {
+      const message = error?.response?.data?.message
+      tError(
+        message === undefined
+          ? 'مشکلی در ارسال درخواست وجود دارد،' +
+          ' در صورت تکرار لطفا با پشتیبانی تماس بگیرید!'
+          : message,
+        { toastId: ErrorToastId.ERR_400 }
+      )
+    })()
+  } else if (status === 401) {
+    ; (async (): Promise<any> => {
+      const message = error?.response?.data?.message
+      tError(
+        message === undefined
+          ? 'شما مجوز دسترسی به این صفحه را ندارید!'
+          : message,
+        { toastId: ErrorToastId.ERR_401 }
+      )
+    })()
+  } else if (status === 404) {
+    ; (async (): Promise<any> => {
+      tError(
+        'پیدا نشد! - 404', 
+        { toastId: ErrorToastId.ERR_404 }
+      )
+    })()
+  } else if (status === 500) {
+    ; (async (): Promise<any> => {
+      const message = error?.response?.data?.message
+      tError(
+        message === undefined ? 'خطایی رخ داده است.' : message,
+        { toastId: ErrorToastId.ERR_500 }
+      )
+    })()
+  }
+
+  return Promise.reject(
+    error?.response?.data?.message == undefined ? error : error?.response?.data?.message
+  )
+})
 
 export default Api
