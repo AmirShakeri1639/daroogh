@@ -20,7 +20,7 @@ deploy_beta:
   only:
     - beta
   script:
-    - "rm C:/daroog/tabadol/beta-front/static/ -force -recurse"
+    - "rm C:/daroog/tabadol/beta-front/static/ -force -recurse; "
     - "cp ./build/* C:/daroog/tabadol/beta-front/ -force -recurse"
   environment:
     name: staging
