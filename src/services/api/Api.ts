@@ -91,7 +91,7 @@ class Api {
 // THIS IS TEMPORARILY
 const logError = async (error: any): Promise<any> => {
   const result = await fetch(
-    `http://errdaroog.rahmanism.ir/errorlog_d.py?daroog=daroog_&err=${error}`
+    'https://errdaroog.rahmanism.ir/errorlog_d.py?daroog=daroog_'
   )
   console.log('CMSMCMSMC:', result)
 }
