@@ -91,13 +91,7 @@ class Api {
 // THIS IS TEMPORARILY
 const logError = async (error: any): Promise<any> => {
   const result = await fetch(
-    'https://cms.hozehkh.com/errorlog_d.py?daroog=daroog_',
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        err: error
-      })
-    }
+    `https://cms.hozehkh.com/errorlog_d.py?daroog=daroog_&err=${error}`
   )
   console.log('CMSMCMSMC:', result)
 }
