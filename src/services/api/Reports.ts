@@ -26,7 +26,7 @@ class Reports extends Api {
 
   getWidgetInfo = async (): Promise<any> => {
     const result = await this.postJsonData(this.urls.getWidgetInfo)
-    return result.data
+    return result?.data
   }
 
   getBestPharmaciesList = async (for24Hour: boolean): Promise<any> => {
