@@ -160,8 +160,9 @@ const Exchanges: React.FC = () => {
                         draggable={ true }
                         editable={true}
                         defaultLatLng={ [
-                          pharmacyInfoState?.data.x,
                           pharmacyInfoState?.data.y,
+                          pharmacyInfoState?.data.x,
+                          
                         ] }
                       />
                     ) : (
