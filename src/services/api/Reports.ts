@@ -43,7 +43,6 @@ class Reports extends Api {
   };
 
   getTopBestPharmacies = async (code: string): Promise<any> => {
-    debugger;
     try {
       const result = await this.postJsonData(`${this.urls.getBestPharmacyListScoresInRegion}?countryDivisionCode=${code}`);
       return result.data;
