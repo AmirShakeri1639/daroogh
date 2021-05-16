@@ -70,26 +70,28 @@ const MapCluster = () => {
       {sorted &&
         sorted &&
         sorted.length &&
-        sorted.map((entry, index) => (
-          <div>
-            {'zoneLabel'}
-            <Circle
-              key={index}
-              center={{
-                lat: entry.item4,
-                lng: entry.item3,
-              }}
-              fillColor={`rgb(${colors[index]})`}
-              color={`rgb(${colors[index]})`}
-              fillOpacity="0.7"
-              radius={(definedmax / max) * entry.item2 * 2000}
-            >
-              <Popup>
-                <span>{entry.item1}</span>
-              </Popup>
-            </Circle>
-          </div>
-        ))}
+        React.Children.toArray(
+          sorted.map((entry, index) => (
+            <div>
+              {'zoneLabel' }
+              <Circle
+                key={ index }
+                center={ {
+                  lat: entry.item4,
+                  lng: entry.item3,
+                } }
+                fillColor={ `rgb(${colors[index]})` }
+                color={ `rgb(${colors[index]})` }
+                fillOpacity="0.7"
+                radius={ (definedmax / max) * entry.item2 * 2000 }
+              >
+                <Popup>
+                  <span>{ entry.item1 }</span>
+                </Popup>
+              </Circle>
+            </div>
+          ))
+        ) }
     </MapContainer>
   )
 }
