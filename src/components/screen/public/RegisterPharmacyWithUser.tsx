@@ -902,8 +902,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
                   draggable={ true }
                   getGeoLocation={ true }
                   onClick={ (e: any): void => {
-                    dispatch({ type: 'pharmacy.x', value: e.lngLat.lng })
-                    dispatch({ type: 'pharmacy.y', value: e.lngLat.lat })
+                    dispatch({ type: 'pharmacy.x', value: e.lng })
+                    dispatch({ type: 'pharmacy.y', value: e.lat })
                   } }
                 />
               </div>
