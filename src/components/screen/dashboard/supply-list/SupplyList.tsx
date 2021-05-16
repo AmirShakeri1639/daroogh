@@ -100,8 +100,6 @@ const { all, searchDrug } = new Drug();
 
 const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 
-const { getComissionAndRecommendation } = new Comission();
-
 const { numberWithZero, convertISOTime } = Convertor;
 
 const monthIsValid = (month: number): boolean => month < 13;

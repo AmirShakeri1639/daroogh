@@ -9,20 +9,17 @@ import {
   Hidden,
   Fab,
   Button,
-  Dialog,
   DialogContent,
   DialogTitle,
   DialogContentText,
   DialogActions,
-  useMediaQuery,
-  useTheme,
   Divider,
   Paper,
   Checkbox,
   ListItemText,
 } from '@material-ui/core';
 import React, { useState, useEffect, useRef, useMemo, Fragment } from 'react';
-import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faCalculator, faLongArrowAltLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
@@ -38,12 +35,12 @@ import {
 import { omit, remove, has, debounce, isUndefined } from 'lodash';
 import Input from '../../../../public/input/Input';
 import CardContainer from './CardContainer';
-import { useEffectOnce } from '../../../../../hooks';
+import { useEffectOnce, useMediaQueryWithTheme } from '../../../../../hooks';
 import { errorHandler, Convertor, jalali, tWarn, confirmSweetAlert } from 'utils';
 import { utils } from 'react-modern-calendar-datepicker';
 import moment from 'jalali-moment';
 import { PharmacyDrugSupplyList } from '../../../../../model/pharmacyDrug';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import Calculator from '../../calculator/Calculator';
 
 // @ts-ignore
@@ -56,7 +53,7 @@ import styled from 'styled-components';
 import { useSnackbar } from 'notistack';
 import { ColorEnum } from 'enum';
 import CDialog from 'components/public/dialog/Dialog';
-import { CountryDivisionSelect } from 'components/public/country-division/CountryDivisionSelect';
+import routes from 'routes';
 
 const { searchDrugInMultipleCategory } = new Drug();
 
@@ -64,11 +61,15 @@ const { getAllCategories } = new Category();
 
 const { savePack, getPackDetail } = new Pack();
 
-const { getComissionAndRecommendation } = new Comission();
-
 const { numberWithZero, thousandsSeperatorFa } = Convertor;
 
 const { drugExpireDay } = JSON.parse(localStorage.getItem('settings') ?? '{}');
+
+enum PackStatus {
+  ArzeShodeh = 1,
+  ForookhtehShodeh = 2,
+  Deleted = 3,
+}
 
 const StyledTitle = styled.span`
   color: #17a2bb;
@@ -242,6 +243,15 @@ const STMenuItem = styled((props) => <MenuItem {...props} />)`
   }
 `;
 
+const StyledSubmitButton = styled(Button)`
+  border: 1px solid #3c3cff;
+`;
+
+const StyledLeftIcon = styled(FontAwesomeIcon)`
+  margin-right: 8px;
+  color: #3c3cff;
+`
+
 const Create: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [options, setOptions] = useState<any[]>([]);
@@ -278,12 +288,11 @@ const Create: React.FC = () => {
   const [isCalculatingPrice, setIsCalculatingPrice] = useState<boolean>(false);
 
   const [offerAlert, setOfferAlert] = useState<boolean>(false);
-
-  const theme = useTheme();
+  const { push } = useHistory();
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const fullScreen = useMediaQueryWithTheme('down', 'sm');
 
   const { t } = useTranslation();
 
@@ -792,9 +801,9 @@ const Create: React.FC = () => {
       <Grid container spacing={3} alignItems="center">
         <Grid item xs={12} className={formContainer}>
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={12} md={6} lg={6}>
-              <Grid container spacing={1}>
-                <Grid item xs={12}>
+            <Grid item xs={12}>
+              <Grid container spacing={1} justify="space-between" alignItems="center">
+                <Grid item xs={12} sm={8} md={6} lg={4} xl={3}>
                   <FormControl variant="outlined" size="small" className="w-100">
                     <InputLabel id="category-pack">{t('pack.category')}</InputLabel>
                     <Select
@@ -820,8 +829,17 @@ const Create: React.FC = () => {
                     </Select>
                   </FormControl>
                 </Grid>
+                <Grid item container justify={fullScreen ? 'flex-start' : 'flex-end'} xs={12} sm={4} md={6} lg={8} xl={9}>
+                  <StyledSubmitButton onClick={() => push(routes.packsList)} variant="outlined" type="button">
+                    مشاهده لیست پک ها
+                    <StyledLeftIcon icon={faLongArrowAltLeft} />
+                  </StyledSubmitButton>
+                </Grid>
               </Grid>
+
+
             </Grid>
+
 
             <Grid item xs={12} className="text-left">
               <Grid container spacing={1} alignItems="center">
@@ -841,9 +859,11 @@ const Create: React.FC = () => {
                 </Grid>
               </Grid>
             </Grid>
+
+
           </Grid>
         </Grid>
-        {packStatus == 1 && (
+        {packStatus === PackStatus.ArzeShodeh && (
           <Fragment>
             <Hidden xsDown>
               <Grid item xs={12} md={4}>
@@ -862,31 +882,9 @@ const Create: React.FC = () => {
           </Fragment>
         )}
 
+
         {memoContent}
       </Grid>
-
-      {/* <CDialog
-        fullWidth={fullScreen}
-        isOpen={isOpenCalculator}
-        onCloseAlternate={(): void => setIsOpenCalculator(false)}
-        onOpenAltenate={(): void => setIsOpenCalculator(true)}
-        modalAlt={true}
-        hideAll={false}
-        hideSubmit={true}
-      >
-        <DialogContent>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignContent: 'center',
-              minWidth: `${fullScreen ? '0px' : '300px'}`,
-            }}
-          >
-            <Calculator setCalculatedValue={selectedCalculaterValueHandler} />
-          </div>
-        </DialogContent>
-      </CDialog> */}
 
       {isOpenCalculator && (
         <div className={calculator}>
