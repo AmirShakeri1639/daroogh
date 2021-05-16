@@ -641,7 +641,7 @@ function NewExCardContent(props: ExCardContentProps): JSX.Element {
           onMouseDown={(e: any): void => down('-')}
           onMouseUp={(): void => up()}
           onTouchStart={(e: any): void => setInterVal(setInterval(() => console.log("onTouchStart"), 100))}
-          onTouchEnd={(): void => {clearInterval(interval); console.log("onTouchEnd")}}
+          onTouchEnd={(): void => {clearInterval(interval);}}
         >
           <RemoveIcon />
         </Button>
