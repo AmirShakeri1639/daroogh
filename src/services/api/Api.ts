@@ -192,10 +192,15 @@ class Api {
 
 // THIS IS TEMPORARILY
 const logError = async (error: any): Promise<any> => {
+  const data = new URLSearchParams()
+  data.append('main_pharmacy_name', localStorage.getItem('mainPharmacyName') ?? '')
+  data.append('query', window.location.href)
   const result = await fetch(
-    'https://errdaroog.rahmanism.ir/errorlog_d.py?daroog=daroog_'
+    'https://errdaroog.rahmanism.ir/errorlog_d.py?daroog=daroog_', {
+      method: 'POST',
+      body: data
+    }
   )
-  console.log('CMSMCMSMC:', result)
 }
 
 axiosInstance.interceptors.response.use(undefined, (error) => {
