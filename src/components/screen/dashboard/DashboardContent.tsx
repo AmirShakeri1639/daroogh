@@ -35,7 +35,9 @@ import { VectorMap } from '@south-paw/react-vector-maps';
 
 import iran from './iran.json';
 import CDialog from 'components/public/dialog/Dialog';
-
+import { useQuery } from 'react-query';
+import { Reports } from 'services/api';
+const { getTopBestPharmacies } = new Reports();
 const Map = styled.div`
   margin: 1rem auto;
   width: 100%;
@@ -118,7 +120,18 @@ const DashboardContent: React.FC<any> = () => {
   const pharmacyName = jwtData.userData.pharmacyName;
   const { t } = useTranslation();
   const [value, setValue] = React.useState(0);
+  const [code, setCode] = React.useState('');
   const [isOpenDetails, setIsOpenDetails] = useState(false);
+
+  const { data, refetch } = useQuery(
+    ['getTopBestPharmacies', code],
+    () => {
+      debugger;
+
+      return getTopBestPharmacies(code);
+    },
+    { enabled: code }
+  );
 
   const handleChange = (event: any, newValue: any): void => {
     setValue(newValue);
@@ -128,6 +141,8 @@ const DashboardContent: React.FC<any> = () => {
     setValue(index);
   };
   const onClick = ({ target }: any) => {
+    debugger;
+    setCode(target.id);
     setIsOpenDetails(true);
     // const name = target.attributes.name.value;
     // window.open(`https://www.google.com/search?q=${name}%20nz`);
@@ -292,12 +307,15 @@ const DashboardContent: React.FC<any> = () => {
         <Divider />
         <DialogContent>
           <List component="nav" aria-label="contacts">
-            <ListItem button>
-              <ListItemText primary="شاکری" />
-            </ListItem>
-            <ListItem button>
-              <ListItemText primary="امینی" />
-            </ListItem>
+            {data &&
+              data.items &&
+              data.items.map((rec: any) => {
+                return (
+                  <ListItem button>
+                    <ListItemText primary={rec.name} />
+                  </ListItem>
+                );
+              })}
           </List>
         </DialogContent>
       </CDialog>

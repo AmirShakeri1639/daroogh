@@ -512,7 +512,7 @@ const Profile: React.FC = () => {
                           <Map
                             draggable={ false }
                             getGeoLocation={ false }
-                            defaultLatLng={ [state?.pharmacyX, state?.pharmacyY] }
+                            defaultLatLng={ [ state?.pharmacyY,state?.pharmacyX] }
                           />
                         </Grid>
                       ) }

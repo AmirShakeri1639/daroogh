@@ -646,7 +646,7 @@ const PharmaciesList: React.FC = () => {
                   hasGeocoder={true}
                   defaultLatLng={[state.y, state.x]}
                   onClick={(e: any): void => {
-                    debugger;
+              
                     dispatch({ type: 'x', value: e.lng });
                     dispatch({ type: 'y', value: e.lat });
                   }}
