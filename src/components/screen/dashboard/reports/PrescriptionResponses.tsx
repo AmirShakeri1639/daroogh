@@ -6,6 +6,7 @@ import {
 } from 'interfaces'
 import { getJalaliDate } from 'utils'
 import DataGrid from 'components/public/data-grid/DataGrid'
+import { ColorEnum } from 'enum'
 
 interface Props {
   items: PrescriptionResponseForReportInterface[]
@@ -61,6 +62,14 @@ const PrescriptionResponses: React.FC<Props> = (props) => {
         field: 'stateString',
         title: t('general.state'),
         type: 'string',
+        render: (row: any): any => {
+          return <span style={{ 
+              color: row.state == 2 ? ColorEnum.Green : ColorEnum.GrayRed,
+              fontWeight: row.state == 2 ? 'bold' : 'normal'
+            }}>
+            { row.stateString }
+          </span>
+        }
       }
     ]
   }, [])
