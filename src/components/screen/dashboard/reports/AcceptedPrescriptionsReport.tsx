@@ -1,10 +1,11 @@
+import React, { useMemo } from 'react'
 import { Container, Grid, Paper } from '@material-ui/core'
 import DataTable from 'components/public/datatable/DataTable'
 import { DataTableColumns } from 'interfaces'
-import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Prescription } from 'services/api'
 import { getJalaliDate } from 'utils'
+import PrescriptionResponses from './PrescriptionResponses'
 
 const AcceptedPrescriptionsReport: React.FC = () => {
   const { t } = useTranslation()
@@ -16,7 +17,7 @@ const AcceptedPrescriptionsReport: React.FC = () => {
         field: 'id',
         title: t('general.id'),
         searchable: true,
-        type: 'number',
+        type: 'numeric',
       },
       {
         title: 'تاریخ ارسال',
@@ -25,7 +26,11 @@ const AcceptedPrescriptionsReport: React.FC = () => {
         headerStyle: { textAlign: 'right', direction: 'rtl' },
         cellStyle: { textAlign: 'right', whiteSpace: 'nowrap' },
         render: (row: any): any => {
-          return <> {row.sendDate ? getJalaliDate(row.sendDate) : 'نامشخص'}</>;
+          return <> {
+            row.sendDate
+              ? getJalaliDate(row.sendDate)
+              : 'نامشخص'
+          }</>
         },
       },
       {
@@ -40,8 +45,23 @@ const AcceptedPrescriptionsReport: React.FC = () => {
         searchable: true,
         type: 'string',
       },
-   ]
+    ]
   }, [])
+
+  const detailPanelHandler = (row: any): JSX.Element => {
+    return (
+      <Paper
+        style={ {
+          backgroundColor: 'white',
+          padding: 20,
+          margin: 20,
+          boxShadow: 'inset 0px 0px 3px 0px',
+        } }
+      >
+        <PrescriptionResponses items={ row.prescriptionResponse } />
+      </Paper>
+    )
+  }
 
   return (
     <Container>
@@ -52,6 +72,7 @@ const AcceptedPrescriptionsReport: React.FC = () => {
             <DataTable
               columns={ tableColumns }
               urlAddress={ urls.acceptedPrescriptions }
+              detailPanel={ detailPanelHandler }
               initLoad={ false }
             />
           </Grid>

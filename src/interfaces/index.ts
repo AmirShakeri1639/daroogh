@@ -124,6 +124,7 @@ export type { SettingsAiInterface } from './SettingsAiInterface';
 export type {
   PrescriptionInterface,
   PrescriptionResponseInterface,
+  PrescriptionResponseForReportInterface,
 } from './PrescriptionInterface';
 export type { EmploymentApplicationInterface } from './EmploymentApplicationInterface';
 export type { ProfileInterface } from './profile';

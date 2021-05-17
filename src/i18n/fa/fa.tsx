@@ -152,6 +152,7 @@ export default {
         about: 'درباره ما',
         inNumber: 'به عدد',
         basedOnDescriptions: 'بر اساس توضیحات بالا',
+        rowsPerPage: 'ردیف در صفحه',
       },
 
       pack: {
@@ -604,6 +605,7 @@ export default {
         response: 'پاسخ به نسخه',
         cantEdit: 'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
         comment: 'شرح نسخه',
+        pharmacyComment: 'توضیح داروخانه',
       },
       PrescriptionResponseStateEnum: {
         NotAccept: 'پذیرفته نشد',
