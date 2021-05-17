@@ -7,23 +7,24 @@ export enum ColorEnum {
   PaleGray = '#9e9e9e',
   Silver = '#e0e0e0',
   Yellow = '#ffeb3b',
-  DarkGreen ='#009688',
-  LightRed ='#d34a2f',
-  DarkRed ='#a53030',
-  Blue ='#03a9f4',
-  LightBlue ='#71caf2',
-  DarkYellow ='#d4c227',
-  LightGreen ='#a0dc39',
+  DarkGreen = '#009688',
+  LightRed = '#d34a2f',
+  DarkRed = '#a53030',
+  GrayRed = '#926161',
+  Blue = '#03a9f4',
+  LightBlue = '#71caf2',
+  DarkYellow = '#d4c227',
+  LightGreen = '#a0dc39',
   LightGreen2 = '#dcf7dd',
   LightGreen3 = '#f5fbf5',
-  Cyan ='#00bcd4',
-  DarkCyan ='#0097a7',
-  Maroon ='#e91e63',
-  Purple ='#9c27b0',
-  Orange ='#ff9800',
-  DarkBlue ='#1e88e5',
-  Navy ='#3f51b5',
-  Lime ='#8dff3b',
+  Cyan = '#00bcd4',
+  DarkCyan = '#0097a7',
+  Maroon = '#e91e63',
+  Purple = '#9c27b0',
+  Orange = '#ff9800',
+  DarkBlue = '#1e88e5',
+  Navy = '#3f51b5',
+  Lime = '#8dff3b',
   GOLD = '#ffb300',
   SILVER = '#9e9e9e',
   BRONZE = '#cd7f32',
@@ -31,10 +32,10 @@ export enum ColorEnum {
   AddedByB = '#9cff9c',
   Confirmed = '#dff4ff',//'#33ff33',
   NotConfirmed = '#ffe1e1',
-  DeepBlue ='#1d0d50',
+  DeepBlue = '#1d0d50',
   LiteBack = '#4625b20a',
   Borders = '#f80501',
-  LiteGray ='#dbdedf',
+  LiteGray = '#dbdedf',
   mainBack = '#f2f2f2',
 }
 
@@ -60,7 +61,7 @@ export const CardColors = [
   ColorEnum.DarkBlue, //CONFIRMA_AND_B_PAYMENTA = 8+10,
   ColorEnum.Navy, //CONFIRMA_AND_B_PAYMENTB = 9+10,
   ColorEnum.Lime, //CONFIRMALL_AND_PAYMENTALL = 10+10
-];
+]
 
 export const UserColors = [
   ColorEnum.White,
@@ -68,4 +69,4 @@ export const UserColors = [
   ColorEnum.SILVER,
   ColorEnum.BRONZE,
   ColorEnum.PLATINUM
-];
+]
