@@ -128,7 +128,6 @@ class Api {
 }
 
 // THIS IS TEMPORARILY
-    // 'https://errdaroog.rahmanism.ir/errorlog_d.py?daroog=daroog_', {
 const logError = async (error: any): Promise<any> => {
   const data = new URLSearchParams()
   data.append('main_pharmacy_name', localStorage.getItem('mainPharmacyName') ?? '')

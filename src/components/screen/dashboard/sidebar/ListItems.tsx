@@ -31,6 +31,7 @@ import {
   faFingerprint,
   faQuestionCircle,
   faBookMedical,
+  faPrescriptionBottleAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
@@ -86,6 +87,7 @@ const {
   employmentApplicationForAdmin,
   about,
   allPharmacyDrugReport,
+  acceptedPrescriptionsReport,
 } = routes
 
 /**
@@ -397,6 +399,19 @@ const ListItems: React.FC = () => {
               isNested: true,
               props: {
                 icon: faBookMedical,
+                size: 'lg'
+              }
+            })}
+          </List>
+          <List component="div" className={linkWrapper}>
+            {getListItem({
+              Icon: FontAwesomeIcon,
+              text: t('reports.acceptedPrescriptions'),
+              selected: isOpenPageOfThisGroup('reports/accepted-prescriptions'),
+              link: acceptedPrescriptionsReport,
+              isNested: true,
+              props: {
+                icon: faPrescriptionBottleAlt,
                 size: 'lg'
               }
             })}
