@@ -2,6 +2,7 @@ import Api from './Api';
 import { PrescriptionResponseInterface } from '../../interfaces';
 import { PrescriptionSendInterface } from '../../interfaces/PrescriptionInterface';
 import { DataTableColumns } from 'interfaces/DataTableColumns';
+import { PrescriptionResponseStateEnum } from 'enum'
 
 class Prescription extends Api {
   readonly urls = {
@@ -11,6 +12,9 @@ class Prescription extends Api {
     send: '/Prescription/Send',
     cancel: '/Prescription/Cancel',
     detail: '/Prescription/Detail',
+    getAllPrescriptions: '/Prescription/GetAllPrescription',
+    // PrescriptionResponseStateEnum.Accept
+    acceptedPrescriptions: '/Prescription/GetAllPrescription?state=2',
   };
 
   getList = async (skip: number, top: number = 10,searchableColumns: DataTableColumns[] = [],
@@ -72,6 +76,15 @@ class Prescription extends Api {
     );
     return result.data;
   };
+
+  getAllPrescriptions = async (
+    state: PrescriptionResponseStateEnum | null = null
+  ): Promise<any> => {
+    const result = await this.postJsonData(
+      `${this.urls.getAllPrescriptions}?state=${state}`
+    )
+    return result.data
+  }
 }
 
 export default Prescription;
