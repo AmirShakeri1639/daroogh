@@ -584,6 +584,7 @@ export default {
         loginCountTitle: 'تعداد لاگین‌ها',
         basedOn: 'بر اساس',
         allPharmacyDrug: 'محصولات داروخانه‌ها',
+        acceptedPrescriptions: 'نسخه‌های پذیرفته شده',
       },
       countryDivision: {
         province: 'استان',
