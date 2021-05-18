@@ -1,6 +1,7 @@
 import Api from './Api';
 import { AdvancedSearchInterface } from '../../interfaces/search';
 import { SearchTypeEnum, _PharmacyTypeEnum } from '../../enum';
+import { ReactText } from 'react';
 
 class Search extends Api {
   advancedSearch = async (data: AdvancedSearchInterface): Promise<any> => {
@@ -8,8 +9,8 @@ class Search extends Api {
     return result.data;
   };
 
-  searchDrug = async (drugName: string): Promise<any> => {
-    const result = await this.getData(`/Search/SearchDrug?name=${drugName}`);
+  searchDrug = async (drugName: string, searchType?: string, count?: ReactText): Promise<any> => {
+    const result = await this.getData(`/Search/SearchDrug?name=${drugName}&searchType=${searchType ?? ''}&count=${count ?? 99}`);
     return result.data;
   };
 
