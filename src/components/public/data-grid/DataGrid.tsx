@@ -1,39 +1,32 @@
-import React, { useState, Fragment } from "react";
+import React, { useState, Fragment } from "react"
 import {
   TableColumnInterface,
-} from "../../../interfaces";
+} from "interfaces"
 import {
-  createStyles,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead, TablePagination,
   TableRow,
-} from "@material-ui/core";
-import CircleLoading from "../loading/CircleLoading";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@material-ui/core"
+import { useTranslation } from "react-i18next"
+import CircleBackdropLoading from "../loading/CircleBackdropLoading"
 
 interface DataGridProps {
-  stickyHeader?: boolean;
-  ariaLabel?: string;
-  tableColumns: TableColumnInterface[];
-  data: any;
-  isLoading: boolean;
-  extraColumn?: (item: any) => any;
+  stickyHeader?: boolean
+  ariaLabel?: string
+  tableColumns: TableColumnInterface[]
+  data: any
+  isLoading: boolean
+  extraColumn?: (item: any) => any
 }
 
-const useClasses = makeStyles(() => createStyles({
-  tableContainer: {
-    maxHeight: 350
-  }
-}));
-
 const DataGrid: React.FC<DataGridProps> = (props) => {
-  const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [page, setPage] = useState<number>(0)
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10)
 
-  const { tableContainer } = useClasses();
+  const { t } = useTranslation()
 
   const {
     stickyHeader,
@@ -42,89 +35,100 @@ const DataGrid: React.FC<DataGridProps> = (props) => {
     data,
     isLoading,
     extraColumn,
-  } = props;
+  } = props
 
-  const handleChangePage = (event: unknown, newPage: number): void => {
-    setPage(newPage);
-  };
+  const handleChangePage = (
+    event: unknown, newPage: number
+  ): void => {
+    setPage(newPage)
+  }
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    setRowsPerPage(+event.target.value)
+    setPage(0)
+  }
 
   const tableHeadGenerator = (): JSX.Element[] => {
     return tableColumns.map((item, index) => {
       return (
-        <Fragment key={item.field}>
+        <Fragment key={ item.field }>
           <TableCell>
-            {item.title}
+            { item.title }
           </TableCell>
           {index + 1 === tableColumns.length && (
             <TableCell />
-          )}
+          ) }
         </Fragment>
-      );
-    });
+      )
+    })
   }
 
   const tableRowsGenerator = (): any => {
     if (data !== null) {
       return data
-        .slice(page * rowsPerPage, page  * rowsPerPage + rowsPerPage)
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
         .map((item: any) => {
           return (
             <TableRow
               hover
-              tabIndex={-1}
-              key={item.id}
+              tabIndex={ -1 }
+              key={ item.id }
             >
               {tableColumns.map((c, index) => {
-                const value = item[c.field];
+                const value = c.render
+                  ? c.render(item)
+                  : c.field.toString().split('.')
+                    .reduce((o, i) => o[i], item)
                 return (
-                  <Fragment key={c.field}>
+                  <Fragment key={ c.field }>
                     <TableCell>
-                      {value}
+                      { value }
                     </TableCell>
-                    {(extraColumn !== undefined && tableColumns.length === index + 1) && extraColumn(item)}
+                    {(
+                      extraColumn !== undefined &&
+                      tableColumns.length === index + 1
+                    ) && extraColumn(item) }
                   </Fragment>
-                );
-              })}
+                )
+              }) }
             </TableRow>
-          );
-        });
+          )
+        })
     }
   }
 
   return (
     <>
-      <TableContainer className={tableContainer}>
+      <TableContainer>
         <Table
-          stickyHeader={stickyHeader}
-          aria-label={ariaLabel}
+          stickyHeader={ stickyHeader }
+          aria-label={ ariaLabel }
         >
           <TableHead>
             <TableRow>
-              {tableHeadGenerator()}
+              { tableHeadGenerator() }
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {!isLoading && tableRowsGenerator()} */}
+            { !isLoading && tableRowsGenerator() }
           </TableBody>
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[1, 25, 100]}
+        rowsPerPageOptions={ [1, 25, 100] }
         component="div"
-        count={data?.length || 0}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
+        count={ data?.length || 0 }
+        rowsPerPage={ rowsPerPage }
+        labelRowsPerPage={ t('general.rowsPerPage') }
+        page={ page }
+        onChangePage={ handleChangePage }
+        onChangeRowsPerPage={ handleChangeRowsPerPage }
       />
-      {(isLoading) && <CircleLoading />}
+      <CircleBackdropLoading isOpen={ isLoading } />
     </>
-  );
+  )
 }
 
 DataGrid.defaultProps = {
@@ -133,4 +137,4 @@ DataGrid.defaultProps = {
   isLoading: true,
 }
 
-export default DataGrid;
+export default DataGrid

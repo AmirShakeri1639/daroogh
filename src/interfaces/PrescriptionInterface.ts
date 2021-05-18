@@ -1,10 +1,20 @@
 import { PrescriptionResponseStateEnum } from '../enum';
+import { PharmacyInterface } from './PharmacyInterface'
 
 export interface PrescriptionResponseInterface {
   prescriptionID: number;
   pharmacyComment: string;
   isAccept: boolean;
   state: PrescriptionResponseStateEnum;
+}
+
+export interface PrescriptionResponseForReportInterface {
+  id: number
+  pharmacy: PharmacyInterface
+  pharmacyComment: string
+  responseDate: string
+  state: PrescriptionResponseStateEnum
+  stateString?: string
 }
 export interface PrescriptionSendInterface {
   duration: number;

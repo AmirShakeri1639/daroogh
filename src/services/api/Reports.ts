@@ -26,9 +26,9 @@ class Reports extends Api {
   };
 
   getWidgetInfo = async (): Promise<any> => {
-    const result = await this.postJsonData(this.urls.getWidgetInfo);
-    return result.data;
-  };
+    const result = await this.postJsonData(this.urls.getWidgetInfo)
+    return result?.data
+  }
 
   getBestPharmaciesList = async (for24Hour: boolean): Promise<any> => {
     try {
@@ -43,7 +43,6 @@ class Reports extends Api {
   };
 
   getTopBestPharmacies = async (code: string): Promise<any> => {
-    debugger;
     try {
       const result = await this.postJsonData(
         `${this.urls.getBestPharmacyListScoresInRegion}?countryDivisionCode=${code}`

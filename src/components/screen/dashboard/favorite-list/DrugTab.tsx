@@ -26,7 +26,7 @@ import CDialog from 'components/public/dialog/Dialog';
 
 const { getFavoriteList, saveFavoriteList } = new Favorite();
 
-const { searchDrug } = new DrugApi();
+const { searchMedicalDrug } = new DrugApi();
 
 const { searchCategory } = new Search();
 
@@ -138,7 +138,7 @@ const DrugTab: React.FC = () => {
         return;
       }
 
-      const result = await searchDrug(title);
+      const result = await searchMedicalDrug(title);
 
       const options = autoCompleteItems(result);
 

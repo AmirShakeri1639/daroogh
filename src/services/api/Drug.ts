@@ -66,7 +66,7 @@ class Drug extends Api {
     }
   };
 
-  searchDrug = async (name: string, searchType: string = '', count = 100): Promise<any> => {
+  searchMedicalDrug = async (name: string, searchType: string = '', count = 100): Promise<any> => {
     const result = await this.getData(
       `/Search/SearchMedicalDrug?name=${name}&searchType=${searchType}&count=${count}`
     );

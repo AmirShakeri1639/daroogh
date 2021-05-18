@@ -126,7 +126,6 @@ const DashboardContent: React.FC<any> = () => {
   const { data, refetch } = useQuery(
     ['getTopBestPharmacies', code],
     () => {
-
       return getTopBestPharmacies(code);
     },
     { enabled: code }

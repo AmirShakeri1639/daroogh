@@ -29,7 +29,7 @@ class Message extends Api {
     const result = await this.postData(
       `/Message/CurrentUserMessages?$skip=${skip}&$top=${top}&$orderby=id desc${queryString}`
     );
-    return result.data;
+    return result?.data;
   };
 
   readMultiMessage = async (data: Array<number>): Promise<any> => {
