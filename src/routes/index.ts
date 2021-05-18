@@ -19,7 +19,7 @@ const prescription = 'prescription';
 const job = 'job';
 const fda = `/${dashboard}/fda`;
 const error = `/${dashboard}/error`;
-const reports = `/${dashboard}/reportes`
+const reports = `/${dashboard}/reports`
 const commisionSettings = 'settingsCommision';
 const employmentApplication = 'employmentApplication';
 
@@ -105,6 +105,7 @@ export default {
 
   loginCountReport: `${reports}/login-count`,
   allPharmacyDrugReport: `${reports}/all-pharmacy-drugs`,
+  acceptedPrescriptionsReport: `${reports}/accepted-prescriptions`,
 
   about: `/${dashboard}/about`,
 };

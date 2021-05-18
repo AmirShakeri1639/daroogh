@@ -152,6 +152,7 @@ export default {
         about: 'درباره ما',
         inNumber: 'به عدد',
         basedOnDescriptions: 'بر اساس توضیحات بالا',
+        rowsPerPage: 'ردیف در صفحه',
       },
 
       pack: {
@@ -584,6 +585,7 @@ export default {
         loginCountTitle: 'تعداد لاگین‌ها',
         basedOn: 'بر اساس',
         allPharmacyDrug: 'محصولات داروخانه‌ها',
+        acceptedPrescriptions: 'نسخه‌های پذیرفته شده',
       },
       countryDivision: {
         province: 'استان',
@@ -603,6 +605,7 @@ export default {
         response: 'پاسخ به نسخه',
         cantEdit: 'امکان ویرایش این نسخه وجود ندارد. نسخه کنسل شده یا تاریخ آن گذشته است.',
         comment: 'شرح نسخه',
+        pharmacyComment: 'توضیح داروخانه',
       },
       PrescriptionResponseStateEnum: {
         NotAccept: 'پذیرفته نشد',
@@ -655,6 +658,7 @@ export default {
         notificationAPIkey: 'کلید سامانه ارسال اعلان‌ها',
         notificationSenderkey: 'کلید ارسال کننده اعلان‌ها',
         applicationUrl: 'Application URL',
+        mapAPIkey: 'کلید ای پی آی نقشه',
       },
       settingsAi: {
         settingsAi: 'تنظیمات سیستم توصیه گر',

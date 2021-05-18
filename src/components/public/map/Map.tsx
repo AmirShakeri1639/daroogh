@@ -92,7 +92,6 @@ const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
   const eventHandlers = useMemo(
     () => ({
       dragend() {
-        debugger;
         const marker: any = markerRef.current;
         if (marker != null) {
           setPosition({
@@ -107,7 +106,6 @@ const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
   );
   const map = useMapEvents({
     click(event) {
-      debugger;
       const { lat, lng } = event.latlng;
       setPosition({
         latitude: lat,
