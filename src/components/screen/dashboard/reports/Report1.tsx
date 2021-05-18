@@ -12,7 +12,7 @@ import {
   Tabs,
   TextField,
 } from '@material-ui/core';
-import { ActionInterface, RreportSearch } from 'interfaces';
+import { ActionInterface, ReportSearch } from 'interfaces';
 // @ts-ignore
 import DatePicker, { DateObject } from 'react-multi-date-picker';
 import React, { useEffect, useReducer, useState } from 'react';
@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const initialState: RreportSearch = {
+const initialState: ReportSearch = {
   fromDate: new DateObject(),
   toDate: new DateObject(),
   geoCode: '',

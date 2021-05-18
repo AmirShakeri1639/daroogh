@@ -153,6 +153,7 @@ export default {
         inNumber: 'به عدد',
         basedOnDescriptions: 'بر اساس توضیحات بالا',
         rowsPerPage: 'ردیف در صفحه',
+        update: 'بروزرسانی',
       },
 
       pack: {
@@ -179,6 +180,8 @@ export default {
         recieveDate: 'تاریخ دریافت',
         minimumDate: 'تاریخ انتخابی باید حداقل برای {{day}} روز آینده باشد',
         registerDate: 'تاریخ ثبت',
+        fromDate: 'از تاریخ',
+        toDate: 'تا تاریخ',
       },
       province: {
         selectCounty: 'انتخاب استان',
@@ -308,6 +311,7 @@ export default {
 
         newProduct: 'محصول جدید',
         productsDatabase: 'دیتابیس محصولات',
+        daysToExpire: 'تعداد روز باقیمانده به انقضای دارو',
       },
       peopleSection: {
         prescription: 'نسخه',
@@ -586,6 +590,7 @@ export default {
         basedOn: 'بر اساس',
         allPharmacyDrug: 'محصولات داروخانه‌ها',
         acceptedPrescriptions: 'نسخه‌های پذیرفته شده',
+        allEmploymentApplicationsReport: 'درخواست‌های کاریابی',
       },
       countryDivision: {
         province: 'استان',
