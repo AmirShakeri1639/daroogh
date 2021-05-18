@@ -658,6 +658,7 @@ export default {
         notificationAPIkey: 'کلید سامانه ارسال اعلان‌ها',
         notificationSenderkey: 'کلید ارسال کننده اعلان‌ها',
         applicationUrl: 'Application URL',
+        mapAPIkey: 'کلید ای پی آی نقشه',
       },
       settingsAi: {
         settingsAi: 'تنظیمات سیستم توصیه گر',
