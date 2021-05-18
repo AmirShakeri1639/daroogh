@@ -10,6 +10,7 @@ class EmploymentApplication extends Api {
     currentUserEmploymentApplications: '/EmploymentApplication/CurrentUserEmploymentApplications/',
     save: '/EmploymentApplication/Save/',
     detail: '/EmploymentApplication/detail',
+    allEmploymentApplicationsForAdmin: '/EmploymentApplication/AllEmploymentApplicationsForAdmin',
   };
 
   all = async (
@@ -83,6 +84,15 @@ class EmploymentApplication extends Api {
     const result = await this.postJsonData(`${this.urls.cancel}${id}`);
     return result.data;
   };
+
+  allEmploymentApplicationsForAdmin = async (
+    skip: number = 0, top: number = 10
+  ): Promise<any> => {
+    const result = await this.postJsonData(
+      `${this.urls.allEmploymentApplicationsForAdmin}?top=${top}&$skip=${top * skip}`
+    )
+    return result.data
+  }
 }
 
 export default EmploymentApplication;

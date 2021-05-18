@@ -4,7 +4,7 @@ import {
   PharmacyInterface,
   ConfirmParams,
   PharmacyWithUserInterface,
-  RreportSearch,
+  ReportSearch,
   LoginCountReportInterface,
 } from '../../interfaces';
 import moment from 'jalali-moment';
@@ -96,7 +96,7 @@ class Reports extends Api {
       return Promise.reject(e);
     }
   };
-  getSurplusDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
+  getSurplusDrugs = async (skip: number, top: number = 10, data: ReportSearch): Promise<any> => {
     try {
       const result = await this.getData(
         `${this.urls.getSurplusDrugs}?top=${top}&$skip=${
@@ -118,7 +118,7 @@ class Reports extends Api {
     }
   };
 
-  getFavoriteDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
+  getFavoriteDrugs = async (skip: number, top: number = 10, data: ReportSearch): Promise<any> => {
     try {
       const result = await this.getData(
         `${this.urls.getFavoriteDrugs}?top=${top}&$skip=${top * skip}&fromDate=${
@@ -134,7 +134,7 @@ class Reports extends Api {
     }
   };
 
-  getSelectedDrugs = async (skip: number, top: number = 10, data: RreportSearch): Promise<any> => {
+  getSelectedDrugs = async (skip: number, top: number = 10, data: ReportSearch): Promise<any> => {
     try {
       const result = await this.getData(
         `${this.urls.getSelectedDrugs}?top=${top}&$skip=${
