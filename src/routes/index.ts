@@ -106,6 +106,7 @@ export default {
   loginCountReport: `${reports}/login-count`,
   allPharmacyDrugReport: `${reports}/all-pharmacy-drugs`,
   acceptedPrescriptionsReport: `${reports}/accepted-prescriptions`,
+  allEmploymentApplicationsReport: `${reports}/all-employment-applications`,
 
   about: `/${dashboard}/about`,
 };

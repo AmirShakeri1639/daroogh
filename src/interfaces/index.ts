@@ -8,7 +8,7 @@ export interface ActionInterface {
   value?: any;
 }
 
-export interface RreportSearch {
+export interface ReportSearch {
   fromDate: any;
   toDate: any;
   geoCode: string;
