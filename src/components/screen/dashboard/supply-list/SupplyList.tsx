@@ -45,7 +45,12 @@ import { StyledFilterWrapper } from './styles';
 import { useStyle } from './style';
 import { ToastDurationEnum, tWarn } from 'utils/toast';
 import { ErrorToastId } from 'services/api/Api';
+
 import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown';
+
+import { Search } from 'services/api';
+
+const { searchDrug } = new Search();
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -97,7 +102,7 @@ function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   }
 }
 
-const { all, searchDrug } = new Drug();
+
 function reducerDrug(state = initialState, action: ActionInterface): any {
   const { value } = action;
 
@@ -170,6 +175,8 @@ const initialState: DrugInterface = {
   enName: '',
   type: '',
 };
+
+const { all, searchMedicalDrug } = new Drug();
 
 const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 
