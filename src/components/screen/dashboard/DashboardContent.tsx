@@ -126,7 +126,6 @@ const DashboardContent: React.FC<any> = () => {
   const { data, refetch } = useQuery(
     ['getTopBestPharmacies', code],
     () => {
-      debugger;
 
       return getTopBestPharmacies(code);
     },
@@ -141,7 +140,6 @@ const DashboardContent: React.FC<any> = () => {
     setValue(index);
   };
   const onClick = ({ target }: any) => {
-    debugger;
     setCode(target.id);
     setIsOpenDetails(true);
     // const name = target.attributes.name.value;

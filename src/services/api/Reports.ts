@@ -45,7 +45,9 @@ class Reports extends Api {
   getTopBestPharmacies = async (code: string): Promise<any> => {
     debugger;
     try {
-      const result = await this.postJsonData(`${this.urls.getBestPharmacyListScoresInRegion}?countryDivisionCode=${code}`);
+      const result = await this.postJsonData(
+        `${this.urls.getBestPharmacyListScoresInRegion}?countryDivisionCode=${code}`
+      );
       return result.data;
     } catch (e) {
       errorHandler(e);
@@ -55,6 +57,18 @@ class Reports extends Api {
   getExchangeStatus = async (): Promise<any> => {
     try {
       const result = await this.getData(`${this.urls.getExchangeStatus}`);
+      return result.data;
+    } catch (e) {
+      errorHandler(e);
+      return Promise.reject(e);
+    }
+  };
+  SearchMap = async (term: string, lat: number, lng: number): Promise<any> => {
+    debugger;
+    try {
+      const result = await this.getData(
+        `/CountryDivision/SearchMap?term=${term}&lat=${lat}&lng=${lng}`
+      );
       return result.data;
     } catch (e) {
       errorHandler(e);
