@@ -21,7 +21,6 @@ import {
   Typography,
 } from '@material-ui/core'
 import { DataTableColumns } from '../../../interfaces/DataTableColumns'
-import { UrlAddress } from '../../../enum/UrlAddress'
 import FilterInput from './FilterInput'
 import { DataTableFilterInterface } from '../../../interfaces/DataTableFilterInterface'
 import ChevronRight from '@material-ui/icons/ChevronRight'
@@ -30,7 +29,7 @@ import ReportViewerContainer from '../report/ReportViewerContainer'
 import { TransitionProps } from '@material-ui/core/transitions/transition'
 import CloseIcon from '@material-ui/icons/Close'
 import XLSX from 'xlsx'
-import { tSimple, tSuccess, tInfo, tWarn } from 'utils'
+import { tInfo, tWarn } from 'utils'
 import { screenWidth } from 'enum'
 import { getBaseUrl } from 'config'
 import Utils from '../utility/Utils'
@@ -348,7 +347,7 @@ const DataTable: React.ForwardRefRenderFunction<CountdownHandle, DataTableProps>
       </DialogContent>
     </Dialog>
   )
-  
+
   const [querySearch, setQuerySearch] = useState('')
 
   const TOOLBAR_ID = "toolbar__unique__id";
