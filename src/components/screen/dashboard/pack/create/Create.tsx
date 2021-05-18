@@ -23,7 +23,7 @@ import { faPlus, faCalculator, faLongArrowAltLeft } from '@fortawesome/free-soli
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from 'react-query';
-import { Category, Comission, Drug, Pack } from '../../../../../services/api';
+import { Category, Comission, Drug, Message, Pack } from '../../../../../services/api';
 import {
   AutoComplete,
   autoCompleteItems,

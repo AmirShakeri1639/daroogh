@@ -20,7 +20,7 @@ import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearch
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
 import { AllPharmacyDrug } from '../../../../enum/query';
-import { Drug, PharmacyDrug, Comission } from '../../../../services/api';
+import { Drug, PharmacyDrug } from '../../../../services/api';
 import CardContainer from './CardContainer';
 import { debounce, has, isNil } from 'lodash';
 import { ActionInterface, AllPharmacyDrugInterface, DrugInterface } from '../../../../interfaces';
@@ -45,6 +45,9 @@ import { StyledFilterWrapper } from './styles';
 import { useStyle } from './style';
 import { ToastDurationEnum } from 'utils/toast';
 import { ErrorToastId } from 'services/api/Api';
+import { Search } from 'services/api';
+
+const { searchDrug } = new Search();
 
 function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   const { value, type } = action;
@@ -96,7 +99,7 @@ function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   }
 }
 
-const { all, searchDrug } = new Drug();
+const { all, searchMedicalDrug } = new Drug();
 
 const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
 
