@@ -15,4 +15,5 @@ export interface SettingsInterface {
   ticketExireDuration: number;
   surveyTime?: number;
   drugExpireDay?: number;
+  mapAPIkey?: string
 }

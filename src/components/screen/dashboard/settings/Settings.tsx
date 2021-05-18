@@ -69,6 +69,7 @@ const initialState: SettingsInterface = {
   ticketExireDuration: 0,
   surveyTime: 0,
   drugExpireDay: 0,
+  mapAPIkey: '',
 }
 
 function reducer(state = initialState, action: ActionInterface): any {
@@ -155,6 +156,11 @@ function reducer(state = initialState, action: ActionInterface): any {
         ...state,
         drugExpireDay: value
       };
+    case 'mapAPIkey':
+      return {
+        ...state,
+        mapAPIkey: value
+      }
     case 'full':
       return {
         ...state,
@@ -215,6 +221,7 @@ const SettingsForm: React.FC = () => {
         notificationAPIkey, notificationSenderkey, applicationUrl,
         messageExpireDayDefault, exchangeDeadline, debtAmountAllow,
         debtTimeAllow, ticketExireDuration, surveyTime, drugExpireDay,
+        mapAPIkey,
       } = state;
       await _save({
         passwordMinLength, passwordRequiredLetter, passwordRequiredSymbol,
@@ -222,6 +229,7 @@ const SettingsForm: React.FC = () => {
         notificationAPIkey, notificationSenderkey, applicationUrl,
         messageExpireDayDefault, exchangeDeadline, debtAmountAllow,
         debtTimeAllow, ticketExireDuration, surveyTime, drugExpireDay,
+        mapAPIkey,
       });
     } catch (e) {
       tError(t('error.save'));
@@ -472,6 +480,18 @@ const SettingsForm: React.FC = () => {
                 className={ formItem }
                 onChange={ (e): void =>
                   dispatch({ type: 'notificationSenderkey', value: e.target.value })
+                }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 } >
+              <TextField
+                error={ state.mapAPIkey.length < 1 && showError }
+                label={ t('settings.mapAPIkey') }
+                variant="outlined"
+                value={ state.mapAPIkey }
+                className={ formItem }
+                onChange={ (e): void =>
+                  dispatch({ type: 'mapAPIkey', value: e.target.value })
                 }
               />
             </Grid>
