@@ -20,7 +20,7 @@ import MaterialSearchBar from '../../../public/material-searchbar/MaterialSearch
 import { useMutation, useQuery, useQueryCache } from 'react-query';
 import { faPlus, faCalculator } from '@fortawesome/free-solid-svg-icons';
 import { AllPharmacyDrug } from '../../../../enum/query';
-import { Drug, PharmacyDrug } from '../../../../services/api';
+import { Drug, PharmacyDrug, Comission, Category } from '../../../../services/api';
 import CardContainer from './CardContainer';
 import { debounce, has, isNil } from 'lodash';
 import { ActionInterface, AllPharmacyDrugInterface, DrugInterface } from '../../../../interfaces';
@@ -43,8 +43,11 @@ import SupplyListFilter, { Option } from './SupplyListFilter';
 import { FilterItems } from './types';
 import { StyledFilterWrapper } from './styles';
 import { useStyle } from './style';
-import { ToastDurationEnum } from 'utils/toast';
+import { ToastDurationEnum, tWarn } from 'utils/toast';
 import { ErrorToastId } from 'services/api/Api';
+
+import { DaroogDropdown } from 'components/public/daroog-dropdown/DaroogDropdown';
+
 import { Search } from 'services/api';
 
 const { searchDrug } = new Search();
@@ -99,6 +102,80 @@ function reducer(state: PharmacyDrugSupplyList, action: ActionInterface): any {
   }
 }
 
+
+function reducerDrug(state = initialState, action: ActionInterface): any {
+  const { value } = action;
+
+  switch (action.type) {
+    case 'id':
+      return {
+        ...state,
+        id: value,
+      };
+    case 'categoryID':
+      return {
+        ...state,
+        categoryID: value,
+      };
+    case 'name':
+      return {
+        ...state,
+        name: value,
+      };
+    case 'genericName':
+      return {
+        ...state,
+        genericName: value,
+      };
+    case 'companyName':
+      return {
+        ...state,
+        companyName: value,
+      };
+    case 'barcode':
+      return {
+        ...state,
+        barcode: value,
+      };
+    case 'description':
+      return {
+        ...state,
+        description: value,
+      };
+    case 'active':
+      return {
+        ...state,
+        active: value,
+      };
+    case 'enName':
+      return {
+        ...state,
+        enName: value,
+      };
+    case 'type':
+      return {
+        ...state,
+        type: value,
+      };
+    case 'reset':
+      return initialState;
+    default:
+      console.error('Action type not defined');
+  }
+}
+const initialState: DrugInterface = {
+  id: 0,
+  categoryID: 1,
+  name: '',
+  genericName: '',
+  companyName: '',
+  barcode: '',
+  description: '',
+  active: false,
+  enName: '',
+  type: '',
+};
+
 const { all, searchMedicalDrug } = new Drug();
 
 const { allPharmacyDrug, savePharmacyDrug } = new PharmacyDrug();
@@ -137,7 +214,9 @@ const SupplyList: React.FC = () => {
   const [filteredItems, setFilteredItems] = useState<any>([]);
   const [isOpenModalOfNewList, setIsOpenModalOfNewList] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [noData, setNoData] = useState(false);
   const [state, dispatch] = useReducer(reducer, new PharmacyDrugSupplyList());
+  const [stateDrug, dispatchDrug] = useReducer(reducerDrug, initialState);
   const [drugList, setDrugList] = useState<DrugInterface[]>([]);
   const [options, setOptions] = useState<any[]>([]);
   const [selectedDrug, setSelectedDrug] = useState<ListOptions | null>(null);
@@ -165,6 +244,7 @@ const SupplyList: React.FC = () => {
   const [hasMinimumDate, setHasMinimumDate] = useState(true);
   const [showError, setShowError] = useState(false);
   const [offerAlert, setOfferAlert] = useState<boolean>(false);
+
   const [selectedFilterItem, setSelectedFilterItem] = useState<string>(
     FilterItems.NEAREST_EXPIRE_DATE
   );
@@ -285,6 +365,7 @@ const SupplyList: React.FC = () => {
     setHasMinimumDate(true);
     setShowError(false);
     setOfferAlert(false);
+    setNoData(false);
 
     if (autoCompleteRef && autoCompleteRef.current) {
       autoCompleteRef.current.setInputValue('');
@@ -296,6 +377,9 @@ const SupplyList: React.FC = () => {
     //   resetStates();
     // }
     setIsOpenModalOfNewList((v) => !v);
+    if (isOpenModalOfNewList) {
+      window.history.back();
+    }
   };
 
   const callAllPharmacyDrugs = () => {
@@ -409,6 +493,7 @@ const SupplyList: React.FC = () => {
 
   const searchDrugs = async (title: string): Promise<any> => {
     try {
+      setNoData(false);
       if (title.length < 2) {
         return;
       }
@@ -418,6 +503,9 @@ const SupplyList: React.FC = () => {
       setSelectDrugForEdit(options.find((item) => item.id === selectedDrug));
       setIsLoading(false);
 
+      if (result.length == 0) {
+        setNoData(true);
+      }
       const optionsList = result
         //.filter((_item: any) => _item.active === true)
         .map((_item: any) => ({
@@ -572,7 +660,65 @@ const SupplyList: React.FC = () => {
       });
     }
   };
+  const [isOpenNewDrug, setIsOpenNewDrug] = useState<boolean>(false);
+  const toggleIsOpenNewDrug = (): void => {
+    setIsOpenNewDrug((v) => !v);
+    if (isOpenNewDrug) {
+      window.history.back();
+    }
+  };
+  const { getDrugCategories } = new Category();
+  const [categories, setCategories] = useState([]);
+  React.useEffect(() => {
+    async function getCategories(): Promise<any> {
+      const result = await getDrugCategories(0, 1000);
+      setCategories(result.items.map((item: any) => ({ value: item.id, label: item.name })));
+      dispatchDrug({ type: 'categoryID', value: result.items[0].id });
+    }
+    getCategories();
+  }, []);
 
+  const { save } = new Drug();
+  const [_save] = useMutation(save, {
+    onSuccess: async () => {
+      await queryCache.invalidateQueries('drugsList');
+      tSuccess(t('alert.successfulSave'));
+    },
+    onError: async (e) => {
+      // @ts-ignore
+      tError(t('error.save'));
+    },
+  });
+  const isFormValid = (): boolean => {
+    return stateDrug.name && stateDrug.name.trim().length > 0;
+  };
+  const submitSave = async (): Promise<any> => {
+    const data: any = {
+      id: 0,
+      name: stateDrug.name,
+      categoryID: stateDrug.categoryID,
+      genericName: stateDrug.genericName,
+      companyName: stateDrug.companyName,
+      barcode: stateDrug.barcode,
+      description: stateDrug.description,
+      active: false,
+      enName: stateDrug.enName,
+      type: '',
+    };
+
+    if (isFormValid()) {
+      try {
+        await _save(data);
+        dispatch({ type: 'reset' });
+        toggleIsOpenNewDrug();
+        toggleIsOpenModalOfNewList();
+      } catch (e) {
+        errorHandler(e);
+      }
+    } else {
+      tWarn(t('alert.fillFormCarefully'));
+    }
+  };
   const filterListItems = (): Option[] => [
     {
       value: FilterItems.MAXIMUM_INVENTORY,
@@ -689,9 +835,149 @@ const SupplyList: React.FC = () => {
           </Grid>
         </div>
       )}
+      <CDialog
+        fullWidth={fullScreen}
+        isOpen={isOpenNewDrug}
+        onClose={(): void => setIsOpenNewDrug(false)}
+        onOpen={(id?: string): void => {
+          if (id == '2') {
+            setIsOpenNewDrug(true);
+          }
+        }}
+        formHandler={submitSave}
+        dialogId={'2'}
+        resetDialog={false}
+      >
+        <DialogTitle className="text-sm">{t('action.create')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Grid container spacing={1} className={formContent}>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.product')}</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      value={stateDrug.name}
+                      onChange={(e): void => dispatchDrug({ type: 'name', value: e.target.value })}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.category')}</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <DaroogDropdown
+                      defaultValue={stateDrug.categoryID}
+                      data={categories}
+                      className="w-100"
+                      onChangeHandler={(v): void => {
+                        return dispatchDrug({ type: 'categoryID', value: v });
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.genericName')}</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      label={t('drug.genericName')}
+                      value={stateDrug.genericName}
+                      onChange={(e): void =>
+                        dispatchDrug({ type: 'genericName', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.companyName')}</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      label={t('drug.companyName')}
+                      value={stateDrug.companyName}
+                      onChange={(e): void =>
+                        dispatchDrug({ type: 'companyName', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.barcode')}</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      label={t('drug.barcode')}
+                      value={stateDrug.barcode}
+                      onChange={(e): void =>
+                        dispatchDrug({ type: 'barcode', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('general.description')}</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100"
+                      label={t('general.description')}
+                      value={stateDrug.description}
+                      onChange={(e): void =>
+                        dispatchDrug({ type: 'description', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid container spacing={1}>
+                  <Grid item xs={12}>
+                    <label>{t('drug.enName')}</label>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Input
+                      className="w-100 no-farsi-number"
+                      label={t('drug.enName')}
+                      value={stateDrug.enName}
+                      onChange={(e): void =>
+                        dispatchDrug({ type: 'enName', value: e.target.value })
+                      }
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </DialogContentText>
+        </DialogContent>
+        <Divider />
+      </CDialog>
 
       <CDialog
         fullScreen={fullScreen}
+        dialogId={'1'}
+        resetDialog={true}
         isOpen={isOpenModalOfNewList}
         onClose={(): void => {
           setIsOpenModalOfNewList(false);
@@ -699,6 +985,7 @@ const SupplyList: React.FC = () => {
           resetStates();
           setSelectedDrug(null);
           setIsOpenCalculator(false);
+          setNoData(false);
         }}
         onOpen={(): void => {
           setIsOpenModalOfNewList(true);
@@ -759,7 +1046,29 @@ const SupplyList: React.FC = () => {
                   />
                 </Grid>
               </Grid>
+              {noData && (
+                <Grid item xs={12} className={sectionContainer}>
+                  <Grid container>
+                    <Grid item xs={12}>
+                      <span>
+                        داروی مد نظر شما یافت نشد. شما می توانید داروی مد نظر خود را به لیست محصولات
+                        اضافه فرمایید.
+                      </span>{' '}
+                    </Grid>
+                    <Grid item xs={6}></Grid>
 
+                    <Grid item xs={6}>
+                      <Button onClick={toggleIsOpenNewDrug} style={{ float: 'left' }}>
+                        <FontAwesomeIcon
+                          style={{ color: ColorEnum.DeepBlue, margin: 4 }}
+                          icon={faPlus}
+                        />
+                        افزودن دارو
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              )}
               <Grid item xs={12} className={sectionContainer}>
                 <Grid container>
                   <Grid item xs={12}>
