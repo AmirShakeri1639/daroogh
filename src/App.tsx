@@ -116,6 +116,9 @@ const AllPharmacyDrugReport = lazy(
 const AcceptedPrescriptionsReport = lazy(
   () => import('./components/screen/dashboard/reports/AcceptedPrescriptionsReport')
 )
+const AllEmploymentApplicationsReport = lazy(
+  () => import('./components/screen/dashboard/reports/AllEmploymentApplicationsReport')
+)
 
 const About = lazy(() => import('./components/screen/dashboard/about/About'))
 
@@ -190,6 +193,7 @@ const {
   about,
   allPharmacyDrugReport,
   acceptedPrescriptionsReport,
+  allEmploymentApplicationsReport,
 } = routes;
 
 const LoadingComponent: React.FC = () => {
@@ -401,6 +405,9 @@ const App = (): JSX.Element => {
             </PrivateRoute>
             <PrivateRoute exact path={ acceptedPrescriptionsReport }>
               <Dashboard component={ <AcceptedPrescriptionsReport /> } />
+            </PrivateRoute>
+            <PrivateRoute exact path={ allEmploymentApplicationsReport }>
+              <Dashboard component={ <AllEmploymentApplicationsReport /> } />
             </PrivateRoute>
 
             <PrivateRoute path={jobsList}>
