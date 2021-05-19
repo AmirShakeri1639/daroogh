@@ -504,7 +504,7 @@ export default {
       },
       WorkTimeEnum: {
         PART_TIME: 'نیمه وقت',
-        FULL_TIME: 'روزانه',
+        FULL_TIME: 'تمام وقت',
         NIGHTLY: 'شبانه‌روزی',
       },
       CategoryTypeEnum: {
