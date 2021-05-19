@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import {
   Container,
   TextField,
@@ -16,13 +16,11 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  Switch,
   Link,
 } from '@material-ui/core'
-import Pharmacy from '../../../services/api/Pharmacy'
-import { LabelValue } from '../../../interfaces'
+import Pharmacy from 'services/api/Pharmacy'
+import { LabelValue, ActionInterface } from 'interfaces'
 import { useMutation } from 'react-query'
-import { ActionInterface } from '../../../interfaces'
 import { useTranslation } from 'react-i18next'
 import {
   errorHandler,
@@ -30,15 +28,15 @@ import {
   tWarn,
 } from 'utils'
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown'
-import { ColorEnum, WorkTimeEnum } from 'enum'
+import { ColorEnum, PharmacyTypeEnum, WorkTimeEnum } from 'enum'
 import Modal from '../../public/modal/Modal'
 import DateTimePicker from '../../public/datepicker/DatePicker'
-import { 
-  CountryDivisionSelect 
+import {
+  CountryDivisionSelect
 } from '../../public/country-division/CountryDivisionSelect'
 import { Map, ThreePartDatePicker } from '../../public'
 import { useHistory } from 'react-router-dom'
-import routes from '../../../routes'
+import routes from 'routes'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faEye, faEyeSlash,
@@ -47,6 +45,7 @@ import { faKey } from '@fortawesome/free-solid-svg-icons'
 import Uploader from 'components/public/uploader/uploader'
 import Note from 'components/public/note/Note'
 import NumberField from 'components/public/TextField/NumberField'
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading'
 
 export const useClasses = makeStyles((theme) => createStyles({
   parent: {
@@ -54,7 +53,6 @@ export const useClasses = makeStyles((theme) => createStyles({
   },
   dropdown: {
     margin: theme.spacing(1),
-    minWidth: '100%',
   },
   silverBackground: {
     background: '#ebebeb',
@@ -109,7 +107,7 @@ const initialState = {
     countryDivisionID: -1,
     x: '',
     y: '',
-    type: 1,
+    type: PharmacyTypeEnum.NonGovernmental,
   },
   user: {
     id: 0,
@@ -223,7 +221,7 @@ function reducer(state = initialState, action: ActionInterface): any {
     case 'pharmacy.type':
       return {
         ...state,
-        pharmacy: { ...state.pharmacy, type: value },
+        pharmacy: { ...state.pharmacy, type: +value },
       }
     // USER -------------------
     case 'user.pharmacyID':
@@ -325,6 +323,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
   const history = useHistory()
   const [isOpenDatePicker, setIsOpenDatePicker] = useState<boolean>(false)
   const [showError, setShowError] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const toggleIsOpenDatePicker = (): void => setIsOpenDatePicker((v) => !v)
   const { register } = new Pharmacy()
   const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/g
@@ -345,7 +344,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
   } = useClasses()
 
   const [workTimeList, setWorkTimeList] = useState(new Array<LabelValue>())
-  useEffect(() => {
+  const [pharmacyTypeList, setPharmacyTypeList] = useState(new Array<LabelValue>())
+  const makeWorkTimeList = useCallback(() => {
     const wtList: LabelValue[] = []
     for (const wt in WorkTimeEnum) {
       if (parseInt(wt) >= 0)
@@ -355,6 +355,22 @@ const RegisterPharmacyWithUser: React.FC = () => {
         })
     }
     setWorkTimeList(wtList)
+  }, [])
+  const makePharmacyTypeList = useCallback(() => {
+    const ptList: LabelValue[] = []
+    for (const pt in PharmacyTypeEnum) {
+      if (parseInt(pt) >= 0)
+        ptList.push({
+          label: t(`PharmacyTypeEnum.${PharmacyTypeEnum[pt]}`),
+          value: pt,
+        })
+    }
+    setPharmacyTypeList(ptList)
+  }, [])
+
+  useEffect(() => {
+    makeWorkTimeList()
+    makePharmacyTypeList()
   }, [])
 
   const [_register, { isLoading: isLoadingNewUser }] = useMutation(register, {
@@ -414,8 +430,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
         file1 == null ||
         file2 == null ||
         file3 == null ||
-        (pharmacy.type == 2 && // Governmental pharmacy
-          (file4 == null || file5 == null))
+        (pharmacy.type != PharmacyTypeEnum.NonGovernmental &&
+          (file4 == null || file5 == null)
+        )
       )
     )
   }
@@ -425,8 +442,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
     const msg = []
     const errorMsg = (title: string = ''): JSX.Element => {
       return (
-        <span style={{ color: 'red' }}>
-          {title}: {t('error.saveFile')}
+        <span style={ { color: 'red' } }>
+          {title }: {t('error.saveFile') }
         </span>
       )
     }
@@ -470,7 +487,9 @@ const RegisterPharmacyWithUser: React.FC = () => {
         errorHandler(e)
       }
     }
-    if (state.pharmacy.type == 2) {
+    // file4 (ctoLicense) and file5 (commitment) are mandatory
+    // for all but nongovernmental pharmacies
+    if (state.pharmacy.type != PharmacyTypeEnum.NonGovernmental) {
       if (state.file4) {
         try {
           temp = await addFileGeneral({
@@ -504,6 +523,7 @@ const RegisterPharmacyWithUser: React.FC = () => {
   const submit = async (e: React.FormEvent<HTMLFormElement>): Promise<any> => {
     e.preventDefault()
 
+    setIsLoading(true)
     if (isFormValid()) {
       try {
         const regResult = await _register({
@@ -545,15 +565,15 @@ const RegisterPharmacyWithUser: React.FC = () => {
             type: 'success',
             html: (
               <>
-                {regResult.data.message || t('alert.successfulSave')}
+                {regResult.data.message || t('alert.successfulSave') }
                 <br />
                 {filesSaved.map((i: any): any => {
                   return (
                     <>
-                      {i} <br />
+                      {i } <br />
                     </>
                   )
-                })}
+                }) }
               </>
             ),
           })
@@ -571,73 +591,74 @@ const RegisterPharmacyWithUser: React.FC = () => {
       tWarn(t('alert.fillFormCarefully'))
       setShowError(true)
     }
+    setIsLoading(false)
   }
 
   return (
-    <Container maxWidth="lg" className={parent}>
+    <Container maxWidth="lg" className={ parent }>
       <Paper>
-        <div className={`${titleContainer} ${silverBackground}`}>
-          <Typography variant="h2" component="h2" className={`${formTitle} txt-md`}>
-            <h2>{t('pharmacy.new')}</h2>
+        <div className={ `${titleContainer} ${silverBackground}` }>
+          <Typography variant="h2" component="h2" className={ `${formTitle} txt-md` }>
+            <h2>{ t('pharmacy.new') }</h2>
           </Typography>
         </div>
         <Divider />
-        <form autoComplete="off" className={rootFull} onSubmit={submit}>
-          {/* //////////////////////   USER   ///////////////////// */}
+        <form autoComplete="off" className={ rootFull } onSubmit={ submit }>
+          {/* //////////////////////   USER   ///////////////////// */ }
 
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <div className={titleContainer}>
-                <Typography variant="h3" component="h3" className={`${formTitle} txt-md`}>
-                  <h3>{t('pharmacy.manager')}</h3>
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" component="h3" className={ `${formTitle} txt-md` }>
+                  <h3>{ t('pharmacy.manager') }</h3>
                 </Typography>
               </div>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state?.user?.name.length < 2 && showError}
-                label={t('general.name')}
+                error={ state?.user?.name.length < 2 && showError }
+                label={ t('general.name') }
                 required
                 variant="outlined"
-                value={state?.user?.name}
-                className={formItem}
-                onChange={(e): void => dispatch({ type: 'user.name', value: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                error={state?.user?.family.length < 2 && showError}
-                label={t('user.family')}
-                required
-                className={formItem}
-                variant="outlined"
-                value={state?.user?.family}
-                onChange={(e): void => dispatch({ type: 'user.family', value: e.target.value })}
+                value={ state?.user?.name }
+                className={ formItem }
+                onChange={ (e): void => dispatch({ type: 'user.name', value: e.target.value }) }
               />
             </Grid>
             <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state?.password?.length < 3 && showError}
-                label={t('login.password')}
+                error={ state?.user?.family.length < 2 && showError }
+                label={ t('user.family') }
                 required
-                helperText={t('user.passwordHelperText')}
-                autoComplete="new-password"
-                type={state?.isVisiblePassword ? 'text' : 'password'}
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
-                value={state?.user.password}
-                onChange={(e): void => dispatch({ type: 'user.password', value: e.target.value })}
-                InputProps={{
+                value={ state?.user?.family }
+                onChange={ (e): void => dispatch({ type: 'user.family', value: e.target.value }) }
+              />
+            </Grid>
+            <Grid item xs={ 12 } sm={ 6 }>
+              <TextField
+                error={ state?.password?.length < 3 && showError }
+                label={ t('login.password') }
+                required
+                helperText={ t('user.passwordHelperText') }
+                autoComplete="new-password"
+                type={ state?.isVisiblePassword ? 'text' : 'password' }
+                className={ formItem }
+                variant="outlined"
+                value={ state?.user.password }
+                onChange={ (e): void => dispatch({ type: 'user.password', value: e.target.value }) }
+                InputProps={ {
                   startAdornment: (
                     <InputAdornment position="start">
-                      <FontAwesomeIcon icon={faKey} color={ColorEnum.PaleGray} />
+                      <FontAwesomeIcon icon={ faKey } color={ ColorEnum.PaleGray } />
                     </InputAdornment>
                   ),
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={(): void => {
+                        onClick={ (): void => {
                           dispatch({ type: 'isVisiblePassword', value: !state?.isVisiblePassword })
                         } }
                         onMouseDown={ (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -645,15 +666,15 @@ const RegisterPharmacyWithUser: React.FC = () => {
                         } }
                         edge="end"
                       >
-                        {state?.isVisiblePassword ? (
-                          <FontAwesomeIcon icon={faEye} />
+                        { state?.isVisiblePassword ? (
+                          <FontAwesomeIcon icon={ faEye } />
                         ) : (
-                          <FontAwesomeIcon icon={faEyeSlash} />
-                        )}
+                          <FontAwesomeIcon icon={ faEyeSlash } />
+                        ) }
                       </IconButton>
                     </InputAdornment>
                   ),
-                }}
+                } }
               />
             </Grid>
             <Grid item xs={ 12 } sm={ 6 }>
@@ -664,13 +685,13 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 required
                 className={ formItem }
                 variant="outlined"
-                value={state?.user.nationalCode}
-                onChange={(e): void =>
+                value={ state?.user.nationalCode }
+                onChange={ (e): void =>
                   dispatch({ type: 'user.nationalCode', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} style={{ display: 'flex', alignItems: 'center' }}>
+            <Grid item xs={ 12 } sm={ 6 } style={ { display: 'flex', alignItems: 'center' } }>
               <ThreePartDatePicker
                 label={ t('user.birthDate') }
                 onChange={ (value: string, isValid: boolean): void => {
@@ -679,64 +700,64 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 } }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <FormControl component="fieldset">
-                <FormLabel component="legend">{t('general.gender')}</FormLabel>
+                <FormLabel component="legend">{ t('general.gender') }</FormLabel>
                 <RadioGroup
                   row
                   name="gender"
-                  value={state?.user.gender}
-                  onChange={(e: any): void =>
+                  value={ state?.user.gender }
+                  onChange={ (e: any): void =>
                     dispatch({ type: 'user.gender', value: e.target.value })
                   }
                 >
                   <FormControlLabel
                     value="0"
-                    checked={state?.user.gender == 0}
-                    control={<Radio />}
-                    label={t('GenderType.Male')}
+                    checked={ state?.user.gender == 0 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Male') }
                   />
                   <FormControlLabel
                     value="1"
-                    checked={state?.user.gender == 1}
-                    control={<Radio />}
-                    label={t('GenderType.Female')}
+                    checked={ state?.user.gender == 1 }
+                    control={ <Radio /> }
+                    label={ t('GenderType.Female') }
                   />
                 </RadioGroup>
               </FormControl>
             </Grid>
           </Grid>
-          <div className={spacing3}></div>
+          <div className={ spacing3 }></div>
           <Divider />
 
-          {/* //////////////////////   PHARMACY   ///////////////////// */}
+          {/* //////////////////////   PHARMACY   ///////////////////// */ }
 
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <div className={titleContainer}>
-                <Typography variant="h3" className={`${formTitle} txt-md`}>
-                  <h3>{t('pharmacy.pharmacy')}</h3>
+          <Grid container spacing={ 3 }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" className={ `${formTitle} txt-md` }>
+                  <h3>{ t('pharmacy.pharmacy') }</h3>
                 </Typography>
               </div>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
-                error={state?.pharmacy.name.trim().length < 3 && showError}
+                error={ state?.pharmacy.name.trim().length < 3 && showError }
                 required
                 variant="outlined"
-                label={t('pharmacy.name')}
-                className={formItem}
-                value={state?.pharmacy.name}
-                onChange={(e): void => dispatch({ type: 'pharmacy.name', value: e.target.value })}
+                label={ t('pharmacy.name') }
+                className={ formItem }
+                value={ state?.pharmacy.name }
+                onChange={ (e): void => dispatch({ type: 'pharmacy.name', value: e.target.value }) }
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={ 12 } sm={ 6 }>
               <TextField
                 variant="outlined"
-                className={formItem}
-                label={t('general.description')}
-                value={state?.pharmacy.description}
-                onChange={(e): void =>
+                className={ formItem }
+                label={ t('general.description') }
+                value={ state?.pharmacy.description }
+                onChange={ (e): void =>
                   dispatch({
                     type: 'pharmacy.description',
                     value: e.target.value,
@@ -744,15 +765,15 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <TextField
-                error={state?.pharmacy.address.trim().length < 3 && showError}
+                error={ state?.pharmacy.address.trim().length < 3 && showError }
                 variant="outlined"
                 required
-                label={t('general.address')}
-                className={formItem}
-                value={state?.pharmacy.address}
-                onChange={(e): void =>
+                label={ t('general.address') }
+                className={ formItem }
+                value={ state?.pharmacy.address }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.address', value: e.target.value })
                 }
               />
@@ -762,60 +783,60 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 error={ state?.pharmacy.mobile.length < 10 && showError }
                 label={ t('general.mobile') }
                 required
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
                 maxLength={ 11 }
                 value={ state?.pharmacy.mobile }
                 onChange={ (e: any): void => {
                   dispatch({ type: 'pharmacy.mobile', value: e.target.value })
                   dispatch({ type: 'user.userName', value: e.target.value })
-                }}
+                } }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
-                error={state?.pharmacy.telphon.trim().length < 8 && showError}
+                error={ state?.pharmacy.telphon.trim().length < 8 && showError }
                 variant="outlined"
                 required
-                label={t('general.phone')}
-                value={state?.pharmacy.telphon}
-                className={formItem}
-                onChange={(e): void =>
+                label={ t('general.phone') }
+                value={ state?.pharmacy.telphon }
+                className={ formItem }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.telphon', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 variant="outlined"
-                className={formItem}
-                label={t('general.website')}
-                value={state?.pharmacy.webSite}
-                onChange={(e): void =>
+                className={ formItem }
+                label={ t('general.website') }
+                value={ state?.pharmacy.webSite }
+                onChange={ (e): void =>
                   dispatch({ type: 'pharmacy.webSite', value: e.target.value })
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 error={
                   state?.pharmacy.email && !emailRegex.test(state?.pharmacy.email) && showError
                 }
-                label={t('general.email')}
+                label={ t('general.email') }
                 type="email"
-                className={formItem}
+                className={ formItem }
                 variant="outlined"
-                value={state?.pharmacy.email}
-                onChange={(e): void => dispatch({ type: 'pharmacy.email', value: e.target.value })}
+                value={ state?.pharmacy.email }
+                onChange={ (e): void => dispatch({ type: 'pharmacy.email', value: e.target.value }) }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 variant="outlined"
-                className={formItem}
-                label={t('general.postalCode')}
-                value={state?.pharmacy.postalCode}
-                onChange={(e): void =>
+                className={ formItem }
+                label={ t('general.postalCode') }
+                value={ state?.pharmacy.postalCode }
+                onChange={ (e): void =>
                   dispatch({
                     type: 'pharmacy.postalCode',
                     value: e.target.value,
@@ -823,41 +844,36 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 variant="outlined"
-                label={t('pharmacy.hix')}
-                className={formItem}
-                value={state?.hix}
-                onChange={(e): void => dispatch({ type: 'pharmacy.hix', value: e.target.value })}
+                label={ t('pharmacy.hix') }
+                className={ formItem }
+                value={ state?.hix }
+                onChange={ (e): void => dispatch({ type: 'pharmacy.hix', value: e.target.value }) }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <TextField
                 variant="outlined"
-                className={formItem}
-                label={t('pharmacy.gli')}
-                value={state?.gli}
-                onChange={(e): void => dispatch({ type: 'pharmacy.gli', value: e.target.value })}
+                className={ formItem }
+                label={ t('pharmacy.gli') }
+                value={ state?.gli }
+                onChange={ (e): void => dispatch({ type: 'pharmacy.gli', value: e.target.value }) }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={state?.pharmacy.type == 2}
-                    onChange={(e): void => {
-                      dispatch({
-                        type: 'pharmacy.type',
-                        value: e.target.checked ? 2 : 1,
-                      })
-                    }}
-                  />
-                }
-                label={t('pharmacy.governmental')}
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
+              <DaroogDropdown
+                defaultValue={ state?.pharmacy.type }
+                data={ pharmacyTypeList }
+                className={ `${formItem} ${dropdown}` }
+                label={ t('pharmacy.type') }
+                onChangeHandler={ (v): void => {
+                  return dispatch({ type: 'pharmacy.type', value: v })
+                } }
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 } sm={ 6 } md={ 4 }>
               <DaroogDropdown
                 defaultValue={ state?.pharmacy.workTime }
                 data={ workTimeList }
@@ -868,8 +884,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 } }
               />
             </Grid>
-            <Grid item xs={12}>
-              <Grid xs={12} sm={6} md={4}>
+            <Grid item xs={ 12 }>
+              <Grid xs={ 12 } sm={ 6 } md={ 4 }>
                 <CountryDivisionSelect
                   error={ state?.pharmacy.countryDivisionID == -1 && showError }
                   label={ `${t('general.location')} * ` }
@@ -879,26 +895,26 @@ const RegisterPharmacyWithUser: React.FC = () => {
                 />
               </Grid>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <Typography
                 component="p"
-                style={{
+                style={ {
                   padding: '1em 0',
                   color:
                     (state?.pharmacy.x == '' || state?.pharmacy.y == '') && showError
                       ? 'red'
                       : 'rgba(0, 0, 0, 0.87)',
-                }}
+                } }
               >
-                {t('pharmacy.chooseLocationOnMap')} *
+                { t('pharmacy.chooseLocationOnMap') } *
               </Typography>
               <div
-                style={{
+                style={ {
                   overflow: 'hidden',
-                }}
+                } }
               >
                 <Map
-                editable={true}
+                  editable={ true }
                   draggable={ true }
                   getGeoLocation={ true }
                   onClick={ (e: any): void => {
@@ -909,132 +925,132 @@ const RegisterPharmacyWithUser: React.FC = () => {
               </div>
             </Grid>
           </Grid>
-          <div className={spacing1}>&nbsp;</div>
+          <div className={ spacing1 }>&nbsp;</div>
           <Divider />
 
-          {/* //////////////////////   FILES   ///////////////////// */}
+          {/* //////////////////////   FILES   ///////////////////// */ }
 
-          <Grid container spacing={3} className={rootFull}>
-            <Grid item xs={12}>
-              <div className={titleContainer}>
-                <Typography variant="h3" className={`${formTitle} txt-md`}>
-                  <h3>{t('file.docs')}</h3>
+          <Grid container spacing={ 3 } className={ rootFull }>
+            <Grid item xs={ 12 }>
+              <div className={ titleContainer }>
+                <Typography variant="h3" className={ `${formTitle} txt-md` }>
+                  <h3>{ t('file.docs') }</h3>
                 </Typography>
               </div>
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <h4
-                style={{
+                style={ {
                   padding: '1em 0',
                   color: state?.file1 == null && showError ? 'red' : 'rgba(0, 0, 0, 0.87)',
-                }}
+                } }
               >
-                {t('file.type.nationalCard')} *
+                { t('file.type.nationalCard') } *
               </h4>
               <Uploader
                 keyId="file1"
-                showSaveClick={false}
-                getFile={(e) => dispatch({ type: 'file1', value: e })}
-                onDelete={() => dispatch({ type: 'file1', value: null })}
+                showSaveClick={ false }
+                getFile={ (e) => dispatch({ type: 'file1', value: e }) }
+                onDelete={ () => dispatch({ type: 'file1', value: null }) }
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <h4
-                style={{
+                style={ {
                   padding: '1em 0',
                   color: state?.file2 == null && showError ? 'red' : 'rgba(0, 0, 0, 0.87)',
-                }}
+                } }
               >
-                {t('file.type.establishLicense')} *
+                { t('file.type.establishLicense') } *
               </h4>
               <Uploader
                 key="file2"
-                showSaveClick={false}
-                getFile={(e) => dispatch({ type: 'file2', value: e })}
-                onDelete={() => dispatch({ type: 'file2', value: null })}
+                showSaveClick={ false }
+                getFile={ (e) => dispatch({ type: 'file2', value: e }) }
+                onDelete={ () => dispatch({ type: 'file2', value: null }) }
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={ 12 }>
               <h4
-                style={{
+                style={ {
                   padding: '1em 0',
                   color: state?.file3 == null && showError ? 'red' : 'rgba(0, 0, 0, 0.87)',
-                }}
+                } }
               >
-                {t('file.type.healThMinistryLicense')} *
+                { t('file.type.healThMinistryLicense') } *
               </h4>
               <Uploader
                 keyId="file3"
-                showSaveClick={false}
-                getFile={(e) => dispatch({ type: 'file3', value: e })}
-                onDelete={() => dispatch({ type: 'file3', value: null })}
+                showSaveClick={ false }
+                getFile={ (e) => dispatch({ type: 'file3', value: e }) }
+                onDelete={ () => dispatch({ type: 'file3', value: null }) }
               />
             </Grid>
-            {state?.pharmacy.type == 2 && (
-              <Grid item container xs={12}>
-                <Grid item xs={12}>
+            { state?.pharmacy.type != PharmacyTypeEnum.NonGovernmental && (
+              <Grid item container xs={ 12 }>
+                <Grid item xs={ 12 }>
                   <h4
-                    style={{
+                    style={ {
                       padding: '1em 0',
                       color: state?.file4 == null && showError ? 'red' : 'rgba(0, 0, 0, 0.87)',
-                    }}
+                    } }
                   >
-                    {t('file.type.ctoLicense')} *
+                    { t('file.type.ctoLicense') } *
                   </h4>
                   <Uploader
                     keyId="file4"
-                    showSaveClick={false}
-                    getFile={(e) => dispatch({ type: 'file4', value: e })}
-                    onDelete={() => dispatch({ type: 'file4', value: null })}
+                    showSaveClick={ false }
+                    getFile={ (e) => dispatch({ type: 'file4', value: e }) }
+                    onDelete={ () => dispatch({ type: 'file4', value: null }) }
                   />
                 </Grid>
-                <Grid item container xs={12}>
-                  <Grid item xs={12}>
+                <Grid item container xs={ 12 }>
+                  <Grid item xs={ 12 }>
                     <h4
-                      style={{
+                      style={ {
                         padding: '1em 0',
                         color: state?.file5 == null && showError ? 'red' : 'rgba(0, 0, 0, 0.87)',
-                      }}
+                      } }
                     >
-                      {t('file.type.commitment')} *
+                      { t('file.type.commitment') } *
                     </h4>
                     <Note>
-                      {t('file.commitmentGuide')}
+                      { t('file.commitmentGuide') }
                       <br />
                       <Link href="http://daroog.com/file/%D9%86%D9%85%D9%88%D9%86%D9%87.docx">
-                        {t('file.downloadCommitmentSample')}
+                        { t('file.downloadCommitmentSample') }
                       </Link>
                     </Note>
                     <Uploader
                       keyId="file5"
-                      showSaveClick={false}
-                      getFile={(e) => dispatch({ type: 'file5', value: e })}
-                      onDelete={() => dispatch({ type: 'file5', value: null })}
+                      showSaveClick={ false }
+                      getFile={ (e) => dispatch({ type: 'file5', value: e }) }
+                      onDelete={ () => dispatch({ type: 'file5', value: null }) }
                     />
                   </Grid>
                 </Grid>
               </Grid>
-            )}
+            ) }
           </Grid>
-          <div className={spacing1}>&nbsp;</div>
+          <div className={ spacing1 }>&nbsp;</div>
           <Divider />
-          {/* //////// SUBMIT //////////// */}
-          <Grid item xs={12} className={spacing3}>
+          {/* //////// SUBMIT //////////// */ }
+          <Grid item xs={ 12 } className={ spacing3 }>
             <Button
               type="submit"
               variant="contained"
               color="primary"
               size="large"
-              className={`${addButton} ${longItem} ${centerItem}`}
+              className={ `${addButton} ${longItem} ${centerItem}` }
             >
-              {isLoadingNewUser ? t('general.pleaseWait') : <span>{t('action.register')}</span>}
+              { isLoading ? t('general.pleaseWait') : <span>{ t('action.register') }</span> }
             </Button>
           </Grid>
         </form>
-        <div className={spacing3}>&nbsp;</div>
+        <div className={ spacing3 }>&nbsp;</div>
       </Paper>
-      <div className={spacing3}>&nbsp;</div>
-      <Modal open={isOpenDatePicker} toggle={toggleIsOpenDatePicker}>
+      <div className={ spacing3 }>&nbsp;</div>
+      <Modal open={ isOpenDatePicker } toggle={ toggleIsOpenDatePicker }>
         <DateTimePicker
           selectedDateHandler={ (e): void => {
             dispatch({ type: 'user.birthDate', value: e })
@@ -1042,7 +1058,8 @@ const RegisterPharmacyWithUser: React.FC = () => {
           } }
         />
       </Modal>
-      <div className={spacing3}>&nbsp;</div>
+      <div className={ spacing3 }>&nbsp;</div>
+      <CircleBackdropLoading isOpen={ isLoading } />
     </Container>
   )
 }
