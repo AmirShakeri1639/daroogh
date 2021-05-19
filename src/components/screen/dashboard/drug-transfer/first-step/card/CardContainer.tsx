@@ -11,15 +11,15 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, useTheme } from '@material-ui/core/styles';
 import CardHeader from './CardHeader';
-import { CardContainerRelatedPharmacyDrugsInterface } from '../../../../../interfaces';
+import { CardContainerRelatedPharmacyDrugsInterface } from 'interfaces';
 import ItemContainer from './ItemContainer';
-import DrugTransferContext, { TransferDrugContextInterface } from '../Context';
+import DrugTransferContext, { TransferDrugContextInterface } from '../../Context';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setTransferStart } from '../../../../../redux/actions';
-import routes from '../../../../../routes';
-import AllPharmacyDrugsViwer from '../AllPharmacyDrugsViwer';
+import { setTransferStart } from 'redux/actions';
+import routes from 'routes';
+import AllPharmacyDrugsViwer from '../../AllPharmacyDrugsViwer';
 
 const { transfer } = routes;
 
@@ -190,13 +190,13 @@ const CardContainer: React.FC<CardContainerRelatedPharmacyDrugsInterface> = (pro
           )}
         </Grid>
         <Grid container item className={button} xs={12}>
-         
+
           <Button type="button" className={buttonExchange} onClick={transferStartHandler}>
             {notSendExchangeID !== null ? t('exchange.continue') : t('general.tabadol')}
           </Button>
-      
+
           <Button
-            type="button" className={buttonExchange} 
+            type="button" className={buttonExchange}
             onClick={(): void => {
               setShowExchangeTree(true);
             }}

@@ -15,8 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryCache } from 'react-query';
 import { Category, PharmacyDrug } from 'services/api';
 import { PharmacyDrugEnum } from 'enum/query';
-import { CircleLoading, EmptyContent } from 'components/public';
-import CardContainer from './CardContainer';
+import { EmptyContent } from 'components/public';
+import CardContainer from './card/CardContainer';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { PharmacyDrugInterface } from 'interfaces/pharmacyDrug';
 import { makeStyles } from '@material-ui/core/styles';
@@ -43,6 +43,7 @@ import { CategoryQueryEnum } from 'enum/query';
 import styled from 'styled-components';
 import { useEffectOnce, useScrollRestoration } from 'hooks';
 import DisplayType, { ListItem } from './DisplayType';
+import CircleBackdropLoading from 'components/public/loading/CircleBackdropLoading';
 
 const { getRelatedPharmacyDrug, getFavoritePharmacyDrug, getRelatedPharmacyDrugByDate } = new PharmacyDrug();
 const { advancedSearch, searchDrug } = new Search();
@@ -203,7 +204,7 @@ const FirstStep: React.FC = () => {
     let hash = window.location.hash;
 
     if (activeStep === 0 && !hash.includes('eid=')) {
-      hash = hash.replace('step=0', '') 
+      hash = hash.replace('step=0', '')
       if (hash.includes('step=2')) {
         window.location.hash = hash.replace('step=2', 'step=1')
       } else if (!window.location.hash.endsWith('step=1')) {
@@ -217,8 +218,8 @@ const FirstStep: React.FC = () => {
   const { search: useLocationSearch } = useLocation();
   const scrollRestoration = useScrollRestoration;
 
-  scrollRestoration(0,window, PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, setCurrentPage, cache);
- 
+  scrollRestoration(window, PharmacyDrugEnum.GET_RELATED_PHARMACY_DRUG, setCurrentPage, cache, 0);
+
   try {
     const localStorageSettings = JSON.parse(localStorage.getItem('settings') ?? '{}');
     minimumDrugExpireDay = localStorageSettings.drugExpireDay;
@@ -375,9 +376,8 @@ const FirstStep: React.FC = () => {
   useEffect(() => {
     (async (): Promise<any> => {
       if (searchedDrugs.length === 0 && pharmacyList.length < totalPharmacyCount?.current) {
-        if (currentPage === 0) {
-          setIsLoadingRelatedDrugs(true)
-        }
+        setIsLoadingRelatedDrugs(true)
+
         let result: ServerResponse;
         if (shouldDisplayFavoriteList) {
           result = await getFavoritePharmacyDrug();
@@ -386,8 +386,11 @@ const FirstStep: React.FC = () => {
         } else {
           result = await getRelatedPharmacyDrugByDate(10, currentPage * 10)
         }
+
         setPharmacyList((v) => [...v, ...result.items]);
+
         totalPharmacyCount.current = result.count;
+
         setIsLoadingRelatedDrugs(false);
       }
     })();
@@ -399,14 +402,6 @@ const FirstStep: React.FC = () => {
   };
 
   const contentHandler = () => {
-    if (isLoadingRelatedDrugs || isLoading) {
-      return (
-        <Grid container item justify="center">
-          <CircleLoading />
-        </Grid>
-      );
-    }
-
     let items = [];
 
     if (isInSearchMode) {
@@ -659,6 +654,8 @@ const FirstStep: React.FC = () => {
           </Grid>
         </div>
       </MaterialDrawer>
+
+      <CircleBackdropLoading isOpen={isLoadingRelatedDrugs || isLoading} />
     </>
   );
 };
