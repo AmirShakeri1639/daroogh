@@ -499,13 +499,15 @@ export default {
         chooseLocationOnMap: 'انتخاب مکان روی نقشه',
       },
       PharmacyTypeEnum: {
-        NONGOVERNMENTAL: 'خصوصی',
-        GOVERNMENTAL: 'دولتی',
+        NonGovernmental: 'خصوصی',
+        Governmental: 'دولتی',
+        Hospital: 'بیمارستانی',
+        Military: 'نظامی',
       },
       WorkTimeEnum: {
-        PART_TIME: 'نیمه وقت',
-        FULL_TIME: 'تمام وقت',
-        NIGHTLY: 'شبانه‌روزی',
+        PartTime: 'نیمه وقت',
+        FullTime: 'تمام وقت',
+        Nightly: 'شبانه‌روزی',
       },
       CategoryTypeEnum: {
         MEDICAL: 'پزشکی',

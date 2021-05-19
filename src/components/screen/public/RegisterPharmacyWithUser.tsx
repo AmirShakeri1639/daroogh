@@ -99,7 +99,7 @@ const initialState = {
     description: '',
     hix: '',
     gli: '',
-    workTime: WorkTimeEnum.FULL_TIME,
+    workTime: WorkTimeEnum.FullTime,
     address: '',
     mobile: '',
     telphon: '',

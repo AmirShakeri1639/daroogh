@@ -28,7 +28,7 @@ const initialState: PharmacyInterface = {
   active: false,
   hix: '',
   gli: '',
-  workTime: WorkTimeEnum.FULL_TIME,
+  workTime: WorkTimeEnum.FullTime,
   address: '',
   mobile: '',
   telphon: '',

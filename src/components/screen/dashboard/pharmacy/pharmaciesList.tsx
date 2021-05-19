@@ -61,7 +61,7 @@ const initialState: PharmacyInterface = {
   active: false,
   hix: '',
   gli: '',
-  workTime: WorkTimeEnum.FULL_TIME,
+  workTime: WorkTimeEnum.FullTime,
   address: '',
   mobile: '',
   telphon: '',
@@ -235,6 +235,18 @@ const PharmaciesList: React.FC = () => {
         searchable: true,
       },
       {
+        field: 'typeString',
+        title: t('pharmacy.type'),
+        type: 'string',
+        fieldLookup: 'type',
+        lookupFilter: [
+          { code: 1, name: t('PharmacyTypeEnum.NonGovernmental') },
+          { code: 2, name: t('PharmacyTypeEnum.Governmental') },
+          { code: 3, name: t('PharmacyTypeEnum.Hospital') },
+          { code: 4, name: t('PharmacyTypeEnum.Military') },
+        ],
+      },
+      {
         field: 'telphon',
         title: t('general.phone'),
         type: 'string',
@@ -244,6 +256,12 @@ const PharmaciesList: React.FC = () => {
         field: 'workTimeString',
         title: t('pharmacy.workTime'),
         type: 'string',
+        fieldLookup: 'workTime',
+        lookupFilter: [
+          { code: 1, name: t('WorkTimeEnum.PartTime') },
+          { code: 2, name: t('WorkTimeEnum.FullTime') },
+          { code: 3, name: t('WorkTimeEnum.Nightly') },
+        ]
       },
       {
         field: 'x',

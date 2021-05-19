@@ -29,14 +29,16 @@ export enum DashboardPages {
 }
 
 export enum PharmacyTypeEnum {
-  NONGOVERNMENTAL = 1,
-  GOVERNMENTAL,
+  NonGovernmental = 1,
+  Governmental,
+  Hospital,
+  Military
 }
 
 export enum WorkTimeEnum {
-  PART_TIME = 1,
-  FULL_TIME,
-  NIGHTLY,
+  PartTime = 1,
+  FullTime,
+  Nightly,
 }
 
 export enum CategoryTypeEnum {
