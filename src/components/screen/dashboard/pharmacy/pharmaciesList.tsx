@@ -181,7 +181,7 @@ const PharmaciesList: React.FC = () => {
 
   const [_remove, { isLoading: isLoadingRemove }] = useMutation(remove, {
     onSuccess: async () => {
-      ref.current?.loadItems();
+      ref.current?.onQueryChange();
       await queryCache.invalidateQueries(PharmacyEnum.GET_ALL);
       tSuccess(t('alert.successfulDelete'));
     },
@@ -308,7 +308,7 @@ const PharmaciesList: React.FC = () => {
       const removeConfirm = await confirmSweetAlert(t('alert.remove'));
       if (removeConfirm) {
         await _remove(row.id);
-        ref.current?.loadItems();
+        ref.current?.onQueryChange();
       }
     } catch (e) {
       errorHandler(e);
@@ -322,7 +322,7 @@ const PharmaciesList: React.FC = () => {
         status: !row.active,
       };
       await _confirm(confirmParams);
-      ref.current?.loadItems();
+      ref.current?.onQueryChange();
     } catch (e) {
       errorHandler(e);
     }
@@ -413,7 +413,7 @@ const PharmaciesList: React.FC = () => {
         });
         toggleIsOpenSaveModalForm();
         dispatch({ type: 'reset' });
-        ref.current?.loadItems();
+        ref.current?.onQueryChange();
       } catch (e) {
         errorHandler(e);
       }
