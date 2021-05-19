@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box, createStyles, DialogContent, Divider, Grid, Hidden } from '@material-ui/core';
-import { CardHeaderInterface } from '../../../../../interfaces';
-import { makeStyles } from '@material-ui/core/styles';
+import { Grid, Hidden } from '@material-ui/core';
+import { CardHeaderInterface } from '../../../../../../interfaces';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar as solidStar,
@@ -13,74 +12,18 @@ import {
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { useTranslation } from 'react-i18next';
 import PersonIcon from '@material-ui/icons/Person';
-import { ColorEnum, RolesEnum } from 'enum';
+import { RolesEnum } from 'enum';
 import { confirmSweetAlert, Impersonation, JwtData } from 'utils'
 import { Pharmacy, User } from 'services/api'
 import routes from 'routes'
 import { useHistory } from 'react-router-dom'
-
-const useStyle = makeStyles((theme) =>
-  createStyles({
-    
-    userLevelContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      '& span:nth-child(1)': {
-        width: 12,
-        height: 12,
-        borderRadius: '50%',
-        marginRight: 5,
-        display: 'inline-block',
-        '&.gold': {
-          backgroundColor: '#ffd700',
-        },
-        '&.silver': {
-          backgroundColor: '#c0c0c0',
-        },
-        '&.boronze': {
-          backgroundColor: '#cd7f32',
-        },
-        '&.platinium': {
-          background: '#E5E4E2',
-        },
-        '& svg': {
-          width: 10,
-          height: 10,
-          color: 'white',
-          marginLeft: 1,
-          marginBottom: 1,
-        },
-      },
-    },
-    starIcon: {
-      color: '#ffc65d',
-    },
-
-    headerBack: {
-      background: ColorEnum.LiteBack,
-      margin: '4px 4px 8px 4px',
-      borderRadius: '8px 8px 0px 0px',
-      padding: 4
-    },
-    logoType: {
-      width: '60px',
-      height: '60px',
-      maxWidth: '100%',
-      maxHeight: '100%',
-      verticalAlign: 'middle',
-    },
-    pharmacyName: {
-      fontSize: '15px',
-      color: '#0d810d',
-    },
-  })
-);
+import { useStyle } from './style';
 
 const CardHeader: React.FC<CardHeaderInterface> = (props) => {
   const { city, guaranty, province, star, itemsCount, userType, pharmacyKey = '' } = props;
   const [pharmacyTitle, setPharmacyTitle] = useState('')
   const [pharmacyId, setPharmacyId] = useState(0)
-  
+
   const { roles } = new JwtData();
   let rolesArray = roles();
   if (!Array.isArray(rolesArray)) {
@@ -100,7 +43,7 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
     }
     getPharmacyData()
   }, [showPharmacyInfo])
-  
+
   const history = useHistory()
 
   const { impersonate } = new User()
@@ -125,7 +68,6 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
   }
 
   const {
-
     userLevelContainer,
     starIcon,
     headerBack,
@@ -206,7 +148,7 @@ const CardHeader: React.FC<CardHeaderInterface> = (props) => {
         <img className={logoType} src="pharmacy.png" />
       </Grid>
       </Hidden>
-     
+
       <Grid item xs={7} lg={6} md={6}>
         <Grid item xs={12}>
           <span>

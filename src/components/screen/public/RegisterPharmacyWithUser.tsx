@@ -30,7 +30,7 @@ import {
   tWarn,
 } from 'utils'
 import { DaroogDropdown } from '../../public/daroog-dropdown/DaroogDropdown'
-import { ColorEnum, WorkTimeEnum } from '../../../enum'
+import { ColorEnum, WorkTimeEnum } from 'enum'
 import Modal from '../../public/modal/Modal'
 import DateTimePicker from '../../public/datepicker/DatePicker'
 import { 
