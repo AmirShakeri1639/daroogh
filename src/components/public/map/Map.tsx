@@ -1,5 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMapEvents,
+  useMap,
+} from 'react-leaflet';
 
 import L, { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -99,7 +112,11 @@ const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
             latitude: marker.getLatLng().lat,
             longitude: marker.getLatLng().lng,
           });
-          if (onClick) onClick({ lat: marker.getLatLng().lat, lng: marker.getLatLng().lng });
+          if (onClick)
+            onClick({
+              lat: marker.getLatLng().lat,
+              lng: marker.getLatLng().lng,
+            });
         }
       },
     }),
@@ -132,6 +149,7 @@ const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
         drawMarker: false,
       })
       .addTo(map);
+    if (!defaultLatLng[0]) lc.start();
   }, []);
 
   return position.latitude ? (

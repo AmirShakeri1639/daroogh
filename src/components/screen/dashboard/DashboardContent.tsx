@@ -26,7 +26,11 @@ import { checkVersion, clearMyCache, JwtData, showWhatsNew } from 'utils';
 import AddedValueOfPharmacyWidget from './widgets/AddedValueOfPharmacyWidget';
 import AddedValueWidget from './widgets/AddedValueWidget';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faFileMedical, faUser } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBars,
+  faFileMedical,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
 import routes from 'routes';
 import { useTranslation } from 'react-i18next';
 
@@ -159,7 +163,9 @@ const DashboardContent: React.FC<any> = () => {
             ' checking for whatsneweXists',
           'background: lightblue'
         );
-        const whatsNewExistsFromStorage = localStorage.getItem('whatsNewExists');
+        const whatsNewExistsFromStorage = localStorage.getItem(
+          'whatsNewExists'
+        );
         if (whatsNewExistsFromStorage === 'true') {
           localStorage.removeItem('whatsNewExists');
           showWhatsNew(localStorage.getItem('version') || '1.0.0');
@@ -196,7 +202,10 @@ const DashboardContent: React.FC<any> = () => {
               <Grid className={classes.buttonItem}>
                 <Grid container xs={12}>
                   <Button className={classes.userButton}>
-                    <a className={classes.buttonNavigator} href={'#' + prescription}>
+                    <a
+                      className={classes.buttonNavigator}
+                      href={'#' + prescription}
+                    >
                       <FontAwesomeIcon
                         icon={faFileMedical}
                         size="4x"
@@ -215,7 +224,10 @@ const DashboardContent: React.FC<any> = () => {
               <Grid className={classes.buttonItem}>
                 <Grid container xs={12}>
                   <Button className={classes.userButton}>
-                    <a className={classes.buttonNavigator} href={'#' + jobApplication}>
+                    <a
+                      className={classes.buttonNavigator}
+                      href={'#' + jobApplication}
+                    >
                       <FontAwesomeIcon
                         icon={faBars}
                         size="4x"
@@ -247,8 +259,18 @@ const DashboardContent: React.FC<any> = () => {
           </Grid>
 
           {/* Chart */}
-          <Grid item xs={12} sm={12} md={6} xl={6} style={{ height: 500, overflow: 'disabled' }}>
-            <Paper className={classes.paper} style={{ height: 500, overflow: 'disabled' }}>
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            xl={6}
+            style={{ height: 500, overflow: 'disabled' }}
+          >
+            <Paper
+              className={classes.paper}
+              style={{ height: 500, overflow: 'disabled' }}
+            >
               <span>هیت مپ تبادلات در کشور</span>
               <div id="map">
                 <MapCluster />
@@ -300,7 +322,12 @@ const DashboardContent: React.FC<any> = () => {
         onOpen={(): void => setIsOpenDetails(true)}
         hideSubmit={true}
       >
-        <DialogTitle>داروخانه ها</DialogTitle>
+        <DialogTitle>
+          داروخانه ها{' '}
+          {data && data.items && data.items[0]
+            ? '(' + data.items[0].province + ')'
+            : ''}
+        </DialogTitle>
         <Divider />
         <DialogContent>
           <List component="nav" aria-label="contacts">
@@ -309,9 +336,7 @@ const DashboardContent: React.FC<any> = () => {
               data.items.map((rec: any) => {
                 return (
                   <ListItem button>
-                    <ListItemText
-                      primary={rec.name + ' (' + rec.province + ' , ' + rec.city + ')'}
-                    />
+                    <ListItemText primary={rec.name + ' (' + rec.city + ')'} />
                   </ListItem>
                 );
               })}
