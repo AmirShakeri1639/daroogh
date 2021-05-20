@@ -593,6 +593,8 @@ export default {
         allPharmacyDrug: 'محصولات داروخانه‌ها',
         acceptedPrescriptions: 'نسخه‌های پذیرفته شده',
         allEmploymentApplicationsReport: 'درخواست‌های کاریابی',
+        yourPharmacyStats: 'آمار داروخانه شما',
+        allPharmaciesStats: 'آمار داروخانه‌های کل کشور',
       },
       countryDivision: {
         province: 'استان',
