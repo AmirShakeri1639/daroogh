@@ -153,6 +153,7 @@ export default {
         inNumber: 'به عدد',
         basedOnDescriptions: 'بر اساس توضیحات بالا',
         rowsPerPage: 'ردیف در صفحه',
+        update: 'بروزرسانی',
       },
 
       pack: {
@@ -179,6 +180,8 @@ export default {
         recieveDate: 'تاریخ دریافت',
         minimumDate: 'تاریخ انتخابی باید حداقل برای {{day}} روز آینده باشد',
         registerDate: 'تاریخ ثبت',
+        fromDate: 'از تاریخ',
+        toDate: 'تا تاریخ',
       },
       province: {
         selectCounty: 'انتخاب استان',
@@ -308,6 +311,7 @@ export default {
 
         newProduct: 'محصول جدید',
         productsDatabase: 'دیتابیس محصولات',
+        daysToExpire: 'تعداد روز باقیمانده به انقضای دارو',
       },
       peopleSection: {
         prescription: 'نسخه',
@@ -495,13 +499,15 @@ export default {
         chooseLocationOnMap: 'انتخاب مکان روی نقشه',
       },
       PharmacyTypeEnum: {
-        NONGOVERNMENTAL: 'خصوصی',
-        GOVERNMENTAL: 'دولتی',
+        NonGovernmental: 'خصوصی',
+        Governmental: 'دولتی',
+        Hospital: 'بیمارستانی',
+        Military: 'نظامی',
       },
       WorkTimeEnum: {
-        PART_TIME: 'نیمه وقت',
-        FULL_TIME: 'روزانه',
-        NIGHTLY: 'شبانه‌روزی',
+        PartTime: 'نیمه وقت',
+        FullTime: 'تمام وقت',
+        Nightly: 'شبانه‌روزی',
       },
       CategoryTypeEnum: {
         MEDICAL: 'پزشکی',
@@ -586,6 +592,7 @@ export default {
         basedOn: 'بر اساس',
         allPharmacyDrug: 'محصولات داروخانه‌ها',
         acceptedPrescriptions: 'نسخه‌های پذیرفته شده',
+        allEmploymentApplicationsReport: 'درخواست‌های کاریابی',
       },
       countryDivision: {
         province: 'استان',

@@ -254,8 +254,8 @@ export class Pharmacy {
   public name: string = '';
   public hix: string = '';
   public gli: string = '';
-  public type: PharmacyTypeEnum = PharmacyTypeEnum.NONGOVERNMENTAL;
-  public workTime: WorkTimeEnum = WorkTimeEnum.PART_TIME;
+  public type: PharmacyTypeEnum = PharmacyTypeEnum.NonGovernmental;
+  public workTime: WorkTimeEnum = WorkTimeEnum.PartTime;
   public address: string = '';
   public countryDivisionID: number = DefaultCountryDivisionID;
   public x?: string = '';

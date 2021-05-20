@@ -27,7 +27,7 @@ interface Props {
   title?: string;
   isOpen: boolean;
   fullWidth?: boolean;
-  onOpen?: () => void;
+  onOpen?: (id?: string) => void;
   onOpenAltenate?: () => void;
   onClose?: () => void;
   onCloseAlternate?: () => void;
@@ -44,9 +44,9 @@ interface Props {
   id?: string;
   ref?: any;
   disableBackdropClick?: boolean;
+  dialogId?: string;
+  resetDialog?: boolean;
 }
-
-
 
 // CDialog => Custom Dialog
 const CDialog: React.FC<Props> = ({
@@ -69,13 +69,17 @@ const CDialog: React.FC<Props> = ({
   id,
   ref,
   disableBackdropClick,
+  dialogId,
+  resetDialog,
 }) => {
   const location = useLocation();
-  const params = queryString.parse(location.search);
+  let params = queryString.parse(location.search);
+
   const urlHasParams = Object.keys(params).length > 0;
 
   const modalQueryString = `${urlHasParams ? '&' : '?'}modal=true`;
   const modalAltQueryString = `${urlHasParams ? '&' : '?'}modalAlt=true`;
+  const dialogQueryString = `${urlHasParams ? '&' : '?'}dialog=`;
 
   const hasModalAlt = (): boolean => {
     return window.location.hash.endsWith(modalAltQueryString);
@@ -87,7 +91,27 @@ const CDialog: React.FC<Props> = ({
 
   useEffect(() => {
     const onHashChange = (): void => {
-      if (!hasModal() && !hasModalAlt() && !isUndefined(onClose)) {
+      let hash = window.location.hash;
+
+      let parts = hash.substring(hash.indexOf('?') + 1).split('&');
+
+      let dialogParam = '';
+      for (let i = 0; i < parts.length; i++) {
+        if (parts[i].indexOf('dialog=') == 0) {
+          dialogParam = parts[i].substring(7);
+          break;
+        }
+      }
+
+      if (dialogParam != '') {
+        let dialogIDs = dialogParam.split(',');
+
+        if (dialogId != undefined && dialogIDs?.indexOf(dialogId) != -1 && !isUndefined(onOpen)) {
+          onOpen(dialogId);
+        } else if (!isUndefined(onClose)) {
+          onClose();
+        }
+      } else if (!hasModal() && !hasModalAlt() && !isUndefined(onClose)) {
         onClose();
       } else if (!hasModalAlt() && !isUndefined(onCloseAlternate)) {
         onCloseAlternate();
@@ -105,13 +129,27 @@ const CDialog: React.FC<Props> = ({
 
   useEffect(() => {
     if (isOpen) {
-      if (!modalAlt && !hasModal()) {
+      if (dialogId != undefined) {
+        let dialogIds = '';
+        if (resetDialog || params['dialog'] == undefined) {
+          dialogIds = dialogId;
+        } else {
+          dialogIds = params['dialog'] + ',' + dialogId;
+        }
+
+        if (params['dialog'] != undefined) {
+          const regExp = new RegExp('dialog(.+?)(&|$)', 'g');
+          window.location.hash = window.location.hash.replace(regExp, 'dialog=' + dialogIds + '$2');
+        } else {
+          window.location.hash = `${window.location.hash}${dialogQueryString}` + dialogIds;
+        }
+      } else if (!modalAlt && !hasModal()) {
         window.location.hash = `${window.location.hash}${modalQueryString}`;
       } else if (modalAlt && !hasModalAlt()) {
         window.location.hash = `${window.location.hash}${modalAltQueryString}`;
       }
     }
-  }, [isOpen]);
+  }, [isOpen, dialogId, resetDialog]);
 
   const onCloseHandler = (): void => {
     if (!isUndefined(onClose)) {
@@ -131,9 +169,9 @@ const CDialog: React.FC<Props> = ({
       fullScreen={fullScreen}
       style={style ?? undefined}
       className={className ?? ''}
-      id={ id }
-      ref={ ref }
-      disableBackdropClick = {disableBackdropClick}
+      id={id}
+      ref={ref}
+      disableBackdropClick={disableBackdropClick}
     >
       {children}
       {!hideAll && (

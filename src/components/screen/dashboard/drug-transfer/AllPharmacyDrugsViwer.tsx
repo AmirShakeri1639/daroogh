@@ -2,12 +2,10 @@ import { AllPharmacyDrug } from 'enum';
 import { useScrollRestoration } from 'hooks';
 import { AllPharmacyDrugInterface } from 'interfaces';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryCache } from 'react-query';
 import { PharmacyDrug } from 'services/api';
-import { isNullOrEmpty } from 'utils';
 import { DaroogSearchBar } from './DaroogSearchBar';
-import ItemContainer from './first-step/ItemContainer';
+import ItemContainer from './first-step/card/ItemContainer';
 
 interface Props {
   pharmacyId: string;
@@ -58,7 +56,7 @@ const AllPharmacyDrugsViwer: React.FC<Props> = (props) => {
   const scrollRestoration = useScrollRestoration;
   const cache = useQueryCache();
 
-  scrollRestoration(20, window, AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, setCurrentPage, cache);
+  scrollRestoration(window, AllPharmacyDrug.GET_ALL_PHARMACY_DRUG, setCurrentPage, cache, 20);
 
   const { refetch } = useQuery(
     AllPharmacyDrug.GET_ALL_PHARMACY_DRUG,
