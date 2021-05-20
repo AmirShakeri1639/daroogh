@@ -93,7 +93,7 @@ const CDialog: React.FC<Props> = ({
     const onHashChange = (): void => {
       let hash = window.location.hash;
 
-      var parts = hash.substring(hash.indexOf('?') + 1).split('&');
+      let parts = hash.substring(hash.indexOf('?') + 1).split('&');
 
       let dialogParam = '';
       for (let i = 0; i < parts.length; i++) {
@@ -130,7 +130,7 @@ const CDialog: React.FC<Props> = ({
   useEffect(() => {
     if (isOpen) {
       if (dialogId != undefined) {
-        var dialogIds = '';
+        let dialogIds = '';
         if (resetDialog || params['dialog'] == undefined) {
           dialogIds = dialogId;
         } else {
