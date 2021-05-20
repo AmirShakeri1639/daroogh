@@ -446,10 +446,10 @@ const SupplyList: React.FC = () => {
       isJalaliDate(convertedArray[0])
         ? [selectedDate.gy, selectedDate.gm - 1, selectedDate.gd]
         : [
-            Number(selectedYear),
-            Number(selectedMonth) - 1,
-            Number(selectedDay === '' ? monthMinimumLength : selectedDay),
-          ]
+          Number(selectedYear),
+          Number(selectedMonth) - 1,
+          Number(selectedDay === '' ? monthMinimumLength : selectedDay),
+        ]
     );
 
     const daysDiff = String(selectedDateMomentObject.diff(todayMomentObject, 'days'));
@@ -471,11 +471,11 @@ const SupplyList: React.FC = () => {
     setIsoDate(
       isJalaliDate(convertedArray[0])
         ? `${selectedDate.gy}-${numberWithZero(selectedDate.gm)}-${numberWithZero(
-            selectedDate.gd
-          )}T00:00:00Z`
+          selectedDate.gd
+        )}T00:00:00Z`
         : `${[Number(selectedYear), Number(selectedMonth) - 1, Number(selectedDay)].join(
-            '-'
-          )}T00:00:00Z`
+          '-'
+        )}T00:00:00Z`
     );
   };
 
@@ -486,9 +486,8 @@ const SupplyList: React.FC = () => {
   }, [selectedDay, selectedMonth, selectedYear]);
 
   const getDrugName = (item: any): string => {
-    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${
-      item.type !== null ? ` - ${item.type}` : ''
-    }`;
+    return `${item.name}${item.genericName !== null ? ` (${item.genericName}) ` : ''}${item.type !== null ? ` - ${item.type}` : ''
+      }`;
   };
 
   const searchDrugs = async (title: string): Promise<any> => {
@@ -516,9 +515,8 @@ const SupplyList: React.FC = () => {
           el: (
             <div>
               <div>{getDrugName(_item)}</div>
-              <div className="text-muted txt-sm no-farsi-number">{`${
-                _item.enName !== null ? `-${_item.enName}` : ''
-              }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
+              <div className="text-muted txt-sm no-farsi-number">{`${_item.enName !== null ? `-${_item.enName}` : ''
+                }${_item.companyName !== null ? ` - ${_item.companyName}` : ''}`}</div>
             </div>
           ),
         }));
@@ -836,7 +834,7 @@ const SupplyList: React.FC = () => {
         </div>
       )}
       <CDialog
-        fullWidth={fullScreen}
+        fullScreen={fullScreen}
         isOpen={isOpenNewDrug}
         onClose={(): void => setIsOpenNewDrug(false)}
         onOpen={(id?: string): void => {
@@ -846,6 +844,7 @@ const SupplyList: React.FC = () => {
         }}
         formHandler={submitSave}
         dialogId={'2'}
+        fullWidth
         resetDialog={false}
       >
         <DialogTitle className="text-sm">{t('action.create')}</DialogTitle>
@@ -1092,8 +1091,8 @@ const SupplyList: React.FC = () => {
                           calculatedValue === 0
                             ? state?.cnt
                             : !isCalculatingPrice
-                            ? calculatedValue
-                            : state.cnt
+                              ? calculatedValue
+                              : state.cnt
                         }
                       />
                     </Grid>
@@ -1127,8 +1126,8 @@ const SupplyList: React.FC = () => {
                         calculatedValue === 0
                           ? state?.amount
                           : isCalculatingPrice
-                          ? calculatedValue
-                          : state?.amount
+                            ? calculatedValue
+                            : state?.amount
                       }
                       className="w-100"
                       valueLimit={(value) => {
