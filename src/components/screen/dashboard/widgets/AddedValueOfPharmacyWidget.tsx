@@ -69,13 +69,13 @@ const AddedValueOfPharmacyWidget: React.FC = () => {
           <span
             className={titleC}
             style={{
-              background: 'blue',
+              background: '#2196f3',
               marginRight: 2,
               borderRadius: '5px 5px 0px 0px',
               padding: 8,
             }}
           >
-            آمار داروخانه شما
+            { t('reports.yourPharmacyStats') }
           </span>
         </Grid>
         <Grid
@@ -83,7 +83,7 @@ const AddedValueOfPharmacyWidget: React.FC = () => {
           container
           xs={12}
           style={{
-            backgroundColor: 'blue',
+            backgroundColor: '#2196f3',
             color: 'white',
             borderRadius: 15,
             border: '1px solid white',
