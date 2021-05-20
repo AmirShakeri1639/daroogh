@@ -5,6 +5,7 @@ import L, { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import SearchControl from './SearchControl';
 L.Icon.Default.imagePath = 'images/';
+var lc: any;
 
 interface Props {
   onClick?: (e: any) => void;
@@ -113,7 +114,6 @@ const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
       });
       if (onClick) onClick({ lat, lng });
     },
-
   });
   useEffect(() => {
     setPosition({
@@ -122,6 +122,17 @@ const AddMarkerToClick: React.FC<MarkerProps> = (props) => {
     });
     map.setView([defaultLatLng[0], defaultLatLng[1]], map.getZoom());
   }, [defaultLatLng[0], defaultLatLng[1]]);
+
+  useEffect(() => {
+    debugger;
+    if (lc) lc._map.stopLocate();
+
+    lc = L.control
+      .locate({
+        drawMarker: false,
+      })
+      .addTo(map);
+  }, []);
 
   return position.latitude ? (
     <Marker
