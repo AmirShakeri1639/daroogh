@@ -309,7 +309,9 @@ const DashboardContent: React.FC<any> = () => {
               data.items.map((rec: any) => {
                 return (
                   <ListItem button>
-                    <ListItemText primary={rec.name} />
+                    <ListItemText
+                      primary={rec.name + ' (' + rec.province + ' , ' + rec.city + ')'}
+                    />
                   </ListItem>
                 );
               })}

@@ -1,27 +1,27 @@
-import { makeStyles, TextField } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
-import { debounce } from 'lodash'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet'
+import { makeStyles, TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
+import React, { useState } from 'react';
+import Reports from '../../../services/api/Reports';
+const Services = new Reports();
 
 const POSITION_CLASSES = {
   bottomleft: 'leaflet-bottom leaflet-left',
   bottomright: 'leaflet-bottom leaflet-right',
   topleft: 'leaflet-top leaflet-left',
   topright: 'leaflet-top leaflet-right',
-}
+};
 interface Location {
-  x?: number
-  y?: number
+  x?: number;
+  y?: number;
 }
 interface OptionType {
-  title: string
-  address?: string
-  neighbourhood?: string
-  region?: string
-  type?: string
-  category?: string
-  location?: Location
+  title: string;
+  address?: string;
+  neighbourhood?: string;
+  region?: string;
+  type?: string;
+  category?: string;
+  location?: Location;
 }
 
 const useStyles = makeStyles({
@@ -32,45 +32,36 @@ const useStyles = makeStyles({
       fontSize: 18,
     },
   },
-})
+});
 interface Props {
-  onSelect: (e: Location | undefined) => void
+  onSelect: (e: Location | undefined) => void;
 }
 
 const SearchControl: React.FC<Props> = (props) => {
-  const defaultLatLng = [32.167342, 53.460555]
+  const defaultLatLng = [32.167342, 53.460555];
   const [position, setPosition] = useState({
     latitude: defaultLatLng[0],
     longitude: defaultLatLng[1],
-  })
-  const [term, setTerm] = useState('')
-  const [options, setoptions] = useState([])
-  const classes = useStyles()
+  });
+  const [term, setTerm] = useState('');
+  const [options, setoptions] = useState([]);
+  const classes = useStyles();
 
-  const positionClass = POSITION_CLASSES.topright
+  const positionClass = POSITION_CLASSES.topright;
 
   const handelChange = (e: any) => {
     // setTerm(e.target.value);
-    fetch(
-      `https://api.neshan.org/v1/search?term=${e.target.value}&lat=${defaultLatLng[0]}&lng=${defaultLatLng[1]}`,
-      {
-        method: 'Get',
-        headers: {
-          'Api-Key': 'service.pAAcIhXE5ZPxKPohrU41OUjNn0XhjElNYjp6A5nj',
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setoptions(data.items)
-      })
-  }
+    Services.SearchMap(e.target.value, defaultLatLng[0], defaultLatLng[1]).then((data) => {
+      debugger;
+      setoptions(data.items);
+    });
+  };
   return (
     <div
       style={{ position: 'absolute' }}
       onClick={(e) => {
-        e.stopPropagation()
-        e.nativeEvent.stopImmediatePropagation()
+        e.stopPropagation();
+        e.nativeEvent.stopImmediatePropagation();
       }}
       className={positionClass}
     >
@@ -86,7 +77,7 @@ const SearchControl: React.FC<Props> = (props) => {
           }}
           autoHighlight
           onChange={(event: object, value: OptionType | null, reason: string) => {
-            if (reason == 'select-option') if (props.onSelect) props.onSelect(value?.location)
+            if (reason == 'select-option') if (props.onSelect) props.onSelect(value?.location);
           }}
           getOptionLabel={(option) => option.title}
           renderOption={(option) => (
@@ -111,7 +102,7 @@ const SearchControl: React.FC<Props> = (props) => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SearchControl
+export default SearchControl;
