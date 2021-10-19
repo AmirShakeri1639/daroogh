@@ -78,6 +78,7 @@ const {
   selectedDrugs,
   favoriteDrugs,
   surplusDrugs,
+  Top10Pharmacy,
   jobsList,
   pharmacyMessage,
   surveyList,
@@ -361,6 +362,14 @@ const ListItems: React.FC = () => {
                 <ReceiptIcon />
               </ListItemIcon>
               <ListItemText primary={t('reports.SurplusDrugsForm')} />
+            </Link>
+          </List>
+          <List component="div" className={linkWrapper}>
+            <Link to={Top10Pharmacy} className={nested}>
+              <ListItemIcon>
+                <ReceiptIcon />
+              </ListItemIcon>
+              <ListItemText primary={t('reports.Top10PharmacyForm')} />
             </Link>
           </List>
           <List component="div" className={linkWrapper}>

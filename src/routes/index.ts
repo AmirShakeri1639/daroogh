@@ -92,6 +92,7 @@ export default {
   settings: `/${dashboard}/site-settings`,
   settingsAi: `/${dashboard}/settingsAi`,
   surplusDrugs: `/${dashboard}/surplusDrugs`,
+  Top10Pharmacy: `/${dashboard}/Top10Pharmacy`,
   favoriteDrugs: `/${dashboard}/favoriteDrugs`,
   selectedDrugs: `/${dashboard}/selectedDrugs`,
   jobsList: `/${dashboard}/${job}/list`,

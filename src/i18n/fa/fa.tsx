@@ -585,6 +585,7 @@ export default {
         report: 'گزارش',
         reports: 'گزارشات',
         SurplusDrugsForm: 'گزارش داروهای مازاد',
+        Top10PharmacyForm: 'گزارش داروخانه های برتر',
         FavoriteDrugsForm: 'گزارش داروهای مورد علاقه داروخانه‌ها',
         SelectedDrugsForm: 'گزارش داروهای انتخاب شده در تبادل',
         loginCount: 'گزارش تعداد لاگین‌ها',
